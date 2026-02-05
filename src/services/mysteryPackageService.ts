@@ -117,9 +117,11 @@ export async function saveStructuredPackageData(mysteryId: string, jsonData: any
       throw new Error(`Failed to fetch package record: ${packageError.message}`);
     }
     
+    let packageId: string;
+
     if (!packageData) {
       console.log("ℹ️ [DEBUG] No existing package found, creating new one");
-      
+
       // Create new package if none exists
       const { data: newPackage, error: createError } = await supabase
         .from("mystery_packages")
@@ -146,16 +148,16 @@ export async function saveStructuredPackageData(mysteryId: string, jsonData: any
         })
         .select("id")
         .single();
-        
+
       if (createError || !newPackage) {
         console.error("❌ [DEBUG] Error creating package:", createError);
         throw new Error(`Failed to create package record: ${createError?.message}`);
       }
-      
-      var packageId = newPackage.id;
+
+      packageId = newPackage.id;
       console.log("✅ [DEBUG] Created new package with ID:", packageId);
     } else {
-      var packageId = packageData.id;
+      packageId = packageData.id;
       console.log("✅ [DEBUG] Found existing package with ID:", packageId);
 
       // Update existing mystery_packages table with structured data
@@ -280,9 +282,11 @@ export async function saveStructuredPackageData(mysteryId: string, jsonData: any
 
 // Enhanced package generation with domain detection
 export async function generateCompletePackage(mysteryId: string, testMode = false): Promise<string> {
+  let packageId: string | undefined;
+
   try {
     console.log("Starting package generation for conversation ID:", mysteryId);
-    
+
     // Prevent duplicate generation attempts
     const { data: existingPackage, error: existingPackageErr } = await supabase
       .from("mystery_packages")
@@ -291,14 +295,17 @@ export async function generateCompletePackage(mysteryId: string, testMode = fals
       .order('updated_at', { ascending: false })
       .limit(1)
       .maybeSingle();
-    
+
     if (existingPackageErr) {
       console.error("Error checking for existing generation:", existingPackageErr);
+    } else if (existingPackage?.generation_status?.status === 'completed') {
+      console.log("Package already generated — skipping duplicate generation");
+      return "already_completed";
     } else if (existingPackage?.generation_status?.status === 'in_progress') {
       console.warn("Generation already in progress – aborting duplicate webhook call");
       return "already_in_progress";
     }
-    
+
     // Get conversation data
     const { data: conversation, error: conversationError } = await supabase
       .from("conversations")
@@ -321,13 +328,11 @@ export async function generateCompletePackage(mysteryId: string, testMode = fals
       .order('updated_at', { ascending: false })
       .limit(1)
       .maybeSingle();
-    
+
     if (checkError && checkError.code !== 'PGRST116') {
       console.error("Error checking for existing package:", checkError);
       throw new Error("Failed to check existing package");
     }
-    
-    let packageId: string;
     
     const initialStatus: GenerationStatus = {
       status: 'in_progress',
@@ -442,22 +447,24 @@ export async function generateCompletePackage(mysteryId: string, testMode = fals
       .eq("id", packageId);
   } catch (e) {
     console.error("Unexpected error in generateCompletePackage:", e);
-    
-    // Update status to failed with error details
-    await supabase
-      .from("mystery_packages")
-      .update({
-        generation_status: {
-          status: 'failed',
-          progress: 0,
-          currentStep: 'Unexpected error during generation',
-          error: e instanceof Error ? e.message : String(e),
-          resumable: true
-        },
-        updated_at: new Date().toISOString()
-      })
-      .eq("id", packageId);
-      
+
+    // Update status to failed with error details (only if we have a packageId)
+    if (packageId) {
+      await supabase
+        .from("mystery_packages")
+        .update({
+          generation_status: {
+            status: 'failed',
+            progress: 0,
+            currentStep: 'Unexpected error during generation',
+            error: e instanceof Error ? e.message : String(e),
+            resumable: true
+          },
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", packageId);
+    }
+
     throw new Error(`Package generation failed: ${e instanceof Error ? e.message : String(e)}`);
   }
   
