@@ -826,6 +826,19 @@
         "noValidAssignments": "No valid assignments to send",
         "allSent": "Sent {{count}} character assignments!",
         "sendSomeFailed": "Failed to send some assignments"
+      },
+      "hostKit": {
+        "title": "Host Materials",
+        "subtitle": "Send yourself the host guide and detective kit for easy mobile access at your party.",
+        "emailPlaceholder": "your@email.com",
+        "sendButton": "Send Host Kit",
+        "sending": "Sending...",
+        "sent": "Sent",
+        "toasts": {
+          "success": "Host materials sent to your email!",
+          "error": "Failed to send host materials",
+          "invalidEmail": "Please enter a valid email address"
+        }
       }
     },
     "roles": {
@@ -912,6 +925,17 @@
         "Evidence cards and printable materials",
         "Full gameplay script and timeline"
       ]
+    }
+  },
+  "hostAccess": {
+    "loading": "Loading host materials...",
+    "accessDenied": "Access Denied",
+    "notFound": "Host materials not found.",
+    "title": "Host Materials",
+    "subtitle": "Your complete host guide and detective kit",
+    "tabs": {
+      "guide": "Host Guide",
+      "detective": "Detective & Evidence Kit"
     }
   },
   "mysteryView": {

@@ -26,6 +26,7 @@ import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
 import CharacterAccess from "./pages/CharacterAccess";
+import HostAccess from "./pages/HostAccess";
 import BlogIndex from "./pages/BlogIndex";
 import BlogPost from "./pages/BlogPost";
 import PaymentSuccess from "./pages/PaymentSuccess";
@@ -103,6 +104,8 @@ const AppRoutes = () => {
         
         {/* Character access route (public) */}
         <Route path="/character/:token" element={<CharacterAccess />} />
+        {/* Host access route (public) */}
+        <Route path="/host/:token" element={<HostAccess />} />
         
         {/* Payment success and cancel routes */}
         <Route path="/payment-success" element={<PaymentSuccess />} />

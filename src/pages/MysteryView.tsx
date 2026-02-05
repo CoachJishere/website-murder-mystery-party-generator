@@ -39,6 +39,7 @@ const MysteryView = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [packageContent, setPackageContent] = useState<string | null>(null);
   const [packageData, setPackageData] = useState<MysteryPackageData | null>(null);
+  const [packageId, setPackageId] = useState<string | null>(null);
   const [characters, setCharacters] = useState<MysteryCharacter[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -129,6 +130,7 @@ const MysteryView = () => {
         };
         
         setPackageData(structuredPackageData);
+        setPackageId(packageData.id);
         console.log("✅ [DEBUG] Structured package data loaded");
 
         // Fetch characters from database
@@ -906,8 +908,8 @@ const MysteryView = () => {
           {(mystery?.is_paid || generationStatus?.status === 'completed' || 
             (!generating && !generationStatus && packageData && packageData.gameOverview && 
              packageData.hostGuide && characters.length > 0)) ? (
-            <MysteryPackageTabView 
-              packageContent={packageContent || ""} 
+            <MysteryPackageTabView
+              packageContent={packageContent || ""}
               mysteryTitle={getMysteryTitle()}
               generationStatus={generationStatus || undefined}
               conversationId={id}
@@ -916,6 +918,7 @@ const MysteryView = () => {
               packageData={packageData || undefined}
               characters={characters}
               estimatedTime={getEstimatedTime(mystery?.player_count || 6)}
+              packageId={packageId || undefined}
             />
           ) : (
             // Show generation progress or start button

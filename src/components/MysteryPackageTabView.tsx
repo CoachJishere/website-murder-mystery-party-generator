@@ -36,6 +36,7 @@ interface MysteryPackageTabViewProps {
   packageData?: MysteryPackageData;
   characters?: MysteryCharacter[];
   estimatedTime: string;
+  packageId?: string;
 }
 
 const MysteryPackageTabView = React.memo(({
@@ -47,7 +48,8 @@ const MysteryPackageTabView = React.memo(({
   onGenerateClick,
   packageData,
   characters = [],
-  estimatedTime
+  estimatedTime,
+  packageId
 }: MysteryPackageTabViewProps) => {
   const [activeTab, setActiveTab] = useState("host-guide");
   const [statusMessage, setStatusMessage] = useState("Starting generation...");
@@ -635,6 +637,7 @@ const MysteryPackageTabView = React.memo(({
         characters={characters}
         mysteryId={conversationId || ""}
         mysteryTitle={mysteryTitle}
+        packageId={packageId}
       />
     </div>
   );

@@ -861,6 +861,19 @@
         "noValidAssignments": "Nenhuma atribuição válida para enviar",
         "allSent": "{{count}} atribuições de personagens enviadas!",
         "sendSomeFailed": "Falha ao enviar algumas atribuições"
+      },
+      "hostKit": {
+        "title": "Materiais do Anfitrião",
+        "subtitle": "Envie para si mesmo o guia do anfitrião e o kit de detetive para acesso fácil no celular durante a festa.",
+        "emailPlaceholder": "seu@email.com",
+        "sendButton": "Enviar Kit do Anfitrião",
+        "sending": "Enviando...",
+        "sent": "Enviado",
+        "toasts": {
+          "success": "Materiais do anfitrião enviados para o seu e-mail!",
+          "error": "Falha ao enviar materiais do anfitrião",
+          "invalidEmail": "Por favor, insira um endereço de e-mail válido"
+        }
       }
     },
     "roles": {
@@ -990,6 +1003,17 @@
     },
     "matrix": {
       "title": "Matriz de Relacionamento de Personagens"
+    }
+  },
+  "hostAccess": {
+    "loading": "Carregando materiais do anfitrião...",
+    "accessDenied": "Acesso Negado",
+    "notFound": "Materiais do anfitrião não encontrados.",
+    "title": "Materiais do Anfitrião",
+    "subtitle": "Seu guia completo do anfitrião e kit de detetive",
+    "tabs": {
+      "guide": "Guia do Anfitrião",
+      "detective": "Kit de Detetive e Evidências"
     }
   },
   "mysteryView": {
