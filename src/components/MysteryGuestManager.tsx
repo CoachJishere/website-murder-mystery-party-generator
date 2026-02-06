@@ -243,11 +243,11 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
       if (emailError) {
         throw new Error(`Failed to send email: ${emailError.message}`);
       }
-      toast.success(t('character.guestManager.toasts.success', { name: assignment.guest_name }));
+      toast.success(t('character.guestManager.toasts.characterSent', { name: assignment.guest_name }));
 
     } catch (error) {
       console.error('Error sending assignment:', error);
-      toast.error(t('character.guestManager.toasts.error'));
+      toast.error(t('character.guestManager.toasts.sendFailed'));
     } finally {
       setLoading(false);
     }
@@ -274,7 +274,7 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
 
     } catch (error) {
       console.error('Error updating assignment:', error);
-      toast.error(t('character.guestManager.toasts.updateError'));
+      toast.error(t('character.guestManager.toasts.updateFailed'));
     }
   };
 
@@ -296,10 +296,10 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
         await sendCharacterAssignment(assignment);
       }
       if (validAssignments.length > 0) {
-        toast.success(t('character.guestManager.toasts.sentAll', { count: validAssignments.length }));
+        toast.success(t('character.guestManager.toasts.allSent', { count: validAssignments.length }));
       }
     } catch (error) {
-      toast.error(t('character.guestManager.toasts.error'));
+      toast.error(t('character.guestManager.toasts.sendFailed'));
     } finally {
       setLoading(false);
     }
