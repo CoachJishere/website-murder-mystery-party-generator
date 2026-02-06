@@ -21,7 +21,7 @@ const formSchema = z.object({
   }).max(32, {
     message: "Maximum 32 players allowed"
   }),
-  mysteryStyle: z.enum(["character", "detective"]).default("character"),
+  mysteryStyle: z.enum(["character", "detective"]).default("detective"),
   hasAccomplice: z.boolean().default(false),
   scriptType: z.enum(["full", "pointForm", "both"], {
     required_error: "Please select a script type"
@@ -53,7 +53,7 @@ const MysteryForm = ({
       userRequest: initialData?.userRequest || "",
       theme: initialData?.theme || "",
       playerCount: initialData?.playerCount || 6,
-      mysteryStyle: initialData?.mysteryStyle || "character",
+      mysteryStyle: initialData?.mysteryStyle || "detective",
       hasAccomplice: initialData?.hasAccomplice || false,
       scriptType: initialData?.scriptType || "full",
       additionalDetails: initialData?.additionalDetails || ""
@@ -72,7 +72,7 @@ const MysteryForm = ({
         userRequest: initialData.userRequest || "",
         theme: initialData.theme || "",
         playerCount: initialData.playerCount || 6,
-        mysteryStyle: initialData.mysteryStyle || "character",
+        mysteryStyle: initialData.mysteryStyle || "detective",
         hasAccomplice: initialData.hasAccomplice || false,
         scriptType: initialData.scriptType || "full",
         additionalDetails: initialData.additionalDetails || ""
@@ -174,26 +174,27 @@ const MysteryForm = ({
                   className="flex flex-col space-y-3 sm:space-y-2"
                 >
                   <div className="flex items-start space-x-3 py-3 sm:py-2">
-                    <RadioGroupItem value="character" id="character" className="mt-0.5 shrink-0" />
-                    <div className="flex flex-col">
-                      <Label htmlFor="character" className="text-sm sm:text-base leading-5 cursor-pointer font-medium flex items-center gap-2">
-                        {t('mysteryForm.mysteryStyleCharacterLabel')}
-                        
-                      </Label>
-                      <span className="text-xs sm:text-sm text-muted-foreground">
-                        {t('mysteryForm.mysteryStyleCharacterDescription')}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3 py-3 sm:py-2">
                     <RadioGroupItem value="detective" id="detective" className="mt-0.5 shrink-0" />
                     <div className="flex flex-col">
                       <Label htmlFor="detective" className="text-sm sm:text-base leading-5 cursor-pointer font-medium flex items-center gap-2">
                         {t('mysteryForm.mysteryStyleDetectiveLabel')}
-                        
                       </Label>
                       <span className="text-xs sm:text-sm text-muted-foreground">
                         {t('mysteryForm.mysteryStyleDetectiveDescription')}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3 py-3 sm:py-2 opacity-50 cursor-not-allowed">
+                    <RadioGroupItem value="character" id="character" className="mt-0.5 shrink-0" disabled />
+                    <div className="flex flex-col">
+                      <Label htmlFor="character" className="text-sm sm:text-base leading-5 font-medium flex items-center gap-2 cursor-not-allowed">
+                        {t('mysteryForm.mysteryStyleCharacterLabel')}
+                        <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
+                          {t('common.messages.comingSoon')}
+                        </span>
+                      </Label>
+                      <span className="text-xs sm:text-sm text-muted-foreground">
+                        {t('mysteryForm.mysteryStyleCharacterDescription')}
                       </span>
                     </div>
                   </div>
