@@ -4,7 +4,7 @@ User-agent: *
 Allow: /
 
 # Define sitemap location
-Sitemap: https://murder-mystery.party/sitemap.xml
+Sitemap: https://www.mysterymaker.party/sitemap.xml
 
 # Specific rules for major search engines
 User-agent: Googlebot

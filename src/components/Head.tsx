@@ -11,7 +11,7 @@ interface HeadProps {
 const Head = ({ 
   title = "Murder Mystery Party Generator", 
   description = "Create custom murder mystery parties with our AI-powered generator. Perfect for parties, team building, and events.",
-  canonical = "https://murder-mystery.party", 
+  canonical = "https://www.mysterymaker.party", 
   image = "https://github.com/CoachJ87/murder-mystery-party-generator/blob/main/public/images/custom_themes.png?raw=true" 
 }: HeadProps) => {
   

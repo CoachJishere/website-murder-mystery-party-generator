@@ -18,8 +18,8 @@ serve(async (req) => {
       throw new Error("RESEND_API_KEY not configured");
     }
 
-    const guideUrl = `https://murder-mystery.party/host/${access_token}#guide`;
-    const detectiveUrl = `https://murder-mystery.party/host/${access_token}#detective`;
+    const guideUrl = `https://www.mysterymaker.party/host/${access_token}#guide`;
+    const detectiveUrl = `https://www.mysterymaker.party/host/${access_token}#detective`;
 
     // Email 1: Host Guide
     const guideHtml = `

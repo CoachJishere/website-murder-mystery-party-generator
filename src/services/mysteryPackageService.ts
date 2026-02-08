@@ -55,7 +55,7 @@ const getCurrentDomain = () => {
   }
   
   // Fallback to your production domain
-  return 'https://murder-mystery.party';
+  return 'https://www.mysterymaker.party';
 };
 
 // Enhanced Save structured package data with comprehensive debugging

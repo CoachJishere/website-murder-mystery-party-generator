@@ -18,7 +18,7 @@ serve(async (req) => {
       throw new Error("RESEND_API_KEY not configured");
     }
 
-    const characterUrl = `https://murder-mystery.party/character/${access_token}`;
+    const characterUrl = `https://www.mysterymaker.party/character/${access_token}`;
 
     const htmlBody = `
 <!DOCTYPE html>

@@ -9,7 +9,7 @@ const Privacy = () => {
       <Head 
         title="Privacy Policy" 
         description="Our commitment to protecting your privacy and personal information when using the Murder Mystery Party Generator."
-        canonical="https://murder-mystery.party/privacy"
+        canonical="https://www.mysterymaker.party/privacy"
       />
       <Header />
       
@@ -76,7 +76,7 @@ const Privacy = () => {
             
             <h2>7. Contact Us</h2>
             <p>
-              If you have any questions about this privacy policy or our privacy practices, please contact us at info@murder-mystery.party.
+              If you have any questions about this privacy policy or our privacy practices, please contact us at support@mysterymaker.party.
             </p>
           </div>
         </div>
