@@ -183,12 +183,18 @@ const HostAccess: React.FC = () => {
         </div>
 
         <Tabs defaultValue={initialTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-2 mb-4">
-            <TabsTrigger value="guide" className="gap-2">
+          <TabsList className="w-full grid grid-cols-2 mb-6 h-auto p-1 bg-muted/80 border border-border rounded-lg">
+            <TabsTrigger
+              value="guide"
+              className="gap-2 py-3 text-sm font-semibold data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-border rounded-md transition-all"
+            >
               <BookOpen className="h-4 w-4" />
               {t("hostAccess.tabs.guide")}
             </TabsTrigger>
-            <TabsTrigger value="detective" className="gap-2">
+            <TabsTrigger
+              value="detective"
+              className="gap-2 py-3 text-sm font-semibold data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-border rounded-md transition-all"
+            >
               <Search className="h-4 w-4" />
               {t("hostAccess.tabs.detective")}
             </TabsTrigger>
