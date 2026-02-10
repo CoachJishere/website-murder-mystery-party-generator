@@ -137,142 +137,127 @@ After presenting or refining the mystery concept, mention what the package inclu
 
     // Determine system prompt based on conversation state
     let systemPrompt = system;
-    
+
     if (!systemPrompt) {
-      // Default behavior for new conversations without custom system prompt
-      console.log("No custom system prompt - analyzing conversation for next step");
-      
-      // Analyze the conversation to determine what step we're at
-      const conversationText = messages.map(msg => msg.content || '').join(' ').toLowerCase();
-      const lastUserMessage = messages.filter(msg => msg.role === 'user').pop()?.content?.toLowerCase() || '';
-      
-      // Check if this looks like a brand new conversation (1 message, likely asking for mystery creation)
-      if (messages.length === 1) {
-        const userMessage = messages[0].content || '';
-        const looksLikeInitialRequest = userMessage.toLowerCase().includes('mystery') || 
-                                       userMessage.toLowerCase().includes('murder') ||
-                                       userMessage.toLowerCase().includes('design') ||
-                                       userMessage.toLowerCase().includes('create') ||
-                                       userMessage.toLowerCase().includes('craft') ||
-                                       userMessage.toLowerCase().includes('gallery') ||
-                                       userMessage.toLowerCase().includes('theme');
-        
-        if (looksLikeInitialRequest) {
-          // Check if this is a complete request with all details
-          const hasPlayerCount = /\b([4-9]|[12][0-9]|3[0-2])\s*(명|players?|people|guests?)\b/i.test(userMessage) ||
-                               /([4-9]|[12][0-9]|3[0-2])\s*(명의|명을)\s*(플레이어|참가자)/i.test(userMessage);
-          
-          const hasScriptType = /full\s*(스크립트|script)/i.test(userMessage) ||
-                             /point\s*(form|스크립트)/i.test(userMessage) ||
-                             /전체\s*스크립트/i.test(userMessage);
-          
-          if (hasPlayerCount && hasScriptType && databasePrompt) {
-            console.log("Detected complete request with all details - skipping questions");
-            // Detect language and build labels for database prompt
-            const firstUserMessage = messages.find(msg => msg.role === 'user')?.content || '';
-            const detectedLocale = detectLocale(firstUserMessage);
-            const labels = await buildLabels(detectedLocale);
-            
-            // Replace label placeholders in database prompt and append content boundaries
-            systemPrompt = databasePrompt
-              .replace(/\{\{labels\.premise\}\}/g, labels.premise)
-              .replace(/\{\{labels\.victim\}\}/g, labels.victim)
-              .replace(/\{\{labels\.characterList\}\}/g, labels.characterList)
-              .replace(/\{\{labels\.playersWord\}\}/g, labels.playersWord)
-              .replace(/\{\{labels\.murderMethod\}\}/g, labels.murderMethod)
-              + contentBoundaries;
+      console.log("No custom system prompt - analyzing conversation state");
 
-            console.log("Using database prompt with multilingual labels for complete request");
-          } else {
-            // Keep existing step-by-step logic for incomplete requests
-            console.log("Detected initial mystery creation request - asking for player count");
-            systemPrompt = `You are a helpful murder mystery creator. Your first question should ALWAYS be: "How many players do you want for your murder mystery? (Choose between 4 and 32 players)"
+      const conversationText = messages.map(msg => msg.content || '').join(' ');
+      const lastUserMessage = messages.filter(msg => msg.role === 'user').pop()?.content || '';
+      const firstUserMessage = messages.find(msg => msg.role === 'user')?.content || '';
+      const detectedLocale = detectLocale(firstUserMessage);
+      const labels = await buildLabels(detectedLocale);
 
-Be conversational and ask only this question first.`;
-          }
-        }
-      }
-      
-      // If still no system prompt, check conversation progress
-      if (!systemPrompt) {
-        // FIXED: Better player count detection - look for standalone numbers
-        const playerCountNumbers = lastUserMessage.match(/\b(\d+)\b/g) || conversationText.match(/\b(\d+)\b/g) || [];
-        const lastNumber = playerCountNumbers.length > 0 ? parseInt(playerCountNumbers[playerCountNumbers.length - 1]) : null;
-        
-        // Check if we have an invalid player count (including 3 which was mentioned)
-        if (lastNumber !== null && (lastNumber < 4 || lastNumber > 32)) {
-          console.log(`Detected invalid player count: ${lastNumber} - asking for correction`);
-          systemPrompt = `The user provided ${lastNumber} players, which is outside the valid range. You must ask them to choose a number between 4 and 32 players. Be polite but clear about the requirement.
+      // --- Check if a mystery concept has already been presented ---
+      const conceptAlreadyGenerated = messages.some(msg =>
+        msg.role === 'assistant' &&
+        msg.content &&
+        msg.content.length > 500 &&
+        (msg.content.match(/##\s/g) || []).length >= 3
+      );
 
-Say something like: "I need between 4 and 32 players for a murder mystery. Could you please choose a number in that range?"`;
-        }
-        
-        // Check if we have a valid player count but no script preference
-        const hasValidPlayerCount = conversationText.match(/\b([4-9]|[12][0-9]|3[0-2])\b/) && 
-                                   (conversationText.includes('player') || conversationText.includes('people') || conversationText.includes('guest'));
-        
-        // FIXED: More specific script preference detection
-        const hasScriptPreference = conversationText.includes('full script') || conversationText.includes('point form') || 
-                                   conversationText.includes('summaries') || conversationText.includes('both formats') ||
-                                   lastUserMessage.includes('full') || lastUserMessage.includes('point') ||
-                                   lastUserMessage.includes('script') || lastUserMessage.includes('summary') ||
-                                   lastUserMessage.includes('both');
-        
-        if (hasValidPlayerCount && !hasScriptPreference) {
-          console.log("Has valid player count but no script preference - asking for script preference");
-          systemPrompt = `Great! Now I need to know about character guidance format. Ask: "Would you prefer full scripts or point form summaries for character guidance? (You can also choose both if you'd like both formats)"
+      // --- Detect player count in conversation ---
+      // Explicit: "8 players", "for 12 people", "10 of us"
+      const hasExplicitPlayerCount =
+        /\b([4-9]|[12][0-9]|3[0-2])\s*(players?|people|guests?|folks|friends?|명|人|joueurs?|Spieler|jugadores|giocatori|spelers|spillere|spelare|pelaajaa?|jogadores?)\b/i.test(conversationText) ||
+        /\bfor\s+([4-9]|[12][0-9]|3[0-2])\b/i.test(conversationText) ||
+        /\b([4-9]|[12][0-9]|3[0-2])\s+(of us|of them)\b/i.test(conversationText);
 
-Only ask this question and wait for their response before proceeding.`;
-        }
-        
-        // If we have both player count and script preference, use database prompt or create mystery
-        if (hasValidPlayerCount && hasScriptPreference) {
-          console.log("Has both player count and script preference - proceeding to mystery creation");
-          
-          if (databasePrompt) {
-            console.log("Using environment prompt for mystery creation");
-            
-            // Detect language and build labels for database prompt
-            const firstUserMessage = messages.find(msg => msg.role === 'user')?.content || '';
-            const detectedLocale = detectLocale(firstUserMessage);
-            const labels = await buildLabels(detectedLocale);
-            
-            // Replace label placeholders in database prompt and append content boundaries
-            systemPrompt = databasePrompt
-              .replace(/\{\{labels\.premise\}\}/g, labels.premise)
-              .replace(/\{\{labels\.victim\}\}/g, labels.victim)
-              .replace(/\{\{labels\.characterList\}\}/g, labels.characterList)
-              .replace(/\{\{labels\.playersWord\}\}/g, labels.playersWord)
-              .replace(/\{\{labels\.murderMethod\}\}/g, labels.murderMethod)
-              + contentBoundaries;
+      // Standalone number response after AI asked about player count
+      const aiAskedAboutPlayers = messages.some(msg =>
+        msg.role === 'assistant' && msg.content &&
+        /how many (players?|people|guests?)/i.test(msg.content)
+      );
+      const standaloneNumberMatch = lastUserMessage.trim().match(/^(\d+)$/);
+      const hasStandaloneResponse = aiAskedAboutPlayers && standaloneNumberMatch &&
+        parseInt(standaloneNumberMatch[1]) >= 4 && parseInt(standaloneNumberMatch[1]) <= 32;
 
-            console.log("Processed database prompt with multilingual labels");
-          } else {
-            // Fallback to inline prompt with proper confirmation message
-            console.log("Using fallback prompt for mystery creation");
+      const hasPlayerCount = hasExplicitPlayerCount || hasStandaloneResponse;
 
-            // Detect language from first user message
-            const firstUserMessage = messages.find(msg => msg.role === 'user')?.content || '';
-            const detectedLocale = detectLocale(firstUserMessage);
-            const labels = await buildLabels(detectedLocale);
+      // Check for invalid player count (user responded to AI's question with out-of-range number)
+      const hasInvalidPlayerCount = aiAskedAboutPlayers && standaloneNumberMatch &&
+        (parseInt(standaloneNumberMatch[1]) < 4 || parseInt(standaloneNumberMatch[1]) > 32);
 
-            // Extract theme from conversation if available
-            let theme = "murder mystery";
-            const themeMatch = conversationText.match(/(?:theme|setting|style).*?([a-z\s]+)/i);
-            if (themeMatch) {
-              theme = themeMatch[1].trim();
-            }
-            // Extract player count
-            const playerCountMatch = conversationText.match(/\b([4-9]|[12][0-9]|3[0-2])\b/);
-            const playerCount = playerCountMatch ? playerCountMatch[1] : "6";
+      // Extract player count number for use in prompts
+      const playerCountMatch = conversationText.match(/\b([4-9]|[12][0-9]|3[0-2])\s*(players?|people|guests?|folks|friends?|명|人|joueurs?|Spieler|jugadores|giocatori|spelers|spillere|spelare|pelaajaa?|jogadores?)\b/i) ||
+        conversationText.match(/\bfor\s+([4-9]|[12][0-9]|3[0-2])\b/i);
+      const playerCount = playerCountMatch ? playerCountMatch[1] :
+        (hasStandaloneResponse ? standaloneNumberMatch![1] : "6");
 
-            systemPrompt = `You are a murder mystery CONCEPT DESIGNER. The user has provided the necessary information.
+      // Helper: apply labels to database prompt
+      const applyDatabasePrompt = () => {
+        return databasePrompt!
+          .replace(/\{\{labels\.premise\}\}/g, labels.premise)
+          .replace(/\{\{labels\.victim\}\}/g, labels.victim)
+          .replace(/\{\{labels\.characterList\}\}/g, labels.characterList)
+          .replace(/\{\{labels\.playersWord\}\}/g, labels.playersWord)
+          .replace(/\{\{labels\.murderMethod\}\}/g, labels.murderMethod)
+          + contentBoundaries;
+      };
+
+      if (conceptAlreadyGenerated) {
+        // === POST-CONCEPT: Refinement mode ===
+        console.log("Concept already generated - entering refinement mode");
+
+        if (databasePrompt) {
+          systemPrompt = applyDatabasePrompt();
+        } else {
+          systemPrompt = `You are a murder mystery CONCEPT designer helping refine a mystery.
 
 <language_instruction>
-Always respond in the same language that the user writes to you.
+Always respond in the same language the user writes to you.
 </language_instruction>
 
-Create a complete mystery CONCEPT with this format:
+Continue helping the user adjust characters, motives, relationships, backstories, and story elements. They can go as deep as they want on character concepts.
+
+After any changes, present the updated concept and ask if they'd like to adjust anything else. Remind them they can hit 'Generate Mystery' when satisfied to create their complete package — including individual character scripts, printable evidence cards, a host guide, and everything needed to run their event.
+
+${contentBoundaries}`;
+        }
+
+      } else if (hasInvalidPlayerCount) {
+        // === INVALID PLAYER COUNT ===
+        const invalidNumber = standaloneNumberMatch![1];
+        console.log(`Invalid player count: ${invalidNumber}`);
+        systemPrompt = `The user provided ${invalidNumber} players. Politely let them know the range is 4 to 32 players and ask them to pick a number in that range.
+
+<language_instruction>
+Always respond in the same language the user writes to you.
+</language_instruction>`;
+
+      } else if (!hasPlayerCount) {
+        // === PRE-CONCEPT: Need player count ===
+        console.log("No player count detected - asking for it (+ creative question if sparse)");
+
+        systemPrompt = `You are an enthusiastic, creative murder mystery concept designer.
+
+<language_instruction>
+Always respond in the same language the user writes to you.
+</language_instruction>
+
+Your response should:
+1. React warmly and enthusiastically to their idea
+2. Ask how many players they need (between 4 and 32)
+3. If their request is vague (just a basic theme like "train mystery" or "beach party" without much detail), also ask ONE creative question to spark their imagination — such as what era or time period, what tone (lighthearted and campy vs dark and serious), what type of setting within the theme, or if they have any specific character ideas in mind
+4. If their request is already detailed (they've described a specific setting, era, character ideas, or tone), just ask for the player count — they've given you plenty to work with
+
+Keep it conversational and brief. Ask at most 2 questions total (player count + one creative question if needed). Do NOT generate any mystery content yet.
+
+${contentBoundaries}`;
+
+      } else {
+        // === HAS PLAYER COUNT: Generate concept ===
+        console.log(`Player count detected (${playerCount}) - generating concept`);
+
+        if (databasePrompt) {
+          systemPrompt = applyDatabasePrompt();
+        } else {
+          systemPrompt = `You are a murder mystery CONCEPT DESIGNER. The user has provided enough information to generate a concept.
+
+<language_instruction>
+Always respond in the same language the user writes to you.
+</language_instruction>
+
+Create a complete mystery CONCEPT using this format:
 
 # "[CREATIVE TITLE]"
 
@@ -290,31 +275,9 @@ Create a complete mystery CONCEPT with this format:
 ## ${labels.murderMethod}
 [Paragraph describing how the murder was committed, interesting details about the method, and what clues might be found]
 
-<content_boundaries>
-CRITICAL RULES - You are a mystery CONCEPT designer. You help users craft the perfect mystery concept: characters, motives, relationships, premise, murder method, themes, and tone. Users can go as deep as they want on character concepts — detailed personalities, backstories, motives, relationships, name customization, costume ideas.
+${contentBoundaries}
 
-You must NEVER generate any of the following game-ready content:
-- Character scripts, dialogue lines, or introduction speeches
-- Multiple character versions (innocent/guilty/accomplice scripts)
-- Investigation scripts or "when investigating" instructions
-- Clue card text or evidence card content
-- Host guide content or round-by-round game instructions
-- Solution reveal scripts or whodunit reveal structure
-- Any formatted content that could be printed and played directly
-
-If a user asks for scripts, character guides, clue cards, or playable game content, redirect warmly. For example: "I can absolutely help you refine [character]'s concept further — their personality, motives, and relationships. The actual character scripts, printable clue cards, and host guide are created as part of the full mystery package. Let's keep perfecting the concept so your package is exactly what you want!"
-</content_boundaries>
-
-IMPORTANT: Always end your response with: "Does this concept work for you? We can adjust any elements you'd like to change. Once you're satisfied, hit 'Generate Mystery' to create your complete package — including individual character scripts for each player, printable evidence cards, a host guide with round-by-round instructions, and everything you need to run your event."`;
-          }
-        }
-        
-        // Fallback: ask for player count
-        if (!systemPrompt) {
-          console.log("Fallback - asking for player count");
-          systemPrompt = `You are a helpful murder mystery creator. Your first question should ALWAYS be: "How many players do you want for your murder mystery? (Choose between 4 and 32 players)"
-
-Be conversational and ask only this question first. Do not generate any mystery content until you know the player count.`;
+IMPORTANT: Always end your response by asking if the concept works for them. Mention they can continue refining any character concepts, motives, or story elements. Once satisfied, they can hit 'Generate Mystery' to create their complete package — including individual character scripts for each player, printable evidence cards, a host guide with round-by-round instructions, and everything needed to run their event.`;
         }
       }
     }
