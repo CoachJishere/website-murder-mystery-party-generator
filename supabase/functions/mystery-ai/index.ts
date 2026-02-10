@@ -112,7 +112,29 @@ serve(async (req) => {
     } else {
       console.log("No database prompt found in secrets, using fallback logic");
     }
-    
+
+    // Content boundaries to prevent the AI from generating game-ready content in free chat.
+    // Users can freely design character concepts, motives, relationships, and story elements.
+    // But scripts, clue cards, host guides, and playable materials are reserved for the paid package.
+    const contentBoundaries = `
+
+<content_boundaries>
+CRITICAL RULES - You are a mystery CONCEPT designer. You help users craft the perfect mystery concept: characters, motives, relationships, premise, murder method, themes, and tone. Users can go as deep as they want on character concepts — detailed personalities, backstories, motives, relationships, name customization, costume ideas.
+
+You must NEVER generate any of the following game-ready content:
+- Character scripts, dialogue lines, or introduction speeches
+- Multiple character versions (innocent/guilty/accomplice scripts)
+- Investigation scripts or "when investigating" instructions
+- Clue card text or evidence card content
+- Host guide content or round-by-round game instructions
+- Solution reveal scripts or whodunit reveal structure
+- Any formatted content that could be printed and played directly
+
+If a user asks for scripts, character guides, clue cards, or playable game content, redirect warmly. For example: "I can absolutely help you refine [character]'s concept further — their personality, motives, and relationships. The actual character scripts, printable clue cards, and host guide are created as part of the full mystery package. Let's keep perfecting the concept so your package is exactly what you want!"
+
+After presenting or refining the mystery concept, mention what the package includes: "Once you're happy with your mystery concept, hit 'Generate Mystery' to create your complete package — including individual character scripts for each player, printable evidence cards, a host guide with round-by-round instructions, and everything you need to run your event."
+</content_boundaries>`;
+
     // Determine system prompt based on conversation state
     let systemPrompt = system;
     
@@ -151,14 +173,15 @@ serve(async (req) => {
             const detectedLocale = detectLocale(firstUserMessage);
             const labels = await buildLabels(detectedLocale);
             
-            // Replace label placeholders in database prompt
+            // Replace label placeholders in database prompt and append content boundaries
             systemPrompt = databasePrompt
               .replace(/\{\{labels\.premise\}\}/g, labels.premise)
               .replace(/\{\{labels\.victim\}\}/g, labels.victim)
               .replace(/\{\{labels\.characterList\}\}/g, labels.characterList)
               .replace(/\{\{labels\.playersWord\}\}/g, labels.playersWord)
-              .replace(/\{\{labels\.murderMethod\}\}/g, labels.murderMethod);
-              
+              .replace(/\{\{labels\.murderMethod\}\}/g, labels.murderMethod)
+              + contentBoundaries;
+
             console.log("Using database prompt with multilingual labels for complete request");
           } else {
             // Keep existing step-by-step logic for incomplete requests
@@ -214,14 +237,15 @@ Only ask this question and wait for their response before proceeding.`;
             const detectedLocale = detectLocale(firstUserMessage);
             const labels = await buildLabels(detectedLocale);
             
-            // Replace label placeholders in database prompt
+            // Replace label placeholders in database prompt and append content boundaries
             systemPrompt = databasePrompt
               .replace(/\{\{labels\.premise\}\}/g, labels.premise)
               .replace(/\{\{labels\.victim\}\}/g, labels.victim)
               .replace(/\{\{labels\.characterList\}\}/g, labels.characterList)
               .replace(/\{\{labels\.playersWord\}\}/g, labels.playersWord)
-              .replace(/\{\{labels\.murderMethod\}\}/g, labels.murderMethod);
-              
+              .replace(/\{\{labels\.murderMethod\}\}/g, labels.murderMethod)
+              + contentBoundaries;
+
             console.log("Processed database prompt with multilingual labels");
           } else {
             // Fallback to inline prompt with proper confirmation message
@@ -242,13 +266,13 @@ Only ask this question and wait for their response before proceeding.`;
             const playerCountMatch = conversationText.match(/\b([4-9]|[12][0-9]|3[0-2])\b/);
             const playerCount = playerCountMatch ? playerCountMatch[1] : "6";
 
-            systemPrompt = `You are a murder mystery creator. The user has provided the necessary information. 
+            systemPrompt = `You are a murder mystery CONCEPT DESIGNER. The user has provided the necessary information.
 
 <language_instruction>
 Always respond in the same language that the user writes to you.
 </language_instruction>
 
-Create a complete mystery with this format:
+Create a complete mystery CONCEPT with this format:
 
 # "[CREATIVE TITLE]"
 
@@ -266,7 +290,22 @@ Create a complete mystery with this format:
 ## ${labels.murderMethod}
 [Paragraph describing how the murder was committed, interesting details about the method, and what clues might be found]
 
-IMPORTANT: Always end your response with: "Does this concept work for you? We can adjust any elements you'd like to change. Once you're satisfied with the concept, you can generate the complete mystery package with detailed character guides, host instructions, and game materials."`;
+<content_boundaries>
+CRITICAL RULES - You are a mystery CONCEPT designer. You help users craft the perfect mystery concept: characters, motives, relationships, premise, murder method, themes, and tone. Users can go as deep as they want on character concepts — detailed personalities, backstories, motives, relationships, name customization, costume ideas.
+
+You must NEVER generate any of the following game-ready content:
+- Character scripts, dialogue lines, or introduction speeches
+- Multiple character versions (innocent/guilty/accomplice scripts)
+- Investigation scripts or "when investigating" instructions
+- Clue card text or evidence card content
+- Host guide content or round-by-round game instructions
+- Solution reveal scripts or whodunit reveal structure
+- Any formatted content that could be printed and played directly
+
+If a user asks for scripts, character guides, clue cards, or playable game content, redirect warmly. For example: "I can absolutely help you refine [character]'s concept further — their personality, motives, and relationships. The actual character scripts, printable clue cards, and host guide are created as part of the full mystery package. Let's keep perfecting the concept so your package is exactly what you want!"
+</content_boundaries>
+
+IMPORTANT: Always end your response with: "Does this concept work for you? We can adjust any elements you'd like to change. Once you're satisfied, hit 'Generate Mystery' to create your complete package — including individual character scripts for each player, printable evidence cards, a host guide with round-by-round instructions, and everything you need to run your event."`;
           }
         }
         

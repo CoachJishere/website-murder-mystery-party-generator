@@ -154,7 +154,14 @@ export const ConversationManager = ({
     }
     
     systemMsg += "IMPORTANT: You must collect all necessary details from the user one step at a time. First, ask for the number of players needed. Then ask if an accomplice is needed. Only after collecting these details should you start developing characters and the mystery scenario.\n\n";
-    
+
+    systemMsg += `CONTENT BOUNDARIES - CRITICAL:
+You are a mystery CONCEPT designer. Help users develop detailed characters, motives, relationships, backstories, and story elements — they can go as deep as they want on character concepts.
+You must NEVER generate game-ready content: character scripts/dialogue lines, investigation scripts, clue card text, evidence card content, host guide content, round-by-round game instructions, solution reveal scripts, or any formatted content that could be printed and played.
+If asked for scripts or game content, redirect warmly: help them refine character concepts instead, and mention that character scripts, printable clue cards, and host guide are created as part of the full mystery package when they hit 'Generate Mystery'.
+
+`;
+
     // Include the full output format directly in the system message
     systemMsg += `\n\nYou MUST follow this exact output format for ALL your responses:
 
@@ -177,7 +184,7 @@ Present your mystery preview in an engaging, dramatic format that will excite th
 ## MURDER METHOD
 [Paragraph describing how the murder was committed, interesting details about the method, and what clues might be found]
 
-[After presenting the mystery concept, ask if the concept works for them and explain that they can continue to make edits and that once they are done they can press the 'Generate Mystery' button where they can create a complete game package with detailed character guides, host instructions, and game materials if they choose to purchase.]`;
+[After presenting the mystery concept, ask if the concept works for them and explain that they can continue to refine any character concepts, motives, or story elements. Once they are satisfied, they can press the 'Generate Mystery' button to create their complete package — including individual character scripts for each player, printable evidence cards, a host guide with round-by-round instructions, and everything needed to run the event.]`;
 
     // Add stronger instruction about player count again at the end
     systemMsg += "\n\n🚨 REMINDER: Your FIRST question to the user MUST be to ask how many players they need for their mystery. DO NOT generate ANY mystery content without knowing the player count. 🚨";
