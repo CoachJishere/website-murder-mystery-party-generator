@@ -30,6 +30,7 @@ import HostAccess from "./pages/HostAccess";
 import BlogIndex from "./pages/BlogIndex";
 import BlogPost from "./pages/BlogPost";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import Feedback from "./pages/Feedback";
 import React from "react";
 
 const queryClient = new QueryClient();
@@ -106,7 +107,9 @@ const AppRoutes = () => {
         <Route path="/character/:token" element={<CharacterAccess />} />
         {/* Host access route (public) */}
         <Route path="/host/:token" element={<HostAccess />} />
-        
+        {/* Feedback route (public, accessed from follow-up emails) */}
+        <Route path="/feedback/:conversationId" element={<Feedback />} />
+
         {/* Payment success and cancel routes */}
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-canceled" element={<Navigate to="/" replace />} />
