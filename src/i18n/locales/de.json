@@ -826,6 +826,19 @@
         "noValidAssignments": "Keine gültigen Zuweisungen zum Senden vorhanden",
         "allSent": "{{count}} Charakterzuweisungen gesendet!",
         "sendSomeFailed": "Fehler beim Senden einiger Zuweisungen"
+      },
+      "hostKit": {
+        "title": "Gastgebermaterialien",
+        "subtitle": "Senden Sie sich die Gastgeberanleitung und das Detektiv-Kit für einfachen mobilen Zugriff bei Ihrer Party.",
+        "emailPlaceholder": "ihre@email.com",
+        "sendButton": "Gastgeber-Kit senden",
+        "sending": "Wird gesendet...",
+        "sent": "Gesendet",
+        "toasts": {
+          "success": "Gastgebermaterialien an Ihre E-Mail gesendet!",
+          "error": "Fehler beim Senden der Gastgebermaterialien",
+          "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein"
+        }
       }
     },
     "roles": {
@@ -853,7 +866,10 @@
     "relatedPosts": "Verwandte Beiträge",
     "noPostsFound": "Keine Blog-Beiträge gefunden.",
     "loading": "Wird geladen...",
-    "error": "Fehler beim Laden der Blog-Beiträge."
+    "error": "Fehler beim Laden der Blog-Beiträge.",
+    "errorTitle": "Fehler",
+    "tryAgain": "Erneut versuchen",
+    "checkBackLater": "Schauen Sie später nach neuen Artikeln!"
   },
   "purchase": {
     "toasts": {
@@ -1015,6 +1031,24 @@
       "medium": "15-30 Minuten",
       "large": "30-45 Minuten",
       "xlarge": "45-60 Minuten"
+    }
+  },
+  "hostAccess": {
+    "loading": "Gastgebermaterialien werden geladen...",
+    "accessDenied": "Zugriff verweigert",
+    "notFound": "Gastgebermaterialien nicht gefunden.",
+    "title": "Gastgebermaterialien",
+    "subtitle": "Ihre vollständige Gastgeberanleitung und Detektiv-Kit",
+    "tabs": {
+      "guide": "Gastgeberanleitung",
+      "detective": "Detektiv- & Beweis-Kit"
+    }
+  },
+  "payment": {
+    "success": {
+      "message": "Zahlung erfolgreich! Ihr Kauf ist abgeschlossen.",
+      "verifying": "Ihre Zahlung wird überprüft...",
+      "redirecting": "Weiterleitung zu Ihrem Mysterium..."
     }
   }
 }

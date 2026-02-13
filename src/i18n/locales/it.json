@@ -194,7 +194,7 @@
       "privacy": "Informativa sulla Privacy",
       "and": "e",
       "hasAccount": "Hai già un account?",
-      "signUpLink": "Accedi qui",
+      "signInLink": "Accedi qui",
       "submitButton": "Crea Account",
       "creatingAccount": "Creazione account...",
       "orDivider": "o continua con",
@@ -826,6 +826,19 @@
         "noValidAssignments": "Nessuna assegnazione valida da inviare",
         "allSent": "{{count}} assegnazioni personaggi inviate!",
         "sendSomeFailed": "Invio di alcune assegnazioni non riuscito"
+      },
+      "hostKit": {
+        "title": "Materiali dell'Organizzatore",
+        "subtitle": "Inviati la guida dell'organizzatore e il kit investigativo per un facile accesso mobile alla tua festa.",
+        "emailPlaceholder": "tua@email.com",
+        "sendButton": "Invia Kit dell'Organizzatore",
+        "sending": "Invio in corso...",
+        "sent": "Inviato",
+        "toasts": {
+          "success": "Materiali dell'organizzatore inviati alla tua email!",
+          "error": "Impossibile inviare i materiali dell'organizzatore",
+          "invalidEmail": "Inserisci un indirizzo email valido"
+        }
       }
     },
     "roles": {
@@ -853,7 +866,10 @@
     "relatedPosts": "Post correlati",
     "noPostsFound": "Nessun post del blog trovato.",
     "loading": "Caricamento...",
-    "error": "Impossibile caricare i post del blog."
+    "error": "Impossibile caricare i post del blog.",
+    "errorTitle": "Errore",
+    "tryAgain": "Riprova",
+    "checkBackLater": "Torna più tardi per nuovi articoli!"
   },
   "purchase": {
     "toasts": {
@@ -1007,6 +1023,24 @@
       "drafts": "Bozze",
       "purchased": "Acquistati",
       "archived": "Archiviati"
+    }
+  },
+  "hostAccess": {
+    "loading": "Caricamento materiali dell'organizzatore...",
+    "accessDenied": "Accesso Negato",
+    "notFound": "Materiali dell'organizzatore non trovati.",
+    "title": "Materiali dell'Organizzatore",
+    "subtitle": "La tua guida completa per l'organizzatore e kit investigativo",
+    "tabs": {
+      "guide": "Guida dell'Organizzatore",
+      "detective": "Kit Investigativo e Prove"
+    }
+  },
+  "payment": {
+    "success": {
+      "message": "Pagamento riuscito! Il tuo acquisto è completo.",
+      "verifying": "Verifica del pagamento in corso...",
+      "redirecting": "Reindirizzamento al tuo mistero..."
     }
   },
   "mysteryView": {

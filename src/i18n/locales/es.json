@@ -826,6 +826,19 @@
         "noValidAssignments": "No hay asignaciones válidas para enviar",
         "allSent": "¡{{count}} asignaciones de personajes enviadas!",
         "sendSomeFailed": "Error al enviar algunas asignaciones"
+      },
+      "hostKit": {
+        "title": "Materiales del Anfitrión",
+        "subtitle": "Envíate a ti mismo la guía del anfitrión y el kit de detective para un fácil acceso móvil en tu fiesta.",
+        "emailPlaceholder": "tu@email.com",
+        "sendButton": "Enviar Kit del Anfitrión",
+        "sending": "Enviando...",
+        "sent": "Enviado",
+        "toasts": {
+          "success": "¡Materiales del anfitrión enviados a tu correo!",
+          "error": "Error al enviar los materiales del anfitrión",
+          "invalidEmail": "Por favor, introduce una dirección de correo válida"
+        }
       }
     },
     "roles": {
@@ -853,7 +866,28 @@
     "relatedPosts": "Publicaciones relacionadas",
     "noPostsFound": "No se encontraron publicaciones del blog.",
     "loading": "Cargando...",
-    "error": "Error al cargar las publicaciones del blog."
+    "error": "Error al cargar las publicaciones del blog.",
+    "errorTitle": "Error",
+    "tryAgain": "Intentar de Nuevo",
+    "checkBackLater": "¡Vuelve más tarde para nuevos artículos!"
+  },
+  "hostAccess": {
+    "loading": "Cargando materiales del anfitrión...",
+    "accessDenied": "Acceso Denegado",
+    "notFound": "Materiales del anfitrión no encontrados.",
+    "title": "Materiales del Anfitrión",
+    "subtitle": "Tu guía completa del anfitrión y kit de detective",
+    "tabs": {
+      "guide": "Guía del Anfitrión",
+      "detective": "Kit de Detective y Evidencia"
+    }
+  },
+  "payment": {
+    "success": {
+      "message": "¡Pago exitoso! Tu compra está completa.",
+      "verifying": "Verificando tu pago...",
+      "redirecting": "Redirigiendo a tu misterio..."
+    }
   },
   "purchase": {
     "toasts": {

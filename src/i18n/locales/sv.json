@@ -826,6 +826,19 @@
         "noValidAssignments": "No valid assignments to send",
         "allSent": "Sent {{count}} character assignments!",
         "sendSomeFailed": "Failed to send some assignments"
+      },
+      "hostKit": {
+        "title": "Värdmaterial",
+        "subtitle": "Skicka värdguiden och detektivpaketet till dig själv för enkel mobilåtkomst på din fest.",
+        "emailPlaceholder": "din@email.com",
+        "sendButton": "Skicka värdkit",
+        "sending": "Skickar...",
+        "sent": "Skickat",
+        "toasts": {
+          "success": "Värdmaterial skickat till din e-post!",
+          "error": "Kunde inte skicka värdmaterial",
+          "invalidEmail": "Ange en giltig e-postadress"
+        }
       }
     },
     "roles": {
@@ -974,6 +987,17 @@
     "errorTitle": "Error",
     "tryAgain": "Try Again",
     "checkBackLater": "Check back later for new articles!"
+  },
+  "hostAccess": {
+    "loading": "Laddar värdmaterial...",
+    "accessDenied": "Åtkomst nekad",
+    "notFound": "Värdmaterial hittades inte.",
+    "title": "Värdmaterial",
+    "subtitle": "Din kompletta värdguide och detektivkit",
+    "tabs": {
+      "guide": "Värdguide",
+      "detective": "Detektiv- & beviskit"
+    }
   },
   "chatbot": {
     "toasts": {

@@ -826,6 +826,19 @@
         "noValidAssignments": "送信する有効な割り当てがありません",
         "allSent": "{{count}}件のキャラクター割り当てを送信しました！",
         "sendSomeFailed": "一部の割り当ての送信に失敗しました"
+      },
+      "hostKit": {
+        "title": "ホスト資料",
+        "subtitle": "パーティーで簡単にモバイルアクセスできるよう、ホストガイドと探偵キットをメールで送信します。",
+        "emailPlaceholder": "your@email.com",
+        "sendButton": "ホストキットを送信",
+        "sending": "送信中...",
+        "sent": "送信済み",
+        "toasts": {
+          "success": "ホスト資料がメールに送信されました！",
+          "error": "ホスト資料の送信に失敗しました",
+          "invalidEmail": "有効なメールアドレスを入力してください"
+        }
       }
     },
     "roles": {
@@ -1025,6 +1038,17 @@
       "drafts": "下書き",
       "purchased": "購入済み",
       "archived": "アーカイブ済み"
+    }
+  },
+  "hostAccess": {
+    "loading": "ホスト資料を読み込み中...",
+    "accessDenied": "アクセスが拒否されました",
+    "notFound": "ホスト資料が見つかりません。",
+    "title": "ホスト資料",
+    "subtitle": "完全なホストガイドと探偵キット",
+    "tabs": {
+      "guide": "ホストガイド",
+      "detective": "探偵・証拠キット"
     }
   }
 }

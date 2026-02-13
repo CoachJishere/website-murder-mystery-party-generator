@@ -826,6 +826,19 @@
         "noValidAssignments": "Ei kelvollisia lähetettäviä määrityksiä",
         "allSent": "{{count}} hahmomääritystä lähetetty!",
         "sendSomeFailed": "Joidenkin määritysten lähetys epäonnistui"
+      },
+      "hostKit": {
+        "title": "Isännöintimateriaalit",
+        "subtitle": "Lähetä itsellesi isännöintiopas ja etsiväpaketti helposti puhelimella käytettäväksi juhlissasi.",
+        "emailPlaceholder": "sinun@email.com",
+        "sendButton": "Lähetä isännöintipaketti",
+        "sending": "Lähetetään...",
+        "sent": "Lähetetty",
+        "toasts": {
+          "success": "Isännöintimateriaalit lähetetty sähköpostiisi!",
+          "error": "Isännöintimateriaalien lähetys epäonnistui",
+          "invalidEmail": "Syötä kelvollinen sähköpostiosoite"
+        }
       }
     },
     "roles": {
@@ -853,7 +866,10 @@
     "relatedPosts": "Aiheeseen liittyvät kirjoitukset",
     "noPostsFound": "Blogikirjoituksia ei löytynyt.",
     "loading": "Ladataan...",
-    "error": "Blogikirjoitusten lataaminen epäonnistui."
+    "error": "Blogikirjoitusten lataaminen epäonnistui.",
+    "errorTitle": "Virhe",
+    "tryAgain": "Yritä uudelleen",
+    "checkBackLater": "Tarkista myöhemmin uudet artikkelit!"
   },
   "purchase": {
     "toasts": {
@@ -1015,6 +1031,24 @@
       "medium": "15-30 minuuttia",
       "large": "30-45 minuuttia",
       "xlarge": "45-60 minuuttia"
+    }
+  },
+  "hostAccess": {
+    "loading": "Ladataan isännöintimateriaaleja...",
+    "accessDenied": "Pääsy evätty",
+    "notFound": "Isännöintimateriaaleja ei löytynyt.",
+    "title": "Isännöintimateriaalit",
+    "subtitle": "Täydellinen isännöintiopas ja etsiväpaketti",
+    "tabs": {
+      "guide": "Isännöintiopas",
+      "detective": "Etsivä- ja todistepaketti"
+    }
+  },
+  "payment": {
+    "success": {
+      "message": "Maksu onnistui! Ostoksesi on valmis.",
+      "verifying": "Vahvistetaan maksuasi...",
+      "redirecting": "Uudelleenohjataan mysteeriisi..."
     }
   }
 }

@@ -826,6 +826,19 @@
         "noValidAssignments": "No valid assignments to send",
         "allSent": "Sent {{count}} character assignments!",
         "sendSomeFailed": "Failed to send some assignments"
+      },
+      "hostKit": {
+        "title": "Værtsmaterialer",
+        "subtitle": "Send dig selv værtsguiden og detektivkittet til nem mobil adgang til din fest.",
+        "emailPlaceholder": "din@email.com",
+        "sendButton": "Send værtskit",
+        "sending": "Sender...",
+        "sent": "Sendt",
+        "toasts": {
+          "success": "Værtsmaterialer sendt til din e-mail!",
+          "error": "Kunne ikke sende værtsmaterialer",
+          "invalidEmail": "Indtast venligst en gyldig e-mailadresse"
+        }
       }
     },
     "roles": {
@@ -1025,6 +1038,17 @@
       "drafts": "Drafts",
       "purchased": "Purchased",
       "archived": "Archived"
+    }
+  },
+  "hostAccess": {
+    "loading": "Indlæser værtsmaterialer...",
+    "accessDenied": "Adgang nægtet",
+    "notFound": "Værtsmaterialer ikke fundet.",
+    "title": "Værtsmaterialer",
+    "subtitle": "Din komplette værtsguide og detektivkit",
+    "tabs": {
+      "guide": "Værtsguide",
+      "detective": "Detektiv- & beviskit"
     }
   }
 }

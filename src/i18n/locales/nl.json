@@ -826,6 +826,19 @@
         "noValidAssignments": "Geen geldige toewijzingen om te verzenden",
         "allSent": "{{count}} personagetoewijzingen verzonden!",
         "sendSomeFailed": "Verzenden van sommige toewijzingen mislukt"
+      },
+      "hostKit": {
+        "title": "Hostmateriaal",
+        "subtitle": "Stuur uzelf de hostgids en het detectivepakket voor gemakkelijke mobiele toegang op uw feest.",
+        "emailPlaceholder": "uw@email.com",
+        "sendButton": "Hostkit Verzenden",
+        "sending": "Verzenden...",
+        "sent": "Verzonden",
+        "toasts": {
+          "success": "Hostmateriaal naar uw e-mail verzonden!",
+          "error": "Verzenden van hostmateriaal mislukt",
+          "invalidEmail": "Voer een geldig e-mailadres in"
+        }
       }
     },
     "roles": {
@@ -853,7 +866,10 @@
     "relatedPosts": "Gerelateerde berichten",
     "noPostsFound": "Geen blogberichten gevonden.",
     "loading": "Laden...",
-    "error": "Kan blogberichten niet laden."
+    "error": "Kan blogberichten niet laden.",
+    "errorTitle": "Fout",
+    "tryAgain": "Opnieuw Proberen",
+    "checkBackLater": "Kom later terug voor nieuwe artikelen!"
   },
   "purchase": {
     "toasts": {
@@ -1015,6 +1031,24 @@
       "medium": "15-30 minuten",
       "large": "30-45 minuten",
       "xlarge": "45-60 minuten"
+    }
+  },
+  "hostAccess": {
+    "loading": "Hostmateriaal laden...",
+    "accessDenied": "Toegang Geweigerd",
+    "notFound": "Hostmateriaal niet gevonden.",
+    "title": "Hostmateriaal",
+    "subtitle": "Uw complete hostgids en detectivepakket",
+    "tabs": {
+      "guide": "Hostgids",
+      "detective": "Detective- & Bewijspakket"
+    }
+  },
+  "payment": {
+    "success": {
+      "message": "Betaling geslaagd! Uw aankoop is voltooid.",
+      "verifying": "Uw betaling wordt geverifieerd...",
+      "redirecting": "U wordt doorgestuurd naar uw mysterie..."
     }
   }
 }

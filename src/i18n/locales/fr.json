@@ -194,6 +194,7 @@
       "privacy": "Politique de confidentialité",
       "and": "et",
       "hasAccount": "Vous avez déjà un compte ?",
+      "signInLink": "Connectez-vous ici",
       "signUpLink": "Se connecter ici",
       "submitButton": "Créer un compte",
       "creatingAccount": "Création du compte...",
@@ -826,6 +827,19 @@
         "noValidAssignments": "Aucune assignation valide à envoyer",
         "allSent": "{{count}} assignations de personnages envoyées !",
         "sendSomeFailed": "Échec de l'envoi de certaines assignations"
+      },
+      "hostKit": {
+        "title": "Matériel de l'hôte",
+        "subtitle": "Envoyez-vous le guide de l'hôte et le kit de détective pour un accès mobile facile lors de votre soirée.",
+        "emailPlaceholder": "votre@email.com",
+        "sendButton": "Envoyer le kit de l'hôte",
+        "sending": "Envoi en cours...",
+        "sent": "Envoyé",
+        "toasts": {
+          "success": "Matériel de l'hôte envoyé à votre e-mail !",
+          "error": "Échec de l'envoi du matériel de l'hôte",
+          "invalidEmail": "Veuillez saisir une adresse e-mail valide"
+        }
       }
     },
     "roles": {
@@ -853,7 +867,28 @@
     "relatedPosts": "Articles connexes",
     "noPostsFound": "Aucun article de blog trouvé.",
     "loading": "Chargement...",
-    "error": "Échec du chargement des articles de blog."
+    "error": "Échec du chargement des articles de blog.",
+    "errorTitle": "Erreur",
+    "tryAgain": "Réessayer",
+    "checkBackLater": "Revenez plus tard pour de nouveaux articles !"
+  },
+  "hostAccess": {
+    "loading": "Chargement du matériel de l'hôte...",
+    "accessDenied": "Accès refusé",
+    "notFound": "Matériel de l'hôte introuvable.",
+    "title": "Matériel de l'hôte",
+    "subtitle": "Votre guide de l'hôte et kit de détective complet",
+    "tabs": {
+      "guide": "Guide de l'hôte",
+      "detective": "Kit de détective et preuves"
+    }
+  },
+  "payment": {
+    "success": {
+      "message": "Paiement réussi ! Votre achat est terminé.",
+      "verifying": "Vérification de votre paiement...",
+      "redirecting": "Redirection vers votre mystère..."
+    }
   },
   "purchase": {
     "toasts": {

@@ -901,7 +901,10 @@
     "relatedPosts": "Posts relacionados",
     "noPostsFound": "Nenhum post do blog encontrado.",
     "loading": "Carregando...",
-    "error": "Falha ao carregar posts do blog."
+    "error": "Falha ao carregar posts do blog.",
+    "errorTitle": "Erro",
+    "tryAgain": "Tentar Novamente",
+    "checkBackLater": "Volte mais tarde para novos artigos!"
   },
   "purchase": {
     "toasts": {
@@ -1014,6 +1017,30 @@
     "tabs": {
       "guide": "Guia do Anfitrião",
       "detective": "Kit de Detetive e Evidências"
+    }
+  },
+  "payment": {
+    "success": {
+      "message": "Pagamento bem-sucedido! Sua compra está completa.",
+      "verifying": "Verificando seu pagamento...",
+      "redirecting": "Redirecionando para o seu mistério..."
+    }
+  },
+  "chat": {
+    "title": "Criador de Mistério de Assassinato",
+    "public": "Público",
+    "private": "Privado",
+    "initialGreeting": "Olá! Sou seu assistente de desenvolvimento de IA. Deixe-me ajudá-lo a criar um mistério de assassinato. Quantos jogadores você deseja para o seu mistério de assassinato?",
+    "inputPlaceholder": "Digite sua mensagem...",
+    "signInPrompt": "Por favor <1>faça login</1> para usar o modo privado",
+    "errorResponse": "Estou tendo dificuldades para responder no momento. Por favor, tente novamente.",
+    "errorResponseWithFallback": "Estou enfrentando algumas dificuldades técnicas. Quantos jogadores você deseja para o seu mistério de assassinato?",
+    "connectionErrorResponse": "Estou tendo problemas de conexão no momento. Quantos jogadores você deseja para o seu mistério de assassinato?",
+    "placeholder": "Compartilhe suas ideias para o mistério...",
+    "loadingMessages": "Carregando mensagens anteriores...",
+    "errors": {
+      "responseFailed": "Falha ao obter resposta da IA. Por favor, tente novamente.",
+      "aiUnavailable": "Desculpe, estou tendo dificuldades para responder no momento. Por favor, tente novamente em instantes."
     }
   },
   "mysteryView": {

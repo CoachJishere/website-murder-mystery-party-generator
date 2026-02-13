@@ -861,6 +861,19 @@
         "noValidAssignments": "没有可发送的有效分配",
         "allSent": "{{count}}个角色分配已发送！",
         "sendSomeFailed": "发送部分分配失败"
+      },
+      "hostKit": {
+        "title": "主持人材料",
+        "subtitle": "将主持指南和侦探工具包发送到您的邮箱，方便在派对上通过手机访问。",
+        "emailPlaceholder": "your@email.com",
+        "sendButton": "发送主持工具包",
+        "sending": "发送中...",
+        "sent": "已发送",
+        "toasts": {
+          "success": "主持人材料已发送到您的邮箱！",
+          "error": "发送主持人材料失败",
+          "invalidEmail": "请输入有效的电子邮件地址"
+        }
       }
     },
     "roles": {
@@ -888,7 +901,10 @@
     "relatedPosts": "相关文章",
     "noPostsFound": "未找到博客文章。",
     "loading": "加载中...",
-    "error": "加载博客文章失败。"
+    "error": "加载博客文章失败。",
+    "errorTitle": "错误",
+    "tryAgain": "重试",
+    "checkBackLater": "稍后再来查看新文章！"
   },
   "purchase": {
     "toasts": {
@@ -990,6 +1006,41 @@
     },
     "matrix": {
       "title": "角色关系矩阵"
+    }
+  },
+  "hostAccess": {
+    "loading": "正在加载主持人材料...",
+    "accessDenied": "访问被拒绝",
+    "notFound": "未找到主持人材料。",
+    "title": "主持人材料",
+    "subtitle": "您的完整主持指南和侦探工具包",
+    "tabs": {
+      "guide": "主持指南",
+      "detective": "侦探与证据工具包"
+    }
+  },
+  "payment": {
+    "success": {
+      "message": "支付成功！您的购买已完成。",
+      "verifying": "正在验证您的付款...",
+      "redirecting": "正在重定向到您的谜团..."
+    }
+  },
+  "chat": {
+    "title": "谋杀悬疑创作者",
+    "public": "公开",
+    "private": "私密",
+    "initialGreeting": "您好！我是您的AI开发助手。让我帮您创建一个谋杀悬疑故事。您的谋杀悬疑游戏需要多少玩家？",
+    "inputPlaceholder": "输入您的消息...",
+    "signInPrompt": "请<1>登录</1>以使用私密模式",
+    "errorResponse": "我目前无法回应。请重试。",
+    "errorResponseWithFallback": "我遇到了一些技术问题。您的谋杀悬疑游戏需要多少玩家？",
+    "connectionErrorResponse": "我目前连接遇到问题。您的谋杀悬疑游戏需要多少玩家？",
+    "placeholder": "分享您对谜团的想法...",
+    "loadingMessages": "正在加载之前的消息...",
+    "errors": {
+      "responseFailed": "获取AI回应失败。请重试。",
+      "aiUnavailable": "抱歉，我目前无法回应。请稍后再试。"
     }
   },
   "mysteryView": {
