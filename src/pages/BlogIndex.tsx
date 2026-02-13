@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import { ko, es, fr, de, ja, zhCN, nl, da, sv, fi, it, pt } from 'date-fns/locale';
 
@@ -57,8 +57,17 @@ export default function BlogIndex() {
   const [groupedPosts, setGroupedPosts] = useState<GroupedPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { lang } = useParams<{ lang?: string }>();
   const { t, i18n }: any = useTranslation();
-  const currentLanguage = i18n.language.split('-')[0];
+  // URL language takes precedence over i18n setting
+  const currentLanguage = lang || i18n.language.split('-')[0];
+
+  // Sync i18n if URL specifies a language
+  useEffect(() => {
+    if (lang && lang !== i18n.language.split('-')[0]) {
+      i18n.changeLanguage(lang);
+    }
+  }, [lang]);
 
   useEffect(() => {
     const fetchAndGroupPosts = async () => {
@@ -148,9 +157,11 @@ export default function BlogIndex() {
         <Helmet>
           <title>Blog - Murder Mystery Party Generator</title>
           <meta name="description" content="Read our latest articles and tips for hosting the perfect murder mystery party." />
+          <link rel="canonical" href={`https://www.mysterymaker.party${lang ? `/${lang}` : ''}/blog`} />
           <meta property="og:title" content="Blog - Murder Mystery Party Generator" />
           <meta property="og:description" content="Discover tips, tricks, and stories about hosting unforgettable murder mystery parties." />
           <meta property="og:type" content="website" />
+          <meta property="og:locale" content={currentLanguage} />
         </Helmet>
 
         <div className="max-w-4xl mx-auto">
@@ -195,7 +206,7 @@ export default function BlogIndex() {
                     <Card className="hover:shadow-lg transition-shadow">
                       <CardHeader>
                         <CardTitle className="text-xl">
-                          <Link to={`/blog/${primaryPost.slug}`} className="hover:text-[#8B1538] transition-colors">
+                          <Link to={lang ? `/${lang}/blog/${primaryPost.slug}` : `/blog/${primaryPost.slug}`} className="hover:text-[#8B1538] transition-colors">
                             {primaryPost.title}
                           </Link>
                         </CardTitle>
@@ -217,7 +228,7 @@ export default function BlogIndex() {
                         <p className="text-gray-700">{primaryPost.meta_description}</p>
                         <div className="flex justify-between items-center mt-4">
                           <Link 
-                            to={`/blog/${primaryPost.slug}`} 
+                            to={lang ? `/${lang}/blog/${primaryPost.slug}` : `/blog/${primaryPost.slug}`} 
                             className="text-[#8B1538] hover:underline font-medium"
                           >
                             {t('blog.readMore')}

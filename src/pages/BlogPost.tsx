@@ -68,15 +68,23 @@ const CTA_SECTION = ({ theme = 'light' as 'light' | 'dark' } = {}) => {
 };
 
 export default function BlogPost() {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug, lang } = useParams<{ slug: string; lang?: string }>();
   const [post, setPost] = useState<BlogPost | null>(null);
+  const [langVariants, setLangVariants] = useState<{ language: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewingTime, setViewingTime] = useState(0);
   const [showStickyCTA, setShowStickyCTA] = useState(true);
   const ctaSectionRef = useRef<HTMLDivElement>(null);
-  // Get current language directly from i18n
-  const currentLanguage = i18n.language.split('-')[0];
+  // URL language takes precedence over i18n setting
+  const effectiveLanguage = lang || i18n.language.split('-')[0];
+
+  // Sync i18n if URL specifies a language
+  useEffect(() => {
+    if (lang && lang !== i18n.language.split('-')[0]) {
+      i18n.changeLanguage(lang);
+    }
+  }, [lang]);
 
   // Track time on page for conversion optimization
   useEffect(() => {
@@ -131,7 +139,15 @@ export default function BlogPost() {
           .select('*')
           .eq('slug', slug)
           .eq('status', 'published')
-          .eq('language', currentLanguage);
+          .eq('language', effectiveLanguage);
+
+        // Fetch available languages for hreflang tags
+        const { data: variants } = await supabase
+          .from('blog_posts')
+          .select('language')
+          .eq('slug', slug)
+          .eq('status', 'published');
+        setLangVariants(variants || []);
 
         if (fetchError) throw fetchError;
         if (!allPosts || allPosts.length === 0) throw new Error('Post not found');
@@ -146,14 +162,14 @@ export default function BlogPost() {
           .eq('post_date', selectedPost.post_date)
           .neq('id', selectedPost.id)
           .eq('status', 'published')
-          .eq('language', currentLanguage);
+          .eq('language', effectiveLanguage);
 
         // Get theme-related posts (excluding the current post and same post_date) in current language
         const { data: themeRelated } = await supabase
           .from('blog_posts')
           .select('id, slug, title, reading_time, language, content')
           .eq('theme', selectedPost.theme)
-          .eq('language', currentLanguage)
+          .eq('language', effectiveLanguage)
           .neq('id', selectedPost.id)
           .neq('post_date', selectedPost.post_date) // Exclude same date
           .eq('status', 'published')
@@ -176,7 +192,7 @@ export default function BlogPost() {
           const { data: recentPosts } = await supabase
             .from('blog_posts')
             .select('id, slug, title, reading_time, language, content')
-            .eq('language', currentLanguage)
+            .eq('language', effectiveLanguage)
             .neq('id', selectedPost.id)
             .neq('post_date', selectedPost.post_date) // Exclude same date
             .eq('status', 'published')
@@ -196,7 +212,7 @@ export default function BlogPost() {
         
         // Debug logging
         console.log('Blog post data:', postData);
-        console.log('Selected language:', currentLanguage);
+        console.log('Selected language:', effectiveLanguage);
       } catch (err) {
         console.error('Error fetching blog post:', err);
         setError('Post not found');
@@ -206,14 +222,14 @@ export default function BlogPost() {
     };
 
     fetchPost();
-  }, [slug, currentLanguage]); // Add currentLanguage to dependencies
+  }, [slug, effectiveLanguage]); // Add effectiveLanguage to dependencies
 
   if (error) {
     return (
       <div className="min-h-screen bg-[#FEFCF8] py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-6">Related Posts</h2>
-          <Link to="/blog" className="text-[#8B1538] hover:underline">
+          <Link to={lang ? `/${lang}/blog` : '/blog'} className="text-[#8B1538] hover:underline">
             ← Back to Blog
           </Link>
         </div>
@@ -251,16 +267,17 @@ export default function BlogPost() {
     "dateModified": post.updated_at || post.published_at,
     "publisher": {
       "@type": "Organization",
-      "name": "Murder Mystery Party Generator",
+      "name": "Mystery Maker",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://yourdomain.com/logo.png"
+        "url": "https://www.mysterymaker.party/images/homepage-share-image.png"
       }
     },
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://yourdomain.com/blog/${post.slug}`
+      "@id": `https://www.mysterymaker.party${lang ? `/${lang}` : ''}/blog/${post.slug}`
     },
+    "inLanguage": effectiveLanguage,
     "timeRequired": `PT${post.reading_time || calculateReadingTime(post.content || '')}M`,
     "wordCount": post.content.split(' ').length
   };
@@ -274,9 +291,21 @@ export default function BlogPost() {
           {post?.meta_description && (
             <meta name="description" content={post.meta_description} />
           )}
+          <link rel="canonical" href={`https://www.mysterymaker.party${lang ? `/${lang}` : ''}/blog/${slug}`} />
+          {langVariants.map(v => (
+            <link
+              key={v.language}
+              rel="alternate"
+              hrefLang={v.language === 'zh-CN' ? 'zh-Hans' : v.language}
+              href={v.language === 'en'
+                ? `https://www.mysterymaker.party/blog/${slug}`
+                : `https://www.mysterymaker.party/${v.language}/blog/${slug}`}
+            />
+          ))}
           <meta property="og:title" content={post?.title || 'Blog Post'} />
           <meta property="og:description" content={post?.meta_description || ''} />
           <meta property="og:type" content="article" />
+          <meta property="og:locale" content={effectiveLanguage} />
           {post?.featured_image && (
             <meta property="og:image" content={post.featured_image} />
           )}
@@ -286,8 +315,8 @@ export default function BlogPost() {
         </Helmet>
         <article className="max-w-4xl mx-auto">
           <header className="mb-12">
-            <Link 
-              to="/blog" 
+            <Link
+              to={lang ? `/${lang}/blog` : '/blog'}
               className="inline-flex items-center text-[#8B1538] hover:underline mb-4"
             >
               <ChevronRight className="h-4 w-4 rotate-180 mr-1" />
@@ -345,7 +374,7 @@ export default function BlogPost() {
                   <Card key={related.id} className="border-[#8B1538] hover:shadow-md transition-shadow">
                     <CardContent className="p-6">
                       <h3 className="font-bold text-lg mb-2 text-[#8B1538]">
-                        <Link to={`/blog/${related.slug}`} className="hover:underline">
+                        <Link to={lang ? `/${lang}/blog/${related.slug}` : `/blog/${related.slug}`} className="hover:underline">
                           {related.title}
                         </Link>
                       </h3>

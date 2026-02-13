@@ -156,6 +156,8 @@ const AppRoutes = () => {
           element={<MysteryPurchase />} 
         />
         <Route path="/mystery/:id" element={<MysteryView />} />
+        <Route path="/:lang/blog" element={<BlogIndex />} />
+        <Route path="/:lang/blog/:slug" element={<BlogPost />} />
         <Route path="/blog" element={<BlogIndex />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         
