@@ -70,7 +70,7 @@ const CTA_SECTION = ({ theme = 'light' as 'light' | 'dark' } = {}) => {
 export default function BlogPost() {
   const { slug, lang } = useParams<{ slug: string; lang?: string }>();
   const [post, setPost] = useState<BlogPost | null>(null);
-  const [langVariants, setLangVariants] = useState<{ language: string }[]>([]);
+  const [langVariants, setLangVariants] = useState<{ language: string; slug: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewingTime, setViewingTime] = useState(0);
@@ -141,16 +141,17 @@ export default function BlogPost() {
           .eq('status', 'published')
           .eq('language', effectiveLanguage);
 
-        // Fetch available languages for hreflang tags
-        const { data: variants } = await supabase
-          .from('blog_posts')
-          .select('language')
-          .eq('slug', slug)
-          .eq('status', 'published');
-        setLangVariants(variants || []);
-
         if (fetchError) throw fetchError;
         if (!allPosts || allPosts.length === 0) throw new Error('Post not found');
+
+        // Fetch available language variants for hreflang tags
+        // Group by post_date since each translation has a different slug
+        const { data: variants } = await supabase
+          .from('blog_posts')
+          .select('language, slug')
+          .eq('post_date', allPosts[0].post_date)
+          .eq('status', 'published');
+        setLangVariants(variants || []);
 
         // Since we're already filtering by language, just use the first result
         const selectedPost = allPosts[0];
@@ -298,8 +299,8 @@ export default function BlogPost() {
               rel="alternate"
               hrefLang={v.language === 'zh-CN' ? 'zh-Hans' : v.language}
               href={v.language === 'en'
-                ? `https://www.mysterymaker.party/blog/${slug}`
-                : `https://www.mysterymaker.party/${v.language}/blog/${slug}`}
+                ? `https://www.mysterymaker.party/blog/${v.slug}`
+                : `https://www.mysterymaker.party/${v.language}/blog/${v.slug}`}
             />
           ))}
           <meta property="og:title" content={post?.title || 'Blog Post'} />
