@@ -1,7 +1,8 @@
 // scripts/generate-sitemap.mjs
 // Generates a static sitemap.xml at build time by querying Supabase for all published blog posts.
+// Also creates static HTML route files so GitHub Pages returns 200 (not 404) for blog URLs.
 import { createClient } from '@supabase/supabase-js';
-import { writeFileSync } from 'fs';
+import { writeFileSync, readFileSync, mkdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -93,6 +94,43 @@ async function generateSitemap() {
   writeFileSync(outputPath, xml, 'utf-8');
   console.log(`Sitemap written to ${outputPath}`);
   console.log(`Total URLs: ${staticPages.length + posts.length}`);
+
+  // Generate static HTML route files so GitHub Pages returns 200 for blog URLs.
+  // Each file is a copy of index.html — the SPA router handles rendering.
+  const distDir = resolve(__dirname, '..', 'dist');
+  const indexHtml = readFileSync(resolve(distDir, 'index.html'), 'utf-8');
+  let routeCount = 0;
+
+  // Create /blog/index.html for the blog index page
+  const blogDir = resolve(distDir, 'blog');
+  mkdirSync(blogDir, { recursive: true });
+  writeFileSync(resolve(blogDir, 'index.html'), indexHtml, 'utf-8');
+  routeCount++;
+
+  // Create route files for each blog post
+  for (const post of posts) {
+    const lang = post.language;
+    let routePath;
+    if (lang === 'en') {
+      routePath = resolve(distDir, 'blog', post.slug);
+    } else {
+      routePath = resolve(distDir, lang, 'blog', post.slug);
+    }
+    mkdirSync(routePath, { recursive: true });
+    writeFileSync(resolve(routePath, 'index.html'), indexHtml, 'utf-8');
+    routeCount++;
+  }
+
+  // Create language-specific blog index pages
+  const languages = [...new Set(posts.map(p => p.language).filter(l => l !== 'en'))];
+  for (const lang of languages) {
+    const langBlogDir = resolve(distDir, lang, 'blog');
+    mkdirSync(langBlogDir, { recursive: true });
+    writeFileSync(resolve(langBlogDir, 'index.html'), indexHtml, 'utf-8');
+    routeCount++;
+  }
+
+  console.log(`Generated ${routeCount} route files for GitHub Pages`);
 }
 
 generateSitemap().catch((err) => {
