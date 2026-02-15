@@ -16,6 +16,192 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Define webhook URL from environment
 const webhookUrl = Deno.env.get("WEBHOOK_URL") || "";
 
+// All locale translations of "Character List" section header + common variants
+const CHARACTER_LIST_HEADERS = [
+  "Character List", "Characters", "Cast of Characters",
+  "Lista de Personajes", "Personajes",
+  "Liste des personnages", "Personnages",
+  "Charakterliste", "Charaktere",
+  "Elenco Personaggi", "Personaggi",
+  "Lista de Personagens", "Personagens",
+  "Personagelijst", "Personages",
+  "Karaktärslista", "Karakterliste",
+  "Hahmoluettelo", "Hahmot",
+  "캐릭터 목록", "등장인물",
+  "キャラクターリスト", "登場人物",
+  "角色列表", "角色名单",
+];
+
+interface ExtractedCharacter {
+  name: string;
+  description: string;
+}
+
+// Primary extraction: regex-based (free, deterministic, <1ms)
+function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | null {
+  // Build regex to match any locale's character list header
+  // Pattern: ## <Header> (N PLAYERS) or ## <Header>
+  const headerAlternatives = CHARACTER_LIST_HEADERS.map(h =>
+    h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  ).join('|');
+  const sectionHeaderRegex = new RegExp(
+    `^#{2,3}\\s+(?:${headerAlternatives})(?:\\s*\\(\\d+\\s+.+?\\))?\\s*$`, 'im'
+  );
+
+  // Pattern for numbered character lines (multiple formats):
+  // 1. **Name** - Description  (bold with dash)
+  // 1. **Name**: Description   (bold with colon)
+  // 1. Name - Description      (plain with dash)
+  const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))\s*[-–—:]\s*(.+)/;
+
+  // Scan assistant messages in reverse (latest refinement wins)
+  const assistantMessages = messages
+    .filter((m: any) => m.role === 'assistant' || m.is_ai)
+    .reverse();
+
+  console.log(`[CharExtract] Scanning ${assistantMessages.length} assistant messages (of ${messages.length} total)`);
+
+  for (const msg of assistantMessages) {
+    const content = msg.content || '';
+    const headerMatch = content.match(sectionHeaderRegex);
+    if (!headerMatch) {
+      // Log first 80 chars of each skipped message for debugging
+      console.log(`[CharExtract] No header match in message (${content.length} chars): "${content.substring(0, 80)}..."`);
+      continue;
+    }
+
+    console.log(`[CharExtract] Found header: "${headerMatch[0].trim()}"`);
+    // Found a character list header — parse the numbered lines after it
+    const afterHeader = content.substring(headerMatch.index! + headerMatch[0].length);
+    const lines = afterHeader.split('\n');
+    const characters: ExtractedCharacter[] = [];
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+
+      const charMatch = trimmed.match(characterLineRegex);
+      if (charMatch) {
+        const name = (charMatch[1] || charMatch[2]).trim();
+        const description = charMatch[3].trim();
+        characters.push({ name, description });
+      } else if (characters.length > 0) {
+        // Hit a non-matching line after we started collecting — section is over
+        break;
+      }
+    }
+
+    if (characters.length >= 4 && characters.length <= 32) {
+      console.log(`[CharExtract] PRIMARY regex extracted ${characters.length} characters: ${characters.map(c => c.name).join(', ')}`);
+      return characters;
+    } else {
+      console.log(`[CharExtract] Header found but only ${characters.length} characters parsed (need 4-32)`);
+    }
+  }
+
+  console.log(`[CharExtract] Primary pattern failed, trying secondary (consecutive bold lines)...`);
+  // Secondary pattern: 4+ consecutive **Name** - Description lines (no section header)
+  const boldCharRegex = /^\*\*(.+?)\*\*\s*[-–—:]\s*(.+)/;
+  for (const msg of assistantMessages) {
+    const content = msg.content || '';
+    const lines = content.split('\n');
+    const characters: ExtractedCharacter[] = [];
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      // Match both "N. **Name** - Desc" and "**Name** - Desc"
+      const numberedMatch = trimmed.match(characterLineRegex);
+      const boldMatch = trimmed.match(boldCharRegex);
+
+      if (numberedMatch) {
+        const name = (numberedMatch[1] || numberedMatch[2]).trim();
+        const description = numberedMatch[3].trim();
+        characters.push({ name, description });
+      } else if (boldMatch) {
+        characters.push({ name: boldMatch[1].trim(), description: boldMatch[2].trim() });
+      } else if (characters.length > 0 && trimmed !== '') {
+        // Non-matching non-empty line — check if we have enough
+        if (characters.length >= 4) {
+          console.log(`Regex (secondary) extracted ${characters.length} characters`);
+          return characters;
+        }
+        characters.length = 0; // Reset and keep scanning
+      }
+    }
+
+    if (characters.length >= 4 && characters.length <= 32) {
+      console.log(`Regex (secondary) extracted ${characters.length} characters`);
+      return characters;
+    }
+  }
+
+  console.log(`[CharExtract] Both regex patterns failed — no characters extracted`);
+  return null;
+}
+
+// Fallback extraction: Claude API (only called if regex finds nothing)
+async function extractCharactersWithClaude(
+  messages: any[],
+  playerCount: number | null
+): Promise<ExtractedCharacter[] | null> {
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) {
+    console.warn("No ANTHROPIC_API_KEY set, skipping Claude fallback extraction");
+    return null;
+  }
+
+  // Only send assistant messages that contain bold text (character names)
+  const relevantContent = messages
+    .filter((m: any) => (m.role === 'assistant' || m.is_ai) && (m.content || '').includes('**'))
+    .map((m: any) => m.content)
+    .join('\n\n---\n\n');
+
+  if (!relevantContent) return null;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 2000,
+        temperature: 0,
+        system: "You are a strict JSON extraction tool. Output ONLY a valid JSON array of objects with 'name' and 'description' fields. Extract the playable character names and descriptions. Never continue the story. Never output anything except the JSON array.",
+        messages: [{
+          role: "user",
+          content: `Extract ALL playable character names and their one-line descriptions from this mystery content. Output ONLY a JSON array like: [{"name":"Character Name","description":"Their description"}]\n\nExpected count: ${playerCount || 'unknown'}\n\n${relevantContent.substring(0, 8000)}`
+        }],
+      }),
+    });
+
+    if (!response.ok) {
+      console.error(`Claude extraction API returned ${response.status}`);
+      return null;
+    }
+
+    const result = await response.json();
+    const text = result.content?.[0]?.text || '';
+
+    // Extract JSON array from response
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) return null;
+
+    const parsed = JSON.parse(jsonMatch[0]) as ExtractedCharacter[];
+    if (Array.isArray(parsed) && parsed.length >= 4 && parsed.every(c => c.name && c.description)) {
+      console.log(`Claude fallback extracted ${parsed.length} characters`);
+      return parsed;
+    }
+  } catch (error) {
+    console.error("Claude fallback extraction failed:", error);
+  }
+
+  return null;
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -78,7 +264,19 @@ serve(async (req) => {
         }).join("\n\n---\n\n")
       : "";
 
-    // Simplified payload with only essential data
+    // Extract character names before sending to Make.com
+    let extractedCharacters = extractCharactersFromMessages(conversation.messages);
+    let extractionMethod = extractedCharacters ? 'regex' : 'none';
+
+    if (!extractedCharacters) {
+      extractedCharacters = await extractCharactersWithClaude(
+        conversation.messages, conversation.player_count
+      );
+      extractionMethod = extractedCharacters ? 'claude_fallback' : 'failed';
+    }
+
+    console.log(`Character extraction: method=${extractionMethod}, count=${extractedCharacters?.length || 0}`);
+
     // Build individual message fields for Make.com
     const messageFields: any = {};
     conversation.messages.forEach((msg: any, index: number) => {
@@ -88,14 +286,11 @@ serve(async (req) => {
     });
 
     const webhookPayload = {
+      // Put critical fields FIRST (before ...messageFields which can be 600+ fields)
+      extractedCharacters: extractedCharacters ? JSON.stringify(extractedCharacters) : "[]",
+      extractionMethod,
       model: "claude-sonnet-4-20250514",
       max_tokens: 4000,
-      messages: conversation.messages.map((msg: any) => ({
-        role: msg.role,
-        content: msg.content
-      })),
-      message_count: conversation.messages.length,
-      ...messageFields,
       userId,
       userEmail,
       userName,
@@ -110,7 +305,14 @@ serve(async (req) => {
       hasAccomplice: conversation.has_accomplice || false,
       mysteryStyle: conversation.mystery_style || 'character',
       testMode,
-      conversationContent
+      conversationContent,
+      messages: conversation.messages.map((msg: any) => ({
+        role: msg.role,
+        content: msg.content
+      })),
+      message_count: conversation.messages.length,
+      // Individual message fields last (can be 600+ fields for long conversations)
+      ...messageFields,
     };
 
     console.log(`Sending simplified payload to webhook: ${webhookUrl}`);
