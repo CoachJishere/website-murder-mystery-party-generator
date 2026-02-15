@@ -23,3 +23,13 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Make.com blueprints (contain sensitive connection IDs and API tokens)
+*.blueprint.json
+*.blueprint.json.backup
+
+# Temporary scripts and data files
+fix_blueprint_prompt.js
+temp_detective_script.json
+update_detective_script.js
+Blog Database - Master.csv
