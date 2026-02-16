@@ -1,0 +1,62 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I create characters that fit my specific friend group?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Start with your friends' actual personalities and translate them into Victorian contexts. Your competitive friend becomes an ambitious industrialist, your social butterfly transforms into a well-connected socialite, and your quiet observer becomes a mysterious governess. The key is maintaining core personality traits while adding period-appropriate backgrounds and motivations."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What Victorian elements make the biggest atmospheric impact?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Lighting creates the most dramatic transformation—use candles, oil lamps, or warm LED bulbs to simulate gas lighting. Add dark fabrics in burgundy and forest green, classical music from the period, and props like vintage books, ornate mirrors, and antique bottles. These elements immediately transport guests to the 1800s."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How complex should Victorian murder mystery clues be?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Balance historical authenticity with accessibility. Use period-appropriate evidence like telegrams, poison bottles, and inheritance documents, but write clues in clear language. Provide context cards explaining Victorian customs that affect the mystery without requiring extensive historical knowledge."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the ideal group size for Victorian murder mystery parties?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Six to eight guests work best for Victorian mysteries. This size allows complex character relationships without overwhelming investigation logistics. Each guest can have meaningful connections with 2-3 other characters, creating rich interaction possibilities during the 90-minute investigation period."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I handle guests who aren't comfortable with elaborate costumes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Focus on key accessories rather than complete period dress. Men can wear dark suits with pocket watches and bow ties, women can use long dresses with gloves and hair accessories. Provide budget alternatives like thrift store finds and emphasize that attitude and character portrayal matter more than perfect Victorian clothing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What Victorian time period works best for murder mysteries?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The 1880s-1890s offer the best balance of recognizable Victorian elements and dramatic potential. This period includes industrial wealth, emerging women's rights conflicts, spiritualism trends, and technological innovations like early photography and telephone systems that create interesting evidence possibilities."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I ensure the mystery is challenging but solvable?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Create three tiers of clues: obvious evidence that establishes basic facts, intermediate clues that develop theories, and subtle details that confirm the solution. Ensure at least two pieces of evidence point toward the actual murderer while providing red herrings that create alternative theories without being impossible to disprove."
+      }
+    }
+  ]
+}
