@@ -1,8 +1,9 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Loader2 } from "lucide-react";
+import { trackPurchaseComplete } from "@/lib/analytics";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -36,6 +37,15 @@ const PaymentSuccess = () => {
     console.log('PaymentSuccess - No conversation_id found in URL or localStorage');
     return null;
   }, [searchParams]);
+
+  // Track purchase conversion exactly once
+  const tracked = useRef(false);
+  useEffect(() => {
+    if (conversationId && !tracked.current) {
+      tracked.current = true;
+      trackPurchaseComplete(conversationId);
+    }
+  }, [conversationId]);
 
   useEffect(() => {
     // Show success message immediately

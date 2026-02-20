@@ -14,6 +14,7 @@ import { extractTitleFromMessages } from "@/utils/titleExtraction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { trackPurchasePageView, trackBeginCheckout } from "@/lib/analytics";
 
 interface Character {
   name: string;
@@ -255,6 +256,11 @@ const MysteryPurchase = () => {
 
         setMystery(mysteryData);
 
+        // Track purchase page view for conversion funnel
+        if (!conversation.is_paid) {
+          trackPurchasePageView(conversation.id, conversation.theme || undefined);
+        }
+
         if (conversation.messages && conversation.messages.length > 0) {
           const aiMessages = conversation.messages
             .filter(m => m.is_ai)
@@ -348,7 +354,10 @@ const MysteryPurchase = () => {
     try {
       setProcessing(true);
       toast.info(t("purchase.toasts.checkoutRedirect"));
-      
+
+      // Track checkout initiation
+      trackBeginCheckout(id || '', mystery?.theme || undefined);
+
       // Construct Stripe URL with conversation ID in metadata
       const baseUrl = window.location.origin;
       const successUrl = `${baseUrl}/payment-success?conversation_id=${id}`;
