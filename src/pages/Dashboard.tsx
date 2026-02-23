@@ -12,6 +12,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { HomeDashboard } from "@/components/dashboard/HomeDashboard";
 import { useTranslation } from "react-i18next";
+import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -110,6 +111,7 @@ const Dashboard = () => {
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow container mx-auto py-8 px-4">
+        <EmailVerificationBanner />
         {mysteries.length > 0 ? (
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">

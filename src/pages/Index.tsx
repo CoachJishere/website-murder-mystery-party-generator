@@ -12,6 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 import { HomeDashboard } from "@/components/dashboard/HomeDashboard";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import { SkipToContent } from "@/components/SkipToContent";
 
 const Index = () => {
   const { isAuthenticated } = useAuth();
@@ -70,13 +71,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col font-inter">
-      <Head 
-        title="Create Custom Murder Mystery Parties" 
+      <Head
+        title="Create Custom Murder Mystery Parties"
         description="Generate unique murder mystery party scenarios with our AI-powered tool. Customize themes, characters, and plots for unforgettable events."
       />
+      <SkipToContent />
       <Header />
-      
-      <main className="flex-1 w-full overflow-x-hidden">
+
+      <main id="main-content" className="flex-1 w-full overflow-x-hidden">
         {/* Hero section is shown for all users */}
         <div className="bg-card">
           <Hero />

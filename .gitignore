@@ -24,6 +24,10 @@ dist-ssr
 *.sw?
 .env
 
+# Google Cloud credentials (sensitive - never commit)
+.google-analytics-credentials.json
+.google-search-console-credentials.json
+
 # Make.com blueprints (contain sensitive connection IDs and API tokens)
 *.blueprint*.json
 *.blueprint.json.backup

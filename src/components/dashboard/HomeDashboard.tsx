@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Mystery } from "@/interfaces/mystery";
-import { Search, ArrowDown } from "lucide-react";
+import { Search, ArrowDown, Search as MagnifyingGlass } from "lucide-react";
 import HomeMysteryCard from "./HomeMysteryCard";
 import { extractTitleFromMessages } from "@/utils/titleExtraction";
 import { getPackageGenerationStatus } from "@/services/mysteryPackageService";
@@ -473,11 +473,33 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
             ))}
           </div>
         ) : displayedMysteries.length === 0 ? (
-          <div className="text-center py-12 bg-muted/20 rounded-lg">
-            <p className="text-xl font-medium mb-2">{t('homeDashboard.empty.title', { defaultValue: 'No mysteries found' })}</p>
-            <p className="text-muted-foreground mb-4">
-              {t('homeDashboard.empty.description', { defaultValue: 'Create your first mystery to get started' })}
+          <div className="text-center py-16 px-6 bg-muted/20 rounded-lg">
+            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+              <MagnifyingGlass className="h-8 w-8 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold mb-3">
+              {totalMysteriesCount === 0
+                ? t('homeDashboard.empty.firstMystery.title', { defaultValue: 'Create Your First Mystery' })
+                : t('homeDashboard.empty.noResults.title', { defaultValue: 'No mysteries found' })}
+            </h2>
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              {totalMysteriesCount === 0
+                ? t('homeDashboard.empty.firstMystery.description', {
+                    defaultValue: 'Design a custom murder mystery party in minutes using AI. Your guests will love it!'
+                  })
+                : t('homeDashboard.empty.noResults.description', {
+                    defaultValue: 'Try adjusting your search or create a new mystery'
+                  })}
             </p>
+            {totalMysteriesCount === 0 && (
+              <Button
+                onClick={() => navigate("/mystery/create")}
+                size="lg"
+                className="h-12 px-8"
+              >
+                {t('homeDashboard.empty.firstMystery.cta', { defaultValue: 'Create My First Mystery' })}
+              </Button>
+            )}
           </div>
         ) : (
           <>

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import MysteryCard from "./MysteryCard";
-import { Loader2 } from "lucide-react";
+import { MysteryListSkeleton } from "./MysteryListSkeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -92,9 +92,7 @@ const MysteryList = ({ mysteries, isLoading, onRefresh }: MysteryListProps) => {
       </div>
       
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
+        <MysteryListSkeleton />
       ) : filteredMysteries.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredMysteries.map((mystery) => (

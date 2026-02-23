@@ -345,48 +345,77 @@ const MysteryPurchase = () => {
   };
 
   const handlePurchase = async () => {
+    // Validate authentication
     if (!isAuthenticated) {
       toast.error(t("purchase.toasts.signInRequired"));
       navigate("/sign-in");
       return;
     }
-    
+
+    // Validate mystery ID
+    if (!id) {
+      toast.error("Mystery not found. Please try again from the dashboard.");
+      navigate("/dashboard");
+      return;
+    }
+
+    // Check if email is verified
+    const isEmailVerified = user?.email_confirmed_at || user?.confirmed_at;
+    if (!isEmailVerified) {
+      toast.error("Please verify your email address before purchasing. Check your inbox for the verification link.", {
+        duration: 6000,
+      });
+      return;
+    }
+
+    // Check if user email exists
+    if (!user?.email) {
+      toast.error("User email not found. Please sign out and sign in again.");
+      return;
+    }
+
     try {
       setProcessing(true);
-      toast.info(t("purchase.toasts.checkoutRedirect"));
+      toast.info("Redirecting to secure checkout...", { duration: 2000 });
 
       // Track checkout initiation
-      trackBeginCheckout(id || '', mystery?.theme || undefined);
+      trackBeginCheckout(id, mystery?.theme || undefined);
 
-      // Construct Stripe URL with conversation ID in metadata
+      // Construct URLs
       const baseUrl = window.location.origin;
       const successUrl = `${baseUrl}/payment-success?conversation_id=${id}`;
       const cancelUrl = `${baseUrl}/mystery/purchase/${id}?purchase=cancel`;
-      
-      // Add client_reference_id to pass conversation ID to Stripe
-      const stripeUrl = `https://buy.stripe.com/dRm4gAgls6c47UccYV2Nq03?prefilled_email=${encodeURIComponent(user?.email || '')}&client_reference_id=${id}&success_url=${encodeURIComponent(successUrl)}&cancel_url=${encodeURIComponent(cancelUrl)}`;
-      
-      // Store conversation ID in localStorage as fallback in case URL params are lost
-      if (id) {
-        localStorage.setItem('pendingConversationId', id);
-        console.log('Stored conversation ID in localStorage:', id);
+
+      // Validate URLs before proceeding
+      if (!baseUrl || !successUrl || !cancelUrl) {
+        throw new Error("Failed to construct checkout URLs");
       }
 
-      // Debug logging
-      console.log('=== STRIPE URL DEBUG ===');
-      console.log('Conversation ID from useParams:', id);
-      console.log('ID type:', typeof id);
-      console.log('Base URL:', baseUrl);
-      console.log('Success URL being constructed:', successUrl);
-      console.log('Final Stripe URL:', stripeUrl);
-      console.log('=== END STRIPE DEBUG ===');
-      
+      // Build Stripe checkout URL
+      const stripeUrl = `https://buy.stripe.com/dRm4gAgls6c47UccYV2Nq03?prefilled_email=${encodeURIComponent(user.email)}&client_reference_id=${id}&success_url=${encodeURIComponent(successUrl)}&cancel_url=${encodeURIComponent(cancelUrl)}`;
+
+      // Store conversation ID as fallback
+      localStorage.setItem('pendingConversationId', id);
+
+      // Small delay to ensure toast is visible
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // Redirect to Stripe
       window.location.href = stripeUrl;
-      
-    } catch (error) {
-      console.error("Error redirecting to Stripe:", error);
-      toast.error(t("purchase.toasts.checkoutFailed"));
+
+    } catch (error: any) {
+      console.error("Payment error:", error);
+
+      // Provide specific error messages
+      let errorMessage = "Failed to start checkout. Please try again.";
+
+      if (error.message?.includes("network")) {
+        errorMessage = "Network error. Please check your connection and try again.";
+      } else if (error.message?.includes("URL")) {
+        errorMessage = "Checkout configuration error. Please contact support.";
+      }
+
+      toast.error(errorMessage, { duration: 5000 });
       setProcessing(false);
     }
   };

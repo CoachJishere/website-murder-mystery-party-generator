@@ -9,7 +9,9 @@ import { HelmetProvider } from "react-helmet-async";
 import LoadingBoundary from "@/components/LoadingBoundary";
 import { useEffect } from "react";
 import { initGA, trackPageView } from "@/lib/analytics";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -31,6 +33,7 @@ import BlogIndex from "./pages/BlogIndex";
 import BlogPost from "./pages/BlogPost";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import Feedback from "./pages/Feedback";
+import BillingHistory from "./pages/BillingHistory";
 import React from "react";
 
 const queryClient = new QueryClient();
@@ -87,9 +90,10 @@ const App = () => (
 
 const AppRoutes = () => {
   const { loading, isAuthenticated } = useAuth();
-  
+
   return (
     <LoadingBoundary loading={loading}>
+      {isAuthenticated && <MobileBottomNav />}
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/sign-in" element={<SignIn />} />
@@ -115,25 +119,37 @@ const AppRoutes = () => {
         <Route path="/payment-canceled" element={<Navigate to="/" replace />} />
         
         {/* Protected routes */}
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
-              <Index />
+              <Dashboard />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/account" 
+        <Route
+          path="/account"
           element={
             <ProtectedRoute>
               <AccountSettings />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/mystery/create" 
-          element={<MysteryCreation />} 
+        <Route
+          path="/billing"
+          element={
+            <ProtectedRoute>
+              <BillingHistory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mystery/create"
+          element={
+            <ProtectedRoute>
+              <MysteryCreation />
+            </ProtectedRoute>
+          }
         />
         <Route 
           path="/mystery/edit/:id" 

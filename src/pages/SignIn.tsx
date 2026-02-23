@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
-import { Mail, Lock, ArrowRight } from "lucide-react";
+import { Mail, Lock, ArrowRight, AlertCircle, Check } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "react-i18next";
 
@@ -16,8 +16,7 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // TODO: Re-enable when Google OAuth is fixed
-  // const [socialLoading, setSocialLoading] = useState<string | null>(null);
+  const [socialLoading, setSocialLoading] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,81 +61,41 @@ const SignIn = () => {
     }
   };
 
-  // TODO: Re-enable Google auth when OAuth issues are resolved
-  // const handleGoogleSignIn = async () => {
-  //   try {
-  //     console.log("=== Google Sign-In Debug Info ===");
-  //     console.log("Current origin:", window.location.origin);
-  //     console.log("Current URL:", window.location.href);
-  //     
-  //     setSocialLoading('google');
-  //     
-  //     const redirectUrl = `${window.location.origin}/auth/callback`;
-  //     console.log("Redirect URL:", redirectUrl);
-  //     
-  //     const oauthConfig = {
-  //       provider: "google" as const,
-  //       options: {
-  //         redirectTo: redirectUrl,
-  //         queryParams: {
-  //           access_type: 'offline',
-  //           prompt: 'consent',
-  //         },
-  //       }
-  //     };
-  //     
-  //     console.log("OAuth config:", JSON.stringify(oauthConfig, null, 2));
-  //     console.log("Calling supabase.auth.signInWithOAuth...");
-  //     
-  //     const { data, error } = await supabase.auth.signInWithOAuth(oauthConfig);
-  //     
-  //     console.log("signInWithOAuth response:", { 
-  //       data, 
-  //       error,
-  //       hasUrl: !!data?.url,
-  //       provider: data?.provider 
-  //     });
-  //     
-  //     if (error) {
-  //       console.error("❌ Google sign-in error:", error);
-  //       console.error("Error details:", {
-  //         message: error.message,
-  //         status: error.status,
-  //         details: error
-  //       });
-  //       toast.error(`Failed to sign in with Google: ${error.message}`);
-  //       setSocialLoading(null);
-  //       return;
-  //     }
-  //     
-  //     if (data?.url) {
-  //       console.log("✅ OAuth redirect URL generated:", data.url);
-  //       console.log("🔄 Browser should redirect to Google now...");
-  //       // The redirect will happen automatically, so don't reset loading state
-  //       
-  //       // Add a timeout as a fallback in case redirect doesn't work
-  //       setTimeout(() => {
-  //         console.log("⚠️ Redirect timeout - this might indicate an issue");
-  //         setSocialLoading(null);
-  //       }, 5000);
-  //     } else {
-  //       console.warn("⚠️ No redirect URL returned from signInWithOAuth");
-  //       console.log("Response data:", data);
-  //       toast.error("Failed to initiate Google sign-in. No redirect URL received.");
-  //       setSocialLoading(null);
-  //     }
-  //     
-  //   } catch (error: any) {
-  //     console.error("❌ Google sign-in catch block:", error);
-  //     console.error("Catch block error details:", {
-  //       message: error.message,
-  //       stack: error.stack,
-  //       name: error.name
-  //     });
-  //     toast.error(`An unexpected error occurred: ${error.message || "Unknown error"}`);
-  //     setSocialLoading(null);
-  //   }
-  // };
+  const handleGoogleSignIn = async () => {
+    try {
+      setSocialLoading('google');
+
+      const redirectUrl = `${window.location.origin}/auth/callback`;
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        }
+      });
+
+      if (error) {
+        console.error("Google sign-in error:", error);
+        toast.error(`Failed to sign in with Google: ${error.message}`);
+        setSocialLoading(null);
+        return;
+      }
+
+      // The redirect will happen automatically
+      if (!data?.url) {
+        toast.error("Failed to initiate Google sign-in.");
+        setSocialLoading(null);
+      }
+    } catch (error: any) {
+      console.error("Google sign-in error:", error);
+      toast.error(`An unexpected error occurred: ${error.message || "Unknown error"}`);
+      setSocialLoading(null);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -146,12 +105,11 @@ const SignIn = () => {
         <div className="w-full max-w-md">
           <div className="bg-card rounded-lg shadow-lg border p-8">
             <h1 className="text-2xl font-bold mb-6 text-center">{t('auth.signIn.title')}</h1>
-            
-            {/* TODO: Re-enable Google auth when OAuth issues are resolved */}
-            {/* <div className="space-y-4 mb-6">
-              <Button 
-                variant="outline" 
-                className="w-full flex items-center justify-center gap-2"
+
+            <div className="space-y-4 mb-6">
+              <Button
+                variant="outline"
+                className="w-full flex items-center justify-center gap-2 h-12"
                 onClick={handleGoogleSignIn}
                 disabled={!!socialLoading}
               >
@@ -180,7 +138,7 @@ const SignIn = () => {
                 <span>Continue with Google</span>
               </Button>
             </div>
-            
+
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border"></div>
@@ -188,8 +146,8 @@ const SignIn = () => {
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
               </div>
-            </div> */}
-            
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">{t('auth.signIn.email')}</Label>

@@ -16,8 +16,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // TODO: Re-enable when Google OAuth is fixed
-  // const [socialLoading, setSocialLoading] = useState<string | null>(null);
+  const [socialLoading, setSocialLoading] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,15 +63,20 @@ const SignUp = () => {
       }
 
       console.log("Sign up successful:", data);
-      
-      // For Supabase, by default email confirmation is required
-      // Redirect to check email page regardless of session
-      // This prevents the "Email not confirmed" error on auto-login attempts
-      toast.success(t("auth.success.accountCreated"));
-      
-      // Add a small delay before navigation to ensure the toast is shown
+
+      // Allow users to access dashboard immediately
+      // Send verification email in background, but don't block access
+      const hasSession = !!data.session;
+
+      if (!hasSession) {
+        toast.success("Account created! Check your email to verify and unlock all features.");
+      } else {
+        toast.success(t("auth.success.accountCreated"));
+      }
+
+      // Navigate to dashboard immediately - let them explore
       setTimeout(() => {
-        navigate("/check-email");
+        navigate("/dashboard");
       }, 100);
       
     } catch (error: any) {
@@ -83,29 +87,28 @@ const SignUp = () => {
     }
   };
 
-  // TODO: Re-enable Google auth when OAuth issues are resolved
-  // const handleGoogleSignIn = async () => {
-  //   try {
-  //     setSocialLoading('google');
-  //     const { error } = await supabase.auth.signInWithOAuth({
-  //       provider: "google",
-  //       options: {
-  //         redirectTo: `${window.location.origin}/auth/callback`,
-  //       }
-  //     });
-  //     
-  //     if (error) {
-  //       console.error("Google sign in error:", error);
-  //       toast.error(`Failed to sign in with Google: ${error.message}`);
-  //       setSocialLoading(null);
-  //     }
-  //     // Page will redirect if successful
-  //   } catch (error: any) {
-  //     console.error("Google sign in catch block:", error);
-  //     toast.error(`An unexpected error occurred: ${error.message || "Unknown error"}`);
-  //     setSocialLoading(null);
-  //   }
-  // };
+  const handleGoogleSignIn = async () => {
+    try {
+      setSocialLoading('google');
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        }
+      });
+
+      if (error) {
+        console.error("Google sign in error:", error);
+        toast.error(`Failed to sign in with Google: ${error.message}`);
+        setSocialLoading(null);
+      }
+      // Page will redirect if successful
+    } catch (error: any) {
+      console.error("Google sign in catch block:", error);
+      toast.error(`An unexpected error occurred: ${error.message || "Unknown error"}`);
+      setSocialLoading(null);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -115,12 +118,11 @@ const SignUp = () => {
         <div className="w-full max-w-md">
           <div className="bg-card rounded-lg shadow-lg border p-8">
             <h1 className="text-2xl font-bold mb-6 text-center">{t('auth.signUp.title')}</h1>
-            
-            {/* TODO: Re-enable Google auth when OAuth issues are resolved */}
-            {/* <div className="space-y-4 mb-6">
-              <Button 
-                variant="outline" 
-                className="w-full flex items-center justify-center gap-2"
+
+            <div className="space-y-4 mb-6">
+              <Button
+                variant="outline"
+                className="w-full flex items-center justify-center gap-2 h-12"
                 onClick={handleGoogleSignIn}
                 disabled={!!socialLoading}
               >
@@ -149,7 +151,7 @@ const SignUp = () => {
                 <span>Continue with Google</span>
               </Button>
             </div>
-            
+
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border"></div>
@@ -157,8 +159,8 @@ const SignUp = () => {
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
               </div>
-            </div> */}
-            
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">{t('auth.signUp.name')}</Label>

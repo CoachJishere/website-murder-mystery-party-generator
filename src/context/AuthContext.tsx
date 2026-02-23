@@ -123,9 +123,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
           toast.error("The email or password you entered is incorrect. Please try again.");
-        } else if (error.message.includes('Email not confirmed')) {
-          toast.error("Please confirm your email before logging in. Check your inbox.");
-          navigate("/check-email");
         } else {
           toast.error(`Failed to sign in: ${error.message}`);
         }
@@ -171,15 +168,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw error;
       }
       
-      if (data.user && !data.session) {
-        toast.success("Account created! Please check your email to confirm your account.");
-        navigate("/check-email");
-        return;
-      }
-      
-      if (data.user && data.session) {
-        toast.success("Account created successfully! You're now logged in.");
-        navigate("/dashboard");
+      // Allow users to access dashboard immediately, regardless of email confirmation
+      if (data.user) {
+        const hasSession = !!data.session;
+
+        if (!hasSession) {
+          // Email confirmation required by Supabase, but we'll let them explore anyway
+          toast.success("Account created! Check your email to verify and unlock all features.");
+          // Manual session creation not needed - Supabase handles this
+          // Just navigate to dashboard and let them explore
+          navigate("/dashboard");
+        } else {
+          // Instant confirmation (OAuth or disabled email confirmation)
+          toast.success("Account created successfully! You're now logged in.");
+          navigate("/dashboard");
+        }
       }
     } catch (error: any) {
       console.error("Sign-up error:", error);

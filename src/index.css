@@ -125,3 +125,20 @@
     text-decoration: none !important;
   }
 }
+
+@layer utilities {
+  /* Mobile bottom navigation spacing */
+  .pb-safe-mobile-nav {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 768px) {
+    .pb-safe-mobile-nav {
+      padding-bottom: 0;
+    }
+  }
+
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
