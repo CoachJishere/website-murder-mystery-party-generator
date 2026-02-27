@@ -50,7 +50,7 @@ export function MobileBottomNav() {
           to="/mystery/create"
           icon={<Plus size={20} />}
           label={t("navigation.create", { defaultValue: "Create" })}
-          active={location.pathname.includes("/mystery/create") || location.pathname.includes("/mystery/new")}
+          active={location.pathname.includes("/mystery/create")}
         />
         <NavItem
           to="/dashboard"

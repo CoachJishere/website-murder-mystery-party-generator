@@ -17,6 +17,8 @@ interface HomeMysteryCardProps {
     display_status: string;
     created_at: string;
     is_completed: boolean;
+    is_paid?: boolean;
+    needs_package_generation?: boolean;
   };
   onView: (id: string) => void;
   onEdit: (id: string) => void;
@@ -27,8 +29,10 @@ interface HomeMysteryCardProps {
 export default function HomeMysteryCard({ mystery, onView, onEdit, onArchive, onDelete }: HomeMysteryCardProps) {
   const { t } = useTranslation();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const isPurchased = mystery.display_status === 'purchased';
-  const isGenerating = mystery.display_status === 'generating';
+
+  // Compute status from authoritative fields, falling back to display_status
+  const isGenerating = (mystery.is_paid && mystery.needs_package_generation) || mystery.display_status === 'generating';
+  const isPurchased = !isGenerating && (mystery.is_paid || mystery.display_status === 'purchased');
   
   const truncateTitle = (title: string, maxLength: number = 80) => {
     // Strip markdown bold markers

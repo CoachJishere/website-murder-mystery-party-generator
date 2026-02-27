@@ -66,7 +66,7 @@ const Index = () => {
   ];
 
   const handleCreateNew = () => {
-    navigate("/mystery/new");
+    navigate("/mystery/create");
   };
 
   return (

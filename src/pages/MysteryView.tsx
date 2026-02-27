@@ -6,11 +6,11 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
-import { 
-  generateCompletePackage, 
+import {
+  generateCompletePackage,
   resumePackageGeneration,
-  getPackageGenerationStatus, 
-  GenerationStatus 
+  getPackageGenerationStatus,
+  GenerationStatus
 } from "@/services/mysteryPackageService";
 import { useAuth } from "@/context/AuthContext";
 import { RefreshCw, AlertTriangle, Clock, CheckCircle2, Eye, XCircle } from "lucide-react";
@@ -21,6 +21,7 @@ import { extractTitleFromMessages } from "@/utils/titleExtraction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { trackMysteryCreation } from "@/lib/analytics";
 
 interface MysteryPackageData {
   title?: string;
@@ -272,10 +273,17 @@ const MysteryView = () => {
     try {
       const estimatedTime = getEstimatedTime(mystery?.player_count || 6);
       toast.info(`Starting generation of your mystery package. This will take ${estimatedTime}...`);
-      
+
       // Just call the webhook - don't wait for completion
       await generateCompletePackage(id);
-      
+
+      // Track mystery creation event for analytics
+      trackMysteryCreation(mystery?.theme || 'unknown', {
+        mystery_id: id,
+        player_count: mystery?.player_count || 6,
+        has_theme: !!mystery?.theme
+      });
+
       debugLog("Generation started, auto-refresh will check status");
       
     } catch (error: any) {

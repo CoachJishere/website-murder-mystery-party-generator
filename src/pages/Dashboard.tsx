@@ -96,7 +96,7 @@ const Dashboard = () => {
   };
 
   const handleCreateNewMystery = () => {
-    navigate("/mystery/new");
+    navigate("/mystery/create");
   };
 
   if (loading) {

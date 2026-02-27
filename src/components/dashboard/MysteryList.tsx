@@ -3,20 +3,13 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import MysteryCard from "./MysteryCard";
+import HomeMysteryCard from "./HomeMysteryCard";
 import { MysteryListSkeleton } from "./MysteryListSkeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Mystery } from "@/interfaces/mystery";
 import { useTranslation } from "react-i18next";
-
-interface Message {
-  id: string;
-  content: string;
-  is_ai: boolean;
-  created_at: string;
-}
 
 interface MysteryListProps {
   mysteries: Mystery[];
@@ -48,18 +41,34 @@ const MysteryList = ({ mysteries, isLoading, onRefresh }: MysteryListProps) => {
     });
   }, [mysteries, searchQuery]);
 
-  // Handle mystery deletion
-  const handleDeleteMystery = async (mysteryId: string) => {
+  // Handle archiving a mystery (soft delete)
+  const handleArchiveMystery = async (mysteryId: string) => {
     try {
       const { error } = await supabase
         .from("conversations")
         .update({ display_status: "archived" })
         .eq("id", mysteryId);
-      
-      if (error) {
-        throw error;
-      }
-      
+
+      if (error) throw error;
+
+      toast.success(t("dashboard.mysteries.deleteSuccess"));
+      onRefresh();
+    } catch (error) {
+      console.error("Error archiving mystery:", error);
+      toast.error(t("dashboard.mysteries.deleteFailed"));
+    }
+  };
+
+  // Handle hard delete
+  const handleDeleteMystery = async (mysteryId: string) => {
+    try {
+      const { error } = await supabase
+        .from("conversations")
+        .delete()
+        .eq("id", mysteryId);
+
+      if (error) throw error;
+
       toast.success(t("dashboard.mysteries.deleteSuccess"));
       onRefresh();
     } catch (error) {
@@ -96,7 +105,7 @@ const MysteryList = ({ mysteries, isLoading, onRefresh }: MysteryListProps) => {
       ) : filteredMysteries.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredMysteries.map((mystery) => (
-            <MysteryCard
+            <HomeMysteryCard
               key={mystery.id}
               mystery={{
                 id: mystery.id,
@@ -104,11 +113,14 @@ const MysteryList = ({ mysteries, isLoading, onRefresh }: MysteryListProps) => {
                 mystery_data: mystery.mystery_data || {},
                 display_status: mystery.display_status || mystery.status,
                 created_at: mystery.created_at,
-                is_completed: Boolean(mystery.is_completed)
+                is_completed: Boolean(mystery.is_completed),
+                is_paid: Boolean(mystery.is_paid),
+                needs_package_generation: Boolean(mystery.needs_package_generation),
               }}
-              onView={() => handleViewMystery(mystery.id)}
-              onEdit={() => handleEditMystery(mystery.id)}
-              onDelete={() => handleDeleteMystery(mystery.id)}
+              onView={handleViewMystery}
+              onEdit={handleEditMystery}
+              onArchive={handleArchiveMystery}
+              onDelete={handleDeleteMystery}
             />
           ))}
         </div>
@@ -119,7 +131,7 @@ const MysteryList = ({ mysteries, isLoading, onRefresh }: MysteryListProps) => {
               ? t("dashboard.mysteries.empty.searchResult")
               : t("dashboard.welcome.noMysteries")}
           </p>
-          <Button onClick={() => navigate("/mystery/new")}>{t("dashboard.buttons.createFirstMystery")}</Button>
+          <Button onClick={() => navigate("/mystery/create")}>{t("dashboard.buttons.createFirstMystery")}</Button>
         </div>
       )}
       
