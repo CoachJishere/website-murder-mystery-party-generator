@@ -78,7 +78,7 @@ const Dashboard = () => {
     try {
       const { data, error } = await supabase
         .from("conversations")
-        .select("*, messages!messages_conversation_id_fkey(id, content, created_at, is_ai, role)")
+        .select("*, messages!fk_messages_conversation_id(id, content, created_at, is_ai, role)")
         .eq("user_id", userId)
         .order("updated_at", { ascending: false });
         
