@@ -9,14 +9,11 @@ import { FeatureSteps } from "@/components/ui/feature-steps";
 import { Faq1 } from "@/components/ui/faq1";
 import { HowItWorks } from "@/components/ui/how-it-works";
 import { useAuth } from "@/context/AuthContext";
-import { HomeDashboard } from "@/components/dashboard/HomeDashboard";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { SkipToContent } from "@/components/SkipToContent";
 
 const Index = () => {
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
   const { t } = useTranslation();
   
   // Feature Steps data
@@ -65,10 +62,6 @@ const Index = () => {
     }
   ];
 
-  const handleCreateNew = () => {
-    navigate("/mystery/create");
-  };
-
   return (
     <div className="min-h-screen flex flex-col font-inter">
       <Head
@@ -107,13 +100,7 @@ const Index = () => {
           </section>
         )}
 
-        {isAuthenticated ? (
-          // Content for logged-in users
-          <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8">
-            <HomeDashboard onCreateNew={handleCreateNew} />
-          </div>
-        ) : (
-          // Content for non-logged-in users
+        {!isAuthenticated && (
           <>
             {/* How It Works Section */}
             <section className="py-6 sm:py-8 px-2 sm:px-4 md:px-6 lg:px-8">
