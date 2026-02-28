@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Users, MessageSquare, CreditCard, Package, UserCheck, Star, TrendingUp, AlertTriangle } from "lucide-react";
+import { RefreshCw, Users, MessageSquare, CreditCard, Package, UserCheck, Star, TrendingUp, AlertTriangle, ArrowRight, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FunnelMetrics {
@@ -15,10 +15,27 @@ interface FunnelMetrics {
   assignedCharacters: number;
 }
 
-interface ThemeRow {
-  theme: string;
-  count: number;
-  paidCount: number;
+interface EngagementBucket {
+  label: string;
+  total: number;
+  paid: number;
+  convRate: number;
+}
+
+interface MonthlyRow {
+  month: string;
+  users: number;
+  conversations: number;
+  paid: number;
+  convRate: number;
+}
+
+interface EngagementFunnel {
+  created: number;
+  engaged: number;
+  paid: number;
+  generated: number;
+  assigned: number;
 }
 
 interface GenerationHealth {
@@ -59,7 +76,9 @@ const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [excludeTest, setExcludeTest] = useState(true);
   const [funnel, setFunnel] = useState<FunnelMetrics | null>(null);
-  const [themes, setThemes] = useState<ThemeRow[]>([]);
+  const [engagement, setEngagement] = useState<EngagementBucket[]>([]);
+  const [engagementFunnel, setEngagementFunnel] = useState<EngagementFunnel | null>(null);
+  const [monthlyTrends, setMonthlyTrends] = useState<MonthlyRow[]>([]);
   const [genHealth, setGenHealth] = useState<GenerationHealth | null>(null);
   const [feedback, setFeedback] = useState<FeedbackRow[]>([]);
   const [recentActivity, setRecentActivity] = useState<RecentConversation[]>([]);
@@ -128,30 +147,93 @@ const AdminDashboard: React.FC = () => {
         assignedCharacters: assignmentCount || 0,
       });
 
-      // 2. Theme Analysis
-      const { data: themeData } = await supabase
-        .from("conversations")
-        .select("theme, is_paid, user_id");
+      // 2. Drop-off & Engagement Analysis
+      // Fetch message counts per conversation
+      const { data: allMessages } = await supabase
+        .from("messages")
+        .select("conversation_id");
 
-      const filteredThemes = excludeTest
-        ? (themeData || []).filter((c: any) => !testUserIds.includes(c.user_id))
-        : themeData || [];
-
-      const themeMap = new Map<string, { count: number; paidCount: number }>();
-      for (const conv of filteredThemes) {
-        const theme = (conv as any).theme?.trim() || "No theme";
-        const existing = themeMap.get(theme) || { count: 0, paidCount: 0 };
-        existing.count++;
-        if ((conv as any).is_paid) existing.paidCount++;
-        themeMap.set(theme, existing);
+      // Build message count map
+      const msgCountMap = new Map<string, number>();
+      for (const msg of allMessages || []) {
+        const cid = (msg as any).conversation_id;
+        msgCountMap.set(cid, (msgCountMap.get(cid) || 0) + 1);
       }
 
-      const sortedThemes = Array.from(themeMap.entries())
-        .map(([theme, data]) => ({ theme, ...data }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 20);
+      // Build engagement buckets from filtered conversations
+      const bucketDefs = [
+        { label: "1-2 msgs", min: 1, max: 2 },
+        { label: "3-5 msgs", min: 3, max: 5 },
+        { label: "6-10 msgs", min: 6, max: 10 },
+        { label: "11-20 msgs", min: 11, max: 20 },
+        { label: "20+ msgs", min: 21, max: Infinity },
+      ];
 
-      setThemes(sortedThemes);
+      const buckets: EngagementBucket[] = bucketDefs.map((def) => {
+        const inBucket = conversations.filter((c: any) => {
+          const count = msgCountMap.get(c.id) || 0;
+          return count >= def.min && count <= def.max;
+        });
+        const paidInBucket = inBucket.filter((c: any) => c.is_paid);
+        return {
+          label: def.label,
+          total: inBucket.length,
+          paid: paidInBucket.length,
+          convRate: inBucket.length > 0 ? (paidInBucket.length / inBucket.length) * 100 : 0,
+        };
+      });
+      setEngagement(buckets);
+
+      // Engagement funnel: Created → 6+ msgs → Paid → Generated → Assigned
+      const engagedConvIds = conversations
+        .filter((c: any) => (msgCountMap.get(c.id) || 0) >= 6)
+        .map((c: any) => c.id);
+
+      const paidConvIds = paidConvs.map((c: any) => c.id);
+
+      // Count packages linked to these conversations
+      const { data: pkgLinks } = await supabase
+        .from("mystery_packages")
+        .select("conversation_id");
+      const pkgConvIds = new Set((pkgLinks || []).map((p: any) => p.conversation_id));
+      const generatedFromFiltered = paidConvIds.filter((id: string) => pkgConvIds.has(id)).length;
+
+      // Count assignments linked to these conversations
+      const { data: assignLinks } = await supabase
+        .from("character_assignments")
+        .select("mystery_id");
+      const assignConvIds = new Set((assignLinks || []).map((a: any) => a.mystery_id));
+      const assignedFromFiltered = paidConvIds.filter((id: string) => assignConvIds.has(id)).length;
+
+      setEngagementFunnel({
+        created: conversations.length,
+        engaged: engagedConvIds.length,
+        paid: paidConvs.length,
+        generated: generatedFromFiltered,
+        assigned: assignedFromFiltered,
+      });
+
+      // Monthly Trends
+      const monthMap = new Map<string, { users: Set<string>; conversations: number; paid: number }>();
+      for (const c of conversations) {
+        const month = (c as any).created_at?.substring(0, 7) || "unknown";
+        const existing = monthMap.get(month) || { users: new Set<string>(), conversations: 0, paid: 0 };
+        existing.conversations++;
+        if ((c as any).user_id) existing.users.add((c as any).user_id);
+        if ((c as any).is_paid) existing.paid++;
+        monthMap.set(month, existing);
+      }
+
+      const monthly = Array.from(monthMap.entries())
+        .map(([month, data]) => ({
+          month,
+          users: data.users.size,
+          conversations: data.conversations,
+          paid: data.paid,
+          convRate: data.conversations > 0 ? (data.paid / data.conversations) * 100 : 0,
+        }))
+        .sort((a, b) => a.month.localeCompare(b.month));
+      setMonthlyTrends(monthly);
 
       // 3. Generation Health
       const { data: packages } = await supabase
@@ -286,35 +368,88 @@ const AdminDashboard: React.FC = () => {
           </section>
         )}
 
-        {/* 2. Theme Analysis */}
+        {/* 2. Drop-off & Engagement Analysis */}
         <section>
-          <h2 className="text-lg font-semibold mb-3">Top Themes</h2>
+          <h2 className="text-lg font-semibold mb-3">Drop-off & Engagement</h2>
+
+          {/* Engagement Funnel */}
+          {engagementFunnel && (
+            <div className="mb-4">
+              <div className="flex flex-wrap items-center gap-2 text-sm">
+                {[
+                  { label: "Created", value: engagementFunnel.created },
+                  { label: "6+ Messages", value: engagementFunnel.engaged },
+                  { label: "Paid", value: engagementFunnel.paid },
+                  { label: "Package Generated", value: engagementFunnel.generated },
+                  { label: "Characters Assigned", value: engagementFunnel.assigned },
+                ].map((step, i, arr) => (
+                  <React.Fragment key={step.label}>
+                    <Card className="flex-1 min-w-[120px]">
+                      <CardContent className="p-3 text-center">
+                        <div className="text-2xl font-bold">{step.value}</div>
+                        <div className="text-xs text-muted-foreground">{step.label}</div>
+                        {i > 0 && arr[i - 1].value > 0 && (
+                          <div className="text-xs text-muted-foreground mt-1">
+                            {((step.value / arr[i - 1].value) * 100).toFixed(0)}% of prev
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                    {i < arr.length - 1 && (
+                      <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 hidden sm:block" />
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Message Engagement → Conversion Table */}
           <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Message Count vs. Conversion Rate
+              </CardTitle>
+            </CardHeader>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b bg-muted/50">
-                      <th className="text-left p-3 font-medium">Theme</th>
+                      <th className="text-left p-3 font-medium">Messages</th>
                       <th className="text-right p-3 font-medium">Conversations</th>
                       <th className="text-right p-3 font-medium">Paid</th>
                       <th className="text-right p-3 font-medium">Conv. Rate</th>
+                      <th className="text-left p-3 font-medium w-[200px]"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {themes.map((t, i) => (
+                    {engagement.map((b, i) => (
                       <tr key={i} className="border-b last:border-0">
-                        <td className="p-3 truncate max-w-[200px]">{t.theme}</td>
-                        <td className="p-3 text-right">{t.count}</td>
-                        <td className="p-3 text-right">{t.paidCount}</td>
-                        <td className="p-3 text-right">{conversionPct(t.paidCount, t.count)}</td>
+                        <td className="p-3 font-medium">{b.label}</td>
+                        <td className="p-3 text-right">{b.total}</td>
+                        <td className="p-3 text-right">{b.paid}</td>
+                        <td className="p-3 text-right font-medium">
+                          <span className={b.convRate >= 15 ? "text-green-600" : b.convRate >= 5 ? "text-yellow-600" : "text-red-500"}>
+                            {b.convRate.toFixed(1)}%
+                          </span>
+                        </td>
+                        <td className="p-3">
+                          <div className="w-full bg-gray-100 rounded-full h-2">
+                            <div
+                              className={cn(
+                                "h-2 rounded-full",
+                                b.convRate >= 15 ? "bg-green-500" : b.convRate >= 5 ? "bg-yellow-500" : "bg-red-400"
+                              )}
+                              style={{ width: `${Math.min(b.convRate * 3, 100)}%` }}
+                            />
+                          </div>
+                        </td>
                       </tr>
                     ))}
-                    {themes.length === 0 && (
+                    {engagement.length === 0 && (
                       <tr>
-                        <td colSpan={4} className="p-6 text-center text-muted-foreground">
-                          No data
-                        </td>
+                        <td colSpan={5} className="p-6 text-center text-muted-foreground">No data</td>
                       </tr>
                     )}
                   </tbody>
@@ -324,7 +459,45 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </section>
 
-        {/* 3. Generation Health */}
+        {/* 3. Monthly Trends */}
+        <section>
+          <h2 className="text-lg font-semibold mb-3">Monthly Trends</h2>
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b bg-muted/50">
+                      <th className="text-left p-3 font-medium">Month</th>
+                      <th className="text-right p-3 font-medium">Users</th>
+                      <th className="text-right p-3 font-medium">Conversations</th>
+                      <th className="text-right p-3 font-medium">Paid</th>
+                      <th className="text-right p-3 font-medium">Conv. Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {monthlyTrends.map((m, i) => (
+                      <tr key={i} className="border-b last:border-0">
+                        <td className="p-3 font-medium">{m.month}</td>
+                        <td className="p-3 text-right">{m.users}</td>
+                        <td className="p-3 text-right">{m.conversations}</td>
+                        <td className="p-3 text-right">{m.paid}</td>
+                        <td className="p-3 text-right">{m.convRate.toFixed(1)}%</td>
+                      </tr>
+                    ))}
+                    {monthlyTrends.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="p-6 text-center text-muted-foreground">No data</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* 4. Generation Health */}
         {genHealth && (
           <section>
             <h2 className="text-lg font-semibold mb-3">Generation Health</h2>
