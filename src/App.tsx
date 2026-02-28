@@ -34,6 +34,7 @@ import BlogPost from "./pages/BlogPost";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import Feedback from "./pages/Feedback";
 import BillingHistory from "./pages/BillingHistory";
+import AdminDashboard from "./pages/AdminDashboard";
 import React from "react";
 
 const queryClient = new QueryClient();
@@ -140,6 +141,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <BillingHistory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />

@@ -21,7 +21,7 @@ import { extractTitleFromMessages } from "@/utils/titleExtraction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-import { trackMysteryCreation } from "@/lib/analytics";
+import { trackMysteryCreation, trackGenerationCompleted, trackGenerationFailed } from "@/lib/analytics";
 
 interface MysteryPackageData {
   title?: string;
@@ -406,6 +406,12 @@ const MysteryView = () => {
         if (previousStatus !== 'completed') {
           console.log("=== STATUS CHECK DEBUG === Status changed to completed - triggering completion actions");
           setGenerating(false);
+
+          // Track generation completion for analytics
+          trackGenerationCompleted(id!, {
+            theme: mystery?.theme,
+            player_count: mystery?.player_count,
+          });
           
           // Fetch the completed package data
           await fetchStructuredPackageData();
@@ -456,6 +462,12 @@ const MysteryView = () => {
       if (status.status === 'failed' && previousStatus !== 'failed') {
         console.log("=== STATUS CHECK DEBUG === Generation failed");
         setGenerating(false);
+
+        // Track generation failure for analytics
+        trackGenerationFailed(id!, {
+          error_step: status.currentStep || 'unknown',
+          resumable: status.resumable,
+        });
         
         // Show detailed error message with current step
         const errorMessage = status.currentStep || "Generation failed at an unknown step";
@@ -927,6 +939,7 @@ const MysteryView = () => {
               characters={characters}
               estimatedTime={getEstimatedTime(mystery?.player_count || 6)}
               packageId={packageId || undefined}
+              isPaid={mystery?.is_paid}
             />
           ) : (
             // Show generation progress or start button

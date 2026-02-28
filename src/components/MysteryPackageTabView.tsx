@@ -5,13 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
-import { Loader2, Wand2, Eye, Mail } from "lucide-react";
+import { Loader2, Wand2, Eye, Mail, MessageSquare, X } from "lucide-react";
 import { MysteryCharacter } from "@/interfaces/mystery";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import MysteryGuestManager from "./MysteryGuestManager";
 import "../styles/mystery-package.css";
 import { useTranslation } from "react-i18next";
+import { trackPackageTabViewed, trackFeedbackPromptShown, trackFeedbackPromptClicked } from "@/lib/analytics";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 interface MysteryPackageData {
   title?: string;
@@ -37,6 +40,7 @@ interface MysteryPackageTabViewProps {
   characters?: MysteryCharacter[];
   estimatedTime: string;
   packageId?: string;
+  isPaid?: boolean;
 }
 
 const MysteryPackageTabView = React.memo(({
@@ -49,13 +53,74 @@ const MysteryPackageTabView = React.memo(({
   packageData,
   characters = [],
   estimatedTime,
-  packageId
+  packageId,
+  isPaid
 }: MysteryPackageTabViewProps) => {
   const [activeTab, setActiveTab] = useState("host-guide");
   const [statusMessage, setStatusMessage] = useState("Starting generation...");
   const [showGuestManager, setShowGuestManager] = useState(false);
   const isMobile = useIsMobile();
   const { t } = useTranslation();
+
+  // Feedback nudge state
+  const [showFeedbackNudge, setShowFeedbackNudge] = useState(false);
+  const [feedbackAlreadyGiven, setFeedbackAlreadyGiven] = useState(false);
+  const feedbackPromptTracked = useRef(false);
+
+  // Check for existing feedback and show nudge after delay
+  useEffect(() => {
+    if (!isPaid || !conversationId) return;
+
+    // Check if already dismissed via localStorage
+    const dismissed = localStorage.getItem(`feedback_dismissed_${conversationId}`);
+    if (dismissed) return;
+
+    // Check if feedback already exists for this conversation
+    const checkFeedback = async () => {
+      const { data } = await supabase
+        .from('mystery_feedback' as any)
+        .select('id')
+        .eq('conversation_id', conversationId)
+        .maybeSingle();
+
+      if (data) {
+        setFeedbackAlreadyGiven(true);
+        return;
+      }
+
+      // Show nudge after 30 seconds
+      const timer = setTimeout(() => {
+        setShowFeedbackNudge(true);
+        if (!feedbackPromptTracked.current) {
+          trackFeedbackPromptShown(conversationId);
+          feedbackPromptTracked.current = true;
+        }
+      }, 30000);
+
+      return () => clearTimeout(timer);
+    };
+
+    checkFeedback();
+  }, [isPaid, conversationId]);
+
+  const handleDismissFeedback = useCallback(() => {
+    setShowFeedbackNudge(false);
+    if (conversationId) {
+      localStorage.setItem(`feedback_dismissed_${conversationId}`, 'true');
+    }
+  }, [conversationId]);
+
+  const handleFeedbackClick = useCallback(() => {
+    if (conversationId) {
+      trackFeedbackPromptClicked(conversationId);
+    }
+  }, [conversationId]);
+
+  // Handle tab change with analytics tracking
+  const handleTabChange = useCallback((tab: string) => {
+    setActiveTab(tab);
+    trackPackageTabViewed(tab, conversationId);
+  }, [conversationId]);
 
   // Update status message based on generationStatus
   useEffect(() => {
@@ -414,7 +479,7 @@ const MysteryPackageTabView = React.memo(({
         )}
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className={cn(
           "w-full mb-4 bg-primary p-1 overflow-hidden border-0",
           isMobile ? "grid grid-cols-2 gap-1 h-auto" : "grid grid-cols-2 md:grid-cols-4"
@@ -629,6 +694,71 @@ const MysteryPackageTabView = React.memo(({
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Feedback Nudge */}
+      {isPaid && conversationId && feedbackAlreadyGiven && (
+        <div className={cn(
+          "mt-6 text-center text-sm text-muted-foreground",
+          isMobile && "mt-4 px-2"
+        )}>
+          Thanks for sharing your feedback!
+        </div>
+      )}
+
+      {isPaid && conversationId && showFeedbackNudge && !feedbackAlreadyGiven && (
+        <Card className={cn(
+          "mt-6 border-[#8B1538]/20 bg-[#F7F3E9]",
+          isMobile && "mt-4 mx-2"
+        )}>
+          <CardContent className={cn(
+            "flex items-center justify-between py-4",
+            isMobile && "flex-col space-y-3 px-4 py-3"
+          )}>
+            <div className={cn(
+              "flex items-center gap-3",
+              isMobile && "text-center flex-col"
+            )}>
+              <MessageSquare className="h-5 w-5 text-[#8B1538] shrink-0" />
+              <div>
+                <p className={cn("font-medium text-foreground", isMobile && "text-sm")}>
+                  How was your mystery party?
+                </p>
+                <p className={cn("text-sm text-muted-foreground", isMobile && "text-xs")}>
+                  Your feedback helps us improve!
+                </p>
+              </div>
+            </div>
+            <div className={cn(
+              "flex items-center gap-2",
+              isMobile && "w-full"
+            )}>
+              <Link
+                to={`/feedback/${conversationId}`}
+                onClick={handleFeedbackClick}
+                className={cn(isMobile && "flex-1")}
+              >
+                <Button
+                  size="sm"
+                  className={cn(
+                    "bg-[#8B1538] hover:bg-[#6B0F28] text-white",
+                    isMobile && "w-full"
+                  )}
+                >
+                  Share Feedback
+                </Button>
+              </Link>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDismissFeedback}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Mystery Guest Manager Dialog */}
       <MysteryGuestManager

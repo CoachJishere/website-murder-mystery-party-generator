@@ -100,6 +100,52 @@ export const trackPurchaseComplete = (mysteryId: string, theme?: string) => {
   });
 };
 
+// Track package generation completed
+export const trackGenerationCompleted = (conversationId: string, params: Record<string, any> = {}) => {
+  trackEvent('package_generation_completed', {
+    conversation_id: conversationId,
+    ...params,
+  });
+};
+
+// Track package generation failed
+export const trackGenerationFailed = (conversationId: string, params: Record<string, any> = {}) => {
+  trackEvent('package_generation_failed', {
+    conversation_id: conversationId,
+    ...params,
+  });
+};
+
+// Track package tab view (which sections users look at)
+export const trackPackageTabViewed = (tabName: string, conversationId?: string) => {
+  trackEvent('package_tab_viewed', {
+    tab_name: tabName,
+    ...(conversationId && { conversation_id: conversationId }),
+  });
+};
+
+// Track character assignment started
+export const trackCharacterAssignment = (conversationId: string, characterCount: number) => {
+  trackEvent('character_assignment_started', {
+    conversation_id: conversationId,
+    character_count: characterCount,
+  });
+};
+
+// Track feedback prompt shown
+export const trackFeedbackPromptShown = (conversationId: string) => {
+  trackEvent('feedback_prompt_shown', {
+    conversation_id: conversationId,
+  });
+};
+
+// Track feedback prompt clicked
+export const trackFeedbackPromptClicked = (conversationId: string) => {
+  trackEvent('feedback_prompt_clicked', {
+    conversation_id: conversationId,
+  });
+};
+
 // Hook to track page views on route changes
 export const usePageTracking = () => {
   const location = useLocation();

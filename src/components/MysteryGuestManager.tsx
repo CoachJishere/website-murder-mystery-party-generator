@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { MysteryCharacter } from "@/interfaces/mystery";
 import { useTranslation } from "react-i18next";
 import { Loader2 } from "lucide-react";
+import { trackCharacterAssignment } from "@/lib/analytics";
 
 interface CharacterAssignment {
   id?: string;
@@ -244,6 +245,9 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
         throw new Error(`Failed to send email: ${emailError.message}`);
       }
       toast.success(t('character.guestManager.toasts.characterSent', { name: assignment.guest_name }));
+
+      // Track character assignment for analytics
+      trackCharacterAssignment(mysteryId, characters.length);
 
     } catch (error) {
       console.error('Error sending assignment:', error);

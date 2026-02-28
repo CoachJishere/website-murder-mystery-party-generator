@@ -17,6 +17,7 @@ type AuthContextType = {
   session: Session | null;
   loading: boolean;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   isPublic: boolean;
   setIsPublic: (value: boolean) => void;
   signIn: (email: string, password: string) => Promise<void>;
@@ -31,6 +32,7 @@ const AuthContext = createContext<AuthContextType>({
   session: null,
   loading: false,
   isAuthenticated: false,
+  isAdmin: false,
   isPublic: false,
   setIsPublic: () => {},
   signIn: async () => {},
@@ -44,6 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
   const navigate = useNavigate();
 
@@ -68,14 +71,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (currentSession?.user) {
           const userData = {
             ...currentSession.user,
-            name: currentSession.user.user_metadata?.name || 
-                  currentSession.user.email?.split("@")[0] || 
+            name: currentSession.user.user_metadata?.name ||
+                  currentSession.user.email?.split("@")[0] ||
                   "User",
             avatar: currentSession.user.user_metadata?.avatar_url || null,
           };
           setUser(userData);
+
+          // Check admin status from profiles (defer to avoid blocking auth)
+          supabase
+            .from('profiles')
+            .select('is_admin')
+            .eq('id', currentSession.user.id)
+            .single()
+            .then(({ data }) => {
+              if (mounted && data?.is_admin) {
+                setIsAdmin(true);
+              }
+            });
         } else {
           setUser(null);
+          setIsAdmin(false);
         }
         
         setLoading(false);
@@ -239,6 +255,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     session,
     loading,
     isAuthenticated: !!user,
+    isAdmin,
     isPublic,
     setIsPublic,
     signIn,
