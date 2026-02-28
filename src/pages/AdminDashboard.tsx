@@ -51,9 +51,11 @@ interface RecentConversation {
 }
 
 const AdminDashboard: React.FC = () => {
-  const { isAdmin, isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading, user } = useAuth();
   const navigate = useNavigate();
 
+  const [adminChecked, setAdminChecked] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [excludeTest, setExcludeTest] = useState(true);
   const [funnel, setFunnel] = useState<FunnelMetrics | null>(null);
@@ -62,12 +64,27 @@ const AdminDashboard: React.FC = () => {
   const [feedback, setFeedback] = useState<FeedbackRow[]>([]);
   const [recentActivity, setRecentActivity] = useState<RecentConversation[]>([]);
 
-  // Redirect non-admins
+  // Check admin status directly from profiles
   useEffect(() => {
-    if (!authLoading && (!isAuthenticated || !isAdmin)) {
+    if (authLoading) return;
+    if (!isAuthenticated || !user) {
       navigate("/", { replace: true });
+      return;
     }
-  }, [authLoading, isAuthenticated, isAdmin, navigate]);
+    supabase
+      .from("profiles")
+      .select("is_admin")
+      .eq("id", user.id)
+      .single()
+      .then(({ data }) => {
+        if (data?.is_admin) {
+          setIsAdmin(true);
+        } else {
+          navigate("/", { replace: true });
+        }
+        setAdminChecked(true);
+      });
+  }, [authLoading, isAuthenticated, user, navigate]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -185,7 +202,7 @@ const AdminDashboard: React.FC = () => {
     }
   }, [isAdmin, fetchData]);
 
-  if (authLoading || !isAdmin) {
+  if (authLoading || !adminChecked || !isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
