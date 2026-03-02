@@ -169,7 +169,9 @@
   },
   "trustpilot": {
     "linkText": "Trustpilotでのレビューを見る",
-    "ariaLabel": "Trustpilotのレビューを読む"
+    "ariaLabel": "Trustpilotのレビューを読む",
+    "customersSay": "お客様の声",
+    "excellent": "非常に良い"
   },
   "auth": {
     "signIn": {

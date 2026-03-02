@@ -169,7 +169,9 @@
   },
   "trustpilot": {
     "linkText": "Katso arvostelumme Trustpilotissa",
-    "ariaLabel": "Lue Trustpilot-arvostelumme"
+    "ariaLabel": "Lue Trustpilot-arvostelumme",
+    "customersSay": "Asiakkaamme sanovat",
+    "excellent": "Erinomainen"
   },
   "auth": {
     "signIn": {

@@ -169,7 +169,9 @@
   },
   "trustpilot": {
     "linkText": "Se vores anmeldelser på Trustpilot",
-    "ariaLabel": "Læs vores Trustpilot-anmeldelser"
+    "ariaLabel": "Læs vores Trustpilot-anmeldelser",
+    "customersSay": "Vores kunder siger",
+    "excellent": "Fremragende"
   },
   "auth": {
     "signIn": {

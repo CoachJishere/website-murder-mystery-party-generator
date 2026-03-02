@@ -169,7 +169,9 @@
   },
   "trustpilot": {
     "linkText": "See our reviews on Trustpilot",
-    "ariaLabel": "Read our Trustpilot reviews"
+    "ariaLabel": "Read our Trustpilot reviews",
+    "customersSay": "Our customers say",
+    "excellent": "Excellent"
   },
   "auth": {
     "signIn": {

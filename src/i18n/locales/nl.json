@@ -169,7 +169,9 @@
   },
   "trustpilot": {
     "linkText": "Bekijk onze beoordelingen op Trustpilot",
-    "ariaLabel": "Lees onze Trustpilot-beoordelingen"
+    "ariaLabel": "Lees onze Trustpilot-beoordelingen",
+    "customersSay": "Onze klanten zeggen",
+    "excellent": "Uitstekend"
   },
   "auth": {
     "signIn": {

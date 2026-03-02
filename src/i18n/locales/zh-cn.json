@@ -169,7 +169,9 @@
   },
   "trustpilot": {
     "linkText": "查看我们在Trustpilot上的评价",
-    "ariaLabel": "阅读我们的Trustpilot评价"
+    "ariaLabel": "阅读我们的Trustpilot评价",
+    "customersSay": "客户评价",
+    "excellent": "优秀"
   },
   "auth": {
     "signIn": {
