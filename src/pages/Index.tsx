@@ -12,6 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from 'react-i18next';
 import { SkipToContent } from "@/components/SkipToContent";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import TrustpilotBadge from "@/components/TrustpilotBadge";
 
 const Index = () => {
   const { isAuthenticated } = useAuth();
@@ -124,7 +125,12 @@ const Index = () => {
             
             {/* Testimonials */}
             <TestimonialsSection />
-            
+
+            {/* Trustpilot Badge */}
+            <div className="py-4 px-2 sm:px-4 text-center">
+              <TrustpilotBadge />
+            </div>
+
             {/* FAQ Section */}
             <section className="py-6 sm:py-8 bg-card px-2 sm:px-4 md:px-6 lg:px-8">
               <div className="w-full max-w-7xl mx-auto">

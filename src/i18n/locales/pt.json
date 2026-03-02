@@ -167,6 +167,10 @@
     },
     "copyright": "Mystery Maker, Inc. Todos os direitos reservados."
   },
+  "trustpilot": {
+    "linkText": "Veja nossas avaliações no Trustpilot",
+    "ariaLabel": "Leia nossas avaliações no Trustpilot"
+  },
   "auth": {
     "signIn": {
       "title": "Bem-vindo de Volta",

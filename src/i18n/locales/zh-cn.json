@@ -167,6 +167,10 @@
     },
     "copyright": "Mystery Maker, Inc. 保留所有权利。"
   },
+  "trustpilot": {
+    "linkText": "查看我们在Trustpilot上的评价",
+    "ariaLabel": "阅读我们的Trustpilot评价"
+  },
   "auth": {
     "signIn": {
       "title": "欢迎回来",

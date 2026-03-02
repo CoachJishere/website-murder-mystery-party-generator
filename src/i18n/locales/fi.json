@@ -167,6 +167,10 @@
     },
     "copyright": "Mystery Maker, Inc. Kaikki oikeudet pidätetään."
   },
+  "trustpilot": {
+    "linkText": "Katso arvostelumme Trustpilotissa",
+    "ariaLabel": "Lue Trustpilot-arvostelumme"
+  },
   "auth": {
     "signIn": {
       "title": "Tervetuloa takaisin",

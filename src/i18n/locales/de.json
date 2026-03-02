@@ -167,6 +167,10 @@
     },
     "copyright": "Mystery Maker, Inc. Alle Rechte vorbehalten."
   },
+  "trustpilot": {
+    "linkText": "Unsere Bewertungen auf Trustpilot ansehen",
+    "ariaLabel": "Unsere Trustpilot-Bewertungen lesen"
+  },
   "auth": {
     "signIn": {
       "title": "Willkommen zurück",

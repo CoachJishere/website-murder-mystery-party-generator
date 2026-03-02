@@ -167,6 +167,10 @@
     },
     "copyright": "Mystery Maker, Inc. All rights reserved."
   },
+  "trustpilot": {
+    "linkText": "Trustpilot에서 리뷰 보기",
+    "ariaLabel": "Trustpilot 리뷰 읽기"
+  },
   "auth": {
     "signIn": {
       "title": "환영합니다",

@@ -167,6 +167,10 @@
     },
     "copyright": "Mystery Maker, Inc. All rights reserved."
   },
+  "trustpilot": {
+    "linkText": "Se våra omdömen på Trustpilot",
+    "ariaLabel": "Läs våra Trustpilot-omdömen"
+  },
   "auth": {
     "signIn": {
       "title": "Welcome Back",

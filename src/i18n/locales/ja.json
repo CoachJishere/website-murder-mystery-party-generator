@@ -167,6 +167,10 @@
     },
     "copyright": "Mystery Maker, Inc. All rights reserved."
   },
+  "trustpilot": {
+    "linkText": "Trustpilotでのレビューを見る",
+    "ariaLabel": "Trustpilotのレビューを読む"
+  },
   "auth": {
     "signIn": {
       "title": "お帰りなさい",
