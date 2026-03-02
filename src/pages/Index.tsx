@@ -81,7 +81,7 @@ const Index = () => {
 
         {/* Trustpilot Badge - above video demo */}
         {!isAuthenticated && (
-          <div className="py-4 px-2 sm:px-4 text-center">
+          <div className="py-5 px-2 sm:px-4 text-center bg-muted/60 border-y border-border/40">
             <TrustpilotBadge />
           </div>
         )}
