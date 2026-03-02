@@ -79,6 +79,13 @@ const Index = () => {
           <Hero />
         </div>
 
+        {/* Trustpilot Badge - above video demo */}
+        {!isAuthenticated && (
+          <div className="py-4 px-2 sm:px-4 text-center">
+            <TrustpilotBadge />
+          </div>
+        )}
+
         {/* Video Demo Section - Only for non-authenticated users */}
         {!isAuthenticated && (
           <section className="py-6 sm:py-8 px-2 sm:px-4 md:px-6 lg:px-8">
@@ -125,11 +132,6 @@ const Index = () => {
             
             {/* Testimonials */}
             <TestimonialsSection />
-
-            {/* Trustpilot Badge */}
-            <div className="py-4 px-2 sm:px-4 text-center">
-              <TrustpilotBadge />
-            </div>
 
             {/* FAQ Section */}
             <section className="py-6 sm:py-8 bg-card px-2 sm:px-4 md:px-6 lg:px-8">
