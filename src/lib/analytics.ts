@@ -41,6 +41,10 @@ export const trackEvent = (action: string, params: Record<string, any> = {}) => 
 
 // Track sign up
 export const trackSignUp = (method: string) => {
+  console.log('🔍 trackSignUp called with method:', method);
+  console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
+  console.log('🔍 isProduction:', process.env.NODE_ENV === 'production');
+  console.log('🔍 typeof gtag:', typeof gtag);
   trackEvent('sign_up', { method });
 };
 
