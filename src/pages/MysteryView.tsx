@@ -489,8 +489,11 @@ const MysteryView = () => {
                 <RefreshCw className="h-3 w-3 mr-1" />
                 Resume Generation
               </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                Still having trouble? <a href="/support" className="underline text-primary hover:text-primary/80">Contact support</a>
+              </p>
             </div>,
-            { 
+            {
               duration: 15000,
               id: 'mystery-failed-resumable'
             }
@@ -512,8 +515,11 @@ const MysteryView = () => {
                 <RefreshCw className="h-3 w-3 mr-1" />
                 Try Again
               </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                Still having trouble? <a href="/support" className="underline text-primary hover:text-primary/80">Contact support</a>
+              </p>
             </div>,
-            { 
+            {
               duration: 15000,
               id: 'mystery-failed-retry'
             }
@@ -871,6 +877,12 @@ const MysteryView = () => {
           )}>
             <strong>Auto-refresh:</strong> This page automatically checks for updates every 15 seconds.
             {lastUpdate && ` Last update: ${lastUpdate.toLocaleTimeString()}`}
+          </p>
+          <p className={cn(
+            "text-sm text-muted-foreground",
+            isMobile && "text-xs"
+          )}>
+            Having issues? <a href="/support" className="underline text-primary hover:text-primary/80">Contact support</a>
           </p>
         </CardContent>
       </Card>
