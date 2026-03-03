@@ -305,3 +305,6 @@ verify_jwt = false
 
 [functions.mystery-webhook-trigger]
 verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false

@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { toast } from "sonner";
 import { Mail, Lock, ArrowRight, AlertCircle, Check } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { trackLogin } from "@/lib/analytics";
 import { useTranslation } from "react-i18next";
 
 const SignIn = () => {
@@ -50,6 +51,7 @@ const SignIn = () => {
       
       if (data?.user) {
         console.log("Signin successful:", data);
+        trackLogin('email');
         toast.success("Signed in successfully!");
         navigate("/dashboard");
       }
@@ -85,7 +87,9 @@ const SignIn = () => {
         return;
       }
 
-      // The redirect will happen automatically
+      if (data?.url) {
+        trackLogin('google');
+      }
       if (!data?.url) {
         toast.error("Failed to initiate Google sign-in.");
         setSocialLoading(null);

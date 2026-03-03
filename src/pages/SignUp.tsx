@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Mail, User, Lock, ArrowRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { trackSignUp } from "@/lib/analytics";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useTranslation } from "react-i18next";
@@ -63,6 +64,7 @@ const SignUp = () => {
       }
 
       console.log("Sign up successful:", data);
+      trackSignUp('email');
 
       // Allow users to access dashboard immediately
       // Send verification email in background, but don't block access
@@ -101,8 +103,9 @@ const SignUp = () => {
         console.error("Google sign in error:", error);
         toast.error(`Failed to sign in with Google: ${error.message}`);
         setSocialLoading(null);
+      } else {
+        trackSignUp('google');
       }
-      // Page will redirect if successful
     } catch (error: any) {
       console.error("Google sign in catch block:", error);
       toast.error(`An unexpected error occurred: ${error.message || "Unknown error"}`);

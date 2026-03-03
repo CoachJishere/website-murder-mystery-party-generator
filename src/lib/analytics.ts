@@ -39,6 +39,16 @@ export const trackEvent = (action: string, params: Record<string, any> = {}) => 
   }
 };
 
+// Track sign up
+export const trackSignUp = (method: string) => {
+  trackEvent('sign_up', { method });
+};
+
+// Track login
+export const trackLogin = (method: string) => {
+  trackEvent('login', { method });
+};
+
 // Track form submissions
 export const trackFormSubmission = (formName: string, data: Record<string, any> = {}) => {
   trackEvent('form_submission', {
