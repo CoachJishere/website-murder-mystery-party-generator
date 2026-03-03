@@ -34,6 +34,8 @@ export default defineConfig(({ mode }) => ({
   },
   // Define environment variables for client-side code
   define: {
+    // Set NODE_ENV for production/development detection
+    'process.env.NODE_ENV': JSON.stringify(mode),
     // Ensure process.env is defined for libraries that expect it
     'process.env': {}
   },
