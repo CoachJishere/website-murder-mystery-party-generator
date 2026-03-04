@@ -131,9 +131,6 @@ const MysteryPreviewCard = ({ mystery, parsedDetails }: MysteryPreviewCardProps)
               {parsedDetails.characters.map((char, i) => (
                 <div key={i} className="leading-relaxed">
                   <span className="font-medium">{i + 1}. {char.name}</span>
-                  {char.description && (
-                    <span className="text-muted-foreground"> — {char.description}</span>
-                  )}
                 </div>
               ))}
             </div>
