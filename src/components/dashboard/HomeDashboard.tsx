@@ -485,7 +485,7 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               {totalMysteriesCount === 0
                 ? t('homeDashboard.empty.firstMystery.description', {
-                    defaultValue: 'Design a custom murder mystery party in minutes using AI. Your guests will love it!'
+                    defaultValue: 'Design a custom murder mystery party in minutes using AI.'
                   })
                 : t('homeDashboard.empty.noResults.description', {
                     defaultValue: 'Try adjusting your search or create a new mystery'

@@ -72,6 +72,44 @@ const AuthCallback = () => {
             email: data.session.user.email,
             provider: data.session.user.app_metadata?.provider
           });
+
+          // Check if this is a new user by checking profile creation
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('welcome_email_sent')
+            .eq('id', data.session.user.id)
+            .single();
+
+          // Send welcome email if not already sent
+          if (profile && !profile.welcome_email_sent) {
+            try {
+              const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
+                body: {
+                  user_email: data.session.user.email,
+                  user_name: data.session.user.user_metadata?.name || data.session.user.email?.split('@')[0]
+                }
+              });
+
+              if (!emailError) {
+                // Mark welcome email as sent
+                await supabase
+                  .from('profiles')
+                  .update({
+                    welcome_email_sent: true,
+                    welcome_email_sent_at: new Date().toISOString()
+                  })
+                  .eq('id', data.session.user.id);
+
+                console.log("Welcome email sent successfully");
+              } else {
+                console.error("Failed to send welcome email:", emailError);
+              }
+            } catch (error) {
+              // Don't block user flow if email fails
+              console.error("Error sending welcome email:", error);
+            }
+          }
+
           toast.success("Successfully signed in with Google!");
           navigate("/dashboard");
         } else {

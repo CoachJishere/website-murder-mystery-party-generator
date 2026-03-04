@@ -12,10 +12,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { ChevronDown } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 const AuthButton = () => {
   const { user, isAuthenticated, signOut, isPublic, setIsPublic } = useAuth();
   const [open, setOpen] = useState(false);
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (isOpen) {
+      trackEvent('profile_menu_opened', { location: 'header' });
+    }
+  };
 
   if (!isAuthenticated) {
     return (
@@ -43,13 +52,16 @@ const AuthButton = () => {
         </Label>
       </div>
       
-      <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenu open={open} onOpenChange={handleOpenChange}>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="p-1 h-auto">
+          <Button
+            variant="outline"
+            className="h-11 px-3 gap-2 hover:bg-accent"
+          >
             {user?.avatar ? (
-              <img 
-                src={user.avatar} 
-                alt={user.name} 
+              <img
+                src={user.avatar}
+                alt={user.name}
                 className="h-8 w-8 rounded-full"
               />
             ) : (
@@ -57,6 +69,7 @@ const AuthButton = () => {
                 {user?.name?.charAt(0) || "U"}
               </div>
             )}
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">

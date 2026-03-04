@@ -1,16 +1,16 @@
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
+import AuthButton from "./AuthButton";
 import { useTranslation } from 'react-i18next';
 
 const Header = () => {
   const { isAuthenticated, user, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const toggleMenu = () => {
@@ -44,35 +44,7 @@ const Header = () => {
             {t('navigation.support')}
           </Link>
           <LanguageSwitcher />
-          {isAuthenticated ? (
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                {user?.avatar && (
-                  <img 
-                    src={user.avatar} 
-                    alt={user.name}
-                    className="w-8 h-8 rounded-full"
-                  />
-                )}
-                <span className="font-medium font-inter">{user?.name}</span>
-              </div>
-              <Button variant="outline" onClick={signOut} className="no-underline font-inter">
-                {t('navigation.signOut')}
-              </Button>
-              <Button asChild className="no-underline font-inter">
-                <Link to="/dashboard">{t('navigation.dashboard')}</Link>
-              </Button>
-            </div>
-          ) : (
-            <>
-              <Button asChild variant="outline" className="no-underline font-inter">
-                <Link to="/sign-in">{t('navigation.signIn')}</Link>
-              </Button>
-              <Button asChild className="no-underline font-inter">
-                <Link to="/sign-up">{t('navigation.signUp')}</Link>
-              </Button>
-            </>
-          )}
+          <AuthButton />
         </div>
 
         {/* Mobile Menu Button - Enhanced touch target */}
@@ -106,24 +78,32 @@ const Header = () => {
               <>
                 <div className="flex items-center space-x-3 py-3 border-b border-border">
                   {user?.avatar && (
-                    <img 
-                      src={user.avatar} 
+                    <img
+                      src={user.avatar}
                       alt={user.name}
                       className="w-8 h-8 rounded-full"
                     />
                   )}
                   <span className="font-medium text-sm font-inter">{user?.name}</span>
                 </div>
-                <Button 
-                  asChild 
-                  className="w-full h-12 no-underline text-base font-inter" 
+                <Button
+                  asChild
+                  className="w-full h-12 no-underline text-base font-inter"
                   onClick={toggleMenu}
                 >
                   <Link to="/dashboard">{t('navigation.dashboard')}</Link>
                 </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full h-12 no-underline text-base font-inter" 
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full h-12 no-underline text-base font-inter"
+                  onClick={toggleMenu}
+                >
+                  <Link to="/account">{t('navigation.account', 'Account Settings')}</Link>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full h-12 no-underline text-base font-inter"
                   onClick={() => {
                     signOut();
                     toggleMenu();
