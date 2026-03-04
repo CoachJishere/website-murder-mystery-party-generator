@@ -57,8 +57,12 @@ export const trackEvent = (action: string, params: Record<string, any> = {}) => 
       console.log('✅ Pushed to dataLayer directly:', {event: action, ...params});
     }
 
-    // Method 2: gtag function call
-    gtag('event', action, params);
+    // Method 2: gtag function call with explicit send_to
+    // This ensures events go to G-XGD48X4ZQS instead of being routed by GT tag
+    gtag('event', action, {
+      ...params,
+      send_to: GA_MEASUREMENT_ID,
+    });
 
     console.log('✅ gtag called successfully. dataLayer:', window.dataLayer);
   } else {
