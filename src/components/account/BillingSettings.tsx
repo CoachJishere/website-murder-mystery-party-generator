@@ -3,7 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 
 interface Purchase {
@@ -112,14 +112,6 @@ const BillingSettings = () => {
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
                     View Package
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => window.open(`https://billing.stripe.com/p/login/YOUR_STRIPE_PORTAL_ID`, '_blank')}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Receipt
                   </Button>
                 </div>
               </div>
