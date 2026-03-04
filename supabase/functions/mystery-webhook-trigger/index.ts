@@ -38,6 +38,8 @@ interface ExtractedCharacter {
 }
 
 // Primary extraction: regex-based (free, deterministic, <1ms)
+// Aggregates characters across ALL assistant messages (chronological order,
+// later messages overwrite earlier ones by name for refinements)
 function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | null {
   // Build regex to match any locale's character list header
   // Pattern: ## <Header> (N PLAYERS) or ## <Header>
@@ -54,19 +56,19 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
   // 1. Name - Description      (plain with dash)
   const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))\s*[-–—:]\s*(.+)/;
 
-  // Scan assistant messages in reverse (latest refinement wins)
+  // Scan assistant messages in CHRONOLOGICAL order so later refinements overwrite earlier versions
   const assistantMessages = messages
-    .filter((m: any) => m.role === 'assistant' || m.is_ai)
-    .reverse();
+    .filter((m: any) => m.role === 'assistant' || m.is_ai);
 
   console.log(`[CharExtract] Scanning ${assistantMessages.length} assistant messages (of ${messages.length} total)`);
+
+  // Aggregate characters across ALL messages using a Map (keyed by lowercase name)
+  const charMap = new Map<string, ExtractedCharacter>();
 
   for (const msg of assistantMessages) {
     const content = msg.content || '';
     const headerMatch = content.match(sectionHeaderRegex);
     if (!headerMatch) {
-      // Log first 80 chars of each skipped message for debugging
-      console.log(`[CharExtract] No header match in message (${content.length} chars): "${content.substring(0, 80)}..."`);
       continue;
     }
 
@@ -74,7 +76,7 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
     // Found a character list header — parse the numbered lines after it
     const afterHeader = content.substring(headerMatch.index! + headerMatch[0].length);
     const lines = afterHeader.split('\n');
-    const characters: ExtractedCharacter[] = [];
+    let foundCharsInSection = false;
 
     for (const line of lines) {
       const trimmed = line.trim();
@@ -84,28 +86,33 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
       if (charMatch) {
         const name = (charMatch[1] || charMatch[2]).trim();
         const description = charMatch[3].trim();
-        characters.push({ name, description });
-      } else if (characters.length > 0) {
-        // Hit a non-matching line after we started collecting — section is over
+        charMap.set(name.toLowerCase(), { name, description });
+        foundCharsInSection = true;
+      } else if (foundCharsInSection) {
+        // Hit a non-matching line after collecting — this section is over, but continue to next message
         break;
       }
     }
-
-    if (characters.length >= 4 && characters.length <= 32) {
-      console.log(`[CharExtract] PRIMARY regex extracted ${characters.length} characters: ${characters.map(c => c.name).join(', ')}`);
-      return characters;
-    } else {
-      console.log(`[CharExtract] Header found but only ${characters.length} characters parsed (need 4-32)`);
-    }
   }
 
-  console.log(`[CharExtract] Primary pattern failed, trying secondary (consecutive bold lines)...`);
+  if (charMap.size >= 4 && charMap.size <= 32) {
+    const characters = Array.from(charMap.values());
+    console.log(`[CharExtract] PRIMARY regex aggregated ${characters.length} characters across messages: ${characters.map(c => c.name).join(', ')}`);
+    return characters;
+  } else if (charMap.size > 0) {
+    console.log(`[CharExtract] Primary found ${charMap.size} characters (need 4-32), trying secondary...`);
+  }
+
+  console.log(`[CharExtract] Primary pattern insufficient, trying secondary (consecutive bold lines)...`);
   // Secondary pattern: 4+ consecutive **Name** - Description lines (no section header)
+  // Also aggregates across all messages
   const boldCharRegex = /^\*\*(.+?)\*\*\s*[-–—:]\s*(.+)/;
+  const secondaryMap = new Map<string, ExtractedCharacter>();
+
   for (const msg of assistantMessages) {
     const content = msg.content || '';
     const lines = content.split('\n');
-    const characters: ExtractedCharacter[] = [];
+    const batch: ExtractedCharacter[] = [];
 
     for (const line of lines) {
       const trimmed = line.trim();
@@ -116,23 +123,32 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
       if (numberedMatch) {
         const name = (numberedMatch[1] || numberedMatch[2]).trim();
         const description = numberedMatch[3].trim();
-        characters.push({ name, description });
+        batch.push({ name, description });
       } else if (boldMatch) {
-        characters.push({ name: boldMatch[1].trim(), description: boldMatch[2].trim() });
-      } else if (characters.length > 0 && trimmed !== '') {
-        // Non-matching non-empty line — check if we have enough
-        if (characters.length >= 4) {
-          console.log(`Regex (secondary) extracted ${characters.length} characters`);
-          return characters;
+        batch.push({ name: boldMatch[1].trim(), description: boldMatch[2].trim() });
+      } else if (batch.length > 0 && trimmed !== '') {
+        // Non-matching non-empty line — flush batch if 4+
+        if (batch.length >= 4) {
+          for (const c of batch) {
+            secondaryMap.set(c.name.toLowerCase(), c);
+          }
         }
-        characters.length = 0; // Reset and keep scanning
+        batch.length = 0;
       }
     }
 
-    if (characters.length >= 4 && characters.length <= 32) {
-      console.log(`Regex (secondary) extracted ${characters.length} characters`);
-      return characters;
+    // Flush remaining batch from this message
+    if (batch.length >= 4) {
+      for (const c of batch) {
+        secondaryMap.set(c.name.toLowerCase(), c);
+      }
     }
+  }
+
+  if (secondaryMap.size >= 4 && secondaryMap.size <= 32) {
+    const characters = Array.from(secondaryMap.values());
+    console.log(`[CharExtract] SECONDARY regex aggregated ${characters.length} characters`);
+    return characters;
   }
 
   console.log(`[CharExtract] Both regex patterns failed — no characters extracted`);

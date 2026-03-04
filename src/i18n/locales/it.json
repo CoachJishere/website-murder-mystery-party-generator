@@ -939,7 +939,19 @@
         "Istruzioni del personaggio per ogni giocatore",
         "Carte prova e materiali stampabili",
         "Script di gioco completo e cronologia"
-      ]
+      ],
+      "charactersTitle": "I Tuoi Personaggi ({{count}})",
+      "noCharactersWarning": "Non siamo riusciti a rilevare la lista dei personaggi. Torna indietro e verifica che il design del tuo mistero includa tutti i personaggi.",
+      "mysteryStyle": {
+        "character": "Basato sui personaggi",
+        "detective": "Stile detective"
+      },
+      "scriptType": {
+        "full": "Script completi",
+        "both": "Script completi + riassunti",
+        "summary": "Script riassunti"
+      },
+      "hasAccomplice": "Include complice"
     }
   },
   "mysteryPackage": {

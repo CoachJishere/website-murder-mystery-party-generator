@@ -957,7 +957,19 @@
         "Guías de personajes para cada jugador",
         "Tarjetas de evidencia y materiales imprimibles",
         "Guion de juego completo y cronología"
-      ]
+      ],
+      "charactersTitle": "Tus Personajes ({{count}})",
+      "noCharactersWarning": "No pudimos detectar tu lista de personajes. Por favor, regresa y verifica que el diseño de tu misterio incluya todos los personajes.",
+      "mysteryStyle": {
+        "character": "Basado en personajes",
+        "detective": "Estilo detective"
+      },
+      "scriptType": {
+        "full": "Guiones completos",
+        "both": "Guiones completos + resumidos",
+        "summary": "Guiones resumidos"
+      },
+      "hasAccomplice": "Incluye cómplice"
     }
   },
   "mysteryPackage": {

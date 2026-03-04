@@ -939,7 +939,19 @@
         "Personagegidsen voor elke speler",
         "Bewijskaarten en printbaar materiaal",
         "Volledig gameplay script en tijdlijn"
-      ]
+      ],
+      "charactersTitle": "Jouw Personages ({{count}})",
+      "noCharactersWarning": "We konden je personagelijst niet detecteren. Ga terug en controleer of je mysterieontwerp alle personages bevat.",
+      "mysteryStyle": {
+        "character": "Karaktergedreven",
+        "detective": "Detectivestijl"
+      },
+      "scriptType": {
+        "full": "Volledige scripts",
+        "both": "Volledige + samengevatte scripts",
+        "summary": "Samengevatte scripts"
+      },
+      "hasAccomplice": "Inclusief medeplichtige"
     }
   },
   "mysteryPackage": {

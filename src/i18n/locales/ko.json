@@ -930,7 +930,19 @@
         "각 플레이어를 위한 캐릭터 가이드",
         "증거 카드 및 인쇄 가능한 자료",
         "전체 게임플레이 스크립트 및 타임라인"
-      ]
+      ],
+      "charactersTitle": "캐릭터 ({{count}})",
+      "noCharactersWarning": "캐릭터 목록을 감지할 수 없었습니다. 돌아가서 미스터리 디자인에 모든 캐릭터가 포함되어 있는지 확인해 주세요.",
+      "mysteryStyle": {
+        "character": "캐릭터 중심",
+        "detective": "탐정 스타일"
+      },
+      "scriptType": {
+        "full": "전체 스크립트",
+        "both": "전체 + 요약 스크립트",
+        "summary": "요약 스크립트"
+      },
+      "hasAccomplice": "공범 포함"
     }
   },
   "mysteryView": {

@@ -930,7 +930,19 @@
         "Character guides for each player",
         "Evidence cards and printable materials",
         "Full gameplay script and timeline"
-      ]
+      ],
+      "charactersTitle": "Dine Karakterer ({{count}})",
+      "noCharactersWarning": "Vi kunne ikke finde din karakterliste. Gå venligst tilbage og bekræft, at dit mysterie-design inkluderer alle karakterer.",
+      "mysteryStyle": {
+        "character": "Karakterdrevet",
+        "detective": "Detektivstil"
+      },
+      "scriptType": {
+        "full": "Fulde manuskripter",
+        "both": "Fulde + opsummerede manuskripter",
+        "summary": "Opsummerede manuskripter"
+      },
+      "hasAccomplice": "Inkluderer medskyldig"
     }
   },
   "mysteryView": {

@@ -939,7 +939,19 @@
         "Hahmo-ohjeet jokaiselle pelaajalle",
         "Todistekortit ja tulostettavat materiaalit",
         "Täydellinen pelikäsikirjoitus ja aikajana"
-      ]
+      ],
+      "charactersTitle": "Hahmosi ({{count}})",
+      "noCharactersWarning": "Emme löytäneet hahmoluetteloasi. Palaa takaisin ja varmista, että mysteerisi sisältää kaikki hahmot.",
+      "mysteryStyle": {
+        "character": "Hahmopohjainen",
+        "detective": "Etsivä-tyylinen"
+      },
+      "scriptType": {
+        "full": "Täydet käsikirjoitukset",
+        "both": "Täydet + tiivistetyt käsikirjoitukset",
+        "summary": "Tiivistetyt käsikirjoitukset"
+      },
+      "hasAccomplice": "Sisältää rikoskumppanin"
     }
   },
   "mysteryPackage": {

@@ -251,7 +251,10 @@ const MysteryPurchase = () => {
           theme: conversation.theme || "",
           premise: "",
           purchase_date: conversation.purchase_date,
-          is_purchased: conversation.is_paid
+          is_purchased: conversation.is_paid,
+          has_accomplice: conversation.has_accomplice ?? false,
+          script_type: conversation.script_type || 'full',
+          mystery_style: conversation.mystery_style || 'character',
         };
 
         setMystery(mysteryData);
@@ -296,15 +299,27 @@ const MysteryPurchase = () => {
           }
 
           if (detailedMessage) {
+            // Aggregate characters across ALL AI messages (not just one)
+            // to catch characters spread across multiple messages/pages
+            const charMap = new Map<string, Character>();
+            for (const msg of aiMessages) {
+              const chars = parseCharacters(msg.content);
+              for (const c of chars) {
+                charMap.set(c.name.toLowerCase(), c);
+              }
+            }
+            const allCharacters = Array.from(charMap.values());
+
             const details: ParsedMysteryDetails = {
               premise: extractPremise(detailedMessage.content),
               overview: extractGameOverview(detailedMessage.content),
-              characters: parseCharacters(detailedMessage.content),
+              characters: allCharacters.length > 0 ? allCharacters : parseCharacters(detailedMessage.content),
               evidence: parseEvidence(detailedMessage.content)
             };
-            
+
             setParsedDetails(details);
-            console.log("Extracted details:", details); // Debug log
+            console.log("Extracted details:", details);
+            console.log(`Aggregated ${allCharacters.length} characters across ${aiMessages.length} AI messages`);
           }
         }
       } catch (error) {

@@ -974,7 +974,19 @@
         "Guias de personagens para cada jogador",
         "Cartões de evidências e materiais para impressão",
         "Roteiro completo do jogo e linha do tempo"
-      ]
+      ],
+      "charactersTitle": "Seus Personagens ({{count}})",
+      "noCharactersWarning": "Não conseguimos detectar sua lista de personagens. Volte e verifique se o design do seu mistério inclui todos os personagens.",
+      "mysteryStyle": {
+        "character": "Baseado em personagens",
+        "detective": "Estilo detetive"
+      },
+      "scriptType": {
+        "full": "Scripts completos",
+        "both": "Scripts completos + resumidos",
+        "summary": "Scripts resumidos"
+      },
+      "hasAccomplice": "Inclui cúmplice"
     }
   },
   "mysteryPackage": {

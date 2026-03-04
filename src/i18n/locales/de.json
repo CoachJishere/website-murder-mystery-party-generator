@@ -939,7 +939,19 @@
         "Charakteranleitungen für jeden Spieler",
         "Beweiskarten und druckbare Materialien",
         "Vollständiges Spielskript und Zeitleiste"
-      ]
+      ],
+      "charactersTitle": "Ihre Charaktere ({{count}})",
+      "noCharactersWarning": "Wir konnten Ihre Charakterliste nicht erkennen. Bitte gehen Sie zurück und überprüfen Sie, ob Ihr Mysteriendesign alle Charaktere enthält.",
+      "mysteryStyle": {
+        "character": "Charakterbasiert",
+        "detective": "Detektiv-Stil"
+      },
+      "scriptType": {
+        "full": "Vollständige Skripte",
+        "both": "Vollständige + Zusammenfassungen",
+        "summary": "Zusammenfassungen"
+      },
+      "hasAccomplice": "Mit Komplize"
     }
   },
   "mysteryPackage": {

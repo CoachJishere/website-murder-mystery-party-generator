@@ -930,7 +930,19 @@
         "Character guides for each player",
         "Evidence cards and printable materials",
         "Full gameplay script and timeline"
-      ]
+      ],
+      "charactersTitle": "Your Characters ({{count}})",
+      "noCharactersWarning": "We couldn't detect your character list. Please go back and verify your mystery design includes all characters.",
+      "mysteryStyle": {
+        "character": "Character-driven",
+        "detective": "Detective-style"
+      },
+      "scriptType": {
+        "full": "Full scripts",
+        "both": "Full + summary scripts",
+        "summary": "Summary scripts"
+      },
+      "hasAccomplice": "Includes accomplice"
     }
   },
   "hostAccess": {

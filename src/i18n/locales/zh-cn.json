@@ -974,7 +974,19 @@
         "每个玩家的角色指南",
         "证据和可打印材料",
         "完整游戏剧本和时间线"
-      ]
+      ],
+      "charactersTitle": "您的角色 ({{count}})",
+      "noCharactersWarning": "我们无法检测到您的角色列表。请返回并验证您的谜案设计包含所有角色。",
+      "mysteryStyle": {
+        "character": "角色驱动",
+        "detective": "侦探风格"
+      },
+      "scriptType": {
+        "full": "完整剧本",
+        "both": "完整 + 摘要剧本",
+        "summary": "摘要剧本"
+      },
+      "hasAccomplice": "包含同谋"
     }
   },
   "mysteryPackage": {

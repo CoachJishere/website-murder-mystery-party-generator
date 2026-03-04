@@ -930,7 +930,19 @@
         "Character guides for each player",
         "Evidence cards and printable materials",
         "Full gameplay script and timeline"
-      ]
+      ],
+      "charactersTitle": "Dina Karaktärer ({{count}})",
+      "noCharactersWarning": "Vi kunde inte hitta din karaktärslista. Gå tillbaka och kontrollera att din mysteriedesign inkluderar alla karaktärer.",
+      "mysteryStyle": {
+        "character": "Karaktärsdriven",
+        "detective": "Detektivstil"
+      },
+      "scriptType": {
+        "full": "Fullständiga manus",
+        "both": "Fullständiga + sammanfattade manus",
+        "summary": "Sammanfattade manus"
+      },
+      "hasAccomplice": "Inkluderar medbrottsling"
     }
   },
   "mysteryView": {

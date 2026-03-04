@@ -61,6 +61,9 @@ export interface Mystery {
   has_complete_package?: boolean;
   is_completed?: boolean;
   needs_package_generation?: boolean;
+  has_accomplice?: boolean;
+  script_type?: string;
+  mystery_style?: string;
 }
 
 export interface MysteryCharacter {
