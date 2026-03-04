@@ -2,6 +2,11 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 declare const gtag: any; // Will be available via the script in index.html
+declare global {
+  interface Window {
+    dataLayer: any[];
+  }
+}
 
 const GA_MEASUREMENT_ID = 'G-XGD48X4ZQS';
 const isProduction = process.env.NODE_ENV === 'production';
@@ -41,11 +46,12 @@ export const trackEvent = (action: string, params: Record<string, any> = {}) => 
 
   if (isProduction && typeof window !== 'undefined' && typeof gtag === 'function') {
     console.log('✅ Calling gtag with:', action, params);
-    gtag('event', action, {
-      ...params,
-      send_to: GA_MEASUREMENT_ID,
-    });
-    console.log('✅ gtag called successfully');
+
+    // Try calling gtag without send_to to send to all configured properties
+    gtag('event', action, params);
+
+    // Also log the dataLayer to see what's actually being pushed
+    console.log('✅ gtag called successfully. dataLayer:', window.dataLayer);
   } else {
     console.log('❌ Skipping gtag. isProduction:', isProduction, 'window:', typeof window, 'gtag:', typeof gtag);
   }
