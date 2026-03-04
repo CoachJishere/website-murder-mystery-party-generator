@@ -11,9 +11,6 @@ declare global {
 const GA_MEASUREMENT_ID = 'G-XGD48X4ZQS';
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Debug: Log at module load time
-console.log('📊 Analytics module loaded. isProduction:', isProduction, 'NODE_ENV:', process.env.NODE_ENV);
-
 // Initialize GA4
 export const initGA = () => {
   if (isProduction && typeof window !== 'undefined') {
@@ -39,14 +36,7 @@ export const trackPageView = (path: string) => {
 
 // Track custom events
 export const trackEvent = (action: string, params: Record<string, any> = {}) => {
-  console.log('🎯 trackEvent called:', action, params);
-  console.log('🎯 isProduction (module const):', isProduction);
-  console.log('🎯 typeof window:', typeof window);
-  console.log('🎯 typeof gtag:', typeof gtag);
-
   if (isProduction && typeof window !== 'undefined' && typeof gtag === 'function') {
-    console.log('✅ Calling gtag with:', action, params);
-
     // Try both methods to ensure the event is sent
     // Method 1: Direct dataLayer push
     if (window.dataLayer) {
@@ -54,7 +44,6 @@ export const trackEvent = (action: string, params: Record<string, any> = {}) => 
         event: action,
         ...params
       });
-      console.log('✅ Pushed to dataLayer directly:', {event: action, ...params});
     }
 
     // Method 2: gtag function call with explicit send_to
@@ -63,19 +52,11 @@ export const trackEvent = (action: string, params: Record<string, any> = {}) => 
       ...params,
       send_to: GA_MEASUREMENT_ID,
     });
-
-    console.log('✅ gtag called successfully. dataLayer:', window.dataLayer);
-  } else {
-    console.log('❌ Skipping gtag. isProduction:', isProduction, 'window:', typeof window, 'gtag:', typeof gtag);
   }
 };
 
 // Track sign up
 export const trackSignUp = (method: string) => {
-  console.log('🔍 trackSignUp called with method:', method);
-  console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
-  console.log('🔍 isProduction:', process.env.NODE_ENV === 'production');
-  console.log('🔍 typeof gtag:', typeof gtag);
   trackEvent('sign_up', { method });
 };
 
