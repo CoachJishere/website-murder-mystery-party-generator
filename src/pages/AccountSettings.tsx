@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import ProfileSettings from "@/components/account/ProfileSettings";
 import PasswordSettings from "@/components/account/PasswordSettings";
 import DeleteAccount from "@/components/account/DeleteAccount";
+import BillingSettings from "@/components/account/BillingSettings";
 
 interface UserMetadata {
   name?: string;
@@ -61,20 +62,25 @@ const AccountSettings = () => {
           <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
           
           <Tabs defaultValue="profile">
-            <TabsList className="mb-8 grid w-full grid-cols-2 md:w-auto md:inline-flex">
+            <TabsList className="mb-8 grid w-full grid-cols-3 md:w-auto md:inline-flex">
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="security">Security</TabsTrigger>
+              <TabsTrigger value="billing">Billing</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="profile">
               <ProfileSettings initialName={name} email={email} />
             </TabsContent>
-            
+
             <TabsContent value="security">
               <div className="space-y-8">
                 <PasswordSettings email={email} />
                 <DeleteAccount onDeleteAccount={handleDeleteAccount} />
               </div>
+            </TabsContent>
+
+            <TabsContent value="billing">
+              <BillingSettings />
             </TabsContent>
           </Tabs>
         </div>
