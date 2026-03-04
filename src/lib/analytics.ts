@@ -47,10 +47,19 @@ export const trackEvent = (action: string, params: Record<string, any> = {}) => 
   if (isProduction && typeof window !== 'undefined' && typeof gtag === 'function') {
     console.log('✅ Calling gtag with:', action, params);
 
-    // Try calling gtag without send_to to send to all configured properties
+    // Try both methods to ensure the event is sent
+    // Method 1: Direct dataLayer push
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: action,
+        ...params
+      });
+      console.log('✅ Pushed to dataLayer directly:', {event: action, ...params});
+    }
+
+    // Method 2: gtag function call
     gtag('event', action, params);
 
-    // Also log the dataLayer to see what's actually being pushed
     console.log('✅ gtag called successfully. dataLayer:', window.dataLayer);
   } else {
     console.log('❌ Skipping gtag. isProduction:', isProduction, 'window:', typeof window, 'gtag:', typeof gtag);
