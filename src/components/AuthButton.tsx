@@ -66,14 +66,11 @@ const AuthButton = () => {
           </div>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link to="/dashboard" className="cursor-pointer">Dashboard</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
             <Link to="/account" className="cursor-pointer">Account Settings</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem 
-            className="cursor-pointer text-red-600 focus:text-red-600" 
+          <DropdownMenuItem
+            className="cursor-pointer text-red-600 focus:text-red-600"
             onClick={() => {
               signOut();
               setOpen(false);
