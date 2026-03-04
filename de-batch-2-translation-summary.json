@@ -1,0 +1,69 @@
+{
+  "batch": "Batch 2 (Posts 11-20)",
+  "startTime": "2026-02-28T01:05:08.075Z",
+  "posts": [
+    {
+      "number": 11,
+      "title": "Unique Pirate Murder Mystery Plot Ideas",
+      "slug": "unique-pirate-murder-mystery-plot-ideas",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "number": 12,
+      "title": "How to Fix Confusing Murder Mystery Clues",
+      "slug": "how-to-fix-confusing-murder-mystery-clues",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "number": 13,
+      "title": "5 Renaissance Murder Mystery Party Themes",
+      "slug": "5-renaissance-murder-mystery-party-themes",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "number": 14,
+      "title": "How to Host a Space Station Murder Mystery",
+      "slug": "how-to-host-a-space-station-murder-mystery",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "number": 15,
+      "title": "Innocent Bystander Murder Mystery Themes: Wrong Place, Wrong Time Scenarios",
+      "slug": "innocent-bystander-murder-mystery-themes-wrong-place-wrong-time",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "number": 16,
+      "title": "Ancient Egypt Murder Mystery Party Guide",
+      "slug": "ancient-egypt-murder-mystery-party-guide",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "number": 17,
+      "title": "Murder Mystery Party for Corporate Events",
+      "slug": "murder-mystery-party-for-corporate-events",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "number": 18,
+      "title": "Unique Circus Murder Mystery Plot Ideas",
+      "slug": "unique-circus-murder-mystery-plot-ideas",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "number": 19,
+      "title": "How to Fix Overly Complex Murder Mysteries",
+      "slug": "how-to-fix-overly-complex-murder-mysteries",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "number": 20,
+      "title": "5 Masquerade Ball Murder Mystery Themes That Will Leave Your Guests Speechless",
+      "slug": "5-masquerade-ball-murder-mystery-themes-that-will-leave-your-guests-speechless",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    }
+  ],
+  "totalPosts": 10,
+  "endTime": "2026-02-28T01:05:08.077Z",
+  "duration": "0s"
+}

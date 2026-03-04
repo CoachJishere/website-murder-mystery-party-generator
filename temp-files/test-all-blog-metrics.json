@@ -1,0 +1,42 @@
+{
+  "lastUpdated": "2026-02-16T12:54:35.226Z",
+  "testMode": true,
+  "totalPostsProcessed": 5,
+  "posts": [
+    {
+      "slug": "miten-jarjestaa-viktoriaaninen-murhamysteri-juhla",
+      "title": "Miten järjestää viktoriaaninen murhamysteeri-juhla?",
+      "language": "fi",
+      "url": "https://www.mysterymaker.party/blog/fi/miten-jarjestaa-viktoriaaninen-murhamysteri-juhla",
+      "note": "Test run - full metrics not fetched"
+    },
+    {
+      "slug": "hoe-organiseer-je-een-victoriaans-moordmysterie-feestje",
+      "title": "Hoe organiseer je een Victoriaans Moordmysterie-feestje?",
+      "language": "nl",
+      "url": "https://www.mysterymaker.party/blog/nl/hoe-organiseer-je-een-victoriaans-moordmysterie-feestje",
+      "note": "Test run - full metrics not fetched"
+    },
+    {
+      "slug": "hur-man-anordnar-ett-viktorianskt-mordmysterium-fest",
+      "title": "Hur man anordnar ett viktorianskt mordmysterium-fest",
+      "language": "sv",
+      "url": "https://www.mysterymaker.party/blog/sv/hur-man-anordnar-ett-viktorianskt-mordmysterium-fest",
+      "note": "Test run - full metrics not fetched"
+    },
+    {
+      "slug": "como-organizar-uma-festa-de-misterio-de-assassinato-vitoriana",
+      "title": "Como organizar uma festa de mistério de assassinato vitoriana",
+      "language": "pt",
+      "url": "https://www.mysterymaker.party/blog/pt/como-organizar-uma-festa-de-misterio-de-assassinato-vitoriana",
+      "note": "Test run - full metrics not fetched"
+    },
+    {
+      "slug": "빅토리아-시대-살인-미스터리-파티-주최하는-방법",
+      "title": "빅토리아 시대 살인 미스터리 파티 주최하는 방법",
+      "language": "ko",
+      "url": "https://www.mysterymaker.party/blog/ko/빅토리아-시대-살인-미스터리-파티-주최하는-방법",
+      "note": "Test run - full metrics not fetched"
+    }
+  ]
+}

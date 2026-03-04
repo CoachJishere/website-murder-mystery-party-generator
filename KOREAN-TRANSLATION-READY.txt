@@ -1,0 +1,93 @@
+═══════════════════════════════════════════════════════════════════════════════
+  KOREAN (KO) TRANSLATION - READY FOR EXECUTION
+═══════════════════════════════════════════════════════════════════════════════
+
+STATUS: ✓ All preparation complete - Ready to translate 9 missing posts
+
+CURRENT COVERAGE: 52/61 posts (85.2%)
+TARGET COVERAGE:  61/61 posts (100%)
+MISSING POSTS:    9 posts
+
+═══════════════════════════════════════════════════════════════════════════════
+  PREPARED FILES
+═══════════════════════════════════════════════════════════════════════════════
+
+1. ko-missing-posts.json           → List of 9 missing post IDs
+2. ko-batch-all-posts.json         → Full English content (126KB)
+3. translate-ko-complete-9.mjs     → Translation automation script
+4. KO-TRANSLATION-COMPLETION-PLAN.md → Detailed execution guide
+5. KO-COMPLETION-SUMMARY.md        → Comprehensive summary
+
+═══════════════════════════════════════════════════════════════════════════════
+  THE 9 MISSING POSTS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. 1920s Speakeasy Murder Mystery Party Guide
+2. Unique Film Noir Murder Mystery Plots
+3. Unique Archaeological Dig Murder Mystery
+4. How to Host a Superhero Murder Mystery Party
+5. Unique Underwater Murder Mystery Plots
+6. Murder Mystery Party for Dinner Parties
+7. Detective Murder Mystery Themes
+8. How to Fix Unrealistic Murder Mystery Plots
+9. How to Host a Victorian Murder Mystery Party
+
+═══════════════════════════════════════════════════════════════════════════════
+  QUICK START - TWO OPTIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+OPTION 1: Automated Translation (30 minutes)
+──────────────────────────────────────────────
+1. Update .env with valid ANTHROPIC_API_KEY
+2. Run: node translate-ko-complete-9.mjs
+3. Review generated ko-complete-post-*.md files
+4. Create insertion script (template provided)
+5. Verify: node audit-all-translations.mjs
+
+OPTION 2: Manual Translation (6-8 hours)
+─────────────────────────────────────────
+1. Open ko-batch-all-posts.json
+2. Translate each post following guidelines
+3. Save as ko-complete-post-1.md through ko-complete-post-9.md
+4. Create insertion script
+5. Verify completion
+
+═══════════════════════════════════════════════════════════════════════════════
+  KOREAN TRANSLATION REQUIREMENTS
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ Use Korean honorific form (존댓말)
+  - Endings: ~ㅂ니다/습니다, ~세요, ~ㅂ니까/습니까
+  - Formal, respectful tone throughout
+
+✓ Preserve E-E-A-T metadata
+  - Keep metadata headers in English
+  - Keep source titles in English
+  - Keep dates and author statements as-is
+
+✓ Content quality
+  - Natural, fluent Korean for native readers
+  - Adapt idioms appropriately
+  - Preserve SEO keywords in Korean
+  - Maintain markdown formatting
+
+═══════════════════════════════════════════════════════════════════════════════
+  NEXT STEPS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. ⏸️  Update ANTHROPIC_API_KEY in .env file
+2. ⏸️  Run translation script
+3. ⏸️  Review translations for quality
+4. ⏸️  Insert translations to Supabase
+5. ⏸️  Run audit to verify 61/61 (100%)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+For detailed instructions, see: KO-TRANSLATION-COMPLETION-PLAN.md
+For comprehensive summary, see: KO-COMPLETION-SUMMARY.md
+
+═══════════════════════════════════════════════════════════════════════════════
+  PREPARED BY: Claude Code Agent
+  DATE: March 2, 2026
+  STATUS: ✓ Ready for Execution
+═══════════════════════════════════════════════════════════════════════════════

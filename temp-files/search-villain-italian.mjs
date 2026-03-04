@@ -1,0 +1,25 @@
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  'https://mhfikaomkmqcndqfohbp.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1oZmlrYW9ta21xY25kcWZvaGJwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MzYxNzkxMiwiZXhwIjoyMDU5MTkzOTEyfQ.DMyPlyn0d5RvluhrG8zrjzThCaJGlw9DrJ74GliDql8'
+);
+
+// Search for Italian villain posts
+const { data } = await supabase
+  .from('blog_posts')
+  .select('slug, title, content, created_at')
+  .eq('language', 'it')
+  .ilike('slug', '%villain%');
+
+console.log(`Found ${data.length} Italian posts with 'villain' in slug:\n`);
+
+data.forEach((post, i) => {
+  console.log(`${i + 1}. ${post.slug}`);
+  console.log(`   Title: ${post.title}`);
+  console.log(`   Created: ${post.created_at}`);
+  const hasEEAT = post.content?.includes('*Pubblicato: 16 febbraio 2026');
+  console.log(`   Has E-E-A-T: ${hasEEAT ? '✅ YES' : '❌ NO'}`);
+  console.log('');
+});
+

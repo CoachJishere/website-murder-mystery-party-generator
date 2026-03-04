@@ -1,0 +1,62 @@
+{
+  "language": "pt",
+  "totalMissing": 11,
+  "note": "Based on translation-audit-full.json showing PT has 50/61 posts (gap of 11). Analysis shows NO 'How to Fix' posts exist in Portuguese, plus missing Masquerade Ball, Dinner Parties, Space Station, Journalist, and Lawyer themes.",
+  "missingPosts": [
+    {
+      "id": "4662e124-df40-455b-852d-2d8f2e13515e",
+      "slug": "how-to-fix-guests-breaking-character-keep-your-murder-mystery-party-immersive",
+      "title": "How to Fix Guests Breaking Character: Keep Your Murder Mystery Party Immersive"
+    },
+    {
+      "id": "47ecf1b0-7a33-4966-8939-755a6858bdfd",
+      "slug": "how-to-fix-poor-mystery-pacing-issues-master-the-art-of-murder-mystery-timing",
+      "title": "How to Fix Poor Mystery Pacing Issues: Master the Art of Murder Mystery Timing"
+    },
+    {
+      "id": "7adb6cd9-e978-456e-a72b-852b905bbb78",
+      "slug": "how-to-fix-overly-complex-murder-mysteries",
+      "title": "How to Fix Overly Complex Murder Mysteries"
+    },
+    {
+      "id": "aa97dd47-7bcd-417f-a2b2-15832d4b3c78",
+      "slug": "how-to-fix-unsatisfying-mystery-endings-create-reveals-that-actually-satisfy",
+      "title": "How to Fix Unsatisfying Mystery Endings: Create Reveals That Actually Satisfy"
+    },
+    {
+      "id": "bdb64008-689e-4db6-87be-c170a6bde642",
+      "slug": "how-to-fix-confusing-murder-mystery-clues",
+      "title": "How to Fix Confusing Murder Mystery Clues"
+    },
+    {
+      "id": "eaa38579-90a3-4dbc-9afa-f2eff4f79051",
+      "slug": "how-to-fix-guests-who-wont-participate-in-your-murder-mystery-party",
+      "title": "How to Fix Guests Who Won't Participate in Your Murder Mystery Party"
+    },
+    {
+      "id": "f3990bda-af8a-4cca-af57-e49990134f29",
+      "slug": "how-to-fix-boring-murder-mystery-parties",
+      "title": "How to Fix Boring Murder Mystery Parties"
+    },
+    {
+      "id": "f4678c7e-d6af-4e2a-8a16-452b5aeb102f",
+      "slug": "how-to-fix-unrealistic-murder-mystery-plots-create-believable-storylines-that-captivate",
+      "title": "How to Fix Unrealistic Murder Mystery Plots: Create Believable Storylines That Captivate"
+    },
+    {
+      "id": "2d19c069-2354-45b5-be1f-ffe3d5338e7b",
+      "slug": "5-masquerade-ball-murder-mystery-themes-that-will-leave-your-guests-speechless",
+      "title": "5 Masquerade Ball Murder Mystery Themes That Will Leave Your Guests Speechless"
+    },
+    {
+      "id": "2fb18701-39ba-4152-8a82-bcbe0fea4e9b",
+      "slug": "murder-mystery-party-for-dinner-parties-elevate-your-evening-with-culinary-intrigue",
+      "title": "Murder Mystery Party for Dinner Parties: Elevate Your Evening with Culinary Intrigue"
+    },
+    {
+      "id": "51f4866c-e974-4231-ac17-1558585233a8",
+      "slug": "journalist-murder-mystery-themes-investigative-reporters-deadly-stories",
+      "title": "Journalist Murder Mystery Themes: Investigative Reporters Uncover Deadly Stories"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+31. Murder Mystery Party for Holiday Gatherings: Festive Fun Meets Family Intrigue
+   ID: 141f0863-8371-4f60-a17f-77a38eed6398
+   Slug: murder-mystery-party-for-holiday-gatherings-festive-fun-meets-family-intrigue
+   Theme: Holiday
+
+32. Murder Mystery Party for Office Teams: Build Bonds Through Collaborative Investigation
+   ID: fc1396b1-617a-43b2-81eb-8b9f0325c6a7
+   Slug: murder-mystery-party-for-office-teams-build-bonds-through-collaborative-investigation
+   Theme: Office/Corporate
+
+33. Murder Mystery Party for Small Groups Ideas
+   ID: da666de8-8af2-420e-90af-490597d4360b
+   Slug: murder-mystery-party-for-small-groups-ideas
+   Theme: Small Groups
+
+34. Murder Mystery Party for Teenagers Guide
+   ID: bee3a521-2203-4f03-99a6-1ddc4d97ff62
+   Slug: murder-mystery-party-for-teenagers-guide
+   Theme: Teenagers
+
+35. Socialite Murder Mystery Themes: High Society Scandals and Elite Intrigue
+   ID: a3b3638b-468e-428c-b8f5-8cee7b9fdccc
+   Slug: socialite-murder-mystery-themes-high-society-scandals-elite-intrigue
+   Theme: Mystery Themes
+
+36. Spa Resort Murder Mystery Party Guide: Relax Into Danger and Luxury
+   ID: b512ac15-867c-4f68-8a24-5ca4ee46760f
+   Slug: spa-resort-murder-mystery-party-guide-relax-into-danger-and-luxury
+   Theme: Spa/Wellness
+
+37. Unique Archaeological Dig Murder Mystery: Unearth Ancient Secrets and Modern Murders
+   ID: 2bc621a3-61d1-4ba6-8a7b-66e031e5d28c
+   Slug: unique-archaeological-dig-murder-mystery-unearth-ancient-secrets-and-modern-murders
+   Theme: Archaeology
+
+38. Unique Circus Murder Mystery Plot Ideas
+   ID: 6f4e5fce-4713-4f88-a8ad-b450f6353190
+   Slug: unique-circus-murder-mystery-plot-ideas
+   Theme: Circus
+
+39. Unique Film Noir Murder Mystery Plots: Enter the Shadows of Urban Crime
+   ID: 2acf78da-c601-4506-830b-ab46c180c414
+   Slug: unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime
+   Theme: Film Noir
+
+40. Unique Medieval Murder Mystery Plot Ideas
+   ID: 9a37fa33-5397-4c58-a85a-d81ebaa676a8
+   Slug: unique-medieval-murder-mystery-plot-ideas
+   Theme: Medieval

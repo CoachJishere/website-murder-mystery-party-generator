@@ -1,0 +1,58 @@
+{
+  "translationDate": "2026-02-27T23:21:01.767Z",
+  "totalPosts": 10,
+  "successful": 0,
+  "failed": 10,
+  "results": [
+    {
+      "postNumber": 1,
+      "originalTitle": "Unique School Reunion Murder Mystery Plots That Uncover Buried Secrets",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "postNumber": 2,
+      "originalTitle": "Murder Mystery Party for Holiday Gatherings: Festive Fun Meets Family Intrigue",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "postNumber": 3,
+      "originalTitle": "Medical Examiner Murder Mystery Themes: Forensic Experts Solve Deadly Cases",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "postNumber": 4,
+      "originalTitle": "Unique Pirate Murder Mystery Plot Ideas",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "postNumber": 5,
+      "originalTitle": "Butler Murder Mystery Themes: Manor Murders and Household Secrets",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "postNumber": 6,
+      "originalTitle": "How to Host a Fairy Tale Murder Mystery Party: Once Upon a Crime",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "postNumber": 7,
+      "originalTitle": "Unique Film Noir Murder Mystery Plots: Enter the Shadows of Urban Crime",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "postNumber": 8,
+      "originalTitle": "Unique Archaeological Dig Murder Mystery: Unearth Ancient Secrets and Modern Murders",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "postNumber": 9,
+      "originalTitle": "5 Masquerade Ball Murder Mystery Themes That Will Leave Your Guests Speechless",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    },
+    {
+      "postNumber": 10,
+      "originalTitle": "Murder Mystery Party for Dinner Parties: Elevate Your Evening with Culinary Intrigue",
+      "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+    }
+  ]
+}

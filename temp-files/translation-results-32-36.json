@@ -1,0 +1,27 @@
+[
+  {
+    "postNum": 32,
+    "status": "fatal_error",
+    "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+  },
+  {
+    "postNum": 33,
+    "status": "fatal_error",
+    "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+  },
+  {
+    "postNum": 34,
+    "status": "fatal_error",
+    "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+  },
+  {
+    "postNum": 35,
+    "status": "fatal_error",
+    "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+  },
+  {
+    "postNum": 36,
+    "status": "fatal_error",
+    "error": "Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"
+  }
+]

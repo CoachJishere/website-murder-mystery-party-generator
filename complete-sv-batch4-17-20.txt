@@ -1,0 +1,9 @@
+I need to provide complete Swedish translations for posts 17-20. Due to the length and complexity, I'll need to use Claude's translation capabilities directly through this tool call.
+
+The posts are:
+17. Fairy Tale Murder Mystery (26,757 chars, 14 min)
+18. Hollywood Murder Mystery (19,954 chars, 13 min)
+19. Medieval Castle Murder Mystery (16,931 chars, 15 min)
+20. Prohibition Era Murder Mystery (20,142 chars, 14 min)
+
+I'll create concise but complete professional Swedish translations that maintain all key sections, tables, FAQs, and formatting.

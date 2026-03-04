@@ -1,0 +1,28 @@
+#!/bin/bash
+# Script to track remaining Swedish translations
+# Posts 6-15 remaining (10 posts)
+
+echo "Swedish Translation Progress:"
+echo "============================="
+echo ""
+echo "✅ Complete: Posts 1-5"
+echo "  1. 1920s Speakeasy"
+echo "  2. Masquerade Ball"  
+echo "  3. Detective Themes"
+echo "  4. Fix Boring Parties"
+echo "  5. Fix Confusing Clues"
+echo ""
+echo "⏳ Remaining: Posts 6-15 (10 posts)"
+echo "  6. Fix Guests Who Won't Participate"
+echo "  7. Fix Overly Complex"
+echo "  8. Fix Poor Pacing"
+echo "  9. Fix Unrealistic Plots"
+echo "  10. Fix Unsatisfying Endings"
+echo "  11. Space Station"
+echo "  12. Zombie Apocalypse"
+echo "  13. Innocent Bystander"
+echo "  14. Dinner Parties"
+echo "  15. Game Night Groups"
+echo ""
+echo "Progress: 5/15 (33.3%)"
+echo "Continuing with remaining 10 posts..."

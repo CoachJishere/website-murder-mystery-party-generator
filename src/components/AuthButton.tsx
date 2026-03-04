@@ -10,13 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { ChevronDown } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 
 const AuthButton = () => {
-  const { user, isAuthenticated, signOut, isPublic, setIsPublic } = useAuth();
+  const { user, isAuthenticated, signOut } = useAuth();
   const [open, setOpen] = useState(false);
 
   const handleOpenChange = (isOpen: boolean) => {
@@ -41,17 +39,6 @@ const AuthButton = () => {
 
   return (
     <div className="flex items-center space-x-4">
-      <div className="flex items-center space-x-2">
-        <Switch 
-          id="public-mode-toggle" 
-          checked={isPublic}
-          onCheckedChange={setIsPublic}
-        />
-        <Label htmlFor="public-mode-toggle" className="text-sm">
-          {isPublic ? "Public" : "Private"}
-        </Label>
-      </div>
-      
       <DropdownMenu open={open} onOpenChange={handleOpenChange}>
         <DropdownMenuTrigger asChild>
           <Button

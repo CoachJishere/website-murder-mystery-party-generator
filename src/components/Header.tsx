@@ -44,6 +44,11 @@ const Header = () => {
             {t('navigation.support')}
           </Link>
           <LanguageSwitcher />
+          {isAuthenticated && (
+            <Button asChild className="no-underline font-inter">
+              <Link to="/dashboard">{t('navigation.dashboard')}</Link>
+            </Button>
+          )}
           <AuthButton />
         </div>
 

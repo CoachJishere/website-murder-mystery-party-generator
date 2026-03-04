@@ -1,0 +1,49 @@
+21. How to Host a Steampunk Murder Mystery Party: Gear Up for Victorian Sci-Fi Crime
+   ID: 9c6bc262-da91-4eb9-aeda-71f5dc3ce0d8
+   Slug: how-to-host-a-steampunk-murder-mystery-party-gear-up-for-victorian-sci-fi-crime
+   Theme: Steampunk
+
+22. Jazz Club Murder Mystery Party Planning: Swing Into Prohibition-Era Crime
+   ID: 42a2278c-9865-48bb-9bbc-c1dad4df17b9
+   Slug: jazz-club-murder-mystery-party-planning-swing-into-prohibition-era-crime
+   Theme: Jazz Club
+
+23. Journalist Murder Mystery Themes: Investigative Reporters Uncover Deadly Stories
+   ID: 51f4866c-e974-4231-ac17-1558585233a8
+   Slug: journalist-murder-mystery-themes-investigative-reporters-deadly-stories
+   Theme: Mystery Themes
+
+24. Lawyer Murder Mystery Themes: Courtroom Drama and Legal Intrigue
+   ID: cea7e6f4-77b7-448d-aeab-daa6ccff7593
+   Slug: lawyer-murder-mystery-themes-courtroom-drama-legal-intrigue
+   Theme: Mystery Themes
+
+25. Medical Examiner Murder Mystery Themes: Forensic Experts Solve Deadly Cases
+   ID: 17325502-e5ad-4b92-bde3-0857f82a9254
+   Slug: medical-examiner-murder-mystery-themes-forensic-investigations
+   Theme: Mystery Themes
+
+26. Murder Mystery Party for Birthday Celebrations: Make Their Special Day Unforgettable
+   ID: 9016f13f-eebd-4300-984a-e7fd4066b465
+   Slug: murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable
+   Theme: Birthday
+
+27. Murder Mystery Party for Corporate Events
+   ID: dba8b0ee-1643-4a3d-a856-5cda94fc0863
+   Slug: murder-mystery-party-for-corporate-events
+   Theme: Corporate
+
+28. Murder Mystery Party for Date Night Ideas: Where Romance Meets Mystery
+   ID: 82cfb122-fdd1-4069-9a37-16fc8a8a1454
+   Slug: murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery
+   Theme: Date Night
+
+29. Murder Mystery Party for Game Night Groups: Transform Your Regular Game Night
+   ID: 680bf92f-556b-457c-b14e-f7dc576f8b96
+   Slug: murder-mystery-party-for-game-night-groups-transform-your-regular-game-night
+   Theme: Game Night
+
+30. Murder Mystery Party for Graduation Celebrations: Academic Achievement Mysteries with Educational Excellence
+   ID: 4804f59e-2596-49db-a2ef-8eba9b14aa00
+   Slug: murder-mystery-party-for-graduation-celebrations-academic-achievement-mysteries-with-educational-excellence
+   Theme: Graduation

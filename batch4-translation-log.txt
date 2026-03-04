@@ -1,0 +1,9 @@
+[dotenv@17.3.1] injecting env (17) from .env -- tip: ⚙️  override existing env vars with { override: true }
+Reading source posts from german-batch-4-source-posts.json...
+
+Found 10 posts to translate
+
+
+[1/10] Translating Post 31:
+Title: Murder Mystery Party for Date Night Ideas: Where Romance Meets Mystery
+✗ Error translating post 31: 401 {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"},"request_id":"req_011CYaTycf9pYjpSaKFb7QoX"}
