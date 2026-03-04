@@ -30,7 +30,7 @@ const BillingSettings = () => {
       // Fetch paid conversations (purchases)
       const { data, error } = await supabase
         .from('conversations')
-        .select('id, mystery_title, created_at, is_paid')
+        .select('id, title, created_at, is_paid')
         .eq('user_id', user.id)
         .eq('is_paid', true)
         .order('created_at', { ascending: false });
@@ -40,7 +40,7 @@ const BillingSettings = () => {
       // Map to purchase format
       const purchaseData: Purchase[] = (data || []).map((conv) => ({
         id: conv.id,
-        mystery_title: conv.mystery_title || 'Mystery Package',
+        mystery_title: conv.title || 'Mystery Package',
         created_at: conv.created_at,
         amount: 24.99, // Fixed price
         conversation_id: conv.id
