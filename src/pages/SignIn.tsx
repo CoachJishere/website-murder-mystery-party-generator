@@ -53,7 +53,11 @@ const SignIn = () => {
         console.log("Signin successful:", data);
         trackLogin('email');
         toast.success("Signed in successfully!");
-        navigate("/dashboard");
+
+        // Delay navigation to ensure analytics event is sent
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 500);
       }
     } catch (error: any) {
       console.error("Signin catch block error:", error);

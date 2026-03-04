@@ -76,10 +76,11 @@ const SignUp = () => {
         toast.success(t("auth.success.accountCreated"));
       }
 
-      // Navigate to dashboard immediately - let them explore
+      // Navigate to dashboard after a delay to ensure analytics event is sent
+      // gtag queues events asynchronously, so we need to wait for the request to complete
       setTimeout(() => {
         navigate("/dashboard");
-      }, 100);
+      }, 500);
       
     } catch (error: any) {
       console.error("Sign-up catch block:", error);
