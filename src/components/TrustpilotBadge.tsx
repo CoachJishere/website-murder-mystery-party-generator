@@ -10,7 +10,7 @@ const TrustpilotBadge = () => {
       href={TRUSTPILOT_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center justify-center gap-3 sm:gap-4 py-3 no-underline transition-opacity hover:opacity-80"
+      className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-x-4 py-3 no-underline transition-opacity hover:opacity-80"
       aria-label={t('trustpilot.ariaLabel')}
     >
       <span className="text-muted-foreground text-sm sm:text-base font-inter">
