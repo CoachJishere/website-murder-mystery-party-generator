@@ -175,29 +175,3 @@ export const sendMysteryToWebhook = async (conversationId: string) => {
   }
 };
 
-// Add a basic CORS-validation function to check if an endpoint is accessible
-export const validateEndpointCors = async (url: string): Promise<boolean> => {
-  try {
-    // Use the cors-proxy to validate the CORS setup of the target URL
-    const { data, error } = await supabase.functions.invoke('cors-proxy', {
-      body: {
-        url,
-        method: 'OPTIONS',
-        headers: {
-          'Access-Control-Request-Method': 'POST',
-          'Access-Control-Request-Headers': 'content-type,authorization'
-        }
-      }
-    });
-    
-    if (error) {
-      console.error("Error validating CORS:", error);
-      return false;
-    }
-    
-    return true;
-  } catch (error) {
-    console.error("CORS validation error:", error);
-    return false;
-  }
-};

@@ -2,12 +2,25 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const ALLOWED_ORIGINS = [
+  'https://www.mysterymaker.party',
+  'https://mysterymaker.party',
+  'http://localhost:5173',
+  'http://localhost:3000',
+];
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('Origin') || '';
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  };
+}
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
+
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -16,7 +29,7 @@ serve(async (req) => {
   try {
     // Create a Supabase client with the service role key
     const supabaseAdmin = createClient(
-      "https://mhfikaomkmqcndqfohbp.supabase.co",
+      Deno.env.get("SUPABASE_URL") || "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "",
       {
         auth: {
@@ -74,12 +87,29 @@ serve(async (req) => {
       exp: Math.floor(Date.now() / 1000) + 60 * 60,
     };
 
-    // Encode the payload
+    // Sign the token with HMAC-SHA256
+    const tokenSecret = Deno.env.get('CHATBOT_TOKEN_SECRET');
     const encodedPayload = btoa(JSON.stringify(payload));
-    
-    // In a real implementation, you would sign this token with a secret
-    // For now, we'll just create a simple encoded token
-    const chatbotToken = encodedPayload;
+    let chatbotToken: string;
+
+    if (tokenSecret) {
+      const encoder = new TextEncoder();
+      const key = await crypto.subtle.importKey(
+        'raw',
+        encoder.encode(tokenSecret),
+        { name: 'HMAC', hash: 'SHA-256' },
+        false,
+        ['sign']
+      );
+      const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(encodedPayload));
+      const signatureHex = Array.from(new Uint8Array(signature))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+      chatbotToken = `${encodedPayload}.${signatureHex}`;
+    } else {
+      console.warn('CHATBOT_TOKEN_SECRET not configured - token will be unsigned');
+      chatbotToken = encodedPayload;
+    }
     
     // Get the correct chatbot URL based on environment
     const vercelChatbotUrl = "https://my-awesome-chatbot-nine-sand.vercel.app";

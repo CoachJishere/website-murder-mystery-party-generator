@@ -1,6 +1,5 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 type Locale = 'en' | 'es' | 'fr' | 'de' | 'ko' | 'ja' | 'zh-cn' | 'nl' | 'da' | 'sv' | 'fi' | 'it' | 'pt';
 
@@ -49,51 +48,77 @@ async function buildLabels(locale: Locale) {
   }
 }
 
-// Comprehensive CORS headers to handle all possible browser requests
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS, GET, PUT, DELETE, PATCH',
-  'Access-Control-Max-Age': '86400',
-  'Access-Control-Allow-Credentials': 'false',
-  'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers'
-};
+// CORS: restrict to production domains
+const ALLOWED_ORIGINS = [
+  'https://www.mysterymaker.party',
+  'https://mysterymaker.party',
+  'http://localhost:5173',
+  'http://localhost:3000',
+];
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('Origin') || '';
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Max-Age': '86400',
+  };
+}
+
+// Rate limiting: 10 requests per minute per user (in-memory, resets on cold start)
+const rateLimitMap = new Map<string, number[]>();
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 10;
 
 serve(async (req) => {
-  // Log all incoming requests for debugging
-  console.log("=== Incoming Request ===");
-  console.log("Method:", req.method);
-  console.log("URL:", req.url);
-  console.log("Headers:", Object.fromEntries(req.headers.entries()));
-  
-  // Handle CORS preflight requests with comprehensive logging
+  const corsHeaders = getCorsHeaders(req);
+
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    console.log("CORS preflight request received");
-    const response = new Response(null, { 
-      status: 200,
-      headers: corsHeaders 
-    });
-    console.log("CORS preflight response headers:", Object.fromEntries(response.headers.entries()));
-    return response;
+    return new Response(null, { status: 200, headers: corsHeaders });
   }
 
-  // Add CORS headers to all responses
   const responseHeaders = { ...corsHeaders, 'Content-Type': 'application/json' };
 
+  // Auth check: require Authorization header
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401, headers: responseHeaders
+    });
+  }
+
+  // Rate limiting per auth token
+  const now = Date.now();
+  const timestamps = (rateLimitMap.get(authHeader) || []).filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+  if (timestamps.length >= RATE_LIMIT_MAX) {
+    return new Response(JSON.stringify({ error: 'Too many requests. Please slow down.' }), {
+      status: 429, headers: responseHeaders
+    });
+  }
+  timestamps.push(now);
+  rateLimitMap.set(authHeader, timestamps);
+
   try {
-    console.log("Processing request with mystery-ai edge function");
-    
     const requestBody = await req.json();
-    console.log("Request body received:", JSON.stringify(requestBody, null, 2));
-    
     const { messages, system, promptVersion } = requestBody;
-    
+
     if (!messages || !Array.isArray(messages)) {
       throw new Error('Messages array is required');
     }
-    
-    console.log(`Processing request with ${messages.length} messages`);
-    console.log("Custom system prompt provided:", !!system);
+
+    // Input validation: cap individual message length
+    for (const msg of messages) {
+      if (msg.content && msg.content.length > 10000) {
+        return new Response(JSON.stringify({ error: 'Message too long' }), {
+          status: 400, headers: responseHeaders
+        });
+      }
+    }
+
+    console.log(`Processing ${messages.length} messages`);
     
     // Get the Anthropic API key
     const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
@@ -102,16 +127,8 @@ serve(async (req) => {
       throw new Error('ANTHROPIC_API_KEY not configured');
     }
 
-    // Get database prompt from environment secrets instead of database
-    console.log("Available environment variables:", Object.keys(Deno.env.toObject()));
-    console.log("MYSTERY_FREE_PROMPT exists:", !!Deno.env.get('MYSTERY_FREE_PROMPT'));
-    console.log("MYSTERY_FREE_PROMPT length:", Deno.env.get('MYSTERY_FREE_PROMPT')?.length || 'undefined');
+    // Get database prompt from environment secrets
     let databasePrompt = Deno.env.get('MYSTERY_FREE_PROMPT');
-    if (databasePrompt) {
-      console.log("Retrieved database prompt from environment secrets");
-    } else {
-      console.log("No database prompt found in secrets, using fallback logic");
-    }
 
     // Content boundaries to prevent the AI from generating game-ready content in free chat.
     // Users can freely design character concepts, motives, relationships, and story elements.
@@ -139,7 +156,6 @@ After presenting or refining the mystery concept, mention what the package inclu
     let systemPrompt = system;
 
     if (!systemPrompt) {
-      console.log("No custom system prompt - analyzing conversation state");
 
       const conversationText = messages.map(msg => msg.content || '').join(' ');
       const lastUserMessage = messages.filter(msg => msg.role === 'user').pop()?.content || '';
@@ -196,7 +212,6 @@ After presenting or refining the mystery concept, mention what the package inclu
 
       if (conceptAlreadyGenerated) {
         // === POST-CONCEPT: Refinement mode ===
-        console.log("Concept already generated - entering refinement mode");
 
         if (databasePrompt) {
           systemPrompt = applyDatabasePrompt();
@@ -217,7 +232,6 @@ ${contentBoundaries}`;
       } else if (hasInvalidPlayerCount) {
         // === INVALID PLAYER COUNT ===
         const invalidNumber = standaloneNumberMatch![1];
-        console.log(`Invalid player count: ${invalidNumber}`);
         systemPrompt = `The user provided ${invalidNumber} players. Politely let them know the range is 4 to 32 players and ask them to pick a number in that range.
 
 <language_instruction>
@@ -226,7 +240,6 @@ Always respond in the same language the user writes to you.
 
       } else if (!hasPlayerCount) {
         // === PRE-CONCEPT: Need player count ===
-        console.log("No player count detected - asking for it (+ creative question if sparse)");
 
         systemPrompt = `You are an enthusiastic, creative murder mystery concept designer.
 
@@ -246,7 +259,6 @@ ${contentBoundaries}`;
 
       } else {
         // === HAS PLAYER COUNT: Generate concept ===
-        console.log(`Player count detected (${playerCount}) - generating concept`);
 
         if (databasePrompt) {
           systemPrompt = applyDatabasePrompt();
@@ -280,18 +292,19 @@ ${contentBoundaries}
 IMPORTANT: Always end your response by asking if the concept works for them. Mention they can continue refining any character concepts, motives, or story elements. Once satisfied, they can hit 'Generate Mystery' to create their complete package — including individual character scripts for each player, printable evidence cards, a host guide with round-by-round instructions, and everything needed to run their event.`;
         }
       }
+
+      // Soft conversion nudge for long conversations (100+ messages)
+      if (messages.length > 100) {
+        systemPrompt += `\n\nNote: This has been a wonderfully detailed conversation! When it feels natural, warmly encourage the user that their concept is very well-developed and suggest hitting 'Generate Mystery' to bring it to life. But continue helping if they want to keep refining — don't block or pressure them.`;
+      }
     }
-    
-    console.log("Final system prompt being used:", systemPrompt.substring(0, 200) + "...");
-    
+
     // Format messages for Anthropic API
     const anthropicMessages = messages.map(msg => ({
       role: msg.role === 'assistant' ? 'assistant' : 'user',
       content: msg.content || ''
     })).filter(msg => msg.content.trim() !== '');
-    
-    console.log("Formatted messages for Anthropic:", anthropicMessages.length, "messages");
-    
+
     const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -310,41 +323,30 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
     
     if (!anthropicResponse.ok) {
       const errorText = await anthropicResponse.text();
-      console.error(`Anthropic API error: ${anthropicResponse.status} ${errorText}`);
-      throw new Error(`Anthropic API error: ${anthropicResponse.status} ${errorText}`);
+      console.error(`Anthropic API error: ${anthropicResponse.status}`);
+      throw new Error(`Anthropic API error: ${anthropicResponse.status}`);
     }
-    
+
     const data = await anthropicResponse.json();
-    console.log("Anthropic API response received, content length:", data.content?.[0]?.text?.length || 0);
-    
     const assistantMessage = data.content?.[0]?.text;
     if (!assistantMessage) {
       throw new Error('No content in response from Anthropic API');
     }
-    
-    console.log("Returning successful response");
-    
-    // Return in the format expected by the frontend
-    const successResponse = new Response(JSON.stringify({
+
+    return new Response(JSON.stringify({
       choices: [{
         message: {
           content: assistantMessage,
           role: "assistant"
         }
       }]
-    }), {
-      headers: responseHeaders
-    });
-    
-    console.log("Success response headers:", Object.fromEntries(successResponse.headers.entries()));
-    return successResponse;
-    
+    }), { headers: responseHeaders });
+
   } catch (error) {
-    console.error('Error in mystery-ai function:', error);
-    
-    // Return a proper error response that the frontend can handle
-    const errorResponse = new Response(JSON.stringify({ 
-      error: error.message,
+    console.error('Error in mystery-ai function:', error.message);
+
+    return new Response(JSON.stringify({
+      error: 'An error occurred processing your request',
       choices: [{
         message: {
           content: "I apologize, but I'm having trouble processing your request right now. Please try again in a moment.",
@@ -352,11 +354,8 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
         }
       }]
     }), {
-      status: 200, // Return 200 so the frontend doesn't treat it as a failed request
+      status: 200,
       headers: responseHeaders
     });
-    
-    console.log("Error response headers:", Object.fromEntries(errorResponse.headers.entries()));
-    return errorResponse;
   }
 });

@@ -13,11 +13,6 @@ export const supabase = createClient(
       storage: localStorage,
       flowType: 'pkce' // Use PKCE flow for better security
     },
-    global: {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      }
-    }
   }
 );
 

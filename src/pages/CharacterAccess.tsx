@@ -64,12 +64,9 @@ const CharacterAccess: React.FC = () => {
     try {
       setLoading(true);
 
-      // First, get the character assignment
+      // First, get the character assignment via secure RPC
       const { data: assignmentData, error: assignmentError } = await supabase
-        .from('character_assignments')
-        .select('id, guest_name, guest_email, character_id')
-        .eq('access_token', token)
-        .eq('is_sent', true)
+        .rpc('get_character_by_token', { access_token_param: token })
         .single();
 
       if (assignmentError) {
@@ -78,11 +75,9 @@ const CharacterAccess: React.FC = () => {
         return;
       }
 
-      // Then, get the character details
+      // Then, get the character details via secure RPC (validates token ownership)
       const { data: characterData, error: characterError } = await supabase
-        .from('mystery_characters')
-        .select('*')
-        .eq('id', assignmentData.character_id)
+        .rpc('get_character_details', { char_id: assignmentData.character_id, access_token_param: token })
         .single();
 
       if (characterError) {

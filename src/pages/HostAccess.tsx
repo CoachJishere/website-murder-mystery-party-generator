@@ -46,11 +46,7 @@ const HostAccess: React.FC = () => {
       setLoading(true);
 
       const { data, error: fetchError } = await supabase
-        .from("mystery_packages")
-        .select(
-          "title, game_overview, host_guide, materials, preparation_instructions, timeline, hosting_tips, detective_script, evidence_cards"
-        )
-        .eq("host_access_token", token)
+        .rpc("get_host_package", { access_token: token })
         .single();
 
       if (fetchError) {

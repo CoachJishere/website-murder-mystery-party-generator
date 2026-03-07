@@ -2,11 +2,22 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// Configure CORS headers
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "*",
-};
+// CORS: restrict to production domains
+const ALLOWED_ORIGINS = [
+  'https://www.mysterymaker.party',
+  'https://mysterymaker.party',
+  'http://localhost:5173',
+  'http://localhost:3000',
+];
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('Origin') || '';
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  };
+}
 
 // Initialize Supabase client with environment variables
 const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
@@ -219,6 +230,8 @@ async function extractCharactersWithClaude(
 }
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
+
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -421,10 +434,9 @@ serve(async (req) => {
     console.error("Error processing webhook:", error);
     
     return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: error.message,
-        stack: error.stack
+      JSON.stringify({
+        success: false,
+        error: 'An error occurred processing your request'
       }),
       { 
         status: 500, 
