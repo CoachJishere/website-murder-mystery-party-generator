@@ -23,7 +23,7 @@ const stripe = new Stripe(stripeSecretKey, {
 });
 
 // GA4 configuration
-const GA4_MEASUREMENT_ID = "G-1VCPKFH6NV";
+const GA4_MEASUREMENT_ID = "G-XGD48X4ZQS";
 const GA4_API_SECRET = Deno.env.get("GA4_API_SECRET") || "";
 
 async function sendGA4Event(

@@ -37,3 +37,32 @@ fix_blueprint_prompt.js
 temp_detective_script.json
 update_detective_script.js
 Blog Database - Master.csv
+
+# Translation artifacts (generated scripts, reports, data)
+# These are one-time-use files from blog translation sessions
+*.mjs
+*.sql
+*-REPORT*.md
+*-STATUS*.md
+*-SUMMARY*.md
+*-COMPLETE*.md
+*-GUIDE*.md
+*-INSTRUCTIONS*.md
+*TRANSLATION*.md
+*BATCH*.md
+*INSERT*.md
+
+# Temp files directory (except blueprints and analytics tracked above)
+temp-files/*.json
+!temp-files/ga-metrics.json
+!temp-files/gsc-metrics.json
+!temp-files/make-scenarios.json
+temp-files/*.md
+temp-files/*.mjs
+temp-files/*.txt
+temp-files/*.py
+temp-files/*.sh
+temp-files/*.sql
+temp-files/*.csv
+temp-files/*.gsheet
+temp-files/**/*.json

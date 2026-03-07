@@ -1,2 +1,0 @@
-Available columns:
-id, title, content, slug, meta_description, meta_keywords, language, theme, status, featured_image_url, reading_time, author, tags, published_at, created_at, updated_at, post_date

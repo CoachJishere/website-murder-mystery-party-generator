@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,74 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
     }
   }, [user?.id]);
 
+  // Build a stable key for mysteries that need generation checks
+  const generatingIds = allMysteries
+    .filter(m => m.needs_package_generation && m.status === "generating")
+    .map(m => m.id)
+    .join(",");
+
+  // Deferred: check generation status for mysteries that need it (non-blocking)
+  useEffect(() => {
+    if (!generatingIds) return;
+
+    const generatingMysteries = allMysteries.filter(
+      m => m.needs_package_generation && m.status === "generating"
+    );
+    if (generatingMysteries.length === 0) return;
+
+    let cancelled = false;
+
+    const checkStatuses = async () => {
+      const updates: { id: string; newStatus: "purchased" | "generating" }[] = [];
+
+      await Promise.all(
+        generatingMysteries.map(async (mystery) => {
+          try {
+            const generationStatus = await getPackageGenerationStatus(mystery.id);
+            if (cancelled) return;
+
+            if (generationStatus.status === 'completed') {
+              updates.push({ id: mystery.id, newStatus: "purchased" });
+              // Update DB so we don't check again next time
+              await supabase
+                .from("conversations")
+                .update({ needs_package_generation: false })
+                .eq("id", mystery.id);
+            }
+            // If still in_progress, keep as "generating" (already set)
+          } catch (error) {
+            console.error(`Error checking generation status for ${mystery.id}:`, error);
+          }
+        })
+      );
+
+      if (cancelled || updates.length === 0) return;
+
+      // Batch-update mysteries whose status changed
+      setAllMysteries(prev =>
+        prev.map(m => {
+          const update = updates.find(u => u.id === m.id);
+          if (update) {
+            return { ...m, status: update.newStatus, display_status: update.newStatus, needs_package_generation: false };
+          }
+          return m;
+        })
+      );
+      setDisplayedMysteries(prev =>
+        prev.map(m => {
+          const update = updates.find(u => u.id === m.id);
+          if (update) {
+            return { ...m, status: update.newStatus, display_status: update.newStatus, needs_package_generation: false };
+          }
+          return m;
+        })
+      );
+    };
+
+    checkStatuses();
+    return () => { cancelled = true; };
+  }, [generatingIds]);
+
   // Apply search filter to all loaded mysteries
   const applySearchFilter = (searchLower: string) => {
     if (allMysteries.length === 0) return;
@@ -86,14 +154,7 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
     // Only set hasMorePages to false when we've loaded all available mysteries
     setHasMorePages(mysteries.length > paginated.length);
     
-    // Debug logging
-    console.log('updateDisplayedMysteries:', {
-      pageNum,
-      end,
-      totalMysteries: mysteries.length,
-      displayedCount: paginated.length,
-      hasMore: mysteries.length > paginated.length
-    });
+    // hasMore when there are still more items beyond what we're showing
   };
 
   const fetchMysteries = async (pageNumber: number, reset: boolean = false) => {
@@ -101,29 +162,23 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
       setLoading(true);
       if (!user?.id) return;
 
-      // First, get the total count of all conversations
-      const { count: totalCount } = await supabase
-        .from("conversations")
-        .select("*", { count: 'exact', head: true })
-        .eq("user_id", user.id);
-
-      if (totalCount !== null) {
-        setTotalMysteriesCount(totalCount);
-      }
-
-      // Build base query
+      // Single query: get conversations WITH messages joined, plus exact count
       let query = supabase
         .from("conversations")
-        .select("id, title, created_at, updated_at, theme, player_count, script_type, has_accomplice, additional_details, status, display_status, is_paid, purchase_date, is_completed, needs_package_generation")
+        .select("id, title, created_at, updated_at, theme, player_count, script_type, has_accomplice, additional_details, status, display_status, is_paid, purchase_date, is_completed, needs_package_generation, messages:messages!fk_messages_conversation_id(id, content, created_at, is_ai, role)", { count: 'exact' })
         .eq("user_id", user.id)
         .order("updated_at", { ascending: false });
-      
+
       // If not searching, apply pagination on the server
       if (!isSearching) {
         query = query.range((pageNumber - 1) * pageSize, pageNumber * pageSize - 1);
       }
-      
-      const { data: conversationsData, error: conversationsError } = await query;
+
+      const { data: conversationsData, error: conversationsError, count: totalCount } = await query;
+
+      if (totalCount !== null) {
+        setTotalMysteriesCount(totalCount);
+      }
 
       if (conversationsError) {
         console.error("Error fetching conversations:", conversationsError);
@@ -137,113 +192,80 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
         return;
       }
 
-      const mysteriesWithMessages = await Promise.all(
-        conversationsData.map(async (conversation: any) => {
-          try {
-            // Fetch messages for this conversation
-            const { data: messagesData, error: messagesError } = await supabase
-              .from("messages")
-              .select("*")
-              .eq("conversation_id", conversation.id)
-              .order("created_at", { ascending: true });
-            
-            if (messagesError) {
-              console.error(`Error fetching messages for conversation ${conversation.id}:`, messagesError);
-              // Continue with empty messages array rather than failing completely
-            }
-            
-            const aiTitle = extractTitleFromMessages(messagesData || []);
-            const theme = conversation.theme || 'Mystery';
-            
-            const title = aiTitle || conversation.title || `${theme} Mystery`;
-            
-            // Determine the true status with generation state consideration
-            let status: "draft" | "purchased" | "archived" | "generating";
-            
-            if (conversation.needs_package_generation && conversation.is_paid) {
-              // Check if currently generating
-              try {
-                const generationStatus = await getPackageGenerationStatus(conversation.id);
-                if (generationStatus.status === 'in_progress') {
-                  status = "generating";
-                  } else if (generationStatus.status === 'completed') {
-                    status = "purchased";
-                    // Update database to prevent future checks
-                    await supabase
-                      .from("conversations")
-                      .update({ needs_package_generation: false })
-                      .eq("id", conversation.id);
-                  } else {
-                    status = "purchased"; // Default to purchased if paid but status unclear
-                  }
-              } catch (error) {
-                console.error(`Error checking generation status for ${conversation.id}:`, error);
-                // Default to purchased if we can't check generation status
-                status = "purchased";
-              }
-            } else if (conversation.is_paid === true || conversation.display_status === "purchased") {
-              status = "purchased";
-            } else if (conversation.display_status === "archived") {
-              status = "archived";
-            } else {
-              status = conversation.status || "draft";
-            }
-            
-            const mystery: Mystery = {
-              id: conversation.id,
-              title: title,
-              created_at: conversation.created_at,
-              updated_at: conversation.updated_at || conversation.created_at,
-              status: status,
-              display_status: status,
-              mystery_data: {
-                theme: conversation.theme,
-                playerCount: conversation.player_count,
-                scriptType: conversation.script_type,
-                hasAccomplice: conversation.has_accomplice,
-                additionalDetails: conversation.additional_details,
-                status: status
-              },
-              theme: theme,
-              guests: conversation.player_count || 6,
-              is_purchased: conversation.is_paid === true || conversation.display_status === "purchased",
-              is_completed: conversation.is_completed || false,
-              ai_title: aiTitle,
-              purchase_date: conversation.purchase_date,
-              needs_package_generation: conversation.needs_package_generation || false
-            };
-            
-            return mystery;
-          } catch (error) {
-            console.error(`Error processing conversation ${conversation.id}:`, error);
-            // Return a basic mystery object to prevent complete failure
-            const mystery: Mystery = {
-              id: conversation.id,
-              title: conversation.title || "Mystery",
-              created_at: conversation.created_at,
-              updated_at: conversation.updated_at || conversation.created_at,
-              status: "draft",
-              display_status: "draft",
-              mystery_data: {
-                theme: conversation.theme || "Mystery",
-                playerCount: conversation.player_count || 6,
-                scriptType: conversation.script_type || "full",
-                hasAccomplice: conversation.has_accomplice || false,
-                additionalDetails: conversation.additional_details || ""
-              },
-              theme: conversation.theme || "Mystery",
-              guests: conversation.player_count || 6,
-              is_purchased: false,
-              is_completed: false,
-              ai_title: null,
-              purchase_date: null,
-              needs_package_generation: false
-            };
-            
-            return mystery;
+      // Process conversations synchronously — messages are already joined
+      const mysteriesWithMessages = conversationsData.map((conversation: any) => {
+        try {
+          const messages = conversation.messages || [];
+          const aiTitle = extractTitleFromMessages(messages);
+          const theme = conversation.theme || 'Mystery';
+          const title = aiTitle || conversation.title || `${theme} Mystery`;
+
+          // Determine status WITHOUT awaiting generation checks
+          // Generation status is checked in a deferred background effect
+          let status: "draft" | "purchased" | "archived" | "generating";
+
+          if (conversation.needs_package_generation && conversation.is_paid) {
+            // Optimistically show as "generating" — background effect will update
+            status = "generating";
+          } else if (conversation.is_paid === true || conversation.display_status === "purchased") {
+            status = "purchased";
+          } else if (conversation.display_status === "archived") {
+            status = "archived";
+          } else {
+            status = conversation.status || "draft";
           }
-        })
-      );
+
+          const mystery: Mystery = {
+            id: conversation.id,
+            title: title,
+            created_at: conversation.created_at,
+            updated_at: conversation.updated_at || conversation.created_at,
+            status: status,
+            display_status: status,
+            mystery_data: {
+              theme: conversation.theme,
+              playerCount: conversation.player_count,
+              scriptType: conversation.script_type,
+              hasAccomplice: conversation.has_accomplice,
+              additionalDetails: conversation.additional_details,
+              status: status
+            },
+            theme: theme,
+            guests: conversation.player_count || 6,
+            is_purchased: conversation.is_paid === true || conversation.display_status === "purchased",
+            is_completed: conversation.is_completed || false,
+            ai_title: aiTitle,
+            purchase_date: conversation.purchase_date,
+            needs_package_generation: conversation.needs_package_generation || false
+          };
+
+          return mystery;
+        } catch (error) {
+          console.error(`Error processing conversation ${conversation.id}:`, error);
+          return {
+            id: conversation.id,
+            title: conversation.title || "Mystery",
+            created_at: conversation.created_at,
+            updated_at: conversation.updated_at || conversation.created_at,
+            status: "draft" as const,
+            display_status: "draft" as const,
+            mystery_data: {
+              theme: conversation.theme || "Mystery",
+              playerCount: conversation.player_count || 6,
+              scriptType: conversation.script_type || "full",
+              hasAccomplice: conversation.has_accomplice || false,
+              additionalDetails: conversation.additional_details || ""
+            },
+            theme: conversation.theme || "Mystery",
+            guests: conversation.player_count || 6,
+            is_purchased: false,
+            is_completed: false,
+            ai_title: null,
+            purchase_date: null,
+            needs_package_generation: false
+          } as Mystery;
+        }
+      });
 
       // Filter out any null results
       let validMysteries = mysteriesWithMessages.filter(Boolean);
@@ -301,16 +323,8 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
     }
   };
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     if (!loading) {
-      console.log('handleLoadMore called', { 
-        isSearching, 
-        page, 
-        hasMorePages, 
-        displayedCount: displayedMysteries.length,
-        allMysteriesCount: allMysteries.length
-      });
-      
       const nextPage = page + 1;
       
       if (isSearching) {
@@ -337,9 +351,9 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
       
       setPage(nextPage);
     }
-  };
+  }, [loading, page, isSearching, searchTerm, allMysteries]);
 
-  const handleViewMystery = (mysteryId: string) => {
+  const handleViewMystery = useCallback((mysteryId: string) => {
     const mystery = displayedMysteries.find(m => m.id === mysteryId);
     
     if (mystery?.is_purchased || mystery?.status === "purchased" || mystery?.status === "generating") {
@@ -347,11 +361,11 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
     } else {
       navigate(`/mystery/edit/${mysteryId}`);
     }
-  };
+  }, [displayedMysteries, navigate]);
 
-  const handleEditMystery = (mysteryId: string) => {
+  const handleEditMystery = useCallback((mysteryId: string) => {
     navigate(`/mystery/edit/${mysteryId}`);
-  };
+  }, [navigate]);
 
   const handleArchiveMystery = async (mysteryId: string) => {
     try {
@@ -408,7 +422,7 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
     fetchMysteries(1, true);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const searchLower = value.trim().toLowerCase();
     setSearchTerm(value);
@@ -436,7 +450,7 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
       updateDisplayedMysteries(allMysteries, 1);
       setIsSearching(false);
     }
-  };
+  }, [allMysteries]);
 
   return (
     <div className="py-12 px-4 bg-card/30">
@@ -555,12 +569,6 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
                     }
                     return `Showing ${displayedMysteries.length} of ${totalMysteriesCount} mysteries`;
                   })()}
-                </div>
-                {/* Debug info - can be removed in production */}
-                <div className="hidden text-xs text-muted-foreground">
-                  <div>Page: {page}</div>
-                  <div>Has more: {hasMorePages ? 'true' : 'false'}</div>
-                  <div>Loading: {loading ? 'true' : 'false'}</div>
                 </div>
               </div>
             )}

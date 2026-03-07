@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +26,7 @@ interface HomeMysteryCardProps {
   onDelete?: (id: string) => void;
 }
 
-export default function HomeMysteryCard({ mystery, onView, onEdit, onArchive, onDelete }: HomeMysteryCardProps) {
+function HomeMysteryCard({ mystery, onView, onEdit, onArchive, onDelete }: HomeMysteryCardProps) {
   const { t } = useTranslation();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -189,3 +189,5 @@ export default function HomeMysteryCard({ mystery, onView, onEdit, onArchive, on
     </Card>
   );
 }
+
+export default memo(HomeMysteryCard);

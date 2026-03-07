@@ -1,15 +1,13 @@
 {
-  "lastUpdated": "2026-03-03T14:00:02.294Z",
+  "error": "ENOENT: no such file or directory, open '/Users/jonathanmiller/My Drive/[04] Projects/[01] CascadeProjects/website-murder-mystery-party-generator-main/.google-analytics-credentials.json'",
+  "lastUpdated": "2026-03-06T14:00:02.508Z",
   "postPath": "/blog/en/how-to-host-a-victorian-murder-mystery-party",
-  "dateRange": {
-    "start": "2026-02-24",
-    "end": "2026-03-03"
-  },
-  "dailyMetrics": [],
-  "summary": {
-    "totalPageviews": 0,
-    "avgTimeOnPage": 0,
-    "avgBounceRate": 0,
-    "totalConversions": 0
+  "note": "Unable to fetch GA metrics. Check credentials and configuration.",
+  "setup": {
+    "step1": "Enable Google Analytics Data API in Google Cloud Console",
+    "step2": "Create service account and download credentials JSON",
+    "step3": "Add service account email to GA4 property with Viewer role",
+    "step4": "Save credentials to .google-analytics-credentials.json",
+    "step5": "Set GA4_PROPERTY_ID environment variable"
   }
 }
