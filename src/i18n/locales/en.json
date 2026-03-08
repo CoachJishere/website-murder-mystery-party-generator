@@ -506,14 +506,6 @@
           "question": "How many players do I need?",
           "answer": "Our system creates mysteries for any group size you specify - from intimate gatherings of 4-6 players to larger parties of 15+ players. Just tell us your player count and we'll design accordingly."
         },
-        "modifyMystery": {
-          "question": "Can I modify my mystery after creating it?",
-          "answer": "Of course! Use our editor to refine and adjust your mystery until it's exactly right for your group. Change characters, themes, or complexity anytime."
-        },
-        "lastMinuteChanges": {
-          "question": "What if I need to add or remove players at the last minute?",
-          "answer": "No problem! Our flexible system allows you to adjust your player count even after creating your mystery. The AI will adapt the story and characters to accommodate these changes."
-        },
         "whatIncluded": {
           "question": "What's included in my custom mystery package?",
           "answer": "Everything you need: a comprehensive host guide with step-by-step instructions, detailed character profiles for each player, clues, evidence, and all game materials. No additional preparation required."
@@ -544,19 +536,7 @@
         },
         "gameDesignEngagement": {
           "question": "How does your game design ensure everyone stays engaged?",
-          "answer": "Our mysteries focus on rich character interactions rather than rigid storylines. Every character has detailed backgrounds and motivations that drive natural gameplay, ensuring all players stay actively involved throughout the entire experience."
-        },
-        "dynamicMurderer": {
-          "question": "Why don't the clues point to one specific murderer from the start?",
-          "answer": "The murderer is determined after the first round based on clues revealed during gameplay. This dynamic approach means clues build progressively, making the mystery solvable even if some details are missed in the party atmosphere. It's designed for real-world hosting where conversations flow naturally."
-        },
-        "flexiblePlayerCount": {
-          "question": "What happens if someone can't make it last minute?",
-          "answer": "Our flexible design accommodates last-minute changes! Since the game doesn't rely on one character holding critical information, you can adjust your player count without breaking the mystery. Life happens - sick guests, traffic delays - and your party continues seamlessly."
-        },
-        "characterFocused": {
-          "question": "Why character-focused instead of plot-focused?",
-          "answer": "Years of hosting taught us that overly specific clues get missed at parties - people chat, refill drinks, and enjoy themselves. Our character-driven approach means the mystery unfolds naturally through interactions, not through finding every single clue perfectly."
+          "answer": "Our mysteries are built around rich character interactions, shared histories, and interwoven secrets. Every character is deeply connected — not just to the victim, but to each other — creating natural drama and ensuring all players stay actively involved throughout the entire experience."
         }
       }
     },

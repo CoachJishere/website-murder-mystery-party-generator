@@ -52,10 +52,6 @@ const Faq1 = ({
       answer: t('supportPage.faqs.questions.whatIncluded.answer')
     },
     {
-      question: t('supportPage.faqs.questions.modifyMystery.question'),
-      answer: t('supportPage.faqs.questions.modifyMystery.answer')
-    },
-    {
       question: t('supportPage.faqs.questions.gameDuration.question'),
       answer: t('supportPage.faqs.questions.gameDuration.answer')
     },
@@ -67,18 +63,6 @@ const Faq1 = ({
       question: t('supportPage.faqs.questions.gameDesignEngagement.question'),
       answer: t('supportPage.faqs.questions.gameDesignEngagement.answer')
     },
-    {
-      question: t('supportPage.faqs.questions.dynamicMurderer.question'),
-      answer: t('supportPage.faqs.questions.dynamicMurderer.answer')
-    },
-    {
-      question: t('supportPage.faqs.questions.flexiblePlayerCount.question'),
-      answer: t('supportPage.faqs.questions.flexiblePlayerCount.answer')
-    },
-    {
-      question: t('supportPage.faqs.questions.characterFocused.question'),
-      answer: t('supportPage.faqs.questions.characterFocused.answer')
-    }
   ];
 
   const finalItems = items || translatedItems;

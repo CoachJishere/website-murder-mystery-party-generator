@@ -506,14 +506,6 @@
           "question": "Wie viele Spieler brauche ich?",
           "answer": "Unser System erstellt Mysterien für jede von Ihnen angegebene Gruppengröße, von intimen Treffen mit 4 bis 6 Spielern bis hin zu größeren Partys mit über 15 Spielern. Sagen Sie uns einfach, wie viele Spieler, und wir werden entsprechend entwerfen."
         },
-        "modifyMystery": {
-          "question": "Kann ich mein Mysterium nach der Erstellung ändern?",
-          "answer": "Ja, natürlich! Verwenden Sie unseren Editor, um Ihr Mysterium zu verfeinern und anzupassen, bis es perfekt für Ihre Gruppe ist. Ändern Sie Charaktere, Themen oder Komplexität jederzeit."
-        },
-        "lastMinuteChanges": {
-          "question": "Was passiert, wenn ich in letzter Minute Spieler hinzufügen oder entfernen muss?",
-          "answer": "Kein Problem! Unser flexibles System ermöglicht es Ihnen, die Anzahl der Spieler auch nach der Erstellung Ihres Mysteriums anzupassen. Die KI passt die Geschichte und die Charaktere an diese Änderungen an."
-        },
         "whatIncluded": {
           "question": "Was ist in meinem benutzerdefinierten Mystery-Paket enthalten?",
           "answer": "Alles, was Sie brauchen: eine umfassende Gastgeberanleitung mit Schritt-für-Schritt-Anleitungen, detaillierte Charakterprofile für jeden Spieler, Hinweise, Beweise und alle Spielmaterialien. Keine zusätzliche Vorbereitung erforderlich."
@@ -544,19 +536,7 @@
         },
         "gameDesignEngagement": {
           "question": "Wie stellt Ihr Spieldesign sicher, dass alle engagiert bleiben?",
-          "answer": "Unsere Mysterien konzentrieren sich auf reichhaltige Charakterinteraktionen statt auf starre Handlungsstränge. Jeder Charakter hat detaillierte Hintergründe und Motivationen, die natürliches Gameplay antreiben und sicherstellen, dass alle Spieler während des gesamten Erlebnisses aktiv beteiligt bleiben."
-        },
-        "dynamicMurderer": {
-          "question": "Warum weisen die Hinweise nicht von Anfang an auf einen bestimmten Mörder hin?",
-          "answer": "Der Mörder wird nach der ersten Runde basierend auf den während des Spiels aufgedeckten Hinweisen bestimmt. Dieser dynamische Ansatz bedeutet, dass sich Hinweise progressiv aufbauen, wodurch das Mysterium auch dann lösbar bleibt, wenn einige Details in der Party-Atmosphäre verpasst werden."
-        },
-        "flexiblePlayerCount": {
-          "question": "Was passiert, wenn jemand in letzter Minute nicht kommen kann?",
-          "answer": "Unser flexibles Design ermöglicht Last-Minute-Änderungen! Da das Spiel nicht darauf angewiesen ist, dass ein Charakter kritische Informationen hält, können Sie Ihre Spieleranzahl anpassen, ohne das Mysterium zu unterbrechen."
-        },
-        "characterFocused": {
-          "question": "Warum charakterzentriert statt handlungszentriert?",
-          "answer": "Jahre des Hostings haben uns gelehrt, dass übermäßig spezifische Hinweise bei Partys verpasst werden - die Leute plaudern, füllen Getränke nach und genießen sich. Unser charaktergesteuerter Ansatz bedeutet, dass sich das Mysterium natürlich durch Interaktionen entfaltet."
+          "answer": "Unsere Mysterien basieren auf reichhaltigen Charakterinteraktionen, gemeinsamen Geschichten und miteinander verwobenen Geheimnissen. Jeder Charakter ist tief verbunden — nicht nur mit dem Opfer, sondern auch miteinander — was natürliches Drama erzeugt und sicherstellt, dass alle Spieler während des gesamten Erlebnisses aktiv beteiligt bleiben."
         }
       }
     },

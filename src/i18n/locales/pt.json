@@ -506,14 +506,6 @@
           "question": "Quantos jogadores preciso?",
           "answer": "Nosso sistema cria mistérios para qualquer tamanho de grupo que você especificar - desde reuniões íntimas de 4-6 jogadores até festas maiores de 15+ jogadores. Basta nos dizer o número de jogadores e nós projetaremos de acordo."
         },
-        "modifyMystery": {
-          "question": "Posso modificar meu mistério depois de criá-lo?",
-          "answer": "Claro! Use nosso editor para ajustar e personalizar seu mistério até que esteja perfeito para seu grupo. Modifique personagens, temas ou complexidade a qualquer momento."
-        },
-        "lastMinuteChanges": {
-          "question": "E se eu precisar adicionar ou remover jogadores no último minuto?",
-          "answer": "Sem problemas! Nosso sistema flexível permite que você ajuste o número de jogadores mesmo depois de criar seu mistério. A IA ajustará a história e os personagens para acomodar essas mudanças."
-        },
         "whatIncluded": {
           "question": "O que está incluído no meu pacote de mistério personalizado?",
           "answer": "Tudo o que você precisa: um guia abrangente do anfitrião com instruções passo a passo, perfis detalhados de personagens para cada jogador, pistas, evidências e todos os materiais do jogo. Nenhuma preparação extra é necessária."
@@ -544,19 +536,7 @@
         },
         "gameDesignEngagement": {
           "question": "Como o design do seu jogo garante que todos permaneçam engajados?",
-          "answer": "Nossos mistérios focam em interações ricas entre personagens em vez de histórias rígidas. Cada personagem tem históricos e motivações detalhados que impulsionam o gameplay natural, garantindo que todos os jogadores permaneçam ativamente envolvidos durante toda a experiência."
-        },
-        "dynamicMurderer": {
-          "question": "Por que as pistas não apontam para um assassino específico desde o início?",
-          "answer": "O assassino é determinado após a primeira rodada com base nas pistas reveladas durante o jogo. Esta abordagem dinâmica significa que as pistas se constroem progressivamente, tornando o mistério solucionável mesmo que alguns detalhes sejam perdidos no ambiente de festa."
-        },
-        "flexiblePlayerCount": {
-          "question": "O que acontece se alguém não puder comparecer no último minuto?",
-          "answer": "Nosso design flexível acomoda mudanças de última hora. Como o jogo não depende de um personagem segurando informações críticas, você pode ajustar seu número de jogadores sem quebrar o mistério."
-        },
-        "characterFocused": {
-          "question": "Por que focado em personagens em vez de focado no enredo?",
-          "answer": "Anos de experiência nos ensinaram que pistas muito específicas são perdidas em festas. Nossa abordagem orientada por personagens significa que o mistério se desenrola naturalmente através de interações."
+          "answer": "Nossos mistérios são construídos em torno de ricas interações entre personagens, histórias compartilhadas e segredos entrelaçados. Cada personagem está profundamente conectado — não apenas à vítima, mas uns aos outros — criando drama natural e garantindo que todos os jogadores permaneçam ativamente envolvidos durante toda a experiência."
         }
       }
     },

@@ -506,14 +506,6 @@
           "question": "How many players do I need?",
           "answer": "Our system creates mysteries for any group size you specify - from intimate gatherings of 4-6 players to larger parties of 15+ players. Just tell us your player count and we'll design accordingly."
         },
-        "modifyMystery": {
-          "question": "Can I modify my mystery after creating it?",
-          "answer": "Of course! Use our editor to refine and adjust your mystery until it's exactly right for your group. Change characters, themes, or complexity anytime."
-        },
-        "lastMinuteChanges": {
-          "question": "What if I need to add or remove players at the last minute?",
-          "answer": "No problem! Our flexible system allows you to adjust your player count even after creating your mystery. The AI will adapt the story and characters to accommodate these changes."
-        },
         "whatIncluded": {
           "question": "What's included in my custom mystery package?",
           "answer": "Everything you need: a comprehensive host guide with step-by-step instructions, detailed character profiles for each player, clues, evidence, and all game materials. No additional preparation required."
@@ -544,19 +536,7 @@
         },
         "gameDesignEngagement": {
           "question": "Hur säkerställer er speldesign att alla förblir engagerade?",
-          "answer": "Våra mysterier fokuserar på rika karaktärsinteraktioner snarare än rigida berättelser. Varje karaktär har detaljerade bakgrunder och motiv som driver naturligt spelande, vilket säkerställer att alla spelare förblir aktivt involverade under hela upplevelsen."
-        },
-        "dynamicMurderer": {
-          "question": "Varför pekar inte ledtrådarna på en specifik mördare från början?",
-          "answer": "Mördaren bestäms efter första omgången baserat på ledtrådar som avslöjas under spelet. Detta dynamiska tillvägagångssätt innebär att ledtrådar byggs progressivt, vilket gör mysteriet lösbart även om vissa detaljer missas i feststämningen."
-        },
-        "flexiblePlayerCount": {
-          "question": "Vad händer om någon inte kan komma i sista minuten?",
-          "answer": "Vår flexibla design hanterar ändringar i sista minuten. Eftersom spelet inte är beroende av att en karaktär har kritisk information kan du justera ditt antal spelare utan att förstöra mysteriet."
-        },
-        "characterFocused": {
-          "question": "Varför karaktärsfokuserad istället för plotfokuserad?",
-          "answer": "Års erfarenhet har lärt oss att alltför specifika ledtrådar missas på fester. Vårt karaktärsdrivna tillvägagångssätt innebär att mysteriet utvecklas naturligt genom interaktioner."
+          "answer": "Våra mysterier är uppbyggda kring rika karaktärsinteraktioner, delade historier och sammanflätade hemligheter. Varje karaktär är djupt kopplad — inte bara till offret, utan till varandra — vilket skapar naturlig dramatik och säkerställer att alla spelare förblir aktivt engagerade genom hela upplevelsen."
         }
       }
     },

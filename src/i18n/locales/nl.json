@@ -506,14 +506,6 @@
           "question": "Hoeveel spelers heb ik nodig?",
           "answer": "Ons systeem creëert mysteries voor elke groepsgrootte die u opgeeft - van intieme bijeenkomsten van 4-6 spelers tot grotere feesten van 15+ spelers. Vertel ons gewoon uw spelersaantal en wij ontwerpen dienovereenkomstig."
         },
-        "modifyMystery": {
-          "question": "Kan ik mijn mysterie wijzigen nadat ik het heb gemaakt?",
-          "answer": "Natuurlijk! Gebruik onze editor om uw mysterie te verfijnen en aan te passen totdat het precies goed is voor uw groep. Wijzig personages, thema's of complexiteit op elk moment."
-        },
-        "lastMinuteChanges": {
-          "question": "Wat als ik op het laatste moment spelers moet toevoegen of verwijderen?",
-          "answer": "Geen probleem! Ons flexibele systeem stelt u in staat om uw spelersaantal aan te passen, zelfs nadat u uw mysterie heeft gemaakt. De AI past het verhaal en de personages aan om deze wijzigingen op te vangen."
-        },
         "whatIncluded": {
           "question": "Wat zit er in mijn aangepaste mysteriepakket?",
           "answer": "Alles wat u nodig heeft: een uitgebreide hostgids met stapsgewijze instructies, gedetailleerde personageprofielen voor elke speler, aanwijzingen, bewijsmateriaal en alle spelmaterialen. Geen extra voorbereiding vereist."
@@ -544,19 +536,7 @@
         },
         "gameDesignEngagement": {
           "question": "Hoe zorgt uw spelontwerp ervoor dat iedereen betrokken blijft?",
-          "answer": "Onze mysteries richten zich op rijke karakterinteracties in plaats van rigide verhaallijnen. Elk personage heeft gedetailleerde achtergronden en motivaties die natuurlijke gameplay stimuleren, waardoor alle spelers tijdens de hele ervaring actief betrokken blijven."
-        },
-        "dynamicMurderer": {
-          "question": "Waarom wijzen de aanwijzingen niet vanaf het begin naar een specifieke moordenaar?",
-          "answer": "De moordenaar wordt bepaald na de eerste ronde op basis van aanwijzingen die tijdens het spel worden onthuld. Deze dynamische aanpak betekent dat aanwijzingen progressief worden opgebouwd, waardoor het mysterie oplosbaar blijft, zelfs als sommige details in de feestsfeer worden gemist."
-        },
-        "flexiblePlayerCount": {
-          "question": "Wat gebeurt er als iemand op het laatste moment niet kan komen?",
-          "answer": "Ons flexibele ontwerp past zich aan wijzigingen op het laatste moment aan. Omdat het spel niet afhankelijk is van één personage dat cruciale informatie vasthoudt, kunt u uw aantal spelers aanpassen zonder het mysterie te verbreken."
-        },
-        "characterFocused": {
-          "question": "Waarom gericht op personages in plaats van op plot?",
-          "answer": "Jaren van ervaring hebben ons geleerd dat te specifieke aanwijzingen op feesten worden gemist. Onze op personages gerichte benadering betekent dat het mysterie zich natuurlijk ontvouwt door interacties."
+          "answer": "Onze mysteries zijn opgebouwd rond rijke karakterinteracties, gedeelde geschiedenissen en verweven geheimen. Elk personage is diep verbonden — niet alleen met het slachtoffer, maar ook met elkaar — wat natuurlijk drama creëert en ervoor zorgt dat alle spelers actief betrokken blijven gedurende de gehele ervaring."
         }
       }
     },

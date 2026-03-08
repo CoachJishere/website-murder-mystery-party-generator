@@ -506,14 +506,6 @@
           "question": "Kuinka monta pelaajaa tarvitsen?",
           "answer": "Järjestelmämme luo mysteerejä mihin tahansa ryhmäkokoon, jonka ilmoitat, intiimeistä 4-6 pelaajan tapaamisista suurempiin yli 15 pelaajan juhliin. Kerro vain, kuinka monta pelaajaa, niin suunnittelemme sen mukaisesti."
         },
-        "modifyMystery": {
-          "question": "Voinko muuttaa mysteeriäni sen luomisen jälkeen?",
-          "answer": "Kyllä, ehdottomasti! Käytä muokkaustyökaluamme viimeistelläksesi ja mukauttaaksesi mysteeriäsi, kunnes se on täydellinen ryhmällesi. Muokkaa hahmoja, teemoja tai monimutkaisuutta milloin tahansa."
-        },
-        "lastMinuteChanges": {
-          "question": "Mitä jos minun täytyy lisätä tai poistaa pelaajia viime hetkellä?",
-          "answer": "Ei ongelmaa! Joustava järjestelmämme antaa sinun säätää pelaajien määrää jopa mysteerisi luomisen jälkeen. Tekoäly mukauttaa tarinan ja hahmot vastaamaan näitä muutoksia."
-        },
         "whatIncluded": {
           "question": "Mitä mukautettu mysteeripakettini sisältää?",
           "answer": "Kaiken mitä tarvitset: kattavan isännöintioppaan vaiheittaisilla ohjeilla, yksityiskohtaiset hahmoprofiilit jokaiselle pelaajalle, vihjeet, todisteet ja kaikki pelimateriaalit. Ei ylimääräistä valmistelua tarvita."
@@ -544,19 +536,7 @@
         },
         "gameDesignEngagement": {
           "question": "Miten pelisi suunnittelu varmistaa, että kaikki pysyvät sitoutuneina?",
-          "answer": "Mysteerimme keskittyvät rikkaaseen hahmojen väliseen vuorovaikutukseen jäykkien juonilinjojen sijaan. Jokaisella hahmolla on yksityiskohtaiset taustat ja motivaatiot, jotka ohjaavat luonnollista pelaamista ja varmistavat, että kaikki pelaajat pysyvät aktiivisesti mukana koko kokemuksen ajan."
-        },
-        "dynamicMurderer": {
-          "question": "Miksi vihjeet eivät osoita tiettyä murhaajaa alusta alkaen?",
-          "answer": "Murhaaja määräytyy ensimmäisen kierroksen jälkeen pelin aikana paljastettujen vihjeiden perusteella. Tämä dynaaminen lähestymistapa tarkoittaa, että vihjeet rakentuvat asteittain, mikä tekee mysteeristä ratkaistavissa, vaikka joitakin yksityiskohtia jäisi huomaamatta juhlien tunnelmassa."
-        },
-        "flexiblePlayerCount": {
-          "question": "Mitä tapahtuu, jos joku ei voi tulla viime hetkellä?",
-          "answer": "Joustava suunnittelumme sopeutuu viime hetken muutoksiin. Koska peli ei ole riippuvainen siitä, että yksi hahmo pitää hallussaan kriittistä tietoa, voit säätää pelaajien määrää rikkomatta mysteeriä."
-        },
-        "characterFocused": {
-          "question": "Miksi hahmokeskeinen juonenkeskeisen sijaan?",
-          "answer": "Vuosien kokemus on opettanut meille, että liian tarkat vihjeet jäävät huomaamatta juhlissa. Hahmovetoinen lähestymistapamme tarkoittaa, että mysteeri kehittyy luonnollisesti vuorovaikutusten kautta."
+          "answer": "Mysteerimme on rakennettu rikkaiden hahmojen välisten vuorovaikutusten, jaettujen historioiden ja toisiinsa kietoutuneiden salaisuuksien ympärille. Jokainen hahmo on syvästi yhteydessä — ei vain uhriin, vaan myös toisiinsa — luoden luonnollista draamaa ja varmistaen, että kaikki pelaajat pysyvät aktiivisesti mukana koko kokemuksen ajan."
         }
       }
     },

@@ -507,14 +507,6 @@
           "question": "De combien de joueurs ai-je besoin ?",
           "answer": "Notre système génère des mystères pour n'importe quelle taille de groupe que vous spécifiez, des réunions intimes de 4 à 6 joueurs aux grandes fêtes de plus de 15 joueurs. Dites-nous simplement le nombre de joueurs et nous le concevrons en conséquence."
         },
-        "modifyMystery": {
-          "question": "Puis-je modifier mon mystère une fois qu'il est généré ?",
-          "answer": "Oui, absolument ! Utilisez notre outil d'édition pour peaufiner et personnaliser votre mystère jusqu'à ce qu'il soit parfait pour votre groupe. Modifiez les personnages, les thèmes ou la complexité à tout moment."
-        },
-        "lastMinuteChanges": {
-          "question": "Que faire si je dois ajouter ou supprimer des joueurs à la dernière minute ?",
-          "answer": "Pas de problème ! Notre système flexible vous permet d'ajuster le nombre de joueurs même après la génération de votre mystère. L'IA adaptera l'histoire et les personnages pour accommoder ces changements."
-        },
         "whatIncluded": {
           "question": "Qu'est-ce qui est inclus dans mon package de mystère personnalisé ?",
           "answer": "Tout ce dont vous avez besoin : un guide complet de l'hôte avec des instructions étape par étape, des profils de personnages détaillés pour chaque joueur, des indices, des preuves et tous les matériaux de jeu. Aucune préparation supplémentaire n'est nécessaire."
@@ -545,19 +537,7 @@
         },
         "gameDesignEngagement": {
           "question": "Comment votre conception de jeu garantit-elle que tout le monde reste engagé?",
-          "answer": "Nos mystères se concentrent sur des interactions riches entre personnages plutôt que sur des intrigues rigides. Chaque personnage a des antécédents et des motivations détaillés qui stimulent un gameplay naturel, garantissant que tous les joueurs restent activement impliqués tout au long de lexpérience."
-        },
-        "dynamicMurderer": {
-          "question": "Pourquoi les indices ne pointent-ils pas vers un meurtrier spécifique dès le départ?",
-          "answer": "Le meurtrier est déterminé après le premier tour en fonction des indices révélés pendant le jeu. Cette approche dynamique signifie que les indices se construisent progressivement, rendant le mystère résolvable même si certains détails sont manqués dans latmosphère de fête."
-        },
-        "flexiblePlayerCount": {
-          "question": "Que se passe-t-il si quelquun ne peut pas venir au dernier moment?",
-          "answer": "Notre conception flexible sadapte aux changements de dernière minute. Comme le jeu ne repose pas sur un personnage détenant des informations critiques, vous pouvez ajuster votre nombre de joueurs sans casser le mystère."
-        },
-        "characterFocused": {
-          "question": "Pourquoi axé sur les personnages plutôt que sur lintrigue?",
-          "answer": "Des années dexpérience nous ont appris que les indices trop spécifiques sont manqués lors des fêtes. Notre approche axée sur les personnages signifie que le mystère se déroule naturellement à travers les interactions."
+          "answer": "Nos mystères sont construits autour d'interactions riches entre personnages, d'histoires partagées et de secrets entrelacés. Chaque personnage est profondément connecté — non seulement à la victime, mais aussi les uns aux autres — créant un drame naturel et garantissant que tous les joueurs restent activement impliqués tout au long de l'expérience."
         }
       }
     },

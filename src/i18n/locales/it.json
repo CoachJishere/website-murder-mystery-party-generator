@@ -506,14 +506,6 @@
           "question": "Di quanti giocatori ho bisogno?",
           "answer": "Il nostro sistema genera misteri per qualsiasi dimensione di gruppo tu specifichi, da incontri intimi di 4-6 giocatori a grandi feste di oltre 15. Dicci semplicemente il numero di giocatori e lo progetteremo di conseguenza."
         },
-        "modifyMystery": {
-          "question": "Posso modificare il mio mistero una volta generato?",
-          "answer": "Sì, assolutamente! Usa il nostro strumento di modifica per affinare e personalizzare il tuo mistero finché non è perfetto per il tuo gruppo. Modifica personaggi, temi o complessità in qualsiasi momento."
-        },
-        "lastMinuteChanges": {
-          "question": "Cosa succede se devo aggiungere o rimuovere giocatori all'ultimo minuto?",
-          "answer": "Nessun problema! Il nostro sistema flessibile ti consente di regolare il numero di giocatori anche dopo che il tuo mistero è stato generato. L'IA adatterà la storia e i personaggi per accogliere questi cambiamenti."
-        },
         "whatIncluded": {
           "question": "Cosa è incluso nel mio pacchetto mistero personalizzato?",
           "answer": "Tutto ciò di cui hai bisogno: una guida completa per l'organizzatore con istruzioni passo-passo, profili dettagliati dei personaggi per ogni giocatore, indizi, prove e tutti i materiali di gioco. Non è necessaria alcuna preparazione aggiuntiva."
@@ -544,19 +536,7 @@
         },
         "gameDesignEngagement": {
           "question": "Come fa il vostro design di gioco a garantire che tutti rimangano coinvolti?",
-          "answer": "I nostri misteri si concentrano su ricche interazioni tra personaggi piuttosto che su trame rigide. Ogni personaggio ha background e motivazioni dettagliati che guidano un gameplay naturale, garantendo che tutti i giocatori rimangano attivamente coinvolti per tutta lesperienza."
-        },
-        "dynamicMurderer": {
-          "question": "Perché gli indizi non puntano a un assassino specifico dallinizio?",
-          "answer": "Lassassino viene determinato dopo il primo round in base agli indizi rivelati durante il gioco. Questo approccio dinamico significa che gli indizi si costruiscono progressivamente, rendendo il mistero risolvibile anche se alcuni dettagli vengono persi nellatmosfera della festa."
-        },
-        "flexiblePlayerCount": {
-          "question": "Cosa succede se qualcuno non può partecipare allultimo minuto?",
-          "answer": "Il nostro design flessibile si adatta ai cambiamenti dellultimo minuto. Poiché il gioco non si basa su un personaggio che detiene informazioni critiche, puoi regolare il numero di giocatori senza rompere il mistero."
-        },
-        "characterFocused": {
-          "question": "Perché incentrato sui personaggi invece che sulla trama?",
-          "answer": "Anni di esperienza ci hanno insegnato che gli indizi troppo specifici vengono persi alle feste. Il nostro approccio guidato dai personaggi significa che il mistero si svolge naturalmente attraverso le interazioni."
+          "answer": "I nostri misteri sono costruiti attorno a ricche interazioni tra personaggi, storie condivise e segreti intrecciati. Ogni personaggio è profondamente connesso — non solo alla vittima, ma anche agli altri — creando dramma naturale e assicurando che tutti i giocatori rimangano attivamente coinvolti durante l'intera esperienza."
         }
       }
     },
