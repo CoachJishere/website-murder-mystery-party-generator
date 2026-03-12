@@ -55,28 +55,57 @@ export default async function handler(req) {
 
     console.log(`Updating mystery package for conversation: ${conversationId}`);
 
-    // Update the mystery package with completed status and data
+    // Fetch extracted_characters to validate character count
+    const { data: packageRecord } = await supabase
+      .from('mystery_packages')
+      .select('extracted_characters')
+      .eq('conversation_id', conversationId)
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    let expectedCharacterCount = 0;
+    if (packageRecord?.extracted_characters) {
+      try {
+        const extracted = typeof packageRecord.extracted_characters === 'string'
+          ? JSON.parse(packageRecord.extracted_characters)
+          : packageRecord.extracted_characters;
+        expectedCharacterCount = Array.isArray(extracted) ? extracted.length : 0;
+      } catch { /* ignore parse errors */ }
+    }
+
+    const incomingCharacterCount = Array.isArray(data?.characters) ? data.characters.length : 0;
+    const allCharactersPresent = expectedCharacterCount === 0 || incomingCharacterCount >= expectedCharacterCount;
+
+    console.log(`Character count check: ${incomingCharacterCount} incoming, ${expectedCharacterCount} expected, complete: ${allCharactersPresent}`);
+
+    const generationStatus = allCharactersPresent
+      ? { status: 'completed', progress: 100, currentStep: 'Package generation completed successfully' }
+      : { status: 'in_progress', progress: Math.round((incomingCharacterCount / expectedCharacterCount) * 90), currentStep: `Generated ${incomingCharacterCount} of ${expectedCharacterCount} characters` };
+
+    // Update the mystery package with status based on character completeness
+    const updateData = {
+      title: data?.title || null,
+      game_overview: data?.gameOverview || null,
+      host_guide: data?.hostGuide || null,
+      materials: data?.materials || null,
+      preparation_instructions: data?.preparation || null,
+      timeline: data?.timeline || null,
+      hosting_tips: data?.hostingTips || null,
+      evidence_cards: data?.evidenceCards ? JSON.stringify(data.evidenceCards) : null,
+      relationship_matrix: data?.relationshipMatrix ? JSON.stringify(data.relationshipMatrix) : null,
+      detective_script: data?.detectiveScript || null,
+      generation_status: generationStatus,
+      updated_at: new Date().toISOString()
+    };
+
+    if (allCharactersPresent) {
+      updateData.generation_completed_at = new Date().toISOString();
+    }
+
     const { error: updateError } = await supabase
       .from('mystery_packages')
-      .update({
-        title: data?.title || null,
-        game_overview: data?.gameOverview || null,
-        host_guide: data?.hostGuide || null,
-        materials: data?.materials || null,
-        preparation_instructions: data?.preparation || null,
-        timeline: data?.timeline || null,
-        hosting_tips: data?.hostingTips || null,
-        evidence_cards: data?.evidenceCards ? JSON.stringify(data.evidenceCards) : null,
-        relationship_matrix: data?.relationshipMatrix ? JSON.stringify(data.relationshipMatrix) : null,
-        detective_script: data?.detectiveScript || null,
-        generation_status: {
-          status: 'completed',
-          progress: 100,
-          currentStep: 'Package generation completed successfully'
-        },
-        generation_completed_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
+      .update(updateData)
       .eq('conversation_id', conversationId);
 
     if (updateError) {

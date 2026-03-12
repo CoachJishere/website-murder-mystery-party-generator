@@ -318,7 +318,9 @@ const MysteryView = () => {
           host_guide,
           generation_completed_at,
           generation_status,
-          id
+          id,
+          extracted_characters,
+          characters:mystery_characters(count)
         `)
         .eq("conversation_id", id)
         .order('updated_at', { ascending: false })
@@ -350,8 +352,8 @@ const MysteryView = () => {
 
       // STEP 3: Determine completion status from multiple indicators
       const hasActualContent = packageData && (
-        packageData.title || 
-        packageData.host_guide || 
+        packageData.title ||
+        packageData.host_guide ||
         packageData.generation_completed_at
       );
 
@@ -362,16 +364,33 @@ const MysteryView = () => {
 
       const packageStatusComplete = packageData?.generation_status?.status === 'completed';
 
+      // Validate that all expected characters have been generated
+      let allCharactersGenerated = true;
+      if (packageData?.extracted_characters) {
+        try {
+          const extracted = typeof packageData.extracted_characters === 'string'
+            ? JSON.parse(packageData.extracted_characters)
+            : packageData.extracted_characters;
+          const expectedCount = Array.isArray(extracted) ? extracted.length : 0;
+          const generatedCount = packageData.characters?.[0]?.count ?? 0;
+          allCharactersGenerated = expectedCount === 0 || generatedCount >= expectedCount;
+          console.log(`=== STATUS CHECK DEBUG === Character count: ${generatedCount} generated, ${expectedCount} expected, allGenerated: ${allCharactersGenerated}`);
+        } catch {
+          allCharactersGenerated = true; // If parsing fails, don't block
+        }
+      }
+
       console.log("=== STATUS CHECK DEBUG === Completion indicators:", {
         hasActualContent,
         conversationIndicatesComplete,
         packageStatusComplete,
+        allCharactersGenerated,
         packageGenerationStatus: packageData?.generation_status,
         conversationStatus: conversationData
       });
 
-      // STEP 4: If any completion indicator is true, force completion
-      if (hasActualContent || conversationIndicatesComplete || packageStatusComplete) {
+      // STEP 4: If completion indicators are true AND all characters generated, force completion
+      if ((hasActualContent || conversationIndicatesComplete || packageStatusComplete) && allCharactersGenerated) {
         const previousStatus = generationStatus?.status;
         console.log("=== STATUS CHECK DEBUG === Completion detected, previous status:", previousStatus);
         

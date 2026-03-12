@@ -102,11 +102,11 @@ export async function saveStructuredPackageData(mysteryId: string, jsonData: any
 
     console.log("✅ [DEBUG] Normalized data:", normalizedData);
 
-    // Get the package ID for this conversation with enhanced error handling
+    // Get the package ID and extracted characters for this conversation
     console.log("🔍 [DEBUG] Fetching package for conversation:", mysteryId);
     const { data: packageData, error: packageError } = await supabase
       .from("mystery_packages")
-      .select("id")
+      .select("id, extracted_characters")
       .eq("conversation_id", mysteryId)
       .order('updated_at', { ascending: false })
       .limit(1)
@@ -118,6 +118,29 @@ export async function saveStructuredPackageData(mysteryId: string, jsonData: any
     }
     
     let packageId: string;
+
+    // Determine expected character count from extracted_characters
+    let expectedCharacterCount = 0;
+    if (packageData?.extracted_characters) {
+      try {
+        const extracted = typeof packageData.extracted_characters === 'string'
+          ? JSON.parse(packageData.extracted_characters)
+          : packageData.extracted_characters;
+        expectedCharacterCount = Array.isArray(extracted) ? extracted.length : 0;
+      } catch {
+        expectedCharacterCount = 0;
+      }
+    }
+
+    const incomingCharacterCount = Array.isArray(normalizedData.characters) ? normalizedData.characters.length : 0;
+    const allCharactersPresent = expectedCharacterCount === 0 || incomingCharacterCount >= expectedCharacterCount;
+
+    // Only mark completed if all expected characters are included
+    const generationStatus = allCharactersPresent
+      ? { status: 'completed', progress: 100, currentStep: 'Package generation completed' }
+      : { status: 'in_progress', progress: Math.round((incomingCharacterCount / expectedCharacterCount) * 90), currentStep: `Generated ${incomingCharacterCount} of ${expectedCharacterCount} characters` };
+
+    console.log(`🔍 [DEBUG] Character count check: ${incomingCharacterCount} incoming, ${expectedCharacterCount} expected, allPresent: ${allCharactersPresent}`);
 
     if (!packageData) {
       console.log("ℹ️ [DEBUG] No existing package found, creating new one");
@@ -137,12 +160,8 @@ export async function saveStructuredPackageData(mysteryId: string, jsonData: any
           evidence_cards: normalizedData.evidenceCards || null,
           relationship_matrix: normalizedData.relationshipMatrix || null,
           detective_script: normalizedData.detectiveScript || null,
-          generation_status: {
-            status: 'completed',
-            progress: 100,
-            currentStep: 'Package generation completed'
-          },
-          generation_completed_at: new Date().toISOString(),
+          generation_status: generationStatus,
+          generation_completed_at: allCharactersPresent ? new Date().toISOString() : null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         })
@@ -161,34 +180,35 @@ export async function saveStructuredPackageData(mysteryId: string, jsonData: any
       console.log("✅ [DEBUG] Found existing package with ID:", packageId);
 
       // Update existing mystery_packages table with structured data
+      const updateData: any = {
+        title: normalizedData.title,
+        game_overview: normalizedData.gameOverview,
+        host_guide: normalizedData.hostGuide,
+        materials: normalizedData.materials || null,
+        preparation_instructions: normalizedData.preparation || null,
+        timeline: normalizedData.timeline || null,
+        hosting_tips: normalizedData.hostingTips || null,
+        evidence_cards: normalizedData.evidenceCards || null,
+        relationship_matrix: normalizedData.relationshipMatrix || null,
+        detective_script: normalizedData.detectiveScript || null,
+        generation_status: generationStatus,
+        updated_at: new Date().toISOString()
+      };
+
+      if (allCharactersPresent) {
+        updateData.generation_completed_at = new Date().toISOString();
+      }
+
       const { error: upsertError } = await supabase
         .from("mystery_packages")
-        .update({
-          title: normalizedData.title,
-          game_overview: normalizedData.gameOverview,
-          host_guide: normalizedData.hostGuide,
-          materials: normalizedData.materials || null,
-          preparation_instructions: normalizedData.preparation || null,
-          timeline: normalizedData.timeline || null,
-          hosting_tips: normalizedData.hostingTips || null,
-          evidence_cards: normalizedData.evidenceCards || null,
-          relationship_matrix: normalizedData.relationshipMatrix || null,
-          detective_script: normalizedData.detectiveScript || null,
-          generation_status: {
-            status: 'completed',
-            progress: 100,
-            currentStep: 'Package generation completed'
-          },
-          generation_completed_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq("id", packageId);
-      
+
       if (upsertError) {
         console.error("❌ [DEBUG] Error updating package data:", upsertError);
         throw new Error(`Failed to save package data: ${upsertError.message}`);
       }
-      
+
       console.log("✅ [DEBUG] Package data updated successfully");
     }
     
@@ -483,15 +503,16 @@ export async function getPackageGenerationStatus(mysteryId: string): Promise<Gen
   console.log("🔍 [STATUS CHECK] getPackageGenerationStatus called for:", mysteryId);
   
   try {
-    // Enhanced database query to include content fields and character count
+    // Enhanced database query to include content fields, character count, and expected characters
     const { data, error } = await supabase
       .from("mystery_packages")
       .select(`
-        generation_status, 
-        generation_completed_at, 
+        generation_status,
+        generation_completed_at,
         generation_started_at,
         title,
         host_guide,
+        extracted_characters,
         characters:mystery_characters(count)
       `)
       .eq("conversation_id", mysteryId)
@@ -518,14 +539,31 @@ export async function getPackageGenerationStatus(mysteryId: string): Promise<Gen
       return defaultStatus;
     }
     
-    // Content-based completion detection
+    // Content-based completion detection with character count validation
     const hasContent = !!(data.title && data.host_guide);
-    const hasCharacters = !!(data.characters && data.characters.length > 0);
-    const contentComplete = hasContent && hasCharacters;
-    
+    const generatedCharacterCount = data.characters?.[0]?.count ?? 0;
+    const hasCharacters = generatedCharacterCount > 0;
+
+    // Parse expected character count from extracted_characters
+    let expectedCharacterCount = 0;
+    if (data.extracted_characters) {
+      try {
+        const extracted = typeof data.extracted_characters === 'string'
+          ? JSON.parse(data.extracted_characters)
+          : data.extracted_characters;
+        expectedCharacterCount = Array.isArray(extracted) ? extracted.length : 0;
+      } catch {
+        expectedCharacterCount = 0;
+      }
+    }
+
+    const allCharactersGenerated = expectedCharacterCount === 0 || generatedCharacterCount >= expectedCharacterCount;
+    const contentComplete = hasContent && hasCharacters && allCharactersGenerated;
+
     console.log("🔍 [STATUS CHECK] Content check results:");
     console.log("  - Has title and host_guide:", hasContent);
-    console.log("  - Has characters:", hasCharacters, `(count: ${data.characters?.length || 0})`);
+    console.log("  - Has characters:", hasCharacters, `(generated: ${generatedCharacterCount}, expected: ${expectedCharacterCount})`);
+    console.log("  - All characters generated:", allCharactersGenerated);
     console.log("  - Content complete:", contentComplete);
     
     // Check current status in database
@@ -572,7 +610,7 @@ export async function getPackageGenerationStatus(mysteryId: string): Promise<Gen
       console.log("ℹ️ [STATUS CHECK] No valid generation_status found, checking completion dates and content");
       
       // Fallback: check completion dates and content to determine status
-      if (data.generation_completed_at || contentComplete) {
+      if ((data.generation_completed_at && allCharactersGenerated) || contentComplete) {
         const completedStatus = {
           status: 'completed' as const,
           progress: 100,
