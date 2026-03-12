@@ -59,3 +59,14 @@
 **Files changed:**
 - `src/i18n/locales/en.json`
 - `src/i18n/locales/pt.json`
+
+---
+
+### UX Fix: Hide N/A stub scripts in detective-mode character guides
+
+**Issue:** Same customer couldn't find their innocent/guilty scripts. In detective-style mysteries, each character has a fixed role, so only one script version has real content — the other is a 30-char stub ("N/A - See role-specific script"). The UI was rendering both, making it confusing to identify which section to read.
+
+**Fix:** Added an `isStub()` helper in `MysteryPackageTabView.tsx` that filters out short placeholder text containing "N/A", "see role-specific", or "not applicable" from all innocent/guilty/accomplice round fields. Real content renders normally; stubs are silently hidden.
+
+**Files changed:**
+- `src/components/MysteryPackageTabView.tsx`

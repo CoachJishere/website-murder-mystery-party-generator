@@ -165,76 +165,87 @@ const MysteryPackageTabView = React.memo(({
     return [];
   }, []);
 
+  // Check if a field is a stub placeholder (e.g., "N/A - See role-specific script")
+  const isStub = (text: string | null | undefined): boolean => {
+    if (!text) return true;
+    const trimmed = text.trim();
+    return trimmed.length < 50 && (
+      trimmed.toLowerCase().includes('n/a') ||
+      trimmed.toLowerCase().includes('see role-specific') ||
+      trimmed.toLowerCase().includes('not applicable')
+    );
+  };
+
   // Function to build complete character guide content
   const buildCharacterGuideContent = useCallback((character: MysteryCharacter): string => {
     let content = `# ${character.character_name} - Character Guide\n\n`;
-    
+
     // All content is pre-formatted in database - just concatenate in logical order
     if (character.description) {
       content += `${character.description}\n\n`;
     }
-    
+
     if (character.background) {
       content += `${character.background}\n\n`;
     }
-    
+
     if (character.relationships) {
       content += `${character.relationships}\n\n`;
     }
-    
+
     if (character.rumors) {
       content += `${character.rumors}\n\n`;
     }
-    
+
     if (character.secret) {
       content += `${character.secret}\n\n`;
     }
-    
+
     if (character.introduction) {
       content += `${character.introduction}\n\n`;
     }
-    
+
     if (character.round2_questions) {
       content += `${character.round2_questions}\n\n`;
     }
-    
-    if (character.round2_innocent) {
+
+    if (character.round2_innocent && !isStub(character.round2_innocent)) {
       content += `${character.round2_innocent}\n\n`;
     }
-    
-    if (character.round2_guilty) {
+
+    if (character.round2_guilty && !isStub(character.round2_guilty)) {
       content += `${character.round2_guilty}\n\n`;
     }
-    
+
     if (character.round3_questions) {
       content += `${character.round3_questions}\n\n`;
     }
-    
-    if (character.round3_innocent) {
+
+    if (character.round3_innocent && !isStub(character.round3_innocent)) {
       content += `${character.round3_innocent}\n\n`;
     }
-    
-    if (character.round3_guilty) {
+
+    if (character.round3_guilty && !isStub(character.round3_guilty)) {
       content += `${character.round3_guilty}\n\n`;
     }
-    
+
     if (character.round4_questions) {
       content += `${character.round4_questions}\n\n`;
     }
-    
-    if (character.round4_innocent) {
+
+    if (character.round4_innocent && !isStub(character.round4_innocent)) {
       content += `${character.round4_innocent}\n\n`;
     }
-    
-    if (character.round4_guilty) {
+
+    if (character.round4_guilty && !isStub(character.round4_guilty)) {
       content += `${character.round4_guilty}\n\n`;
     }
-    
-    if (character.final_innocent) {
+
+    if (character.final_innocent && !isStub(character.final_innocent)) {
       content += `${character.final_innocent}\n\n`;
     }
-    
-    if (character.final_guilty) {
+
+    if (character.final_guilty && !isStub(character.final_guilty)) {
       content += `${character.final_guilty}\n\n`;
     }
     
