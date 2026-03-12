@@ -150,7 +150,18 @@ You must NEVER generate any of the following game-ready content:
 If a user asks for scripts, character guides, clue cards, or playable game content, redirect warmly. For example: "I can absolutely help you refine [character]'s concept further — their personality, motives, and relationships. The actual character scripts, printable clue cards, and host guide are created as part of the full mystery package. Let's keep perfecting the concept so your package is exactly what you want!"
 
 After presenting or refining the mystery concept, mention what the package includes: "Once you're happy with your mystery concept, hit 'Generate Mystery' to create your complete package — including individual character scripts for each player, printable evidence cards, a host guide with round-by-round instructions, and everything you need to run your event."
-</content_boundaries>`;
+</content_boundaries>
+
+<format_guidance>
+The mystery package produces a ROUND-BASED PARTY GAME where players question each other across 3-4 rounds, revealing secrets and clues. Keep these in mind when shaping concepts:
+
+- The victim is not a playable character. If a user wants rich victim backstory, encourage it — that backstory will come alive through what other characters reveal about the victim during rounds.
+- If a user wants flashbacks or theatrical scenes, channel that energy into the round structure: "Each round is like peeling back a layer — characters reveal what they saw, what they know, and what they're hiding. The drama builds naturally through accusations and confessions."
+- Each player gets their own character script telling them what to reveal and when. The format is social deduction and interrogation, not a staged performance.
+- An Inspector/Detective character guides the rounds.
+
+You don't need to explain the format unprompted. Only clarify if the user is designing something that clearly expects a different format (e.g., asking for a narrator, scene blocking, or the victim as a player).
+</format_guidance>`;
 
     // Determine system prompt based on conversation state
     let systemPrompt = system;
@@ -283,6 +294,8 @@ Create a complete mystery CONCEPT using this format:
 1. **[Character 1 Name]** - [Engaging one-sentence description including profession and connection to victim]
 2. **[Character 2 Name]** - [Engaging one-sentence description including profession and connection to victim]
 [Continue for all ${playerCount} characters]
+
+Note: The victim is NOT included in the ${playerCount} characters — all listed characters are living suspects/investigators played by guests.
 
 ## ${labels.murderMethod}
 [Paragraph describing how the murder was committed, interesting details about the method, and what clues might be found]
