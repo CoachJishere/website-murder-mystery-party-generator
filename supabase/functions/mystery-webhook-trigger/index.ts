@@ -96,7 +96,9 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
       const charMatch = trimmed.match(characterLineRegex);
       if (charMatch) {
         const name = (charMatch[1] || charMatch[2]).trim();
-        const description = charMatch[3].trim();
+        // Replace inner double quotes with single quotes to prevent JSON parsing
+        // errors in downstream Make.com scenarios that use string interpolation
+        const description = charMatch[3].trim().replace(/"/g, "'");
         charMap.set(name.toLowerCase(), { name, description });
         foundCharsInSection = true;
       } else if (foundCharsInSection) {
@@ -133,10 +135,10 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
 
       if (numberedMatch) {
         const name = (numberedMatch[1] || numberedMatch[2]).trim();
-        const description = numberedMatch[3].trim();
+        const description = numberedMatch[3].trim().replace(/"/g, "'");
         batch.push({ name, description });
       } else if (boldMatch) {
-        batch.push({ name: boldMatch[1].trim(), description: boldMatch[2].trim() });
+        batch.push({ name: boldMatch[1].trim(), description: boldMatch[2].trim().replace(/"/g, "'") });
       } else if (batch.length > 0 && trimmed !== '') {
         // Non-matching non-empty line — flush batch if 4+
         if (batch.length >= 4) {
@@ -219,6 +221,10 @@ async function extractCharactersWithClaude(
 
     const parsed = JSON.parse(jsonMatch[0]) as ExtractedCharacter[];
     if (Array.isArray(parsed) && parsed.length >= 4 && parsed.every(c => c.name && c.description)) {
+      // Sanitize descriptions to prevent JSON issues in Make.com string interpolation
+      for (const c of parsed) {
+        c.description = c.description.replace(/"/g, "'");
+      }
       console.log(`Claude fallback extracted ${parsed.length} characters`);
       return parsed;
     }
