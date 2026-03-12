@@ -74,8 +74,22 @@ export default async function handler(req) {
       } catch { /* ignore parse errors */ }
     }
 
+    // Cross-validate against player_count from conversations table
+    const { data: convRecord } = await supabase
+      .from('conversations')
+      .select('player_count')
+      .eq('id', conversationId)
+      .maybeSingle();
+    const playerCount = convRecord?.player_count || 0;
+    const minFromPlayerCount = playerCount > 0 ? playerCount - 2 : 0; // inspector + flexibility
+    const effectiveExpected = Math.max(expectedCharacterCount, minFromPlayerCount);
+
     const incomingCharacterCount = Array.isArray(data?.characters) ? data.characters.length : 0;
-    const allCharactersPresent = expectedCharacterCount === 0 || incomingCharacterCount >= expectedCharacterCount;
+    const allCharactersPresent = effectiveExpected === 0 || incomingCharacterCount >= effectiveExpected;
+
+    if (effectiveExpected !== expectedCharacterCount) {
+      console.log(`Player count cross-validation: extracted expects ${expectedCharacterCount}, player_count expects ${minFromPlayerCount}, using ${effectiveExpected}`);
+    }
 
     console.log(`Character count check: ${incomingCharacterCount} incoming, ${expectedCharacterCount} expected, complete: ${allCharactersPresent}`);
 

@@ -132,8 +132,22 @@ export async function saveStructuredPackageData(mysteryId: string, jsonData: any
       }
     }
 
+    // Cross-validate against player_count from conversations table
+    const { data: convRecord } = await supabase
+      .from("conversations")
+      .select("player_count")
+      .eq("id", mysteryId)
+      .maybeSingle();
+    const playerCount = convRecord?.player_count || 0;
+    const minFromPlayerCount = playerCount > 0 ? playerCount - 2 : 0;
+    const effectiveExpected = Math.max(expectedCharacterCount, minFromPlayerCount);
+
+    if (effectiveExpected !== expectedCharacterCount) {
+      console.log(`🔍 [DEBUG] Player count cross-validation: extracted expects ${expectedCharacterCount}, player_count expects ${minFromPlayerCount}, using ${effectiveExpected}`);
+    }
+
     const incomingCharacterCount = Array.isArray(normalizedData.characters) ? normalizedData.characters.length : 0;
-    const allCharactersPresent = expectedCharacterCount === 0 || incomingCharacterCount >= expectedCharacterCount;
+    const allCharactersPresent = effectiveExpected === 0 || incomingCharacterCount >= effectiveExpected;
 
     // Only mark completed if all expected characters are included
     const generationStatus = allCharactersPresent
@@ -557,7 +571,17 @@ export async function getPackageGenerationStatus(mysteryId: string): Promise<Gen
       }
     }
 
-    const allCharactersGenerated = expectedCharacterCount === 0 || generatedCharacterCount >= expectedCharacterCount;
+    // Cross-validate against player_count from conversations table
+    const { data: convRecord } = await supabase
+      .from("conversations")
+      .select("player_count")
+      .eq("id", mysteryId)
+      .maybeSingle();
+    const statusPlayerCount = convRecord?.player_count || 0;
+    const statusMinFromPlayerCount = statusPlayerCount > 0 ? statusPlayerCount - 2 : 0;
+    const statusEffectiveExpected = Math.max(expectedCharacterCount, statusMinFromPlayerCount);
+
+    const allCharactersGenerated = statusEffectiveExpected === 0 || generatedCharacterCount >= statusEffectiveExpected;
     const contentComplete = hasContent && hasCharacters && allCharactersGenerated;
 
     console.log("🔍 [STATUS CHECK] Content check results:");

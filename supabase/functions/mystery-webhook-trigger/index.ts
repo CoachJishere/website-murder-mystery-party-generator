@@ -102,8 +102,13 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
         charMap.set(name.toLowerCase(), { name, description });
         foundCharsInSection = true;
       } else if (foundCharsInSection) {
-        // Hit a non-matching line after collecting — this section is over, but continue to next message
-        break;
+        // Allow non-matching lines (subheadings, dividers, category labels)
+        // between character entries — only stop at a new ## section header
+        // that isn't another character list header
+        if (/^#{2,3}\s+/.test(trimmed) && !sectionHeaderRegex.test(trimmed)) {
+          break;
+        }
+        // Otherwise skip and keep looking for more numbered characters
       }
     }
   }
@@ -311,6 +316,22 @@ serve(async (req) => {
     }
 
     console.log(`Character extraction: method=${extractionMethod}, count=${extractedCharacters?.length || 0}`);
+
+    // Cross-validate extracted count against player_count — if regex found
+    // significantly fewer characters than expected, try Claude fallback
+    const playerCount = conversation.player_count || 0;
+    if (extractedCharacters && playerCount > 0) {
+      const minExpected = playerCount - 2; // Allow for inspector + flexibility
+      if (extractedCharacters.length < minExpected && extractionMethod === 'regex') {
+        console.warn(`[CharExtract] WARNING: Regex found ${extractedCharacters.length} characters but player_count is ${playerCount}. Trying Claude fallback...`);
+        const claudeChars = await extractCharactersWithClaude(conversation.messages, playerCount);
+        if (claudeChars && claudeChars.length > extractedCharacters.length) {
+          console.log(`[CharExtract] Claude fallback found ${claudeChars.length} characters (vs regex ${extractedCharacters.length}), using Claude result`);
+          extractedCharacters = claudeChars;
+          extractionMethod = 'claude_upgrade';
+        }
+      }
+    }
 
     // Build individual message fields for Make.com
     const messageFields: any = {};
