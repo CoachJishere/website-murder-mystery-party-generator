@@ -1,0 +1,62 @@
+name: Publish Daily Blog Post
+
+on:
+  schedule:
+    # Runs at 9:00 AM UTC every day (5 AM ET / 2 AM PT)
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  publish-post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish oldest draft blog post (all languages)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          set -e
+
+          # 1. Find the oldest draft EN post (by created_at)
+          RESPONSE=$(curl -s \
+            "${SUPABASE_URL}/rest/v1/blog_posts?language=eq.en&status=eq.draft&order=created_at.asc&limit=1&select=slug,title" \
+            -H "apikey: ${SUPABASE_SERVICE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}")
+
+          SLUG=$(echo "$RESPONSE" | jq -r '.[0].slug // empty')
+          TITLE=$(echo "$RESPONSE" | jq -r '.[0].title // empty')
+
+          if [ -z "$SLUG" ]; then
+            echo "No draft posts remaining. All posts have been published!"
+            exit 0
+          fi
+
+          echo "Publishing slug: $SLUG"
+          echo "Title: $TITLE"
+
+          # 2. Update ALL language variants of this slug to published
+          RESULT=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.${SLUG}&status=eq.draft" \
+            -X PATCH \
+            -H "apikey: ${SUPABASE_SERVICE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d "{\"status\": \"published\", \"published_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}")
+
+          if [ "$RESULT" = "204" ]; then
+            echo "Successfully published '$TITLE' in all languages"
+          else
+            echo "Failed to publish. HTTP status: $RESULT"
+            exit 1
+          fi
+
+          # 3. Count remaining drafts
+          REMAINING=$(curl -s \
+            "${SUPABASE_URL}/rest/v1/blog_posts?language=eq.en&status=eq.draft&select=slug" \
+            -H "apikey: ${SUPABASE_SERVICE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
+            -H "Prefer: count=exact" \
+            -I | grep -i 'content-range' | grep -oP '\d+$' || echo "unknown")
+
+          echo "Remaining draft posts: $REMAINING"
