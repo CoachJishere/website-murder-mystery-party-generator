@@ -1,0 +1,42 @@
+name: Quarterly Blog Date Refresh
+
+on:
+  schedule:
+    # Runs at 10:00 AM UTC on the 1st of Jan, Apr, Jul, Oct
+    - cron: '0 10 1 1,4,7,10 *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  refresh-dates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refresh "Last updated" dates across all languages
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          set -e
+
+          MONTH_NUM=$(date -u +"%m" | sed 's/^0//')
+          YEAR=$(date -u +"%Y")
+          MONTH_EN=$(date -u +"%B")
+
+          echo "=== Quarterly Blog Refresh: $MONTH_EN $YEAR ==="
+          echo "Calling refresh_blog_dates($MONTH_NUM, $YEAR)..."
+
+          # Call the Supabase RPC function
+          RESULT=$(curl -s \
+            "${SUPABASE_URL}/rest/v1/rpc/refresh_blog_dates" \
+            -X POST \
+            -H "apikey: ${SUPABASE_SERVICE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"month_num\": ${MONTH_NUM}, \"year_num\": ${YEAR}}")
+
+          echo ""
+          echo "Results by language:"
+          echo "$RESULT" | jq -r '.[] | "\(.language): \(.updated_count) posts refreshed"'
+
+          TOTAL=$(echo "$RESULT" | jq '[.[].updated_count] | add')
+          echo ""
+          echo "=== Total: $TOTAL posts refreshed to $MONTH_EN $YEAR ==="
