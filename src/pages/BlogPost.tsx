@@ -283,6 +283,113 @@ export default function BlogPost() {
     "wordCount": post.content.split(' ').length
   };
 
+  // Generate FAQPage schema from FAQ sections in the content
+  const generateFaqSchema = (content: string) => {
+    // Match FAQ section: look for a heading containing "FAQ" or "Frequently Asked"
+    // then capture all ### Question? / Answer pairs that follow
+    const faqSectionMatch = content.match(/##\s*(?:Frequently Asked Questions|FAQ)[^\n]*\n([\s\S]*?)(?=\n## [^#]|$)/i);
+    if (!faqSectionMatch) return null;
+
+    const faqSection = faqSectionMatch[1];
+    const qaItems: { question: string; answer: string }[] = [];
+
+    // Match ### Question? followed by answer text (until next ### or end)
+    const qaPairs = faqSection.matchAll(/###\s*(.+?\?)\s*\n([\s\S]*?)(?=\n###\s|\n## |$)/g);
+    for (const match of qaPairs) {
+      const question = match[1].trim();
+      // Clean markdown from answer: strip bold, links, etc.
+      const answer = match[2].trim()
+        .replace(/\*\*([^*]+)\*\*/g, '$1')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/\n+/g, ' ')
+        .trim();
+      if (question && answer) {
+        qaItems.push({ question, answer });
+      }
+    }
+
+    if (qaItems.length === 0) return null;
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": qaItems.map(qa => ({
+        "@type": "Question",
+        "name": qa.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": qa.answer
+        }
+      }))
+    };
+  };
+
+  // Generate HowTo schema from step-by-step tutorial content
+  const generateHowToSchema = (content: string, title: string) => {
+    // Detect tutorial/how-to posts by title or content patterns
+    const isHowTo = /^how[\s-]to/i.test(title) || /## (?:step\s*\d|how to)/i.test(content);
+    if (!isHowTo) return null;
+
+    const steps: { name: string; text: string }[] = [];
+
+    // Pattern 1: ## Step N: Title / content
+    const stepMatches = content.matchAll(/##\s*(?:Step\s*\d+[:.]\s*)(.+?)\n([\s\S]*?)(?=\n## |$)/gi);
+    for (const match of stepMatches) {
+      const name = match[1].trim();
+      const text = match[2].trim()
+        .replace(/\*\*([^*]+)\*\*/g, '$1')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/\n+/g, ' ')
+        .substring(0, 500);
+      if (name && text) {
+        steps.push({ name, text });
+      }
+    }
+
+    // Pattern 2: ## H2 sections in how-to posts that read as sequential instructions
+    // Only use if no explicit Step N pattern was found
+    if (steps.length === 0) {
+      const h2Matches = content.matchAll(/## ([^\n]+)\n([\s\S]*?)(?=\n## |$)/g);
+      const allH2s: { name: string; text: string }[] = [];
+      for (const match of h2Matches) {
+        const name = match[1].trim();
+        // Skip FAQ sections and non-instructional headings
+        if (/FAQ|Frequently Asked|Related|Conclusion|Sources/i.test(name)) continue;
+        const text = match[2].trim()
+          .replace(/\*\*([^*]+)\*\*/g, '$1')
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+          .replace(/###[^\n]+\n/g, '')
+          .replace(/\n+/g, ' ')
+          .substring(0, 500);
+        if (name && text) {
+          allH2s.push({ name, text });
+        }
+      }
+      // Only use H2-based steps if we have 3+ sections (indicates a real guide)
+      if (allH2s.length >= 3) {
+        steps.push(...allH2s);
+      }
+    }
+
+    if (steps.length < 2) return null;
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": title,
+      "description": post.meta_description,
+      "step": steps.map((s, i) => ({
+        "@type": "HowToStep",
+        "position": i + 1,
+        "name": s.name,
+        "text": s.text
+      }))
+    };
+  };
+
+  const faqSchema = generateFaqSchema(post.content);
+  const howToSchema = generateHowToSchema(post.content, post.title);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#FEFCF8]">
       <Header />
@@ -313,6 +420,16 @@ export default function BlogPost() {
           <script type="application/ld+json">
             {JSON.stringify(jsonLd)}
           </script>
+          {faqSchema && (
+            <script type="application/ld+json">
+              {JSON.stringify(faqSchema)}
+            </script>
+          )}
+          {howToSchema && (
+            <script type="application/ld+json">
+              {JSON.stringify(howToSchema)}
+            </script>
+          )}
         </Helmet>
         <article className="max-w-4xl mx-auto">
           <header className="mb-12">
