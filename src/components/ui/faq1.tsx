@@ -52,6 +52,10 @@ const Faq1 = ({
       answer: t('supportPage.faqs.questions.whatIncluded.answer')
     },
     {
+      question: t('supportPage.faqs.questions.canIEdit.question'),
+      answer: t('supportPage.faqs.questions.canIEdit.answer')
+    },
+    {
       question: t('supportPage.faqs.questions.gameDuration.question'),
       answer: t('supportPage.faqs.questions.gameDuration.answer')
     },

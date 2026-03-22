@@ -510,6 +510,10 @@
           "question": "O que está incluído no meu pacote de mistério personalizado?",
           "answer": "Tudo o que você precisa: um guia abrangente do anfitrião com instruções passo a passo, perfis detalhados de personagens para cada jogador, pistas, evidências e todos os materiais do jogo. Nenhuma preparação extra é necessária."
         },
+        "canIEdit": {
+          "question": "Posso editar meu mistério depois de gerado?",
+          "answer": "Sim! Cada parte do seu mistério é totalmente editável após a geração. Você pode ajustar os roteiros dos personagens, modificar o guia do anfitrião, alterar os cartões de evidências e atualizar o roteiro do detetive — tudo diretamente no aplicativo. Você também pode salvar seu mistério como PDF."
+        },
         "gameDuration": {
           "question": "Quanto tempo dura um jogo típico?",
           "answer": "A maioria dos mistérios dura de 2 a 3 horas, mas você define o ritmo. Nosso guia do anfitrião inclui sugestões de tempo que você pode ajustar ao seu horário."

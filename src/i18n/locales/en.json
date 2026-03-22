@@ -510,6 +510,10 @@
           "question": "What's included in my custom mystery package?",
           "answer": "Everything you need: a comprehensive host guide with step-by-step instructions, detailed character profiles for each player, clues, evidence, and all game materials. No additional preparation required."
         },
+        "canIEdit": {
+          "question": "Can I edit my mystery after it's been generated?",
+          "answer": "Yes! Every part of your mystery is fully editable after generation. You can tweak character scripts, adjust the host guide, modify evidence cards, and update the detective script — all directly in the app. You can also save your mystery as a PDF."
+        },
         "gameDuration": {
           "question": "How long does a typical game last?",
           "answer": "Most mysteries run 2-3 hours, but you control the pacing. Our host guide includes timing suggestions that you can adjust to fit your schedule."
