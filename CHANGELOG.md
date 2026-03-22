@@ -2,6 +2,9 @@
 
 ## 2026-03-22
 
+### UI: Remove hero gradient blob
+- Removed the blurred gradient circle (red/purple blob) above the homepage title for a cleaner look
+
 ### Feature: In-App Mystery Package Editing + PDF Export
 
 **Inline Editing:**

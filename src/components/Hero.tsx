@@ -139,10 +139,6 @@ const Hero = () => {
   return (
     <div className="py-8 sm:py-12 md:py-20 px-2 sm:px-4 md:px-6 lg:px-8 bg-background">
       <div className="w-full max-w-7xl mx-auto text-center">
-        <div className="flex justify-center mb-4 sm:mb-6">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-r from-primary to-secondary opacity-90 blur-sm"></div>
-        </div>
-        
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-3 sm:mb-4 tracking-tight leading-tight font-playfair">
           {t('hero.title')}
         </h1>
