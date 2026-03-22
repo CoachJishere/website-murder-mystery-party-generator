@@ -42,6 +42,13 @@
 - `src/i18n/locales/en.json` — Edit and export i18n keys
 - `src/i18n/locales/pt.json` — Edit and export i18n keys (Portuguese)
 
+**Purchase Page Update:**
+- Replaced amber "content cannot be edited" warning with green "Fully editable" reassurance on `MysteryPurchase.tsx`
+
+**Homepage FAQ:**
+- Added "Can I edit my mystery after it's been generated?" FAQ entry (EN + PT)
+- Explains all content is editable post-generation and mentions PDF export
+
 ---
 
 ### Blog: Batch 2 Translation Quality Audit + SEO Schema Fixes
