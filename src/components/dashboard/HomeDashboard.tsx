@@ -472,7 +472,7 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
         </div>
 
         {loading && displayedMysteries.length === 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-4">
             {[1, 2, 3].map((i) => (
               <Card key={i} className="opacity-70 animate-pulse h-56">
                 <CardHeader className="h-16">
@@ -517,7 +517,7 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {displayedMysteries.map((mystery) => (
                 <HomeMysteryCard 
                   key={mystery.id} 
