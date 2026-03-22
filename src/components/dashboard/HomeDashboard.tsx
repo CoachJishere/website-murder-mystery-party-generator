@@ -454,7 +454,7 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
 
   return (
     <div className="py-12 px-4 bg-card/30">
-      <div className="container mx-auto max-w-5xl">
+      <div className="container mx-auto max-w-7xl">
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-4">{t('homeDashboard.title', { defaultValue: 'My Mysteries' })}</h2>
           
