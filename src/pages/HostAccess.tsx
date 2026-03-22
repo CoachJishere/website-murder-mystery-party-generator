@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, BookOpen, Search } from "lucide-react";
+import { Download, Loader2, BookOpen, Search } from "lucide-react";
+import "../styles/print.css";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
 import { useTranslation } from "react-i18next";
@@ -176,6 +178,15 @@ const HostAccess: React.FC = () => {
             {packageData.title || t("hostAccess.title")}
           </h1>
           <p className="text-muted-foreground">{t("hostAccess.subtitle")}</p>
+          <Button
+            onClick={() => window.print()}
+            variant="outline"
+            size="sm"
+            className="mt-3 gap-2 print:hidden"
+          >
+            <Download className="h-4 w-4" />
+            {t('mysteryPackage.export.saveAsPdf')}
+          </Button>
         </div>
 
         <Tabs defaultValue={initialTab} className="w-full">

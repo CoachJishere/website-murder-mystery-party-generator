@@ -1,0 +1,132 @@
+@media print {
+  /* Hide all app chrome */
+  header,
+  footer,
+  nav,
+  .mobile-bottom-nav,
+  [role="navigation"] {
+    display: none !important;
+  }
+
+  /* Hide interactive elements */
+  button,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Hide tab controls but show active tab content */
+  [role="tablist"] {
+    display: none !important;
+  }
+
+  /* Hide non-active tab content */
+  [role="tabpanel"][data-state="inactive"] {
+    display: none !important;
+  }
+
+  /* Show active tab content fully */
+  [role="tabpanel"][data-state="active"] {
+    display: block !important;
+  }
+
+  /* Hide edit buttons and feedback nudge */
+  .editable-section .group-hover\:opacity-100,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Force all accordion content visible for printing.
+     AccordionContent uses forceMount so DOM exists;
+     we override the data-[state=closed]:hidden utility. */
+  .character-accordion [data-state="closed"] {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Hide accordion toggle chevrons */
+  .character-accordion [data-radix-collection-item] svg {
+    display: none !important;
+  }
+
+  /* Full width layout */
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  /* Reset background colors */
+  body,
+  main,
+  .min-h-screen {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Ensure prose content prints well */
+  .prose {
+    max-width: 100% !important;
+    font-size: 12pt !important;
+    line-height: 1.5 !important;
+    color: black !important;
+  }
+
+  .prose h1 {
+    font-size: 20pt !important;
+    margin-top: 0 !important;
+  }
+
+  .prose h2 {
+    font-size: 16pt !important;
+    page-break-after: avoid;
+  }
+
+  .prose h3 {
+    font-size: 14pt !important;
+    page-break-after: avoid;
+  }
+
+  /* Each character starts on a new page */
+  .character-accordion {
+    page-break-before: always;
+  }
+
+  /* But not the first one */
+  .character-accordion:first-child {
+    page-break-before: auto;
+  }
+
+  /* Editable section headers */
+  .editable-section h3 {
+    page-break-after: avoid;
+  }
+
+  /* Page setup */
+  @page {
+    margin: 2cm;
+    size: A4;
+  }
+
+  /* Don't append URLs to links */
+  a[href]::after {
+    content: none;
+  }
+
+  /* Cards print cleanly */
+  .border,
+  [class*="border-"] {
+    border-color: #ddd !important;
+  }
+
+  /* Mystery title */
+  h1.font-bold {
+    font-size: 24pt !important;
+    margin-bottom: 1cm !important;
+  }
+}

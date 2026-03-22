@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, User } from "lucide-react";
+import { Download, Loader2, User } from "lucide-react";
+import "../styles/print.css";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from 'react-markdown';
 import { toast } from "sonner";
@@ -242,6 +244,15 @@ const CharacterAccess: React.FC = () => {
           <p className="text-muted-foreground">
             View your complete character guide and game instructions below.
           </p>
+          <Button
+            onClick={() => window.print()}
+            variant="outline"
+            size="sm"
+            className="mt-3 gap-2 print:hidden"
+          >
+            <Download className="h-4 w-4" />
+            {t('mysteryPackage.export.saveAsPdf')}
+          </Button>
         </div>
 
         <Card>

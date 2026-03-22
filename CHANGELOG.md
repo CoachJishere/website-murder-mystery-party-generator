@@ -1,5 +1,86 @@
 # Changelog
 
+## 2026-03-22
+
+### Feature: In-App Mystery Package Editing + PDF Export
+
+**Inline Editing:**
+- Users can now edit their generated mystery package content directly in the app
+- Per-section editing with fixed headers (non-editable) and plain text textareas — users never see markdown syntax
+- Covers all tabs: Host Guide (6 sections), Characters (per-field within each accordion), Evidence Cards, and Detective Script
+- Evidence cards and detective script split by `##`/`###` headers into individually editable sections
+- Escape key exits edit mode; unsaved changes prompt confirmation
+- Saves directly to individual Supabase columns with optimistic local state updates
+- New service functions: `updatePackageField()` and `updateCharacterField()` with field allowlists
+
+**PDF Export:**
+- "Save as PDF" button on mystery package view, character access page (guest email link), and host access page
+- Uses `window.print()` with custom `@media print` CSS — zero new dependencies
+- Print stylesheet hides app chrome, tabs, edit buttons; shows only active tab content
+- Character accordions force-mount content so all characters print expanded, each on a new page
+
+**Accomplice Display Bug Fix:**
+- The host-facing tab view was never rendering `round2_accomplice`, `round3_accomplice`, `round4_accomplice`, or `final_accomplice` fields — accomplice characters appeared to have empty scripts even though the data was correctly generated and stored
+- Fixed by including all accomplice fields in the new per-field character rendering
+
+**Feedback Email Notifications:**
+- New Supabase Edge Function `notify-feedback` sends email to support@mysterymaker.party on every feedback submission
+- Database trigger `on_feedback_insert` fires automatically via `pg_net`
+- Email includes star rating, NPS score, customer email, mystery title, comments, and testimonial
+- Color-coded subject line (red for 1-2 stars, yellow for 3, green for 4-5)
+
+**Files changed:**
+- `src/components/EditableSection.tsx` — New: reusable edit/view toggle component
+- `src/components/EditableMultiSection.tsx` — New: splits single markdown fields by headers into multiple EditableSections
+- `src/styles/print.css` — New: print stylesheet for PDF export
+- `supabase/functions/notify-feedback/index.ts` — New: feedback notification edge function
+- `src/components/MysteryPackageTabView.tsx` — Per-section editing, accomplice field display, PDF button
+- `src/pages/MysteryView.tsx` — Update handlers wired to tab view
+- `src/pages/CharacterAccess.tsx` — PDF export button for guest character page
+- `src/pages/HostAccess.tsx` — PDF export button for host access page
+- `src/services/mysteryPackageService.ts` — `updatePackageField()`, `updateCharacterField()`
+- `src/i18n/locales/en.json` — Edit and export i18n keys
+- `src/i18n/locales/pt.json` — Edit and export i18n keys (Portuguese)
+
+---
+
+### Blog: Batch 2 Translation Quality Audit + SEO Schema Fixes
+
+**Scope:** 708 translated posts (59 batch 2 slugs × 12 non-EN languages) in Supabase, plus `BlogPost.tsx` SEO schema code.
+
+**Database fixes (Supabase `blog_posts`):**
+
+1. **Meta descriptions trimmed** — ~320 Latin-script posts (ES, FR, PT, DE, IT, FI, NL, DA, SV) had meta descriptions >160 chars. Created PL/pgSQL function `trim_meta_description()` with smart truncation at natural sentence boundaries (period > comma > space). All now 80–160 chars.
+2. **CJK meta descriptions rewritten** — 38 ZH-CN descriptions rewritten with natural Chinese (target 40–90 chars). 9 JA descriptions rewritten. 7 JA and 11 KO descriptions trimmed from >90 chars to ≤85 chars with natural CJK sentence breaks.
+3. **Bold-wrapped heading fix** — 24 posts (17 FR, 4 NL, 3 FI) had `**## Heading` formatting that broke FAQ detection and markdown rendering. Stripped stray `**` markers from all `##` headings.
+4. **Missing FAQ sections added** — 3 FR posts (`how-to-fix-unsatisfying-mystery-endings`, `how-to-host-a-fairy-tale-murder-mystery-party`, `how-to-host-a-hollywood-murder-mystery-party`) had FAQ sections in EN but not in FR. Translated and appended French FAQ sections with `## Questions fréquemment posées` heading and `### Question?` Q&A format.
+5. **MysteryMaker CTA references** — 6 posts (DE 1, ES 1, FR 2, IT 2) were missing mysterymaker.party references. Appended localized CTA lines.
+
+**BlogPost.tsx SEO schema fixes:**
+
+6. **hreflang tags were completely broken** — The language variant lookup used `post_date` (NULL for all 766 posts), so `.eq('post_date', null)` returned nothing → zero hreflang tags on any page. Fixed to use `slug` (which all translations share). This is the highest-impact fix — hreflang is critical for multilingual SEO.
+7. **zh-cn hreflang case mismatch** — Code checked `v.language === 'zh-CN'` but database stores `zh-cn`. Chinese posts got invalid `hrefLang="zh-cn"` instead of correct `hrefLang="zh-Hans"`. Fixed case comparison.
+8. **Added x-default hreflang** — New `<link rel="alternate" hrefLang="x-default">` pointing to EN version for users outside specified language regions.
+9. **FAQPage schema — expanded heading detection** — Added `UKK` (Finnish FAQ abbreviation, 9 FI posts), `Questions People Actually Ask` (1 EN post), and broadened accent-aware matching for `fréquemment` (FR). All 13 language FAQ heading variants now detected.
+10. **HowTo schema — FAQ leak fix** — The H2 skip filter only excluded English FAQ headings (`FAQ|Frequently Asked|Related|Conclusion|Sources`). Translated FAQ sections like `## Häufig gestellte Fragen` were leaking into HowTo steps. Added all 13 language FAQ heading patterns to the skip filter.
+11. **HowTo schema — multilingual title detection** — `isHowTo` only matched English "How to" titles. Added slug-based detection (`/^how-to/i.test(postSlug)`) plus translated title prefixes: `Sådan` (DA), `Kuinka` (FI), `So/Wie du` (DE), `Comment` (FR), `Cómo/Como` (ES/PT), `Come` (IT), `Hoe` (NL), `Hur man` (SV), `Hvordan` (DA), and `方法` (JA/KO/ZH-CN in title). Coverage went from ~60% to 100% of how-to posts across all languages.
+12. **wordCount schema for CJK** — `post.content.split(' ').length` gave wrong counts for CJK languages (no word spaces). Now uses character count for JA/KO/ZH-CN.
+
+**Final audit state:** 7 metrics × 12 languages = 84 checks, all passing with 0 issues. One expected gap: casino slug has no FAQ in any language (EN source has no FAQ).
+
+**Known deferred items:**
+- ZH-CN and JA content bodies need full re-translation (machine-translation quality)
+- KO tone adjustment (overuse of formal 당신)
+- FR missing 1 translation (`5-ancient-egyptian-temple-murder-themes`) — in-flight with batch 2 FR run
+- Internal linking pass — after all translations complete
+- No sitemap found in codebase — may need separate implementation
+
+**Files changed:**
+- `src/pages/BlogPost.tsx` (6 code changes: hreflang lookup, zh-Hans fix, x-default, FAQ regex, HowTo skip filter, HowTo title detection, wordCount CJK)
+- ~400 rows updated in Supabase `blog_posts` table (meta descriptions, FAQ sections, heading formatting, CTA references)
+
+---
+
 ## 2026-03-21
 
 ### Security: Fix Prototype Pollution in flatted

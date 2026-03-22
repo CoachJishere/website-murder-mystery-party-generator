@@ -1004,6 +1004,19 @@
     },
     "matrix": {
       "title": "Matriz de Relacionamento de Personagens"
+    },
+    "edit": {
+      "button": "Editar",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "saving": "Salvando...",
+      "saved": "Alterações salvas",
+      "discardConfirm": "Descartar alterações não salvas?",
+      "error": "Falha ao salvar. Tente novamente."
+    },
+    "export": {
+      "saveAsPdf": "Salvar como PDF",
+      "printTip": "Abre a caixa de diálogo de impressão do navegador — escolha \"Salvar como PDF\" para baixar"
     }
   },
   "hostAccess": {

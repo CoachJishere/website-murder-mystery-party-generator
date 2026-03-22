@@ -10,7 +10,9 @@ import {
   generateCompletePackage,
   resumePackageGeneration,
   getPackageGenerationStatus,
-  GenerationStatus
+  GenerationStatus,
+  updatePackageField,
+  updateCharacterField,
 } from "@/services/mysteryPackageService";
 import { useAuth } from "@/context/AuthContext";
 import { RefreshCw, AlertTriangle, Clock, CheckCircle2, Eye, XCircle } from "lucide-react";
@@ -689,6 +691,38 @@ const MysteryView = () => {
     checkGenerationStatus();
   }, [checkGenerationStatus, debugLog]);
 
+  // Field-level update handler for mystery_packages
+  const handlePackageFieldUpdate = useCallback(async (fieldName: string, value: string) => {
+    if (!packageId) throw new Error("Package ID not available");
+    await updatePackageField(packageId, fieldName, value);
+    // Optimistically update local state
+    const fieldMap: Record<string, keyof MysteryPackageData> = {
+      game_overview: 'gameOverview',
+      host_guide: 'hostGuide',
+      materials: 'materials',
+      preparation_instructions: 'preparation',
+      timeline: 'timeline',
+      hosting_tips: 'hostingTips',
+      evidence_cards: 'evidenceCards',
+      detective_script: 'detectiveScript',
+    };
+    const stateKey = fieldMap[fieldName];
+    if (stateKey && packageData) {
+      setPackageData(prev => prev ? { ...prev, [stateKey]: value } : prev);
+    }
+  }, [packageId, packageData]);
+
+  // Field-level update handler for mystery_characters
+  const handleCharacterFieldUpdate = useCallback(async (characterId: string, fieldName: string, value: string) => {
+    await updateCharacterField(characterId, fieldName, value);
+    // Optimistically update local state
+    setCharacters(prev =>
+      prev.map(c =>
+        c.id === characterId ? { ...c, [fieldName]: value } : c
+      )
+    );
+  }, []);
+
   // Render generation progress with mobile optimization
   const renderGenerationProgress = () => {
     if (!generationStatus) return null;
@@ -971,6 +1005,8 @@ const MysteryView = () => {
               estimatedTime={getEstimatedTime(mystery?.player_count || 6)}
               packageId={packageId || undefined}
               isPaid={mystery?.is_paid}
+              onPackageFieldUpdate={packageId ? handlePackageFieldUpdate : undefined}
+              onCharacterFieldUpdate={handleCharacterFieldUpdate}
             />
           ) : (
             // Show generation progress or start button

@@ -699,3 +699,92 @@ export async function getPackageGenerationStatus(mysteryId: string): Promise<Gen
     return errorStatus;
   }
 }
+
+// Allowlist of editable fields on mystery_packages
+const EDITABLE_PACKAGE_FIELDS = [
+  'game_overview',
+  'host_guide',
+  'materials',
+  'preparation_instructions',
+  'timeline',
+  'hosting_tips',
+  'evidence_cards',
+  'detective_script',
+] as const;
+
+// Allowlist of editable fields on mystery_characters
+const EDITABLE_CHARACTER_FIELDS = [
+  'description',
+  'background',
+  'relationships',
+  'rumors',
+  'secret',
+  'introduction',
+  'round2_questions',
+  'round2_innocent',
+  'round2_guilty',
+  'round2_accomplice',
+  'round3_questions',
+  'round3_innocent',
+  'round3_guilty',
+  'round3_accomplice',
+  'round4_questions',
+  'round4_innocent',
+  'round4_guilty',
+  'round4_accomplice',
+  'final_innocent',
+  'final_guilty',
+  'final_accomplice',
+] as const;
+
+/**
+ * Update a single field on a mystery_packages row.
+ */
+export async function updatePackageField(
+  packageId: string,
+  fieldName: string,
+  value: string
+): Promise<void> {
+  if (!EDITABLE_PACKAGE_FIELDS.includes(fieldName as any)) {
+    throw new Error(`Field "${fieldName}" is not editable`);
+  }
+
+  const { error } = await supabase
+    .from('mystery_packages')
+    .update({
+      [fieldName]: value,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', packageId);
+
+  if (error) {
+    console.error('Failed to update package field:', error);
+    throw new Error(`Failed to save changes: ${error.message}`);
+  }
+}
+
+/**
+ * Update a single field on a mystery_characters row.
+ */
+export async function updateCharacterField(
+  characterId: string,
+  fieldName: string,
+  value: string
+): Promise<void> {
+  if (!EDITABLE_CHARACTER_FIELDS.includes(fieldName as any)) {
+    throw new Error(`Field "${fieldName}" is not editable`);
+  }
+
+  const { error } = await supabase
+    .from('mystery_characters')
+    .update({
+      [fieldName]: value,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', characterId);
+
+  if (error) {
+    console.error('Failed to update character field:', error);
+    throw new Error(`Failed to save changes: ${error.message}`);
+  }
+}

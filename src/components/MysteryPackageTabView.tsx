@@ -5,12 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
-import { Loader2, Wand2, Eye, Mail, MessageSquare, X } from "lucide-react";
+import { Loader2, Wand2, Eye, Mail, MessageSquare, X, Download } from "lucide-react";
 import { MysteryCharacter } from "@/interfaces/mystery";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import MysteryGuestManager from "./MysteryGuestManager";
+import EditableSection from "./EditableSection";
+import EditableMultiSection from "./EditableMultiSection";
 import "../styles/mystery-package.css";
+import "../styles/print.css";
 import { useTranslation } from "react-i18next";
 import { trackPackageTabViewed, trackFeedbackPromptShown, trackFeedbackPromptClicked } from "@/lib/analytics";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,6 +44,8 @@ interface MysteryPackageTabViewProps {
   estimatedTime: string;
   packageId?: string;
   isPaid?: boolean;
+  onPackageFieldUpdate?: (fieldName: string, value: string) => Promise<void>;
+  onCharacterFieldUpdate?: (characterId: string, fieldName: string, value: string) => Promise<void>;
 }
 
 const MysteryPackageTabView = React.memo(({
@@ -54,7 +59,9 @@ const MysteryPackageTabView = React.memo(({
   characters = [],
   estimatedTime,
   packageId,
-  isPaid
+  isPaid,
+  onPackageFieldUpdate,
+  onCharacterFieldUpdate,
 }: MysteryPackageTabViewProps) => {
   const [activeTab, setActiveTab] = useState("host-guide");
   const [statusMessage, setStatusMessage] = useState("Starting generation...");
@@ -475,18 +482,35 @@ const MysteryPackageTabView = React.memo(({
           {mysteryTitle}
         </h1>
 
-        {/* Share Mystery with Guests Button */}
+        {/* Action buttons */}
         {canShareMystery && conversationId && (
-          <Button
-            onClick={() => setShowGuestManager(true)}
-            className={cn(
-              "gap-2 bg-primary hover:bg-primary/90 text-primary-foreground",
-              isMobile && "w-full"
-            )}
-          >
-            <Mail className="h-4 w-4" />
-            {t('mysteryPackage.shareWithGuests')}
-          </Button>
+          <div className={cn(
+            "flex gap-2",
+            isMobile && "flex-col w-full"
+          )}>
+            <Button
+              onClick={() => setShowGuestManager(true)}
+              className={cn(
+                "gap-2 bg-primary hover:bg-primary/90 text-primary-foreground",
+                isMobile && "w-full"
+              )}
+            >
+              <Mail className="h-4 w-4" />
+              {t('mysteryPackage.shareWithGuests')}
+            </Button>
+            <Button
+              onClick={() => window.print()}
+              variant="outline"
+              className={cn(
+                "gap-2 print:hidden",
+                isMobile && "w-full"
+              )}
+              title={t('mysteryPackage.export.printTip')}
+            >
+              <Download className="h-4 w-4" />
+              {t('mysteryPackage.export.saveAsPdf')}
+            </Button>
+          </div>
         )}
       </div>
 
@@ -538,15 +562,72 @@ const MysteryPackageTabView = React.memo(({
             "mystery-content",
             isMobile && "text-sm"
           )}>
-            {hostGuide ? (
+            {packageData && (packageData.gameOverview || packageData.hostGuide) ? (
+              <div className="space-y-6">
+                {packageData.gameOverview && (
+                  <EditableSection
+                    content={packageData.gameOverview}
+                    onSave={(val) => onPackageFieldUpdate?.('game_overview', val) ?? Promise.resolve()}
+                    canEdit={!!onPackageFieldUpdate}
+                    sectionLabel="Game Overview"
+                    isMobile={isMobile}
+                  />
+                )}
+                {packageData.materials && (
+                  <EditableSection
+                    content={packageData.materials}
+                    onSave={(val) => onPackageFieldUpdate?.('materials', val) ?? Promise.resolve()}
+                    canEdit={!!onPackageFieldUpdate}
+                    sectionLabel="Materials"
+                    isMobile={isMobile}
+                  />
+                )}
+                {packageData.preparation && (
+                  <EditableSection
+                    content={packageData.preparation}
+                    onSave={(val) => onPackageFieldUpdate?.('preparation_instructions', val) ?? Promise.resolve()}
+                    canEdit={!!onPackageFieldUpdate}
+                    sectionLabel="Preparation"
+                    isMobile={isMobile}
+                  />
+                )}
+                {packageData.timeline && (
+                  <EditableSection
+                    content={packageData.timeline}
+                    onSave={(val) => onPackageFieldUpdate?.('timeline', val) ?? Promise.resolve()}
+                    canEdit={!!onPackageFieldUpdate}
+                    sectionLabel="Timeline"
+                    isMobile={isMobile}
+                  />
+                )}
+                {packageData.hostGuide && (
+                  <EditableSection
+                    content={packageData.hostGuide}
+                    onSave={(val) => onPackageFieldUpdate?.('host_guide', val) ?? Promise.resolve()}
+                    canEdit={!!onPackageFieldUpdate}
+                    sectionLabel="Host Guide"
+                    isMobile={isMobile}
+                  />
+                )}
+                {packageData.hostingTips && (
+                  <EditableSection
+                    content={packageData.hostingTips}
+                    onSave={(val) => onPackageFieldUpdate?.('hosting_tips', val) ?? Promise.resolve()}
+                    canEdit={!!onPackageFieldUpdate}
+                    sectionLabel="Hosting Tips"
+                    isMobile={isMobile}
+                  />
+                )}
+              </div>
+            ) : hostGuide ? (
               <div className={cn("prose prose-slate max-w-none overflow-x-auto", isMobile && "prose-sm")}>
                 <ReactMarkdown>{hostGuide}</ReactMarkdown>
               </div>
             ) : isGenerating ? (
-              <LoadingTabContent 
-                message={t('mysteryPackage.loading.generatingMessage')} 
-                estimatedTime={estimatedTime} 
-              />            
+              <LoadingTabContent
+                message={t('mysteryPackage.loading.generatingMessage')}
+                estimatedTime={estimatedTime}
+              />
             ) : (
               <div className={cn(
                 "text-center py-12 space-y-4",
@@ -569,8 +650,8 @@ const MysteryPackageTabView = React.memo(({
                   {t('mysteryPackage.placeholder.description')}
                 </p>
                 {onGenerateClick && (
-                  <Button 
-                    onClick={onGenerateClick} 
+                  <Button
+                    onClick={onGenerateClick}
                     className={cn(
                       "mt-4",
                       isMobile && "w-full text-sm h-11"
@@ -595,8 +676,31 @@ const MysteryPackageTabView = React.memo(({
                 isMobile && "space-y-3"
               )}>
                 {charactersList.map((character, index) => {
-                  const characterGuideContent = buildCharacterGuideContent(character);
-                  
+                  // Define character fields to render as editable sections
+                  const characterFields: Array<{ key: string; content: string | undefined }> = [
+                    { key: 'description', content: character.description },
+                    { key: 'background', content: character.background },
+                    { key: 'relationships', content: typeof character.relationships === 'string' ? character.relationships : undefined },
+                    { key: 'rumors', content: character.rumors },
+                    { key: 'secret', content: character.secret },
+                    { key: 'introduction', content: character.introduction },
+                    { key: 'round2_questions', content: character.round2_questions },
+                    { key: 'round2_innocent', content: character.round2_innocent },
+                    { key: 'round2_guilty', content: character.round2_guilty },
+                    { key: 'round2_accomplice', content: character.round2_accomplice },
+                    { key: 'round3_questions', content: character.round3_questions },
+                    { key: 'round3_innocent', content: character.round3_innocent },
+                    { key: 'round3_guilty', content: character.round3_guilty },
+                    { key: 'round3_accomplice', content: character.round3_accomplice },
+                    { key: 'round4_questions', content: character.round4_questions },
+                    { key: 'round4_innocent', content: character.round4_innocent },
+                    { key: 'round4_guilty', content: character.round4_guilty },
+                    { key: 'round4_accomplice', content: character.round4_accomplice },
+                    { key: 'final_innocent', content: character.final_innocent },
+                    { key: 'final_guilty', content: character.final_guilty },
+                    { key: 'final_accomplice', content: character.final_accomplice },
+                  ];
+
                   return (
                     <Accordion key={character.id || index} type="single" collapsible className="character-accordion">
                       <AccordionItem value={`character-${index}`}>
@@ -611,12 +715,29 @@ const MysteryPackageTabView = React.memo(({
                             {character.character_name}
                           </h3>
                         </AccordionTrigger>
-                        <AccordionContent className={cn(
-                          "text-foreground",
-                          isMobile && "text-sm"
-                        )}>
-                          <div className={cn("prose prose-slate max-w-none overflow-x-auto", isMobile && "prose-sm")}>
-                            <ReactMarkdown>{characterGuideContent}</ReactMarkdown>
+                        <AccordionContent
+                          forceMount
+                          className={cn(
+                            "text-foreground",
+                            "data-[state=closed]:hidden print:!block print:!h-auto print:!overflow-visible",
+                            isMobile && "text-sm"
+                          )}
+                        >
+                          <div className="space-y-4">
+                            {characterFields
+                              .filter(f => f.content && !isStub(f.content))
+                              .map(field => (
+                                <EditableSection
+                                  key={`${character.id}-${field.key}`}
+                                  content={field.content!}
+                                  onSave={(val) =>
+                                    onCharacterFieldUpdate?.(character.id, field.key, val) ?? Promise.resolve()
+                                  }
+                                  canEdit={!!onCharacterFieldUpdate}
+                                  sectionLabel={`${character.character_name} - ${field.key}`}
+                                  isMobile={isMobile}
+                                />
+                              ))}
                           </div>
                         </AccordionContent>
                       </AccordionItem>
@@ -625,9 +746,9 @@ const MysteryPackageTabView = React.memo(({
                 })}
               </div>
             ) : isGenerating ? (
-              <LoadingTabContent 
-                message={t('mysteryPackage.loading.characters')} 
-                estimatedTime={estimatedTime} 
+              <LoadingTabContent
+                message={t('mysteryPackage.loading.characters')}
+                estimatedTime={estimatedTime}
               />
             ) : (
               <div className={cn(
@@ -651,13 +772,17 @@ const MysteryPackageTabView = React.memo(({
             isMobile && "text-sm"
           )}>
             {evidenceCards ? (
-              <div className={cn("prose prose-slate max-w-none overflow-x-auto", isMobile && "prose-sm")}>
-                <ReactMarkdown>{evidenceCards}</ReactMarkdown>
-              </div>
+              <EditableMultiSection
+                content={evidenceCards}
+                onSave={(val) => onPackageFieldUpdate?.('evidence_cards', val) ?? Promise.resolve()}
+                canEdit={!!onPackageFieldUpdate}
+                sectionLabel="Evidence Cards"
+                isMobile={isMobile}
+              />
             ) : isGenerating ? (
-              <LoadingTabContent 
-                message={t('mysteryPackage.loading.clues')} 
-                estimatedTime={estimatedTime} 
+              <LoadingTabContent
+                message={t('mysteryPackage.loading.clues')}
+                estimatedTime={estimatedTime}
               />
             ) : (
               <div className={cn(
@@ -681,13 +806,17 @@ const MysteryPackageTabView = React.memo(({
             isMobile && "text-sm"
           )}>
             {detectiveScript ? (
-              <div className={cn("prose prose-slate max-w-none overflow-x-auto", isMobile && "prose-sm")}>
-                <ReactMarkdown>{detectiveScript}</ReactMarkdown>
-              </div>
+              <EditableMultiSection
+                content={detectiveScript}
+                onSave={(val) => onPackageFieldUpdate?.('detective_script', val) ?? Promise.resolve()}
+                canEdit={!!onPackageFieldUpdate}
+                sectionLabel="Detective Script"
+                isMobile={isMobile}
+              />
             ) : isGenerating ? (
-              <LoadingTabContent 
-                message={t('mysteryPackage.loading.inspector')} 
-                estimatedTime={estimatedTime} 
+              <LoadingTabContent
+                message={t('mysteryPackage.loading.inspector')}
+                estimatedTime={estimatedTime}
               />
             ) : (
               <div className={cn(
