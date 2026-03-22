@@ -558,8 +558,8 @@ const MysteryPurchase = () => {
                   "flex-col gap-4",
                   isMobile && "p-4 pt-0 gap-3"
                 )}>
-                  <p className="text-sm text-amber-700 bg-amber-50 p-3 rounded-md border border-amber-200">
-                    <strong>Note:</strong> Once purchased, the mystery content cannot be edited through our AI system. Please ensure all character details and story elements are finalized before completing your purchase.
+                  <p className="text-sm text-green-700 bg-green-50 p-3 rounded-md border border-green-200">
+                    <strong>Fully editable:</strong> Don't worry — you can edit all character scripts, host guide content, and evidence cards after your mystery is generated.
                   </p>
                   <Button 
                     className={cn(
