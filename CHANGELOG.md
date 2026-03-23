@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-03-23
+
+### UX: Clarify player count as suspects/characters in creation form
+- Moved "Mystery Style" field above "Player Count" so users understand the host's role before choosing character count
+- Relabeled player count field from "How many players will participate?" to "How many suspects/characters?"
+- Updated description to clarify the count excludes the host/detective
+- Updated dropdown items from "X players" to "X suspects" across all 13 languages
+
 ## 2026-03-22
 
 ### UI: Remove hero gradient blob

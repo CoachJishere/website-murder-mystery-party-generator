@@ -64,6 +64,7 @@ const MysteryForm = ({
   const currentTheme = form.watch("theme");
   console.log("Current theme value:", currentTheme);
 
+
   // Reset form when initialData changes
   useEffect(() => {
     if (initialData) {
@@ -130,39 +131,6 @@ const MysteryForm = ({
 
         <FormField
           control={form.control}
-          name="playerCount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-sm sm:text-base font-medium">
-                {t('mysteryForm.playerCountLabel')}
-              </FormLabel>
-              <FormControl>
-                <Select 
-                  onValueChange={(value) => field.onChange(parseInt(value))} 
-                  value={field.value?.toString()}
-                >
-                  <SelectTrigger className="h-10 sm:h-auto text-sm sm:text-base">
-                    <SelectValue placeholder={t('mysteryForm.playerCountPlaceholder')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from({ length: 29 }, (_, i) => i + 4).map((num) => (
-                      <SelectItem key={num} value={num.toString()} className="text-sm sm:text-base">
-                        {t('mysteryForm.playerCountItem', { count: num })}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormDescription className="text-xs sm:text-sm">
-                {t('mysteryForm.playerCountDescription')}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="mysteryStyle"
           render={({ field }) => (
             <FormItem className="space-y-3">
@@ -200,6 +168,39 @@ const MysteryForm = ({
                   </div>
                 </RadioGroup>
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="playerCount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm sm:text-base font-medium">
+                {t('mysteryForm.playerCountLabel')}
+              </FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={(value) => field.onChange(parseInt(value))}
+                  value={field.value?.toString()}
+                >
+                  <SelectTrigger className="h-10 sm:h-auto text-sm sm:text-base">
+                    <SelectValue placeholder={t('mysteryForm.playerCountPlaceholder')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 29 }, (_, i) => i + 4).map((num) => (
+                      <SelectItem key={num} value={num.toString()} className="text-sm sm:text-base">
+                        {t('mysteryForm.playerCountItem', { count: num })}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormDescription className="text-xs sm:text-sm">
+                {t('mysteryForm.playerCountDescription')}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
