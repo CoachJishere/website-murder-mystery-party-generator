@@ -6,6 +6,12 @@
 - After completing payment, users now see the full tab view (Host Guide, Characters, Clues, Inspector) with the generate button inside, instead of a plain "Generate" card with no tabs
 - `is_paid` is now set to `true` in the database as soon as the user arrives with `?purchase=success`, rather than waiting until generation completes
 
+### Fix: Keep spinner until all tab content is loaded
+- Spinner now stays visible in all tabs until package data AND characters are fully fetched
+- Previously `setGenerating(false)` fired before data loaded, causing a brief flash of placeholder text
+- Package data and characters are now batched together so all tabs populate simultaneously
+- Removed unnecessary forced page reload on completion
+
 ## 2026-03-23
 
 ### UX: Clarify player count as suspects/characters in creation form
