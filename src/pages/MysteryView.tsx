@@ -132,11 +132,10 @@ const MysteryView = () => {
           detectiveScript: packageData.detective_script,
         };
         
-        setPackageData(structuredPackageData);
-        setPackageId(packageData.id);
         console.log("✅ [DEBUG] Structured package data loaded");
 
-        // Fetch characters from database
+        // Fetch characters from database before setting state,
+        // so all tabs populate at once (no partial content flash)
         const { data: charactersData, error: charactersError } = await supabase
           .from("mystery_characters")
           .select("*")
@@ -145,7 +144,12 @@ const MysteryView = () => {
 
         if (charactersError) {
           console.error("❌ [DEBUG] Error fetching characters:", charactersError);
-        } else if (charactersData && charactersData.length > 0) {
+        }
+
+        // Batch state updates so all tabs show content simultaneously
+        setPackageData(structuredPackageData);
+        setPackageId(packageData.id);
+        if (charactersData && charactersData.length > 0) {
           setCharacters(charactersData);
           console.log(`✅ [DEBUG] Loaded ${charactersData.length} characters from database`);
         }
@@ -426,17 +430,17 @@ const MysteryView = () => {
         // Only trigger completion actions when status changes to completed
         if (previousStatus !== 'completed') {
           console.log("=== STATUS CHECK DEBUG === Status changed to completed - triggering completion actions");
-          setGenerating(false);
+          // Keep generating=true until all data is loaded so tabs show spinner, not placeholder
 
           // Track generation completion for analytics
           trackGenerationCompleted(id!, {
             theme: mystery?.theme,
             player_count: mystery?.player_count,
           });
-          
-          // Fetch the completed package data
+
+          // Fetch the completed package data BEFORE clearing generating state
           await fetchStructuredPackageData();
-          
+
           // Update conversation status for consistency
           await supabase
             .from("conversations")
@@ -448,17 +452,17 @@ const MysteryView = () => {
               has_complete_package: true
             })
             .eq("id", id);
-          
+
+          // Now that data is loaded, clear generating state so content shows
+          setGenerating(false);
+
           // Show success notification only once
           if (!packageReadyNotified.current) {
-            toast.success("Your mystery package is ready! The page will refresh automatically.", {
+            toast.success("Your mystery package is ready!", {
               duration: 10000,
               id: 'mystery-completed'
             });
             packageReadyNotified.current = true;
-            
-            // Force page refresh after 2 seconds to ensure all data loads
-            setTimeout(() => window.location.reload(), 2000);
           }
         }
         
