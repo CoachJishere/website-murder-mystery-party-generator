@@ -611,8 +611,14 @@ const MysteryView = () => {
         
         if (purchaseStatus === 'success') {
           toast.success("Purchase successful! You now have full access to this mystery package.");
+
+          // Mark as paid immediately so the tab view shows (with generate button inside)
+          await supabase
+            .from("conversations")
+            .update({ is_paid: true, display_status: "purchased" })
+            .eq("id", id);
         }
-        
+
         const { data: conversation, error } = await supabase
           .from("conversations")
           .select("*, mystery_data, is_paid, has_complete_package, needs_package_generation")
