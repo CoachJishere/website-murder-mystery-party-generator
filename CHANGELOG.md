@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-03-24
+
+### Fix: Show tab view immediately after purchase
+- After completing payment, users now see the full tab view (Host Guide, Characters, Clues, Inspector) with the generate button inside, instead of a plain "Generate" card with no tabs
+- `is_paid` is now set to `true` in the database as soon as the user arrives with `?purchase=success`, rather than waiting until generation completes
+
 ## 2026-03-23
 
 ### UX: Clarify player count as suspects/characters in creation form
