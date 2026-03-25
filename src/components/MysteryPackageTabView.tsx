@@ -676,29 +676,54 @@ const MysteryPackageTabView = React.memo(({
                 isMobile && "space-y-3"
               )}>
                 {charactersList.map((character, index) => {
+                  // Detective-style uses round_script fields (with headers); character-based uses innocent/guilty fields
+                  const hasDetectiveScripts = !!(character.round2_script || character.round3_script || character.round4_script);
+
                   // Define character fields to render as editable sections
                   const characterFields: Array<{ key: string; content: string | undefined }> = [
                     { key: 'description', content: character.description },
                     { key: 'background', content: character.background },
                     { key: 'relationships', content: typeof character.relationships === 'string' ? character.relationships : undefined },
-                    { key: 'rumors', content: character.rumors },
                     { key: 'secret', content: character.secret },
                     { key: 'introduction', content: character.introduction },
+                    { key: 'rumors', content: character.rumors },
+                    // Round 2: use script field for detective-style, innocent/guilty for character-based
+                    ...(hasDetectiveScripts
+                      ? [{ key: 'round2_script', content: character.round2_script }]
+                      : [
+                          { key: 'round2_innocent', content: character.round2_innocent },
+                          { key: 'round2_guilty', content: character.round2_guilty },
+                          { key: 'round2_accomplice', content: character.round2_accomplice },
+                        ]),
                     { key: 'round2_questions', content: character.round2_questions },
-                    { key: 'round2_innocent', content: character.round2_innocent },
-                    { key: 'round2_guilty', content: character.round2_guilty },
-                    { key: 'round2_accomplice', content: character.round2_accomplice },
+                    // Round 3
+                    ...(hasDetectiveScripts
+                      ? [{ key: 'round3_script', content: character.round3_script }]
+                      : [
+                          { key: 'round3_innocent', content: character.round3_innocent },
+                          { key: 'round3_guilty', content: character.round3_guilty },
+                          { key: 'round3_accomplice', content: character.round3_accomplice },
+                        ]),
                     { key: 'round3_questions', content: character.round3_questions },
-                    { key: 'round3_innocent', content: character.round3_innocent },
-                    { key: 'round3_guilty', content: character.round3_guilty },
-                    { key: 'round3_accomplice', content: character.round3_accomplice },
+                    // Round 4
+                    ...(hasDetectiveScripts
+                      ? [{ key: 'round4_script', content: character.round4_script }]
+                      : [
+                          { key: 'round4_innocent', content: character.round4_innocent },
+                          { key: 'round4_guilty', content: character.round4_guilty },
+                          { key: 'round4_accomplice', content: character.round4_accomplice },
+                        ]),
                     { key: 'round4_questions', content: character.round4_questions },
-                    { key: 'round4_innocent', content: character.round4_innocent },
-                    { key: 'round4_guilty', content: character.round4_guilty },
-                    { key: 'round4_accomplice', content: character.round4_accomplice },
-                    { key: 'final_innocent', content: character.final_innocent },
-                    { key: 'final_guilty', content: character.final_guilty },
-                    { key: 'final_accomplice', content: character.final_accomplice },
+                    // Accusations
+                    { key: 'accusations', content: character.accusations },
+                    // Final statement: use final_statement for detective-style, innocent/guilty for character-based
+                    ...(hasDetectiveScripts && character.final_statement
+                      ? [{ key: 'final_statement', content: character.final_statement }]
+                      : [
+                          { key: 'final_innocent', content: character.final_innocent },
+                          { key: 'final_guilty', content: character.final_guilty },
+                          { key: 'final_accomplice', content: character.final_accomplice },
+                        ]),
                   ];
 
                   return (
@@ -719,7 +744,7 @@ const MysteryPackageTabView = React.memo(({
                           forceMount
                           className={cn(
                             "text-foreground",
-                            "data-[state=closed]:hidden print:!block print:!h-auto print:!overflow-visible",
+                            "group-data-[state=closed]:hidden print:!block print:!h-auto print:!overflow-visible",
                             isMobile && "text-sm"
                           )}
                         >

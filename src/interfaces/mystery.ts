@@ -70,10 +70,12 @@ export interface MysteryCharacter {
   id: string;
   package_id: string;
   character_name: string;
+  character_role?: string;
   description?: string;
   background?: string;
   relationships: RelationshipInfo[];
   secrets: string[];
+  secret?: string;
   round_scripts?: {
     introduction?: string;
     round1?: string | RoundScriptOptions;
@@ -82,14 +84,35 @@ export interface MysteryCharacter {
     final?: RoundScriptOptions;
   };
   introduction?: string;
+  rumors?: string;
   whereabouts?: string;
   round1_statement?: string;
   round2_statement?: string;
   round3_statement?: string;
+  round2_script?: string;
+  round2_questions?: string;
+  round2_innocent?: string;
+  round2_guilty?: string;
+  round2_accomplice?: string;
+  round3_script?: string;
+  round3_questions?: string;
+  round3_innocent?: string;
+  round3_guilty?: string;
+  round3_accomplice?: string;
+  round4_script?: string;
+  round4_questions?: string;
+  round4_innocent?: string;
+  round4_guilty?: string;
+  round4_accomplice?: string;
+  accusations?: string;
+  final_statement?: string;
+  final_innocent?: string;
+  final_guilty?: string;
+  final_accomplice?: string;
   questioning_options?: QuestionOption[];
-  created_at?: string; // Make created_at optional
-  updated_at?: string; // Make updated_at optional
-  [key: string]: any; // To allow for additional properties
+  created_at?: string;
+  updated_at?: string;
+  [key: string]: any;
 }
 
 interface RelationshipInfo {
