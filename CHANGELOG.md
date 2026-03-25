@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-03-25
+
+### Improvement: Detective-style child scenario prompt cleanup
+- Added 🛑 **STOP!** 🛑 markers after rumors, round 2, round 3, and round 4 sections (these were present in character-based but missing from detective-style)
+- Removed redundant innocent/guilty/accomplice script variants — detective-style only needs `round2_script`, `round3_script`, `round4_script`, and `final_statement` since the murderer is predetermined
+- Removed `quickReference` field as redundant with existing character content
+- Simplified `accusations` field to match character-based format (no role-specific guidance text)
+
+### Fix: Detective-style character tab rendering
+- Characters tab now correctly renders `round2_script`, `round3_script`, `round4_script`, and `final_statement` fields for detective-style mysteries
+- Previously rendered only innocent/guilty variants which are empty for detective-style, resulting in blank character accordions
+
 ## 2026-03-24
 
 ### Fix: Show tab view immediately after purchase
