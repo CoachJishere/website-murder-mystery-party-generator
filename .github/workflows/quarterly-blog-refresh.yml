@@ -25,7 +25,7 @@ jobs:
           echo "Calling refresh_blog_dates($MONTH_NUM, $YEAR)..."
 
           # Call the Supabase RPC function
-          RESULT=$(curl -s \
+          HTTP_CODE=$(curl -s -o /tmp/result.json -w "%{http_code}" \
             "${SUPABASE_URL}/rest/v1/rpc/refresh_blog_dates" \
             -X POST \
             -H "apikey: ${SUPABASE_SERVICE_KEY}" \
@@ -33,9 +33,17 @@ jobs:
             -H "Content-Type: application/json" \
             -d "{\"month_num\": ${MONTH_NUM}, \"year_num\": ${YEAR}}")
 
+          RESULT=$(cat /tmp/result.json)
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Error: Supabase returned HTTP $HTTP_CODE"
+            echo "$RESULT"
+            exit 1
+          fi
+
           echo ""
           echo "Results by language:"
-          echo "$RESULT" | jq -r '.[] | "\(.language): \(.updated_count) posts refreshed"'
+          echo "$RESULT" | jq -r '.[] | "\(.lang): \(.updated_count) posts refreshed"'
 
           TOTAL=$(echo "$RESULT" | jq '[.[].updated_count] | add')
           echo ""
