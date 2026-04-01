@@ -1,7 +1,5 @@
 
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { AIInputWithLoading } from "@/components/ui/ai-input-with-loading";
 import SignInPrompt from "@/components/SignInPrompt";
 import { useAuth } from "@/context/AuthContext";
@@ -54,29 +52,91 @@ const Hero = () => {
     { name: "hero.themes.sentientPlantColony", prompt: t("hero.prompts.sentientPlantColony") }
   ], [t]);
 
-  // State for holding selected themes and input value
-  const [selectedThemes, setSelectedThemes] = useState<typeof MYSTERY_THEMES>([]);
+  // State for input value and UI
   const [inputValue, setInputValue] = useState("");
   const [showSignInPrompt, setShowSignInPrompt] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
-  // Function to randomly select themes
-  const getRandomThemes = useCallback(() => {
-    const shuffled = [...MYSTERY_THEMES].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 4);
-  }, [MYSTERY_THEMES]);
+  // ── Typewriter cycling placeholder ──
+  const STATIC_PREFIX = t('hero.typewriterPrefix', 'Create a mystery ');
+  const [displayText, setDisplayText] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
+  const [currentThemeIndex, setCurrentThemeIndex] = useState(0);
+  const [isFocused, setIsFocused] = useState(false);
+  const typewriterPaused = useRef(false);
 
-  // Initialize selected themes on component mount
+  // Pick a random starting index on mount
   useEffect(() => {
-    setSelectedThemes(getRandomThemes());
-  }, [getRandomThemes]);
+    setCurrentThemeIndex(Math.floor(Math.random() * MYSTERY_THEMES.length));
+  }, [MYSTERY_THEMES.length]);
 
-  // Function to handle button click and set input value
-  const handleThemeSelect = (prompt: string) => {
-    setInputValue(prompt);
-  };
+  // Get only the suffix (strip "Create a mystery " from the prompt)
+  const getCurrentSuffix = useCallback(() => {
+    const fullPrompt = MYSTERY_THEMES[currentThemeIndex]?.prompt || "";
+    // Strip the prefix if it starts with it, otherwise use the full prompt
+    const prefixPattern = /^Create a mystery\s*/i;
+    const ptPrefixPattern = /^Crie um mistério\s*/i;
+    return fullPrompt.replace(prefixPattern, "").replace(ptPrefixPattern, "");
+  }, [currentThemeIndex, MYSTERY_THEMES]);
+
+  // Typewriter effect — only types/erases the suffix part
+  useEffect(() => {
+    if (isFocused || inputValue) {
+      typewriterPaused.current = true;
+      return;
+    }
+    typewriterPaused.current = false;
+
+    const currentSuffix = getCurrentSuffix();
+    let timeout: NodeJS.Timeout;
+
+    if (isTyping) {
+      if (displayText.length < currentSuffix.length) {
+        timeout = setTimeout(() => {
+          if (!typewriterPaused.current) {
+            setDisplayText(currentSuffix.slice(0, displayText.length + 1));
+          }
+        }, 30 + Math.random() * 40);
+      } else {
+        timeout = setTimeout(() => {
+          if (!typewriterPaused.current) {
+            setIsTyping(false);
+          }
+        }, 2500);
+      }
+    } else {
+      if (displayText.length > 0) {
+        timeout = setTimeout(() => {
+          if (!typewriterPaused.current) {
+            setDisplayText(displayText.slice(0, -1));
+          }
+        }, 20);
+      } else {
+        setCurrentThemeIndex((prev) => (prev + 1) % MYSTERY_THEMES.length);
+        setIsTyping(true);
+      }
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayText, isTyping, isFocused, inputValue, currentThemeIndex, MYSTERY_THEMES, getCurrentSuffix]);
+
+  // showTypewriter — true when the overlay should be visible (prefix always shows)
+  const showTypewriter = !inputValue && !isFocused;
+
+  const handleFocus = useCallback(() => {
+    setIsFocused(true);
+    setDisplayText("");
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setIsFocused(false);
+    if (!inputValue) {
+      setDisplayText("");
+      setIsTyping(true);
+    }
+  }, [inputValue]);
 
   // Extract theme from prompt
   const extractThemeFromPrompt = (prompt: string) => {
@@ -148,30 +208,36 @@ const Hero = () => {
             : t('hero.subtitle')}
         </p>
         
-        <div className="max-w-xl mx-auto px-2 sm:px-0">
+        <div className="max-w-2xl mx-auto px-2 sm:px-0 relative">
+          {/* Typewriter overlay — static prefix + animated suffix */}
+          {showTypewriter && (
+            <div className="absolute left-2 sm:left-0 right-2 sm:right-0 top-0 z-10 pointer-events-none">
+              <div className="max-w-2xl mx-auto relative">
+                <div className="pt-3">
+                  <div className="px-4 pt-2 text-left">
+                    <span className="text-black/40 dark:text-white/40 text-[15px] leading-snug">
+                      <span>{STATIC_PREFIX}</span>
+                      <span>{displayText}</span>
+                      <span className="inline-block w-[2px] h-[1em] bg-[#8B1538]/50 ml-[1px] animate-pulse align-middle" />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           <AIInputWithLoading
-            placeholder={isAuthenticated 
-              ? t('hero.placeholderAuth')
-              : t('hero.placeholder')}
+            placeholder={showTypewriter
+              ? ""
+              : isAuthenticated
+                ? t('hero.placeholderAuth')
+                : t('hero.placeholder')}
             value={inputValue}
             setValue={setInputValue}
             onSubmit={handleSubmit}
             loading={isCreating}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
           />
-        </div>
-        
-        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mt-4 sm:mt-5 px-2">
-          {selectedThemes.map((theme) => (
-            <Button 
-              key={theme.name} 
-              variant="outline" 
-              className="rounded-full px-3 sm:px-4 md:px-6 border-border/50 bg-card/30 backdrop-blur-sm text-xs sm:text-sm h-8 sm:h-9 md:h-10 font-inter"
-              onClick={() => handleThemeSelect(theme.prompt)}
-            >
-              <span className="truncate max-w-[140px] xs:max-w-[160px] sm:max-w-none">{t(theme.name)}</span>
-              <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-            </Button>
-          ))}
         </div>
 
         <SignInPrompt 

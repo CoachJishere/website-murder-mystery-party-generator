@@ -1,8 +1,7 @@
 "use client";
 
-import { CornerRightUp } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useAutoResizeTextarea } from "@/components/hooks/use-auto-resize-textarea";
 import { useTranslation } from "react-i18next";
@@ -19,13 +18,15 @@ interface AIInputWithLoadingProps {
   autoAnimate?: boolean;
   value?: string;
   setValue?: (value: string) => void;
-  loading?: boolean; // Add the loading prop here
+  loading?: boolean;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 export function AIInputWithLoading({
   id = "ai-input-with-loading",
   placeholder = "Ask me anything!",
-  minHeight = 56,
+  minHeight = 80,
   maxHeight = 200,
   loadingDuration = 3000,
   thinkingDuration = 1000,
@@ -34,13 +35,15 @@ export function AIInputWithLoading({
   autoAnimate = false,
   value,
   setValue,
-  loading = false, // Add default value for loading
+  loading = false,
+  onFocus,
+  onBlur,
 }: AIInputWithLoadingProps) {
   const { t } = useTranslation();
   const [inputValue, setInputValue] = useState(value || "");
-  const [submitted, setSubmitted] = useState(autoAnimate || loading); // Update to use loading prop
+  const [submitted, setSubmitted] = useState(autoAnimate || loading);
   const [isAnimating, setIsAnimating] = useState(autoAnimate);
-  
+
   const { textareaRef, adjustHeight } = useAutoResizeTextarea({
     minHeight,
     maxHeight,
@@ -53,7 +56,6 @@ export function AIInputWithLoading({
     }
   }, [value, adjustHeight]);
 
-  // Update submitted state when loading prop changes
   useEffect(() => {
     setSubmitted(loading);
   }, [loading]);
@@ -79,12 +81,12 @@ export function AIInputWithLoading({
 
   const handleSubmit = async () => {
     if (!inputValue.trim() || submitted) return;
-    
+
     setSubmitted(true);
     await onSubmit?.(inputValue);
     setInputValue("");
     adjustHeight(true);
-    
+
     setTimeout(() => {
       setSubmitted(false);
     }, loadingDuration);
@@ -98,57 +100,64 @@ export function AIInputWithLoading({
   };
 
   return (
-    <div className={cn("w-full py-4", className)}>
-      <div className="relative max-w-xl w-full mx-auto flex items-start flex-col gap-2">
-        <div className="relative max-w-xl w-full mx-auto">
-          <Textarea
-            id={id}
-            placeholder={placeholder}
-            className={cn(
-              "max-w-xl bg-black/5 dark:bg-white/5 w-full rounded-3xl pl-6 pr-10 py-4",
-              "placeholder:text-black/70 dark:placeholder:text-white/70",
-              "border-none ring-black/30 dark:ring-white/30",
-              "text-black dark:text-white resize-none text-wrap leading-[1.2]",
-              `min-h-[${minHeight}px]`
-            )}
-            ref={textareaRef}
-            value={inputValue}
-            onChange={handleChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit();
-              }
-            }}
-            disabled={submitted}
-          />
-          <button
-            onClick={handleSubmit}
-            className={cn(
-              "absolute right-3 top-1/2 -translate-y-1/2 rounded-xl py-1 px-1",
-              submitted ? "bg-none" : "bg-black/5 dark:bg-white/5"
-            )}
-            type="button"
-            disabled={submitted}
-          >
-            {submitted ? (
-              <div
-                className="w-4 h-4 bg-black dark:bg-white rounded-sm animate-spin transition duration-700"
-                style={{ animationDuration: "3s" }}
-              />
-            ) : (
-              <CornerRightUp
-                className={cn(
-                  "w-4 h-4 transition-opacity dark:text-white",
-                  inputValue ? "opacity-100" : "opacity-30"
-                )}
-              />
-            )}
-          </button>
+    <div className={cn("w-full py-3", className)}>
+      <div className="relative max-w-2xl w-full mx-auto">
+        <div
+          className={cn(
+            "bg-white dark:bg-zinc-900 rounded-2xl",
+            "shadow-[0_2px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_20px_rgba(0,0,0,0.3)]",
+            "border border-black/[0.06] dark:border-white/[0.08]",
+            "transition-shadow duration-300",
+            "hover:shadow-[0_4px_30px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_4px_30px_rgba(0,0,0,0.4)]",
+            "focus-within:shadow-[0_4px_30px_rgba(139,21,56,0.15)] dark:focus-within:shadow-[0_4px_30px_rgba(139,21,56,0.25)]",
+            "focus-within:border-[#8B1538]/20 dark:focus-within:border-[#8B1538]/30"
+          )}
+        >
+          <div className="px-4 pt-2 pb-0">
+            <textarea
+              id={id}
+              ref={textareaRef}
+              placeholder={placeholder}
+              className={cn(
+                "w-full bg-transparent resize-none outline-none text-left",
+                "text-black dark:text-white text-[15px] leading-snug",
+                "placeholder:text-black/40 dark:placeholder:text-white/40",
+                "min-h-[24px]"
+              )}
+              value={inputValue}
+              onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit();
+                }
+              }}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              disabled={submitted}
+              rows={1}
+            />
+          </div>
+          <div className="flex items-center justify-end px-3 pb-1.5 pt-0">
+            <button
+              onClick={handleSubmit}
+              className={cn(
+                "flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200",
+                submitted
+                  ? "bg-black/30 dark:bg-white/20 text-white"
+                  : "bg-black/70 hover:bg-black/90 dark:bg-white/70 dark:hover:bg-white/90 text-white dark:text-black"
+              )}
+              type="button"
+              disabled={submitted}
+            >
+              {submitted ? (
+                <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <ArrowUp className="w-3.5 h-3.5" />
+              )}
+            </button>
+          </div>
         </div>
-        <p className="pl-4 h-4 text-xs mx-auto text-black/70 dark:text-white/70">
-          {submitted ? t("common.messages.aiThinking") : ""}
-        </p>
       </div>
     </div>
   );
