@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-04-01
+
+### Fix: Quarterly blog refresh GitHub Action
+- Fixed jq field name mismatch: SQL function returns `lang` but workflow referenced `.language`
+- Added HTTP status code checking so Supabase API errors fail fast with a clear message instead of silently piping error responses into jq
+- Manually ran the refresh — all 13 languages updated to April 2026 (2,431 posts total)
+
 ## 2026-03-25
 
 ### Improvement: Detective-style child scenario prompt cleanup
