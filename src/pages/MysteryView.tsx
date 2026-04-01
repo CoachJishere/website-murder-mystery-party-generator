@@ -60,6 +60,9 @@ const MysteryView = () => {
   const lastStatusCheck = useRef<number>(0);
   const lastLogTime = useRef<number>(0);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const generationTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutNotifiedRef = useRef<boolean>(false);
+  const [generationTimedOut, setGenerationTimedOut] = useState(false);
 
   const debugLog = useCallback((message: string, data?: any) => {
     if (!DEBUG_MODE) return;
@@ -249,9 +252,11 @@ const MysteryView = () => {
     }
 
     setGenerating(true);
+    setGenerationTimedOut(false);
+    timeoutNotifiedRef.current = false;
     try {
       toast.info("Resuming your mystery generation...");
-      
+
       // Reset notification state on resume
       packageReadyNotified.current = false;
       
@@ -275,7 +280,9 @@ const MysteryView = () => {
 
     setGenerating(true);
     packageReadyNotified.current = false; // Reset notification flag
-    
+    setGenerationTimedOut(false);
+    timeoutNotifiedRef.current = false;
+
     try {
       const estimatedTime = getEstimatedTime(mystery?.player_count || 6);
       toast.info(`Starting generation of your mystery package. This will take ${estimatedTime}...`);
@@ -369,6 +376,22 @@ const MysteryView = () => {
       );
 
       const packageStatusComplete = packageData?.generation_status?.status === 'completed';
+      const packageNeedsReview = packageData?.generation_status?.status === 'needs_review';
+
+      // If flagged as needs_review, respect that and don't override
+      if (packageNeedsReview) {
+        const needsReviewStatus = {
+          status: 'needs_review' as const,
+          progress: 100,
+          currentStep: packageData?.generation_status?.currentStep || 'Some character content needs attention',
+          sections: packageData?.generation_status?.sections || { hostGuide: true, characters: false, clues: true },
+          resumable: false,
+        };
+        setGenerationStatus(needsReviewStatus as any);
+        setLastUpdate(new Date());
+        setGenerating(false);
+        return needsReviewStatus as any;
+      }
 
       // Validate that all expected characters have been generated
       let allCharactersGenerated = true;
@@ -600,6 +623,62 @@ const MysteryView = () => {
     };
   }, [id, checkGenerationStatus]);
 
+  // Generation timeout detection — 15 minutes
+  const GENERATION_TIMEOUT_MS = 15 * 60 * 1000;
+
+  const notifyGenerationIssue = useCallback(async (conversationId: string) => {
+    if (timeoutNotifiedRef.current) return;
+    timeoutNotifiedRef.current = true;
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      await supabase.functions.invoke('notify-generation-issue', {
+        body: { conversation_id: conversationId },
+        headers: session?.access_token
+          ? { Authorization: `Bearer ${session.access_token}` }
+          : undefined,
+      });
+      console.log("📧 Generation issue notification sent");
+    } catch (err) {
+      console.error("Failed to send generation issue notification:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Start timer when generation is in progress
+    if (generating && generationStatus?.status === 'in_progress' && id) {
+      // Clear any previous timer
+      if (generationTimerRef.current) clearTimeout(generationTimerRef.current);
+
+      generationTimerRef.current = setTimeout(() => {
+        // Only trigger if still generating when timer fires
+        if (generating) {
+          console.log("⏰ Generation timeout reached (15 min)");
+          setGenerationTimedOut(true);
+          notifyGenerationIssue(id);
+        }
+      }, GENERATION_TIMEOUT_MS);
+    }
+
+    // Clear timer when generation completes or fails
+    if (!generating || generationStatus?.status === 'completed' || generationStatus?.status === 'failed') {
+      if (generationTimerRef.current) {
+        clearTimeout(generationTimerRef.current);
+        generationTimerRef.current = null;
+      }
+      if (generationStatus?.status === 'completed') {
+        setGenerationTimedOut(false);
+        timeoutNotifiedRef.current = false;
+      }
+    }
+
+    return () => {
+      if (generationTimerRef.current) {
+        clearTimeout(generationTimerRef.current);
+      }
+    };
+  }, [generating, generationStatus?.status, id, notifyGenerationIssue]);
+
   // Initial data loading
   useEffect(() => {
     const fetchMystery = async () => {
@@ -657,6 +736,24 @@ const MysteryView = () => {
           if (status.status === 'in_progress') {
             setGenerating(true);
             console.log("🔄 [DEBUG] Generation in progress, starting polling");
+
+            // Check if generation has already been running > 15 min on page load
+            const { data: pkgCheck } = await supabase
+              .from("mystery_packages")
+              .select("generation_started_at")
+              .eq("conversation_id", id)
+              .order("updated_at", { ascending: false })
+              .limit(1)
+              .maybeSingle();
+
+            if (pkgCheck?.generation_started_at) {
+              const elapsed = Date.now() - new Date(pkgCheck.generation_started_at).getTime();
+              if (elapsed > 15 * 60 * 1000) {
+                console.log("⏰ Generation already exceeded 15 min on page load");
+                setGenerationTimedOut(true);
+                notifyGenerationIssue(id);
+              }
+            }
           } else if (status.status === 'completed') {
             // Reset notification state on new page load if package is complete
             packageReadyNotified.current = false;
@@ -833,7 +930,67 @@ const MysteryView = () => {
         </Card>
       );
     }
-    
+
+    // Timeout state — generation has been running for over 15 minutes
+    if (generationTimedOut) {
+      return (
+        <Card className={cn(
+          "mb-6 border-amber-200 bg-amber-50",
+          isMobile && "mx-2"
+        )}>
+          <CardHeader className={cn(isMobile && "p-4 pb-3")}>
+            <CardTitle className={cn(
+              "flex items-center space-x-2 text-amber-800",
+              isMobile && "text-base"
+            )}>
+              <AlertTriangle className={cn(
+                "text-amber-600",
+                isMobile ? "h-4 w-4" : "h-5 w-5"
+              )} />
+              <span>Taking Longer Than Expected</span>
+            </CardTitle>
+            <CardDescription className={cn(
+              "text-amber-700",
+              isMobile && "text-sm"
+            )}>
+              Your mystery was generated but we're having an issue displaying the content.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className={cn(
+            "space-y-4",
+            isMobile && "p-4 pt-0 space-y-3"
+          )}>
+            <Alert className="border-amber-200 bg-white">
+              <CheckCircle2 className={cn(
+                "text-green-500",
+                isMobile ? "h-3 w-3" : "h-4 w-4"
+              )} />
+              <AlertTitle className={cn(isMobile && "text-sm")}>Don't worry — your mystery is safe!</AlertTitle>
+              <AlertDescription className={cn(isMobile && "text-xs")}>
+                Our technical team has been automatically notified and will resolve this as soon as possible. You don't need to do anything — we'll make sure your complete mystery package is available for you shortly.
+              </AlertDescription>
+            </Alert>
+            <p className={cn(
+              "text-sm text-amber-700",
+              isMobile && "text-xs"
+            )}>
+              You can safely close this page and come back later. If the issue persists, please reach out to{" "}
+              <a href="mailto:support@mysterymaker.party" className="underline font-medium">support@mysterymaker.party</a>.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleManualRefresh}
+              className="border-amber-300 text-amber-800 hover:bg-amber-100"
+            >
+              <RefreshCw className={cn("mr-2", isMobile ? "h-3 w-3" : "h-4 w-4")} />
+              Check Again
+            </Button>
+          </CardContent>
+        </Card>
+      );
+    }
+
     return (
       <Card className={cn(
         "mb-6",
@@ -1000,8 +1157,63 @@ const MysteryView = () => {
           "container mx-auto max-w-4xl",
           isMobile && "max-w-full"
         )}>
-          {(mystery?.is_paid || generationStatus?.status === 'completed' || 
-            (!generating && !generationStatus && packageData && packageData.gameOverview && 
+          {generationStatus?.status === 'needs_review' ? (
+            <Card className={cn(
+              "mb-6 border-amber-200 bg-amber-50",
+              isMobile && "mx-2"
+            )}>
+              <CardHeader className={cn(isMobile && "p-4 pb-3")}>
+                <CardTitle className={cn(
+                  "flex items-center space-x-2 text-amber-800",
+                  isMobile && "text-base"
+                )}>
+                  <AlertTriangle className={cn(
+                    "text-amber-600",
+                    isMobile ? "h-4 w-4" : "h-5 w-5"
+                  )} />
+                  <span>We're Finalizing Your Mystery</span>
+                </CardTitle>
+                <CardDescription className={cn(
+                  "text-amber-700",
+                  isMobile && "text-sm"
+                )}>
+                  Your mystery was generated but some character content needs attention.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className={cn(
+                "space-y-4",
+                isMobile && "p-4 pt-0 space-y-3"
+              )}>
+                <Alert className="border-amber-200 bg-white">
+                  <CheckCircle2 className={cn(
+                    "text-green-500",
+                    isMobile ? "h-3 w-3" : "h-4 w-4"
+                  )} />
+                  <AlertTitle className={cn(isMobile && "text-sm")}>Don't worry — your mystery is safe!</AlertTitle>
+                  <AlertDescription className={cn(isMobile && "text-xs")}>
+                    Our technical team has been automatically notified and will resolve this as soon as possible. You don't need to do anything — we'll make sure your complete mystery package is available for you shortly.
+                  </AlertDescription>
+                </Alert>
+                <p className={cn(
+                  "text-sm text-amber-700",
+                  isMobile && "text-xs"
+                )}>
+                  You can safely close this page and come back later. If the issue persists, please reach out to{" "}
+                  <a href="mailto:support@mysterymaker.party" className="underline font-medium">support@mysterymaker.party</a>.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleManualRefresh}
+                  className="border-amber-300 text-amber-800 hover:bg-amber-100"
+                >
+                  <RefreshCw className={cn("mr-2", isMobile ? "h-3 w-3" : "h-4 w-4")} />
+                  Check Again
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (mystery?.is_paid || generationStatus?.status === 'completed' ||
+            (!generating && !generationStatus && packageData && packageData.gameOverview &&
              packageData.hostGuide && characters.length > 0)) ? (
             <MysteryPackageTabView
               packageContent={packageContent || ""}

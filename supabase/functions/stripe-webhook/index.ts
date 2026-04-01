@@ -126,8 +126,7 @@ serve(async (req) => {
           .from("conversations")
           .update({
             is_paid: true,
-            stripe_session_id: session.id,
-            stripe_payment_intent: session.payment_intent as string,
+            purchase_date: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           })
           .eq("id", conversationId)
@@ -168,6 +167,70 @@ serve(async (req) => {
         );
 
         console.log("Purchase conversion tracked in GA4");
+
+        // Send purchase notification email
+        const resendApiKey = Deno.env.get("RESEND_API_KEY");
+        if (resendApiKey) {
+          try {
+            const amountFormatted = ((session.amount_total || 0) / 100).toFixed(2);
+            const currency = (session.currency || "usd").toUpperCase();
+
+            // Fetch mystery title from conversation
+            const { data: convData } = await supabase
+              .from("conversations")
+              .select("title")
+              .eq("id", conversationId)
+              .single();
+
+            const mysteryTitle = convData?.title || "Unknown Mystery";
+
+            const notificationHtml = `
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: #10b981; color: white; padding: 20px; border-radius: 8px 8px 0 0;">
+                  <h2 style="margin: 0;">New Purchase!</h2>
+                </div>
+                <div style="background: #f9fafb; padding: 20px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb;">
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr><td style="padding: 8px 0; color: #6b7280;">Mystery</td><td style="padding: 8px 0; font-weight: 600;">${mysteryTitle}</td></tr>
+                    <tr><td style="padding: 8px 0; color: #6b7280;">Amount</td><td style="padding: 8px 0; font-weight: 600;">${currency} ${amountFormatted}</td></tr>
+                    <tr><td style="padding: 8px 0; color: #6b7280;">Customer</td><td style="padding: 8px 0;">${customerEmail || "N/A"}</td></tr>
+                    <tr><td style="padding: 8px 0; color: #6b7280;">Conversation ID</td><td style="padding: 8px 0; font-size: 12px;">${conversationId}</td></tr>
+                    <tr><td style="padding: 8px 0; color: #6b7280;">Stripe Session</td><td style="padding: 8px 0; font-size: 12px;">${session.id}</td></tr>
+                  </table>
+                  <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af;">
+                    ${new Date().toLocaleString("en-AU", { timeZone: "Australia/Sydney" })}
+                  </div>
+                </div>
+              </div>
+            `;
+
+            const emailResponse = await fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${resendApiKey}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                from: "Mystery Maker <noreply@mysterymaker.party>",
+                to: ["support@mysterymaker.party"],
+                subject: `💰 New Purchase — ${mysteryTitle} (${currency} ${amountFormatted})`,
+                html: notificationHtml,
+              }),
+            });
+
+            if (!emailResponse.ok) {
+              const errorText = await emailResponse.text();
+              console.error(`Purchase notification email failed: ${emailResponse.status} ${errorText}`);
+            } else {
+              console.log("Purchase notification email sent successfully");
+            }
+          } catch (emailError) {
+            console.error("Error sending purchase notification email:", emailError);
+          }
+        } else {
+          console.warn("RESEND_API_KEY not set, skipping purchase notification email");
+        }
+
         break;
       }
 

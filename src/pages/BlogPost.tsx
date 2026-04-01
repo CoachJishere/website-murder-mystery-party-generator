@@ -145,11 +145,11 @@ export default function BlogPost() {
         if (!allPosts || allPosts.length === 0) throw new Error('Post not found');
 
         // Fetch available language variants for hreflang tags
-        // Group by post_date since each translation has a different slug
+        // All translations share the same slug, differentiated by language
         const { data: variants } = await supabase
           .from('blog_posts')
           .select('language, slug')
-          .eq('post_date', allPosts[0].post_date)
+          .eq('slug', slug)
           .eq('status', 'published');
         setLangVariants(variants || []);
 
@@ -280,24 +280,26 @@ export default function BlogPost() {
     },
     "inLanguage": effectiveLanguage,
     "timeRequired": `PT${post.reading_time || calculateReadingTime(post.content || '')}M`,
-    "wordCount": post.content.split(' ').length
+    "wordCount": ['ja', 'ko', 'zh-cn'].includes(effectiveLanguage)
+      ? post.content.replace(/\s+/g, '').length  // CJK: count characters (no word boundaries)
+      : post.content.split(/\s+/).filter(w => w.length > 0).length
   };
 
   // Generate FAQPage schema from FAQ sections in the content
   const generateFaqSchema = (content: string) => {
-    // Match FAQ section: look for a heading containing "FAQ" or "Frequently Asked"
-    // then capture all ### Question? / Answer pairs that follow
-    const faqSectionMatch = content.match(/##\s*(?:Frequently Asked Questions|FAQ)[^\n]*\n([\s\S]*?)(?=\n## [^#]|$)/i);
+    // Match FAQ section in any supported language
+    // EN, ES, FR, DE, IT, PT, NL, DA, SV, FI, KO, JA, ZH-CN
+    const faqHeadingPattern = /##\s*(?:Frequently Asked Questions|Questions People Actually Ask|FAQ|Preguntas [Ff]recuent\w*|Questions fréquemment posées|Foire aux questions|Häufig gestellte Fragen|Domande frequenti|Perguntas [Ff]requent\w*|Veelgestelde vragen|Ofte [Ss]tillede [Ss]pørgsmål|Ofta [Ss]tällda [Ff]rågor|Vanliga frågor|Usein kysytyt kysymykset|UKK|자주 묻는 질문|よくある質問|常见问题)[^\n]*\n([\s\S]*?)(?=\n## [^#]|$)/i;
+    const faqSectionMatch = content.match(faqHeadingPattern);
     if (!faqSectionMatch) return null;
 
     const faqSection = faqSectionMatch[1];
     const qaItems: { question: string; answer: string }[] = [];
 
-    // Match ### Question? followed by answer text (until next ### or end)
-    const qaPairs = faqSection.matchAll(/###\s*(.+?\?)\s*\n([\s\S]*?)(?=\n###\s|\n## |$)/g);
-    for (const match of qaPairs) {
+    // Pattern 1: ### Question? followed by answer text
+    const qaPairsH3 = faqSection.matchAll(/###\s*(.+?\?)\s*\n([\s\S]*?)(?=\n###\s|\n## |$)/g);
+    for (const match of qaPairsH3) {
       const question = match[1].trim();
-      // Clean markdown from answer: strip bold, links, etc.
       const answer = match[2].trim()
         .replace(/\*\*([^*]+)\*\*/g, '$1')
         .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
@@ -305,6 +307,22 @@ export default function BlogPost() {
         .trim();
       if (question && answer) {
         qaItems.push({ question, answer });
+      }
+    }
+
+    // Pattern 2: **Q: Question?** / A: Answer format (used in some translations)
+    if (qaItems.length === 0) {
+      const qaPairsBold = faqSection.matchAll(/\*\*(?:Q|P|F|V|D|S|K):\s*(.+?\?)\s*\*\*\s*\n+\s*(?:A|R|S|V|D|K):\s*([\s\S]*?)(?=\n\*\*(?:Q|P|F|V|D|S|K):|$)/gi);
+      for (const match of qaPairsBold) {
+        const question = match[1].trim();
+        const answer = match[2].trim()
+          .replace(/\*\*([^*]+)\*\*/g, '$1')
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+          .replace(/\n+/g, ' ')
+          .trim();
+        if (question && answer) {
+          qaItems.push({ question, answer });
+        }
       }
     }
 
@@ -325,9 +343,10 @@ export default function BlogPost() {
   };
 
   // Generate HowTo schema from step-by-step tutorial content
-  const generateHowToSchema = (content: string, title: string) => {
-    // Detect tutorial/how-to posts by title or content patterns
-    const isHowTo = /^how[\s-]to/i.test(title) || /## (?:step\s*\d|how to)/i.test(content);
+  const generateHowToSchema = (content: string, title: string, postSlug: string) => {
+    // Detect tutorial/how-to posts by slug (always English), title patterns, or content patterns
+    // Slug check covers all languages since slugs remain in English
+    const isHowTo = /^how-to/i.test(postSlug) || /^how[\s-]to/i.test(title) || /^(Sådan|Kuinka|So |Wie du|Comment|Cómo|Como|Come |Hoe |Hur man|Hvordan)/i.test(title) || /方法/.test(title) || /## (?:step\s*\d|how to)/i.test(content);
     if (!isHowTo) return null;
 
     const steps: { name: string; text: string }[] = [];
@@ -354,7 +373,7 @@ export default function BlogPost() {
       for (const match of h2Matches) {
         const name = match[1].trim();
         // Skip FAQ sections and non-instructional headings
-        if (/FAQ|Frequently Asked|Related|Conclusion|Sources/i.test(name)) continue;
+        if (/FAQ|UKK|Frequently Asked|Questions People|Questions fréquemment|Foire aux|Häufig gestellte|Domande frequenti|Preguntas|Perguntas|Veelgestelde|Ofte .tillede|Ofta .tällda|Vanliga frågor|Usein kysytyt|자주 묻는|よくある質問|常见问题|질문|Related|Conclusion|Sources/i.test(name)) continue;
         const text = match[2].trim()
           .replace(/\*\*([^*]+)\*\*/g, '$1')
           .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
@@ -388,7 +407,7 @@ export default function BlogPost() {
   };
 
   const faqSchema = generateFaqSchema(post.content);
-  const howToSchema = generateHowToSchema(post.content, post.title);
+  const howToSchema = generateHowToSchema(post.content, post.title, post.slug);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FEFCF8]">
@@ -404,12 +423,19 @@ export default function BlogPost() {
             <link
               key={v.language}
               rel="alternate"
-              hrefLang={v.language === 'zh-CN' ? 'zh-Hans' : v.language}
+              hrefLang={v.language === 'zh-cn' ? 'zh-Hans' : v.language}
               href={v.language === 'en'
                 ? `https://www.mysterymaker.party/blog/${v.slug}`
                 : `https://www.mysterymaker.party/${v.language}/blog/${v.slug}`}
             />
           ))}
+          {langVariants.some(v => v.language === 'en') && (
+            <link
+              rel="alternate"
+              hrefLang="x-default"
+              href={`https://www.mysterymaker.party/blog/${slug}`}
+            />
+          )}
           <meta property="og:title" content={post?.title || 'Blog Post'} />
           <meta property="og:description" content={post?.meta_description || ''} />
           <meta property="og:type" content="article" />

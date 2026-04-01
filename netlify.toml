@@ -24,6 +24,22 @@
   DISABLE_PNPM = "true"
   PNPM_DISABLE = "true"
 
+# 301 redirects for merged blog posts (non-survivors → survivors)
+[[redirects]]
+  from = "/blog/unique-medieval-murder-mystery-plot-ideas"
+  to = "/blog/how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue"
+  status = 301
+
+[[redirects]]
+  from = "/blog/unique-circus-murder-mystery-plot-ideas"
+  to = "/blog/5-vintage-circus-murder-mystery-themes-step-into-the-big-top-of-intrigue"
+  status = 301
+
+[[redirects]]
+  from = "/blog/unique-space-colony-murder-mystery-plots-explore-the-final-frontier-of-crime"
+  to = "/blog/how-to-host-a-space-station-murder-mystery"
+  status = 301
+
 # Handle client-side routing for SPA
 [[redirects]]
   from = "/*"
