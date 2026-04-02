@@ -2,8 +2,9 @@
 
 ## 2026-04-02
 
-### Fix: Remove experimental ParallaxDemo page to fix production build
+### Fix: Remove experimental preview pages to fix production build
 - Deleted `ParallaxDemo.tsx` and its route — was importing `gsap` and `@studio-freight/lenis` which broke the CI build
+- Removed `HomeParallaxPreview` import and route — file was untracked, causing build failure
 - Removed unused `gsap` and `@studio-freight/lenis` dependencies from `package.json`
 
 ### Improvement: JA translation audit R341–R422 — 41 full retranslations, 8 spot fixes

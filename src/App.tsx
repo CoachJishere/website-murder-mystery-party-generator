@@ -37,7 +37,6 @@ import BillingHistory from "./pages/BillingHistory";
 import AdminDashboard from "./pages/AdminDashboard";
 import DarkHomePreview from "./pages/DarkHomePreview";
 import FontPreview from "./pages/FontPreview";
-import HomeParallaxPreview from "./pages/HomeParallaxPreview";
 import MysteryRoomHero from "./components/MysteryRoomHero";
 import React from "react";
 
@@ -113,7 +112,6 @@ const AppRoutes = () => {
         <Route path="/support" element={<Support />} />
         <Route path="/dark-preview" element={<DarkHomePreview />} />
         <Route path="/font-preview" element={<FontPreview />} />
-        <Route path="/home-parallax" element={<HomeParallaxPreview />} />
         <Route path="/mystery-hero" element={<div className="bg-[#1a0a1a]"><MysteryRoomHero /><div className="px-6 py-32 text-center"><p className="text-white/20 text-sm">Rest of homepage content would go below</p></div></div>} />
         
         {/* Character access route (public) */}
