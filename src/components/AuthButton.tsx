@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,43 +25,101 @@ const AuthButton = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex items-center space-x-2">
-        <Button asChild variant="outline" size="sm">
-          <Link to="/sign-in">Sign In</Link>
-        </Button>
-        <Button asChild size="sm">
-          <Link to="/sign-up">Sign Up</Link>
-        </Button>
+      <div className="flex items-center" style={{ gap: '12px' }}>
+        <Link
+          to="/sign-in"
+          className="no-underline flex items-center justify-center transition-all"
+          style={{
+            color: 'var(--color-cream)',
+            fontFamily: 'var(--font-body)',
+            fontSize: '15px',
+            fontWeight: 500,
+            padding: '8px 20px',
+            borderRadius: '6px',
+            border: '1.5px solid rgba(245,240,232,0.7)',
+            backgroundColor: 'transparent',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--color-cream)';
+            e.currentTarget.style.color = 'var(--color-red)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = 'var(--color-cream)';
+          }}
+        >
+          Sign In
+        </Link>
+        <Link
+          to="/sign-up"
+          className="no-underline flex items-center justify-center transition-all"
+          style={{
+            backgroundColor: '#000000',
+            color: 'var(--color-cream)',
+            fontFamily: 'var(--font-body)',
+            fontSize: '15px',
+            fontWeight: 600,
+            padding: '8px 20px',
+            borderRadius: '6px',
+            border: 'none',
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#1A1A1A')}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#000000')}
+        >
+          Sign Up
+        </Link>
       </div>
     );
   }
 
+  const initial = user?.name?.charAt(0)?.toUpperCase() || "U";
+
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center" style={{ gap: '6px' }}>
       <DropdownMenu open={open} onOpenChange={handleOpenChange}>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            className="h-11 px-3 gap-2 hover:bg-accent"
+          <button
+            className="flex items-center transition-all focus:outline-none"
+            style={{ gap: '6px', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
           >
             {user?.avatar ? (
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="h-8 w-8 rounded-full"
+                className="rounded-full"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  border: '1.5px solid rgba(245,240,232,0.5)',
+                }}
               />
             ) : (
-              <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white">
-                {user?.name?.charAt(0) || "U"}
+              <div
+                className="rounded-full flex items-center justify-center"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  backgroundColor: '#A01000',
+                  border: '1.5px solid rgba(245,240,232,0.5)',
+                  color: 'var(--color-cream)',
+                  fontFamily: 'var(--font-body)',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                }}
+              >
+                {initial}
               </div>
             )}
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-          </Button>
+            <ChevronDown
+              className="transition-colors"
+              style={{ width: '16px', height: '16px', color: 'rgba(245,240,232,0.7)' }}
+            />
+          </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
           <div className="px-4 py-2">
-            <p className="font-medium">{user?.name}</p>
-            <p className="text-sm text-muted-foreground">{user?.email}</p>
+            <p className="font-medium" style={{ color: 'var(--color-cream)' }}>{user?.name}</p>
+            <p className="text-sm" style={{ color: 'var(--color-cream-muted)' }}>{user?.email}</p>
           </div>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
@@ -70,7 +127,8 @@ const AuthButton = () => {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="cursor-pointer text-red-600 focus:text-red-600"
+            className="cursor-pointer"
+            style={{ color: '#C81400' }}
             onClick={() => {
               signOut();
               setOpen(false);

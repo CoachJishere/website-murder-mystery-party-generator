@@ -75,15 +75,32 @@ const Hero = () => {
   // Get only the suffix (strip "Create a mystery " from the prompt)
   const getCurrentSuffix = useCallback(() => {
     const fullPrompt = MYSTERY_THEMES[currentThemeIndex]?.prompt || "";
-    // Strip the prefix if it starts with it, otherwise use the full prompt
     const prefixPattern = /^Create a mystery\s*/i;
     const ptPrefixPattern = /^Crie um mistério\s*/i;
     return fullPrompt.replace(prefixPattern, "").replace(ptPrefixPattern, "");
   }, [currentThemeIndex, MYSTERY_THEMES]);
 
-  // Typewriter effect — only types/erases the suffix part
+  // Typewriter effect
+  // Track whether we've already seeded the full suffix for a focused-empty resume
+  const resumedRef = useRef(false);
+
+  // When user clears input while focused, seed the full suffix and pause before erasing
   useEffect(() => {
-    if (isFocused || inputValue) {
+    if (isFocused && !inputValue && !resumedRef.current) {
+      resumedRef.current = true;
+      const currentSuffix = getCurrentSuffix();
+      setDisplayText(currentSuffix);
+      setIsTyping(true); // set to typing so the 2500ms pause-before-erase triggers naturally
+    }
+    if (inputValue) {
+      resumedRef.current = false;
+    }
+  }, [isFocused, inputValue, getCurrentSuffix]);
+
+  // Main typewriter loop
+  useEffect(() => {
+    // Pause when user is typing their own text
+    if (inputValue) {
       typewriterPaused.current = true;
       return;
     }
@@ -122,48 +139,41 @@ const Hero = () => {
     return () => clearTimeout(timeout);
   }, [displayText, isTyping, isFocused, inputValue, currentThemeIndex, MYSTERY_THEMES, getCurrentSuffix]);
 
-  // showTypewriter — true when the overlay should be visible (prefix always shows)
-  const showTypewriter = !inputValue && !isFocused;
+  // Show typewriter overlay when no user input (whether focused or not)
+  const showTypewriter = !inputValue;
 
   const handleFocus = useCallback(() => {
     setIsFocused(true);
-    setDisplayText("");
+    // Don't clear displayText — typewriter keeps running until user types
   }, []);
 
   const handleBlur = useCallback(() => {
     setIsFocused(false);
-    if (!inputValue) {
-      setDisplayText("");
-      setIsTyping(true);
-    }
-  }, [inputValue]);
+    resumedRef.current = false;
+  }, []);
 
-  // Extract theme from prompt
   const extractThemeFromPrompt = (prompt: string) => {
-    // Check if the prompt directly mentions a theme
     const themeMatch = prompt.match(/theme[d]?\s+(is|of|as|for|about|like)?\s+([a-zA-Z0-9\s'"-]+)/i);
     if (themeMatch && themeMatch[2]) {
       return themeMatch[2].trim();
     }
-    
-    // Check for direct mentions of settings
+
     const settings = [
-      "speakeasy", "hollywood", "castle", "space", "gallery", "bakery", "resort", 
-      "train", "university", "tournament", "dreamworld", "waterworld", "jungle", 
-      "magical", "gaming", "80s", "beach", "opera", "vineyard", "safari", "fashion", 
-      "casino", "fairy tale", "colony", "superhero", "underwater", "wild west", 
-      "viking", "candy", "dragon", "time travel", "atlantis", "toys", "vampire", 
+      "speakeasy", "hollywood", "castle", "space", "gallery", "bakery", "resort",
+      "train", "university", "tournament", "dreamworld", "waterworld", "jungle",
+      "magical", "gaming", "80s", "beach", "opera", "vineyard", "safari", "fashion",
+      "casino", "fairy tale", "colony", "superhero", "underwater", "wild west",
+      "viking", "candy", "dragon", "time travel", "atlantis", "toys", "vampire",
       "dimension", "cyberpunk", "ghost ship", "plant"
     ];
-    
+
     const lowerPrompt = prompt.toLowerCase();
     for (const setting of settings) {
       if (lowerPrompt.includes(setting)) {
         return setting.charAt(0).toUpperCase() + setting.slice(1);
       }
     }
-    
-    // Default to a generic theme if none detected
+
     return "Murder Mystery";
   };
 
@@ -172,19 +182,14 @@ const Hero = () => {
       toast.error("Please enter a description for your mystery");
       return;
     }
-    
+
     if (isAuthenticated) {
       setIsCreating(true);
-      
+
       try {
-        // Extract theme from user input
         const theme = extractThemeFromPrompt(value);
-        
         console.log("Navigating to create page with theme:", theme);
-        
-        // Navigate to mystery creation with theme as URL parameter
         navigate(`/mystery/create?input=${encodeURIComponent(value)}`);
-        
       } catch (error) {
         console.error("Error:", error);
         toast.error("Something went wrong. Please try again.");
@@ -197,28 +202,53 @@ const Hero = () => {
   };
 
   return (
-    <div className="py-8 sm:py-12 md:py-20 px-2 sm:px-4 md:px-6 lg:px-8 bg-background">
-      <div className="w-full max-w-7xl mx-auto text-center">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-3 sm:mb-4 tracking-tight leading-tight font-playfair">
+    <div
+      className="py-8 sm:py-12 md:py-20 px-2 sm:px-4 md:px-6 lg:px-8"
+      style={{
+        backgroundColor: 'var(--color-red)',
+        backgroundImage: 'url(/images/detective-image.png)',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+        position: 'relative',
+      }}
+    >
+      {/* Dark overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.55)',
+          zIndex: 0,
+        }}
+      />
+      <div className="w-full max-w-7xl mx-auto text-center" style={{ position: 'relative', zIndex: 1 }}>
+        <h1
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-[60px] font-display mb-3 sm:mb-4 tracking-tight leading-tight uppercase"
+          style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-display)' }}
+        >
           {t('hero.title')}
         </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-4 sm:mb-5 px-2 font-inter">
-          {isAuthenticated 
+        <p
+          className="text-lg sm:text-xl max-w-2xl mx-auto mb-4 sm:mb-5 px-2 font-inter"
+          style={{ color: 'var(--color-cream-muted)', fontFamily: 'var(--font-body)' }}
+        >
+          {isAuthenticated
             ? t('hero.subtitleAuth')
             : t('hero.subtitle')}
         </p>
-        
+
         <div className="max-w-2xl mx-auto px-2 sm:px-0 relative">
-          {/* Typewriter overlay — static prefix + animated suffix */}
+          {/* Typewriter overlay */}
           {showTypewriter && (
             <div className="absolute left-2 sm:left-0 right-2 sm:right-0 top-0 z-10 pointer-events-none">
               <div className="max-w-2xl mx-auto relative">
                 <div className="pt-3">
                   <div className="px-4 pt-2 text-left">
-                    <span className="text-black/40 dark:text-white/40 text-[15px] leading-snug">
+                    <span className="text-[15px] leading-snug" style={{ color: 'rgba(0, 0, 0, 0.4)' }}>
                       <span>{STATIC_PREFIX}</span>
                       <span>{displayText}</span>
-                      <span className="inline-block w-[2px] h-[1em] bg-[#8B1538]/50 ml-[1px] animate-pulse align-middle" />
+                      <span className="inline-block w-[2px] h-[1em] ml-[1px] animate-pulse align-middle" style={{ backgroundColor: 'rgba(200, 20, 0, 0.5)' }} />
                     </span>
                   </div>
                 </div>
@@ -240,9 +270,9 @@ const Hero = () => {
           />
         </div>
 
-        <SignInPrompt 
-          isOpen={showSignInPrompt} 
-          onClose={() => setShowSignInPrompt(false)} 
+        <SignInPrompt
+          isOpen={showSignInPrompt}
+          onClose={() => setShowSignInPrompt(false)}
         />
       </div>
     </div>

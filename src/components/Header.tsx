@@ -18,43 +18,50 @@ const Header = () => {
   };
 
   return (
-    <header className="py-3 px-3 md:py-4 md:px-8 border-b sticky top-0 bg-background/95 backdrop-blur-sm z-50">
+    <header className="py-3 px-3 md:py-4 md:px-8 border-b sticky top-0 z-50" style={{ backgroundColor: 'var(--color-red)', borderColor: 'var(--color-cream-border)' }}>
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
           <Link to="/" className="flex items-center space-x-2 mr-4 md:mr-8 no-underline">
-            <span className="text-lg md:text-2xl font-bold gradient-text font-playfair">
-              <span className="hidden sm:inline">Mystery Maker</span>
-              <span className="sm:hidden">Mystery Maker</span>
+            <span className="text-lg md:text-2xl font-display" style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-display)' }}>
+              MYSTERY MAKER
             </span>
           </Link>
 
-          {/* Desktop Navigation - Empty now that Support link is moved to the right */}
           <nav className="hidden md:flex items-center space-x-6">
-            {/* Navigation items can be added here if needed in the future */}
           </nav>
         </div>
 
-        {/* Auth Buttons, Support Link and Language Switcher - Desktop */}
+        {/* Desktop nav */}
         <div className="hidden md:flex items-center space-x-4">
           <Link
             to="/support"
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors no-underline"
+            className="text-[15px] transition-colors"
+            style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 400, textDecoration: 'none', cursor: 'pointer' }}
+            onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
+            onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
             aria-label={t('navigation.support')}
           >
             {t('navigation.support')}
           </Link>
           <LanguageSwitcher />
           {isAuthenticated && (
-            <Button asChild className="no-underline font-inter">
-              <Link to="/dashboard">{t('navigation.dashboard')}</Link>
-            </Button>
+            <Link
+              to="/dashboard"
+              className="text-[15px] transition-colors"
+              style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 500, textDecoration: 'none', cursor: 'pointer' }}
+              onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
+              onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
+            >
+              {t('navigation.dashboard')}
+            </Link>
           )}
           <AuthButton />
         </div>
 
-        {/* Mobile Menu Button - Enhanced touch target */}
+        {/* Mobile menu button */}
         <button
-          className="md:hidden text-foreground p-3 -mr-3 min-w-[44px] min-h-[44px] flex items-center justify-center"
+          className="md:hidden p-3 -mr-3 min-w-[44px] min-h-[44px] flex items-center justify-center"
+          style={{ color: 'var(--color-cream)' }}
           onClick={toggleMenu}
           aria-label="Toggle menu"
           aria-expanded={isMenuOpen}
@@ -63,25 +70,25 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Mobile Menu - Improved layout and touch targets */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-background border-b shadow-lg z-50">
+        <div className="md:hidden absolute top-full left-0 right-0 border-b shadow-lg z-50" style={{ backgroundColor: 'var(--color-red)', borderColor: 'var(--color-cream-border)' }}>
           <div className="p-4 space-y-4">
-            {/* Language Switcher in mobile menu */}
             <div className="flex justify-center">
-          <Link
-            to="/support"
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors no-underline"
-            aria-label={t('navigation.support')}
-          >
-            {t('navigation.support')}
-          </Link>
+              <Link
+                to="/support"
+                className="text-sm font-medium transition-colors no-underline"
+                style={{ color: 'var(--color-cream)' }}
+                aria-label={t('navigation.support')}
+              >
+                {t('navigation.support')}
+              </Link>
               <LanguageSwitcher />
             </div>
-            
+
             {isAuthenticated ? (
               <>
-                <div className="flex items-center space-x-3 py-3 border-b border-border">
+                <div className="flex items-center space-x-3 py-3" style={{ borderBottom: '1px solid var(--color-cream-border)' }}>
                   {user?.avatar && (
                     <img
                       src={user.avatar}
@@ -89,7 +96,7 @@ const Header = () => {
                       className="w-8 h-8 rounded-full"
                     />
                   )}
-                  <span className="font-medium text-sm font-inter">{user?.name}</span>
+                  <span className="font-medium text-sm font-inter" style={{ color: 'var(--color-cream)' }}>{user?.name}</span>
                 </div>
                 <Button
                   asChild
@@ -119,21 +126,21 @@ const Header = () => {
               </>
             ) : (
               <>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  className="w-full h-12 no-underline text-base font-inter" 
+                <Link
+                  to="/sign-in"
+                  className="w-full h-12 no-underline text-base font-inter flex items-center justify-center"
+                  style={{ color: 'var(--color-cream)', border: '1px solid var(--color-cream-border)', borderRadius: '4px' }}
                   onClick={toggleMenu}
                 >
-                  <Link to="/sign-in">{t('navigation.signIn')}</Link>
-                </Button>
-                <Button 
-                  asChild 
-                  className="w-full h-12 no-underline text-base font-inter" 
+                  {t('navigation.signIn')}
+                </Link>
+                <Link
+                  to="/sign-up"
+                  className="btn-on-red w-full no-underline"
                   onClick={toggleMenu}
                 >
-                  <Link to="/sign-up">{t('navigation.signUp')}</Link>
-                </Button>
+                  {t('navigation.signUp')}
+                </Link>
               </>
             )}
           </div>

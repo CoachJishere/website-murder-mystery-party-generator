@@ -22,14 +22,21 @@ export function HowItWorks({ steps, className }: HowItWorksProps) {
             {steps.map((step, index) => (
               <div key={index} className="flex flex-col items-center text-center relative">
                 {/* Number Circle */}
-                <div className="bg-black text-white rounded-full h-16 w-16 flex items-center justify-center text-xl font-bold mb-5 z-10">
+                <div
+                  className="rounded-full h-16 w-16 flex items-center justify-center text-xl mb-5 z-10"
+                  style={{
+                    backgroundColor: 'var(--color-red)',
+                    color: 'var(--color-cream)',
+                    fontFamily: 'var(--font-display)',
+                  }}
+                >
                   {step.number}
                 </div>
-                
+
                 {/* Title and Description */}
                 <div className="max-w-[180px]">
-                  <h3 className="font-medium mb-2">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground">{step.description}</p>
+                  <h3 className="font-medium mb-2" style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-display)' }}>{step.title}</h3>
+                  <p className="text-sm" style={{ color: 'var(--color-cream-muted)', fontFamily: 'var(--font-body)' }}>{step.description}</p>
                 </div>
               </div>
             ))}

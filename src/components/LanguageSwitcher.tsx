@@ -60,7 +60,15 @@ const LanguageSwitcher = () => {
 
   return (
     <Select value={i18n.language} onValueChange={handleLanguageChange}>
-      <SelectTrigger className="w-[140px] h-10 border-border bg-background">
+      <SelectTrigger
+        className="w-[140px] h-10 transition-colors"
+        style={{
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          border: '1px solid rgba(245,240,232,0.2)',
+          color: 'var(--color-cream)',
+          fontFamily: 'var(--font-body)',
+        }}
+      >
         <SelectValue>
           {currentLanguage?.name || 'English'}
         </SelectValue>

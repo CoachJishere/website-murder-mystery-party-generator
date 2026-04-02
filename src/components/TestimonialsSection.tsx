@@ -25,7 +25,6 @@ const TestimonialsSection: React.FC = () => {
         .limit(6);
 
       if (data && data.length > 0) {
-        // Only keep entries that have some text content
         const withContent = (data as RealTestimonial[]).filter(
           (d) => d.testimonial || d.best_part
         );
@@ -36,7 +35,6 @@ const TestimonialsSection: React.FC = () => {
     fetchTestimonials();
   }, []);
 
-  // Hardcoded fallback testimonials (existing i18n keys)
   const hardcodedTestimonials = [1, 2, 3].map((i) => ({
     text: t(`testimonials.testimonial${i}.text`),
     author: t(`testimonials.testimonial${i}.author`),
@@ -44,10 +42,8 @@ const TestimonialsSection: React.FC = () => {
     stars: 5,
   }));
 
-  // Build display list: real testimonials first, fill with hardcoded if needed
   const displayList = (() => {
     if (realTestimonials.length >= 3) {
-      // Enough real ones — show only real (up to 6)
       return realTestimonials.slice(0, 6).map((r) => ({
         text: r.testimonial || r.best_part || "",
         author: r.display_name || "Mystery Maker Host",
@@ -57,7 +53,6 @@ const TestimonialsSection: React.FC = () => {
     }
 
     if (realTestimonials.length > 0) {
-      // Some real ones — prepend them, fill remaining slots to 3 with hardcoded
       const real = realTestimonials.map((r) => ({
         text: r.testimonial || r.best_part || "",
         author: r.display_name || "Mystery Maker Host",
@@ -68,38 +63,40 @@ const TestimonialsSection: React.FC = () => {
       return [...real, ...hardcodedTestimonials.slice(0, slotsToFill)];
     }
 
-    // No real ones — use all hardcoded
     return hardcodedTestimonials;
   })();
 
   return (
     <section className="py-12 sm:py-16 lg:py-20 px-2 sm:px-4 md:px-6 lg:px-8">
       <div className="w-full max-w-7xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 text-black font-playfair">
+        <h2
+          className="text-2xl sm:text-3xl md:text-4xl text-center mb-8 sm:mb-12"
+          style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-display)' }}
+        >
           {t("testimonials.title")}
         </h2>
 
         <div
           className={cn(
             "grid gap-4 sm:gap-6 lg:gap-8",
-            displayList.length <= 3
-              ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
           )}
         >
           {displayList.map((item, idx) => (
             <div
               key={idx}
-              className="bg-muted text-foreground rounded-xl p-4 sm:p-6 shadow-md"
+              className="rounded-xl p-4 sm:p-6"
+              style={{
+                backgroundColor: 'var(--color-charcoal)',
+                border: '1px solid var(--color-cream-border)',
+              }}
             >
               <div className="flex items-center space-x-1 mb-4">
                 {Array.from({ length: 5 }, (_, star) => (
                   <svg
                     key={star}
-                    className={cn(
-                      "w-4 h-4 sm:w-5 sm:h-5",
-                      star < item.stars ? "text-primary" : "text-gray-300"
-                    )}
+                    className="w-4 h-4 sm:w-5 sm:h-5"
+                    style={{ color: star < item.stars ? 'var(--color-red)' : 'var(--color-cream-faint)' }}
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -107,17 +104,20 @@ const TestimonialsSection: React.FC = () => {
                   </svg>
                 ))}
               </div>
-              <p className="text-foreground mb-4 text-sm sm:text-base font-inter">
+              <p className="mb-4 text-sm sm:text-base" style={{ color: 'var(--color-cream-muted)', fontFamily: 'var(--font-body)' }}>
                 {item.text}
               </p>
               <div className="flex items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary flex items-center justify-center mr-3">
-                  <span className="font-medium text-xs sm:text-sm text-primary-foreground font-inter">
+                <div
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mr-3"
+                  style={{ backgroundColor: 'var(--color-red)' }}
+                >
+                  <span className="font-medium text-xs sm:text-sm" style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)' }}>
                     {item.initial}
                   </span>
                 </div>
                 <div>
-                  <p className="font-medium text-sm sm:text-base font-inter">
+                  <p className="font-semibold text-sm sm:text-base" style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)' }}>
                     {item.author}
                   </p>
                 </div>

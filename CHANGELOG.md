@@ -1,6 +1,94 @@
 # Changelog
 
+## 2026-04-02
+
+### Improvement: JA translation audit R341–R422 — 41 full retranslations, 8 spot fixes
+- Audited 82 rows of Japanese blog translations (R341–R422) against English source content
+- Fully retranslated 41 rows: 25 had garbled machine translation, 8 had formal です/ます tone (should be casual だ/である), 8 had severe MT artifacts (literal katakana, wrong kanji, Chinese characters mixed in)
+- Applied spot fixes to 8 additional rows: word corrections (容疑人→容疑者, ストレンジャー→見知らぬ人, 赤ニシン→おとりの手がかり) and header fixes (最後更新日→最終更新日)
+- All retranslations verified for header structure match, JA/EN length ratio (35–48%), and natural casual Japanese phrasing
+- Full audit details appended to CHANGELOG_TRANSLATION_QA.md under "R341-R422 JA Content Audit"
+
+### Feature: Full site dark redesign — Bowlby One + black/red/cream color system
+- Replaced entire site color system: black #000000 / charcoal #111111 backgrounds, red #C81400 accents, cream #F5F0E8 text (no pure white)
+- Replaced Playfair Display with Bowlby One for all headings, wordmark, and display text
+- Navigation: red background, cream text, black Sign Up button
+- Hero: detective background image with 55% dark overlay, red submit button, dark translucent input
+- Sections alternate black/charcoal: Trustpilot (black), Demo (charcoal), How It Works (black), Features (charcoal), Testimonials (black), FAQ (charcoal)
+- Support CTA: full vivid red section, black button with cream text
+- Footer: black background, Bowlby wordmark, cream text hierarchy with opacity variants
+- Testimonial cards: charcoal bg with cream border, red stars and avatars
+- FAQ: cream questions, muted cream answers, red chevrons, cream-border dividers
+- All colors defined as CSS custom properties at :root — no hardcoded hex in components
+- Updated tailwind.config.ts font families, typography plugin, and index.css @import
+
+### Improvement: Dark preview v3 — black/charcoal/red with cream text
+- Complete color system rewrite: black #000000 and charcoal #111111 alternate, red #C81400 accents, cream #F5F0E8 text (no pure white anywhere)
+- Navigation: red #C81400 background, cream text, black Sign Up button
+- Hero: centered detective bg image with overlay on red
+- Sections alternate: Trustpilot (black), Demo (charcoal), How It Works (black), Features (charcoal), Testimonials (black), FAQ (charcoal)
+- Support CTA: full vivid red #C81400 background, black button with cream text
+- Footer: black background, cream headings, muted cream links/copyright
+- All text uses cream rgba variants: 70% for body, 40% for copyright, 35% for inactive, 10% for borders
+- Stars, avatars, number circles, chevrons, active circles all use red accent
+
+### Improvement: Dark preview v2 — black + navy alternating sections
+- Complete rewrite of `/dark-preview` color system: hero/nav/footer/testimonials/how-it-works/support on pure black (#000000), video/features/FAQ on navy (#0D1B6E), trustpilot bar on dark navy (#0A1550)
+- Chat input box uses navy background with subtle white border
+- All CTA buttons, stars, avatars, number circles, and chevrons use red accent (#C0392B)
+- Inactive feature step circles use transparent bg with rgba border and muted blue-grey text (#7986CB)
+- Logo rendered as plain white text (no gradient)
+- Every section has explicit inline style — zero CSS class inheritance for backgrounds
+
+### Improvement: JA translation quality audit (R251–R340)
+- Audited 90 rows of Japanese blog content cell-by-cell against English source
+- All 90 rows were below 60% JA/EN character ratio, requiring full retranslation
+- Rows 251-276 received comprehensive section-by-section retranslations
+- Rows 277-320 received moderate to condensed retranslations covering core content
+- Rows 321-340 received comprehensive retranslations with natural Japanese
+- Results logged in CHANGELOG_TRANSLATION_QA.md under "R251-R340 JA Content Audit"
+
 ## 2026-04-01
+
+### Fix: Complete truncated PT translations for 6 blog posts
+- Completed PT (Portuguese) translations for rows R384, R386, R387, R388, R389, R390 in blog_map.xlsx
+- These rows were flagged as TRUNCATED_END during prior retranslation pass — PT content was cut off before covering all EN source sections
+- Missing EN sections identified by comparing EN/PT structure cell-by-cell, then translated and inserted into each row's PT content
+- Results logged in CHANGELOG_TRANSLATION_QA.md under "R341-R422 PT Retranslation Completions"
+
+### Feature: Dark navy theme preview page
+- Added `/dark-preview` route with a full homepage preview using a dark navy color system
+- New palette: deep navy backgrounds (#0D1B6E, #1A237E, #0A1550), red-orange CTAs (#C0392B), teal secondary (#00897B), white/light-grey text
+- Scoped via `.dark-preview` CSS class — zero impact on the live site
+- Overrides hardcoded colors (text-black, bg-white, #8B1538) within the preview scope
+- Includes floating "View Current Site" link for easy A/B comparison
+
+### Fix: Dark preview — eliminate all remaining light backgrounds
+- Added inline `style` props on every section wrapper to guarantee navy backgrounds (#0D1B6E primary, #1A237E secondary)
+- Logo "Mystery Maker" now renders plain white #FFFFFF (not gradient)
+- How It Works section: explicit #1A237E background, white headings, #B0BEC5 body text
+- Video Demo section: explicit #0D1B6E background
+- Feature steps inactive items: visible against dark background (#B0BEC5 text, subtle white border)
+- Footer forced to #0A1550, header to rgba navy with backdrop blur
+- Trustpilot logo inverted for dark bg visibility
+- Separators, borders, and accordion dividers all use rgba(255,255,255,0.15)
+- Support CTA section uses #1A237E background with explicit white/light-grey text
+
+### Improvement: PT translation quality audit (R341–R422)
+- Audited 82 rows of Portuguese blog content cell-by-cell against English source
+- Applied ~700+ fixes: full rewrites for R341-348 (near-PIDGIN quality), targeted fixes for R349-360 and R405, H1 titles added to all 82 rows, common calque/anglicism fixes across all rows
+- Worst issues: "texto corajoso" (bold text), "Espíritos" (spirits→ghosts), "festa culpada" (guilty party), "isla" (Spanish), English words left in (upstairs, aim, budget, scheming, etc.)
+- R356 had entire FAQ section missing — translated and added 7 Q&A pairs
+- 6 rows flagged TRUNCATED_END (R384, R386-390): PT content cut short, missing 3000-6600 chars each — need retranslation
+- Quality: 52 GOOD, 6 FAIR, 19 POOR (including 8 full rewrites from prior session), 0 PIDGIN, 6 TRUNCATED_END
+- Full results appended to CHANGELOG_TRANSLATION_QA.md
+
+### Improvement: PT translation quality audit (R151–R250)
+- Audited 100 rows of Portuguese blog content cell-by-cell against English source
+- Applied ~520 fixes: anglicisms (template→modelo, setup→configuração, email→e-mail), gender agreement (o estrutura→a estrutura), typos (aporentadoria→aposentadoria ×34 in R166), literal translations, untranslated English words
+- R170 (invitations-wording) had 67 fixes — most problematic row with extensive untranslated English
+- 72% rated GOOD, 24% ACCEPTABLE, 2% POOR; 0 PIDGIN or TRUNCATED
+- Full results appended to CHANGELOG_TRANSLATION_QA.md
 
 ### Fix: Quarterly blog refresh GitHub Action
 - Fixed jq field name mismatch: SQL function returns `lang` but workflow referenced `.language`
@@ -381,3 +469,11 @@ Investigation of the last 4 paid mysteries revealed character generation issues 
 - Handled localized headers (TITULO:, TITRE:, TITEL:, etc.) in parser
 - All files have TITLE and metadata; 80 files missing body content
 - These 80 can be identified by filtering for rows with empty `content` column
+
+### Improvement: PT translation quality audit (R62–R150)
+- Deep cell-by-cell Portuguese translation audit of 89 rows against English source
+- Applied ~302 total fixes across rows 62-150
+- Key issues: false cognates (configuração, hospedando, hóspedes), untranslated English words (setup, roleplay, gear, hinge), gender agreement errors, misspellings (origems, foquado, Arruína)
+- Notable: R76 had "cadeira" (furniture) for department chair, "letra" (alphabet) for letter document; R122-123 had entire English sentences left untranslated
+- 27% Excellent, 39% Very Good, 25% Good, 9% Fair; 0 PIDGIN or TRUNCATED
+- Full results appended to CHANGELOG_TRANSLATION_QA.md under "R62-R150 PT Content Audit"

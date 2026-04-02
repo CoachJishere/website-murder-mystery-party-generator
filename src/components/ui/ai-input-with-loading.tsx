@@ -103,27 +103,23 @@ export function AIInputWithLoading({
     <div className={cn("w-full py-3", className)}>
       <div className="relative max-w-2xl w-full mx-auto">
         <div
-          className={cn(
-            "bg-white dark:bg-zinc-900 rounded-2xl",
-            "shadow-[0_2px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_20px_rgba(0,0,0,0.3)]",
-            "border border-black/[0.06] dark:border-white/[0.08]",
-            "transition-shadow duration-300",
-            "hover:shadow-[0_4px_30px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_4px_30px_rgba(0,0,0,0.4)]",
-            "focus-within:shadow-[0_4px_30px_rgba(139,21,56,0.15)] dark:focus-within:shadow-[0_4px_30px_rgba(139,21,56,0.25)]",
-            "focus-within:border-[#8B1538]/20 dark:focus-within:border-[#8B1538]/30"
-          )}
+          className="rounded-2xl transition-shadow duration-300"
+          style={{
+            backgroundColor: '#FFFFFF',
+            border: '1px solid rgba(0, 0, 0, 0.1)',
+            boxShadow: '0 2px 20px rgba(0, 0, 0, 0.15)',
+          }}
         >
           <div className="px-4 pt-2 pb-0">
             <textarea
               id={id}
               ref={textareaRef}
               placeholder={placeholder}
-              className={cn(
-                "w-full bg-transparent resize-none outline-none text-left",
-                "text-black dark:text-white text-[15px] leading-snug",
-                "placeholder:text-black/40 dark:placeholder:text-white/40",
-                "min-h-[24px]"
-              )}
+              className="w-full bg-transparent resize-none outline-none text-left text-[15px] leading-snug min-h-[24px]"
+              style={{
+                color: '#000000',
+                fontFamily: 'var(--font-body)',
+              }}
               value={inputValue}
               onChange={handleChange}
               onKeyDown={(e) => {
@@ -144,14 +140,18 @@ export function AIInputWithLoading({
               className={cn(
                 "flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200",
                 submitted
-                  ? "bg-black/30 dark:bg-white/20 text-white"
-                  : "bg-black/70 hover:bg-black/90 dark:bg-white/70 dark:hover:bg-white/90 text-white dark:text-black"
+                  ? "opacity-50"
+                  : "hover:opacity-90"
               )}
+              style={{
+                backgroundColor: 'var(--color-red)',
+                color: 'var(--color-cream)',
+              }}
               type="button"
               disabled={submitted}
             >
               {submitted ? (
-                <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-3 h-3 border-2 rounded-full animate-spin" style={{ borderColor: 'rgba(245,240,232,0.3)', borderTopColor: 'var(--color-cream)' }} />
               ) : (
                 <ArrowUp className="w-3.5 h-3.5" />
               )}

@@ -13,11 +13,11 @@ const TrustpilotBadge = () => {
       className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-x-4 py-3 no-underline transition-opacity hover:opacity-80"
       aria-label={t('trustpilot.ariaLabel')}
     >
-      <span className="text-muted-foreground text-sm sm:text-base font-inter">
+      <span className="text-sm sm:text-base font-inter" style={{ color: 'var(--color-cream-muted)' }}>
         {t('trustpilot.customersSay')}
       </span>
 
-      <span className="text-foreground text-lg sm:text-xl font-bold font-inter">
+      <span className="text-lg sm:text-xl font-bold font-inter" style={{ color: 'var(--color-cream)' }}>
         {t('trustpilot.excellent')}
       </span>
 

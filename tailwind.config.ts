@@ -20,10 +20,10 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'playfair': ['Playfair Display', 'serif'],
-				'inter': ['Inter', 'sans-serif'],
+				'bowlby': ['Bowlby One', 'cursive'],
+				'display': ['Bowlby One', 'cursive'],
 				'sans': ['Inter', 'sans-serif'],
-				'serif': ['Playfair Display', 'serif'],
+				'serif': ['Bowlby One', 'cursive'],
 			},
 			colors: {
 				/* Mystery Maker Color System - Sophisticated Burgundy & Cream */
@@ -149,7 +149,7 @@ export default {
                             marginBottom: '0.75em',
                             lineHeight: '1.3',
                             fontWeight: '600',
-                            fontFamily: 'Playfair Display, serif',
+                            fontFamily: "'Bowlby One', cursive",
                         },
                         h1: {
                             fontSize: '1.875rem',

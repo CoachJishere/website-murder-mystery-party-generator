@@ -1,102 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Bowlby+One&family=Inter:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Mystery Maker Color System - Sophisticated Burgundy & Cream */
-    /* Primary Colors */
-    --color-primary: 343 74% 32%;        /* Rich Burgundy #8B1538 */
-    --color-primary-foreground: 0 0% 100%;
-    --color-primary-hover: 343 74% 25%;
-    --color-primary-light: 343 74% 45%;
-    
-    --color-secondary: 343 74% 32%;      /* Rich Burgundy #8B1538 */
-    --color-secondary-foreground: 0 0% 100%;
-    --color-secondary-hover: 343 74% 25%;
-    --color-secondary-light: 343 74% 45%;
-    
-    /* Accent Colors */
-    --color-accent: 343 74% 32%;         /* Rich Burgundy #8B1538 */
-    --color-accent-foreground: 0 0% 100%;
-    --color-accent-hover: 343 74% 25%;
-    --color-accent-light: 343 74% 45%;
-    
-    --color-danger: 0 84% 49%;           /* Soft Red #DC2626 */
-    --color-danger-foreground: 0 0% 100%;
+    /* Mystery Maker Color System — Dark + Red + Cream */
+    --color-red: #C81400;
+    --color-black: #000000;
+    --color-charcoal: #111111;
+    --color-cream: #F5F0E8;
+    --color-cream-muted: rgba(245, 240, 232, 0.7);
+    --color-cream-faint: rgba(245, 240, 232, 0.35);
+    --color-cream-border: rgba(245, 240, 232, 0.1);
+    --color-cream-placeholder: rgba(245, 240, 232, 0.5);
+
+    /* Typography */
+    --font-display: 'Bowlby One', cursive;
+    --font-body: 'Inter', sans-serif;
+
+    /* Primary = Red accent */
+    --color-primary: 7 100% 39%;              /* #C81400 */
+    --color-primary-foreground: 37 45% 94%;   /* #F5F0E8 */
+    --color-primary-hover: 7 100% 32%;
+    --color-primary-light: 7 100% 50%;
+
+    --color-secondary: 7 100% 39%;
+    --color-secondary-foreground: 37 45% 94%;
+    --color-secondary-hover: 7 100% 32%;
+    --color-secondary-light: 7 100% 50%;
+
+    --color-accent: 7 100% 39%;
+    --color-accent-foreground: 37 45% 94%;
+    --color-accent-hover: 7 100% 32%;
+    --color-accent-light: 7 100% 50%;
+
+    --color-danger: 0 84% 49%;
+    --color-danger-foreground: 37 45% 94%;
     --color-danger-hover: 0 84% 40%;
     --color-danger-light: 0 84% 65%;
-    
-    /* Background System - Sophisticated & Clean */
-    --color-surface: 35 27% 97%;         /* Soft Off-White #FEFCF8 */
-    --color-surface-foreground: 0 0% 17%; /* Charcoal Black #2A2A2A */
-    --color-surface-hover: 35 27% 95%;   /* Slightly darker off-white */
-    
-    --color-muted: 35 27% 97%;           /* Warm Cream #F7F3E9 */
-    --color-muted-foreground: 215 16% 47%; /* Medium Gray #6B7280 */
-    
-    --color-subtle: 35 27% 95%;          /* Darker Warm Cream #F7F3E9 */
-    --color-subtle-foreground: 0 0% 17%;
-    
-    --color-tertiary: 220 9% 68%;        /* Light Gray #9CA3AF */
-    
+
+    /* Surfaces */
+    --color-surface: 0 0% 0%;                /* #000000 */
+    --color-surface-foreground: 37 45% 94%;  /* #F5F0E8 */
+    --color-surface-hover: 0 0% 7%;
+
+    --color-muted: 0 0% 7%;                  /* #111111 */
+    --color-muted-foreground: 37 45% 94% / 0.7;
+
+    --color-subtle: 0 0% 4%;
+    --color-subtle-foreground: 37 45% 94%;
+
+    --color-tertiary: 37 45% 94% / 0.35;
+
     /* Semantic Tokens */
-    --background: var(--color-surface);
-    --foreground: var(--color-surface-foreground);
-    
-    --card: 35 27% 97%;
-    --card-foreground: var(--color-surface-foreground);
-    
-    --popover: 35 27% 97%;
-    --popover-foreground: var(--color-surface-foreground);
-    
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
+    --background: 0 0% 0%;
+    --foreground: 37 45% 94%;
+
+    --card: 0 0% 7%;                         /* #111111 */
+    --card-foreground: 37 45% 94%;
+
+    --popover: 0 0% 0%;
+    --popover-foreground: 37 45% 94%;
+
+    --border: 37 45% 94% / 0.1;
+    --input: 0 0% 7%;
     --ring: var(--color-primary);
-    
+
     --destructive: var(--color-danger);
     --destructive-foreground: var(--color-danger-foreground);
-    
+
     --radius: 0.5rem;
-    
+
     /* Sidebar Colors */
-    --sidebar-background: var(--color-surface);
-    --sidebar-foreground: var(--color-surface-foreground);
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 37 45% 94%;
     --sidebar-primary: var(--color-primary);
     --sidebar-primary-foreground: var(--color-primary-foreground);
-    --sidebar-accent: var(--color-subtle);
-    --sidebar-accent-foreground: var(--color-surface-foreground);
+    --sidebar-accent: 0 0% 7%;
+    --sidebar-accent-foreground: 37 45% 94%;
     --sidebar-border: var(--border);
     --sidebar-ring: var(--color-primary);
-  }
-  
-  .dark {
-    --color-surface: 0 0% 17%;           /* Charcoal Black */
-    --color-surface-foreground: 0 0% 100%; /* Pure White */
-    --color-surface-hover: 0 0% 20%;
-    
-    --color-muted: 0 0% 20%;             /* Dark surface */
-    --color-muted-foreground: 215 16% 65%; /* Lighter Medium Gray */
-    
-    --color-subtle: 0 0% 23%;            /* Darker surface */
-    
-    --background: var(--color-surface);
-    --foreground: var(--color-surface-foreground);
-    
-    --card: 0 0% 20%;
-    --card-foreground: var(--color-surface-foreground);
-    
-    --popover: 0 0% 20%;
-    --popover-foreground: var(--color-surface-foreground);
-    
-    --border: 0 0% 25%;
-    --input: 0 0% 25%;
-    
-    --sidebar-background: var(--color-surface);
-    --sidebar-foreground: var(--color-surface-foreground);
-    --sidebar-accent: var(--color-muted);
-    --sidebar-accent-foreground: var(--color-surface-foreground);
-    --sidebar-border: var(--border);
   }
 }
 
@@ -106,24 +91,96 @@
   }
 
   body {
-    @apply bg-background text-foreground font-inter;
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-playfair;
+    font-family: var(--font-display);
+    text-transform: uppercase;
   }
 
   a {
     @apply text-foreground hover:text-primary transition-colors no-underline;
   }
-  
+
   .no-underline {
     text-decoration: none !important;
   }
-  
+
   button a {
     text-decoration: none !important;
   }
+}
+
+/* Button treatments */
+.btn-on-red {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12px 32px;
+  border-radius: 4px;
+  border: none;
+  background-color: var(--color-black);
+  color: var(--color-cream);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  transition: background-color 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.btn-on-red:hover {
+  background-color: var(--color-cream);
+  color: var(--color-red);
+}
+
+.btn-on-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12px 32px;
+  border-radius: 4px;
+  border: none;
+  background-color: var(--color-red);
+  color: var(--color-cream);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+.btn-on-dark:hover {
+  background-color: #A01000;
+}
+
+/* Footer links */
+.footer-link {
+  color: rgba(245, 240, 232, 0.6);
+  font-family: var(--font-body);
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.footer-link:hover {
+  color: rgba(245, 240, 232, 1);
+  text-decoration: underline;
+}
+
+/* Gradient text → cream (used by logo) */
+.gradient-text {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: var(--color-cream) !important;
+  background-clip: unset !important;
+  color: var(--color-cream) !important;
+}
+
+/* Trustpilot logo — invert for dark bg */
+img[alt="Trustpilot"] {
+  filter: brightness(0) invert(0.92) sepia(0.1) saturate(0.5) hue-rotate(15deg);
 }
 
 @layer utilities {

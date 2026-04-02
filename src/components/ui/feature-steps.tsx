@@ -41,9 +41,12 @@ export function FeatureSteps({
   }, [progress, features.length, autoPlayInterval])
 
   return (
-    <div className={cn("p-8 md:p-12 bg-card", className)}>
+    <div className={cn("p-8 md:p-12", className)}>
       <div className="max-w-7xl mx-auto w-full">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-10 text-center text-black">
+        <h2
+          className="text-3xl md:text-4xl lg:text-5xl mb-10 text-center"
+          style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-display)' }}
+        >
           {title}
         </h2>
 
@@ -60,23 +63,37 @@ export function FeatureSteps({
                 <motion.div
                   className={cn(
                     "w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-2",
-                    index === currentFeature
-                      ? "bg-primary border-primary text-primary-foreground scale-110"
-                      : "bg-muted border-muted-foreground",
                   )}
+                  style={
+                    index === currentFeature
+                      ? { backgroundColor: 'var(--color-red)', borderColor: 'var(--color-red)' }
+                      : { backgroundColor: 'transparent', borderColor: 'var(--color-cream-border)' }
+                  }
                 >
                   {index <= currentFeature ? (
-                    <span className="text-lg font-bold text-primary-foreground">✓</span>
+                    <span className="text-lg font-bold" style={{ color: 'var(--color-cream)' }}>✓</span>
                   ) : (
-                    <span className="text-lg font-semibold">{index + 1}</span>
+                    <span className="text-lg font-semibold" style={{ color: 'var(--color-cream-faint)' }}>{index + 1}</span>
                   )}
                 </motion.div>
 
                 <div className="flex-1">
-                  <h3 className="text-xl md:text-2xl font-semibold text-foreground">
+                  <h3
+                    className="text-xl md:text-2xl font-semibold"
+                    style={{
+                      color: index === currentFeature ? 'var(--color-cream)' : 'var(--color-cream-faint)',
+                      fontFamily: 'var(--font-display)',
+                    }}
+                  >
                     {feature.title || feature.step}
                   </h3>
-                  <p className="text-sm md:text-lg text-muted-foreground">
+                  <p
+                    className="text-sm md:text-lg"
+                    style={{
+                      color: index === currentFeature ? 'var(--color-cream-muted)' : 'var(--color-cream-faint)',
+                      fontFamily: 'var(--font-body)',
+                    }}
+                  >
                     {feature.content}
                   </p>
                 </div>
@@ -84,7 +101,10 @@ export function FeatureSteps({
             ))}
           </div>
 
-          <div className="order-1 md:order-2 relative h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden rounded-lg">
+          <div
+            className="order-1 md:order-2 relative h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden rounded-lg"
+            style={{ backgroundColor: 'var(--color-black)', border: '1px solid var(--color-cream-border)' }}
+          >
             <AnimatePresence mode="wait">
               {features.map(
                 (feature, index) =>

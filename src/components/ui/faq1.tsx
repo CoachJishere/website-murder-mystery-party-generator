@@ -6,7 +6,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Separator } from "@/components/ui/separator";
 import { useTranslation } from 'react-i18next';
 
 interface FaqItem {
@@ -25,7 +24,6 @@ const Faq1 = ({
 }: Faq1Props) => {
   const { t } = useTranslation();
 
-  // Use translation keys for FAQ items
   const translatedItems = [
     {
       question: t('supportPage.faqs.questions.whatIsMysteryMaker.question'),
@@ -75,22 +73,32 @@ const Faq1 = ({
   return (
     <section className="py-32">
       <div className="container mx-auto">
-        <h1 className="mb-4 text-3xl font-semibold md:mb-11 md:text-5xl">
+        <h1
+          className="mb-4 text-3xl md:mb-11 md:text-5xl"
+          style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-display)' }}
+        >
           {finalHeading}
         </h1>
-        
+
         <div>
           {finalItems.map((item, index) => (
             <React.Fragment key={index}>
               <Accordion type="single" collapsible>
                 <AccordionItem value={`item-${index}`} className="border-none">
-                  <AccordionTrigger className="hover:text-foreground/60 hover:no-underline">
+                  <AccordionTrigger
+                    className="hover:no-underline"
+                    style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 500 }}
+                  >
                     {item.question}
                   </AccordionTrigger>
-                  <AccordionContent>{item.answer}</AccordionContent>
+                  <AccordionContent style={{ color: 'var(--color-cream-muted)', fontFamily: 'var(--font-body)' }}>
+                    {item.answer}
+                  </AccordionContent>
                 </AccordionItem>
               </Accordion>
-              {index < finalItems.length - 1 && <Separator className="my-1" />}
+              {index < finalItems.length - 1 && (
+                <div style={{ height: '1px', backgroundColor: 'var(--color-cream-border)', margin: '4px 0' }} />
+              )}
             </React.Fragment>
           ))}
         </div>
