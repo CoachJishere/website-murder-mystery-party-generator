@@ -2,6 +2,10 @@
 
 ## 2026-04-02
 
+### Fix: Remove experimental ParallaxDemo page to fix production build
+- Deleted `ParallaxDemo.tsx` and its route — was importing `gsap` and `@studio-freight/lenis` which broke the CI build
+- Removed unused `gsap` and `@studio-freight/lenis` dependencies from `package.json`
+
 ### Improvement: JA translation audit R341–R422 — 41 full retranslations, 8 spot fixes
 - Audited 82 rows of Japanese blog translations (R341–R422) against English source content
 - Fully retranslated 41 rows: 25 had garbled machine translation, 8 had formal です/ます tone (should be casual だ/である), 8 had severe MT artifacts (literal katakana, wrong kanji, Chinese characters mixed in)
