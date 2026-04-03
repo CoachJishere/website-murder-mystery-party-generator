@@ -41,6 +41,7 @@ Blog Database - Master.csv
 # Translation artifacts (generated scripts, reports, data)
 # These are one-time-use files from blog translation sessions
 *.mjs
+!scripts/sync-blog-map.mjs
 *.sql
 *-REPORT*.md
 *-STATUS*.md

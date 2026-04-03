@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-04-03
+
+### Feature: Supabase sync workflow for blog_map.xlsx
+- Created `scripts/sync-blog-map.mjs` — reads blog_map.xlsx and syncs all posts to Supabase
+- Updates 72 published posts with audited translations (preserves status/published_at)
+- Deletes old draft rows, inserts 349 new draft slugs × 13 languages with staggered created_at
+- Created `.github/workflows/sync-blog-map.yml` — manual-trigger GitHub Action to run the sync
+- Compatible with existing `publish-daily-blog.yml` (oldest draft published daily)
+
+### Improvement: Cleaned up stale files
+- Deleted 10 stale xlsx/csv files (~190MB): blog_map_backup.xlsx, blog_map_fixed.xlsx, blog_map_fixed2.xlsx, blog_map_repaired.xlsx, blog_map_work.xlsx, mysterymaker_blog_master.xlsx, blog_posts_all_languages.csv, supabase_import.csv, translations_import.csv, batch3_en_import.csv
+- Only blog_map.xlsx (master) and new_blog_topics_pipeline.xlsx (planning) remain
+
+### Improvement: All 13 language translation audits complete
+- Completed final cleanup: JA R87, ZH-CN R172/R197/R226 retranslated to full quality
+- All 361 draft posts × 13 languages now audited and ready for Supabase sync
+
 ## 2026-04-02
 
 ### Improvement: ZH-CN translation audit R151–R250 — 98 full retranslations
