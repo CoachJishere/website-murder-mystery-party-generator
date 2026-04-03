@@ -202,27 +202,8 @@ const Hero = () => {
   };
 
   return (
-    <div
-      className="py-8 sm:py-12 md:py-20 px-2 sm:px-4 md:px-6 lg:px-8"
-      style={{
-        backgroundColor: 'var(--color-red)',
-        backgroundImage: 'url(/images/detective-image.png)',
-        backgroundSize: 'contain',
-        backgroundPosition: 'center center',
-        backgroundRepeat: 'no-repeat',
-        position: 'relative',
-      }}
-    >
-      {/* Dark overlay */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.55)',
-          zIndex: 0,
-        }}
-      />
-      <div className="w-full max-w-7xl mx-auto text-center" style={{ position: 'relative', zIndex: 1 }}>
+    <div className="py-8 sm:py-12 md:py-20 px-2 sm:px-4 md:px-6 lg:px-8">
+      <div className="w-full max-w-7xl mx-auto text-center">
         <h1
           className="text-3xl sm:text-4xl md:text-5xl lg:text-[60px] font-display mb-3 sm:mb-4 tracking-tight leading-tight uppercase"
           style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-display)' }}

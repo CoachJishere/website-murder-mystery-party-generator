@@ -2,6 +2,20 @@
 
 ## 2026-04-02
 
+### Improvement: ZH-CN translation audit R151–R250 — 98 full retranslations
+- Audited 100 rows of Simplified Chinese blog translations (R151–R250) against English source content
+- 2 rows (R151–R152) passed with no changes; 98 rows required full retranslation due to machine-garbled phrasing, incorrect terminology ("谋杀悬疑"→"谋杀推理"), broken syntax, and truncated content
+- Rows 247–249 had the worst originals — barely readable telegraphic Chinese with grammatical particles stripped out
+- All 100 rows now rated A; retranslations target 28–35% ZH/EN character ratio
+- Full audit details appended to CHANGELOG_TRANSLATION_QA.md under "R151-R250 ZH-CN Content Audit"
+
+### Improvement: ZH-CN translation audit R341–R422 — 82 full retranslations
+- Audited 82 rows of Simplified Chinese blog translations (R341–R422) against English source content
+- All 82 rows required full retranslation — originals were uniformly below 50% density ratio (machine-generated truncated translations)
+- New translations target 28–35% ZH/EN character ratio; 77 of 82 rows (94%) hit target range
+- Translations done manually sentence-by-sentence preserving all structure (headers, FAQs, meta descriptions, MysteryMaker references)
+- Full audit details appended to CHANGELOG_TRANSLATION_QA.md under "R341-R422 ZH-CN Content Audit"
+
 ### Fix: Remove experimental preview pages to fix production build
 - Deleted `ParallaxDemo.tsx` and its route — was importing `gsap` and `@studio-freight/lenis` which broke the CI build
 - Removed `HomeParallaxPreview` import and route — file was untracked, causing build failure

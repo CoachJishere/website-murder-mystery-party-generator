@@ -17,8 +17,8 @@ export function HowItWorks({ steps, className }: HowItWorksProps) {
   return (
     <div className={cn("py-16 px-4", className)}>
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-center">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+        <div className="w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 relative">
             {steps.map((step, index) => (
               <div key={index} className="flex flex-col items-center text-center relative">
                 {/* Number Circle */}
@@ -34,7 +34,7 @@ export function HowItWorks({ steps, className }: HowItWorksProps) {
                 </div>
 
                 {/* Title and Description */}
-                <div className="max-w-[180px]">
+                <div className="max-w-[200px] md:max-w-none">
                   <h3 className="font-medium mb-2" style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-display)' }}>{step.title}</h3>
                   <p className="text-sm" style={{ color: 'var(--color-cream-muted)', fontFamily: 'var(--font-body)' }}>{step.description}</p>
                 </div>
