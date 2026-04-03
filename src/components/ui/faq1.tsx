@@ -86,12 +86,12 @@ const Faq1 = ({
               <Accordion type="single" collapsible>
                 <AccordionItem value={`item-${index}`} className="border-none">
                   <AccordionTrigger
-                    className="hover:no-underline"
-                    style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 500 }}
+                    className="hover:no-underline text-left"
+                    style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 500, textTransform: 'none' }}
                   >
                     {item.question}
                   </AccordionTrigger>
-                  <AccordionContent style={{ color: 'var(--color-cream-muted)', fontFamily: 'var(--font-body)' }}>
+                  <AccordionContent style={{ color: 'var(--color-cream-muted)', fontFamily: 'var(--font-body)', textAlign: 'left', textTransform: 'none' }}>
                     {item.answer}
                   </AccordionContent>
                 </AccordionItem>

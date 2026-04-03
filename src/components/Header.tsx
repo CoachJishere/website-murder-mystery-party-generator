@@ -72,77 +72,71 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 border-b shadow-lg z-50" style={{ backgroundColor: 'var(--color-red)', borderColor: 'var(--color-cream-border)' }}>
-          <div className="p-4 space-y-4">
-            <div className="flex justify-center">
+        <div className="md:hidden absolute top-full left-0 right-0 shadow-lg z-50" style={{ backgroundColor: 'var(--color-red)', borderBottom: '1px solid var(--color-cream-border)' }}>
+          <div className="p-5 flex flex-col" style={{ gap: '12px' }}>
+            {isAuthenticated ? (
+              <>
+                <div className="flex items-center space-x-3 pb-3" style={{ borderBottom: '1px solid rgba(245,240,232,0.2)' }}>
+                  {user?.avatar && (
+                    <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full" />
+                  )}
+                  <span className="font-medium text-sm" style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)' }}>{user?.name}</span>
+                </div>
+                <Link
+                  to="/dashboard"
+                  className="w-full h-12 no-underline text-base flex items-center justify-center"
+                  style={{ backgroundColor: '#000', color: 'var(--color-cream)', borderRadius: '6px', fontFamily: 'var(--font-body)', fontWeight: 600 }}
+                  onClick={toggleMenu}
+                >
+                  {t('navigation.dashboard')}
+                </Link>
+                <Link
+                  to="/account"
+                  className="w-full h-12 no-underline text-base flex items-center justify-center"
+                  style={{ color: 'var(--color-cream)', border: '1.5px solid rgba(245,240,232,0.5)', borderRadius: '6px', fontFamily: 'var(--font-body)', fontWeight: 500 }}
+                  onClick={toggleMenu}
+                >
+                  {t('navigation.account', 'Account Settings')}
+                </Link>
+                <button
+                  className="w-full h-12 text-base flex items-center justify-center"
+                  style={{ color: 'var(--color-cream)', border: '1.5px solid rgba(245,240,232,0.5)', borderRadius: '6px', fontFamily: 'var(--font-body)', fontWeight: 500, background: 'none', cursor: 'pointer' }}
+                  onClick={() => { signOut(); toggleMenu(); }}
+                >
+                  {t('navigation.signOut')}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/sign-up"
+                  className="w-full h-12 no-underline text-base flex items-center justify-center"
+                  style={{ backgroundColor: '#000', color: 'var(--color-cream)', borderRadius: '6px', fontFamily: 'var(--font-body)', fontWeight: 600 }}
+                  onClick={toggleMenu}
+                >
+                  {t('navigation.signUp')}
+                </Link>
+                <Link
+                  to="/sign-in"
+                  className="w-full h-12 no-underline text-base flex items-center justify-center"
+                  style={{ color: 'var(--color-cream)', border: '1.5px solid rgba(245,240,232,0.5)', borderRadius: '6px', fontFamily: 'var(--font-body)', fontWeight: 500 }}
+                  onClick={toggleMenu}
+                >
+                  {t('navigation.signIn')}
+                </Link>
+              </>
+            )}
+            <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid rgba(245,240,232,0.15)' }}>
               <Link
                 to="/support"
-                className="text-sm font-medium transition-colors no-underline"
-                style={{ color: 'var(--color-cream)' }}
-                aria-label={t('navigation.support')}
+                className="text-sm no-underline"
+                style={{ color: 'rgba(245,240,232,0.7)', fontFamily: 'var(--font-body)' }}
+                onClick={toggleMenu}
               >
                 {t('navigation.support')}
               </Link>
               <LanguageSwitcher />
             </div>
-
-            {isAuthenticated ? (
-              <>
-                <div className="flex items-center space-x-3 py-3" style={{ borderBottom: '1px solid var(--color-cream-border)' }}>
-                  {user?.avatar && (
-                    <img
-                      src={user.avatar}
-                      alt={user.name}
-                      className="w-8 h-8 rounded-full"
-                    />
-                  )}
-                  <span className="font-medium text-sm font-inter" style={{ color: 'var(--color-cream)' }}>{user?.name}</span>
-                </div>
-                <Button
-                  asChild
-                  className="w-full h-12 no-underline text-base font-inter"
-                  onClick={toggleMenu}
-                >
-                  <Link to="/dashboard">{t('navigation.dashboard')}</Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="w-full h-12 no-underline text-base font-inter"
-                  onClick={toggleMenu}
-                >
-                  <Link to="/account">{t('navigation.account', 'Account Settings')}</Link>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full h-12 no-underline text-base font-inter"
-                  onClick={() => {
-                    signOut();
-                    toggleMenu();
-                  }}
-                >
-                  {t('navigation.signOut')}
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/sign-in"
-                  className="w-full h-12 no-underline text-base font-inter flex items-center justify-center"
-                  style={{ color: 'var(--color-cream)', border: '1px solid var(--color-cream-border)', borderRadius: '4px' }}
-                  onClick={toggleMenu}
-                >
-                  {t('navigation.signIn')}
-                </Link>
-                <Link
-                  to="/sign-up"
-                  className="btn-on-red w-full no-underline"
-                  onClick={toggleMenu}
-                >
-                  {t('navigation.signUp')}
-                </Link>
-              </>
-            )}
           </div>
         </div>
       )}

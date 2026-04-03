@@ -69,21 +69,19 @@ function ParallaxHero() {
   const textOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   return (
-    <section ref={ref} className="relative h-[100vh] overflow-hidden" style={{ backgroundColor: RED }}>
+    <section ref={ref} className="relative h-[100svh] overflow-hidden" style={{ backgroundColor: RED }}>
       <motion.div
-        className="absolute inset-0"
+        className="absolute inset-0 bg-cover bg-[center_20%] sm:bg-contain sm:bg-center"
         style={{
           y: imageY,
           scale: imageScale,
           backgroundImage: "url(/images/detective-image.png)",
-          backgroundSize: "contain",
-          backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
         }}
       />
       <div className="absolute inset-0" style={{ backgroundColor: "rgba(0,0,0,0.55)", zIndex: 1 }} />
       <motion.div
-        className="absolute inset-0 flex items-center justify-center px-4 sm:px-6"
+        className="absolute inset-0 flex items-end sm:items-center justify-center px-4 sm:px-6 pb-12 sm:pb-0"
         style={{ y: textY, opacity: textOpacity, zIndex: 2 }}
       >
         <Hero />
@@ -234,14 +232,42 @@ function HorizontalHowItWorks() {
   if (isMobile) {
     return (
       <section className="py-16 px-4" style={{ backgroundColor: CHARCOAL }}>
-        <h2 className="text-3xl text-center mb-4" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
+        <h2 className="text-2xl sm:text-3xl text-center mb-4" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
           HOW IT WORKS
         </h2>
-        <p className="text-base text-center mb-8" style={{ color: CREAM_70 }}>
+        <p className="text-base text-center mb-10" style={{ color: CREAM_70 }}>
           Four simple steps to your perfect murder mystery
         </p>
-        <div className="space-y-4">
-          {steps.map((step, i) => <StepCard key={i} step={step} i={i} />)}
+        <div className="relative max-w-sm mx-auto">
+          <div className="space-y-8">
+            {steps.map((step, i) => (
+              <motion.div
+                key={i}
+                className="flex items-start gap-5 relative"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: i * 0.15 }}
+              >
+                {/* Number circle */}
+                <div
+                  className="w-14 h-14 rounded-full flex items-center justify-center text-xl shrink-0 relative z-10"
+                  style={{ backgroundColor: step.accent, color: CREAM, fontFamily: "var(--font-display)" }}
+                >
+                  {step.number}
+                </div>
+                {/* Content */}
+                <div className="pt-2">
+                  <h3 className="text-lg mb-1" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
+                    {step.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
+                    {step.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
     );
@@ -251,7 +277,7 @@ function HorizontalHowItWorks() {
     <section ref={sectionRef} className="overflow-hidden" style={{ backgroundColor: CHARCOAL }}>
       <div className="h-screen flex flex-col justify-center">
         <div className="px-6 mb-8">
-          <h2 className="text-3xl md:text-5xl text-center mb-4" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
+          <h2 className="text-2xl sm:text-3xl md:text-5xl text-center mb-4" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
             HOW IT WORKS
           </h2>
           <p className="text-lg text-center" style={{ color: CREAM_70 }}>
@@ -275,17 +301,17 @@ function FeaturesStaggered() {
     {
       title: t("features.step1.title"),
       desc: t("features.step1.content"),
-      image: "https://github.com/CoachJ87/murder-mystery-party-generator/blob/main/public/images/custom_themes.png?raw=true",
+      image: "/images/custom_themes.png",
     },
     {
       title: t("features.step2.title"),
       desc: t("features.step2.content"),
-      image: "https://github.com/CoachJ87/murder-mystery-party-generator/blob/main/public/images/character_profiles.png?raw=true",
+      image: "/images/character_profiles.png",
     },
     {
       title: t("features.step3.title"),
       desc: t("features.step3.content"),
-      image: "https://github.com/CoachJ87/murder-mystery-party-generator/blob/main/public/images/host_guide.png?raw=true",
+      image: "/images/host_guide.png",
     },
   ];
 
@@ -324,7 +350,7 @@ function FeaturesStaggered() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
-                className="md:w-1/2"
+                className="md:w-1/2 text-center md:text-left"
               >
                 <h3 className="text-xl sm:text-2xl md:text-4xl mb-3 sm:mb-4" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
                   {feature.title}
@@ -405,7 +431,7 @@ function TestimonialsParallax() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-2xl sm:text-3xl md:text-4xl text-center mb-8 sm:mb-12"
+          className="text-2xl sm:text-3xl md:text-5xl text-center mb-8 sm:mb-12"
           style={{ color: CREAM, fontFamily: "var(--font-display)" }}
         >
           WHAT OTHERS ARE SAYING
@@ -432,7 +458,7 @@ function SupportCTA() {
         transition={{ duration: 0.6 }}
         className="max-w-3xl mx-auto text-center"
       >
-        <h2 className="text-2xl md:text-4xl mb-4" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
+        <h2 className="text-2xl sm:text-3xl md:text-5xl mb-4" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
           {t("support.title")}
         </h2>
         <p className="mb-8 text-base sm:text-lg" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
@@ -481,7 +507,7 @@ const Index = () => {
             {/* Video Demo */}
             <section className="py-6 sm:py-8 px-2 sm:px-4 md:px-6 lg:px-8" style={{ backgroundColor: CHARCOAL }}>
               <div className="w-full max-w-7xl mx-auto">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl text-center mb-8 sm:mb-12" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
+                <h2 className="text-2xl sm:text-3xl md:text-5xl text-center mb-8 sm:mb-12" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
                   {t('videoDemo.title')}
                 </h2>
                 <div className="max-w-4xl mx-auto">
