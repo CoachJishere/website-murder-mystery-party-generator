@@ -33,6 +33,7 @@ import BlogIndex from "./pages/BlogIndex";
 import BlogPost from "./pages/BlogPost";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import Feedback from "./pages/Feedback";
+import GuestFeedback from "./pages/GuestFeedback";
 import BillingHistory from "./pages/BillingHistory";
 import AdminDashboard from "./pages/AdminDashboard";
 import DarkHomePreview from "./pages/DarkHomePreview";
@@ -40,6 +41,7 @@ import FontPreview from "./pages/FontPreview";
 import HomeParallaxPreview from "./pages/HomeParallaxPreview";
 import EmailPreview from "./pages/EmailPreview";
 import MysteryRoomHero from "./components/MysteryRoomHero";
+import EvidenceCardPreview from "./pages/EvidenceCardPreview";
 import React from "react";
 
 const queryClient = new QueryClient();
@@ -116,6 +118,7 @@ const AppRoutes = () => {
         <Route path="/font-preview" element={<FontPreview />} />
         <Route path="/home-parallax" element={<HomeParallaxPreview />} />
         <Route path="/email-preview" element={<EmailPreview />} />
+        <Route path="/evidence-card-preview" element={<EvidenceCardPreview />} />
         <Route path="/mystery-hero" element={<div className="bg-[#1a0a1a]"><MysteryRoomHero /><div className="px-6 py-32 text-center"><p className="text-white/20 text-sm">Rest of homepage content would go below</p></div></div>} />
         
         {/* Character access route (public) */}
@@ -124,6 +127,9 @@ const AppRoutes = () => {
         <Route path="/host/:token" element={<HostAccess />} />
         {/* Feedback route (public, accessed from follow-up emails) */}
         <Route path="/feedback/:conversationId" element={<Feedback />} />
+
+        {/* Guest feedback route (public, accessed from guest follow-up emails) */}
+        <Route path="/guest-feedback/:token" element={<GuestFeedback />} />
 
         {/* Payment success and cancel routes */}
         <Route path="/payment-success" element={<PaymentSuccess />} />

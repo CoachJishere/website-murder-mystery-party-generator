@@ -2,6 +2,39 @@
 
 ## 2026-04-04
 
+### Feature: Guest feedback system
+- Added `guest_feedback` table for collecting per-character feedback from mystery party guests
+- Built `/guest-feedback/:token` page — dark-themed, minimal (star rating + optional highlight text), uses existing character assignment access tokens
+- Created `send-guest-feedback-email` Edge Function with batch mode — sends branded feedback request emails via Resend 14 days after character profiles are sent
+- Set up daily pg_cron job (`send-guest-feedback-emails`, 10:00 AM UTC) to automatically find and email eligible guests
+- Thank-you page includes "Browse Our Mysteries" CTA for organic guest-to-host conversion
+- Added GDPR Art. 14 privacy notice to character profile emails ("Your email was provided by the host... one follow-up email... no mailing lists")
+- Feedback email includes one-time email disclaimer
+- Backfilled `feedback_email_sent_at` on all existing assignments so only new guests receive feedback emails going forward
+
+### Feature: French (FR) cross-link insertions for 213 blog posts (rows 2–215)
+- Added `lang_insertions.fr` arrays to `cross_link_map.json` for all 213 blog posts in rows 2–215
+- Skipped row 122 (`how-murder-mystery-parties-can-transform-team-dynamics-and-morale`) — known duplicate with no content
+- Skipped 1 slug not in cross_link_map (`how-to-fix-venue-decoration-disasters-transform-spaces-successfully-without-breaking-budgets`)
+- Each post has exactly 5 FR insertions matching the 5 EN insertion targets
+- Phrases are 3–8 word unique substrings from the French content, semantically relevant to target slug topics
+- Position-tracked to ensure no overlapping phrases within a single post
+- All 1,065 insertions validated: unique match_text, correct `/fr/blog/{slug}` URLs, existing EN and ES data preserved
+
+### Feature: Spanish (ES) cross-link insertions for 104 blog posts (rows 111–215)
+- Added `lang_insertions.es` arrays to `cross_link_map.json` for 104 blog posts (rows 111–215)
+- Skipped row 122 (`how-to-fix-venue-decoration-disasters-...`) — not in cross_link_map
+- Each post has exactly 5 ES insertions matching the 5 EN insertion targets
+- Phrases are 3–8 word unique substrings from the Spanish content, not inside headings or existing links
+- All 520 insertions validated: unique match_text, correct `/es/blog/{slug}` URLs, existing EN and Convo A ES data preserved
+
+### Feature: Spanish (ES) cross-link insertions for 109 blog posts (rows 2–110)
+- Added `lang_insertions.es` arrays to `cross_link_map.json` for all 109 blog posts (rows 2–110)
+- Each post has exactly 5 ES insertions matching the 5 EN insertion targets
+- Phrases are 3–8 word unique substrings from the Spanish content, not inside headings or existing links
+- Each insertion spread across different paragraphs to avoid clustering
+- All 545 insertions validated: unique match_text, correct `/es/blog/{slug}` URLs, EN insertions preserved
+
 ### Feature: Backfill EN cross-links for published posts
 - Added `scripts/backfill-crosslinks.mjs` — one-time script to apply cross-links to already-published EN posts in Supabase
 - Added `.github/workflows/backfill-crosslinks.yml` — manual-trigger GitHub Action to run the backfill
