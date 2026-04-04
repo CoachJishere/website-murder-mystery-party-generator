@@ -169,6 +169,13 @@
   text-decoration: underline;
 }
 
+/* Tab active state for dark theme */
+[data-state="active"][role="tab"] {
+  background-color: var(--color-red) !important;
+  color: var(--color-cream) !important;
+  border: none !important;
+}
+
 /* Gradient text → cream (used by logo) */
 .gradient-text {
   background: none !important;

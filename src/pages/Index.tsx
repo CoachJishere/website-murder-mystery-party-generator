@@ -341,7 +341,7 @@ function FeaturesStaggered() {
                 <img
                   src={feature.image}
                   alt={feature.title}
-                  className="rounded-2xl w-full h-48 sm:h-64 md:h-80 object-cover"
+                  className="rounded-2xl w-full h-48 sm:h-64 md:h-80 object-contain"
                   style={{ border: `1px solid ${CREAM_10}` }}
                 />
               </motion.div>
