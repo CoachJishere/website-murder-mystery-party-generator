@@ -169,6 +169,27 @@
   text-decoration: underline;
 }
 
+/* Form inputs — visible on dark backgrounds */
+input,
+textarea,
+select,
+[role="combobox"],
+[class*="SelectTrigger"] {
+  border: 1px solid rgba(245, 240, 232, 0.2) !important;
+  background-color: var(--color-charcoal) !important;
+  color: var(--color-cream) !important;
+}
+input::placeholder,
+textarea::placeholder {
+  color: rgba(245, 240, 232, 0.4) !important;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgba(245, 240, 232, 0.4) !important;
+  outline: none;
+}
+
 /* Mystery content headings — body font, consistent sizing */
 .mystery-content h1,
 .mystery-content h2,
