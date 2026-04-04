@@ -12,6 +12,26 @@
 - Feedback email includes one-time email disclaimer
 - Backfilled `feedback_email_sent_at` on all existing assignments so only new guests receive feedback emails going forward
 
+### Feature: Host Trustpilot review prompts + followup email system
+- Created `send-followup-emails` Edge Function — processes pending `followup_emails` rows (the 21-day "how did it go" emails that were scheduled but never had a sender)
+- All host followup emails now drive to Trustpilot review first, internal feedback page as secondary CTA
+- If positive guest feedback exists when the host email sends, it includes social proof ("Your guests loved it! [Character] rated it 5 stars")
+- Created `notify-guest-feedback` Edge Function — triggered by database insert on `guest_feedback`:
+  - Sends you an email notification (support@) with mystery, character, rating, and highlight
+  - If guest gave 4-5 stars AND host's followup email already sent/skipped, sends immediate Trustpilot prompt to host with guest quote
+  - If host's followup is still pending, does nothing — the scheduled email will include guest data when it sends
+- Set up daily pg_cron job (`process-followup-emails`, 10:15 AM UTC) to send due host emails
+- Skipped 28 stale followup emails (conversations older than 1 month); 9 recent ones retained for sending
+- Green Trustpilot-branded CTA button (#00b67a) with unsubscribe link
+
+### Feature: French (FR) cross-link insertions for 207 blog posts (rows 216–422)
+- Added `lang_insertions.fr` arrays to `cross_link_map.json` for all 207 blog posts in rows 216–422
+- Each post has exactly 5 FR insertions matching the 5 EN insertion targets
+- Phrases are 3–8 word unique substrings from the French content, semantically relevant to target slug topics
+- All 420 entries in the map now have FR insertions (213 from previous batch + 207 from this batch)
+- No rows skipped — all had FR content and valid cross-link entries
+- Saved progress every 20 posts; existing `insertions`, `lang_insertions.es`, and prior `lang_insertions.fr` data preserved
+
 ### Feature: French (FR) cross-link insertions for 213 blog posts (rows 2–215)
 - Added `lang_insertions.fr` arrays to `cross_link_map.json` for all 213 blog posts in rows 2–215
 - Skipped row 122 (`how-murder-mystery-parties-can-transform-team-dynamics-and-morale`) — known duplicate with no content
