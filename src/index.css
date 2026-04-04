@@ -169,6 +169,19 @@
   text-decoration: underline;
 }
 
+/* Mystery content headings — use body font, not display */
+.mystery-content h1,
+.mystery-content h2,
+.mystery-content h3,
+.mystery-content h4,
+.mystery-content h5,
+.mystery-content h6 {
+  font-family: var(--font-body) !important;
+  text-transform: none !important;
+  color: var(--color-cream);
+  font-weight: 700;
+}
+
 /* Tab active state for dark theme */
 [data-state="active"][role="tab"] {
   background-color: var(--color-red) !important;
