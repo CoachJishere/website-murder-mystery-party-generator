@@ -520,16 +520,22 @@ export default function MysteryChat({
       </div>
 
       {/* Fixed Bottom Generate Button and Text Input */}
-      <div className={cn(
-        "fixed bottom-0 left-0 right-0 z-20 bg-muted border-t border-muted",
-        isMobile ? "px-3 py-2" : "px-4 py-3"
-      )}>
+      <div
+        className={cn(
+          "fixed bottom-0 left-0 right-0 z-20",
+          isMobile ? "px-3 py-2" : "px-4 py-3"
+        )}
+        style={{ backgroundColor: 'var(--color-black)', borderTop: '1px solid rgba(245,240,232,0.1)' }}
+      >
         <div className={cn(
           "mx-auto space-y-3",
           isMobile ? "max-w-full" : "max-w-4xl"
         )}>
-          {/* Text Input - NOW ON TOP */}
-          <div className="flex items-end space-x-2 sm:space-x-3 rounded-xl bg-white shadow-lg p-1">
+          {/* Text Input */}
+          <div
+            className="flex items-center gap-2 rounded-xl p-1.5"
+            style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid rgba(245,240,232,0.2)' }}
+          >
             <div className="flex-grow">
               <Textarea
                 ref={inputRef}
@@ -547,25 +553,30 @@ export default function MysteryChat({
                   "resize-none border-0 shadow-none focus-visible:ring-0 min-h-[44px] bg-transparent",
                   isMobile ? "text-base" : "text-sm"
                 )}
+                style={{ color: 'var(--color-cream)', backgroundColor: 'transparent', border: 'none' }}
                 rows={1}
               />
             </div>
-            <Button 
-              type="submit" 
-              onClick={() => handleSendMessage(input)} 
+            <button
+              type="submit"
+              onClick={() => handleSendMessage(input)}
               disabled={isAiTyping || !input.trim()}
-              size={isMobile ? "default" : "icon"}
-              className={cn(
-                "shrink-0 bg-primary hover:bg-primary/90 text-white rounded-lg",
-                isMobile ? "h-11 w-11" : "h-9 w-9"
-              )}
+              className="shrink-0 flex items-center justify-center rounded-lg transition-colors disabled:opacity-40"
+              style={{
+                width: isMobile ? '44px' : '36px',
+                height: isMobile ? '44px' : '36px',
+                backgroundColor: 'var(--color-red)',
+                color: 'var(--color-cream)',
+                border: 'none',
+                cursor: 'pointer',
+              }}
             >
               {isAiTyping ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <Send className="h-4 w-4" />
               )}
-            </Button>
+            </button>
           </div>
       
           {/* Generate Full Mystery Button - NOW ON BOTTOM */}
