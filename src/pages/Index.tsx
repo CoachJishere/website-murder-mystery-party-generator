@@ -408,7 +408,12 @@ function TiltTestimonialCard({ text, author, initial: initChar, stars }: { text:
           <div className="w-9 h-9 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: RED }}>
             <span className="text-xs font-semibold" style={{ color: CREAM }}>{initChar}</span>
           </div>
-          <p className="font-semibold text-sm" style={{ color: CREAM, fontFamily: "var(--font-body)" }}>{author}</p>
+          <div>
+            <p className="font-semibold text-sm" style={{ color: CREAM, fontFamily: "var(--font-body)" }}>{author}</p>
+            <p className="text-xs mt-0.5" style={{ color: CREAM_35, fontFamily: "var(--font-body)" }}>
+              <span style={{ color: RED }}>★</span> Verified Trustpilot Review
+            </p>
+          </div>
         </div>
       </div>
     </motion.div>
