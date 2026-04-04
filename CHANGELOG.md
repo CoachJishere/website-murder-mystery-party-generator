@@ -2,6 +2,19 @@
 
 ## 2026-04-04
 
+### Fix: Chat AI not responding — deprecated Anthropic model
+- Updated `mystery-ai` Edge Function model from `claude-sonnet-4-5-20250929` (deprecated by Anthropic) to `claude-sonnet-4-5-20250514`
+- All new conversations since 2026-04-04 were returning error fallbacks; redeployed as v147
+- Cleaned up error messages from affected conversations
+
+### Feature: German (DE) cross-link insertions for 213 blog posts (rows 2–215)
+- Added `lang_insertions.de` arrays to `cross_link_map.json` for 213 blog posts (rows 2–215, skipping R122 known duplicate)
+- Each post has exactly 5 DE insertions matching the 5 EN insertion targets
+- Phrases are 3–12 word unique substrings from the German content, scored for semantic relevance to target slug topics
+- All match_text values verified unique within their post's DE content
+- No headings, existing links, code blocks, or metadata lines targeted
+- Existing data (EN insertions, FR lang_insertions) preserved unchanged
+
 ### Feature: Guest feedback system
 - Added `guest_feedback` table for collecting per-character feedback from mystery party guests
 - Built `/guest-feedback/:token` page — dark-themed, minimal (star rating + optional highlight text), uses existing character assignment access tokens
