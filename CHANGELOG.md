@@ -2,6 +2,46 @@
 
 ## 2026-04-04
 
+### Feature: Full site dark redesign with parallax homepage
+- New color system: black #000000 / charcoal #111111 backgrounds, red #C81400 accents, cream #F5F0E8 text (no pure white)
+- Bowlby One display font for all headings, Inter for body text, all headings uppercase
+- Parallax hero: detective background image with scroll depth effect, white chatbox with typewriter
+- Lenis smooth scrolling across entire homepage
+- Animated counter stats section: 500+ mysteries, 999+ themes, 5 min to start
+- Horizontal scroll How It Works (GSAP pinned, desktop) with timeline fallback (mobile)
+- Zigzag staggered scroll reveal for Features section
+- 3D tilt testimonial cards with real Trustpilot reviews (Sophia, Will Treaty, Jed)
+- "Verified Trustpilot Review" badge with green star under each reviewer name
+- Red #C81400 navigation, Support CTA section, and accent elements throughout
+- Redesigned auth modal: Google OAuth button, or-divider, red Sign Up, outline Sign In
+- Mobile-optimized: responsive hero, stacked How It Works, centered feature text
+
+### Improvement: Dark theme applied across all pages and components
+- Mystery package tabs: charcoal strip, red active state, cream text
+- Chat bubbles: charcoal background with cream border (not invisible black-on-black)
+- Chat input bar: charcoal container, red send button, cream text
+- Form inputs globally: charcoal bg with cream border (excludes hero chatbox)
+- Alert/info boxes: charcoal bg with subtle borders (removed yellow/cream/white)
+- FAQ: left-aligned questions in body font, red chevrons, consistent heading sizes
+- Mystery content headings: Inter body font, normalized H1-H3 sizing
+- Duplicate title stripped from Host Guide tab content
+- Print/PDF styles: forced black text on white for accessibility
+- HostAccess tabs: red active state, charcoal background
+- "Scroll to explore" hidden for logged-in users
+
+### Improvement: Email templates redesigned for dark theme
+- Welcome, character assignment, and host guide emails all updated
+- Red header with MYSTERY MAKER wordmark, charcoal content area, cream text
+- Red CTA buttons, black feature boxes with red left border
+- From name changed to "Mystery Maker", simplified footer with link only
+- Deployed all three Edge Functions to Supabase
+
+### Improvement: Wizard prompt translations updated to sentence-fragment pattern
+- Updated `mysteryCreation.wizard.prompt` keys (withTheme, withoutTheme, withAccomplice, withoutAccomplice, additionalDetails) across all 12 non-English locales
+- Changed from standalone sentences to sentence-continuation fragments that flow naturally after "I want to create a murder mystery..."
+- Danish and Swedish were previously untranslated (English fallback); now have proper translations
+- All {{template}} variables preserved
+
 ### Fix: Chat AI not responding — deprecated Anthropic model
 - Updated `mystery-ai` Edge Function model from `claude-sonnet-4-5-20250929` (deprecated by Anthropic) to `claude-sonnet-4-5-20250514`
 - All new conversations since 2026-04-04 were returning error fallbacks; redeployed as v147
