@@ -451,9 +451,10 @@ export default function MysteryChat({
               className={cn(
                 "rounded-2xl px-4 py-3 sm:px-5 sm:py-4 max-w-[85%] sm:max-w-[80%] shadow-lg",
                 message.is_ai
-                  ? "bg-background text-foreground border-none"
+                  ? "text-foreground"
                   : "bg-primary text-white border-none"
               )}
+              style={message.is_ai ? { backgroundColor: 'var(--color-charcoal)', border: '1px solid rgba(245,240,232,0.1)' } : undefined}
             >
               {message.is_ai ? (
                 <div className={cn(
@@ -506,7 +507,7 @@ export default function MysteryChat({
         {/* AI Typing Indicator - Mobile Optimized */}
         {isAiTyping && (
           <div className="flex justify-start">
-            <div className="bg-background rounded-2xl px-4 py-3 sm:px-5 sm:py-4 max-w-[85%] sm:max-w-[80%] shadow-lg">
+            <div className="rounded-2xl px-4 py-3 sm:px-5 sm:py-4 max-w-[85%] sm:max-w-[80%] shadow-lg" style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid rgba(245,240,232,0.1)' }}>
               <div className="flex space-x-1">
                 <div className="h-2 w-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
                 <div className="h-2 w-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
