@@ -169,9 +169,9 @@
   text-decoration: underline;
 }
 
-/* Form inputs — visible on dark backgrounds */
-input,
-textarea,
+/* Form inputs — visible on dark backgrounds (exclude hero chatbox) */
+input:not(#ai-input-with-loading),
+textarea:not(#ai-input-with-loading),
 select,
 [role="combobox"],
 [class*="SelectTrigger"] {
@@ -179,12 +179,12 @@ select,
   background-color: var(--color-charcoal) !important;
   color: var(--color-cream) !important;
 }
-input::placeholder,
-textarea::placeholder {
+input:not(#ai-input-with-loading)::placeholder,
+textarea:not(#ai-input-with-loading)::placeholder {
   color: rgba(245, 240, 232, 0.4) !important;
 }
-input:focus,
-textarea:focus,
+input:not(#ai-input-with-loading):focus,
+textarea:not(#ai-input-with-loading):focus,
 select:focus {
   border-color: rgba(245, 240, 232, 0.4) !important;
   outline: none;
