@@ -56,7 +56,7 @@ function useSmoothScroll() {
 // ═══════════════════════════════════════════════════════════════
 // HERO — Single screen with parallax image
 // ═══════════════════════════════════════════════════════════════
-function ParallaxHero() {
+function ParallaxHero({ isAuthenticated }: { isAuthenticated: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -86,16 +86,18 @@ function ParallaxHero() {
       >
         <Hero />
       </motion.div>
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2" style={{ zIndex: 3 }}>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          className="text-sm uppercase tracking-widest"
-          style={{ color: "rgba(245,240,232,0.5)", fontFamily: "var(--font-body)" }}
-        >
-          scroll to explore
-        </motion.div>
-      </div>
+      {!isAuthenticated && (
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2" style={{ zIndex: 3 }}>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="text-sm uppercase tracking-widest"
+            style={{ color: "rgba(245,240,232,0.5)", fontFamily: "var(--font-body)" }}
+          >
+            scroll to explore
+          </motion.div>
+        </div>
+      )}
     </section>
   );
 }
@@ -508,7 +510,7 @@ const Index = () => {
       <Header />
 
       <main id="main-content" className="flex-1 w-full overflow-x-hidden">
-        <ParallaxHero />
+        <ParallaxHero isAuthenticated={isAuthenticated} />
 
         {!isAuthenticated && (
           <>
