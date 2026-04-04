@@ -169,6 +169,19 @@
   text-decoration: underline;
 }
 
+/* Alerts and info boxes — dark theme */
+[role="alert"] {
+  background-color: var(--color-charcoal) !important;
+  border-color: rgba(245, 240, 232, 0.15) !important;
+  color: var(--color-cream) !important;
+}
+[role="alert"] h5 {
+  color: var(--color-cream) !important;
+}
+[role="alert"] div {
+  color: rgba(245, 240, 232, 0.7) !important;
+}
+
 /* Form inputs — visible on dark backgrounds (exclude hero chatbox) */
 input:not(#ai-input-with-loading),
 textarea:not(#ai-input-with-loading),

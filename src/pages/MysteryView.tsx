@@ -106,6 +106,7 @@ const MysteryView = () => {
           timeline,
           hosting_tips,
           evidence_cards,
+          evidence_card_images,
           detective_script,
           id
         `)
@@ -132,6 +133,7 @@ const MysteryView = () => {
           timeline: packageData.timeline,
           hostingTips: packageData.hosting_tips,
           evidenceCards: packageData.evidence_cards,
+          evidenceCardImages: packageData.evidence_card_images,
           detectiveScript: packageData.detective_script,
         };
         
@@ -838,7 +840,7 @@ const MysteryView = () => {
     if (generationStatus.status === 'failed') {
       return (
         <Card className={cn(
-          "mb-6 border-red-200 bg-red-50",
+          "mb-6 border-red-500/30",
           isMobile && "mx-2"
         )}>
           <CardHeader className={cn(isMobile && "p-4 pb-3")}>
@@ -877,7 +879,7 @@ const MysteryView = () => {
             "space-y-4",
             isMobile && "p-4 pt-0 space-y-3"
           )}>
-            <Alert className="border-red-200">
+            <Alert className="border-red-500/30">
               <AlertTriangle className={cn(
                 isMobile ? "h-3 w-3" : "h-4 w-4"
               )} />
@@ -935,7 +937,7 @@ const MysteryView = () => {
     if (generationTimedOut) {
       return (
         <Card className={cn(
-          "mb-6 border-amber-200 bg-amber-50",
+          "mb-6 border-amber-500/30",
           isMobile && "mx-2"
         )}>
           <CardHeader className={cn(isMobile && "p-4 pb-3")}>
@@ -960,7 +962,7 @@ const MysteryView = () => {
             "space-y-4",
             isMobile && "p-4 pt-0 space-y-3"
           )}>
-            <Alert className="border-amber-200 bg-white">
+            <Alert className="border-amber-500/30">
               <CheckCircle2 className={cn(
                 "text-green-500",
                 isMobile ? "h-3 w-3" : "h-4 w-4"
@@ -1159,7 +1161,7 @@ const MysteryView = () => {
         )}>
           {generationStatus?.status === 'needs_review' ? (
             <Card className={cn(
-              "mb-6 border-amber-200 bg-amber-50",
+              "mb-6 border-amber-500/30",
               isMobile && "mx-2"
             )}>
               <CardHeader className={cn(isMobile && "p-4 pb-3")}>
@@ -1184,7 +1186,7 @@ const MysteryView = () => {
                 "space-y-4",
                 isMobile && "p-4 pt-0 space-y-3"
               )}>
-                <Alert className="border-amber-200 bg-white">
+                <Alert className="border-amber-500/30">
                   <CheckCircle2 className={cn(
                     "text-green-500",
                     isMobile ? "h-3 w-3" : "h-4 w-4"
