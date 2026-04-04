@@ -421,13 +421,26 @@ function TiltTestimonialCard({ text, author, initial: initChar, stars }: { text:
 }
 
 function TestimonialsParallax() {
-  const { t } = useTranslation();
-  const testimonials = [1, 2, 3].map((i) => ({
-    text: t(`testimonials.testimonial${i}.text`),
-    author: t(`testimonials.testimonial${i}.author`),
-    initial: ["J", "LB", "A"][i - 1],
-    stars: 5,
-  }));
+  const testimonials = [
+    {
+      text: "My work team and I had so much fun with our custom murder mystery!!! We were able to enter the location and setting of where we really were (winery in Trodos mountains, Cyprus) and put in a theme of our choice (Greek mythology) and it created something so unique. The fact that the setting matched made it feel real and super fun! Plus you get to enter the exact number of participants, so it's perfectly designed. So much better than just the generic murder mysteries I've done in the past. I highly recommend!",
+      author: "Sophia",
+      initial: "S",
+      stars: 5,
+    },
+    {
+      text: "Ahhh. My wife and I had such a blast with our friends using this party package!!! I'm friends with a lot of theater geeks so many of us dressed up over the top (some hardcore nerds memorized their parts) but everyone had a lotta fun. Still talking about it weeks later and we can't wait to schedule the next one.",
+      author: "Will Treaty",
+      initial: "W",
+      stars: 5,
+    },
+    {
+      text: "Ok so I went into this pretty sceptical because I am NOT a roleplay person and my friend convinced me to do a White Lotus island one for her dinner party. I was ready to cringe the whole time. Instead I was fully absorbed for like 3 hours interrogating everyone and genuinely upset when it turned out I wasn't the murderer. Incredible. Absolutely do not sleep on this if someone suggests it.",
+      author: "Jed",
+      initial: "J",
+      stars: 5,
+    },
+  ];
 
   return (
     <section className="py-12 sm:py-20 px-4 sm:px-6" style={{ backgroundColor: BLACK }}>
