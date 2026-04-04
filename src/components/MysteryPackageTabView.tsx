@@ -488,38 +488,30 @@ const MysteryPackageTabView = React.memo(({
             "flex items-center gap-3",
             isMobile && "flex-col w-full"
           )}>
-            <button
+            <Button
               onClick={() => setShowGuestManager(true)}
               className={cn(
-                "btn-on-dark gap-2",
+                "gap-2",
                 isMobile && "w-full"
               )}
+              style={{ backgroundColor: 'var(--color-red)', color: 'var(--color-cream)' }}
             >
               <Mail className="h-4 w-4" />
               {t('mysteryPackage.shareWithGuests')}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => window.print()}
+              variant="outline"
               className={cn(
-                "gap-2 print:hidden flex items-center justify-center transition-colors",
+                "gap-2 print:hidden",
                 isMobile && "w-full"
               )}
-              style={{
-                padding: '12px 32px',
-                borderRadius: '4px',
-                border: '1.5px solid rgba(245,240,232,0.5)',
-                backgroundColor: 'transparent',
-                color: 'var(--color-cream)',
-                fontFamily: 'var(--font-body)',
-                fontWeight: 600,
-                fontSize: '15px',
-                cursor: 'pointer',
-              }}
+              style={{ borderColor: 'rgba(245,240,232,0.5)', color: 'var(--color-cream)' }}
               title={t('mysteryPackage.export.printTip')}
             >
               <Download className="h-4 w-4" />
               {t('mysteryPackage.export.saveAsPdf')}
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -527,8 +519,8 @@ const MysteryPackageTabView = React.memo(({
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList
           className={cn(
-            "w-full mb-4 p-1 overflow-hidden rounded-lg",
-            isMobile ? "grid grid-cols-2 gap-1 h-auto" : "grid grid-cols-2 md:grid-cols-4"
+            "w-full mb-4 p-1.5 overflow-hidden rounded-lg h-auto",
+            isMobile ? "grid grid-cols-2 gap-1" : "grid grid-cols-2 md:grid-cols-4 gap-1"
           )}
           style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid var(--color-cream-border)' }}
         >
