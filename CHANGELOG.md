@@ -1,5 +1,39 @@
 # Changelog
 
+## 2026-04-04
+
+### Feature: EN cross-link application in daily publish action
+- Updated `publish-daily-blog.yml` to checkout the repo and read `cross_link_map.json`
+- Before publishing, the action now fetches EN content, applies up to 5 cross-link insertions (match_text → replacement), and patches the updated content back to Supabase
+- Uses Node.js for reliable string replacement (handles special chars in markdown)
+- Gracefully skips if no cross-links exist for a slug or if `cross_link_map.json` is missing
+- Committed `cross_link_map.json` (420 entries × 5 insertions = 2,100 EN cross-links) and `CROSS_LINKING_PLAN.md`
+
+### Fix: Filled 46 null cross-link insertions across 30 slugs
+- Part A: Created full `insertions` array (5 entries) for `how-to-fix-lighting-and-atmosphere-issues-that-could-dim-your-murder-mystery-party` which had `links_to` and `cluster` but no insertions
+- Part B: Filled 41 null `match_text`/`replacement` entries across 29 slugs where no organic fit was initially found
+- Every post was read manually to find natural, contextually relevant phrases for each target link
+- All 46 insertions validated: unique match_text, not inside headings or existing links
+
+### Feature: Cross-link insertions for 109 blog posts (Convo A, rows 2-110)
+- Added contextual cross-link insertion data to `cross_link_map.json` for all 109 blog posts (pandas indices 1-109)
+- Each post has 5 link target slots; 504 successful insertions placed with natural anchor text, 41 nulled where no organic fit existed (92.5% success rate)
+- Every post was read manually section by section to find natural insertion points — no regex or bulk pattern matching used
+- Each insertion includes `match_text` (unique snippet from post) and `replacement` (same snippet with markdown link woven in)
+- Null entries indicate the target topic had no natural mention in the source post (e.g., beach-resort links in gothic/viking posts)
+
+### Feature: Cross-link insertions for 105 blog posts (Convo C, rows 216-320)
+- Added contextual cross-link insertions to `cross_link_map.json` for 105 posts in rows 216-320
+- 525 insertions placed (5 per post, 100% success rate) — each `match_text` is a unique verbatim substring of the EN content
+- Phrases chosen by semantic relevance to target slug topic, avoiding headings, existing links, and code blocks
+- 14 initially-failed insertions were manually resolved with broader keyword searches
+
+### Feature: Cross-link insertions for 104 blog posts (Convo B, rows 111-215)
+- Added contextual cross-link insertions to `cross_link_map.json` for 104 posts in rows 111-215
+- Skipped row 121 (no EN content) and row 122 (known duplicate `how-murder-mystery-parties-can-transform-team-dynamics-and-morale`)
+- 520 insertions placed (5 per post, 100% success rate) — each `match_text` is a unique verbatim substring of the EN content
+- Phrases chosen by semantic relevance to target slug topic, avoiding headings, existing links, and code blocks
+
 ## 2026-04-03
 
 ### Feature: Supabase sync workflow for blog_map.xlsx
