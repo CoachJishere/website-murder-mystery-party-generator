@@ -390,11 +390,11 @@
       },
       "prompt": {
         "defaultStart": "Ich möchte ein Krimi-Mysterium erstellen",
-        "withTheme": "Das Thema/Setting sollte {{theme}} für {{playerCount}} Spieler mit Skripten im {{scriptType}}-Format sein",
-        "withoutTheme": "Dies ist für {{playerCount}} Spieler mit Skripten im {{scriptType}}-Format",
-        "withAccomplice": "Einen Komplizenmechanismus in das Mysterium aufnehmen",
-        "withoutAccomplice": "Keinen Komplizenmechanismus in das Mysterium aufnehmen",
-        "additionalDetails": "Zusätzliche Details sind: {{details}}"
+        "withTheme": "mit einem {{theme}}-Thema für {{playerCount}} Spieler mit {{scriptType}}-Skripten",
+        "withoutTheme": "für {{playerCount}} Spieler mit {{scriptType}}-Skripten",
+        "withAccomplice": "Einen Komplizenmechanismus einbeziehen",
+        "withoutAccomplice": "Keinen Komplizen einbeziehen",
+        "additionalDetails": "Zusätzliche Details: {{details}}"
       }
     },
     "editor": {

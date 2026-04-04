@@ -390,11 +390,11 @@
       },
       "prompt": {
         "defaultStart": "我想创建一个谋杀悬疑故事",
-        "withTheme": "主题/背景为{{theme}}，适合{{playerCount}}位玩家，剧本为{{scriptType}}",
-        "withoutTheme": "适合{{playerCount}}位玩家，剧本为{{scriptType}}",
-        "withAccomplice": "在谜团中包含一个同谋机制",
-        "withoutAccomplice": "在谜团中不包含同谋机制",
-        "additionalDetails": "其他细节有：{{details}}"
+        "withTheme": "以{{theme}}为主题，适合{{playerCount}}位玩家，使用{{scriptType}}剧本",
+        "withoutTheme": "适合{{playerCount}}位玩家，使用{{scriptType}}剧本",
+        "withAccomplice": "包含同谋机制",
+        "withoutAccomplice": "不包含同谋",
+        "additionalDetails": "额外细节: {{details}}"
       }
     },
     "editor": {

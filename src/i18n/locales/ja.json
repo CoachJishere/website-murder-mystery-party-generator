@@ -390,11 +390,11 @@
       },
       "prompt": {
         "defaultStart": "殺人ミステリーを作成したいです",
-        "withTheme": "テーマ/設定は{{theme}}で、{{playerCount}}人のプレイヤー向け、{{scriptType}}スクリプトです",
-        "withoutTheme": "これは{{playerCount}}人のプレイヤー向け、{{scriptType}}スクリプトです",
-        "withAccomplice": "ミステリーに共犯者メカニズムを含める",
-        "withoutAccomplice": "ミステリーに共犯者メカニズムを含めない",
-        "additionalDetails": "追加の詳細には次のものが含まれます: {{details}}"
+        "withTheme": "{{theme}}テーマで{{playerCount}}人のプレイヤー向け、{{scriptType}}スクリプト付き",
+        "withoutTheme": "{{playerCount}}人のプレイヤー向け、{{scriptType}}スクリプト付き",
+        "withAccomplice": "共犯者メカニズムを含める",
+        "withoutAccomplice": "共犯者を含めない",
+        "additionalDetails": "追加の詳細: {{details}}"
       }
     },
     "editor": {

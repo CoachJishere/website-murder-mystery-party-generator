@@ -390,11 +390,11 @@
       },
       "prompt": {
         "defaultStart": "Ik wil een moordmysterie creëren",
-        "withTheme": "Het thema/de setting moet {{theme}} zijn voor {{playerCount}} spelers met {{scriptType}} scripts",
-        "withoutTheme": "Dit is voor {{playerCount}} spelers met {{scriptType}} scripts",
-        "withAccomplice": "Voeg een handlanger-mechanisme toe aan het mysterie",
-        "withoutAccomplice": "Voeg geen handlanger-mechanisme toe aan het mysterie",
-        "additionalDetails": "Extra details zijn: {{details}}"
+        "withTheme": "met een {{theme}}-thema voor {{playerCount}} spelers met {{scriptType}} scripts",
+        "withoutTheme": "voor {{playerCount}} spelers met {{scriptType}} scripts",
+        "withAccomplice": "Een handlanger-mechanisme opnemen",
+        "withoutAccomplice": "Geen handlanger opnemen",
+        "additionalDetails": "Extra details: {{details}}"
       }
     },
     "editor": {

@@ -391,11 +391,11 @@
       },
       "prompt": {
         "defaultStart": "Quero criar um mistério de assassinato",
-        "withTheme": "O tema/ambiente deve ser {{theme}} para {{playerCount}} jogadores com scripts {{scriptType}}",
-        "withoutTheme": "É para {{playerCount}} jogadores com scripts {{scriptType}}",
-        "withAccomplice": "Inclua um mecanismo de cúmplice no mistério",
-        "withoutAccomplice": "Não inclua um mecanismo de cúmplice no mistério",
-        "additionalDetails": "Detalhes adicionais são: {{details}}"
+        "withTheme": "com um tema {{theme}} para {{playerCount}} jogadores com scripts {{scriptType}}",
+        "withoutTheme": "para {{playerCount}} jogadores com scripts {{scriptType}}",
+        "withAccomplice": "Incluir um mecanismo de cúmplice",
+        "withoutAccomplice": "Não incluir um cúmplice",
+        "additionalDetails": "Detalhes adicionais: {{details}}"
       }
     },
     "editor": {

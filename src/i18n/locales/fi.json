@@ -390,10 +390,10 @@
       },
       "prompt": {
         "defaultStart": "Haluan luoda murhamysteerin",
-        "withTheme": "Teeman/ympäristön tulee olla {{theme}} {{playerCount}} pelaajalle skripteillä {{scriptType}}-muodossa",
-        "withoutTheme": "Tämä on {{playerCount}} pelaajalle skripteillä {{scriptType}}-muodossa",
-        "withAccomplice": "Sisällytä rikoskumppanimekanismi mysteeriin",
-        "withoutAccomplice": "Älä sisällytä rikoskumppanimekanismia mysteeriin",
+        "withTheme": "{{theme}}-teemalla {{playerCount}} pelaajalle {{scriptType}}-käsikirjoituksilla",
+        "withoutTheme": "{{playerCount}} pelaajalle {{scriptType}}-käsikirjoituksilla",
+        "withAccomplice": "Sisällytä rikoskumppanimekanismi",
+        "withoutAccomplice": "Älä sisällytä rikoskumppania",
         "additionalDetails": "Lisätiedot: {{details}}"
       }
     },

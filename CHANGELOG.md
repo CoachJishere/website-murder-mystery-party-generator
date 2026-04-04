@@ -2,6 +2,18 @@
 
 ## 2026-04-04
 
+### UX: Improve initial chat message grammar
+- Fixed awkward message when starting from hero input (e.g. "Cypherpunk nightclub This is for 6 players...")
+- Now reads naturally: "I want to create a murder mystery with a Cypherpunk nightclub theme for 6 players with full scripts."
+- Hero input is treated as the theme when form theme field is empty
+- Updated all 13 locale translation strings to match new sentence-fragment pattern
+- Added localhost:8080 to Edge Function CORS allowed origins for dev
+
+### Fix: Chat AI not responding — deprecated Anthropic model
+- Updated `mystery-ai` Edge Function model from `claude-sonnet-4-5-20250929` (deprecated by Anthropic) to `claude-sonnet-4-5-20250514`
+- All new conversations since 2026-04-04 were returning error fallbacks; redeployed as v148
+- Cleaned up error messages from affected conversations
+
 ### Feature: Full site dark redesign with parallax homepage
 - New color system: black #000000 / charcoal #111111 backgrounds, red #C81400 accents, cream #F5F0E8 text (no pure white)
 - Bowlby One display font for all headings, Inter for body text, all headings uppercase

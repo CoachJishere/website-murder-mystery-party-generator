@@ -391,10 +391,10 @@
       },
       "prompt": {
         "defaultStart": "Je veux créer un mystère de meurtre",
-        "withTheme": "Le thème/cadre doit être {{theme}} pour {{playerCount}} joueurs avec des scripts au format {{scriptType}}",
-        "withoutTheme": "C'est pour {{playerCount}} joueurs avec des scripts au format {{scriptType}}",
-        "withAccomplice": "Inclure un mécanisme de complice dans le mystère",
-        "withoutAccomplice": "Ne pas inclure de mécanisme de complice dans le mystère",
+        "withTheme": "avec un thème {{theme}} pour {{playerCount}} joueurs avec des scripts {{scriptType}}",
+        "withoutTheme": "pour {{playerCount}} joueurs avec des scripts {{scriptType}}",
+        "withAccomplice": "Inclure un mécanisme de complice",
+        "withoutAccomplice": "Ne pas inclure de complice",
         "additionalDetails": "Détails supplémentaires : {{details}}"
       }
     },

@@ -95,25 +95,21 @@ const MysteryCreation = () => {
     };
     
         const createFormattedInitialMessage = (data: any) => {
-            let message = "";
-            
-            // Start with original request if available
-            if (data.userRequest) {
-                message = data.userRequest.trim();
-            } else {
-                message = t("mysteryCreation.wizard.prompt.defaultStart");
-            }
-            
-            // Add theme/setting if provided
-            if (data.theme && data.theme.trim() !== "") {
-                message += " " + t("mysteryCreation.wizard.prompt.withTheme", { 
-                    theme: data.theme, 
-                    playerCount: data.playerCount, 
-                    scriptType: getScriptTypeDisplayText(data.scriptType) 
+            let message = t("mysteryCreation.wizard.prompt.defaultStart");
+
+            // Use theme from form, or fall back to hero input as theme
+            const theme = (data.theme && data.theme.trim()) || (data.userRequest && data.userRequest.trim()) || "";
+
+            // Add theme/setting and player details
+            if (theme) {
+                message += " " + t("mysteryCreation.wizard.prompt.withTheme", {
+                    theme,
+                    playerCount: data.playerCount,
+                    scriptType: getScriptTypeDisplayText(data.scriptType)
                 });
             } else {
-                message += " " + t("mysteryCreation.wizard.prompt.withoutTheme", { 
-                    playerCount: data.playerCount, 
+                message += " " + t("mysteryCreation.wizard.prompt.withoutTheme", {
+                    playerCount: data.playerCount,
                     scriptType: getScriptTypeDisplayText(data.scriptType || 'full')
                 });
             }

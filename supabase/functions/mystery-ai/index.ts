@@ -54,6 +54,7 @@ const ALLOWED_ORIGINS = [
   'https://mysterymaker.party',
   'http://localhost:5173',
   'http://localhost:3000',
+  'http://localhost:8080',
 ];
 
 function getCorsHeaders(req: Request) {

@@ -390,11 +390,11 @@
       },
       "prompt": {
         "defaultStart": "I want to create a murder mystery",
-        "withTheme": "The theme/setting should be {{theme}} for {{playerCount}} players with {{scriptType}} scripts",
-        "withoutTheme": "This is for {{playerCount}} players with {{scriptType}} scripts",
-        "withAccomplice": "Include an accomplice mechanism in the mystery",
-        "withoutAccomplice": "Do not include an accomplice mechanism in the mystery",
-        "additionalDetails": "Additional details include: {{details}}"
+        "withTheme": "med et {{theme}}-tema for {{playerCount}} spillere med {{scriptType}}-manuskripter",
+        "withoutTheme": "for {{playerCount}} spillere med {{scriptType}}-manuskripter",
+        "withAccomplice": "Inkluder en medskyldig-mekanisme",
+        "withoutAccomplice": "Inkluder ikke en medskyldig",
+        "additionalDetails": "Yderligere detaljer: {{details}}"
       }
     },
     "editor": {

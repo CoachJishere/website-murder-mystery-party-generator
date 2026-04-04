@@ -390,11 +390,11 @@
       },
       "prompt": {
         "defaultStart": "Quiero crear un misterio de asesinato",
-        "withTheme": "El tema/escenario debe ser {{theme}} para {{playerCount}} jugadores con guiones en formato {{scriptType}}",
-        "withoutTheme": "Esto es para {{playerCount}} jugadores con guiones en formato {{scriptType}}",
-        "withAccomplice": "Incluir un mecanismo de cómplice en el misterio",
-        "withoutAccomplice": "No incluir un mecanismo de cómplice en el misterio",
-        "additionalDetails": "Detalles adicionales incluyen: {{details}}"
+        "withTheme": "con un tema de {{theme}} para {{playerCount}} jugadores con guiones {{scriptType}}",
+        "withoutTheme": "para {{playerCount}} jugadores con guiones {{scriptType}}",
+        "withAccomplice": "Incluir un mecanismo de cómplice",
+        "withoutAccomplice": "No incluir un cómplice",
+        "additionalDetails": "Detalles adicionales: {{details}}"
       }
     },
     "editor": {

@@ -390,10 +390,10 @@
       },
       "prompt": {
         "defaultStart": "Voglio creare un mistero con delitto",
-        "withTheme": "Il tema/ambientazione dovrebbe essere {{theme}} per {{playerCount}} giocatori con script in formato {{scriptType}}",
-        "withoutTheme": "Questo è per {{playerCount}} giocatori con script in formato {{scriptType}}",
-        "withAccomplice": "Includi un meccanismo di complice nel mistero",
-        "withoutAccomplice": "Non includere un meccanismo di complice nel mistero",
+        "withTheme": "con un tema {{theme}} per {{playerCount}} giocatori con script {{scriptType}}",
+        "withoutTheme": "per {{playerCount}} giocatori con script {{scriptType}}",
+        "withAccomplice": "Includere un meccanismo di complice",
+        "withoutAccomplice": "Non includere un complice",
         "additionalDetails": "Dettagli aggiuntivi: {{details}}"
       }
     },
