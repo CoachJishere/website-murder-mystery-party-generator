@@ -327,7 +327,7 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 2000,
         system: systemPrompt,
         messages: anthropicMessages,
@@ -337,8 +337,8 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
     
     if (!anthropicResponse.ok) {
       const errorText = await anthropicResponse.text();
-      console.error(`Anthropic API error: ${anthropicResponse.status}`);
-      throw new Error(`Anthropic API error: ${anthropicResponse.status}`);
+      console.error(`Anthropic API error ${anthropicResponse.status}: ${errorText}`);
+      throw new Error(`Anthropic API error: ${anthropicResponse.status} - ${errorText}`);
     }
 
     const data = await anthropicResponse.json();

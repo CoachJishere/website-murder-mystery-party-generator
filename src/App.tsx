@@ -42,6 +42,7 @@ import HomeParallaxPreview from "./pages/HomeParallaxPreview";
 import EmailPreview from "./pages/EmailPreview";
 import MysteryRoomHero from "./components/MysteryRoomHero";
 import EvidenceCardPreview from "./pages/EvidenceCardPreview";
+import EvidenceCardPrint from "./pages/EvidenceCardPrint";
 import React from "react";
 
 const queryClient = new QueryClient();
@@ -119,6 +120,7 @@ const AppRoutes = () => {
         <Route path="/home-parallax" element={<HomeParallaxPreview />} />
         <Route path="/email-preview" element={<EmailPreview />} />
         <Route path="/evidence-card-preview" element={<EvidenceCardPreview />} />
+        <Route path="/evidence-card-print" element={<EvidenceCardPrint />} />
         <Route path="/mystery-hero" element={<div className="bg-[#1a0a1a]"><MysteryRoomHero /><div className="px-6 py-32 text-center"><p className="text-white/20 text-sm">Rest of homepage content would go below</p></div></div>} />
         
         {/* Character access route (public) */}

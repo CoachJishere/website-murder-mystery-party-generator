@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
-import { Loader2, Wand2, Eye, Mail, MessageSquare, X, Download } from "lucide-react";
+import { Loader2, Wand2, Eye, Mail, MessageSquare, X, Download, Printer } from "lucide-react";
 import { MysteryCharacter } from "@/interfaces/mystery";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,7 @@ interface MysteryPackageData {
   timeline?: string;
   hostingTips?: string;
   evidenceCards?: string;
+  evidenceCardImages?: { round2?: string; round3?: string; round4?: string } | null;
   relationshipMatrix?: string;
   detectiveScript?: string;
 }
@@ -46,6 +47,59 @@ interface MysteryPackageTabViewProps {
   isPaid?: boolean;
   onPackageFieldUpdate?: (fieldName: string, value: string) => Promise<void>;
   onCharacterFieldUpdate?: (characterId: string, fieldName: string, value: string) => Promise<void>;
+}
+
+function EvidenceCardImageGrid({ images, isMobile }: { images: { round2?: string; round3?: string; round4?: string }; isMobile: boolean }) {
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+
+  return (
+    <>
+      <div className={cn("grid gap-4 mb-6", isMobile ? "grid-cols-1" : "grid-cols-3")}>
+        {(['round2', 'round3', 'round4'] as const).map((round) => {
+          const url = images[round];
+          if (!url) return null;
+          const roundLabel = round === 'round2' ? 'Round 2' : round === 'round3' ? 'Round 3' : 'Round 4';
+          return (
+            <div
+              key={round}
+              className="rounded-lg overflow-hidden border border-border cursor-pointer hover:opacity-90 transition-opacity"
+              onClick={() => setLightboxUrl(url)}
+            >
+              <img
+                src={url}
+                alt={`Evidence - ${roundLabel}`}
+                className="w-full aspect-video object-cover"
+              />
+              <div className="px-3 py-2 text-xs text-muted-foreground font-medium">
+                Evidence — {roundLabel}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Lightbox */}
+      {lightboxUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-pointer"
+          onClick={() => setLightboxUrl(null)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white/70 hover:text-white z-50"
+            onClick={() => setLightboxUrl(null)}
+          >
+            <X className="h-8 w-8" />
+          </button>
+          <img
+            src={lightboxUrl}
+            alt="Evidence card"
+            className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+    </>
+  );
 }
 
 const MysteryPackageTabView = React.memo(({
@@ -432,17 +486,23 @@ const MysteryPackageTabView = React.memo(({
   }, [characters, extractCharacters]);
 
   const evidenceCards = useMemo(() => {
+    let content = "";
     if (packageData?.evidenceCards) {
-      return packageData.evidenceCards;
+      content = packageData.evidenceCards;
+    } else {
+      const clues = extractClues();
+      if (clues.length > 0) {
+        content = clues.map(clue => `## ${clue.title}\n\n${clue.content}`).join('\n\n---\n\n');
+      }
     }
-    
-    const clues = extractClues();
-    if (clues.length > 0) {
-      return clues.map(clue => `## ${clue.title}\n\n${clue.content}`).join('\n\n---\n\n');
+
+    // Strip visual description sections when images exist (they're redundant)
+    if (content && packageData?.evidenceCardImages) {
+      content = content.replace(/### VISUAL DESCRIPTION \(FOR IMAGE GENERATION\)\s*\n[\s\S]*?(?=\n## |\n### (?!VISUAL)|$)/gi, '');
     }
-    
-    return "";
-  }, [packageData?.evidenceCards, extractClues]);
+
+    return content;
+  }, [packageData?.evidenceCards, packageData?.evidenceCardImages, extractClues]);
 
   // Check if mystery is complete enough to share
   const canShareMystery = useMemo(() => {
@@ -811,13 +871,37 @@ const MysteryPackageTabView = React.memo(({
             isMobile && "text-sm"
           )}>
             {evidenceCards ? (
-              <EditableMultiSection
-                content={evidenceCards}
-                onSave={(val) => onPackageFieldUpdate?.('evidence_cards', val) ?? Promise.resolve()}
-                canEdit={!!onPackageFieldUpdate}
-                sectionLabel="Evidence Cards"
-                isMobile={isMobile}
-              />
+              <>
+                {/* Print button when images are available */}
+                {packageData?.evidenceCardImages && Object.keys(packageData.evidenceCardImages).length > 0 && (
+                  <div className="flex justify-end mb-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const printUrl = `/evidence-card-print?packageId=${packageId}`;
+                        window.open(printUrl, '_blank');
+                      }}
+                    >
+                      <Printer className="h-4 w-4 mr-2" />
+                      Print Evidence Cards
+                    </Button>
+                  </div>
+                )}
+
+                {/* Evidence card images with lightbox */}
+                {packageData?.evidenceCardImages && (
+                  <EvidenceCardImageGrid images={packageData.evidenceCardImages} isMobile={isMobile} />
+                )}
+
+                <EditableMultiSection
+                  content={evidenceCards}
+                  onSave={(val) => onPackageFieldUpdate?.('evidence_cards', val) ?? Promise.resolve()}
+                  canEdit={!!onPackageFieldUpdate}
+                  sectionLabel="Evidence Cards"
+                  isMobile={isMobile}
+                />
+              </>
             ) : isGenerating ? (
               <LoadingTabContent
                 message={t('mysteryPackage.loading.clues')}

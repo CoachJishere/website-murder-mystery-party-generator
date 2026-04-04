@@ -2,6 +2,24 @@
 
 ## 2026-04-04
 
+### Feature: AI-generated evidence card images
+- Integrated Replicate Flux 1.1 Pro API to auto-generate photorealistic evidence card images (16:9, webp)
+- Created `store-evidence-images` Supabase Edge Function to download from Replicate, upload to Supabase Storage, and update DB
+- Added `evidence-images` storage bucket and `evidence_card_images` JSONB column to mystery_packages
+- Improved Make.com blueprint prompt instructions for higher quality image generation prompts (photorealistic style anchors, composition terms, material specificity)
+- Added `imagePrompts` as separate JSON output field in Claude prompt for clean extraction
+- Added pointForm carve-out so evidence card prompts are always full detail regardless of script type
+- Evidence tab shows 3 images in a grid with click-to-enlarge lightbox
+- "Print Evidence Cards" button opens landscape A4 print-ready view with real images
+- Visual description sections auto-hidden from evidence text when images exist
+- Print parser handles both detective-style and improv-style evidence card formats
+
+### Feature: German (DE) cross-link insertions for rows 216–422
+- Added `lang_insertions.de` to 207 slugs in `cross_link_map.json` (rows 216–422 of blog_map.xlsx)
+- Each slug received exactly 5 DE insertions matching its EN insertion targets
+- All match_text values are verbatim unique substrings of the German content, not inside headings or existing links
+- Total DE cross-link coverage now 420/420 slugs
+
 ### UX: Improve initial chat message grammar
 - Fixed awkward message when starting from hero input (e.g. "Cypherpunk nightclub This is for 6 players...")
 - Now reads naturally: "I want to create a murder mystery with a Cypherpunk nightclub theme for 6 players with full scripts."

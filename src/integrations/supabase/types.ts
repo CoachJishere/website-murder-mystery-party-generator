@@ -282,6 +282,7 @@ export type Database = {
           created_at: string | null
           detective_script: string | null
           evidence_cards: Json | null
+          evidence_card_images: Json | null
           game_overview: string | null
           generation_completed_at: string | null
           generation_started_at: string | null
@@ -303,6 +304,7 @@ export type Database = {
           created_at?: string | null
           detective_script?: string | null
           evidence_cards?: Json | null
+          evidence_card_images?: Json | null
           game_overview?: string | null
           generation_completed_at?: string | null
           generation_started_at?: string | null
@@ -324,6 +326,7 @@ export type Database = {
           created_at?: string | null
           detective_script?: string | null
           evidence_cards?: Json | null
+          evidence_card_images?: Json | null
           game_overview?: string | null
           generation_completed_at?: string | null
           generation_started_at?: string | null
