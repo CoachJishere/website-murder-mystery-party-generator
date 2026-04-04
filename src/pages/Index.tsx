@@ -338,16 +338,12 @@ function FeaturesStaggered() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="md:w-1/2"
               >
-                <div
-                  className="rounded-2xl overflow-hidden w-full h-48 sm:h-64 md:h-80"
-                  style={{ backgroundColor: CHARCOAL, border: `1px solid ${CREAM_10}` }}
-                >
-                  <img
-                    src={feature.image}
-                    alt={feature.title}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+                <img
+                  src={feature.image}
+                  alt={feature.title}
+                  className="rounded-2xl w-full h-48 sm:h-64 md:h-80 object-cover"
+                  style={{ border: `1px solid ${CREAM_10}` }}
+                />
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, x: i % 2 === 1 ? -30 : 30 }}
