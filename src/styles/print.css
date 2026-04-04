@@ -64,9 +64,46 @@
   /* Reset background colors */
   body,
   main,
-  .min-h-screen {
+  .min-h-screen,
+  div,
+  section,
+  [class*="bg-"] {
     background: white !important;
     color: black !important;
+  }
+
+  /* Force ALL text to black for print/PDF */
+  *,
+  *::before,
+  *::after {
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+  }
+
+  /* Mystery content — force black text on white */
+  .mystery-content,
+  .mystery-content * {
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+    background: transparent !important;
+  }
+
+  .mystery-content h1,
+  .mystery-content h2,
+  .mystery-content h3,
+  .mystery-content h4,
+  .mystery-content h5,
+  .mystery-content h6 {
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+  }
+
+  /* Cards and containers */
+  [class*="Card"],
+  [class*="card"] {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
   }
 
   /* Ensure prose content prints well */
@@ -80,16 +117,19 @@
   .prose h1 {
     font-size: 20pt !important;
     margin-top: 0 !important;
+    color: black !important;
   }
 
   .prose h2 {
     font-size: 16pt !important;
     page-break-after: avoid;
+    color: black !important;
   }
 
   .prose h3 {
     font-size: 14pt !important;
     page-break-after: avoid;
+    color: black !important;
   }
 
   /* Each character starts on a new page */
