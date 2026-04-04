@@ -485,73 +485,90 @@ const MysteryPackageTabView = React.memo(({
         {/* Action buttons */}
         {canShareMystery && conversationId && (
           <div className={cn(
-            "flex gap-2",
+            "flex items-center gap-3",
             isMobile && "flex-col w-full"
           )}>
-            <Button
+            <button
               onClick={() => setShowGuestManager(true)}
               className={cn(
-                "gap-2 bg-primary hover:bg-primary/90 text-primary-foreground",
+                "btn-on-dark gap-2",
                 isMobile && "w-full"
               )}
             >
               <Mail className="h-4 w-4" />
               {t('mysteryPackage.shareWithGuests')}
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={() => window.print()}
-              variant="outline"
               className={cn(
-                "gap-2 print:hidden",
+                "gap-2 print:hidden flex items-center justify-center transition-colors",
                 isMobile && "w-full"
               )}
+              style={{
+                padding: '12px 32px',
+                borderRadius: '4px',
+                border: '1.5px solid rgba(245,240,232,0.5)',
+                backgroundColor: 'transparent',
+                color: 'var(--color-cream)',
+                fontFamily: 'var(--font-body)',
+                fontWeight: 600,
+                fontSize: '15px',
+                cursor: 'pointer',
+              }}
               title={t('mysteryPackage.export.printTip')}
             >
               <Download className="h-4 w-4" />
               {t('mysteryPackage.export.saveAsPdf')}
-            </Button>
+            </button>
           </div>
         )}
       </div>
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className={cn(
-          "w-full mb-4 bg-primary p-1 overflow-hidden border-0",
-          isMobile ? "grid grid-cols-2 gap-1 h-auto" : "grid grid-cols-2 md:grid-cols-4"
-        )}>
-          <TabsTrigger 
-            value="host-guide" 
+        <TabsList
+          className={cn(
+            "w-full mb-4 p-1 overflow-hidden rounded-lg",
+            isMobile ? "grid grid-cols-2 gap-1 h-auto" : "grid grid-cols-2 md:grid-cols-4"
+          )}
+          style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid var(--color-cream-border)' }}
+        >
+          <TabsTrigger
+            value="host-guide"
             className={cn(
-              "whitespace-nowrap bg-primary text-primary-foreground data-[state=active]:bg-primary-hover data-[state=active]:text-primary-foreground hover:bg-primary/90",
+              "whitespace-nowrap rounded-md transition-all",
               isMobile && "text-xs px-2 py-2 h-auto"
             )}
+            style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 500 }}
           >
             {t(isMobile ? 'mysteryPackage.mobileTabs.host' : 'mysteryPackage.tabs.hostGuide')}
           </TabsTrigger>
-          <TabsTrigger 
-            value="characters" 
+          <TabsTrigger
+            value="characters"
             className={cn(
-              "whitespace-nowrap bg-primary text-primary-foreground data-[state=active]:bg-primary-hover data-[state=active]:text-primary-foreground hover:bg-primary/90",
+              "whitespace-nowrap rounded-md transition-all",
               isMobile && "text-xs px-2 py-2 h-auto"
             )}
+            style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 500 }}
           >
             {t(isMobile ? 'mysteryPackage.mobileTabs.characters' : 'mysteryPackage.tabs.characters', { count: charactersList?.length || 0 })}
           </TabsTrigger>
-          <TabsTrigger 
-            value="clues" 
+          <TabsTrigger
+            value="clues"
             className={cn(
-              "whitespace-nowrap bg-primary text-primary-foreground data-[state=active]:bg-primary-hover data-[state=active]:text-primary-foreground hover:bg-primary/90",
+              "whitespace-nowrap rounded-md transition-all",
               isMobile && "text-xs px-2 py-2 h-auto"
             )}
+            style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 500 }}
           >
             {t('mysteryPackage.tabs.clues')}
           </TabsTrigger>
-          <TabsTrigger 
-            value="inspector" 
+          <TabsTrigger
+            value="inspector"
             className={cn(
-              "whitespace-nowrap bg-primary text-primary-foreground data-[state=active]:bg-primary-hover data-[state=active]:text-primary-foreground hover:bg-primary/90",
+              "whitespace-nowrap rounded-md transition-all",
               isMobile && "text-xs px-2 py-2 h-auto"
             )}
+            style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 500 }}
           >
             {t(isMobile ? 'mysteryPackage.mobileTabs.inspector' : 'mysteryPackage.tabs.inspector')}
           </TabsTrigger>
