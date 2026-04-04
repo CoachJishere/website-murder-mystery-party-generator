@@ -42,6 +42,7 @@ Blog Database - Master.csv
 # These are one-time-use files from blog translation sessions
 *.mjs
 !scripts/sync-blog-map.mjs
+!scripts/backfill-crosslinks.mjs
 *.sql
 *-REPORT*.md
 *-STATUS*.md

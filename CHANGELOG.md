@@ -2,6 +2,12 @@
 
 ## 2026-04-04
 
+### Feature: Backfill EN cross-links for published posts
+- Added `scripts/backfill-crosslinks.mjs` — one-time script to apply cross-links to already-published EN posts in Supabase
+- Added `.github/workflows/backfill-crosslinks.yml` — manual-trigger GitHub Action to run the backfill
+- Script fetches all published EN posts, applies match_text → replacement from cross_link_map.json, skips already-linked posts
+- Added .gitignore exception for the new script
+
 ### Feature: EN cross-link application in daily publish action
 - Updated `publish-daily-blog.yml` to checkout the repo and read `cross_link_map.json`
 - Before publishing, the action now fetches EN content, applies up to 5 cross-link insertions (match_text → replacement), and patches the updated content back to Supabase
