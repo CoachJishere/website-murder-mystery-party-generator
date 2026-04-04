@@ -123,6 +123,11 @@ const MysteryPackageTabView = React.memo(({
     }
   }, [conversationId]);
 
+  // Strip the first H1/H2 heading from content since the page header already shows the title
+  const stripFirstHeading = useCallback((content: string) => {
+    return content.replace(/^#{1,2}\s+.+\n*/m, '').trim();
+  }, []);
+
   // Handle tab change with analytics tracking
   const handleTabChange = useCallback((tab: string) => {
     setActiveTab(tab);
@@ -575,7 +580,7 @@ const MysteryPackageTabView = React.memo(({
               <div className="space-y-6">
                 {packageData.gameOverview && (
                   <EditableSection
-                    content={packageData.gameOverview}
+                    content={stripFirstHeading(packageData.gameOverview)}
                     onSave={(val) => onPackageFieldUpdate?.('game_overview', val) ?? Promise.resolve()}
                     canEdit={!!onPackageFieldUpdate}
                     sectionLabel="Game Overview"
