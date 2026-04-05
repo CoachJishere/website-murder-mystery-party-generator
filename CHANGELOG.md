@@ -2,6 +2,23 @@
 
 ## 2026-04-05
 
+### Fix: Complete dark theme color audit across all pages
+- Purged all remaining old burgundy #8B1538 from BlogPost, BlogIndex, Feedback, AdminDashboard, Showcase, NotFound, EvidenceCard pages, MysteryRoomHero, EmailVerificationBanner
+- Feedback nudge card: charcoal bg with cream text (was cream/burgundy)
+- Print Evidence Cards button: red bg instead of invisible outline
+- Chat typing indicator dots: full #C81400 red, larger (was maroon at 60% opacity)
+- Blog pages: black backgrounds, semantic text colors, dark CTA sections
+- Form inputs: charcoal bg with cream border (excludes hero chatbox)
+- Chat input bar: charcoal container, red send button
+- Alert/info boxes: charcoal bg with subtle borders globally
+- Zero instances of old theme colors (#8B1538, #6B0F28, #F7F3E9, #FEFCF8) remain in codebase
+
+### Improvement: Smarter clarifying questions in initial chat
+- Rewrote the pre-concept system prompt in the mystery-ai Edge Function to reliably ask clarifying questions for vague themes
+- The AI now evaluates creative specificity rather than word count: "restaurants" triggers a question, "1920s speakeasy" does not
+- Includes concrete examples of vague vs specific themes to guide the AI's judgment
+- When asking, the AI suggests 2-3 concrete directions to spark imagination rather than putting the burden on the user
+
 ### Feature: Blog link added to footer
 - Added "Blog" link to Quick Links section of the Footer component
 - Added `footer.links.blog` translation key to all 13 locale files
