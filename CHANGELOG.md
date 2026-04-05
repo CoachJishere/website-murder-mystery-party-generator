@@ -2,6 +2,15 @@
 
 ## 2026-04-05
 
+### Improvement: Expand pillar post outbound links in cross_link_map.json
+- Expanded all 5 pillar blog posts from 5 to 15 outbound links each in `cross_link_map.json`
+- Pillars: `murder-mystery-party-planning-checklist`, `ai-murder-mystery-generator-complete-guide`, `first-time-hosting-murder-mystery-complete-guide`, `murder-mystery-party-for-adults-guide`, `murder-mystery-party-ideas`
+- For each pillar: selected 10 new thematically relevant target slugs, prioritising bidirectional targets that already link back
+- Found verbatim match phrases (count=1) in EN and all 12 non-EN language versions (ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN)
+- All 5 pillars verified at exactly 15 entries in `links_to`, `insertions`, and all 12 `lang_insertions` arrays
+
+## 2026-04-05
+
 ### Fix: Remove scroll flicker on logged-in homepage
 - Disabled parallax/fade animations on the hero for authenticated users since there's no content below to scroll to
 - Added `overflow-hidden` to the page container for authenticated users to prevent any scroll
@@ -29,6 +38,12 @@
 - The AI now evaluates creative specificity rather than word count: "restaurants" triggers a question, "1920s speakeasy" does not
 - Includes concrete examples of vague vs specific themes to guide the AI's judgment
 - When asking, the AI suggests 2-3 concrete directions to spark imagination rather than putting the burden on the user
+
+### Improvement: Expanded pillar page outbound links from 5 to 15
+- All 5 pillar pages now link to 15 cluster posts each (up from 5), across all 13 languages
+- Completes the bidirectional hub-and-spoke architecture recommended by the SEO/GEO playbook
+- Pillar pages: murder-mystery-party-ideas, adults-guide, first-time-hosting, ai-generator, planning-checklist
+- Total pillar outbound links: 75 (5 × 15) up from 25 (5 × 5)
 
 ### Feature: Blog link added to footer
 - Added "Blog" link to Quick Links section of the Footer component
