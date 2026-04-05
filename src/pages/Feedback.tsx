@@ -155,15 +155,15 @@ const Feedback: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="h-8 w-8 animate-spin text-[#8B1538]" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-[#C81400]" />
       </div>
     );
   }
 
   if (unsubscribed) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="max-w-md w-full">
           <CardContent className="pt-6 text-center">
             <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
@@ -179,7 +179,7 @@ const Feedback: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="max-w-md w-full">
           <CardContent className="pt-6 text-center">
             <p className="text-red-600">{error}</p>
@@ -191,7 +191,7 @@ const Feedback: React.FC = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="max-w-md w-full">
           <CardContent className="pt-6 text-center">
             <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
@@ -201,7 +201,7 @@ const Feedback: React.FC = () => {
             </p>
             <Button
               onClick={() => navigate("/")}
-              className="bg-[#8B1538] hover:bg-[#6B0F28] text-white"
+              className="bg-[#C81400] hover:bg-[#A01000] text-white"
             >
               Ready for Another Mystery?
             </Button>
@@ -212,12 +212,12 @@ const Feedback: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div
           className="text-center py-8 px-6 rounded-t-lg"
-          style={{ background: "linear-gradient(135deg, #8B1538 0%, #6B0F28 100%)" }}
+          style={{ background: "linear-gradient(135deg, #C81400 0%, #A01000 100%)" }}
         >
           <h1 className="text-2xl font-bold text-white">How Did Your Mystery Go?</h1>
           <p className="text-white/80 mt-2">{mysteryTitle}</p>
@@ -272,8 +272,8 @@ const Feedback: React.FC = () => {
                       onClick={() => setDidHostParty(option.value)}
                       className={`px-4 py-2 rounded-lg border text-sm transition-colors ${
                         didHostParty === option.value
-                          ? "bg-[#8B1538] text-white border-[#8B1538]"
-                          : "bg-white text-gray-700 border-gray-300 hover:border-[#8B1538]"
+                          ? "bg-[#C81400] text-white border-[#C81400]"
+                          : "bg-white text-gray-700 border-gray-300 hover:border-[#C81400]"
                       }`}
                     >
                       {option.label}
@@ -329,7 +329,7 @@ const Feedback: React.FC = () => {
                       onClick={() => setNpsScore(n)}
                       className={`w-9 h-9 rounded text-sm font-medium transition-colors ${
                         npsScore === n
-                          ? "bg-[#8B1538] text-white"
+                          ? "bg-[#C81400] text-white"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                     >
@@ -359,14 +359,14 @@ const Feedback: React.FC = () => {
               </div>
 
               {/* Public review opt-in */}
-              <div className="bg-[#F7F3E9] border-l-4 border-[#8B1538] p-4 rounded-r-lg">
+              <div className="bg-[#111111] border-l-4 border-[#C81400] p-4 rounded-r-lg">
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
                     id="isPublic"
                     checked={isPublic}
                     onChange={(e) => setIsPublic(e.target.checked)}
-                    className="mt-1 h-4 w-4 rounded border-gray-300 text-[#8B1538] focus:ring-[#8B1538]"
+                    className="mt-1 h-4 w-4 rounded border-gray-300 text-[#C81400] focus:ring-[#C81400]"
                   />
                   <div>
                     <Label htmlFor="isPublic" className="text-sm font-medium cursor-pointer">
@@ -394,7 +394,7 @@ const Feedback: React.FC = () => {
               <Button
                 type="submit"
                 disabled={starRating === 0 || submitting}
-                className="w-full bg-[#8B1538] hover:bg-[#6B0F28] text-white py-3 text-base"
+                className="w-full bg-[#C81400] hover:bg-[#A01000] text-white py-3 text-base"
               >
                 {submitting ? (
                   <>

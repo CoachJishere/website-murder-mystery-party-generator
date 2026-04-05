@@ -969,10 +969,10 @@ const MysteryPackageTabView = React.memo(({
       )}
 
       {isPaid && conversationId && showFeedbackNudge && !feedbackAlreadyGiven && (
-        <Card className={cn(
-          "mt-6 border-[#8B1538]/20 bg-[#F7F3E9]",
-          isMobile && "mt-4 mx-2"
-        )}>
+        <Card
+          className={cn("mt-6", isMobile && "mt-4 mx-2")}
+          style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid rgba(245,240,232,0.15)' }}
+        >
           <CardContent className={cn(
             "flex items-center justify-between py-4",
             isMobile && "flex-col space-y-3 px-4 py-3"
@@ -981,12 +981,12 @@ const MysteryPackageTabView = React.memo(({
               "flex items-center gap-3",
               isMobile && "text-center flex-col"
             )}>
-              <MessageSquare className="h-5 w-5 text-[#8B1538] shrink-0" />
+              <MessageSquare className="h-5 w-5 shrink-0" style={{ color: 'var(--color-red)' }} />
               <div>
-                <p className={cn("font-medium text-foreground", isMobile && "text-sm")}>
+                <p className={cn("font-medium", isMobile && "text-sm")} style={{ color: 'var(--color-cream)' }}>
                   How was your mystery party?
                 </p>
-                <p className={cn("text-sm text-muted-foreground", isMobile && "text-xs")}>
+                <p className={cn("text-sm", isMobile && "text-xs")} style={{ color: 'var(--color-cream-muted)' }}>
                   Your feedback helps us improve!
                 </p>
               </div>
@@ -998,14 +998,12 @@ const MysteryPackageTabView = React.memo(({
               <Link
                 to={`/feedback/${conversationId}`}
                 onClick={handleFeedbackClick}
-                className={cn(isMobile && "flex-1")}
+                className={cn("no-underline", isMobile && "flex-1")}
               >
                 <Button
                   size="sm"
-                  className={cn(
-                    "bg-[#8B1538] hover:bg-[#6B0F28] text-white",
-                    isMobile && "w-full"
-                  )}
+                  className={cn(isMobile && "w-full")}
+                  style={{ backgroundColor: 'var(--color-red)', color: 'var(--color-cream)' }}
                 >
                   Share Feedback
                 </Button>
@@ -1015,6 +1013,7 @@ const MysteryPackageTabView = React.memo(({
                 size="sm"
                 onClick={handleDismissFeedback}
                 className="h-8 w-8 p-0"
+                style={{ color: 'var(--color-cream)' }}
               >
                 <X className="h-4 w-4" />
               </Button>
