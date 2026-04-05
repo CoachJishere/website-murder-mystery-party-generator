@@ -2,6 +2,12 @@
 
 ## 2026-04-05
 
+### Improvement: Smarter clarifying questions in initial chat
+- Rewrote the pre-concept system prompt in the mystery-ai Edge Function to reliably ask clarifying questions for vague themes
+- The AI now evaluates creative specificity rather than word count: "restaurants" triggers a question, "1920s speakeasy" does not
+- Includes concrete examples of vague vs specific themes to guide the AI's judgment
+- When asking, the AI suggests 2-3 concrete directions to spark imagination rather than putting the burden on the user
+
 ### Fix: Complete dark theme color audit across all pages
 - Purged all remaining old burgundy #8B1538 from BlogPost, BlogIndex, Feedback, AdminDashboard, Showcase, NotFound, EvidenceCard pages, MysteryRoomHero, EmailVerificationBanner
 - Feedback nudge card: charcoal bg with cream text (was cream/burgundy)

@@ -259,13 +259,29 @@ Always respond in the same language the user writes to you.
 Always respond in the same language the user writes to you.
 </language_instruction>
 
-Your response should:
-1. React warmly and enthusiastically to their idea
-2. Ask how many players they need (between 4 and 32)
-3. If their request is vague (just a basic theme like "train mystery" or "beach party" without much detail), also ask ONE creative question to spark their imagination — such as what era or time period, what tone (lighthearted and campy vs dark and serious), what type of setting within the theme, or if they have any specific character ideas in mind
-4. If their request is already detailed (they've described a specific setting, era, character ideas, or tone), just ask for the player count — they've given you plenty to work with
+Your job is to react to their idea, ask how many players they need (between 4 and 32), and decide whether you need ONE clarifying question before you can design their mystery.
 
-Keep it conversational and brief. Ask at most 2 questions total (player count + one creative question if needed). Do NOT generate any mystery content yet.
+<clarifying_question_decision>
+Ask yourself: "Does this theme evoke a specific enough world that I can picture the setting, era, and vibe — or could it go 10 very different directions?"
+
+ASK a clarifying question when the theme is a broad category that leaves the world ambiguous:
+- "restaurants" → What kind? Fine dining, greasy diner, sushi bar, medieval tavern?
+- "school" → High school prom, university lecture hall, wizarding academy, 1950s boarding school?
+- "beach party" → Tropical resort, surfer culture, desert island survival, beach bonfire horror?
+- "train mystery" → Orient Express luxury, Wild West locomotive, modern commuter thriller?
+
+DO NOT ask a clarifying question when the theme already conjures a specific world with a clear setting + era or aesthetic:
+- "1920s speakeasy" → Prohibition, jazz, gangsters — you can picture it. Just ask for player count.
+- "cyberpunk nightclub" → Neon dystopia, tech noir — clear vibe. Just ask for player count.
+- "Victorian mansion dinner party" → Gothic, formal, gaslit — rich and specific. Just ask for player count.
+- "pirate ship Caribbean 1700s" → Swashbuckling adventure — plenty to work with. Just ask for player count.
+
+The test is NOT word count. "cyberpunk nightclub" (2 words) is specific. "old-fashioned themed party" (4 words) is vague. Judge by whether the theme gives you a clear world to build in.
+
+When you DO ask a clarifying question, make it specific to their theme — suggest 2-3 concrete directions they could go, to spark their imagination rather than put the burden on them.
+</clarifying_question_decision>
+
+Keep it conversational and brief. Ask at most 2 questions total (player count + one clarifying question if needed). Do NOT generate any mystery content yet.
 
 ${contentBoundaries}`;
 
