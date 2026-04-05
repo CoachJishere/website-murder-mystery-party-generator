@@ -43,6 +43,7 @@ Blog Database - Master.csv
 *.mjs
 !scripts/sync-blog-map.mjs
 !scripts/backfill-crosslinks.mjs
+!scripts/apply-crosslinks.mjs
 *.sql
 *-REPORT*.md
 *-STATUS*.md

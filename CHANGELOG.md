@@ -1,6 +1,67 @@
 # Changelog
 
+## 2026-04-05
+
+### Feature: Cross-link insertions complete for all 13 languages
+- All 420 slugs × 12 non-EN languages now have 5 cross-link insertions each (25,200 total non-EN insertions)
+- Combined with EN insertions: 27,300 total cross-links across all 13 languages
+- Languages: EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN
+- Each insertion has verbatim match_text unique to that language's content, with correct `/{lang}/blog/{slug}` URL patterns
+- Verified: zero nulls, zero broken links, zero empty targets, 420/420 coverage per language
+
+### Fix: 515 broken NL cross-link insertions across 103 slugs
+- Fixed all NL insertions where `target_slug` was empty and replacement URL ended in `/nl/blog/)` with no slug
+- For each broken entry, extracted the correct target slug from the corresponding EN insertion's replacement URL (by index position)
+- Reconstructed proper replacement markdown links using `/nl/blog/{target-slug}` format
+- All 515 existing Dutch match_text phrases (already valid verbatim substrings of NL content, 3–8 words) were preserved; only target_slug and replacement URL were corrected
+- Saved progress after every 20 slugs (103 total slugs fixed, 5 insertions each)
+
+### Feature: ES cross-link insertions for 1920s-speakeasy-murder-mystery-party-guide
+- Added `lang_insertions.es` with 5 Spanish insertions to the speakeasy slug
+- Targets: murder-mystery-party-ideas, ancient-egypt-murder-mystery-party-guide, 1950s-diner-murder-mystery-party-guide, 1960s-mod-murder-mystery-party-guide, 1970s-disco-murder-mystery-party-guide
+- All match_text phrases are verbatim unique substrings of the ES content, not in headings or existing links, 3–8 words
+- All existing lang_insertions keys preserved (fr, de, it, da, fi, nl, sv, pt, ko, ja, zh-cn)
+
+### Feature: IT cross-link insertions for cold-war-spy-murder-mystery-party-guide
+- Added `lang_insertions.it` with 5 Italian insertions to the cold-war-spy slug
+- Targets: murder-mystery-party-ideas, bollywood-murder-mystery-party-guide, comedy-murder-mystery-party-guide, downton-abbey-murder-mystery-party-guide, horror-murder-mystery-party-guide
+- All match_text phrases are verbatim unique substrings of the IT content, not in headings or existing links, 3–8 words
+- All existing lang_insertions keys preserved (fr, de, da, fi, nl, sv, pt, ko, ja, zh-cn, es)
+
+### Feature: Danish (DA) cross-link insertions for rows 2–215
+- Added `lang_insertions.da` to 213 slugs in `cross_link_map.json` (rows 2–215 of blog_map.xlsx, skipping R122 duplicate)
+- Each slug received exactly 5 DA insertions matching its EN insertion targets (target_slug extracted from replacement URL for entries lacking explicit target_slug field)
+- All match_text values are verbatim unique substrings of the Danish content, not inside headings or existing links
+- Phrases are 3–8 words (up to 12 where needed), drawn from body paragraphs, with no reuse across the 5 insertions per post
+- Semantically keyword-matched to each target post's topic where possible; contextual fallback for mid-content phrases otherwise
+- All existing fr, de, and it keys in lang_insertions were preserved — only the da key was added/merged
+
+### Feature: AI-generated evidence card images (Make.com integration tested)
+- Verified end-to-end Make.com pipeline: Webhook → 3x Replicate Flux 1.1 Pro → Supabase Edge Function → Storage + DB
+- Fixed edge function to merge image URLs on partial updates instead of overwriting
+- Added lightbox to evidence card images (click to enlarge, X to close)
+- Fixed print page parser to handle both detective-style and improv-style evidence card formats
+- Added "Photorealistic" prefix to image prompt instructions for better Flux output quality
+- Added pointForm carve-out in Make.com blueprint so evidence prompts are always full detail
+- Stripped visual description text from evidence cards display when real images exist
+- Cost: ~$0.12 per mystery (3 images × $0.04 each)
+
+### Feature: Italian (IT) cross-link insertions for rows 216–422
+- Added `lang_insertions.it` to 206 slugs in `cross_link_map.json` (rows 216–422 of blog_map.xlsx that had IT content)
+- Each slug received exactly 5 IT insertions matching its EN insertion targets
+- All 1,030 match_text values are verbatim unique substrings of the Italian content, not inside headings or existing links
+- Phrases are 3–8 words, drawn from different sentences within each post, with no same-sentence reuse across the 5 insertions
+- Semantically relevant to each target post's topic; keyword-matched where possible, contextual fallback otherwise
+- Existing EN, FR, DE data preserved unchanged
+
 ## 2026-04-04
+
+### Feature: Italian (IT) cross-link insertions for rows 2–215
+- Added `lang_insertions.it` to 213 slugs in `cross_link_map.json` (rows 2–215 of blog_map.xlsx, skipping R122 known duplicate)
+- Each slug received exactly 5 IT insertions matching its EN insertion targets
+- All 1,065 match_text values are verbatim unique substrings of the Italian content, not inside headings or existing links
+- Phrases are 3–8 words, semantically relevant to target post topics, and drawn from diverse locations within each post
+- Existing EN, FR, and DE data preserved unchanged
 
 ### Feature: AI-generated evidence card images
 - Integrated Replicate Flux 1.1 Pro API to auto-generate photorealistic evidence card images (16:9, webp)

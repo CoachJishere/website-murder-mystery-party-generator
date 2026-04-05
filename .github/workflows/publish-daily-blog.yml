@@ -10,8 +10,11 @@ jobs:
   publish-post:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo (for cross_link_map.json)
+      - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install @supabase/supabase-js
 
       - name: Publish oldest draft blog post (all languages)
         env:
@@ -37,73 +40,12 @@ jobs:
           echo "Publishing slug: $SLUG"
           echo "Title: $TITLE"
 
-          # 2. Apply EN cross-links from cross_link_map.json
-          LINKS_APPLIED=0
+          # 2. Apply cross-links for all 13 languages
           if [ -f "cross_link_map.json" ]; then
-            # Check if this slug has insertions in the map
-            HAS_INSERTIONS=$(jq -r --arg s "$SLUG" '.[$s].insertions // empty' cross_link_map.json)
-
-            if [ -n "$HAS_INSERTIONS" ] && [ "$HAS_INSERTIONS" != "null" ]; then
-              echo "Applying cross-links for EN content..."
-
-              # Fetch current EN content
-              EN_CONTENT=$(curl -s \
-                "${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.${SLUG}&language=eq.en&select=content" \
-                -H "apikey: ${SUPABASE_SERVICE_KEY}" \
-                -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
-                | jq -r '.[0].content // empty')
-
-              if [ -n "$EN_CONTENT" ]; then
-                # Extract insertions and apply each one
-                INSERTION_COUNT=$(jq -r --arg s "$SLUG" '.[$s].insertions | length' cross_link_map.json)
-
-                for i in $(seq 0 $((INSERTION_COUNT - 1))); do
-                  MATCH=$(jq -r --arg s "$SLUG" --argjson i "$i" '.[$s].insertions[$i].match_text' cross_link_map.json)
-                  REPLACE=$(jq -r --arg s "$SLUG" --argjson i "$i" '.[$s].insertions[$i].replacement' cross_link_map.json)
-
-                  if [ -n "$MATCH" ] && [ "$MATCH" != "null" ]; then
-                    # Use node for reliable string replacement (handles special chars)
-                    EN_CONTENT=$(node -e "
-                      const content = process.argv[1];
-                      const match = process.argv[2];
-                      const replace = process.argv[3];
-                      if (content.includes(match)) {
-                        process.stdout.write(content.replace(match, replace));
-                      } else {
-                        process.stderr.write('WARNING: match_text not found: ' + match.substring(0, 60) + '...\n');
-                        process.stdout.write(content);
-                      }
-                    " "$EN_CONTENT" "$MATCH" "$REPLACE")
-                    LINKS_APPLIED=$((LINKS_APPLIED + 1))
-                  fi
-                done
-
-                # Update EN content with cross-links applied
-                if [ "$LINKS_APPLIED" -gt 0 ]; then
-                  # Write content to temp file to avoid shell escaping issues
-                  echo "$EN_CONTENT" > /tmp/en_content.txt
-                  PAYLOAD=$(jq -n --rawfile content /tmp/en_content.txt '{content: $content}')
-
-                  LINK_RESULT=$(curl -s -o /dev/null -w "%{http_code}" \
-                    "${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.${SLUG}&language=eq.en" \
-                    -X PATCH \
-                    -H "apikey: ${SUPABASE_SERVICE_KEY}" \
-                    -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
-                    -H "Content-Type: application/json" \
-                    -H "Prefer: return=minimal" \
-                    -d "$PAYLOAD")
-
-                  if [ "$LINK_RESULT" = "204" ]; then
-                    echo "Applied $LINKS_APPLIED cross-links to EN content"
-                  else
-                    echo "WARNING: Failed to update EN content with cross-links (HTTP $LINK_RESULT). Publishing without links."
-                  fi
-                  rm -f /tmp/en_content.txt
-                fi
-              fi
-            else
-              echo "No cross-links found for slug: $SLUG"
-            fi
+            echo "Applying cross-links..."
+            for LANG in en es fr de it da fi nl sv pt ko ja zh-cn; do
+              node scripts/apply-crosslinks.mjs "$SLUG" "$LANG" || echo "  WARNING: cross-link application failed for $LANG (continuing)"
+            done
           else
             echo "cross_link_map.json not found, skipping cross-links"
           fi
@@ -119,7 +61,7 @@ jobs:
             -d "{\"status\": \"published\", \"published_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}")
 
           if [ "$RESULT" = "204" ]; then
-            echo "Successfully published '$TITLE' in all languages ($LINKS_APPLIED EN cross-links applied)"
+            echo "Successfully published '$TITLE' in all languages"
           else
             echo "Failed to publish. HTTP status: $RESULT"
             exit 1
