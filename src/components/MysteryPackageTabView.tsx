@@ -876,12 +876,12 @@ const MysteryPackageTabView = React.memo(({
                 {packageData?.evidenceCardImages && Object.keys(packageData.evidenceCardImages).length > 0 && (
                   <div className="flex justify-end mb-4">
                     <Button
-                      variant="outline"
                       size="sm"
                       onClick={() => {
                         const printUrl = `/evidence-card-print?packageId=${packageId}`;
                         window.open(printUrl, '_blank');
                       }}
+                      style={{ backgroundColor: 'var(--color-red)', color: 'var(--color-cream)' }}
                     >
                       <Printer className="h-4 w-4 mr-2" />
                       Print Evidence Cards
