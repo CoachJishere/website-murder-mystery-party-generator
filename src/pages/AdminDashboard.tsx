@@ -308,7 +308,7 @@ const AdminDashboard: React.FC = () => {
   })();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
+    <div className="min-h-screen bg-background p-4 sm:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -322,7 +322,7 @@ const AdminDashboard: React.FC = () => {
                 type="checkbox"
                 checked={excludeTest}
                 onChange={(e) => setExcludeTest(e.target.checked)}
-                className="rounded border-gray-300"
+                className="rounded border-border"
               />
               Exclude test accounts
             </label>
@@ -435,7 +435,7 @@ const AdminDashboard: React.FC = () => {
                           </span>
                         </td>
                         <td className="p-3">
-                          <div className="w-full bg-gray-100 rounded-full h-2">
+                          <div className="w-full bg-muted rounded-full h-2">
                             <div
                               className={cn(
                                 "h-2 rounded-full",
@@ -610,7 +610,7 @@ const AdminDashboard: React.FC = () => {
                         <td className="p-3 truncate max-w-[250px]">
                           {c.title || c.theme || "Untitled"}
                           {c.is_test && (
-                            <span className="ml-2 text-xs bg-gray-200 px-1.5 py-0.5 rounded">test</span>
+                            <span className="ml-2 text-xs bg-muted/80 px-1.5 py-0.5 rounded">test</span>
                           )}
                         </td>
                         <td className="p-3 text-center">{c.player_count || "—"}</td>
@@ -620,7 +620,7 @@ const AdminDashboard: React.FC = () => {
                               Paid
                             </span>
                           ) : (
-                            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                            <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
                               Draft
                             </span>
                           )}

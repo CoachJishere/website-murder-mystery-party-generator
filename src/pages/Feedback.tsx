@@ -168,7 +168,7 @@ const Feedback: React.FC = () => {
           <CardContent className="pt-6 text-center">
             <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
             <h2 className="text-xl font-semibold mb-2">Unsubscribed</h2>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               You've been unsubscribed from follow-up emails. We won't send you any more.
             </p>
           </CardContent>
@@ -196,7 +196,7 @@ const Feedback: React.FC = () => {
           <CardContent className="pt-6 text-center">
             <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
             <h2 className="text-xl font-semibold mb-2">Thank You!</h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               Your feedback for <strong>{mysteryTitle}</strong> has been recorded. We really appreciate it!
             </p>
             <Button
@@ -249,7 +249,7 @@ const Feedback: React.FC = () => {
                         className={`h-8 w-8 ${
                           n <= (hoveredStar || starRating)
                             ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
+                            : "text-muted-foreground/50"
                         }`}
                       />
                     </button>
@@ -273,7 +273,7 @@ const Feedback: React.FC = () => {
                       className={`px-4 py-2 rounded-lg border text-sm transition-colors ${
                         didHostParty === option.value
                           ? "bg-[#C81400] text-white border-[#C81400]"
-                          : "bg-white text-gray-700 border-gray-300 hover:border-[#C81400]"
+                          : "bg-muted text-foreground border-border hover:border-primary"
                       }`}
                     >
                       {option.label}
@@ -330,14 +330,14 @@ const Feedback: React.FC = () => {
                       className={`w-9 h-9 rounded text-sm font-medium transition-colors ${
                         npsScore === n
                           ? "bg-[#C81400] text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          : "bg-muted text-foreground hover:bg-muted/80"
                       }`}
                     >
                       {n}
                     </button>
                   ))}
                 </div>
-                <div className="flex justify-between text-xs text-gray-500 mt-1 px-1">
+                <div className="flex justify-between text-xs text-muted-foreground mt-1 px-1">
                   <span>Not likely</span>
                   <span>Very likely</span>
                 </div>
@@ -366,13 +366,13 @@ const Feedback: React.FC = () => {
                     id="isPublic"
                     checked={isPublic}
                     onChange={(e) => setIsPublic(e.target.checked)}
-                    className="mt-1 h-4 w-4 rounded border-gray-300 text-[#C81400] focus:ring-[#C81400]"
+                    className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary"
                   />
                   <div>
                     <Label htmlFor="isPublic" className="text-sm font-medium cursor-pointer">
                       Show my feedback on the Mystery Maker website
                     </Label>
-                    <p className="text-xs text-gray-600 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Help other hosts see what real customers think!
                     </p>
                   </div>

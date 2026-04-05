@@ -152,7 +152,7 @@ export default function EvidenceCardPrint() {
         </p>
         <button
           onClick={() => window.print()}
-          className="px-6 py-2.5 bg-[#C81400] text-white rounded-lg font-medium hover:bg-[#a01d45] transition-colors"
+          className="px-6 py-2.5 bg-[#C81400] text-white rounded-lg font-medium hover:bg-[#A01000] transition-colors"
         >
           Print Evidence Cards
         </button>

@@ -47,16 +47,16 @@ interface BlogPost {
 
 const CTA_SECTION = ({ theme = 'light' as 'light' | 'dark' } = {}) => {
   return (
-    <div className={`bg-${theme === 'dark' ? 'gray-900' : 'white'} rounded-xl p-8 my-12 shadow-lg text-center`}>
-      <h3 className="text-2xl font-bold mb-4 text-[#8B1538]">
+    <div className="rounded-xl p-8 my-12 text-center" style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid var(--color-cream-border)' }}>
+      <h3 className="text-2xl font-bold mb-4 text-[#C81400]">
         Ready to create your own murder mystery?
       </h3>
-      <p className="mb-6 text-gray-600">
+      <p className="mb-6 text-muted-foreground">
         Create a unique and engaging murder mystery party with our easy-to-use tools.
       </p>
       <Button 
         asChild 
-        className="bg-[#8B1538] hover:bg-[#6d102c] text-white py-6 px-8 text-lg font-medium transition-colors mx-auto"
+        className="bg-[#C81400] hover:bg-[#A01000] text-white py-6 px-8 text-lg font-medium transition-colors mx-auto"
       >
         <Link to="/mystery/create">
           Create Your Mystery
@@ -227,10 +227,10 @@ export default function BlogPost() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#FEFCF8] py-12 px-4">
+      <div className="min-h-screen bg-[#000000] py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-6">Related Posts</h2>
-          <Link to={lang ? `/${lang}/blog` : '/blog'} className="text-[#8B1538] hover:underline">
+          <Link to={lang ? `/${lang}/blog` : '/blog'} className="text-[#C81400] hover:underline">
             ← Back to Blog
           </Link>
         </div>
@@ -240,7 +240,7 @@ export default function BlogPost() {
 
   if (loading || !post) {
     return (
-      <div className="min-h-screen bg-[#FEFCF8] py-12 px-4">
+      <div className="min-h-screen bg-[#000000] py-12 px-4">
         <div className="max-w-4xl mx-auto">
           <Skeleton className="h-12 w-3/4 mb-6" />
           <div className="flex items-center space-x-4 mb-8">
@@ -410,7 +410,7 @@ export default function BlogPost() {
   const howToSchema = generateHowToSchema(post.content, post.title, post.slug);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FEFCF8]">
+    <div className="min-h-screen flex flex-col bg-[#000000]">
       <Header />
       <main className="flex-grow py-12 px-4">
         <Helmet>
@@ -461,19 +461,19 @@ export default function BlogPost() {
           <header className="mb-12">
             <Link
               to={lang ? `/${lang}/blog` : '/blog'}
-              className="inline-flex items-center text-[#8B1538] hover:underline mb-4"
+              className="inline-flex items-center text-[#C81400] hover:underline mb-4"
             >
               <ChevronRight className="h-4 w-4 rotate-180 mr-1" />
               Back to Blog
             </Link>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-[#8B1538] mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#C81400] mb-6">
               {post.title}
             </h1>
             
-            <div className="flex flex-wrap items-center text-gray-600 text-sm gap-4 mb-6">
+            <div className="flex flex-wrap items-center text-muted-foreground text-sm gap-4 mb-6">
               <div className="flex items-center">
-                <Clock className="h-4 w-4 mr-1 text-[#8B1538]" />
+                <Clock className="h-4 w-4 mr-1 text-[#C81400]" />
                 {post.reading_time || calculateReadingTime(post.content || '')} min read
               </div>
             </div>
@@ -492,12 +492,12 @@ export default function BlogPost() {
           <div className="prose prose-lg max-w-none mb-12">
             <ReactMarkdown
               components={{
-                h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-[#8B1538] mt-8 mb-4" {...props} />,
-                h3: ({node, ...props}) => <h3 className="text-xl font-semibold text-[#8B1538] mt-6 mb-3" {...props} />,
+                h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-[#C81400] mt-8 mb-4" {...props} />,
+                h3: ({node, ...props}) => <h3 className="text-xl font-semibold text-[#C81400] mt-6 mb-3" {...props} />,
                 ul: ({node, ...props}) => <ul className="list-disc ml-6 mb-4 space-y-2" {...props} />,
-                li: ({node, ...props}) => <li className="text-gray-700" {...props} />,
-                strong: ({node, ...props}) => <strong className="font-semibold text-[#8B1538]" {...props} />,
-                p: ({node, ...props}) => <p className="mb-4 text-gray-700 leading-relaxed" {...props} />,
+                li: ({node, ...props}) => <li className="text-foreground" {...props} />,
+                strong: ({node, ...props}) => <strong className="font-semibold text-[#C81400]" {...props} />,
+                p: ({node, ...props}) => <p className="mb-4 text-foreground leading-relaxed" {...props} />,
               }}
             >
               {post.content}
@@ -510,19 +510,19 @@ export default function BlogPost() {
 
           {post.related_posts && post.related_posts.length > 0 && (
             <section className="mt-16">
-              <h2 className="text-2xl font-bold text-[#8B1538] mb-6">
+              <h2 className="text-2xl font-bold text-[#C81400] mb-6">
                 You might also like
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {post.related_posts.map((related) => (
-                  <Card key={related.id} className="border-[#8B1538] hover:shadow-md transition-shadow">
+                  <Card key={related.id} className="border-[#C81400] hover:shadow-md transition-shadow">
                     <CardContent className="p-6">
-                      <h3 className="font-bold text-lg mb-2 text-[#8B1538]">
+                      <h3 className="font-bold text-lg mb-2 text-[#C81400]">
                         <Link to={lang ? `/${lang}/blog/${related.slug}` : `/blog/${related.slug}`} className="hover:underline">
                           {related.title}
                         </Link>
                       </h3>
-                      <div className="flex items-center text-sm text-gray-500 mt-2">
+                      <div className="flex items-center text-sm text-muted-foreground mt-2">
                         <Clock className="h-3 w-3 mr-1" />
                         {related.reading_time || calculateReadingTime(related.content || '')} min read
                       </div>
@@ -538,19 +538,19 @@ export default function BlogPost() {
       
       {/* Bottom CTA for scrollers */}
       {showStickyCTA && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 border-t border-gray-200">
+        <div className="fixed bottom-0 left-0 right-0 p-4" style={{ backgroundColor: 'var(--color-black)', borderTop: '1px solid var(--color-cream-border)' }}>
           <div className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center">
             <div className="mb-4 sm:mb-0">
-              <h3 className="font-bold text-[#8B1538]">
+              <h3 className="font-bold text-[#C81400]">
                 Ready to create your own mystery?
               </h3>
-              <p className="text-center mb-6 text-gray-600">
+              <p className="text-center mb-6 text-muted-foreground">
                 Get started today and create an unforgettable experience for your friends and family.
               </p>
             </div>
             <Button 
               asChild 
-              className="bg-[#8B1538] hover:bg-[#6d102c] text-white py-2 px-6 font-medium transition-colors"
+              className="bg-[#C81400] hover:bg-[#A01000] text-white py-2 px-6 font-medium transition-colors"
             >
               <Link to="/mystery/create">
                 Start Now

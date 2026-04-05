@@ -65,7 +65,7 @@ export function EmailVerificationBanner() {
               size="sm"
               onClick={handleResendEmail}
               disabled={resending}
-              className="bg-white hover:bg-blue-50 border-blue-300 text-blue-700"
+              className="bg-muted hover:bg-muted/80 border-border text-foreground"
             >
               {resending ? (
                 <>

@@ -129,16 +129,16 @@ export default function BlogIndex() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#FEFCF8]">
+      <div className="min-h-screen flex flex-col bg-[#000000]">
         <Header />
         <main className="flex-grow py-12 px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center py-12">
-              <h1 className="text-3xl font-bold text-[#8B1538] mb-4">{t('blog.errorTitle')}</h1>
-              <p className="text-gray-600 mb-6">{error}</p>
+              <h1 className="text-3xl font-bold text-[#C81400] mb-4">{t('blog.errorTitle')}</h1>
+              <p className="text-muted-foreground mb-6">{error}</p>
               <Button 
                 onClick={() => window.location.reload()}
-                className="bg-[#8B1538] hover:bg-[#6d102c] text-white"
+                className="bg-[#C81400] hover:bg-[#A01000] text-white"
               >
                 {t('blog.tryAgain')}
               </Button>
@@ -151,7 +151,7 @@ export default function BlogIndex() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FEFCF8]">
+    <div className="min-h-screen flex flex-col bg-[#000000]">
       <Header />
       <main className="flex-grow py-12 px-4">
         <Helmet>
@@ -172,14 +172,14 @@ export default function BlogIndex() {
                 {t('blog.backToHome')}
               </Link>
             </Button>
-            <h1 className="text-3xl md:text-4xl font-bold text-[#8B1538] mb-2">{t('blog.title')}</h1>
-            <p className="text-gray-600">{t('blog.subtitle')}</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-[#C81400] mb-2">{t('blog.title')}</h1>
+            <p className="text-muted-foreground">{t('blog.subtitle')}</p>
           </div>
 
           {loading ? (
             <div className="space-y-6">
               {[1, 2, 3].map((i) => (
-                <Card key={i} className="bg-white">
+                <Card key={i} className="bg-card">
                   <CardHeader>
                     <Skeleton className="h-6 w-3/4 mb-2" />
                     <Skeleton className="h-4 w-1/2" />
@@ -202,11 +202,11 @@ export default function BlogIndex() {
                 
                 return (
                   <div key={group.post_date} className="space-y-2">
-                    <h2 className="text-xl font-semibold text-gray-700">{formattedDate}</h2>
+                    <h2 className="text-xl font-semibold text-foreground">{formattedDate}</h2>
                     <Card className="hover:shadow-lg transition-shadow">
                       <CardHeader>
                         <CardTitle className="text-xl">
-                          <Link to={lang ? `/${lang}/blog/${primaryPost.slug}` : `/blog/${primaryPost.slug}`} className="hover:text-[#8B1538] transition-colors">
+                          <Link to={lang ? `/${lang}/blog/${primaryPost.slug}` : `/blog/${primaryPost.slug}`} className="hover:text-[#C81400] transition-colors">
                             {primaryPost.title}
                           </Link>
                         </CardTitle>
@@ -217,7 +217,7 @@ export default function BlogIndex() {
                           {group.posts.length > 1 && (
                             <>
                               <span>•</span>
-                              <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">
+                              <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
                                 {group.posts.length} {group.posts.length === 1 ? 'post' : 'posts'}
                               </span>
                             </>
@@ -225,17 +225,17 @@ export default function BlogIndex() {
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-gray-700">{primaryPost.meta_description}</p>
+                        <p className="text-foreground">{primaryPost.meta_description}</p>
                         <div className="flex justify-between items-center mt-4">
                           <Link 
                             to={lang ? `/${lang}/blog/${primaryPost.slug}` : `/blog/${primaryPost.slug}`} 
-                            className="text-[#8B1538] hover:underline font-medium"
+                            className="text-[#C81400] hover:underline font-medium"
                           >
                             {t('blog.readMore')}
                           </Link>
                           
                           {group.posts.length > 1 && (
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-muted-foreground">
                               Available in: {group.posts.map(p => p.language.toUpperCase()).join(', ')}
                             </div>
                           )}
@@ -248,7 +248,7 @@ export default function BlogIndex() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <h2 className="text-xl text-gray-700">No blog posts found.</h2>
+              <h2 className="text-xl text-foreground">No blog posts found.</h2>
             </div>
           )}
         </div>
