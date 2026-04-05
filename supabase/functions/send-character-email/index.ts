@@ -68,7 +68,7 @@ serve(async (req) => {
 
   <div style="text-align: center; padding: 20px; font-size: 11px; color: rgba(245,240,232,0.3);">
     <p style="margin: 0 0 8px 0;">Your email was provided by the host of this mystery party via <a href="https://www.mysterymaker.party" style="color: rgba(245,240,232,0.4); text-decoration: none;">mysterymaker.party</a>.</p>
-    <p style="margin: 0;">We may send you one follow-up email to ask about your experience. That's it — no mailing lists, no marketing.</p>
+    <p style="margin: 0;">We may send you one follow-up email to ask about your experience. That's it - no mailing lists, no marketing.</p>
   </div>
 </body>
 </html>

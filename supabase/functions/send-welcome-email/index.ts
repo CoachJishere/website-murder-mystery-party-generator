@@ -69,13 +69,13 @@ serve(async (req) => {
                   &#10024; <strong>Create custom mysteries</strong> in minutes using AI
                 </p>
                 <p style="margin: 0 0 12px 0; color: #F5F0E8; font-size: 15px;">
-                  &#127917; <strong>Choose any theme</strong> — from Victorian mansions to space stations
+                  &#127917; <strong>Choose any theme</strong> - from Victorian mansions to space stations
                 </p>
                 <p style="margin: 0 0 12px 0; color: #F5F0E8; font-size: 15px;">
                   &#128231; <strong>Send character assignments</strong> directly to your guests
                 </p>
                 <p style="margin: 0; color: #F5F0E8; font-size: 15px;">
-                  &#128229; <strong>Download everything you need</strong> — host guides, clue cards, and more
+                  &#128229; <strong>Download everything you need</strong> - host guides, clue cards, and more
                 </p>
               </div>
 

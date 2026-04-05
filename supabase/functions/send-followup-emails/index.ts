@@ -234,18 +234,18 @@ function buildGuestTriggeredEmail(
   const starDisplay = "★".repeat(guestFeedback.topRating) + "☆".repeat(5 - guestFeedback.topRating);
   const guestLine = guestFeedback.count === 1
     ? `${guestFeedback.topName} rated their experience <strong style="color: #f59e0b;">${starDisplay}</strong>`
-    : `${guestFeedback.count} of your guests rated their experience — average <strong style="color: #f59e0b;">${guestFeedback.averageRating}/5 stars</strong>`;
+    : `${guestFeedback.count} of your guests rated their experience - average <strong style="color: #f59e0b;">${guestFeedback.averageRating}/5 stars</strong>`;
 
   const highlightBlock = guestFeedback.topHighlight
     ? `<div style="background: #000000; border-left: 4px solid #f59e0b; padding: 16px; margin: 16px 0; border-radius: 4px;">
         <p style="margin: 0; color: rgba(245,240,232,0.7); font-style: italic;">"${guestFeedback.topHighlight}"</p>
-        <p style="margin: 8px 0 0 0; color: rgba(245,240,232,0.4); font-size: 13px;">— ${guestFeedback.topName}</p>
+        <p style="margin: 8px 0 0 0; color: rgba(245,240,232,0.4); font-size: 13px;">- ${guestFeedback.topName}</p>
       </div>`
     : "";
 
   return buildEmailShell(
     hostName,
-    `Great news — your guests enjoyed <strong style="color: #F5F0E8;">${mysteryTitle}</strong>!`,
+    `Great news - your guests enjoyed <strong style="color: #F5F0E8;">${mysteryTitle}</strong>!`,
     `${guestLine}${highlightBlock}
     <p style="color: rgba(245,240,232,0.7); margin-top: 20px;">
       If you had a great time hosting, we'd really appreciate a quick Trustpilot review. It takes about 30 seconds and helps other hosts find us.

@@ -163,7 +163,7 @@ serve(async (req) => {
       body: JSON.stringify({
         from: "Mystery Maker Alerts <noreply@mysterymaker.party>",
         to: ["support@mysterymaker.party"],
-        subject: `🚨 Generation Issue — ${mysteryTitle} (${userEmail})`,
+        subject: `🚨 Generation Issue - ${mysteryTitle} (${userEmail})`,
         html,
       }),
     });

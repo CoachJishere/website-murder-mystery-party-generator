@@ -213,7 +213,7 @@ serve(async (req) => {
               body: JSON.stringify({
                 from: "Mystery Maker <noreply@mysterymaker.party>",
                 to: ["support@mysterymaker.party"],
-                subject: `💰 New Purchase — ${mysteryTitle} (${currency} ${amountFormatted})`,
+                subject: `💰 New Purchase - ${mysteryTitle} (${currency} ${amountFormatted})`,
                 html: notificationHtml,
               }),
             });

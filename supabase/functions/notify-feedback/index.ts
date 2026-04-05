@@ -130,7 +130,7 @@ serve(async (req) => {
       body: JSON.stringify({
         from: "Mystery Maker <noreply@mysterymaker.party>",
         to: ["support@mysterymaker.party"],
-        subject: `${ratingEmoji} New Feedback: ${record.star_rating}/5 stars — ${mysteryTitle}`,
+        subject: `${ratingEmoji} New Feedback: ${record.star_rating}/5 stars - ${mysteryTitle}`,
         html,
       }),
     });

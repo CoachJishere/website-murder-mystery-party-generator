@@ -159,7 +159,7 @@ serve(async (req) => {
       body: JSON.stringify({
         from: "Mystery Maker <noreply@mysterymaker.party>",
         to: ["support@mysterymaker.party"],
-        subject: `${ratingEmoji} Guest Feedback: ${record.star_rating}/5 stars — ${mysteryTitle} (${record.character_name || "guest"})`,
+        subject: `${ratingEmoji} Guest Feedback: ${record.star_rating}/5 stars - ${mysteryTitle} (${record.character_name || "guest"})`,
         html: notificationHtml,
       }),
     });
@@ -195,7 +195,7 @@ async function sendTrustpilotPrompt(
   const highlightBlock = guestHighlight
     ? `<div style="background: #000000; border-left: 4px solid #f59e0b; padding: 16px; margin: 16px 0; border-radius: 4px;">
         <p style="margin: 0; color: rgba(245,240,232,0.7); font-style: italic;">"${guestHighlight}"</p>
-        <p style="margin: 8px 0 0 0; color: rgba(245,240,232,0.4); font-size: 13px;">— ${guestCharacterName}</p>
+        <p style="margin: 8px 0 0 0; color: rgba(245,240,232,0.4); font-size: 13px;">- ${guestCharacterName}</p>
       </div>`
     : "";
 
@@ -213,7 +213,7 @@ async function sendTrustpilotPrompt(
   <div style="background: #111111; padding: 30px; border-radius: 0 0 8px 8px;">
     <p style="font-size: 18px; margin-bottom: 8px; color: #F5F0E8;">Hi ${hostName},</p>
     <p style="color: rgba(245,240,232,0.7); margin-bottom: 20px;">
-      Great news — your guests enjoyed <strong style="color: #F5F0E8;">${mysteryTitle}</strong>!
+      Great news - your guests enjoyed <strong style="color: #F5F0E8;">${mysteryTitle}</strong>!
     </p>
     <p style="color: rgba(245,240,232,0.7);">
       ${guestCharacterName} rated their experience <strong style="color: #f59e0b;">${starDisplay}</strong>
