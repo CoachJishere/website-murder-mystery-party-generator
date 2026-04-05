@@ -465,17 +465,17 @@ export default function MysteryChat({
                     rehypePlugins={[rehypeRaw]}
                     components={{
                       h1: ({node, ...props}) => <h1 className={cn(
-                        "font-bold mt-3 mb-2 text-[bg-primary]",
+                        "font-bold mt-3 mb-2 text-foreground",
                         isMobile ? "text-lg" : "text-2xl"
-                      )} {...props} />,
+                      )} style={{ fontFamily: 'var(--font-body)', textTransform: 'none' }} {...props} />,
                       h2: ({node, ...props}) => <h2 className={cn(
-                        "font-semibold mt-2 mb-1 text-[bg-primary]",
+                        "font-semibold mt-2 mb-1 text-foreground",
                         isMobile ? "text-base" : "text-xl"
-                      )} {...props} />,
+                      )} style={{ fontFamily: 'var(--font-body)', textTransform: 'none' }} {...props} />,
                       h3: ({node, ...props}) => <h3 className={cn(
-                        "font-medium mt-2 mb-1 text-[bg-primary]",
+                        "font-medium mt-2 mb-1 text-foreground",
                         isMobile ? "text-sm" : "text-lg"
-                      )} {...props} />,
+                      )} style={{ fontFamily: 'var(--font-body)', textTransform: 'none' }} {...props} />,
                       p: ({node, ...props}) => <p className="my-1 leading-relaxed text-foreground" {...props} />,
                       ul: ({node, ...props}) => <ul className={cn(
                         "list-disc my-2",
@@ -486,9 +486,9 @@ export default function MysteryChat({
                         isMobile ? "pl-4" : "pl-6"
                       )} {...props} />,
                       li: ({node, ...props}) => <li className="my-1 text-foreground" {...props} />,
-                      strong: ({node, ...props}) => <strong className="font-bold text-[bg-primary]" {...props} />,
+                      strong: ({node, ...props}) => <strong className="font-bold text-foreground" {...props} />,
                       em: ({node, ...props}) => <em className="italic" {...props} />,
-                      blockquote: ({node, ...props}) => <blockquote className="pl-3 border-l-3 border-[bg-primary] bg-muted italic my-2 rounded-r-md p-2" {...props} />
+                      blockquote: ({node, ...props}) => <blockquote className="pl-3 border-l-3 border-primary bg-muted italic my-2 rounded-r-md p-2" {...props} />
                     }}
                   >
                     {message.content}
