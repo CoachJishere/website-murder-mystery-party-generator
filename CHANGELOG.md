@@ -2,6 +2,11 @@
 
 ## 2026-04-05
 
+### Fix: Remove scroll flicker on logged-in homepage
+- Disabled parallax/fade animations on the hero for authenticated users since there's no content below to scroll to
+- Added `overflow-hidden` to the page container for authenticated users to prevent any scroll
+- Disabled Lenis smooth scroll when authenticated (no scrollable content)
+
 ### Improvement: Smarter clarifying questions in initial chat
 - Rewrote the pre-concept system prompt in the mystery-ai Edge Function to reliably ask clarifying questions for vague themes
 - The AI now evaluates creative specificity rather than word count: "restaurants" triggers a question, "1920s speakeasy" does not

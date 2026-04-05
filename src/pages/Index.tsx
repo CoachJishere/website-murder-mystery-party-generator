@@ -35,8 +35,9 @@ const CREAM_10 = "rgba(245,240,232,0.1)";
 // ═══════════════════════════════════════════════════════════════
 // LENIS SMOOTH SCROLL
 // ═══════════════════════════════════════════════════════════════
-function useSmoothScroll() {
+function useSmoothScroll(enabled: boolean) {
   useEffect(() => {
+    if (!enabled) return;
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -50,7 +51,7 @@ function useSmoothScroll() {
     requestAnimationFrame(raf);
     setTimeout(() => ScrollTrigger.refresh(), 100);
     return () => lenis.destroy();
-  }, []);
+  }, [enabled]);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -63,10 +64,11 @@ function ParallaxHero({ isAuthenticated }: { isAuthenticated: boolean }) {
     offset: ["start start", "end start"],
   });
 
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "60%"]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  // Disable parallax/fade for authenticated users — there's nothing to scroll to
+  const imageY = useTransform(scrollYProgress, [0, 1], isAuthenticated ? ["0%", "0%"] : ["0%", "30%"]);
+  const imageScale = useTransform(scrollYProgress, [0, 1], isAuthenticated ? [1, 1] : [1, 1.15]);
+  const textY = useTransform(scrollYProgress, [0, 1], isAuthenticated ? ["0%", "0%"] : ["0%", "60%"]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.6], isAuthenticated ? [1, 1] : [1, 0]);
 
   return (
     <section ref={ref} className="relative h-[100svh] overflow-hidden" style={{ backgroundColor: RED }}>
@@ -498,10 +500,14 @@ function SupportCTA() {
 const Index = () => {
   const { isAuthenticated } = useAuth();
   const { t } = useTranslation();
-  useSmoothScroll();
+  // Only enable smooth scroll for non-authenticated (marketing) page
+  useSmoothScroll(!isAuthenticated);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: BLACK }}>
+    <div
+      className={`min-h-screen flex flex-col ${isAuthenticated ? "h-screen overflow-hidden" : ""}`}
+      style={{ backgroundColor: BLACK }}
+    >
       <Head
         title="Create Custom Murder Mystery Parties"
         description="Generate unique murder mystery party scenarios with our AI-powered tool. Customize themes, characters, and plots for unforgettable events."
