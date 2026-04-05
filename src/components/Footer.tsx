@@ -42,6 +42,11 @@ const Footer = () => {
                   {t('footer.links.support')}
                 </Link>
               </li>
+              <li>
+                <Link to="/blog" className="footer-link">
+                  {t('footer.links.blog')}
+                </Link>
+              </li>
             </ul>
           </div>
 

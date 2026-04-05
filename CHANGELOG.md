@@ -2,6 +2,12 @@
 
 ## 2026-04-05
 
+### Feature: Blog link added to footer
+- Added "Blog" link to Quick Links section of the Footer component
+- Added `footer.links.blog` translation key to all 13 locale files
+- Footer shows on all public-facing pages (homepage, blog, support, auth pages) but not for logged-in users
+- Provides crawl path from homepage to blog content per SEO/GEO playbook's 3-click rule
+
 ### Feature: Cross-link insertions complete for all 13 languages
 - All 420 slugs × 12 non-EN languages now have 5 cross-link insertions each (25,200 total non-EN insertions)
 - Combined with EN insertions: 27,300 total cross-links across all 13 languages
