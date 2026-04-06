@@ -6,6 +6,115 @@ export const config = {
   runtime: 'edge',
 };
 
+// GA4 configuration
+const GA4_MEASUREMENT_ID = 'G-XGD48X4ZQS';
+
+async function sendGA4PurchaseEvent(session, userId) {
+  const ga4ApiSecret = process.env.GA4_API_SECRET;
+  if (!ga4ApiSecret) {
+    console.warn('GA4_API_SECRET not set, skipping GA4 event');
+    return;
+  }
+
+  try {
+    const payload = {
+      client_id: session.client_reference_id || session.id,
+      ...(userId && { user_id: userId }),
+      events: [
+        {
+          name: 'purchase',
+          params: {
+            currency: (session.currency || 'usd').toUpperCase(),
+            value: (session.amount_total || 0) / 100,
+            transaction_id: session.payment_intent,
+            items: [
+              {
+                item_id: 'murder_mystery_party',
+                item_name: 'Murder Mystery Party Package',
+                price: (session.amount_total || 0) / 100,
+                quantity: 1,
+              },
+            ],
+            conversation_id: session.client_reference_id || session.metadata?.mysteryId,
+            customer_email: session.customer_email || session.customer_details?.email,
+            engagement_time_msec: '1',
+          },
+        },
+      ],
+    };
+
+    const response = await fetch(
+      `https://www.google-analytics.com/mp/collect?measurement_id=${GA4_MEASUREMENT_ID}&api_secret=${ga4ApiSecret}`,
+      { method: 'POST', body: JSON.stringify(payload) }
+    );
+
+    if (!response.ok) {
+      console.error(`GA4 event failed: ${response.status}`);
+    } else {
+      console.log('GA4 purchase event sent successfully');
+    }
+  } catch (error) {
+    console.error('Error sending GA4 event:', error);
+  }
+}
+
+async function sendPurchaseNotificationEmail(session, mysteryTitle, conversationId) {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (!resendApiKey) {
+    console.warn('RESEND_API_KEY not set, skipping purchase notification email');
+    return;
+  }
+
+  try {
+    const amountFormatted = ((session.amount_total || 0) / 100).toFixed(2);
+    const currency = (session.currency || 'usd').toUpperCase();
+    const customerEmail = session.customer_email || session.customer_details?.email;
+
+    const notificationHtml = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #10b981; color: white; padding: 20px; border-radius: 8px 8px 0 0;">
+          <h2 style="margin: 0;">New Purchase!</h2>
+        </div>
+        <div style="background: #f9fafb; padding: 20px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 8px 0; color: #6b7280;">Mystery</td><td style="padding: 8px 0; font-weight: 600;">${mysteryTitle}</td></tr>
+            <tr><td style="padding: 8px 0; color: #6b7280;">Amount</td><td style="padding: 8px 0; font-weight: 600;">${currency} ${amountFormatted}</td></tr>
+            <tr><td style="padding: 8px 0; color: #6b7280;">Customer</td><td style="padding: 8px 0;">${customerEmail || 'N/A'}</td></tr>
+            <tr><td style="padding: 8px 0; color: #6b7280;">Conversation ID</td><td style="padding: 8px 0; font-size: 12px;">${conversationId}</td></tr>
+            <tr><td style="padding: 8px 0; color: #6b7280;">Stripe Session</td><td style="padding: 8px 0; font-size: 12px;">${session.id}</td></tr>
+          </table>
+          <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af;">
+            ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' })}
+          </div>
+        </div>
+      </div>
+    `;
+
+    const emailResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Mystery Maker <noreply@mysterymaker.party>',
+        to: ['support@mysterymaker.party'],
+        subject: `💰 New Purchase - ${mysteryTitle} (${currency} ${amountFormatted})`,
+        html: notificationHtml,
+      }),
+    });
+
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      console.error(`Purchase notification email failed: ${emailResponse.status} ${errorText}`);
+    } else {
+      console.log('Purchase notification email sent successfully');
+    }
+  } catch (error) {
+    console.error('Error sending purchase notification email:', error);
+  }
+}
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2023-10-16',
 });
@@ -287,13 +396,21 @@ export default async function handler(req) {
           }
 
           console.log("Database updates complete for mystery ID:", mysteryId);
-          return new Response(JSON.stringify({ 
+
+          // Send GA4 purchase event and notification email (non-blocking)
+          const mysteryTitle = conversationData?.title || extractedMysteryElements?.title || 'Unknown Mystery';
+          await Promise.allSettled([
+            sendGA4PurchaseEvent(session, userId),
+            sendPurchaseNotificationEmail(session, mysteryTitle, mysteryId),
+          ]);
+
+          return new Response(JSON.stringify({
             success: true,
             mysteryId,
             userId,
             comprehensive_data_sent: true,
             extracted_title: extractedMysteryElements?.title || null
-          }), { 
+          }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
           });

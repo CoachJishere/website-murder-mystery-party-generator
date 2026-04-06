@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-04-06
+
+### Fix: Consolidate Stripe webhook to single endpoint
+- Merged GA4 purchase tracking and Resend email notifications from Supabase Edge Function into `api/webhook.js`
+- Eliminates duplicate webhook endpoints that caused Stripe delivery failures (signature mismatch on redundant endpoints)
+- All purchase handling now in one place: DB updates, Make.com trigger, GA4 event, and email notification
+
 ## 2026-04-05
 
 ### Improvement: Expand pillar post outbound links in cross_link_map.json
