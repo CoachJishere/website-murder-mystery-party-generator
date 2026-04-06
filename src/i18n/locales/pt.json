@@ -1067,5 +1067,22 @@
       "large": "30-45 minutos",
       "xlarge": "45-60 minutos"
     }
+  },
+  "attribution": {
+    "title": "Como soubeste de nós?",
+    "description": "Isto ajuda-nos a perceber de onde vem a nossa comunidade.",
+    "sources": {
+      "google": "Pesquisa Google",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "reddit": "Reddit",
+      "friend": "Amigo / Boca a boca",
+      "blog": "Blog / Artigo",
+      "other": "Outro"
+    },
+    "otherPlaceholder": "Diz-nos onde...",
+    "submit": "Enviar",
+    "skip": "Saltar por agora"
   }
 }

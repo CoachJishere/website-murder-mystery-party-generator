@@ -1050,5 +1050,22 @@
       "large": "30-45 minutes",
       "xlarge": "45-60 minutes"
     }
+  },
+  "attribution": {
+    "title": "Comment avez-vous entendu parler de nous ?",
+    "description": "Cela nous aide à comprendre d'où vient notre communauté.",
+    "sources": {
+      "google": "Recherche Google",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "reddit": "Reddit",
+      "friend": "Ami / Bouche à oreille",
+      "blog": "Blog / Article",
+      "other": "Autre"
+    },
+    "otherPlaceholder": "Dites-nous où...",
+    "submit": "Envoyer",
+    "skip": "Passer pour l'instant"
   }
 }

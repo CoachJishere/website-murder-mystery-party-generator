@@ -2,6 +2,15 @@
 
 ## 2026-04-06
 
+### Feature: "How did you hear about us?" attribution survey
+- Added post-signup lightbox dialog that asks new users how they discovered the site
+- 8 visual source buttons (Google, YouTube, TikTok, Instagram, Reddit, Friend, Blog, Other) with icons and brand colors
+- "Other" option expands a text input for free-text attribution detail
+- Skip button for users who don't want to answer; response saved to `profiles` table
+- Fully translated across all 13 supported languages
+- Shows once on Dashboard for users who haven't completed it; tracked via `attribution_surveyed_at` column
+- GA4 event tracking for completions and skips
+
 ### Fix: Consolidate Stripe webhook to single endpoint
 - Merged GA4 purchase tracking and Resend email notifications from Supabase Edge Function into `api/webhook.js`
 - Eliminates duplicate webhook endpoints that caused Stripe delivery failures (signature mismatch on redundant endpoints)

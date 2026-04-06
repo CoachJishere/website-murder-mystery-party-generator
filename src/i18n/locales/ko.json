@@ -1049,5 +1049,22 @@
       "guide": "호스트 가이드",
       "detective": "탐정 및 증거 키트"
     }
+  },
+  "attribution": {
+    "title": "저희를 어떻게 알게 되셨나요?",
+    "description": "커뮤니티가 어디서 오는지 이해하는 데 도움이 됩니다.",
+    "sources": {
+      "google": "Google 검색",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "reddit": "Reddit",
+      "friend": "친구 / 입소문",
+      "blog": "블로그 / 기사",
+      "other": "기타"
+    },
+    "otherPlaceholder": "어디서 알게 되셨나요...",
+    "submit": "제출",
+    "skip": "건너뛰기"
   }
 }

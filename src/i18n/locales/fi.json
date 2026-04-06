@@ -1049,5 +1049,22 @@
       "verifying": "Vahvistetaan maksuasi...",
       "redirecting": "Uudelleenohjataan mysteeriisi..."
     }
+  },
+  "attribution": {
+    "title": "Mistä kuulit meistä?",
+    "description": "Tämä auttaa meitä ymmärtämään, mistä yhteisömme tulee.",
+    "sources": {
+      "google": "Google-haku",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "reddit": "Reddit",
+      "friend": "Ystävä / Puskaradio",
+      "blog": "Blogi / Artikkeli",
+      "other": "Muu"
+    },
+    "otherPlaceholder": "Kerro meille mistä...",
+    "submit": "Lähetä",
+    "skip": "Ohita toistaiseksi"
   }
 }

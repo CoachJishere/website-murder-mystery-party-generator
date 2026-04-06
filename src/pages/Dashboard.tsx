@@ -13,6 +13,7 @@ import Footer from "@/components/Footer";
 import { HomeDashboard } from "@/components/dashboard/HomeDashboard";
 import { useTranslation } from "react-i18next";
 import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
+import AttributionSurvey from "@/components/AttributionSurvey";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [mysteries, setMysteries] = useState([]);
   const [isLoadingMysteries, setIsLoadingMysteries] = useState(false);
+  const [showAttribution, setShowAttribution] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -41,9 +43,20 @@ const Dashboard = () => {
 
         setUser(data.session.user);
         console.log("Dashboard: Session found for user:", data.session.user.id);
-        
+
         // Fetch user's mysteries
         await fetchMysteries(data.session.user.id);
+
+        // Check if user needs attribution survey
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("attribution_surveyed_at")
+          .eq("id", data.session.user.id)
+          .single();
+
+        if (profile && !profile.attribution_surveyed_at) {
+          setShowAttribution(true);
+        }
       } catch (error) {
         console.error("Dashboard auth check error:", error);
         navigate("/sign-in", { replace: true });
@@ -139,6 +152,14 @@ const Dashboard = () => {
         )}
       </main>
       <Footer />
+
+      {user && (
+        <AttributionSurvey
+          open={showAttribution}
+          onComplete={() => setShowAttribution(false)}
+          userId={user.id}
+        />
+      )}
     </div>
   );
 };

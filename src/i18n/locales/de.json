@@ -1049,5 +1049,22 @@
       "verifying": "Ihre Zahlung wird überprüft...",
       "redirecting": "Weiterleitung zu Ihrem Mysterium..."
     }
+  },
+  "attribution": {
+    "title": "Wie hast du von uns erfahren?",
+    "description": "Das hilft uns zu verstehen, woher unsere Community kommt.",
+    "sources": {
+      "google": "Google-Suche",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "reddit": "Reddit",
+      "friend": "Freund / Mundpropaganda",
+      "blog": "Blog / Artikel",
+      "other": "Sonstiges"
+    },
+    "otherPlaceholder": "Sag uns woher...",
+    "submit": "Absenden",
+    "skip": "Jetzt überspringen"
   }
 }

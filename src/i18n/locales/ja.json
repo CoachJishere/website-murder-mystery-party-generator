@@ -1049,5 +1049,22 @@
       "guide": "ホストガイド",
       "detective": "探偵・証拠キット"
     }
+  },
+  "attribution": {
+    "title": "私たちをどこで知りましたか？",
+    "description": "コミュニティがどこから来ているか理解するのに役立ちます。",
+    "sources": {
+      "google": "Google検索",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "reddit": "Reddit",
+      "friend": "友人 / 口コミ",
+      "blog": "ブログ / 記事",
+      "other": "その他"
+    },
+    "otherPlaceholder": "どこで知りましたか...",
+    "submit": "送信",
+    "skip": "今はスキップ"
   }
 }

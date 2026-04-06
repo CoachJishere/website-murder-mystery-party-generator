@@ -1049,5 +1049,22 @@
       "large": "30-45分钟",
       "xlarge": "45-60分钟"
     }
+  },
+  "attribution": {
+    "title": "你是怎么知道我们的？",
+    "description": "这帮助我们了解社区来自哪里。",
+    "sources": {
+      "google": "Google 搜索",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "reddit": "Reddit",
+      "friend": "朋友 / 口碑",
+      "blog": "博客 / 文章",
+      "other": "其他"
+    },
+    "otherPlaceholder": "告诉我们哪里...",
+    "submit": "提交",
+    "skip": "暂时跳过"
   }
 }

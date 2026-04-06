@@ -1049,5 +1049,22 @@
       "guide": "Værtsguide",
       "detective": "Detektiv- & beviskit"
     }
+  },
+  "attribution": {
+    "title": "Hvordan hørte du om os?",
+    "description": "Det hjælper os med at forstå, hvor vores fællesskab kommer fra.",
+    "sources": {
+      "google": "Google-søgning",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "reddit": "Reddit",
+      "friend": "Ven / Mund til mund",
+      "blog": "Blog / Artikel",
+      "other": "Andet"
+    },
+    "otherPlaceholder": "Fortæl os hvor...",
+    "submit": "Indsend",
+    "skip": "Spring over for nu"
   }
 }

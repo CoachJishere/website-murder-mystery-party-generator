@@ -1067,5 +1067,22 @@
       "purchased": "Purchased",
       "archived": "Archived"
     }
+  },
+  "attribution": {
+    "title": "How did you hear about us?",
+    "description": "This helps us understand where our community comes from.",
+    "sources": {
+      "google": "Google Search",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "reddit": "Reddit",
+      "friend": "Friend / Word of Mouth",
+      "blog": "Blog / Article",
+      "other": "Other"
+    },
+    "otherPlaceholder": "Tell us where...",
+    "submit": "Submit",
+    "skip": "Skip for now"
   }
 }

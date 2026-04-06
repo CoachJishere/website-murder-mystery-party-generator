@@ -1049,5 +1049,22 @@
       "purchased": "Purchased",
       "archived": "Archived"
     }
+  },
+  "attribution": {
+    "title": "Hur hörde du om oss?",
+    "description": "Det hjälper oss förstå var vårt community kommer ifrån.",
+    "sources": {
+      "google": "Google-sökning",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "reddit": "Reddit",
+      "friend": "Vän / Mun till mun",
+      "blog": "Blogg / Artikel",
+      "other": "Övrigt"
+    },
+    "otherPlaceholder": "Berätta var...",
+    "submit": "Skicka",
+    "skip": "Hoppa över för nu"
   }
 }

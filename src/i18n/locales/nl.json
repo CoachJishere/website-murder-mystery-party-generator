@@ -1049,5 +1049,22 @@
       "verifying": "Uw betaling wordt geverifieerd...",
       "redirecting": "U wordt doorgestuurd naar uw mysterie..."
     }
+  },
+  "attribution": {
+    "title": "Hoe heb je over ons gehoord?",
+    "description": "Dit helpt ons te begrijpen waar onze community vandaan komt.",
+    "sources": {
+      "google": "Google Zoeken",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "reddit": "Reddit",
+      "friend": "Vriend / Mond-tot-mond",
+      "blog": "Blog / Artikel",
+      "other": "Anders"
+    },
+    "otherPlaceholder": "Vertel ons waar...",
+    "submit": "Versturen",
+    "skip": "Nu overslaan"
   }
 }
