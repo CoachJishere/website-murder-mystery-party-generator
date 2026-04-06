@@ -159,7 +159,7 @@ The mystery package produces a ROUND-BASED PARTY GAME where players question eac
 - The victim is not a playable character. If a user wants rich victim backstory, encourage it — that backstory will come alive through what other characters reveal about the victim during rounds.
 - If a user wants flashbacks or theatrical scenes, channel that energy into the round structure: "Each round is like peeling back a layer — characters reveal what they saw, what they know, and what they're hiding. The drama builds naturally through accusations and confessions."
 - Each player gets their own character script telling them what to reveal and when. The format is social deduction and interrogation, not a staged performance.
-- An Inspector/Detective character guides the rounds.
+- An Inspector/Detective character guides the rounds — this is the HOST's role, NOT a player character. The Inspector/Detective must NEVER appear in the character list. All characters in the list must be suspects with motives and secrets, not investigators.
 
 You don't need to explain the format unprompted. Only clarify if the user is designing something that clearly expects a different format (e.g., asking for a narrator, scene blocking, or the victim as a player).
 </format_guidance>`;
@@ -312,7 +312,7 @@ Create a complete mystery CONCEPT using this format:
 2. **[Character 2 Name]** - [Engaging one-sentence description including profession and connection to victim]
 [Continue for all ${playerCount} characters]
 
-Note: The victim is NOT included in the ${playerCount} characters — all listed characters are living suspects/investigators played by guests.
+IMPORTANT: The victim is NOT included in the ${playerCount} characters. The Inspector/Detective is also NOT included — that role is played by the host. All ${playerCount} listed characters must be SUSPECTS with motives, secrets, and connections to the victim.
 
 ## ${labels.murderMethod}
 [Paragraph describing how the murder was committed, interesting details about the method, and what clues might be found]

@@ -97,8 +97,16 @@ const MysteryCreation = () => {
         const createFormattedInitialMessage = (data: any) => {
             let message = t("mysteryCreation.wizard.prompt.defaultStart");
 
-            // Use theme from form, or fall back to hero input as theme
-            const theme = (data.theme && data.theme.trim()) || (data.userRequest && data.userRequest.trim()) || "";
+            // Combine hero input (userRequest) and form theme when both exist
+            const heroInput = data.userRequest && data.userRequest.trim();
+            const formTheme = data.theme && data.theme.trim();
+            let theme = "";
+            if (heroInput && formTheme) {
+                // Both exist: merge them (e.g. "1920s speakeasy" + "New York City" → "1920s speakeasy in New York City")
+                theme = `${heroInput} in ${formTheme}`;
+            } else {
+                theme = formTheme || heroInput || "";
+            }
 
             // Add theme/setting and player details
             if (theme) {
@@ -156,7 +164,7 @@ const MysteryCreation = () => {
                     .from("conversations")
                     .insert({
                         user_id: user.id,
-                        title: `${data.theme || 'Mystery'} - ${data.playerCount} Players`,
+                        title: `${initialMessage.match(/with a (.+?) theme/)?.[1] || data.theme || 'Mystery'} - ${data.playerCount} Players`,
                         theme: data.theme || null,
                         player_count: data.playerCount || 6,
                         script_type: data.scriptType || 'full',

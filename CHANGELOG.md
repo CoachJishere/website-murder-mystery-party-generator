@@ -2,6 +2,28 @@
 
 ## 2026-04-06
 
+### Fix: Theme from homepage hero input lost when form theme filled
+- When user typed a theme on the homepage (e.g. "1920s speakeasy") then added details on the form (e.g. "New York City"), only the form value was used
+- Now combines both inputs: "1920s speakeasy in New York City" — hero input provides the concept, form theme refines location/setting
+- Conversation title also uses the combined theme for better dashboard display
+
+### Fix: Detective/Inspector incorrectly appearing in character list
+- AI was including the detective as a playable character in the suspect list
+- Added explicit instructions to system prompt: Inspector/Detective is the HOST role, not a player, and must never appear in the character list
+- All listed characters must be suspects with motives and secrets
+
+### Fix: Dashboard showing "New York, 10 players" instead of mystery title
+- Title extraction regex didn't handle quoted titles (e.g. `# "MURDER IN THE BIG APPLE"`)
+- Updated regex to strip surrounding quotes so AI-generated titles are properly extracted
+
+### UI: Restore stylized headings in mystery chat
+- Chat headings (h1/h2) were overridden to plain body font — restored Bowlby One display font with uppercase styling and primary color
+- Gives the mystery reveal sections more visual impact and thematic pop
+
+### Fix: Accomplice toggle invisible in dark mode
+- Switch component used `bg-input` for unchecked state which was near-black (0 0% 7%) on dark background
+- Changed to `bg-muted-foreground/30` with visible border so the toggle is clearly visible
+
 ### Fix: Attribution survey responses not persisting
 - UPDATE RLS policy on `profiles` was checking `auth.uid() = user_id` but `user_id` is NULL for all rows; actual auth column is `id`
 - Updated policy to `auth.uid() = id` so survey responses (and any profile updates) actually save

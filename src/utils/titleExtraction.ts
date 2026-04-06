@@ -11,8 +11,8 @@ export const extractTitleFromMessages = (messages: any[]) => {
     );
   });
 
-  // Primary pattern: # TITLE (most reliable - this is how Claude formats titles)
-  const headerTitlePattern = /^#\s+(?:\*\*)?([A-Z][A-Za-z0-9\s:'\-']+?)(?:\*\*)?$/m;
+  // Primary pattern: # TITLE or # "TITLE" (most reliable - this is how Claude formats titles)
+  const headerTitlePattern = /^#\s+(?:\*\*)?[""]?([A-Z][A-Za-z0-9\s:'\-']+?)[""]?(?:\*\*)?$/m;
 
   // Secondary patterns (fallbacks)
   const titleLabelPattern = /title:\s*["']?([^"'\n]+)["']?/i;

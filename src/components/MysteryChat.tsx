@@ -465,17 +465,17 @@ export default function MysteryChat({
                     rehypePlugins={[rehypeRaw]}
                     components={{
                       h1: ({node, ...props}) => <h1 className={cn(
-                        "font-bold mt-3 mb-2 text-foreground",
+                        "font-bold mt-3 mb-2 text-primary uppercase tracking-wide",
                         isMobile ? "text-lg" : "text-2xl"
-                      )} style={{ fontFamily: 'var(--font-body)', textTransform: 'none' }} {...props} />,
+                      )} style={{ fontFamily: 'var(--font-display)' }} {...props} />,
                       h2: ({node, ...props}) => <h2 className={cn(
-                        "font-semibold mt-2 mb-1 text-foreground",
+                        "font-semibold mt-3 mb-1 text-primary uppercase tracking-wide",
                         isMobile ? "text-base" : "text-xl"
-                      )} style={{ fontFamily: 'var(--font-body)', textTransform: 'none' }} {...props} />,
+                      )} style={{ fontFamily: 'var(--font-display)' }} {...props} />,
                       h3: ({node, ...props}) => <h3 className={cn(
                         "font-medium mt-2 mb-1 text-foreground",
                         isMobile ? "text-sm" : "text-lg"
-                      )} style={{ fontFamily: 'var(--font-body)', textTransform: 'none' }} {...props} />,
+                      )} {...props} />,
                       p: ({node, ...props}) => <p className="my-1 leading-relaxed text-foreground" {...props} />,
                       ul: ({node, ...props}) => <ul className={cn(
                         "list-disc my-2",
