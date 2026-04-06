@@ -2,6 +2,11 @@
 
 ## 2026-04-06
 
+### Fix: Attribution survey responses not persisting
+- UPDATE RLS policy on `profiles` was checking `auth.uid() = user_id` but `user_id` is NULL for all rows; actual auth column is `id`
+- Updated policy to `auth.uid() = id` so survey responses (and any profile updates) actually save
+- Previously the dialog would close but nothing was written, causing it to reappear on every Dashboard visit
+
 ### Feature: "How did you hear about us?" attribution survey
 - Added post-signup lightbox dialog that asks new users how they discovered the site
 - 8 visual source buttons (Google, YouTube, TikTok, Instagram, Reddit, Friend, Blog, Other) with icons and brand colors
