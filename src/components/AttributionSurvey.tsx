@@ -92,7 +92,7 @@ export default function AttributionSurvey({ open, onComplete, userId }: Attribut
   return (
     <Dialog open={open} onOpenChange={() => {}}>
       <DialogContent
-        className="sm:max-w-md"
+        className="sm:max-w-md [&>button:last-child]:hidden"
         style={{
           backgroundColor: "var(--color-charcoal)",
           border: "1px solid rgba(245,240,232,0.15)",

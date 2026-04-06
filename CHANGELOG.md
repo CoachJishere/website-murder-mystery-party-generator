@@ -9,6 +9,7 @@
 - Skip button for users who don't want to answer; response saved to `profiles` table
 - Fully translated across all 13 supported languages
 - Shows once on Dashboard for users who haven't completed it; tracked via `attribution_surveyed_at` column
+- Hidden X button to funnel users toward an explicit choice (pick source or skip)
 - GA4 event tracking for completions and skips
 
 ### Fix: Consolidate Stripe webhook to single endpoint
