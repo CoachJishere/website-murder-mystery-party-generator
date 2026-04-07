@@ -574,7 +574,8 @@
     "connectionErrorResponse": "J'ai actuellement des problèmes de connexion. Combien de joueurs aimeriez-vous pour votre mystère de meurtre ?",
     "placeholder": "Partagez votre idée de mystère...",
     "loadingMessages": "Chargement des anciens messages...",
-    "errors": {
+
+    "generatingConcept": "Création de votre concept de mystère — cela peut prendre jusqu'à 30 secondes...",    "errors": {
       "responseFailed": "Impossible de récupérer la réponse de l'IA. Veuillez réessayer.",
       "aiUnavailable": "Je suis désolé, j'ai actuellement du mal à vous répondre. Veuillez réessayer dans un instant."
     }

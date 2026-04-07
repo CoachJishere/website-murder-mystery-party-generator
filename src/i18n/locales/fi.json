@@ -573,7 +573,8 @@
     "connectionErrorResponse": "Minulla on tällä hetkellä yhteysongelmia. Kuinka monta pelaajaa haluaisit murhamysteeriisi?",
     "placeholder": "Jaa mysteeri-ideasi...",
     "loadingMessages": "Ladataan vanhoja viestejä...",
-    "errors": {
+
+    "generatingConcept": "Luodaan mysteeri-konseptia — tämä voi kestää jopa 30 sekuntia...",    "errors": {
       "responseFailed": "Tekoälyvastausta ei voitu noutaa. Yritä uudelleen.",
       "aiUnavailable": "Olen pahoillani, mutta minulla on tällä hetkellä vaikeuksia vastata. Yritä uudelleen hetken kuluttua."
     }

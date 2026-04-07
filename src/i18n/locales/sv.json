@@ -573,7 +573,8 @@
     "connectionErrorResponse": "I'm having trouble connecting right now. How many players do you want for your murder mystery?",
     "placeholder": "Share your ideas for the mystery...",
     "loadingMessages": "Loading previous messages...",
-    "errors": {
+
+    "generatingConcept": "Skapar ditt mysteriekoncept — detta kan ta upp till 30 sekunder...",    "errors": {
       "responseFailed": "Failed to get AI response. Please try again.",
       "aiUnavailable": "I apologize, but I'm having trouble responding right now. Please try again in a moment."
     }

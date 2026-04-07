@@ -1055,7 +1055,8 @@
     "connectionErrorResponse": "Estou tendo problemas de conexão no momento. Quantos jogadores você deseja para o seu mistério de assassinato?",
     "placeholder": "Compartilhe suas ideias para o mistério...",
     "loadingMessages": "Carregando mensagens anteriores...",
-    "errors": {
+
+    "generatingConcept": "Criando o conceito do seu mistério — isso pode levar até 30 segundos...",    "errors": {
       "responseFailed": "Falha ao obter resposta da IA. Por favor, tente novamente.",
       "aiUnavailable": "Desculpe, estou tendo dificuldades para responder no momento. Por favor, tente novamente em instantes."
     }

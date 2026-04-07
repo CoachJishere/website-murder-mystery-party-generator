@@ -114,6 +114,15 @@
     color: black !important;
   }
 
+  /* Use plain readable font for all headings in print — no display/decorative fonts */
+  h1, h2, h3, h4, h5, h6,
+  .prose h1, .prose h2, .prose h3, .prose h4,
+  .mystery-content h1, .mystery-content h2, .mystery-content h3,
+  .mystery-content h4, .mystery-content h5, .mystery-content h6 {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+    text-transform: none !important;
+  }
+
   .prose h1 {
     font-size: 20pt !important;
     margin-top: 0 !important;

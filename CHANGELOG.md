@@ -24,6 +24,15 @@
 - Switch component used `bg-input` for unchecked state which was near-black (0 0% 7%) on dark background
 - Changed to `bg-muted-foreground/30` with visible border so the toggle is clearly visible
 
+### UX: Show loading message during initial mystery concept generation
+- When AI generates the first mystery concept (~20s), now shows "Crafting your mystery concept — this can take up to 30 seconds..." beneath the typing dots
+- Only appears on the initial generation (no prior AI messages), not on subsequent back-and-forth
+- Translated across all 13 supported languages
+
+### Improvement: Print-friendly headings
+- Added `@media print` CSS rules to override display font (Bowlby One) with plain Inter/Helvetica for all headings
+- Web display keeps the stylized decorative headings; print/PDF output uses clean readable fonts
+
 ### Fix: Attribution survey responses not persisting
 - UPDATE RLS policy on `profiles` was checking `auth.uid() = user_id` but `user_id` is NULL for all rows; actual auth column is `id`
 - Updated policy to `auth.uid() = id` so survey responses (and any profile updates) actually save

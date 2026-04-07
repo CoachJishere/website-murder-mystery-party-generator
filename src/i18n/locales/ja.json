@@ -573,7 +573,8 @@
     "connectionErrorResponse": "現在接続に問題があります。何人のプレイヤーでミステリーを作成したいですか？",
     "placeholder": "ミステリーのアイデアを共有してください...",
     "loadingMessages": "以前のメッセージを読み込み中...",
-    "errors": {
+
+    "generatingConcept": "ミステリーコンセプトを作成中 — 最大30秒かかる場合があります...",    "errors": {
       "responseFailed": "AI応答の取得に失敗しました。もう一度お試しください。",
       "aiUnavailable": "申し訳ございませんが、現在応答できません。しばらくしてからもう一度お試しください。"
     }

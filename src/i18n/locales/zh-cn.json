@@ -1037,7 +1037,8 @@
     "connectionErrorResponse": "我目前连接遇到问题。您的谋杀悬疑游戏需要多少玩家？",
     "placeholder": "分享您对谜团的想法...",
     "loadingMessages": "正在加载之前的消息...",
-    "errors": {
+
+    "generatingConcept": "正在创建你的谜案概念 — 这可能需要最多30秒...",    "errors": {
       "responseFailed": "获取AI回应失败。请重试。",
       "aiUnavailable": "抱歉，我目前无法回应。请稍后再试。"
     }

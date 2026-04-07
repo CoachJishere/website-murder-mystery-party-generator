@@ -573,7 +573,8 @@
     "connectionErrorResponse": "Ik heb momenteel moeite met verbinden. Hoeveel spelers wilt u voor uw moordmysterie?",
     "placeholder": "Deel uw ideeën voor het mysterie...",
     "loadingMessages": "Vorige berichten laden...",
-    "errors": {
+
+    "generatingConcept": "Je mysterieconcept wordt gemaakt — dit kan tot 30 seconden duren...",    "errors": {
       "responseFailed": "AI-reactie ophalen mislukt. Probeer het opnieuw.",
       "aiUnavailable": "Mijn excuses, maar ik heb momenteel moeite met reageren. Probeer het over een moment opnieuw."
     }

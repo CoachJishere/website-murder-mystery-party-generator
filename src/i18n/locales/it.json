@@ -573,7 +573,8 @@
     "connectionErrorResponse": "Attualmente ho problemi di connessione. Quanti giocatori vorresti per il tuo mistero con delitto?",
     "placeholder": "Condividi la tua idea di mistero...",
     "loadingMessages": "Caricamento messaggi precedenti...",
-    "errors": {
+
+    "generatingConcept": "Creazione del tuo concetto di mistero — potrebbe richiedere fino a 30 secondi...",    "errors": {
       "responseFailed": "Impossibile recuperare la risposta AI. Riprova.",
       "aiUnavailable": "Mi dispiace, al momento ho difficoltà a risponderti. Riprova tra un istante."
     }

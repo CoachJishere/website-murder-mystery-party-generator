@@ -513,6 +513,12 @@ export default function MysteryChat({
                 <div className="h-3 w-3 rounded-full animate-bounce" style={{ backgroundColor: '#C81400', animationDelay: "150ms" }}></div>
                 <div className="h-3 w-3 rounded-full animate-bounce" style={{ backgroundColor: '#C81400', animationDelay: "300ms" }}></div>
               </div>
+              {/* Show helpful message during initial concept generation (no AI messages yet) */}
+              {!messages.some(m => m.is_ai) && (
+                <p className="text-xs sm:text-sm mt-2 opacity-70" style={{ color: 'var(--color-cream)' }}>
+                  {t('chat.generatingConcept', 'Crafting your mystery concept — this can take up to 30 seconds...')}
+                </p>
+              )}
             </div>
           </div>
         )}

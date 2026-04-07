@@ -573,7 +573,8 @@
     "connectionErrorResponse": "Ich habe derzeit Verbindungsprobleme. Wie viele Spieler möchten Sie für Ihr Krimi-Mysterium?",
     "placeholder": "Teilen Sie Ihre Mysterien-Ideen mit...",
     "loadingMessages": "Alte Nachrichten werden geladen...",
-    "errors": {
+
+    "generatingConcept": "Dein Mystery-Konzept wird erstellt — das kann bis zu 30 Sekunden dauern...",    "errors": {
       "responseFailed": "Fehler beim Abrufen der KI-Antwort. Bitte versuchen Sie es erneut.",
       "aiUnavailable": "Es tut mir leid, aber ich habe derzeit Probleme zu antworten. Bitte versuchen Sie es in Kürze erneut."
     }

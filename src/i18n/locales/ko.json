@@ -573,7 +573,8 @@
     "connectionErrorResponse": "지금 연결에 문제가 있습니다. 살인 미스터리에 몇 명의 플레이어를 원하시나요?",
     "placeholder": "미스터리에 대한 아이디어를 공유하세요...",
     "loadingMessages": "이전 메시지 불러오는 중...",
-    "errors": {
+
+    "generatingConcept": "미스터리 컨셉 생성 중 — 최대 30초가 소요될 수 있습니다...",    "errors": {
       "responseFailed": "AI 응답을 받는데 실패했습니다. 다시 시도하세요.",
       "aiUnavailable": "죄송합니다만, 지금 응답하는데 문제가 있습니다. 잠시 후 다시 시도하세요."
     }
