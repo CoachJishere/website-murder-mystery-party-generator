@@ -12,6 +12,11 @@
 - Added explicit instructions to system prompt: Inspector/Detective is the HOST role, not a player, and must never appear in the character list
 - All listed characters must be suspects with motives and secrets
 
+### Fix: Spurious "I apologize" error message after AI generates concept
+- AI was sometimes double-triggering a response after sending the concept, causing a failed request
+- Added guard: if the last message is already from the AI, don't send another request
+- Removed error message persistence to DB — transient errors now show as a toast notification only, not saved to conversation history
+
 ### Improvement: AI asks clarifying question even from form submissions
 - Previously, form submissions with player count skipped straight to concept generation
 - Now the AI evaluates whether the theme would benefit from one clarifying question (e.g., "1920s speakeasy" → asks about location/occasion)
