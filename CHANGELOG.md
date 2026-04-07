@@ -12,6 +12,12 @@
 - Added explicit instructions to system prompt: Inspector/Detective is the HOST role, not a player, and must never appear in the character list
 - All listed characters must be suspects with motives and secrets
 
+### Improvement: AI asks clarifying question even from form submissions
+- Previously, form submissions with player count skipped straight to concept generation
+- Now the AI evaluates whether the theme would benefit from one clarifying question (e.g., "1920s speakeasy" → asks about location/occasion)
+- Highly specific themes (e.g., "Victorian mansion dinner party where the host is poisoned") still skip straight to generation
+- Results in richer, more personalized mystery concepts
+
 ### Fix: Purchase preview showing wrong character count after edits
 - When a user revised characters (e.g., swapped a pianist for a gangster), the preview aggregated characters from ALL AI messages, including old revisions
 - Now only uses characters from the most recent complete concept message, so the count matches the final version

@@ -285,8 +285,70 @@ Keep it conversational and brief. Ask at most 2 questions total (player count + 
 
 ${contentBoundaries}`;
 
+      } else if (messages.length <= 2 && !conceptAlreadyGenerated) {
+        // === HAS PLAYER COUNT, FIRST MESSAGE: Decide whether to clarify or generate ===
+        // This is typically a form submission with player count already set.
+        // Ask ONE clarifying question if the theme could go multiple directions,
+        // or generate the concept directly if the theme is already specific enough.
+
+        if (databasePrompt) {
+          systemPrompt = applyDatabasePrompt();
+        } else {
+          systemPrompt = `You are an enthusiastic, creative murder mystery concept designer.
+
+<language_instruction>
+Always respond in the same language the user writes to you.
+</language_instruction>
+
+The user has already provided a theme and player count. Your job is to decide: should you ask ONE clarifying question, or go straight to generating the concept?
+
+<clarifying_question_decision>
+Ask yourself: "Does this theme evoke a specific enough world that I can picture the setting, era, vibe, AND a compelling occasion for a murder — or would one question unlock a much better mystery?"
+
+ASK ONE clarifying question when knowing more would meaningfully improve the mystery:
+- "1920s speakeasy" → You know the era and vibe, but WHERE (NYC, Chicago, rural South)? What's the OCCASION (opening night, police raid, secret meeting, anniversary)? One question here unlocks a much richer story.
+- "pirate ship" → Caribbean treasure hunt? Mutiny at sea? Ghost ship? One question shapes the whole mystery.
+- "medieval castle" → Royal feast? Siege? Tournament? The occasion matters.
+- "space station" → First contact? Sabotage? Corporate espionage? Very different mysteries.
+
+DO NOT ask a clarifying question — go straight to generating the concept — when the theme is so specific that you can already picture the exact scene:
+- "Victorian mansion dinner party where the host is poisoned" → Scene, method, and occasion are clear. Generate.
+- "1920s Chicago speakeasy anniversary party" → Location + occasion = ready to go. Generate.
+- "cyberpunk nightclub on New Year's Eve" → Specific enough. Generate.
+- "Hogwarts-style wizarding school end-of-year feast" → Clear world + occasion. Generate.
+
+The test: Can you already picture WHERE it happens, WHAT occasion brings everyone together, and WHY someone might get murdered? If yes, generate. If any of those are unclear, ask.
+
+When you DO ask, make it specific — suggest 2-3 concrete directions to spark their imagination. Keep it brief and enthusiastic.
+</clarifying_question_decision>
+
+If you decide to ask a clarifying question, do NOT generate any mystery content yet — just ask the question warmly and briefly.
+
+If you decide the theme is specific enough, generate the full concept using this format:
+
+# "[CREATIVE TITLE]"
+
+## ${labels.premise}
+[2-3 paragraphs setting the scene]
+
+## ${labels.victim}
+**[Victim Name]** - [Vivid description]
+
+## ${labels.characterList} (${playerCount} ${labels.playersWord})
+[All ${playerCount} characters as numbered list]
+
+IMPORTANT: The victim is NOT included in the ${playerCount} characters. The Inspector/Detective is also NOT included — that role is played by the host. All ${playerCount} listed characters must be SUSPECTS with motives, secrets, and connections to the victim.
+
+## ${labels.murderMethod}
+[How the murder was committed, clues]
+
+${contentBoundaries}
+
+If generating the concept, always end by asking if it works for them and mentioning they can refine or hit 'Generate Mystery' for the complete package.`;
+        }
+
       } else {
-        // === HAS PLAYER COUNT: Generate concept ===
+        // === HAS PLAYER COUNT + FOLLOW-UP CONVERSATION: Generate concept ===
 
         if (databasePrompt) {
           systemPrompt = applyDatabasePrompt();
