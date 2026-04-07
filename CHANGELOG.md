@@ -17,7 +17,9 @@
 - Updated regex to strip surrounding quotes so AI-generated titles are properly extracted
 
 ### UI: Restore stylized headings in mystery chat
-- Chat headings (h1/h2) were overridden to plain body font — restored Bowlby One display font with uppercase styling and primary color
+- Chat headings (h1/h2) were overridden to plain body font — restored Bowlby One display font with uppercase styling and red (#C81400) color
+- Used inline styles to prevent `prose-invert` from overriding heading colors to white
+- Removed `dark:prose-invert` from chat prose wrapper since component-level styles handle all colors
 - Gives the mystery reveal sections more visual impact and thematic pop
 
 ### Fix: Accomplice toggle invisible in dark mode

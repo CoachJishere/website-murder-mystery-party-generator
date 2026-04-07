@@ -458,20 +458,20 @@ export default function MysteryChat({
             >
               {message.is_ai ? (
                 <div className={cn(
-                  "prose prose-sm dark:prose-invert max-w-none",
+                  "prose prose-sm max-w-none",
                   isMobile && "text-sm leading-relaxed"
                 )}>
                   <ReactMarkdown 
                     rehypePlugins={[rehypeRaw]}
                     components={{
                       h1: ({node, ...props}) => <h1 className={cn(
-                        "font-bold mt-3 mb-2 text-primary uppercase tracking-wide",
+                        "font-bold mt-3 mb-2 uppercase tracking-wide",
                         isMobile ? "text-lg" : "text-2xl"
-                      )} style={{ fontFamily: 'var(--font-display)' }} {...props} />,
+                      )} style={{ fontFamily: 'var(--font-display)', color: '#C81400' }} {...props} />,
                       h2: ({node, ...props}) => <h2 className={cn(
-                        "font-semibold mt-3 mb-1 text-primary uppercase tracking-wide",
+                        "font-semibold mt-3 mb-1 uppercase tracking-wide",
                         isMobile ? "text-base" : "text-xl"
-                      )} style={{ fontFamily: 'var(--font-display)' }} {...props} />,
+                      )} style={{ fontFamily: 'var(--font-display)', color: '#C81400' }} {...props} />,
                       h3: ({node, ...props}) => <h3 className={cn(
                         "font-medium mt-2 mb-1 text-foreground",
                         isMobile ? "text-sm" : "text-lg"
