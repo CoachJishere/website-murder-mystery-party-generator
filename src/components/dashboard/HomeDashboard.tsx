@@ -197,6 +197,14 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
         try {
           const messages = conversation.messages || [];
           const aiTitle = extractTitleFromMessages(messages);
+          if (conversation.id === '723bc031-69cc-46c1-be19-7605391353d7') {
+            console.log('DEBUG title extraction:', {
+              msgCount: messages.length,
+              aiTitle,
+              dbTitle: conversation.title,
+              aiMsgs: messages.filter((m: any) => m.is_ai || m.role === 'assistant').map((m: any) => ({ role: m.role, is_ai: m.is_ai, contentStart: (m.content || '').substring(0, 80) }))
+            });
+          }
           const theme = conversation.theme || 'Mystery';
           const title = aiTitle || conversation.title || `${theme} Mystery`;
 
