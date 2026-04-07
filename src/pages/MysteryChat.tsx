@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import { supabase } from "@/lib/supabase";
 import MysteryChat from "@/components/MysteryChat";
+import { extractTitleFromMessages } from "@/utils/titleExtraction";
 import { useAuth } from "@/context/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -79,6 +80,17 @@ const MysteryChatPage = () => {
                 role: message.is_ai ? "assistant" : "user",
                 is_ai: message.is_ai
             });
+
+            // If this is an AI message, try to extract a title and update the conversation
+            if (message.is_ai) {
+                const extractedTitle = extractTitleFromMessages([message]);
+                if (extractedTitle) {
+                    await supabase
+                        .from("conversations")
+                        .update({ title: extractedTitle })
+                        .eq("id", id);
+                }
+            }
 
             // Update local messages state to keep button state in sync
             setMessages(prev => {

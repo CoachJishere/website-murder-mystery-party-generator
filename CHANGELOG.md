@@ -12,9 +12,10 @@
 - Added explicit instructions to system prompt: Inspector/Detective is the HOST role, not a player, and must never appear in the character list
 - All listed characters must be suspects with motives and secrets
 
-### Fix: Dashboard showing "New York, 10 players" instead of mystery title
-- Title extraction regex didn't handle quoted titles (e.g. `# "MURDER IN THE BIG APPLE"`)
-- Updated regex to strip surrounding quotes so AI-generated titles are properly extracted
+### Fix: Dashboard showing theme instead of mystery title
+- Title extraction regex didn't handle quoted titles (e.g. `# "MURDER IN THE BIG APPLE"`) — updated regex
+- Additionally: now updates the conversation `title` column in the DB when the AI generates a concept with a `# TITLE` header
+- Dashboard no longer depends solely on message-based extraction at render time — the title is persisted as soon as the AI generates it
 
 ### UI: Restore stylized headings in mystery chat
 - Chat headings (h1/h2) were overridden to plain body font — restored Bowlby One display font with uppercase styling and red (#C81400) color
