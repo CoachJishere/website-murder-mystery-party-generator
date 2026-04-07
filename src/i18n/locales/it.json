@@ -447,12 +447,12 @@
     "userRequestLabel": "Cosa vuoi creare",
     "userRequestDescription": "La tua richiesta iniziale dalla homepage",
     "themeLabel": "Dettagli del tema/ambientazione (opzionale)",
-
-    "themeLabelPrimary": "Descrivi il tuo mistero",    "themePlaceholder": "Es: epoca, dettagli specifici dell'ambientazione, elementi da includere, ecc.",
-
-    "themePlaceholderPrimary": "es., speakeasy degli anni '20, villa vittoriana, stazione spaziale...",    "themeDescription": "Scegli un tema o un'ambientazione specifica per il tuo mistero con delitto",
-
-    "themeDescriptionPrimary": "Quale tema, ambientazione o epoca vuoi per il tuo mistero con delitto?",    "playerCountLabel": "Quanti sospettati/personaggi?",
+    "themeLabelPrimary": "Descrivi il tuo mistero",
+    "themePlaceholder": "Es: epoca, dettagli specifici dell'ambientazione, elementi da includere, ecc.",
+    "themePlaceholderPrimary": "es., speakeasy degli anni '20, villa vittoriana, stazione spaziale...",
+    "themeDescription": "Scegli un tema o un'ambientazione specifica per il tuo mistero con delitto",
+    "themeDescriptionPrimary": "Quale tema, ambientazione o epoca vuoi per il tuo mistero con delitto?",
+    "playerCountLabel": "Quanti sospettati/personaggi?",
     "playerCountPlaceholder": "Seleziona il numero di sospettati",
     "playerCountItem": "{{count}} sospettati",
     "playerCountDescription": "Questo è il numero di personaggi sospettati nel tuo mistero, escluso l'ospite/detective.",
@@ -576,8 +576,8 @@
     "connectionErrorResponse": "Attualmente ho problemi di connessione. Quanti giocatori vorresti per il tuo mistero con delitto?",
     "placeholder": "Condividi la tua idea di mistero...",
     "loadingMessages": "Caricamento messaggi precedenti...",
-
-    "generatingConcept": "Creazione del tuo concetto di mistero — potrebbe richiedere fino a 30 secondi...",    "errors": {
+    "generatingConcept": "Creazione del tuo concetto di mistero — potrebbe richiedere fino a 30 secondi...",
+    "errors": {
       "responseFailed": "Impossibile recuperare la risposta AI. Riprova.",
       "aiUnavailable": "Mi dispiace, al momento ho difficoltà a risponderti. Riprova tra un istante."
     }
@@ -1048,10 +1048,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-10 minuti",
-      "medium": "15-30 minuti",
-      "large": "30-45 minuti",
-      "xlarge": "45-60 minuti"
+      "small": "5-8 minuti",
+      "medium": "8-12 minuti",
+      "large": "12-20 minuti",
+      "xlarge": "20-30 minuti"
     }
   },
   "attribution": {

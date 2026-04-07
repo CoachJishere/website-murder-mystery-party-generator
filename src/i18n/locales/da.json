@@ -447,12 +447,12 @@
     "userRequestLabel": "What you want to create",
     "userRequestDescription": "Your original request from the homepage",
     "themeLabel": "Theme/Setting Details (Optional)",
-
-    "themeLabelPrimary": "Beskriv dit mysterium",    "themePlaceholder": "e.g., time period, setting specifics, must-have's, etc.",
-
-    "themePlaceholderPrimary": "f.eks., 1920ernes speakeasy, victoriansk herregård, rumstation...",    "themeDescription": "Choose a specific theme or setting for your murder mystery",
-
-    "themeDescriptionPrimary": "Hvilket tema, miljø eller æra vil du have til dit mordmysterium?",    "playerCountLabel": "Hvor mange mistænkte/karakterer?",
+    "themeLabelPrimary": "Beskriv dit mysterium",
+    "themePlaceholder": "e.g., time period, setting specifics, must-have's, etc.",
+    "themePlaceholderPrimary": "f.eks., 1920ernes speakeasy, victoriansk herregård, rumstation...",
+    "themeDescription": "Choose a specific theme or setting for your murder mystery",
+    "themeDescriptionPrimary": "Hvilket tema, miljø eller æra vil du have til dit mordmysterium?",
+    "playerCountLabel": "Hvor mange mistænkte/karakterer?",
     "playerCountPlaceholder": "Vælg antal mistænkte",
     "playerCountItem": "{{count}} mistænkte",
     "playerCountDescription": "Dette er antallet af mistænkte karakterer i dit mysterium, eksklusive værten/detektiven.",
@@ -576,8 +576,8 @@
     "connectionErrorResponse": "I'm having trouble connecting right now. How many players do you want for your murder mystery?",
     "placeholder": "Share your ideas for the mystery...",
     "loadingMessages": "Loading previous messages...",
-
-    "generatingConcept": "Skaber dit mystery-koncept — dette kan tage op til 30 sekunder...",    "errors": {
+    "generatingConcept": "Skaber dit mystery-koncept — dette kan tage op til 30 sekunder...",
+    "errors": {
       "responseFailed": "Failed to get AI response. Please try again.",
       "aiUnavailable": "I apologize, but I'm having trouble responding right now. Please try again in a moment."
     }
@@ -932,10 +932,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-10 minutter",
-      "medium": "15-30 minutter",
-      "large": "30-45 minutter",
-      "xlarge": "45-60 minutter"
+      "small": "5-8 minutter",
+      "medium": "8-12 minutter",
+      "large": "12-20 minutter",
+      "xlarge": "20-30 minutter"
     }
   },
   "mysteryPackage": {

@@ -447,12 +447,12 @@
     "userRequestLabel": "作成したいもの",
     "userRequestDescription": "ホームページからの元のリクエスト",
     "themeLabel": "テーマ/設定の詳細（オプション）",
-
-    "themeLabelPrimary": "ミステリーを説明してください",    "themePlaceholder": "例: 時代、設定の詳細、必須事項など",
-
-    "themePlaceholderPrimary": "例：1920年代のスピークイージー、ヴィクトリア朝の邸宅、宇宙ステーション...",    "themeDescription": "殺人ミステリーの特定のテーマまたは設定を選択してください",
-
-    "themeDescriptionPrimary": "殺人ミステリーにどんなテーマ、設定、時代を希望しますか？",    "playerCountLabel": "容疑者/キャラクターは何人？",
+    "themeLabelPrimary": "ミステリーを説明してください",
+    "themePlaceholder": "例: 時代、設定の詳細、必須事項など",
+    "themePlaceholderPrimary": "例：1920年代のスピークイージー、ヴィクトリア朝の邸宅、宇宙ステーション...",
+    "themeDescription": "殺人ミステリーの特定のテーマまたは設定を選択してください",
+    "themeDescriptionPrimary": "殺人ミステリーにどんなテーマ、設定、時代を希望しますか？",
+    "playerCountLabel": "容疑者/キャラクターは何人？",
     "playerCountPlaceholder": "容疑者の人数を選択",
     "playerCountItem": "{{count}}人の容疑者",
     "playerCountDescription": "ミステリーに登場する容疑者キャラクターの人数です。ホスト/探偵は含まれません。",
@@ -576,8 +576,8 @@
     "connectionErrorResponse": "現在接続に問題があります。何人のプレイヤーでミステリーを作成したいですか？",
     "placeholder": "ミステリーのアイデアを共有してください...",
     "loadingMessages": "以前のメッセージを読み込み中...",
-
-    "generatingConcept": "ミステリーコンセプトを作成中 — 最大30秒かかる場合があります...",    "errors": {
+    "generatingConcept": "ミステリーコンセプトを作成中 — 最大30秒かかる場合があります...",
+    "errors": {
       "responseFailed": "AI応答の取得に失敗しました。もう一度お試しください。",
       "aiUnavailable": "申し訳ございませんが、現在応答できません。しばらくしてからもう一度お試しください。"
     }
@@ -932,10 +932,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-10分",
-      "medium": "15-30分",
-      "large": "30-45分",
-      "xlarge": "45-60分"
+      "small": "5-8分",
+      "medium": "8-12分",
+      "large": "12-20分",
+      "xlarge": "20-30分"
     }
   },
   "mysteryPackage": {

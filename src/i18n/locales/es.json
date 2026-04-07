@@ -447,12 +447,12 @@
     "userRequestLabel": "Lo que quieres crear",
     "userRequestDescription": "Tu solicitud original desde la página de inicio",
     "themeLabel": "Detalles del Tema/Entorno (Opcional)",
-
-    "themeLabelPrimary": "Describe tu misterio",    "themePlaceholder": "Ej., período de tiempo, detalles específicos del entorno, elementos imprescindibles, etc.",
-
-    "themePlaceholderPrimary": "ej., speakeasy de los años 20, mansión victoriana, estación espacial...",    "themeDescription": "Elige un tema o entorno específico para tu misterio de asesinato",
-
-    "themeDescriptionPrimary": "¿Qué tema, escenario o época quieres para tu misterio de asesinato?",    "playerCountLabel": "¿Cuántos sospechosos/personajes?",
+    "themeLabelPrimary": "Describe tu misterio",
+    "themePlaceholder": "Ej., período de tiempo, detalles específicos del entorno, elementos imprescindibles, etc.",
+    "themePlaceholderPrimary": "ej., speakeasy de los años 20, mansión victoriana, estación espacial...",
+    "themeDescription": "Elige un tema o entorno específico para tu misterio de asesinato",
+    "themeDescriptionPrimary": "¿Qué tema, escenario o época quieres para tu misterio de asesinato?",
+    "playerCountLabel": "¿Cuántos sospechosos/personajes?",
     "playerCountPlaceholder": "Seleccionar número de sospechosos",
     "playerCountItem": "{{count}} sospechosos",
     "playerCountDescription": "Este es el número de personajes sospechosos en tu misterio, sin incluir al anfitrión/detective.",
@@ -576,8 +576,8 @@
     "connectionErrorResponse": "Estoy teniendo problemas para conectarme en este momento. ¿Cuántos jugadores quieres para tu misterio de asesinato?",
     "placeholder": "Comparte tus ideas para el misterio...",
     "loadingMessages": "Cargando mensajes anteriores...",
-
-    "generatingConcept": "Creando tu concepto de misterio — esto puede tardar hasta 30 segundos...",    "errors": {
+    "generatingConcept": "Creando tu concepto de misterio — esto puede tardar hasta 30 segundos...",
+    "errors": {
       "responseFailed": "Error al obtener respuesta de IA. Por favor, inténtalo de nuevo.",
       "aiUnavailable": "Lo siento, pero estoy teniendo problemas para responder en este momento. Por favor, inténtalo de nuevo en un momento."
     }
@@ -1048,10 +1048,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-10 minutos",
-      "medium": "15-30 minutos",
-      "large": "30-45 minutos",
-      "xlarge": "45-60 minutos"
+      "small": "5-8 minutos",
+      "medium": "8-12 minutos",
+      "large": "12-20 minutos",
+      "xlarge": "20-30 minutos"
     }
   },
   "attribution": {

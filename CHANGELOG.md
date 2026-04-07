@@ -12,6 +12,9 @@
 - Added explicit instructions to system prompt: Inspector/Detective is the HOST role, not a player, and must never appear in the character list
 - All listed characters must be suspects with motives and secrets
 
+### Improvement: Updated generation time estimates to match actual performance
+- Small (≤6 players): 5-8 min (was 5-10), Medium (7-12): 8-12 min (was 15-30), Large (13-20): 12-20 min (was 30-45), XL (21+): 20-30 min (was 45-60)
+
 ### Fix: Spurious "I apologize" error message after AI generates concept
 - AI was sometimes double-triggering a response after sending the concept, causing a failed request
 - Added guard: if the last message is already from the AI, don't send another request

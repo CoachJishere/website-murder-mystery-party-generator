@@ -447,12 +447,12 @@
     "userRequestLabel": "만들고 싶은 것",
     "userRequestDescription": "홈페이지에서의 원래 요청",
     "themeLabel": "테마/설정 세부정보 (선택사항)",
-
-    "themeLabelPrimary": "미스터리를 설명하세요",    "themePlaceholder": "예: 시대, 설정 세부사항, 필수 사항 등",
-
-    "themePlaceholderPrimary": "예: 1920년대 스피크이지, 빅토리아 시대 저택, 우주 정거장...",    "themeDescription": "살인 미스터리의 특정 테마 또는 설정을 선택하세요",
-
-    "themeDescriptionPrimary": "살인 미스터리에 어떤 테마, 배경, 시대를 원하시나요?",    "playerCountLabel": "용의자/캐릭터는 몇 명인가요?",
+    "themeLabelPrimary": "미스터리를 설명하세요",
+    "themePlaceholder": "예: 시대, 설정 세부사항, 필수 사항 등",
+    "themePlaceholderPrimary": "예: 1920년대 스피크이지, 빅토리아 시대 저택, 우주 정거장...",
+    "themeDescription": "살인 미스터리의 특정 테마 또는 설정을 선택하세요",
+    "themeDescriptionPrimary": "살인 미스터리에 어떤 테마, 배경, 시대를 원하시나요?",
+    "playerCountLabel": "용의자/캐릭터는 몇 명인가요?",
     "playerCountPlaceholder": "용의자 수 선택",
     "playerCountItem": "{{count}}명의 용의자",
     "playerCountDescription": "미스터리에 등장하는 용의자 캐릭터 수입니다. 호스트/탐정은 포함되지 않습니다.",
@@ -576,8 +576,8 @@
     "connectionErrorResponse": "지금 연결에 문제가 있습니다. 살인 미스터리에 몇 명의 플레이어를 원하시나요?",
     "placeholder": "미스터리에 대한 아이디어를 공유하세요...",
     "loadingMessages": "이전 메시지 불러오는 중...",
-
-    "generatingConcept": "미스터리 컨셉 생성 중 — 최대 30초가 소요될 수 있습니다...",    "errors": {
+    "generatingConcept": "미스터리 컨셉 생성 중 — 최대 30초가 소요될 수 있습니다...",
+    "errors": {
       "responseFailed": "AI 응답을 받는데 실패했습니다. 다시 시도하세요.",
       "aiUnavailable": "죄송합니다만, 지금 응답하는데 문제가 있습니다. 잠시 후 다시 시도하세요."
     }
@@ -932,10 +932,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-10분",
-      "medium": "15-30분",
-      "large": "30-45분",
-      "xlarge": "45-60분"
+      "small": "5-8분",
+      "medium": "8-12분",
+      "large": "12-20분",
+      "xlarge": "20-30분"
     }
   },
   "mysteryPackage": {

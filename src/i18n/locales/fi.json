@@ -447,12 +447,12 @@
     "userRequestLabel": "Mitä haluat luoda",
     "userRequestDescription": "Alkuperäinen pyyntösi aloitussivulta",
     "themeLabel": "Teeman/ympäristön tiedot (valinnainen)",
-
-    "themeLabelPrimary": "Kuvaile mysteerisi",    "themePlaceholder": "Esim. aikakausi, tietyt ympäristötiedot, pakolliset asiat jne.",
-
-    "themePlaceholderPrimary": "esim., 1920-luvun speakeasy, viktoriaaninen kartano, avaruusasema...",    "themeDescription": "Valitse tietty teema tai ympäristö murhamysteeriisi",
-
-    "themeDescriptionPrimary": "Mikä teema, ympäristö tai aikakausi haluat murhamysteeriisi?",    "playerCountLabel": "Kuinka monta epäiltyä/hahmoa?",
+    "themeLabelPrimary": "Kuvaile mysteerisi",
+    "themePlaceholder": "Esim. aikakausi, tietyt ympäristötiedot, pakolliset asiat jne.",
+    "themePlaceholderPrimary": "esim., 1920-luvun speakeasy, viktoriaaninen kartano, avaruusasema...",
+    "themeDescription": "Valitse tietty teema tai ympäristö murhamysteeriisi",
+    "themeDescriptionPrimary": "Mikä teema, ympäristö tai aikakausi haluat murhamysteeriisi?",
+    "playerCountLabel": "Kuinka monta epäiltyä/hahmoa?",
     "playerCountPlaceholder": "Valitse epäiltyjen määrä",
     "playerCountItem": "{{count}} epäiltyä",
     "playerCountDescription": "Tämä on epäiltyjen hahmojen määrä mysteerissäsi, ilman isäntää/etsivää.",
@@ -576,8 +576,8 @@
     "connectionErrorResponse": "Minulla on tällä hetkellä yhteysongelmia. Kuinka monta pelaajaa haluaisit murhamysteeriisi?",
     "placeholder": "Jaa mysteeri-ideasi...",
     "loadingMessages": "Ladataan vanhoja viestejä...",
-
-    "generatingConcept": "Luodaan mysteeri-konseptia — tämä voi kestää jopa 30 sekuntia...",    "errors": {
+    "generatingConcept": "Luodaan mysteeri-konseptia — tämä voi kestää jopa 30 sekuntia...",
+    "errors": {
       "responseFailed": "Tekoälyvastausta ei voitu noutaa. Yritä uudelleen.",
       "aiUnavailable": "Olen pahoillani, mutta minulla on tällä hetkellä vaikeuksia vastata. Yritä uudelleen hetken kuluttua."
     }
@@ -1030,10 +1030,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-10 minuuttia",
-      "medium": "15-30 minuuttia",
-      "large": "30-45 minuuttia",
-      "xlarge": "45-60 minuuttia"
+      "small": "5-8 minuuttia",
+      "medium": "8-12 minuuttia",
+      "large": "12-20 minuuttia",
+      "xlarge": "20-30 minuuttia"
     }
   },
   "hostAccess": {

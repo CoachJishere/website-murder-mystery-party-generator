@@ -447,12 +447,12 @@
     "userRequestLabel": "Was Sie erstellen möchten",
     "userRequestDescription": "Ihre ursprüngliche Anfrage von der Startseite",
     "themeLabel": "Thema/Umgebungsdetails (Optional)",
-
-    "themeLabelPrimary": "Beschreibe dein Mysterium",    "themePlaceholder": "Z.B. Zeitperiode, spezifische Umgebungsdetails, Must-Haves, etc.",
-
-    "themePlaceholderPrimary": "z.B., 1920er Speakeasy, viktorianisches Herrenhaus, Raumstation...",    "themeDescription": "Wählen Sie ein spezifisches Thema oder eine Umgebung für Ihr Krimi-Mysterium",
-
-    "themeDescriptionPrimary": "Welches Thema, Setting oder Zeitalter möchtest du für dein Krimi-Mysterium?",    "playerCountLabel": "Wie viele Verdächtige/Charaktere?",
+    "themeLabelPrimary": "Beschreibe dein Mysterium",
+    "themePlaceholder": "Z.B. Zeitperiode, spezifische Umgebungsdetails, Must-Haves, etc.",
+    "themePlaceholderPrimary": "z.B., 1920er Speakeasy, viktorianisches Herrenhaus, Raumstation...",
+    "themeDescription": "Wählen Sie ein spezifisches Thema oder eine Umgebung für Ihr Krimi-Mysterium",
+    "themeDescriptionPrimary": "Welches Thema, Setting oder Zeitalter möchtest du für dein Krimi-Mysterium?",
+    "playerCountLabel": "Wie viele Verdächtige/Charaktere?",
     "playerCountPlaceholder": "Anzahl der Verdächtigen auswählen",
     "playerCountItem": "{{count}} Verdächtige",
     "playerCountDescription": "Dies ist die Anzahl der verdächtigen Charaktere in Ihrem Mysterium, ohne den Gastgeber/Detektiv.",
@@ -576,8 +576,8 @@
     "connectionErrorResponse": "Ich habe derzeit Verbindungsprobleme. Wie viele Spieler möchten Sie für Ihr Krimi-Mysterium?",
     "placeholder": "Teilen Sie Ihre Mysterien-Ideen mit...",
     "loadingMessages": "Alte Nachrichten werden geladen...",
-
-    "generatingConcept": "Dein Mystery-Konzept wird erstellt — das kann bis zu 30 Sekunden dauern...",    "errors": {
+    "generatingConcept": "Dein Mystery-Konzept wird erstellt — das kann bis zu 30 Sekunden dauern...",
+    "errors": {
       "responseFailed": "Fehler beim Abrufen der KI-Antwort. Bitte versuchen Sie es erneut.",
       "aiUnavailable": "Es tut mir leid, aber ich habe derzeit Probleme zu antworten. Bitte versuchen Sie es in Kürze erneut."
     }
@@ -1030,10 +1030,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-10 Minuten",
-      "medium": "15-30 Minuten",
-      "large": "30-45 Minuten",
-      "xlarge": "45-60 Minuten"
+      "small": "5-8 Minuten",
+      "medium": "8-12 Minuten",
+      "large": "12-20 Minuten",
+      "xlarge": "20-30 Minuten"
     }
   },
   "hostAccess": {
