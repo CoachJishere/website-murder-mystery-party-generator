@@ -12,6 +12,10 @@
 - Added explicit instructions to system prompt: Inspector/Detective is the HOST role, not a player, and must never appear in the character list
 - All listed characters must be suspects with motives and secrets
 
+### Fix: Purchase preview showing wrong character count after edits
+- When a user revised characters (e.g., swapped a pianist for a gangster), the preview aggregated characters from ALL AI messages, including old revisions
+- Now only uses characters from the most recent complete concept message, so the count matches the final version
+
 ### Fix: Dashboard showing theme instead of mystery title
 - Title extraction regex didn't handle quoted titles (e.g. `# "MURDER IN THE BIG APPLE"`) — updated regex
 - Additionally: now updates the conversation `title` column in the DB when the AI generates a concept with a `# TITLE` header

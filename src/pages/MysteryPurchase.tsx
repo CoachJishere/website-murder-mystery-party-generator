@@ -299,27 +299,19 @@ const MysteryPurchase = () => {
           }
 
           if (detailedMessage) {
-            // Aggregate characters across ALL AI messages (not just one)
-            // to catch characters spread across multiple messages/pages
-            const charMap = new Map<string, Character>();
-            for (const msg of aiMessages) {
-              const chars = parseCharacters(msg.content);
-              for (const c of chars) {
-                charMap.set(c.name.toLowerCase(), c);
-              }
-            }
-            const allCharacters = Array.from(charMap.values());
+            // Use the most recent complete concept message for characters
+            // (not all messages — older revisions may have replaced characters)
+            const characters = parseCharacters(detailedMessage.content);
 
             const details: ParsedMysteryDetails = {
               premise: extractPremise(detailedMessage.content),
               overview: extractGameOverview(detailedMessage.content),
-              characters: allCharacters.length > 0 ? allCharacters : parseCharacters(detailedMessage.content),
+              characters,
               evidence: parseEvidence(detailedMessage.content)
             };
 
             setParsedDetails(details);
-            console.log("Extracted details:", details);
-            console.log(`Aggregated ${allCharacters.length} characters across ${aiMessages.length} AI messages`);
+            console.log("Extracted details from latest concept:", details);
           }
         }
       } catch (error) {
