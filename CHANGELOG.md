@@ -24,8 +24,13 @@
 - Gives the mystery reveal sections more visual impact and thematic pop
 
 ### Fix: Accomplice toggle invisible in dark mode
-- Switch component used `bg-input` for unchecked state which was near-black (0 0% 7%) on dark background
-- Changed to `bg-muted-foreground/30` with visible border so the toggle is clearly visible
+- Switch component used near-black background for unchecked state on dark background
+- Now uses explicit cream-tinted rgba values (15% fill, 40% border) for clear visibility in dark mode
+
+### UX: Improve "Create New Mystery" form from dashboard
+- When creating from the dashboard (no hero input), the theme field now shows "Describe Your Mystery" with an inviting placeholder
+- When creating from the homepage (with hero input), the theme field keeps its secondary "Theme/Setting Details (Optional)" label
+- Translated across all 13 supported languages
 
 ### UX: Show loading message during initial mystery concept generation
 - When AI generates the first mystery concept (~20s), now shows "Crafting your mystery concept — this can take up to 30 seconds..." beneath the typing dots

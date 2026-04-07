@@ -447,9 +447,12 @@
     "userRequestLabel": "Was Sie erstellen möchten",
     "userRequestDescription": "Ihre ursprüngliche Anfrage von der Startseite",
     "themeLabel": "Thema/Umgebungsdetails (Optional)",
-    "themePlaceholder": "Z.B. Zeitperiode, spezifische Umgebungsdetails, Must-Haves, etc.",
-    "themeDescription": "Wählen Sie ein spezifisches Thema oder eine Umgebung für Ihr Krimi-Mysterium",
-    "playerCountLabel": "Wie viele Verdächtige/Charaktere?",
+
+    "themeLabelPrimary": "Beschreibe dein Mysterium",    "themePlaceholder": "Z.B. Zeitperiode, spezifische Umgebungsdetails, Must-Haves, etc.",
+
+    "themePlaceholderPrimary": "z.B., 1920er Speakeasy, viktorianisches Herrenhaus, Raumstation...",    "themeDescription": "Wählen Sie ein spezifisches Thema oder eine Umgebung für Ihr Krimi-Mysterium",
+
+    "themeDescriptionPrimary": "Welches Thema, Setting oder Zeitalter möchtest du für dein Krimi-Mysterium?",    "playerCountLabel": "Wie viele Verdächtige/Charaktere?",
     "playerCountPlaceholder": "Anzahl der Verdächtigen auswählen",
     "playerCountItem": "{{count}} Verdächtige",
     "playerCountDescription": "Dies ist die Anzahl der verdächtigen Charaktere in Ihrem Mysterium, ohne den Gastgeber/Detektiv.",

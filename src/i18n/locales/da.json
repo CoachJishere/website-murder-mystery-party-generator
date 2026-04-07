@@ -447,9 +447,12 @@
     "userRequestLabel": "What you want to create",
     "userRequestDescription": "Your original request from the homepage",
     "themeLabel": "Theme/Setting Details (Optional)",
-    "themePlaceholder": "e.g., time period, setting specifics, must-have's, etc.",
-    "themeDescription": "Choose a specific theme or setting for your murder mystery",
-    "playerCountLabel": "Hvor mange mistænkte/karakterer?",
+
+    "themeLabelPrimary": "Beskriv dit mysterium",    "themePlaceholder": "e.g., time period, setting specifics, must-have's, etc.",
+
+    "themePlaceholderPrimary": "f.eks., 1920ernes speakeasy, victoriansk herregård, rumstation...",    "themeDescription": "Choose a specific theme or setting for your murder mystery",
+
+    "themeDescriptionPrimary": "Hvilket tema, miljø eller æra vil du have til dit mordmysterium?",    "playerCountLabel": "Hvor mange mistænkte/karakterer?",
     "playerCountPlaceholder": "Vælg antal mistænkte",
     "playerCountItem": "{{count}} mistænkte",
     "playerCountDescription": "Dette er antallet af mistænkte karakterer i dit mysterium, eksklusive værten/detektiven.",

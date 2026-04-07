@@ -447,9 +447,12 @@
     "userRequestLabel": "What you want to create",
     "userRequestDescription": "Your original request from the homepage",
     "themeLabel": "Theme/Setting Details (Optional)",
-    "themePlaceholder": "e.g., time period, setting specifics, must-have's, etc.",
-    "themeDescription": "Choose a specific theme or setting for your murder mystery",
-    "playerCountLabel": "Hur många misstänkta/karaktärer?",
+
+    "themeLabelPrimary": "Beskriv ditt mysterium",    "themePlaceholder": "e.g., time period, setting specifics, must-have's, etc.",
+
+    "themePlaceholderPrimary": "t.ex., 1920-talets speakeasy, viktoriansk herrgård, rymdstation...",    "themeDescription": "Choose a specific theme or setting for your murder mystery",
+
+    "themeDescriptionPrimary": "Vilket tema, miljö eller era vill du ha för ditt mordmysterium?",    "playerCountLabel": "Hur många misstänkta/karaktärer?",
     "playerCountPlaceholder": "Välj antal misstänkta",
     "playerCountItem": "{{count}} misstänkta",
     "playerCountDescription": "Detta är antalet misstänkta karaktärer i ditt mysterium, exklusive värden/detektiven.",

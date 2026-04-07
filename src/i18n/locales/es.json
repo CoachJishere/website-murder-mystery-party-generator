@@ -447,9 +447,12 @@
     "userRequestLabel": "Lo que quieres crear",
     "userRequestDescription": "Tu solicitud original desde la página de inicio",
     "themeLabel": "Detalles del Tema/Entorno (Opcional)",
-    "themePlaceholder": "Ej., período de tiempo, detalles específicos del entorno, elementos imprescindibles, etc.",
-    "themeDescription": "Elige un tema o entorno específico para tu misterio de asesinato",
-    "playerCountLabel": "¿Cuántos sospechosos/personajes?",
+
+    "themeLabelPrimary": "Describe tu misterio",    "themePlaceholder": "Ej., período de tiempo, detalles específicos del entorno, elementos imprescindibles, etc.",
+
+    "themePlaceholderPrimary": "ej., speakeasy de los años 20, mansión victoriana, estación espacial...",    "themeDescription": "Elige un tema o entorno específico para tu misterio de asesinato",
+
+    "themeDescriptionPrimary": "¿Qué tema, escenario o época quieres para tu misterio de asesinato?",    "playerCountLabel": "¿Cuántos sospechosos/personajes?",
     "playerCountPlaceholder": "Seleccionar número de sospechosos",
     "playerCountItem": "{{count}} sospechosos",
     "playerCountDescription": "Este es el número de personajes sospechosos en tu misterio, sin incluir al anfitrión/detective.",

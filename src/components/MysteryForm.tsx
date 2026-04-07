@@ -113,16 +113,24 @@ const MysteryForm = ({
           name="theme"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm sm:text-base font-medium">{t('mysteryForm.themeLabel')}</FormLabel>
+              <FormLabel className="text-sm sm:text-base font-medium">
+                {initialData?.userRequest
+                  ? t('mysteryForm.themeLabel')
+                  : t('mysteryForm.themeLabelPrimary', 'Describe Your Mystery')}
+              </FormLabel>
               <FormControl>
-                <Input 
-                  placeholder={t('mysteryForm.themePlaceholder')} 
+                <Input
+                  placeholder={initialData?.userRequest
+                    ? t('mysteryForm.themePlaceholder')
+                    : t('mysteryForm.themePlaceholderPrimary', 'e.g., 1920s speakeasy, Victorian mansion, space station...')}
                   className="text-sm sm:text-base h-10 sm:h-auto"
-                  {...field} 
+                  {...field}
                 />
               </FormControl>
               <FormDescription className="text-xs sm:text-sm">
-                {t('mysteryForm.themeDescription')}
+                {initialData?.userRequest
+                  ? t('mysteryForm.themeDescription')
+                  : t('mysteryForm.themeDescriptionPrimary', 'What theme, setting, or era do you want for your murder mystery?')}
               </FormDescription>
               <FormMessage />
             </FormItem>

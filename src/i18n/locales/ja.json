@@ -447,9 +447,12 @@
     "userRequestLabel": "作成したいもの",
     "userRequestDescription": "ホームページからの元のリクエスト",
     "themeLabel": "テーマ/設定の詳細（オプション）",
-    "themePlaceholder": "例: 時代、設定の詳細、必須事項など",
-    "themeDescription": "殺人ミステリーの特定のテーマまたは設定を選択してください",
-    "playerCountLabel": "容疑者/キャラクターは何人？",
+
+    "themeLabelPrimary": "ミステリーを説明してください",    "themePlaceholder": "例: 時代、設定の詳細、必須事項など",
+
+    "themePlaceholderPrimary": "例：1920年代のスピークイージー、ヴィクトリア朝の邸宅、宇宙ステーション...",    "themeDescription": "殺人ミステリーの特定のテーマまたは設定を選択してください",
+
+    "themeDescriptionPrimary": "殺人ミステリーにどんなテーマ、設定、時代を希望しますか？",    "playerCountLabel": "容疑者/キャラクターは何人？",
     "playerCountPlaceholder": "容疑者の人数を選択",
     "playerCountItem": "{{count}}人の容疑者",
     "playerCountDescription": "ミステリーに登場する容疑者キャラクターの人数です。ホスト/探偵は含まれません。",

@@ -447,9 +447,12 @@
     "userRequestLabel": "Wat u wilt creëren",
     "userRequestDescription": "Uw originele aanvraag vanaf de startpagina",
     "themeLabel": "Thema/Setting Details (Optioneel)",
-    "themePlaceholder": "bijv. tijdsperiode, specifieke setting, must-haves, etc.",
-    "themeDescription": "Kies een specifiek thema of setting voor uw moordmysterie",
-    "playerCountLabel": "Hoeveel verdachten/personages?",
+
+    "themeLabelPrimary": "Beschrijf je mysterie",    "themePlaceholder": "bijv. tijdsperiode, specifieke setting, must-haves, etc.",
+
+    "themePlaceholderPrimary": "bijv., speakeasy uit de jaren '20, Victoriaans landhuis, ruimtestation...",    "themeDescription": "Kies een specifiek thema of setting voor uw moordmysterie",
+
+    "themeDescriptionPrimary": "Welk thema, setting of tijdperk wil je voor je moordmysterie?",    "playerCountLabel": "Hoeveel verdachten/personages?",
     "playerCountPlaceholder": "Selecteer aantal verdachten",
     "playerCountItem": "{{count}} verdachten",
     "playerCountDescription": "Dit is het aantal verdachte personages in uw mysterie, exclusief de gastheer/detective.",

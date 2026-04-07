@@ -447,9 +447,12 @@
     "userRequestLabel": "Mitä haluat luoda",
     "userRequestDescription": "Alkuperäinen pyyntösi aloitussivulta",
     "themeLabel": "Teeman/ympäristön tiedot (valinnainen)",
-    "themePlaceholder": "Esim. aikakausi, tietyt ympäristötiedot, pakolliset asiat jne.",
-    "themeDescription": "Valitse tietty teema tai ympäristö murhamysteeriisi",
-    "playerCountLabel": "Kuinka monta epäiltyä/hahmoa?",
+
+    "themeLabelPrimary": "Kuvaile mysteerisi",    "themePlaceholder": "Esim. aikakausi, tietyt ympäristötiedot, pakolliset asiat jne.",
+
+    "themePlaceholderPrimary": "esim., 1920-luvun speakeasy, viktoriaaninen kartano, avaruusasema...",    "themeDescription": "Valitse tietty teema tai ympäristö murhamysteeriisi",
+
+    "themeDescriptionPrimary": "Mikä teema, ympäristö tai aikakausi haluat murhamysteeriisi?",    "playerCountLabel": "Kuinka monta epäiltyä/hahmoa?",
     "playerCountPlaceholder": "Valitse epäiltyjen määrä",
     "playerCountItem": "{{count}} epäiltyä",
     "playerCountDescription": "Tämä on epäiltyjen hahmojen määrä mysteerissäsi, ilman isäntää/etsivää.",

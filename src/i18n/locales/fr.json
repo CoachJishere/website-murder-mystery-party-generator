@@ -448,9 +448,12 @@
     "userRequestLabel": "Ce que vous voulez créer",
     "userRequestDescription": "Votre demande initiale de la page d'accueil",
     "themeLabel": "Détails du thème/cadre (facultatif)",
-    "themePlaceholder": "Ex : époque, détails spécifiques du cadre, éléments à inclure, etc.",
-    "themeDescription": "Choisissez un thème ou un cadre spécifique pour votre mystère de meurtre",
-    "playerCountLabel": "Combien de suspects/personnages ?",
+
+    "themeLabelPrimary": "Décrivez votre mystère",    "themePlaceholder": "Ex : époque, détails spécifiques du cadre, éléments à inclure, etc.",
+
+    "themePlaceholderPrimary": "ex., speakeasy des années 1920, manoir victorien, station spatiale...",    "themeDescription": "Choisissez un thème ou un cadre spécifique pour votre mystère de meurtre",
+
+    "themeDescriptionPrimary": "Quel thème, cadre ou époque voulez-vous pour votre mystère de meurtre ?",    "playerCountLabel": "Combien de suspects/personnages ?",
     "playerCountPlaceholder": "Sélectionner le nombre de suspects",
     "playerCountItem": "{{count}} suspects",
     "playerCountDescription": "C'est le nombre de personnages suspects dans votre mystère, sans compter l'hôte/détective.",

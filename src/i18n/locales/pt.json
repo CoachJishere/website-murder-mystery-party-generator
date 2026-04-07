@@ -448,9 +448,12 @@
     "userRequestLabel": "O que você deseja criar",
     "userRequestDescription": "Seu pedido original da página inicial",
     "themeLabel": "Detalhes do Tema/Cenário (Opcional)",
-    "themePlaceholder": "ex: período de tempo, cenário específico, itens obrigatórios, etc.",
-    "themeDescription": "Escolha um tema ou cenário específico para o seu mistério de assassinato",
-    "playerCountLabel": "Quantos suspeitos/personagens?",
+
+    "themeLabelPrimary": "Descreva seu mistério",    "themePlaceholder": "ex: período de tempo, cenário específico, itens obrigatórios, etc.",
+
+    "themePlaceholderPrimary": "ex., speakeasy dos anos 1920, mansão vitoriana, estação espacial...",    "themeDescription": "Escolha um tema ou cenário específico para o seu mistério de assassinato",
+
+    "themeDescriptionPrimary": "Qual tema, cenário ou época você quer para seu mistério de assassinato?",    "playerCountLabel": "Quantos suspeitos/personagens?",
     "playerCountPlaceholder": "Selecionar número de suspeitos",
     "playerCountItem": "{{count}} suspeitos",
     "playerCountDescription": "Este é o número de personagens suspeitos no seu mistério, sem incluir o anfitrião/detetive.",

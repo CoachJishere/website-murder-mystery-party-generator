@@ -447,9 +447,12 @@
     "userRequestLabel": "您想创建什么",
     "userRequestDescription": "您在主页上的原始请求",
     "themeLabel": "主题/设定细节（可选）",
-    "themePlaceholder": "例如，时代，特定环境，必需物品等。",
-    "themeDescription": "为您的谋杀悬疑故事选择一个特定的主题或设定",
-    "playerCountLabel": "多少个嫌疑人/角色？",
+
+    "themeLabelPrimary": "描述你的谜案",    "themePlaceholder": "例如，时代，特定环境，必需物品等。",
+
+    "themePlaceholderPrimary": "例如：1920年代地下酒吧、维多利亚式庄园、太空站...",    "themeDescription": "为您的谋杀悬疑故事选择一个特定的主题或设定",
+
+    "themeDescriptionPrimary": "你想为你的谋杀悬疑故事设定什么主题、场景或时代？",    "playerCountLabel": "多少个嫌疑人/角色？",
     "playerCountPlaceholder": "选择嫌疑人数量",
     "playerCountItem": "{{count}}位嫌疑人",
     "playerCountDescription": "这是您的悬疑故事中嫌疑角色的数量，不包括主持人/侦探。",
