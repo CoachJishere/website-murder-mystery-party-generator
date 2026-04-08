@@ -1048,10 +1048,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-8 minuti",
-      "medium": "8-12 minuti",
-      "large": "12-20 minuti",
-      "xlarge": "20-30 minuti"
+      "small": "circa 10 minuti",
+      "medium": "circa 10 minuti",
+      "large": "circa 10 minuti",
+      "xlarge": "circa 10 minuti"
     }
   },
   "attribution": {

@@ -1048,10 +1048,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-8分钟",
-      "medium": "8-12分钟",
-      "large": "12-20分钟",
-      "xlarge": "20-30分钟"
+      "small": "约10分钟",
+      "medium": "约10分钟",
+      "large": "约10分钟",
+      "xlarge": "约10分钟"
     }
   },
   "attribution": {

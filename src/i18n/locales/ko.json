@@ -932,10 +932,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-8분",
-      "medium": "8-12분",
-      "large": "12-20분",
-      "xlarge": "20-30분"
+      "small": "약 10분",
+      "medium": "약 10분",
+      "large": "약 10분",
+      "xlarge": "약 10분"
     }
   },
   "mysteryPackage": {

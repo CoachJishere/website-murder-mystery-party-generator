@@ -1030,10 +1030,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-8 minuten",
-      "medium": "8-12 minuten",
-      "large": "12-20 minuten",
-      "xlarge": "20-30 minuten"
+      "small": "ongeveer 10 minuten",
+      "medium": "ongeveer 10 minuten",
+      "large": "ongeveer 10 minuten",
+      "xlarge": "ongeveer 10 minuten"
     }
   },
   "hostAccess": {

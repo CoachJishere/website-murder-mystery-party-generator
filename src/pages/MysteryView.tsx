@@ -75,13 +75,9 @@ const MysteryView = () => {
     }
   }, []);
 
-  // Calculate estimated generation time based on player count
-  // Note: These estimates are based on actual performance metrics
-  const getEstimatedTime = useCallback((playerCount: number) => {
-    if (playerCount <= 6) return t('mysteryView.timing.small');
-    if (playerCount <= 12) return t('mysteryView.timing.medium');
-    if (playerCount <= 20) return t('mysteryView.timing.large');
-    return t('mysteryView.timing.xlarge');
+  // Generation time is consistent regardless of player count
+  const getEstimatedTime = useCallback((_playerCount: number) => {
+    return t('mysteryView.timing.small');
   }, [t]);
 
   // Fetch structured package data with proper error handling
@@ -1018,7 +1014,7 @@ const MysteryView = () => {
             </Button>
           </CardTitle>
           <CardDescription className={cn(isMobile && "text-sm")}>
-            This is a resource-intensive process that takes approximately {getEstimatedTime(mystery?.player_count || 6)} to complete. Larger mysteries require more time as we generate detailed character backgrounds and relationships. Please be patient - your mystery is being crafted with care! This page will automatically refresh once the mystery has fully generated.
+            Your mystery is being carefully crafted and will take approximately {getEstimatedTime(mystery?.player_count || 6)} to complete. Please be patient - your mystery is being crafted with care! This page will automatically refresh once the mystery has fully generated.
           </CardDescription>
         </CardHeader>
         <CardContent className={cn(
@@ -1272,7 +1268,7 @@ const MysteryView = () => {
                     "text-sm text-muted-foreground mt-3",
                     isMobile && "text-xs mt-2"
                   )}>
-                    Generation typically takes {getEstimatedTime(mystery?.player_count || 6)} as we carefully craft each character's background and relationships. Larger mysteries require more time to ensure high-quality results. This page will auto-refresh to show progress.
+                    Generation typically takes {getEstimatedTime(mystery?.player_count || 6)}. This page will auto-refresh to show progress.
                   </p>
                 </CardContent>
               </Card>

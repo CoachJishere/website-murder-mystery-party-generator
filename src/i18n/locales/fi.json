@@ -1030,10 +1030,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "5-8 minuuttia",
-      "medium": "8-12 minuuttia",
-      "large": "12-20 minuuttia",
-      "xlarge": "20-30 minuuttia"
+      "small": "noin 10 minuuttia",
+      "medium": "noin 10 minuuttia",
+      "large": "noin 10 minuuttia",
+      "xlarge": "noin 10 minuuttia"
     }
   },
   "hostAccess": {
