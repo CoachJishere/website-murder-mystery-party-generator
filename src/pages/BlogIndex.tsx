@@ -134,11 +134,11 @@ export default function BlogIndex() {
         <main className="flex-grow py-12 px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center py-12">
-              <h1 className="text-3xl font-bold text-[#FF6B6B] mb-4">{t('blog.errorTitle')}</h1>
+              <h1 className="text-3xl font-bold text-[#C81400] mb-4">{t('blog.errorTitle')}</h1>
               <p className="text-muted-foreground mb-6">{error}</p>
               <Button 
                 onClick={() => window.location.reload()}
-                className="bg-[#FF6B6B] hover:bg-[#D44444] text-white"
+                className="bg-[#C81400] hover:bg-[#A01000] text-white"
               >
                 {t('blog.tryAgain')}
               </Button>
@@ -172,7 +172,7 @@ export default function BlogIndex() {
                 {t('blog.backToHome')}
               </Link>
             </Button>
-            <h1 className="text-3xl md:text-4xl font-bold text-[#FF6B6B] mb-2">{t('blog.title')}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-[#C81400] mb-2">{t('blog.title')}</h1>
             <p className="text-muted-foreground">{t('blog.subtitle')}</p>
           </div>
 
@@ -206,7 +206,7 @@ export default function BlogIndex() {
                     <Card className="hover:shadow-lg transition-shadow">
                       <CardHeader>
                         <CardTitle className="text-xl">
-                          <Link to={lang ? `/${lang}/blog/${primaryPost.slug}` : `/blog/${primaryPost.slug}`} className="hover:text-[#FF6B6B] transition-colors">
+                          <Link to={lang ? `/${lang}/blog/${primaryPost.slug}` : `/blog/${primaryPost.slug}`} className="hover:text-[#C81400] transition-colors">
                             {primaryPost.title}
                           </Link>
                         </CardTitle>
@@ -229,7 +229,7 @@ export default function BlogIndex() {
                         <div className="flex justify-between items-center mt-4">
                           <Link 
                             to={lang ? `/${lang}/blog/${primaryPost.slug}` : `/blog/${primaryPost.slug}`} 
-                            className="text-[#FF6B6B] hover:underline font-medium"
+                            className="text-[#C81400] hover:underline font-medium"
                           >
                             {t('blog.readMore')}
                           </Link>

@@ -24,7 +24,7 @@ import { Faq1 } from "@/components/ui/faq1";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const RED = "#FF6B6B";
+const RED = "#C81400";
 const BLACK = "#000000";
 const CHARCOAL = "#111111";
 const CREAM = "#F5F0E8";
@@ -206,7 +206,7 @@ function HorizontalHowItWorks() {
   const steps = [
     { number: 1, title: t("howItWorks.step1.title"), desc: t("howItWorks.step1.description"), accent: RED },
     { number: 2, title: t("howItWorks.step2.title"), desc: t("howItWorks.step2.description"), accent: "#E74C3C" },
-    { number: 3, title: t("howItWorks.step3.title"), desc: t("howItWorks.step3.description"), accent: "#D44444" },
+    { number: 3, title: t("howItWorks.step3.title"), desc: t("howItWorks.step3.description"), accent: "#A01000" },
     { number: 4, title: t("howItWorks.step4.title"), desc: t("howItWorks.step4.description"), accent: "#D4380D" },
   ];
 

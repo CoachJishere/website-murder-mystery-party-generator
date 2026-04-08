@@ -230,7 +230,7 @@ function buildEmailHtml(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; background: #000000;">
-  <div style="background: #FF6B6B; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
+  <div style="background: #C81400; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
     <h1 style="color: #F5F0E8; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">MYSTERY MAKER</h1>
   </div>
 
@@ -250,7 +250,7 @@ function buildEmailHtml(
     </div>
 
     <div style="text-align: center; margin-bottom: 24px;">
-      <a href="${feedbackUrl}" style="display: inline-block; background: #FF6B6B; color: #F5F0E8; padding: 12px 32px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px;">Leave Feedback</a>
+      <a href="${feedbackUrl}" style="display: inline-block; background: #C81400; color: #F5F0E8; padding: 12px 32px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px;">Leave Feedback</a>
     </div>
 
     <p style="color: rgba(245,240,232,0.3); font-size: 12px; text-align: center; margin: 24px 0 0 0; padding-top: 20px; border-top: 1px solid rgba(245,240,232,0.1);">

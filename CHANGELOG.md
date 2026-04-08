@@ -2,11 +2,12 @@
 
 ## 2026-04-08
 
-### Improvement: Upgrade primary red from #C81400 to #FF6B6B for accessibility
-- Old red (#C81400) had only 2.3:1 contrast ratio on black — failed WCAG AA even for large text
-- New red (#FF6B6B) achieves 5.5:1 contrast ratio — passes AA for all text sizes, comfortable for older audiences
-- Updated CSS custom properties, all hardcoded hex values across components, email templates, blog pages, and edge functions
-- Hover variant updated from #A01000 to #D44444
+### Improvement: Accessible heading color + no red in body copy
+- Reverted primary brand red to #C81400 (nav, buttons, backgrounds stay bold and striking)
+- Mystery content headings (screen only) now use #E53E2A — 3.1:1 contrast, passes WCAG AA for large text
+- Body copy red eliminated: `strong`, `a`, `code`, `thead th` inside mystery content forced to cream
+- Chat headings also updated to #E53E2A
+- PDF/print: mystery title (h1) now uses Bowlby One display font; section headings remain Inter for readability
 
 ### Fix: Reduce excessive spacing in evidence cards section
 - Tailwind prose `<hr>` default margin was 3em top/bottom — reduced to 1.25rem inside `.mystery-content`

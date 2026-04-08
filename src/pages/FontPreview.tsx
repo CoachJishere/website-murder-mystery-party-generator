@@ -42,7 +42,7 @@ const FONTS = [
 ];
 
 const CREAM = "#F5F0E8";
-const RED = "#FF6B6B";
+const RED = "#C81400";
 const BLACK = "#000000";
 
 const FontPreview = () => {

@@ -144,7 +144,7 @@ export default {
                             fontFamily: 'Inter, sans-serif',
                         },
                         'h1, h2, h3, h4': {
-                            color: 'hsl(var(--color-primary))',
+                            color: '#E53E2A',
                             marginTop: '1.25em',
                             marginBottom: '0.75em',
                             lineHeight: '1.3',

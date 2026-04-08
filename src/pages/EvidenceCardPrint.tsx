@@ -152,7 +152,7 @@ export default function EvidenceCardPrint() {
         </p>
         <button
           onClick={() => window.print()}
-          className="px-6 py-2.5 bg-[#FF6B6B] text-white rounded-lg font-medium hover:bg-[#D44444] transition-colors"
+          className="px-6 py-2.5 bg-[#C81400] text-white rounded-lg font-medium hover:bg-[#A01000] transition-colors"
         >
           Print Evidence Cards
         </button>
@@ -204,7 +204,7 @@ export default function EvidenceCardPrint() {
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 3px;
-          color: #FF6B6B;
+          color: #C81400;
           margin-bottom: 10px;
         }
 
@@ -276,7 +276,7 @@ export default function EvidenceCardPrint() {
           }
           .ec-page:last-child { page-break-after: auto; }
           * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          .ec-round { color: #FF6B6B !important; }
+          .ec-round { color: #C81400 !important; }
           .ec-footer { color: #bbb !important; }
         }
 

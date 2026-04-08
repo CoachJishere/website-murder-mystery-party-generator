@@ -7,7 +7,7 @@
 @layer base {
   :root {
     /* Mystery Maker Color System — Dark + Red + Cream */
-    --color-red: #FF6B6B;
+    --color-red: #C81400;
     --color-black: #000000;
     --color-charcoal: #111111;
     --color-cream: #F5F0E8;
@@ -21,20 +21,20 @@
     --font-body: 'Inter', sans-serif;
 
     /* Primary = Red accent */
-    --color-primary: 0 100% 71%;              /* #FF6B6B */
+    --color-primary: 7 100% 39%;              /* #C81400 */
     --color-primary-foreground: 37 45% 94%;   /* #F5F0E8 */
-    --color-primary-hover: 0 70% 55%;
-    --color-primary-light: 0 100% 80%;
+    --color-primary-hover: 7 100% 32%;
+    --color-primary-light: 7 100% 50%;
 
-    --color-secondary: 0 100% 71%;
+    --color-secondary: 7 100% 39%;
     --color-secondary-foreground: 37 45% 94%;
-    --color-secondary-hover: 0 70% 55%;
-    --color-secondary-light: 0 100% 80%;
+    --color-secondary-hover: 7 100% 32%;
+    --color-secondary-light: 7 100% 50%;
 
-    --color-accent: 0 100% 71%;
+    --color-accent: 7 100% 39%;
     --color-accent-foreground: 37 45% 94%;
-    --color-accent-hover: 0 70% 55%;
-    --color-accent-light: 0 100% 80%;
+    --color-accent-hover: 7 100% 32%;
+    --color-accent-light: 7 100% 50%;
 
     --color-danger: 0 84% 49%;
     --color-danger-foreground: 37 45% 94%;
@@ -152,7 +152,7 @@
   cursor: pointer;
 }
 .btn-on-dark:hover {
-  background-color: #D44444;
+  background-color: #A01000;
 }
 
 /* Footer links */

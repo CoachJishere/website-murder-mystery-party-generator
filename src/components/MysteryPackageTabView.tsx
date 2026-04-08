@@ -811,7 +811,7 @@ const MysteryPackageTabView = React.memo(({
                             "font-semibold",
                             isMobile ? "text-base" : "text-lg"
                           )}
-                          style={{ color: 'hsl(var(--color-primary))', fontFamily: "'Bowlby One', cursive" }}>
+                          style={{ color: '#E53E2A', fontFamily: "'Bowlby One', cursive" }}>
                             {character.character_name}
                           </h3>
                         </AccordionTrigger>

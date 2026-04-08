@@ -15,7 +15,7 @@ import TrustpilotBadge from "@/components/TrustpilotBadge";
 
 const BLACK = '#000000';
 const CHARCOAL = '#111111';
-const RED = '#FF6B6B';
+const RED = '#C81400';
 const CREAM = '#F5F0E8';
 const CREAM_70 = 'rgba(245,240,232,0.7)';
 const CREAM_75 = 'rgba(245,240,232,0.75)';

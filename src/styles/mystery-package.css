@@ -7,7 +7,7 @@
 .mystery-content .prose h4 {
   font-family: 'Bowlby One', cursive !important;
   letter-spacing: 0.03em;
-  color: hsl(var(--color-primary)) !important;
+  color: #E53E2A !important;
 }
 
 .mystery-content .prose h2 {
@@ -21,6 +21,24 @@
   font-size: 1.15rem;
   margin-top: 1.25rem;
   margin-bottom: 0.4rem;
+}
+
+/* Force body-copy text to cream — no red in running text */
+.mystery-content .prose strong {
+  color: var(--color-cream) !important;
+}
+
+.mystery-content .prose a {
+  color: var(--color-cream) !important;
+  text-decoration: underline;
+}
+
+.mystery-content .prose code {
+  color: var(--color-cream) !important;
+}
+
+.mystery-content .prose thead th {
+  color: var(--color-cream) !important;
 }
 
 /* Tighten horizontal rules inside mystery content */
@@ -40,5 +58,5 @@
   font-size: 1.3rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: hsl(var(--color-primary)) !important;
+  color: #E53E2A !important;
 }

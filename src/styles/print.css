@@ -173,8 +173,9 @@
     border-color: #ddd !important;
   }
 
-  /* Mystery title */
+  /* Mystery title — keep display font even in print */
   h1.font-bold {
+    font-family: 'Bowlby One', cursive !important;
     font-size: 24pt !important;
     margin-bottom: 1cm !important;
   }
