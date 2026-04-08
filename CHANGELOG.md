@@ -2,8 +2,9 @@
 
 ## 2026-04-08
 
-### Improvement: Default mystery style changed to Character-Based
-- Form now defaults to "Character-Based" instead of "Detective" when no initial data is provided
+### Improvement: Enable Character-Based mystery style
+- Removed "Coming Soon" badge, disabled state, and opacity from the Character-Based radio option
+- Form now defaults to "Character-Based" instead of "Detective"
 
 ### Improvement: Accessible heading color + no red in body copy
 - Reverted primary brand red to #C81400 (nav, buttons, backgrounds stay bold and striking)

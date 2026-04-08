@@ -160,14 +160,11 @@ const MysteryForm = ({
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-start space-x-3 py-3 sm:py-2 opacity-50 cursor-not-allowed">
-                    <RadioGroupItem value="character" id="character" className="mt-0.5 shrink-0" disabled />
+                  <div className="flex items-start space-x-3 py-3 sm:py-2">
+                    <RadioGroupItem value="character" id="character" className="mt-0.5 shrink-0" />
                     <div className="flex flex-col">
-                      <Label htmlFor="character" className="text-sm sm:text-base leading-5 font-medium flex items-center gap-2 cursor-not-allowed">
+                      <Label htmlFor="character" className="text-sm sm:text-base leading-5 cursor-pointer font-medium flex items-center gap-2">
                         {t('mysteryForm.mysteryStyleCharacterLabel')}
-                        <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
-                          {t('common.messages.comingSoon')}
-                        </span>
                       </Label>
                       <span className="text-xs sm:text-sm text-muted-foreground">
                         {t('mysteryForm.mysteryStyleCharacterDescription')}
