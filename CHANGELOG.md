@@ -2,6 +2,10 @@
 
 ## 2026-04-08
 
+### Fix: Reduce excessive spacing in evidence cards section
+- Tailwind prose `<hr>` default margin was 3em top/bottom — reduced to 1.25rem inside `.mystery-content`
+- First child element in prose body no longer adds top margin that stacks with the section label gap
+
 ### Fix: Mystery headings now render red Bowlby One as intended
 - `mystery-package.css` was setting heading color to `var(--color-cream)` instead of `hsl(var(--color-primary))` (red); added `!important` to both `color` and `font-family` to win over Tailwind typography plugin load-order
 - Removed `text-foreground` utility from EditableSection's extracted h3 heading — it was overriding the CSS rule with cream instead of letting the cascade apply

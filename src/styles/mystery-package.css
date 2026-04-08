@@ -23,6 +23,17 @@
   margin-bottom: 0.4rem;
 }
 
+/* Tighten horizontal rules inside mystery content */
+.mystery-content .prose hr {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Remove top margin from first element in prose body to avoid double-gap with section label */
+.mystery-content .prose > :first-child {
+  margin-top: 0;
+}
+
 /* EditableSection fixed section label (the extracted ## heading) */
 .mystery-content .editable-section > div > h3 {
   font-family: 'Bowlby One', cursive !important;
