@@ -1,1 +1,33 @@
+/* ─── Stylized headings in mystery content (screen only) ───────────────────
+   Print overrides in print.css use !important to revert to plain Inter.    */
 
+.mystery-content .prose h1,
+.mystery-content .prose h2,
+.mystery-content .prose h3,
+.mystery-content .prose h4 {
+  font-family: 'Bowlby One', cursive;
+  letter-spacing: 0.03em;
+  color: var(--color-cream);
+}
+
+.mystery-content .prose h2 {
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.mystery-content .prose h3 {
+  font-size: 1.15rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.4rem;
+}
+
+/* EditableSection fixed section label (the extracted ## heading) */
+.mystery-content .editable-section > div > h3 {
+  font-family: 'Bowlby One', cursive;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-cream);
+}

@@ -1,5 +1,39 @@
 # Changelog
 
+## 2026-04-08
+
+### Fix: Host guide game overview now shows its "Game Overview" section title
+- `stripFirstHeading()` was stripping the `## GAME OVERVIEW` heading before passing to `EditableSection`, so that section rendered with no visible title
+- Removed the strip call; heading is now extracted and displayed like all other host guide sections
+
+### Fix: Mystery title and action buttons no longer crowd each other
+- Added `flex-1 min-w-0` to the title `<h1>` so long titles wrap instead of overflowing
+- Added `flex-shrink-0` to the buttons container and `gap-6` to the row for consistent breathing room at all screen sizes
+
+### UI: Stylized headings in mystery content on screen; plain when printed
+- Added CSS in `mystery-package.css` to render `##`/`###` headings inside mystery content using the Bowlby One display font with uppercase tracking
+- `EditableSection` section-label `<h3>` elements also styled with the display font
+- `print.css` already overrides all headings to plain Inter with `!important`, so printed/PDF output is unaffected
+
+## 2026-04-07
+
+### Feature: Generated and stored evidence card images for "Murder At The Velvet Rose"
+- Generated 3 photorealistic film-noir evidence card images via Replicate (flux-schnell): sale agreement documents (round 2), revolver + key (round 3), stopped pocket watch (round 4)
+- Deployed a temporary Supabase Edge Function to run Replicate + upload to `evidence-images` storage bucket + update DB — bypassing sandbox proxy restrictions
+- Images stored at `evidence-images/{package_id}/round{N}.webp`; all 3 URLs saved to `evidence_card_images` JSONB column
+
+### Feature: Manually populated "Murder At The Velvet Rose" mystery for YouTube demo
+- Bypassed Make.com pipeline to avoid API costs for a demo mystery (package ID `40957647-8c4f-4fbb-bc36-ac3e153fb272`)
+- Populated all `mystery_packages` fields: master_context (57,580 chars), host guide, evidence cards, detective script, game overview, materials, preparation instructions, timeline, hosting tips
+- Inserted all 10 characters into `mystery_characters` with full scripts for all 4 rounds, intro, rumors, accusations, and final statements
+- Murderer: Ricky/Rita Moretti; setting: New Year's Eve 1927 Chicago speakeasy
+- `generation_status` set to `"completed"` so mystery appears in Mystery Maker UI
+
+### Fix: Generation time now shows "about 10 minutes" for all mystery sizes
+- New architecture generates all mysteries in ~10 minutes regardless of player count, so dynamic per-size estimates were misleading
+- Simplified `getEstimatedTime` to return a flat estimate across all locales (13 languages updated)
+- Removed "Larger mysteries require more time" copy from generation page descriptions
+
 ## 2026-04-06
 
 ### Fix: Theme from homepage hero input lost when form theme filled

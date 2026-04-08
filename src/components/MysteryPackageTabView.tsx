@@ -537,11 +537,11 @@ const MysteryPackageTabView = React.memo(({
   return (
     <div className="w-full">
       <div className={cn(
-        "mb-6 flex items-center justify-between",
+        "mb-6 flex items-start justify-between gap-6",
         isMobile && "mb-4 px-2 flex-col space-y-3"
       )}>
         <h1 className={cn(
-          "font-bold",
+          "font-bold flex-1 min-w-0",
           isMobile ? "text-xl text-center" : "text-3xl"
         )}>
           {mysteryTitle}
@@ -550,7 +550,7 @@ const MysteryPackageTabView = React.memo(({
         {/* Action buttons */}
         {canShareMystery && conversationId && (
           <div className={cn(
-            "flex items-center gap-3",
+            "flex items-center gap-3 flex-shrink-0",
             isMobile && "flex-col w-full"
           )}>
             <Button
@@ -640,7 +640,7 @@ const MysteryPackageTabView = React.memo(({
               <div className="space-y-6">
                 {packageData.gameOverview && (
                   <EditableSection
-                    content={stripFirstHeading(packageData.gameOverview)}
+                    content={packageData.gameOverview}
                     onSave={(val) => onPackageFieldUpdate?.('game_overview', val) ?? Promise.resolve()}
                     canEdit={!!onPackageFieldUpdate}
                     sectionLabel="Game Overview"
