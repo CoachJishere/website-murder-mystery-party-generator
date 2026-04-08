@@ -114,7 +114,7 @@ const GuestFeedback: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#C81400]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#FF6B6B]" />
       </div>
     );
   }
@@ -145,7 +145,7 @@ const GuestFeedback: React.FC = () => {
               <p className="text-[#F5F0E8]/60 text-sm mb-4">Ever thought about hosting your own mystery party?</p>
               <a
                 href="https://www.mysterymaker.party"
-                className="inline-block bg-[#C81400] text-[#F5F0E8] px-6 py-3 rounded-lg font-semibold hover:bg-[#a01000] transition-colors"
+                className="inline-block bg-[#FF6B6B] text-[#F5F0E8] px-6 py-3 rounded-lg font-semibold hover:bg-[#D44444] transition-colors"
               >
                 Browse Our Mysteries
               </a>
@@ -160,7 +160,7 @@ const GuestFeedback: React.FC = () => {
     <div className="min-h-screen bg-[#0a0a0a] py-8 px-4">
       <div className="max-w-lg mx-auto">
         {/* Header */}
-        <div className="text-center py-8 px-6 rounded-t-lg bg-[#C81400]">
+        <div className="text-center py-8 px-6 rounded-t-lg bg-[#FF6B6B]">
           <h1 className="text-2xl font-bold text-[#F5F0E8] tracking-wide uppercase">
             How Was Your Mystery?
           </h1>
@@ -227,7 +227,7 @@ const GuestFeedback: React.FC = () => {
               <Button
                 type="submit"
                 disabled={starRating === 0 || submitting}
-                className="w-full bg-[#C81400] hover:bg-[#a01000] text-[#F5F0E8] py-3 text-base"
+                className="w-full bg-[#FF6B6B] hover:bg-[#D44444] text-[#F5F0E8] py-3 text-base"
               >
                 {submitting ? (
                   <>

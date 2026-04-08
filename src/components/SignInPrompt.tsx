@@ -119,7 +119,7 @@ const SignInPrompt = ({ isOpen, onClose }: SignInPromptProps) => {
               fontWeight: 600,
               fontSize: '15px',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#A01000')}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#D44444')}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-red)')}
           >
             Sign Up

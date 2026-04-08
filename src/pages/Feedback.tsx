@@ -156,7 +156,7 @@ const Feedback: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-[#C81400]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#FF6B6B]" />
       </div>
     );
   }
@@ -201,7 +201,7 @@ const Feedback: React.FC = () => {
             </p>
             <Button
               onClick={() => navigate("/")}
-              className="bg-[#C81400] hover:bg-[#A01000] text-white"
+              className="bg-[#FF6B6B] hover:bg-[#D44444] text-white"
             >
               Ready for Another Mystery?
             </Button>
@@ -217,7 +217,7 @@ const Feedback: React.FC = () => {
         {/* Header */}
         <div
           className="text-center py-8 px-6 rounded-t-lg"
-          style={{ background: "linear-gradient(135deg, #C81400 0%, #A01000 100%)" }}
+          style={{ background: "linear-gradient(135deg, #FF6B6B 0%, #D44444 100%)" }}
         >
           <h1 className="text-2xl font-bold text-white">How Did Your Mystery Go?</h1>
           <p className="text-white/80 mt-2">{mysteryTitle}</p>
@@ -272,7 +272,7 @@ const Feedback: React.FC = () => {
                       onClick={() => setDidHostParty(option.value)}
                       className={`px-4 py-2 rounded-lg border text-sm transition-colors ${
                         didHostParty === option.value
-                          ? "bg-[#C81400] text-white border-[#C81400]"
+                          ? "bg-[#FF6B6B] text-white border-[#FF6B6B]"
                           : "bg-muted text-foreground border-border hover:border-primary"
                       }`}
                     >
@@ -329,7 +329,7 @@ const Feedback: React.FC = () => {
                       onClick={() => setNpsScore(n)}
                       className={`w-9 h-9 rounded text-sm font-medium transition-colors ${
                         npsScore === n
-                          ? "bg-[#C81400] text-white"
+                          ? "bg-[#FF6B6B] text-white"
                           : "bg-muted text-foreground hover:bg-muted/80"
                       }`}
                     >
@@ -359,7 +359,7 @@ const Feedback: React.FC = () => {
               </div>
 
               {/* Public review opt-in */}
-              <div className="bg-[#111111] border-l-4 border-[#C81400] p-4 rounded-r-lg">
+              <div className="bg-[#111111] border-l-4 border-[#FF6B6B] p-4 rounded-r-lg">
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
@@ -394,7 +394,7 @@ const Feedback: React.FC = () => {
               <Button
                 type="submit"
                 disabled={starRating === 0 || submitting}
-                className="w-full bg-[#C81400] hover:bg-[#A01000] text-white py-3 text-base"
+                className="w-full bg-[#FF6B6B] hover:bg-[#D44444] text-white py-3 text-base"
               >
                 {submitting ? (
                   <>

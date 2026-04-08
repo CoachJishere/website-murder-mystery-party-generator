@@ -2,6 +2,12 @@
 
 ## 2026-04-08
 
+### Improvement: Upgrade primary red from #C81400 to #FF6B6B for accessibility
+- Old red (#C81400) had only 2.3:1 contrast ratio on black — failed WCAG AA even for large text
+- New red (#FF6B6B) achieves 5.5:1 contrast ratio — passes AA for all text sizes, comfortable for older audiences
+- Updated CSS custom properties, all hardcoded hex values across components, email templates, blog pages, and edge functions
+- Hover variant updated from #A01000 to #D44444
+
 ### Fix: Reduce excessive spacing in evidence cards section
 - Tailwind prose `<hr>` default margin was 3em top/bottom — reduced to 1.25rem inside `.mystery-content`
 - First child element in prose body no longer adds top margin that stacks with the section label gap
@@ -13,10 +19,12 @@
 - Print overrides in `print.css` already use `!important` to revert to Inter/black — no change needed there
 
 ### Improvement: Dual-format detective script (Script + Key Points per round)
-- Detective script now requires both a `### Script` (full narrative dialogue) and `### Key Points` (bullet-point summary) sub-section for every round
+- Detective script now requires both a `#### Script` (full narrative dialogue) and `#### Key Points` (bullet-point summary) sub-section for every round
 - Hosts can read the script verbatim, improvise from bullet points, or have the script recorded by an AI voice
-- Added format spec comment in `mystery-ai` Edge Function for Make.com prompt alignment
-- No DB or frontend changes needed — `EditableMultiSection` already handles `###` headers
+- Updated Make.com blueprint7 (all 3 prompt instances: detective-style + 2 character-based) with `#### Script` / `#### Key Points` template structure and `DUAL FORMAT` instructions
+- Updated `script_type_instructions` to clarify detective script always includes both formats regardless of scriptType
+- Added format spec comment in `mystery-ai` Edge Function for codebase documentation
+- No DB or frontend changes needed — `EditableMultiSection` already handles the header hierarchy
 
 ### Fix: Host guide game overview now shows its "Game Overview" section title
 - `stripFirstHeading()` was stripping the `## GAME OVERVIEW` heading before passing to `EditableSection`, so that section rendered with no visible title

@@ -41,7 +41,7 @@ serve(async (req) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; background: #000000;">
-  <div style="background: #C81400; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+  <div style="background: #FF6B6B; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
     <h1 style="color: #F5F0E8; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">MYSTERY MAKER</h1>
   </div>
 
@@ -50,15 +50,15 @@ serve(async (req) => {
 
     <p style="margin-bottom: 20px; color: rgba(245,240,232,0.7);">You've been assigned a character for <strong style="color: #F5F0E8;">${mystery_title}</strong>!</p>
 
-    <div style="background: #000000; border-left: 4px solid #C81400; padding: 20px; margin: 25px 0; border-radius: 4px;">
-      <h2 style="color: #C81400; margin-top: 0; font-size: 22px;">Your Character: ${character_name}</h2>
+    <div style="background: #000000; border-left: 4px solid #FF6B6B; padding: 20px; margin: 25px 0; border-radius: 4px;">
+      <h2 style="color: #FF6B6B; margin-top: 0; font-size: 22px;">Your Character: ${character_name}</h2>
       <p style="margin-bottom: 0; color: rgba(245,240,232,0.7);">${character_details}</p>
     </div>
 
     <p style="margin-bottom: 25px; color: rgba(245,240,232,0.7);">Click the button below to view your complete character guide:</p>
 
     <div style="text-align: center; margin: 30px 0;">
-      <a href="${characterUrl}" style="display: inline-block; background: #C81400; color: #F5F0E8; padding: 15px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">View My Character</a>
+      <a href="${characterUrl}" style="display: inline-block; background: #FF6B6B; color: #F5F0E8; padding: 15px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">View My Character</a>
     </div>
 
     <p style="color: rgba(245,240,232,0.5); font-size: 14px; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(245,240,232,0.1);">

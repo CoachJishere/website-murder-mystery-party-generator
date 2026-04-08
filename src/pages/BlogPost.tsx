@@ -48,7 +48,7 @@ interface BlogPost {
 const CTA_SECTION = ({ theme = 'light' as 'light' | 'dark' } = {}) => {
   return (
     <div className="rounded-xl p-8 my-12 text-center" style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid var(--color-cream-border)' }}>
-      <h3 className="text-2xl font-bold mb-4 text-[#C81400]">
+      <h3 className="text-2xl font-bold mb-4 text-[#FF6B6B]">
         Ready to create your own murder mystery?
       </h3>
       <p className="mb-6 text-muted-foreground">
@@ -56,7 +56,7 @@ const CTA_SECTION = ({ theme = 'light' as 'light' | 'dark' } = {}) => {
       </p>
       <Button 
         asChild 
-        className="bg-[#C81400] hover:bg-[#A01000] text-white py-6 px-8 text-lg font-medium transition-colors mx-auto"
+        className="bg-[#FF6B6B] hover:bg-[#D44444] text-white py-6 px-8 text-lg font-medium transition-colors mx-auto"
       >
         <Link to="/mystery/create">
           Create Your Mystery
@@ -230,7 +230,7 @@ export default function BlogPost() {
       <div className="min-h-screen bg-[#000000] py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-6">Related Posts</h2>
-          <Link to={lang ? `/${lang}/blog` : '/blog'} className="text-[#C81400] hover:underline">
+          <Link to={lang ? `/${lang}/blog` : '/blog'} className="text-[#FF6B6B] hover:underline">
             ← Back to Blog
           </Link>
         </div>
@@ -461,19 +461,19 @@ export default function BlogPost() {
           <header className="mb-12">
             <Link
               to={lang ? `/${lang}/blog` : '/blog'}
-              className="inline-flex items-center text-[#C81400] hover:underline mb-4"
+              className="inline-flex items-center text-[#FF6B6B] hover:underline mb-4"
             >
               <ChevronRight className="h-4 w-4 rotate-180 mr-1" />
               Back to Blog
             </Link>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-[#C81400] mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#FF6B6B] mb-6">
               {post.title}
             </h1>
             
             <div className="flex flex-wrap items-center text-muted-foreground text-sm gap-4 mb-6">
               <div className="flex items-center">
-                <Clock className="h-4 w-4 mr-1 text-[#C81400]" />
+                <Clock className="h-4 w-4 mr-1 text-[#FF6B6B]" />
                 {post.reading_time || calculateReadingTime(post.content || '')} min read
               </div>
             </div>
@@ -492,11 +492,11 @@ export default function BlogPost() {
           <div className="prose prose-lg max-w-none mb-12">
             <ReactMarkdown
               components={{
-                h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-[#C81400] mt-8 mb-4" {...props} />,
-                h3: ({node, ...props}) => <h3 className="text-xl font-semibold text-[#C81400] mt-6 mb-3" {...props} />,
+                h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-[#FF6B6B] mt-8 mb-4" {...props} />,
+                h3: ({node, ...props}) => <h3 className="text-xl font-semibold text-[#FF6B6B] mt-6 mb-3" {...props} />,
                 ul: ({node, ...props}) => <ul className="list-disc ml-6 mb-4 space-y-2" {...props} />,
                 li: ({node, ...props}) => <li className="text-foreground" {...props} />,
-                strong: ({node, ...props}) => <strong className="font-semibold text-[#C81400]" {...props} />,
+                strong: ({node, ...props}) => <strong className="font-semibold text-[#FF6B6B]" {...props} />,
                 p: ({node, ...props}) => <p className="mb-4 text-foreground leading-relaxed" {...props} />,
               }}
             >
@@ -510,14 +510,14 @@ export default function BlogPost() {
 
           {post.related_posts && post.related_posts.length > 0 && (
             <section className="mt-16">
-              <h2 className="text-2xl font-bold text-[#C81400] mb-6">
+              <h2 className="text-2xl font-bold text-[#FF6B6B] mb-6">
                 You might also like
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {post.related_posts.map((related) => (
-                  <Card key={related.id} className="border-[#C81400] hover:shadow-md transition-shadow">
+                  <Card key={related.id} className="border-[#FF6B6B] hover:shadow-md transition-shadow">
                     <CardContent className="p-6">
-                      <h3 className="font-bold text-lg mb-2 text-[#C81400]">
+                      <h3 className="font-bold text-lg mb-2 text-[#FF6B6B]">
                         <Link to={lang ? `/${lang}/blog/${related.slug}` : `/blog/${related.slug}`} className="hover:underline">
                           {related.title}
                         </Link>
@@ -541,7 +541,7 @@ export default function BlogPost() {
         <div className="fixed bottom-0 left-0 right-0 p-4" style={{ backgroundColor: 'var(--color-black)', borderTop: '1px solid var(--color-cream-border)' }}>
           <div className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center">
             <div className="mb-4 sm:mb-0">
-              <h3 className="font-bold text-[#C81400]">
+              <h3 className="font-bold text-[#FF6B6B]">
                 Ready to create your own mystery?
               </h3>
               <p className="text-center mb-6 text-muted-foreground">
@@ -550,7 +550,7 @@ export default function BlogPost() {
             </div>
             <Button 
               asChild 
-              className="bg-[#C81400] hover:bg-[#A01000] text-white py-2 px-6 font-medium transition-colors"
+              className="bg-[#FF6B6B] hover:bg-[#D44444] text-white py-2 px-6 font-medium transition-colors"
             >
               <Link to="/mystery/create">
                 Start Now

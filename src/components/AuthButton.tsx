@@ -99,7 +99,7 @@ const AuthButton = () => {
                 style={{
                   width: '36px',
                   height: '36px',
-                  backgroundColor: '#A01000',
+                  backgroundColor: '#D44444',
                   border: '1.5px solid rgba(245,240,232,0.5)',
                   color: 'var(--color-cream)',
                   fontFamily: 'var(--font-body)',
@@ -128,7 +128,7 @@ const AuthButton = () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="cursor-pointer"
-            style={{ color: '#C81400' }}
+            style={{ color: '#FF6B6B' }}
             onClick={() => {
               signOut();
               setOpen(false);

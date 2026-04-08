@@ -276,8 +276,8 @@ export default function MysteryRoomHero() {
 
         {/* Red accent — single blood drop/drip on the floor between layers */}
         <motion.div style={{ y: layer4Y }} className="absolute bottom-[22%] left-[52%] z-[5]">
-          <div className="w-3 h-3 rounded-full bg-[#C81400] opacity-30 shadow-[0_0_12px_4px_rgba(139,21,56,0.2)]" />
-          <div className="w-1.5 h-6 bg-[#C81400] opacity-20 rounded-b-full mx-auto -mt-1" />
+          <div className="w-3 h-3 rounded-full bg-[#FF6B6B] opacity-30 shadow-[0_0_12px_4px_rgba(139,21,56,0.2)]" />
+          <div className="w-1.5 h-6 bg-[#FF6B6B] opacity-20 rounded-b-full mx-auto -mt-1" />
         </motion.div>
 
         {/* Text overlay */}

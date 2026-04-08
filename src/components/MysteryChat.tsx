@@ -450,11 +450,11 @@ export default function MysteryChat({
                       h1: ({node, ...props}) => <h1 className={cn(
                         "font-bold mt-3 mb-2 uppercase tracking-wide",
                         isMobile ? "text-lg" : "text-2xl"
-                      )} style={{ fontFamily: 'var(--font-display)', color: '#C81400' }} {...props} />,
+                      )} style={{ fontFamily: 'var(--font-display)', color: '#FF6B6B' }} {...props} />,
                       h2: ({node, ...props}) => <h2 className={cn(
                         "font-semibold mt-3 mb-1 uppercase tracking-wide",
                         isMobile ? "text-base" : "text-xl"
-                      )} style={{ fontFamily: 'var(--font-display)', color: '#C81400' }} {...props} />,
+                      )} style={{ fontFamily: 'var(--font-display)', color: '#FF6B6B' }} {...props} />,
                       h3: ({node, ...props}) => <h3 className={cn(
                         "font-medium mt-2 mb-1 text-foreground",
                         isMobile ? "text-sm" : "text-lg"
@@ -492,9 +492,9 @@ export default function MysteryChat({
           <div className="flex justify-start">
             <div className="rounded-2xl px-4 py-3 sm:px-5 sm:py-4 max-w-[85%] sm:max-w-[80%] shadow-lg" style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid rgba(245,240,232,0.1)' }}>
               <div className="flex space-x-1">
-                <div className="h-3 w-3 rounded-full animate-bounce" style={{ backgroundColor: '#C81400', animationDelay: "0ms" }}></div>
-                <div className="h-3 w-3 rounded-full animate-bounce" style={{ backgroundColor: '#C81400', animationDelay: "150ms" }}></div>
-                <div className="h-3 w-3 rounded-full animate-bounce" style={{ backgroundColor: '#C81400', animationDelay: "300ms" }}></div>
+                <div className="h-3 w-3 rounded-full animate-bounce" style={{ backgroundColor: '#FF6B6B', animationDelay: "0ms" }}></div>
+                <div className="h-3 w-3 rounded-full animate-bounce" style={{ backgroundColor: '#FF6B6B', animationDelay: "150ms" }}></div>
+                <div className="h-3 w-3 rounded-full animate-bounce" style={{ backgroundColor: '#FF6B6B', animationDelay: "300ms" }}></div>
               </div>
               {/* Show helpful message during initial concept generation (no AI messages yet) */}
               {!messages.some(m => m.is_ai) && (

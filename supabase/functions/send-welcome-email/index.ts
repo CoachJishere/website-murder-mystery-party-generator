@@ -51,7 +51,7 @@ serve(async (req) => {
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #000000;">
 
             <!-- Header -->
-            <div style="background: #C81400; padding: 40px 30px; text-align: center; border-radius: 8px 8px 0 0;">
+            <div style="background: #FF6B6B; padding: 40px 30px; text-align: center; border-radius: 8px 8px 0 0;">
               <h1 style="color: #F5F0E8; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">MYSTERY MAKER</h1>
             </div>
 
@@ -64,7 +64,7 @@ serve(async (req) => {
               </p>
 
               <!-- Feature list -->
-              <div style="background: #000000; border-left: 4px solid #C81400; padding: 20px; margin: 25px 0; border-radius: 4px;">
+              <div style="background: #000000; border-left: 4px solid #FF6B6B; padding: 20px; margin: 25px 0; border-radius: 4px;">
                 <p style="margin: 0 0 12px 0; color: #F5F0E8; font-size: 15px;">
                   &#10024; <strong>Create custom mysteries</strong> in minutes using AI
                 </p>
@@ -81,7 +81,7 @@ serve(async (req) => {
 
               <!-- CTA Button -->
               <div style="text-align: center; margin: 35px 0;">
-                <a href="https://www.mysterymaker.party/mystery/create?utm_source=welcome_email&utm_medium=email&utm_campaign=onboarding" style="display: inline-block; background: #C81400; color: #F5F0E8; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+                <a href="https://www.mysterymaker.party/mystery/create?utm_source=welcome_email&utm_medium=email&utm_campaign=onboarding" style="display: inline-block; background: #FF6B6B; color: #F5F0E8; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
                   Create Your First Mystery
                 </a>
               </div>
