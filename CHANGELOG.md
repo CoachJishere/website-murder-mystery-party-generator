@@ -2,6 +2,9 @@
 
 ## 2026-04-08
 
+### Improvement: Default mystery style changed to Character-Based
+- Form now defaults to "Character-Based" instead of "Detective" when no initial data is provided
+
 ### Improvement: Accessible heading color + no red in body copy
 - Reverted primary brand red to #C81400 (nav, buttons, backgrounds stay bold and striking)
 - Mystery content headings (screen only) now use #E53E2A — 3.1:1 contrast, passes WCAG AA for large text

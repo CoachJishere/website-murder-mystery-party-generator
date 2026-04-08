@@ -21,7 +21,7 @@ const formSchema = z.object({
   }).max(32, {
     message: "Maximum 32 players allowed"
   }),
-  mysteryStyle: z.enum(["character", "detective"]).default("detective"),
+  mysteryStyle: z.enum(["character", "detective"]).default("character"),
   hasAccomplice: z.boolean().default(false),
   scriptType: z.enum(["full", "pointForm", "both"], {
     required_error: "Please select a script type"
@@ -53,7 +53,7 @@ const MysteryForm = ({
       userRequest: initialData?.userRequest || "",
       theme: initialData?.theme || "",
       playerCount: initialData?.playerCount || 6,
-      mysteryStyle: initialData?.mysteryStyle || "detective",
+      mysteryStyle: initialData?.mysteryStyle || "character",
       hasAccomplice: initialData?.hasAccomplice || false,
       scriptType: initialData?.scriptType || "full",
       additionalDetails: initialData?.additionalDetails || ""
@@ -73,7 +73,7 @@ const MysteryForm = ({
         userRequest: initialData.userRequest || "",
         theme: initialData.theme || "",
         playerCount: initialData.playerCount || 6,
-        mysteryStyle: initialData.mysteryStyle || "detective",
+        mysteryStyle: initialData.mysteryStyle || "character",
         hasAccomplice: initialData.hasAccomplice || false,
         scriptType: initialData.scriptType || "full",
         additionalDetails: initialData.additionalDetails || ""
