@@ -10,6 +10,10 @@
 - Added `flex-1 min-w-0` to the title `<h1>` so long titles wrap instead of overflowing
 - Added `flex-shrink-0` to the buttons container and `gap-6` to the row for consistent breathing room at all screen sizes
 
+### Fix: Mystery content headings now visible on dark background
+- `prose-slate` was overriding the custom typography heading color (`hsl(var(--color-primary))`) with `#0f172a` (near-black), making headings invisible on the dark background
+- Removed `prose-slate` from `EditableSection` and the fallback host-guide prose block in `MysteryPackageTabView`; the app-level custom typography config now applies correctly
+
 ### UI: Stylized headings in mystery content on screen; plain when printed
 - Added CSS in `mystery-package.css` to render `##`/`###` headings inside mystery content using the Bowlby One display font with uppercase tracking
 - `EditableSection` section-label `<h3>` elements also styled with the display font

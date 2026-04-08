@@ -694,7 +694,7 @@ const MysteryPackageTabView = React.memo(({
                 )}
               </div>
             ) : hostGuide ? (
-              <div className={cn("prose prose-slate max-w-none overflow-x-auto", isMobile && "prose-sm")}>
+              <div className={cn("prose max-w-none overflow-x-auto", isMobile && "prose-sm")}>
                 <ReactMarkdown>{hostGuide}</ReactMarkdown>
               </div>
             ) : isGenerating ? (

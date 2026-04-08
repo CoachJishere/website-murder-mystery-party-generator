@@ -259,7 +259,7 @@ const EditableSection: React.FC<EditableSectionProps> = ({
       ) : (
         <div
           className={cn(
-            "prose prose-slate max-w-none overflow-x-auto",
+            "prose max-w-none overflow-x-auto",
             isMobile && "prose-sm"
           )}
         >
