@@ -808,9 +808,10 @@ const MysteryPackageTabView = React.memo(({
                           isMobile && "py-3"
                         )}>
                           <h3 className={cn(
-                            "font-semibold text-foreground",
+                            "font-semibold",
                             isMobile ? "text-base" : "text-lg"
-                          )}>
+                          )}
+                          style={{ color: 'hsl(var(--color-primary))', fontFamily: "'Bowlby One', cursive" }}>
                             {character.character_name}
                           </h3>
                         </AccordionTrigger>

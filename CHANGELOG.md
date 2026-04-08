@@ -2,6 +2,18 @@
 
 ## 2026-04-08
 
+### Fix: Mystery headings now render red Bowlby One as intended
+- `mystery-package.css` was setting heading color to `var(--color-cream)` instead of `hsl(var(--color-primary))` (red); added `!important` to both `color` and `font-family` to win over Tailwind typography plugin load-order
+- Removed `text-foreground` utility from EditableSection's extracted h3 heading — it was overriding the CSS rule with cream instead of letting the cascade apply
+- Character accordion name headings now get inline red + Bowlby One styles directly since they sit outside `.prose`
+- Print overrides in `print.css` already use `!important` to revert to Inter/black — no change needed there
+
+### Improvement: Dual-format detective script (Script + Key Points per round)
+- Detective script now requires both a `### Script` (full narrative dialogue) and `### Key Points` (bullet-point summary) sub-section for every round
+- Hosts can read the script verbatim, improvise from bullet points, or have the script recorded by an AI voice
+- Added format spec comment in `mystery-ai` Edge Function for Make.com prompt alignment
+- No DB or frontend changes needed — `EditableMultiSection` already handles `###` headers
+
 ### Fix: Host guide game overview now shows its "Game Overview" section title
 - `stripFirstHeading()` was stripping the `## GAME OVERVIEW` heading before passing to `EditableSection`, so that section rendered with no visible title
 - Removed the strip call; heading is now extracted and displayed like all other host guide sections

@@ -177,7 +177,7 @@ const EditableSection: React.FC<EditableSectionProps> = ({
         <div className="flex items-center justify-between mb-2">
           <h3
             className={cn(
-              "font-semibold text-foreground",
+              "font-semibold",
               isMobile ? "text-base" : "text-lg"
             )}
           >

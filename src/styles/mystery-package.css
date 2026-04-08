@@ -5,9 +5,9 @@
 .mystery-content .prose h2,
 .mystery-content .prose h3,
 .mystery-content .prose h4 {
-  font-family: 'Bowlby One', cursive;
+  font-family: 'Bowlby One', cursive !important;
   letter-spacing: 0.03em;
-  color: var(--color-cream);
+  color: hsl(var(--color-primary)) !important;
 }
 
 .mystery-content .prose h2 {
@@ -25,9 +25,9 @@
 
 /* EditableSection fixed section label (the extracted ## heading) */
 .mystery-content .editable-section > div > h3 {
-  font-family: 'Bowlby One', cursive;
+  font-family: 'Bowlby One', cursive !important;
   font-size: 1.3rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--color-cream);
+  color: hsl(var(--color-primary)) !important;
 }
