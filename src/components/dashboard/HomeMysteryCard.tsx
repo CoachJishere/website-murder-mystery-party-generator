@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Eye, Edit, MoreVertical, CheckCircle2, Archive, Trash2, Clock } from "lucide-react";
+import { Eye, Edit, MoreVertical, CheckCircle2, Archive, ArchiveRestore, Trash2, Clock } from "lucide-react";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "react-i18next";
 
@@ -23,16 +23,18 @@ interface HomeMysteryCardProps {
   onView: (id: string) => void;
   onEdit: (id: string) => void;
   onArchive?: (id: string) => void;
+  onUnarchive?: (id: string) => void;
   onDelete?: (id: string) => void;
 }
 
-function HomeMysteryCard({ mystery, onView, onEdit, onArchive, onDelete }: HomeMysteryCardProps) {
+function HomeMysteryCard({ mystery, onView, onEdit, onArchive, onUnarchive, onDelete }: HomeMysteryCardProps) {
   const { t } = useTranslation();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   // Compute status from authoritative fields, falling back to display_status
   const isGenerating = (mystery.is_paid && mystery.needs_package_generation) || mystery.display_status === 'generating';
   const isPurchased = !isGenerating && (mystery.is_paid || mystery.display_status === 'purchased');
+  const isArchived = mystery.display_status === 'archived';
   
   const truncateTitle = (title: string, maxLength: number = 80) => {
     // Strip markdown bold markers
@@ -53,6 +55,12 @@ function HomeMysteryCard({ mystery, onView, onEdit, onArchive, onDelete }: HomeM
   const handleArchive = () => {
     if (onArchive) {
       onArchive(mystery.id);
+    }
+  };
+
+  const handleUnarchive = () => {
+    if (onUnarchive) {
+      onUnarchive(mystery.id);
     }
   };
 
@@ -131,7 +139,13 @@ function HomeMysteryCard({ mystery, onView, onEdit, onArchive, onDelete }: HomeM
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              {!isGenerating && (
+              {!isGenerating && isArchived && (
+                <DropdownMenuItem onClick={handleUnarchive} className="min-h-[44px]">
+                  <ArchiveRestore className="h-4 w-4 mr-2" />
+                  {t('dashboard.mysteries.card.actions.unarchive')}
+                </DropdownMenuItem>
+              )}
+              {!isGenerating && !isArchived && (
                 <DropdownMenuItem onClick={handleArchive} className="min-h-[44px]">
                   <Archive className="h-4 w-4 mr-2" />
                   {t('dashboard.mysteries.card.actions.archive')}

@@ -233,6 +233,7 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
             theme: theme,
             guests: conversation.player_count || 6,
             is_purchased: conversation.is_paid === true || conversation.display_status === "purchased",
+            is_paid: conversation.is_paid === true,
             is_completed: conversation.is_completed || false,
             ai_title: aiTitle,
             purchase_date: conversation.purchase_date,
@@ -388,6 +389,29 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
     }
   };
 
+  const handleUnarchiveMystery = async (mysteryId: string) => {
+    try {
+      // Determine the correct status to restore to based on is_paid
+      const mystery = displayedMysteries.find(m => m.id === mysteryId);
+      const restoreStatus = mystery?.is_paid ? "purchased" : "draft";
+
+      const { error } = await supabase
+        .from("conversations")
+        .update({ display_status: restoreStatus })
+        .eq("id", mysteryId);
+
+      if (error) throw error;
+
+      const mysteryLabel = t('common.labels.mystery', { count: 1, defaultValue: 'mystery' });
+      toast.success(t('common.notifications.unarchiveSuccess', { item: mysteryLabel, defaultValue: '{{item}} restored successfully' }));
+      fetchMysteries(1, true);
+    } catch (error) {
+      console.error("Error unarchiving mystery:", error);
+      const mysteryLabel = t('common.labels.mystery', { count: 1, defaultValue: 'mystery' });
+      toast.error(t('common.notifications.unarchiveFailed', { item: mysteryLabel, defaultValue: 'Failed to restore {{item}}' }));
+    }
+  };
+
   const handleDeleteMystery = async (mysteryId: string) => {
     try {
       const { count: totalCount } = await supabase
@@ -525,13 +549,15 @@ export const HomeDashboard = ({ onCreateNew }: HomeDashboardProps) => {
                     id: mystery.id,
                     title: mystery.title,
                     mystery_data: mystery.mystery_data || {},
-                    display_status: mystery.status, // Use the computed status
+                    display_status: mystery.display_status || mystery.status, // Use display_status to preserve archived state
                     created_at: mystery.created_at,
-                    is_completed: Boolean(mystery.is_completed)
+                    is_completed: Boolean(mystery.is_completed),
+                    is_paid: Boolean(mystery.is_paid)
                   }}
                   onView={handleViewMystery}
                   onEdit={handleEditMystery}
                   onArchive={handleArchiveMystery}
+                  onUnarchive={handleUnarchiveMystery}
                   onDelete={handleDeleteMystery}
                 />
               ))}

@@ -59,6 +59,27 @@ const MysteryList = ({ mysteries, isLoading, onRefresh }: MysteryListProps) => {
     }
   };
 
+  // Handle unarchiving a mystery
+  const handleUnarchiveMystery = async (mysteryId: string) => {
+    try {
+      const mystery = mysteries.find(m => m.id === mysteryId);
+      const restoreStatus = mystery?.is_paid ? "purchased" : "draft";
+
+      const { error } = await supabase
+        .from("conversations")
+        .update({ display_status: restoreStatus })
+        .eq("id", mysteryId);
+
+      if (error) throw error;
+
+      toast.success(t("common.notifications.unarchiveSuccess", { item: t("common.labels.mystery", { count: 1 }), defaultValue: "{{item}} restored successfully" }));
+      onRefresh();
+    } catch (error) {
+      console.error("Error unarchiving mystery:", error);
+      toast.error(t("common.notifications.unarchiveFailed", { item: t("common.labels.mystery", { count: 1 }), defaultValue: "Failed to restore {{item}}" }));
+    }
+  };
+
   // Handle hard delete
   const handleDeleteMystery = async (mysteryId: string) => {
     try {
@@ -120,6 +141,7 @@ const MysteryList = ({ mysteries, isLoading, onRefresh }: MysteryListProps) => {
               onView={handleViewMystery}
               onEdit={handleEditMystery}
               onArchive={handleArchiveMystery}
+              onUnarchive={handleUnarchiveMystery}
               onDelete={handleDeleteMystery}
             />
           ))}

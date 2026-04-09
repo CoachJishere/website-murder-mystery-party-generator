@@ -2,6 +2,11 @@
 
 ## 2026-04-09
 
+### Feature: Unarchive mysteries from the dashboard
+- Archived mystery cards now show "Unarchive" instead of "Archive" in the dropdown menu
+- Restores the mystery to its correct prior status (purchased or draft) based on payment state
+- Added translations for both EN and PT
+
 ### Feature: 7-day welcome discount for new accounts (20% off)
 - New users get a unique, single-use Stripe promotion code (20% off) generated at signup
 - Sticky countdown ribbon (cream + red CTA badge style) appears site-wide showing time remaining and discounted price ($19.99 vs $24.99)

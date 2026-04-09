@@ -290,6 +290,7 @@
           "editMystery": "Edit Mystery",
           "edit": "Edit",
           "archive": "Archive",
+          "unarchive": "Unarchive",
           "deleteTitle": "Delete"
         },
         "deleteDialog": {
@@ -696,6 +697,8 @@
       "deleteFailed": "Failed to delete {{item}}",
       "archiveSuccess": "{{item}} archived successfully",
       "archiveFailed": "Failed to archive {{item}}",
+      "unarchiveSuccess": "{{item}} restored successfully",
+      "unarchiveFailed": "Failed to restore {{item}}",
       "updatedSuccess": "{{item}} updated successfully",
       "updateFailed": "Failed to update {{item}}"
     }
