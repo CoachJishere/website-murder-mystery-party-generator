@@ -514,7 +514,7 @@ export default function MysteryChat({
           "fixed bottom-0 left-0 right-0 z-20",
           isMobile ? "px-3 py-2" : "px-4 py-3"
         )}
-        style={{ backgroundColor: 'var(--color-black)', borderTop: '1px solid rgba(245,240,232,0.1)' }}
+        style={{ backgroundColor: 'var(--color-charcoal)', borderTop: '1px solid rgba(245,240,232,0.1)' }}
       >
         <div className={cn(
           "mx-auto space-y-3",

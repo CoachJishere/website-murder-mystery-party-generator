@@ -13,7 +13,7 @@ const Footer = () => {
   }
 
   return (
-    <footer className="py-12 px-4" style={{ backgroundColor: 'var(--color-charcoal)' }}>
+    <footer className="py-12 px-4" style={{ backgroundColor: 'var(--color-black)' }}>
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-4">
