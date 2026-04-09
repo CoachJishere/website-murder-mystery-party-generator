@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-04-09
+
+### Feature: 7-day welcome discount for new accounts (20% off)
+- New users get a unique, single-use Stripe promotion code (20% off) generated at signup
+- Sticky countdown ribbon appears site-wide showing time remaining and discounted price ($19.99 vs $24.99)
+- Purchase page auto-applies promo code to Stripe checkout URL and shows discount pricing
+- Banner disappears silently after 7 days or once the user has purchased
+- Automated reminder emails at day 5 (48h left) and day 7 (final hours) via pg_cron + Edge Function
+- New Edge Functions: `generate-welcome-discount`, `send-discount-reminders`
+- New DB columns on profiles: `welcome_promo_code`, `welcome_promo_expires_at`, reminder tracking flags
+
+### Improvement: Relationships section — Allies / Rivals & Enemies (Make.com blueprint)
+- Updated `relationships` field template in module 70 of the Detective-Style blueprint
+- Replaced "Friendly Relationships / Hostile Relationships" with "Allies / Rivals & Enemies" — more thematic and in-character
+- Dropped neutral tier: anyone not listed is implicitly neutral, keeping the sheet scannable during play
+
+### Fix: Remove duplicate "Your Relationships with Others" from character backgrounds (Make.com blueprint)
+- Updated `MM Live - Child (Detective-Style).blueprint.json` in temp-files
+- Removed the `**Your Relationships with Others:**` section from the `background` field template in module 70's Claude prompt
+- This section was being generated twice: once in `background` (plain text) and once in the separate `relationships` field (properly formatted)
+- Fix applies to all future mystery generations from this scenario
+
 ## 2026-04-08
 
 ### Improvement: Enable Character-Based mystery style

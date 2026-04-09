@@ -108,6 +108,16 @@ const AuthCallback = () => {
               // Don't block user flow if email fails
               console.error("Error sending welcome email:", error);
             }
+
+            // Generate unique welcome discount promo code
+            try {
+              await supabase.functions.invoke('generate-welcome-discount', {
+                body: { user_id: data.session.user.id }
+              });
+              console.log("Welcome discount generated successfully");
+            } catch (error) {
+              console.error("Error generating welcome discount:", error);
+            }
           }
 
           toast.success("Successfully signed in with Google!");

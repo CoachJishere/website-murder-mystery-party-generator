@@ -1088,5 +1088,15 @@
     "otherPlaceholder": "Tell us where...",
     "submit": "Submit",
     "skip": "Skip for now"
+  },
+  "welcomeDiscount": {
+    "ribbon": {
+      "message": "Welcome! Get {{percent}}% off your first mystery — ${{discountedPrice}} instead of ${{originalPrice}}",
+      "expires": "Expires in {{time}}",
+      "ariaLabel": "Limited time welcome discount"
+    },
+    "purchase": {
+      "expiresIn": "Welcome offer expires in {{time}}"
+    }
   }
 }

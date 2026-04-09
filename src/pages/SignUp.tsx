@@ -66,6 +66,17 @@ const SignUp = () => {
       console.log("Sign up successful:", data);
       trackSignUp('email');
 
+      // Generate unique welcome discount promo code (non-blocking)
+      if (data.user) {
+        supabase.functions.invoke('generate-welcome-discount', {
+          body: { user_id: data.user.id }
+        }).then(() => {
+          console.log("Welcome discount generated successfully");
+        }).catch((error) => {
+          console.error("Error generating welcome discount:", error);
+        });
+      }
+
       // Allow users to access dashboard immediately
       // Send verification email in background, but don't block access
       const hasSession = !!data.session;

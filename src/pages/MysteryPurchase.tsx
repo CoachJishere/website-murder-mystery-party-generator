@@ -15,6 +15,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { trackPurchasePageView, trackBeginCheckout } from "@/lib/analytics";
+import { useWelcomeDiscount } from "@/hooks/useWelcomeDiscount";
+import { ORIGINAL_PRICE, DISCOUNTED_PRICE, DISCOUNT_PERCENT, formatTimeRemaining } from "@/lib/discountUtils";
+import { Clock, Tag } from "lucide-react";
 
 interface Character {
   name: string;
@@ -44,6 +47,7 @@ const MysteryPurchase = () => {
   const isDevMode = import.meta.env.DEV || (window.location.hostname === 'localhost');
   const isMobile = useIsMobile();
   const { t } = useTranslation();
+  const { isActive: hasDiscount, discountInfo, timeRemaining } = useWelcomeDiscount();
 
   // Enhanced extraction functions with better pattern matching
   const extractGameOverview = (content: string): string => {
@@ -399,7 +403,12 @@ const MysteryPurchase = () => {
       }
 
       // Build Stripe checkout URL
-      const stripeUrl = `https://buy.stripe.com/dRm4gAgls6c47UccYV2Nq03?prefilled_email=${encodeURIComponent(user.email)}&client_reference_id=${id}&success_url=${encodeURIComponent(successUrl)}&cancel_url=${encodeURIComponent(cancelUrl)}`;
+      let stripeUrl = `https://buy.stripe.com/dRm4gAgls6c47UccYV2Nq03?prefilled_email=${encodeURIComponent(user.email)}&client_reference_id=${id}&success_url=${encodeURIComponent(successUrl)}&cancel_url=${encodeURIComponent(cancelUrl)}`;
+
+      // Auto-apply welcome discount promo code if active
+      if (hasDiscount && discountInfo?.promoCode) {
+        stripeUrl += `&prefilled_promo_code=${encodeURIComponent(discountInfo.promoCode)}`;
+      }
 
       // Store conversation ID as fallback
       localStorage.setItem('pendingConversationId', id);
@@ -508,14 +517,46 @@ const MysteryPurchase = () => {
                       )} />
                     </div>
                     <div>
-                      <div className={cn(
-                        "font-bold mb-1",
-                        isMobile ? "text-xl" : "text-2xl"
-                      )}>
-                        $24.99
-                      </div>
+                      {hasDiscount ? (
+                        <>
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className={cn(
+                              "font-bold",
+                              isMobile ? "text-xl" : "text-2xl"
+                            )} style={{ color: '#C81400' }}>
+                              ${DISCOUNTED_PRICE.toFixed(2)}
+                            </div>
+                            <div className={cn(
+                              "line-through text-muted-foreground",
+                              isMobile ? "text-base" : "text-lg"
+                            )}>
+                              ${ORIGINAL_PRICE.toFixed(2)}
+                            </div>
+                            <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                              style={{ backgroundColor: 'rgba(200, 20, 0, 0.15)', color: '#C81400' }}>
+                              {DISCOUNT_PERCENT}% OFF
+                            </span>
+                          </div>
+                          {timeRemaining && (
+                            <div className="flex items-center gap-1 text-xs" style={{ color: '#ff6b6b' }}>
+                              <Clock className="h-3 w-3" />
+                              {t("welcomeDiscount.purchase.expiresIn", {
+                                defaultValue: "Welcome offer expires in {{time}}",
+                                time: formatTimeRemaining(timeRemaining),
+                              })}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className={cn(
+                          "font-bold mb-1",
+                          isMobile ? "text-xl" : "text-2xl"
+                        )}>
+                          $24.99
+                        </div>
+                      )}
                       <p className={cn(
-                        "text-muted-foreground",
+                        "text-muted-foreground mt-1",
                         isMobile && "text-sm"
                       )}>
                         {t("purchase.package.priceDescription")}

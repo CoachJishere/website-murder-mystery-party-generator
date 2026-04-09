@@ -10,6 +10,7 @@ import LoadingBoundary from "@/components/LoadingBoundary";
 import { useEffect } from "react";
 import { initGA, trackPageView } from "@/lib/analytics";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { WelcomeDiscountRibbon } from "@/components/WelcomeDiscountRibbon";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
@@ -102,6 +103,7 @@ const AppRoutes = () => {
 
   return (
     <LoadingBoundary loading={loading}>
+      <WelcomeDiscountRibbon />
       {isAuthenticated && <MobileBottomNav />}
       <Routes>
         <Route path="/" element={<Index />} />
