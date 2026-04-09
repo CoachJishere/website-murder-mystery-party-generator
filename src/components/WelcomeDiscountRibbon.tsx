@@ -17,8 +17,8 @@ export function WelcomeDiscountRibbon() {
     <div
       className="w-full py-2 px-4 text-center cursor-pointer z-[60] relative"
       style={{
-        background: 'linear-gradient(90deg, #000000 0%, #1a1a1a 50%, #000000 100%)',
-        borderBottom: '1px solid rgba(200, 20, 0, 0.3)',
+        background: '#F5F0E8',
+        borderBottom: '2px solid #C81400',
       }}
       onClick={() => navigate("/dashboard")}
       role="banner"
@@ -28,7 +28,7 @@ export function WelcomeDiscountRibbon() {
         <Tag className="h-3.5 w-3.5 flex-shrink-0" style={{ color: '#C81400' }} />
         <span
           className="text-xs sm:text-sm font-medium"
-          style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)' }}
+          style={{ color: '#1a1a1a', fontFamily: 'var(--font-body)' }}
         >
           {t("welcomeDiscount.ribbon.message", {
             defaultValue: "Welcome! Get {{percent}}% off your first mystery — ${{discountedPrice}} instead of ${{originalPrice}}",
@@ -37,8 +37,8 @@ export function WelcomeDiscountRibbon() {
             originalPrice: ORIGINAL_PRICE.toFixed(2),
           })}
         </span>
-        <span className="hidden sm:inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: 'rgba(200, 20, 0, 0.2)', color: '#ff6b6b' }}
+        <span className="hidden sm:inline-flex items-center gap-1 text-xs font-medium px-2.5 py-0.5 rounded-full"
+          style={{ backgroundColor: '#C81400', color: '#ffffff' }}
         >
           <Clock className="h-3 w-3" />
           {t("welcomeDiscount.ribbon.expires", {
@@ -47,7 +47,7 @@ export function WelcomeDiscountRibbon() {
           })}
         </span>
         <span className="sm:hidden inline-flex items-center gap-1 text-xs font-medium"
-          style={{ color: '#ff6b6b' }}
+          style={{ color: '#C81400' }}
         >
           <Clock className="h-3 w-3" />
           {timeStr}
