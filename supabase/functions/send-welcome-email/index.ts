@@ -63,6 +63,25 @@ serve(async (req) => {
                 Your account is ready. Here's what you can do now:
               </p>
 
+              <!-- Welcome discount banner -->
+              <div style="background: #000000; border: 2px solid #C81400; padding: 24px; margin: 25px 0; border-radius: 8px; text-align: center;">
+                <p style="margin: 0 0 6px 0; color: rgba(245,240,232,0.5); font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">
+                  Your welcome gift
+                </p>
+                <p style="margin: 0 0 10px 0; color: #F5F0E8; font-size: 28px; font-weight: 700;">
+                  20% OFF
+                </p>
+                <p style="margin: 0 0 8px 0; color: #F5F0E8; font-size: 16px;">
+                  <span style="text-decoration: line-through; color: rgba(245,240,232,0.4);">$24.99</span>
+                  &nbsp;&rarr;&nbsp;
+                  <span style="color: #C81400; font-weight: 700;">$19.99</span>
+                  for your first mystery package
+                </p>
+                <p style="margin: 0; color: rgba(245,240,232,0.5); font-size: 13px;">
+                  Valid for 7 days &mdash; applied automatically at checkout
+                </p>
+              </div>
+
               <!-- Feature list -->
               <div style="background: #000000; border-left: 4px solid #C81400; padding: 20px; margin: 25px 0; border-radius: 4px;">
                 <p style="margin: 0 0 12px 0; color: #F5F0E8; font-size: 15px;">
@@ -82,13 +101,13 @@ serve(async (req) => {
               <!-- CTA Button -->
               <div style="text-align: center; margin: 35px 0;">
                 <a href="https://www.mysterymaker.party/mystery/create?utm_source=welcome_email&utm_medium=email&utm_campaign=onboarding" style="display: inline-block; background: #C81400; color: #F5F0E8; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
-                  Create Your First Mystery
+                  Create Your First Mystery &amp; Save 20%
                 </a>
               </div>
 
               <!-- Helpful tip -->
               <p style="color: rgba(245,240,232,0.5); font-size: 14px; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(245,240,232,0.1); line-height: 1.6;">
-                <strong style="color: rgba(245,240,232,0.7);">Pro tip:</strong> You can explore and create as many mystery drafts as you like. You only pay ($24.99) when you're ready to generate the complete party package with all materials.
+                <strong style="color: rgba(245,240,232,0.7);">Pro tip:</strong> You can explore and create as many mystery drafts as you like for free. Your 20% discount is applied automatically when you're ready to generate the complete party package.
               </p>
             </div>
 

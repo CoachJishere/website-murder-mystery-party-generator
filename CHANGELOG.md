@@ -4,11 +4,13 @@
 
 ### Feature: 7-day welcome discount for new accounts (20% off)
 - New users get a unique, single-use Stripe promotion code (20% off) generated at signup
-- Sticky countdown ribbon appears site-wide showing time remaining and discounted price ($19.99 vs $24.99)
+- Sticky countdown ribbon (cream + red CTA badge style) appears site-wide showing time remaining and discounted price ($19.99 vs $24.99)
 - Purchase page auto-applies promo code to Stripe checkout URL and shows discount pricing
 - Banner disappears silently after 7 days or once the user has purchased
 - Automated reminder emails at day 5 (48h left) and day 7 (final hours) via pg_cron + Edge Function
-- New Edge Functions: `generate-welcome-discount`, `send-discount-reminders`
+- Welcome email updated to prominently feature 20% discount offer and 7-day window
+- Backfilled 15 recent signups (last 7 days) with unique promo codes + sent welcome discount notification emails
+- New Edge Functions: `generate-welcome-discount`, `send-discount-reminders`, `backfill-welcome-discounts` (one-time)
 - New DB columns on profiles: `welcome_promo_code`, `welcome_promo_expires_at`, reminder tracking flags
 
 ### Improvement: Relationships section — Allies / Rivals & Enemies (Make.com blueprint)
