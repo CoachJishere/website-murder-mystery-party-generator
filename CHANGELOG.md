@@ -2,6 +2,19 @@
 
 ## 2026-04-12
 
+### Fix: Stripe webhook failures — both Supabase and Vercel endpoints
+- Supabase edge function redeployed with corrected DB update (removed non-existent `stripe_session_id`/`stripe_payment_intent` columns, now sets `purchase_date`)
+- Added `vercel.json` with rewrites so `/api/webhook` routes to the serverless function instead of the SPA catch-all
+- Backfilled `purchase_date` for 10 March purchases that were missing it due to webhook failures
+
+### Fix: Mystery generation prompt — evidence card format and image prompt wording
+- Phase 5 Step 1 said "as part of the evidence_cards content" which could be misread as instruction to embed image prompts inside the evidence_cards text saved to Supabase; rewrote to keep image prompts in memory only, never write to DB
+- Evidence card template updated to match the round-based format (Round 2/3/4 with IMPLICATIONS sections) and to cap physical descriptions at 3 sentences max — descriptions are printed on physical cards with a fixed layout; IMPLICATIONS are web-only and do not print
+
+### Fix: Alpine Express evidence_cards — visual descriptions stripped from live site
+- `evidence_cards` JSONB field contained `*Note 1: Use the visual descriptors...*` and `**VISUAL DESCRIPTION (FOR IMAGE GENERATION)**` blocks that were rendering on the live mystery page
+- Stripped both blocks and saved clean text back to Supabase (`package_id: 054ca914-d115-432a-9760-6f462c2cef04`)
+
 ### Fix: Evidence tab crash — screen goes dark when clicking Clues & Evidence
 - `packageData.evidenceCards` can arrive from Supabase as a non-string (e.g., JSON object), causing `TypeError: t.replace is not a function` in `EditableMultiSection.splitByHeaders`
 - Added `typeof` guard in both `splitByHeaders` and the `evidenceCards` memo so non-string values fall through to the clue-extraction fallback instead of crashing
@@ -38,6 +51,19 @@
 ### UI: Shorten bottom nav "Account Settings" label to "Settings"
 - "Account Settings" was too long for a bottom nav tab, causing text wrap and misaligned icon
 - Shortened to single-word labels across all 13 locales (e.g. "Settings", "Ajustes", "Konto", "設定")
+
+## 2026-04-12
+
+### Improvement: Mystery generation prompt — add image generation phase and missing documents
+- Added Phase 5: Replicate image generation via Supabase Edge Function workaround (sandbox blocks api.replicate.com directly)
+- Documents the full flow: generate image prompts → get Replicate key from user → deploy one-off edge function → invoke → verify → remind user to delete function to clean up API key
+- Added `evidence_card_images` to Phase 6 verification SQL check
+
+### Improvement: Mystery generation prompt — add missing documents and character count fix
+- Added Phase 2 character count confirmation: Claude must explicitly list and confirm all characters before generating any, preventing early stops (e.g. stopping at 6 when there are 12)
+- Added Phase 4 covering the three missing package-level documents: `host_guide`, `evidence_cards`, `detective_script` — with full format templates for each
+- Added Phase 6 SQL check verifying all three package documents are saved before sign-off
+- Renumbered phases accordingly (now 8 total)
 
 ## 2026-04-09
 
