@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Plus, List, User } from "lucide-react";
+import { Home, Plus, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
@@ -39,7 +39,7 @@ export function MobileBottomNav() {
       className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t z-40 safe-area-inset-bottom"
       aria-label="Mobile navigation"
     >
-      <div className="grid grid-cols-4 h-16">
+      <div className="grid grid-cols-3 h-16">
         <NavItem
           to="/dashboard"
           icon={<Home size={20} />}
@@ -51,12 +51,6 @@ export function MobileBottomNav() {
           icon={<Plus size={20} />}
           label={t("navigation.create", { defaultValue: "Create" })}
           active={location.pathname.includes("/mystery/create")}
-        />
-        <NavItem
-          to="/dashboard"
-          icon={<List size={20} />}
-          label={t("navigation.mysteries", { defaultValue: "Mysteries" })}
-          active={location.pathname.includes("/mystery/") && !location.pathname.includes("/create") && !location.pathname.includes("/new")}
         />
         <NavItem
           to="/account"
