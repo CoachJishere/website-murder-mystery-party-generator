@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-04-12
+
+### Fix: Chatbot generate button hidden behind mobile bottom nav
+- The fixed chat input + "Generate Full Mystery" button was positioned at `bottom-0` with `z-20`, hidden behind the bottom nav (`z-40`, 64px tall)
+- On mobile, the chat container now uses `bottom-16` to sit above the nav bar
+- Increased bottom padding on chat messages area (`pb-48`) and page container (`pb-40`) to prevent content from being obscured
+
+### Improvement: Remove duplicate items from mobile hamburger menu
+- Removed Dashboard and Account Settings links from the hamburger menu since they already exist in the bottom nav bar
+- Hamburger menu for logged-in users now shows: user info, Sign Out, Support, and Language Switcher
+- Follows UX best practice: bottom nav for primary actions, hamburger for secondary/utility actions
+
 ## 2026-04-09
 
 ### Feature: Unarchive mysteries from the dashboard

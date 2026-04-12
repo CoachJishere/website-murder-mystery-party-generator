@@ -406,7 +406,7 @@ export default function MysteryChat({
       {/* Chat Messages Area */}
       <div className={cn(
         "space-y-4 sm:space-y-6 bg-muted",
-        usePageScroll ? "pb-32" : "overflow-y-auto h-80 p-3 sm:h-96 sm:p-4"
+        usePageScroll ? "pb-48" : "overflow-y-auto h-80 p-3 sm:h-96 sm:p-4"
       )}>
         {/* Loading History */}
         {isLoadingHistory && (
@@ -511,8 +511,8 @@ export default function MysteryChat({
       {/* Fixed Bottom Generate Button and Text Input */}
       <div
         className={cn(
-          "fixed bottom-0 left-0 right-0 z-20",
-          isMobile ? "px-3 py-2" : "px-4 py-3"
+          "fixed left-0 right-0 z-20",
+          isMobile ? "bottom-16 px-3 py-2" : "bottom-0 px-4 py-3"
         )}
         style={{ backgroundColor: 'var(--color-charcoal)', borderTop: '1px solid rgba(245,240,232,0.1)' }}
       >

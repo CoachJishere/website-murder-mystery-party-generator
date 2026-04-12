@@ -132,7 +132,7 @@ const MysteryChatPage = () => {
             <Header />
             <main className={cn(
                 "flex-1", // Padding handled by chat component
-                isMobile ? "pt-2 px-3 pb-24" : "pt-4 px-4 pb-32"
+                isMobile ? "pt-2 px-3 pb-40" : "pt-4 px-4 pb-32"
             )}>
                 <div className={cn(
                     "mx-auto",

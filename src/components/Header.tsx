@@ -82,22 +82,6 @@ const Header = () => {
                   )}
                   <span className="font-medium text-sm" style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)' }}>{user?.name}</span>
                 </div>
-                <Link
-                  to="/dashboard"
-                  className="w-full h-12 no-underline text-base flex items-center justify-center"
-                  style={{ backgroundColor: '#000', color: 'var(--color-cream)', borderRadius: '6px', fontFamily: 'var(--font-body)', fontWeight: 600 }}
-                  onClick={toggleMenu}
-                >
-                  {t('navigation.dashboard')}
-                </Link>
-                <Link
-                  to="/account"
-                  className="w-full h-12 no-underline text-base flex items-center justify-center"
-                  style={{ color: 'var(--color-cream)', border: '1.5px solid rgba(245,240,232,0.5)', borderRadius: '6px', fontFamily: 'var(--font-body)', fontWeight: 500 }}
-                  onClick={toggleMenu}
-                >
-                  {t('navigation.account', 'Account Settings')}
-                </Link>
                 <button
                   className="w-full h-12 text-base flex items-center justify-center"
                   style={{ color: 'var(--color-cream)', border: '1.5px solid rgba(245,240,232,0.5)', borderRadius: '6px', fontFamily: 'var(--font-body)', fontWeight: 500, background: 'none', cursor: 'pointer' }}
