@@ -2,6 +2,12 @@
 
 ## 2026-04-12
 
+### Fix: In-progress generation falsely shown as completed on dashboard
+- `checkGenerationStatus` treated `is_paid === true` as a completion signal, but `is_paid` is set when the user pays — before generation finishes
+- Combined with `allCharactersGenerated` defaulting to `true` (no `extracted_characters` at start), the auto-completion logic fired immediately, marking the mystery as "purchased" with empty content
+- Removed `is_paid` from `conversationIndicatesComplete` — only `has_complete_package` is a reliable completion indicator
+- Added guard: when `generation_status` is explicitly `in_progress`, require actual content (title/host_guide) before auto-completing
+
 ### Fix: Chatbot generate button hidden behind mobile bottom nav
 - The fixed chat input + "Generate Full Mystery" button was positioned at `bottom-0` with `z-20`, hidden behind the bottom nav (`z-40`, 64px tall)
 - On mobile, the chat container now uses `bottom-16` to sit above the nav bar

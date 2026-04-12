@@ -368,9 +368,10 @@ const MysteryView = () => {
         packageData.generation_completed_at
       );
 
+      // NOTE: is_paid alone does NOT indicate completion — it's set when the user pays,
+      // before generation finishes. Only has_complete_package is a reliable completion signal.
       const conversationIndicatesComplete = conversationData && (
-        conversationData.has_complete_package === true ||
-        conversationData.is_paid === true
+        conversationData.has_complete_package === true
       );
 
       const packageStatusComplete = packageData?.generation_status?.status === 'completed';
@@ -416,8 +417,15 @@ const MysteryView = () => {
         conversationStatus: conversationData
       });
 
+      // If generation_status is explicitly 'in_progress', don't auto-complete unless
+      // there is actual content (title/host_guide). This prevents premature completion
+      // when the user navigates away during generation and comes back.
+      const generationExplicitlyInProgress = packageData?.generation_status?.status === 'in_progress';
+
       // STEP 4: If completion indicators are true AND all characters generated, force completion
-      if ((hasActualContent || conversationIndicatesComplete || packageStatusComplete) && allCharactersGenerated) {
+      // When generation is explicitly in-progress, require actual content — don't rely solely
+      // on conversation-level flags which may have been set before generation finished.
+      if ((hasActualContent || ((conversationIndicatesComplete || packageStatusComplete) && !generationExplicitlyInProgress)) && allCharactersGenerated) {
         const previousStatus = generationStatus?.status;
         console.log("=== STATUS CHECK DEBUG === Completion detected, previous status:", previousStatus);
         
