@@ -12,14 +12,14 @@
 
 .mystery-content .prose h2 {
   font-size: 1.4rem;
-  text-transform: uppercase;
+  text-transform: uppercase !important;
   margin-top: 1.75rem;
   margin-bottom: 0.5rem;
 }
 
 .mystery-content .prose h3 {
   font-size: 1.15rem;
-  text-transform: uppercase;
+  text-transform: uppercase !important;
   margin-top: 1.25rem;
   margin-bottom: 0.4rem;
 }

@@ -2,10 +2,19 @@
 
 ## 2026-04-12
 
+### Fix: h2/h3 headings not uppercasing in mystery content
+- `text-transform: uppercase` on `.mystery-content .prose h2` and `.mystery-content .prose h3` was being overridden by Tailwind's prose cascade — added `!important` to both so headings render uppercase in host guide, character guides, and evidence sections
+
 ### Fix: Stripe webhook failures — both Supabase and Vercel endpoints
 - Supabase edge function redeployed with corrected DB update (removed non-existent `stripe_session_id`/`stripe_payment_intent` columns, now sets `purchase_date`)
 - Added `vercel.json` with rewrites so `/api/webhook` routes to the serverless function instead of the SPA catch-all
 - Backfilled `purchase_date` for 10 March purchases that were missing it due to webhook failures
+
+### Fix: Parent blueprint — evidence cards VISUAL DESCRIPTION and Note 1 showing on live site
+- Module 182 (detective-style route): removed `*Note 1: Use the visual descriptors...*` and all three `### VISUAL DESCRIPTION (FOR IMAGE GENERATION)` blocks from the `evidenceCards` template — image prompts already exist separately in `imagePrompts` field and should never be saved to `evidence_cards` in DB
+- Module 182: added MAXIMUM 3 sentences constraint to all three round descriptions — evidence card text prints on physical cards with limited layout space
+- Module 171 (master constraints): added same 3-sentence constraint to `Item: [Physical description]` fields in Evidence Progression section so the source descriptions are constrained from the start
+- Changes apply to `MM Live - Parent.blueprint.json` in temp-files — ready to import into Make.com
 
 ### Fix: Generation prompt style detection reading wrong table
 - Prompt said "handle whichever style it is" with no direction on where to look, causing the AI to read `mystery_packages.mystery_style` which defaults to `'character'` — wrong if not explicitly set
