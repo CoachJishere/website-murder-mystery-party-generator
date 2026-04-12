@@ -24,6 +24,14 @@
   margin-bottom: 0.4rem;
 }
 
+/* Section label h3 (extracted by EditableSection, sits outside .prose) */
+.mystery-content .editable-section h3 {
+  font-family: 'Bowlby One', cursive !important;
+  letter-spacing: 0.03em;
+  color: #E53E2A !important;
+  text-transform: uppercase !important;
+}
+
 /* Force body-copy text to cream — no red in running text */
 .mystery-content .prose strong {
   color: var(--color-cream) !important;

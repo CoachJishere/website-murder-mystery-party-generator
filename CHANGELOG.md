@@ -2,6 +2,10 @@
 
 ## 2026-04-12
 
+### Fix: Section label headings not uppercase in host guide
+- `EditableSection` extracts the first `#` heading from content and renders it as an `<h3>` outside the `.prose` div — so `text-transform: uppercase` on `.mystery-content .prose h3` never applied to it
+- Added `.mystery-content .editable-section h3` rule with Bowlby One font, red color, and `text-transform: uppercase !important` to match prose heading style — covers "Welcome to the Train", "Materials", "Prep Guide", and all other section labels
+
 ### Fix: Alpine Express — duplicate mystery title in host guide
 - `game_overview` had `# Murder On The Alpine Express` as its first line, which `EditableSection` extracted and rendered as a visible header — duplicating the page-level title already shown at the top of the view
 - Stripped the `# Murder On The Alpine Express` line from `game_overview` in the DB for record `054ca914`; content now starts cleanly with `## Welcome to the Train`
