@@ -22,7 +22,7 @@ interface ParsedSection {
 }
 
 function splitByHeaders(markdown: string): ParsedSection[] {
-  if (!markdown) return [];
+  if (!markdown || typeof markdown !== "string") return [];
 
   // Normalise escaped newlines from DB
   const normalised = markdown.replace(/\\n/g, "\n");

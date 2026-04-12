@@ -487,7 +487,7 @@ const MysteryPackageTabView = React.memo(({
 
   const evidenceCards = useMemo(() => {
     let content = "";
-    if (packageData?.evidenceCards) {
+    if (packageData?.evidenceCards && typeof packageData.evidenceCards === 'string') {
       content = packageData.evidenceCards;
     } else {
       const clues = extractClues();

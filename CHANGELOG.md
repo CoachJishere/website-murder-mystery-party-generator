@@ -2,6 +2,19 @@
 
 ## 2026-04-12
 
+### Fix: Evidence tab crash — screen goes dark when clicking Clues & Evidence
+- `packageData.evidenceCards` can arrive from Supabase as a non-string (e.g., JSON object), causing `TypeError: t.replace is not a function` in `EditableMultiSection.splitByHeaders`
+- Added `typeof` guard in both `splitByHeaders` and the `evidenceCards` memo so non-string values fall through to the clue-extraction fallback instead of crashing
+
+### Feature: Generate "Murder On The Alpine Express" — 12-player mystery saved to Supabase
+- Full character-based mystery generated and saved directly to Supabase (package ID `054ca914-d115-432a-9760-6f462c2cef04`, conversation ID `bd5318f4-5a78-4413-85a3-6ce2f902556d`)
+- 12 European characters: Victoria Ashworth (murderer), Count Franz Hoffmann, Isabelle Renard, Dr. Leopold Crane, Natalya Volkov, Marcus Thorne, Lord Archibald Pembrooke, Baroness Elise von Hartmann, Signora Lucia Ferrara, Heinrich Braun, Madame Colette Moreau, Professor Erik Lindqvist
+- All 14 fields populated per character (description, background, relationships, secret, introduction, rumors, round 2–4 scripts and questions, accusations, final statement)
+- STOP blocks confirmed present at end of rumors and all three question rounds for all 12 characters
+- Master context saved to `mystery_packages.master_context` covering murderer identity, method (strychnine in brandy decanter, 9:45 PM window), full relationship matrix, evidence cards, and deception guidelines
+- All 12 characters passed quality audit: STOP block placement, background cleanliness, alibi specificity, secret red-herring design, honest suspect arcs, murderer deception layering
+- `generation_status` set to `complete`
+
 ### Fix: In-progress generation falsely shown as completed on dashboard
 - `checkGenerationStatus` treated `is_paid === true` as a completion signal, but `is_paid` is set when the user pays — before generation finishes
 - Combined with `allCharactersGenerated` defaulting to `true` (no `extracted_characters` at start), the auto-completion logic fired immediately, marking the mystery as "purchased" with empty content
