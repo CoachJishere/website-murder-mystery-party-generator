@@ -61,7 +61,7 @@ export function MobileBottomNav() {
         <NavItem
           to="/account"
           icon={<User size={20} />}
-          label={t("navigation.account", { defaultValue: "Account" })}
+          label={t("navigation.account", { defaultValue: "Settings" })}
           active={location.pathname.includes("/account")}
         />
       </div>

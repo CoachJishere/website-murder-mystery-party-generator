@@ -12,6 +12,10 @@
 - Hamburger menu for logged-in users now shows: user info, Sign Out, Support, and Language Switcher
 - Follows UX best practice: bottom nav for primary actions, hamburger for secondary/utility actions
 
+### UI: Shorten bottom nav "Account Settings" label to "Settings"
+- "Account Settings" was too long for a bottom nav tab, causing text wrap and misaligned icon
+- Shortened to single-word labels across all 13 locales (e.g. "Settings", "Ajustes", "Konto", "設定")
+
 ## 2026-04-09
 
 ### Feature: Unarchive mysteries from the dashboard
