@@ -7,6 +7,11 @@
 - Added `vercel.json` with rewrites so `/api/webhook` routes to the serverless function instead of the SPA catch-all
 - Backfilled `purchase_date` for 10 March purchases that were missing it due to webhook failures
 
+### Fix: Generation prompt style detection reading wrong table
+- Prompt said "handle whichever style it is" with no direction on where to look, causing the AI to read `mystery_packages.mystery_style` which defaults to `'character'` — wrong if not explicitly set
+- Added Phase 0: query `conversations.mystery_style` and `conversations.script_type` as the source of truth before any generation begins; state both values out loud; explicitly sync them to `mystery_packages` on save
+- Added explanation of what detective vs character style means for the host guide structure
+
 ### Fix: Excessive spacing between evidence card sections on mystery view
 - `EditableMultiSection` splits on both `##` and `###` headers, causing round headers (e.g. "EVIDENCE: ROUND 3") to become isolated header-only sections with `space-y-6` (24px) gap pushing them away from the cards below
 - Reduced `space-y-6` to `space-y-3` in `EditableMultiSection`
