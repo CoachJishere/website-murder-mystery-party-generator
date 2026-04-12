@@ -2,6 +2,11 @@
 
 ## 2026-04-12
 
+### Fix: Alpine Express — duplicate mystery title in host guide
+- `game_overview` had `# Murder On The Alpine Express` as its first line, which `EditableSection` extracted and rendered as a visible header — duplicating the page-level title already shown at the top of the view
+- Stripped the `# Murder On The Alpine Express` line from `game_overview` in the DB for record `054ca914`; content now starts cleanly with `## Welcome to the Train`
+- Make.com blueprint already generates `gameOverview` starting with `## GAME OVERVIEW` (no title) — no blueprint change needed; this was a one-off data issue from an older generation
+
 ### Fix: h2/h3 headings not uppercasing in mystery content
 - `text-transform: uppercase` on `.mystery-content .prose h2` and `.mystery-content .prose h3` was being overridden by Tailwind's prose cascade — added `!important` to both so headings render uppercase in host guide, character guides, and evidence sections
 
