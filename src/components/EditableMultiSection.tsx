@@ -106,7 +106,7 @@ const EditableMultiSection: React.FC<EditableMultiSectionProps> = ({
   }
 
   return (
-    <div className={className ?? "space-y-6"}>
+    <div className={className ?? "space-y-3"}>
       {sections.map((section) => (
         <EditableSection
           key={section.id}

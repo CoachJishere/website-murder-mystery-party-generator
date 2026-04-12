@@ -174,7 +174,7 @@ const EditableSection: React.FC<EditableSectionProps> = ({
     <div className={cn("editable-section relative group", className)}>
       {/* Fixed header with edit button */}
       {header && (
-        <div className="flex items-center justify-between mb-2">
+        <div className={cn("flex items-center justify-between", bodyContent ? "mb-2" : "mb-0")}>
           <h3
             className={cn(
               "font-semibold",

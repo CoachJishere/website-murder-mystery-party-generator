@@ -7,6 +7,11 @@
 - Added `vercel.json` with rewrites so `/api/webhook` routes to the serverless function instead of the SPA catch-all
 - Backfilled `purchase_date` for 10 March purchases that were missing it due to webhook failures
 
+### Fix: Excessive spacing between evidence card sections on mystery view
+- `EditableMultiSection` splits on both `##` and `###` headers, causing round headers (e.g. "EVIDENCE: ROUND 3") to become isolated header-only sections with `space-y-6` (24px) gap pushing them away from the cards below
+- Reduced `space-y-6` to `space-y-3` in `EditableMultiSection`
+- In `EditableSection`, the header div's `mb-2` is now `mb-0` when there is no body content, removing dead vertical space from header-only sections
+
 ### Fix: Mystery generation prompt — evidence card format and image prompt wording
 - Phase 5 Step 1 said "as part of the evidence_cards content" which could be misread as instruction to embed image prompts inside the evidence_cards text saved to Supabase; rewrote to keep image prompts in memory only, never write to DB
 - Evidence card template updated to match the round-based format (Round 2/3/4 with IMPLICATIONS sections) and to cap physical descriptions at 3 sentences max — descriptions are printed on physical cards with a fixed layout; IMPLICATIONS are web-only and do not print
