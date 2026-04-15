@@ -334,6 +334,12 @@
 - Includes concrete examples of vague vs specific themes to guide the AI's judgment
 - When asking, the AI suggests 2-3 concrete directions to spark imagination rather than putting the burden on the user
 
+### Feature: "Copy for AI" button on blog posts
+- Added a "Copy for AI" button in the blog post header next to reading time
+- Copies the post's title, meta description, source URL, and full markdown content to the clipboard in a format optimized for pasting into ChatGPT, Claude, Perplexity, or any AI assistant
+- Improves UX for AI-first users who want to ask follow-up questions about the content
+- Button shows a check icon and "Copied!" confirmation for 2 seconds after clicking
+
 ### Feature: llms.txt for AI engine discoverability (AEO)
 - Added `public/llms.txt` served at mysterymaker.party/llms.txt — a hierarchical index of all published blog posts organized by thematic cluster
 - Following the llmstxt.org standard format (H1 title, blockquote summary, grouped H2 sections with link + description)
