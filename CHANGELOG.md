@@ -334,6 +334,14 @@
 - Includes concrete examples of vague vs specific themes to guide the AI's judgment
 - When asking, the AI suggests 2-3 concrete directions to spark imagination rather than putting the burden on the user
 
+### Feature: llms.txt for AI engine discoverability (AEO)
+- Added `public/llms.txt` served at mysterymaker.party/llms.txt — a hierarchical index of all published blog posts organized by thematic cluster
+- Following the llmstxt.org standard format (H1 title, blockquote summary, grouped H2 sections with link + description)
+- Initial version contains 83 published posts across 11 clusters (pillar, how-to-host, theme ideas, troubleshooting, etc.)
+- Added `scripts/generate-llms-txt.mjs` — reads Supabase and cross_link_map.json to build llms.txt
+- Daily publish action now regenerates llms.txt after each publish and commits it back to the repo
+- Makes site content discoverable to AI engines (ChatGPT, Claude, Perplexity, Gemini) via the standard llms.txt convention
+
 ### Improvement: Expanded pillar page outbound links from 5 to 15
 - All 5 pillar pages now link to 15 cluster posts each (up from 5), across all 13 languages
 - Completes the bidirectional hub-and-spoke architecture recommended by the SEO/GEO playbook
