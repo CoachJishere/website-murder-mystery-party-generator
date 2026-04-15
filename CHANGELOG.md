@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-04-15
+
+### Fix: Prevent empty tabs when generation completes without characters
+- MysteryView.tsx now requires `characters.length > 0` before showing the tab view — previously `is_paid` or `status === 'completed'` alone would show empty tabs
+- Added fallback: if status looks complete but characters are missing, shows the "We're Finalizing Your Mystery" card instead of broken empty content
+- Root cause: when the Make.com character-based child scenario was off, the parent marked packages as "completed" before child webhooks returned, leaving 0 characters in the DB while the UI showed empty tabs
+
+### Fix: Customer recovery — BEFORE THE NIKAH and Death At Villa Amore
+- Both packages had parent content (overview, host guide, master context) but 0 character scripts due to child scenario being off
+- Generated and inserted all character scripts directly (5 for BEFORE THE NIKAH, 7 for Villa Amore)
+- Fixed double-encoded `extracted_characters` and `generation_status` fields on Villa Amore package
+- Generated evidence cards, detective script, and 3 evidence card images for Villa Amore (parent hadn't completed those steps)
+- Set `character_role` on all characters to prevent monitoring sweep from re-flagging
+
+## 2026-04-13
+
+### Fix: generate_sql.py — incorrect column mapping for wedding mystery characters
+- Removed `round2_statement` and `round3_statement` assignments (columns do not exist in `mystery_characters`)
+- Removed `whereabouts` (never existed)
+- Fixed `relationships` from plain `text` escaping to `::jsonb` cast — source is a markdown string, stored as a JSON string value via `json.dumps()` + `::jsonb` cast
+- Added `secrets = NULL` (jsonb column exists but source has no data)
+- Added `accusations` assignment (text column, field IS present in source JSON)
+- Set `round2_accomplice`, `round3_accomplice`, `round4_accomplice` to NULL (columns exist but source has no data for them)
+- Re-generated `update_1.sql` through `update_5.sql` with corrected mappings
+
 ## 2026-04-12
 
 ### Fix: Section label headings not uppercase in host guide
@@ -24,6 +49,8 @@
 - Module 182: added MAXIMUM 3 sentences constraint to all three round descriptions — evidence card text prints on physical cards with limited layout space
 - Module 171 (master constraints): added same 3-sentence constraint to `Item: [Physical description]` fields in Evidence Progression section so the source descriptions are constrained from the start
 - Changes apply to `MM Live - Parent.blueprint.json` in temp-files — ready to import into Make.com
+
+**Note**: Module 171/182 changes refer to the promotional video mystery creation project using Claude/Make.com, NOT the main website mystery generation system. The main website uses master constraints stored in `mystery_packages.master_context` field in Supabase.
 
 ### Fix: Generation prompt style detection reading wrong table
 - Prompt said "handle whichever style it is" with no direction on where to look, causing the AI to read `mystery_packages.mystery_style` which defaults to `'character'` — wrong if not explicitly set

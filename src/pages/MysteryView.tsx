@@ -1139,9 +1139,9 @@ const MysteryView = () => {
   }
 
   // Log debug info for tab visibility
-  if (mystery?.is_paid || generationStatus?.status === 'completed' || 
-      (!generating && !generationStatus && packageData && packageData.gameOverview && 
-       packageData.hostGuide && characters.length > 0)) {
+  if ((mystery?.is_paid || generationStatus?.status === 'completed' ||
+      (!generating && !generationStatus && packageData && packageData.gameOverview &&
+       packageData.hostGuide)) && characters.length > 0) {
     console.log("🎭 [DEBUG] Showing tabs because:", {
       isPaid: mystery?.is_paid,
       generationComplete: generationStatus?.status === 'completed',
@@ -1163,7 +1163,10 @@ const MysteryView = () => {
           "container mx-auto max-w-4xl",
           isMobile && "max-w-full"
         )}>
-          {generationStatus?.status === 'needs_review' ? (
+          {/* Show "finalizing" card if needs_review OR if generation looks complete but characters are missing */}
+          {generationStatus?.status === 'needs_review' ||
+           (characters.length === 0 && !generating &&
+            (generationStatus?.status === 'completed' || (mystery?.is_paid && packageData?.gameOverview))) ? (
             <Card className={cn(
               "mb-6 border-amber-500/30",
               isMobile && "mx-2"
@@ -1218,9 +1221,9 @@ const MysteryView = () => {
                 </Button>
               </CardContent>
             </Card>
-          ) : (mystery?.is_paid || generationStatus?.status === 'completed' ||
+          ) : ((mystery?.is_paid || generationStatus?.status === 'completed' ||
             (!generating && !generationStatus && packageData && packageData.gameOverview &&
-             packageData.hostGuide && characters.length > 0)) ? (
+             packageData.hostGuide)) && characters.length > 0) ? (
             <MysteryPackageTabView
               packageContent={packageContent || ""}
               mysteryTitle={getMysteryTitle()}
