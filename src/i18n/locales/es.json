@@ -860,7 +860,10 @@
     "error": "Error al cargar las publicaciones del blog.",
     "errorTitle": "Error",
     "tryAgain": "Intentar de Nuevo",
-    "checkBackLater": "¡Vuelve más tarde para nuevos artículos!"
+    "checkBackLater": "¡Vuelve más tarde para nuevos artículos!",
+    "copyForAI": "Copiar para IA",
+    "copied": "¡Copiado!",
+    "copyForAITooltip": "Copia este artículo como markdown limpio para pegarlo en ChatGPT, Claude o cualquier asistente de IA"
   },
   "hostAccess": {
     "loading": "Cargando materiales del anfitrión...",

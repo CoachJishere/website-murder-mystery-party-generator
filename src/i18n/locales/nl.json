@@ -860,7 +860,10 @@
     "error": "Kan blogberichten niet laden.",
     "errorTitle": "Fout",
     "tryAgain": "Opnieuw Proberen",
-    "checkBackLater": "Kom later terug voor nieuwe artikelen!"
+    "checkBackLater": "Kom later terug voor nieuwe artikelen!",
+    "copyForAI": "Kopiëren voor AI",
+    "copied": "Gekopieerd!",
+    "copyForAITooltip": "Kopieer dit bericht als schone markdown om in ChatGPT, Claude of een andere AI-assistent te plakken"
   },
   "purchase": {
     "toasts": {

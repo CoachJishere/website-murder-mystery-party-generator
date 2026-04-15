@@ -989,7 +989,10 @@
     "error": "블로그 게시물을 불러오는데 실패했습니다.",
     "errorTitle": "오류",
     "tryAgain": "다시 시도",
-    "checkBackLater": "새 기사는 나중에 다시 확인하세요!"
+    "checkBackLater": "새 기사는 나중에 다시 확인하세요!",
+    "copyForAI": "AI용 복사",
+    "copied": "복사됨!",
+    "copyForAITooltip": "ChatGPT, Claude 또는 다른 AI 어시스턴트에 붙여넣을 수 있도록 깔끔한 마크다운으로 이 게시물을 복사하세요"
   },
   "chatbot": {
     "toasts": {

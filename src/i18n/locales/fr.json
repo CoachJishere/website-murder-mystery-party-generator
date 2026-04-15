@@ -861,7 +861,10 @@
     "error": "Échec du chargement des articles de blog.",
     "errorTitle": "Erreur",
     "tryAgain": "Réessayer",
-    "checkBackLater": "Revenez plus tard pour de nouveaux articles !"
+    "checkBackLater": "Revenez plus tard pour de nouveaux articles !",
+    "copyForAI": "Copier pour l'IA",
+    "copied": "Copié !",
+    "copyForAITooltip": "Copier cet article en markdown propre à coller dans ChatGPT, Claude ou tout assistant IA"
   },
   "hostAccess": {
     "loading": "Chargement du matériel de l'hôte...",

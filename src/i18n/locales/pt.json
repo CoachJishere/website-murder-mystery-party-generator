@@ -902,7 +902,10 @@
     "error": "Falha ao carregar posts do blog.",
     "errorTitle": "Erro",
     "tryAgain": "Tentar Novamente",
-    "checkBackLater": "Volte mais tarde para novos artigos!"
+    "checkBackLater": "Volte mais tarde para novos artigos!",
+    "copyForAI": "Copiar para IA",
+    "copied": "Copiado!",
+    "copyForAITooltip": "Copie este post como markdown limpo para colar no ChatGPT, Claude ou qualquer assistente de IA"
   },
   "purchase": {
     "toasts": {

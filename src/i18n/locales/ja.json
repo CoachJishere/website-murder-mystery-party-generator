@@ -989,7 +989,10 @@
     "error": "ブログ記事の読み込みに失敗しました。",
     "errorTitle": "エラー",
     "tryAgain": "もう一度試す",
-    "checkBackLater": "新しい記事は後でもう一度確認してください！"
+    "checkBackLater": "新しい記事は後でもう一度確認してください！",
+    "copyForAI": "AI用にコピー",
+    "copied": "コピーしました！",
+    "copyForAITooltip": "ChatGPT、Claudeなどのアシスタントに貼り付けられるクリーンなマークダウンとしてこの記事をコピーします"
   },
   "chatbot": {
     "toasts": {

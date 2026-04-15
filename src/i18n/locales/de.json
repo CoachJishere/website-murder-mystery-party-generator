@@ -860,7 +860,10 @@
     "error": "Fehler beim Laden der Blog-Beiträge.",
     "errorTitle": "Fehler",
     "tryAgain": "Erneut versuchen",
-    "checkBackLater": "Schauen Sie später nach neuen Artikeln!"
+    "checkBackLater": "Schauen Sie später nach neuen Artikeln!",
+    "copyForAI": "Für KI kopieren",
+    "copied": "Kopiert!",
+    "copyForAITooltip": "Diesen Beitrag als sauberes Markdown kopieren, um ihn in ChatGPT, Claude oder einen anderen KI-Assistenten einzufügen"
   },
   "purchase": {
     "toasts": {

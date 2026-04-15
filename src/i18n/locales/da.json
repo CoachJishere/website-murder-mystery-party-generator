@@ -989,7 +989,10 @@
     "error": "Failed to load blog posts.",
     "errorTitle": "Error",
     "tryAgain": "Try Again",
-    "checkBackLater": "Check back later for new articles!"
+    "checkBackLater": "Check back later for new articles!",
+    "copyForAI": "Kopier til AI",
+    "copied": "Kopieret!",
+    "copyForAITooltip": "Kopier dette indlæg som ren markdown for at indsætte i ChatGPT, Claude eller en anden AI-assistent"
   },
   "chatbot": {
     "toasts": {

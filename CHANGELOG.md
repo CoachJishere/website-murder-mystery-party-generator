@@ -2,6 +2,12 @@
 
 ## 2026-04-15
 
+### Feature: AI referral traffic tracking via GA4 Data API
+- Added `scripts/fetchAIReferrals.mjs` — queries GA4 for sessions from ChatGPT, Claude, Perplexity, Gemini, Copilot, and other AI engines
+- Reports breakdown by source/medium, landing page, daily trend, and AI vs all traffic comparison
+- Integrated into `fetch-all-analytics.sh` pipeline and added `npm run fetch-ai-referrals` script
+- First 90-day snapshot: 10 AI sessions (0.63% of traffic), ChatGPT leading with 8 sessions, Gemini and Perplexity with 1 each
+
 ### Fix: Prevent empty tabs when generation completes without characters
 - MysteryView.tsx now requires `characters.length > 0` before showing the tab view — previously `is_paid` or `status === 'completed'` alone would show empty tabs
 - Added fallback: if status looks complete but characters are missing, shows the "We're Finalizing Your Mystery" card instead of broken empty content
@@ -333,6 +339,11 @@
 - The AI now evaluates creative specificity rather than word count: "restaurants" triggers a question, "1920s speakeasy" does not
 - Includes concrete examples of vague vs specific themes to guide the AI's judgment
 - When asking, the AI suggests 2-3 concrete directions to spark imagination rather than putting the burden on the user
+
+### Improvement: Translated "Copy for AI" button across all 13 languages
+- Added `blog.copyForAI`, `blog.copied`, and `blog.copyForAITooltip` translation keys to all 13 locale files
+- Updated BlogPost.tsx to use `useTranslation()` for the button labels and tooltip
+- Button now displays in the user's selected language (e.g., "Copiar para IA" in Spanish, "AI用にコピー" in Japanese)
 
 ### Feature: "Copy for AI" button on blog posts
 - Added a "Copy for AI" button in the blog post header next to reading time

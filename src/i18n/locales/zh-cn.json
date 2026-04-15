@@ -894,7 +894,10 @@
     "error": "加载博客文章失败。",
     "errorTitle": "错误",
     "tryAgain": "重试",
-    "checkBackLater": "稍后再来查看新文章！"
+    "checkBackLater": "稍后再来查看新文章！",
+    "copyForAI": "复制给AI",
+    "copied": "已复制！",
+    "copyForAITooltip": "将此文章复制为干净的markdown格式，可粘贴到ChatGPT、Claude或其他AI助手"
   },
   "purchase": {
     "toasts": {

@@ -11,6 +11,7 @@ import { ArrowRight, Clock, Users, BookOpen, ChevronRight, Copy, Check } from 'l
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import i18n from 'i18next'; // Import i18n directly to avoid type issues
+import { useTranslation } from 'react-i18next';
 
 const calculateReadingTime = (content: string): number => {
   const wordsPerMinute = 200;
@@ -68,6 +69,7 @@ const CTA_SECTION = ({ theme = 'light' as 'light' | 'dark' } = {}) => {
 };
 
 export default function BlogPost() {
+  const { t } = useTranslation();
   const { slug, lang } = useParams<{ slug: string; lang?: string }>();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [langVariants, setLangVariants] = useState<{ language: string; slug: string }[]>([]);
@@ -494,18 +496,18 @@ export default function BlogPost() {
                 type="button"
                 onClick={handleCopyForAI}
                 className="flex items-center gap-1.5 px-3 py-1 rounded-md border border-[#C81400]/30 hover:bg-[#C81400]/10 transition-colors text-[#C81400] text-xs font-medium"
-                title="Copy this post as clean markdown to paste into ChatGPT, Claude, or any AI assistant"
-                aria-label="Copy post content for AI assistants"
+                title={t('blog.copyForAITooltip')}
+                aria-label={t('blog.copyForAITooltip')}
               >
                 {copiedForAI ? (
                   <>
                     <Check className="h-3.5 w-3.5" />
-                    Copied!
+                    {t('blog.copied')}
                   </>
                 ) : (
                   <>
                     <Copy className="h-3.5 w-3.5" />
-                    Copy for AI
+                    {t('blog.copyForAI')}
                   </>
                 )}
               </button>

@@ -989,7 +989,10 @@
     "error": "Failed to load blog posts.",
     "errorTitle": "Error",
     "tryAgain": "Try Again",
-    "checkBackLater": "Check back later for new articles!"
+    "checkBackLater": "Check back later for new articles!",
+    "copyForAI": "Kopiera för AI",
+    "copied": "Kopierat!",
+    "copyForAITooltip": "Kopiera detta inlägg som ren markdown för att klistra in i ChatGPT, Claude eller någon AI-assistent"
   },
   "hostAccess": {
     "loading": "Laddar värdmaterial...",

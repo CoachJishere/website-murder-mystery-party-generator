@@ -860,7 +860,10 @@
     "error": "Blogikirjoitusten lataaminen epäonnistui.",
     "errorTitle": "Virhe",
     "tryAgain": "Yritä uudelleen",
-    "checkBackLater": "Tarkista myöhemmin uudet artikkelit!"
+    "checkBackLater": "Tarkista myöhemmin uudet artikkelit!",
+    "copyForAI": "Kopioi tekoälylle",
+    "copied": "Kopioitu!",
+    "copyForAITooltip": "Kopioi tämä kirjoitus puhtaana markdownina ChatGPT:hen, Claudeen tai muuhun tekoälyavustajaan"
   },
   "purchase": {
     "toasts": {

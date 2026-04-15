@@ -860,7 +860,10 @@
     "error": "Impossibile caricare i post del blog.",
     "errorTitle": "Errore",
     "tryAgain": "Riprova",
-    "checkBackLater": "Torna più tardi per nuovi articoli!"
+    "checkBackLater": "Torna più tardi per nuovi articoli!",
+    "copyForAI": "Copia per IA",
+    "copied": "Copiato!",
+    "copyForAITooltip": "Copia questo articolo come markdown pulito da incollare in ChatGPT, Claude o qualsiasi assistente IA"
   },
   "purchase": {
     "toasts": {
