@@ -353,7 +353,11 @@ If you decide the theme is specific enough, generate the full concept using this
 **[Victim Name]** - [Vivid description]
 
 ## ${labels.characterList} (${playerCount} ${labels.playersWord})
-[All ${playerCount} characters as numbered list]
+1. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to victim]
+2. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to victim]
+[Continue for all ${playerCount} characters]
+
+Each character MUST have a vivid personality trait or quirk (e.g. "a jittery accountant who triple-checks everything", "a charming socialite with a barely-concealed temper") — not just a job title. This makes them instantly memorable and fun to play.
 
 IMPORTANT: The victim is NOT included in the ${playerCount} characters. The Inspector/Detective is also NOT included — that role is played by the host. All ${playerCount} listed characters must be SUSPECTS with motives, secrets, and connections to the victim.
 
@@ -388,9 +392,11 @@ Create a complete mystery CONCEPT using this format:
 **[Victim Name]** - [Vivid description of the victim, their role in the story, personality traits, and why they might have made enemies]
 
 ## ${labels.characterList} (${playerCount} ${labels.playersWord})
-1. **[Character 1 Name]** - [Engaging one-sentence description including profession and connection to victim]
-2. **[Character 2 Name]** - [Engaging one-sentence description including profession and connection to victim]
+1. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to victim]
+2. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to victim]
 [Continue for all ${playerCount} characters]
+
+Each character MUST have a vivid personality trait or quirk (e.g. "a jittery accountant who triple-checks everything", "a charming socialite with a barely-concealed temper") — not just a job title. This makes them instantly memorable and fun to play.
 
 IMPORTANT: The victim is NOT included in the ${playerCount} characters. The Inspector/Detective is also NOT included — that role is played by the host. All ${playerCount} listed characters must be SUSPECTS with motives, secrets, and connections to the victim.
 

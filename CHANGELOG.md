@@ -1,6 +1,20 @@
 # Changelog
 
+## 2026-04-16
+
+### Improvement: Characters now generated with defining personality traits
+- Updated concept generation prompts to require a vivid personality trait or quirk for each suspect (e.g. "a jittery accountant who triple-checks everything") instead of just a job title and connection
+- Applied to both the first-message and follow-up concept generation paths in mystery-ai Edge Function
+- Makes characters instantly more memorable and playable; users can still edit traits during the concept refinement phase
+
 ## 2026-04-15
+
+### Fix: Stripe webhook crashing with 500 — no purchase notification emails sent
+- Root cause: `stripe.webhooks.constructEvent()` (sync) uses Node.js `crypto` module which fails in Deno Edge Functions runtime
+- Switched to `constructEventAsync()` which uses the Web Crypto API compatible with Deno
+- Added `?target=deno` to Stripe esm.sh import for proper Deno compatibility
+- Improved error logging with null-safe property access for better debugging
+- Redeployed as v54
 
 ### Feature: AI referral traffic tracking via GA4 Data API
 - Added `scripts/fetchAIReferrals.mjs` — queries GA4 for sessions from ChatGPT, Claude, Perplexity, Gemini, Copilot, and other AI engines
