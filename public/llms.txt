@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 86 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 87 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -54,6 +54,7 @@ This index organizes 86 published guides by topic cluster. All guides are availa
 
 - [Abandoned Theme Park Murder Mystery Planning: Rides into Ruins and Nostalgic Decay](https://www.mysterymaker.party/blog/abandoned-theme-park-murder-mystery-planning-rides-into-ruins-and-nostalgic-decay): Ride into ruins with abandoned theme park murder mystery parties featuring broken rides and nostalgic decay.
 - [Blackmailer Murder Mystery Themes: Extortion, Secrets, and Deadly Silence](https://www.mysterymaker.party/blog/blackmailer-murder-mystery-themes-extortion-secrets-deadly-silence): Create murder mysteries featuring blackmailer characters who extort secrets, manipulate victims, and meet deadly ends. Generate custom blackmail-driven investig
+- [Cooking Competition Murder Mystery Planning: Spice Up Your Party with Culinary Crime](https://www.mysterymaker.party/blog/cooking-competition-murder-mystery-planning-spice-up-your-party-with-culinary-crime): Spice up competition with culinary murder mystery parties featuring chef rivalries and kitchen competitions.
 - [Film Noir Murder Mystery Parties: How to Build Detective Experiences That Actually Work](https://www.mysterymaker.party/blog/unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime): So you want to run a film noir murder mystery party. Here's how to design detective cases that capture that cinematic atmosphere without falling into the noir c
 - [Unique Pirate Murder Mystery Plot Ideas](https://www.mysterymaker.party/blog/unique-pirate-murder-mystery-plot-ideas): Build pirate murder mystery plots that actually work — treasure disputes, mutiny conspiracies, and crew conflicts tailored to your specific group.
 - [Unique School Reunion Murder Mystery Plots That Uncover Buried Secrets](https://www.mysterymaker.party/blog/unique-school-reunion-murder-mystery-plots-that-uncover-buried-secrets): School reunion murder mysteries transform nostalgic gatherings into investigations where old friends become suspects and buried secrets turn deadly.
