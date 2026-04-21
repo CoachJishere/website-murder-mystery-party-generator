@@ -140,19 +140,22 @@ export const ConversationManager = ({
   };
 
   const createSystemMessage = (data: FormValues) => {
+    const isMurder = !data.mysteryType || data.mysteryType === 'murder';
+    const mysteryLabel = isMurder ? 'murder mystery' : 'intrigue mystery';
+
     // Start with a clear directive about one question at a time and MUST ask for player count first
     let systemMsg = "🚨 CRITICAL INSTRUCTION: You MUST ask ONLY ONE QUESTION at a time. After each user response, address only that response before moving to the next question. NEVER batch multiple questions or proceed without user input. 🚨\n\n";
-    
+
     // Make player count request the absolute priority for first message
-    systemMsg += "🚨 FIRST QUESTION REQUIRED: Your VERY FIRST question must be to ask how many players the user needs for their murder mystery. This is mandatory before proceeding with ANY other questions or content generation. 🚨\n\n";
-    
-    systemMsg += "This is a murder mystery creation conversation. ";
-    
+    systemMsg += `🚨 FIRST QUESTION REQUIRED: Your VERY FIRST question must be to ask how many players the user needs for their ${mysteryLabel}. This is mandatory before proceeding with ANY other questions or content generation. 🚨\n\n`;
+
+    systemMsg += `This is a ${mysteryLabel} creation conversation. `;
+
     // Only provide basic information about the theme as context
     if (data.theme) {
-      systemMsg += `The user wants to create a murder mystery with theme: ${data.theme}. `;
+      systemMsg += `The user wants to create a ${mysteryLabel} with theme: ${data.theme}. `;
     }
-    
+
     systemMsg += "IMPORTANT: You must collect all necessary details from the user one step at a time. First, ask for the number of players needed. Then ask if an accomplice is needed. Only after collecting these details should you start developing characters and the mystery scenario.\n\n";
 
     systemMsg += `CONTENT BOUNDARIES - CRITICAL:
@@ -162,8 +165,9 @@ If asked for scripts or game content, redirect warmly: help them refine characte
 
 `;
 
-    // Include the full output format directly in the system message
-    systemMsg += `\n\nYou MUST follow this exact output format for ALL your responses:
+    // Output format varies by mystery type
+    if (isMurder) {
+      systemMsg += `\n\nYou MUST follow this exact output format for ALL your responses:
 
 ## OUTPUT FORMAT
 Present your mystery preview in an engaging, dramatic format that will excite the user. Include:
@@ -185,13 +189,57 @@ Present your mystery preview in an engaging, dramatic format that will excite th
 [Paragraph describing how the murder was committed, interesting details about the method, and what clues might be found]
 
 [After presenting the mystery concept, ask if the concept works for them and explain that they can continue to refine any character concepts, motives, or story elements. Once they are satisfied, they can press the 'Generate Mystery' button to create their complete package — including individual character scripts for each player, printable evidence cards, a host guide with round-by-round instructions, and everything needed to run the event.]`;
+    } else {
+      systemMsg += `\n\nYou MUST follow this exact output format for ALL your responses:
+
+## OUTPUT FORMAT
+Present your mystery preview in an engaging, dramatic format that will excite the user. Include:
+
+# "[CREATIVE TITLE]" - A [THEME] INTRIGUE MYSTERY
+
+## PREMISE
+[2-3 paragraphs setting the scene, describing the event where the crime takes place, and creating dramatic tension. IMPORTANT: No one dies in an intrigue mystery — the central event is a theft, scandal, sabotage, conspiracy, betrayal, or other non-lethal crime.]
+
+## THE CRIME
+[Description of what happened — what was stolen, leaked, sabotaged, exposed, or destroyed. Make it dramatic and high-stakes even though no one was killed.]
+
+## THE WRONGED PARTY
+**[Name]** - [Vivid description of who was wronged by this crime, what they lost, why it matters deeply to them, and their current emotional state. This person is ALIVE and seeking justice.]
+
+## CHARACTER LIST ([PLAYER COUNT] PLAYERS)
+1. **[Character 1 Name]** - [Engaging one-sentence description including profession and connection to the crime/wronged party]
+2. **[Character 2 Name]** - [Engaging one-sentence description including profession and connection to the crime/wronged party]
+[Continue for all characters]
+
+## CRIME METHOD
+[Paragraph describing how the crime was executed — the planning, the tools or access required, and what clues might exist. What makes this crime clever or daring?]
+
+[After presenting the mystery concept, ask if the concept works for them and explain that they can continue to refine any character concepts, motives, or story elements. Once they are satisfied, they can press the 'Generate Mystery' button to create their complete package — including individual character scripts for each player, printable evidence cards, a host guide with round-by-round instructions, and everything needed to run the event.]`;
+    }
+
+    // Mystery type mismatch detection
+    systemMsg += `\n\n## MYSTERY TYPE MISMATCH DETECTION
+The user selected mystery type: "${data.mysteryType || 'murder'}".
+
+IF THE USER SELECTED "intrigue" BUT DESCRIBES A MURDER:
+- If the user describes someone being killed, murdered, poisoned, found dead, or any scenario where a character dies — this conflicts with their "intrigue" selection.
+- Gently flag it: "It sounds like you're describing someone being killed — that would make this a murder mystery rather than an intrigue. Would you like to switch to a murder mystery, or would you prefer to rework this as an intrigue where the central crime is something non-lethal (like a theft, scandal, or sabotage)?"
+- Wait for their answer before continuing.
+
+IF THE USER SELECTED "murder" BUT DESCRIBES NO DEATH:
+- If after several exchanges the user has only described a theft, scandal, leaked secret, sabotage, fraud, conspiracy, or any crime where nobody dies — this conflicts with their "murder" selection.
+- Gently flag it: "The scenario you're describing sounds more like an intrigue mystery — no one has been killed. Would you like to switch to an intrigue mystery (secrets and crimes, but no death), or would you prefer to add a murder element to this story?"
+- Wait for their answer before continuing.
+
+IMPORTANT: Only flag a mismatch ONCE per conversation. If the user has already confirmed their choice after a flag, respect it and do not ask again.
+`;
 
     // Add stronger instruction about player count again at the end
-    systemMsg += "\n\n🚨 REMINDER: Your FIRST question to the user MUST be to ask how many players they need for their mystery. DO NOT generate ANY mystery content without knowing the player count. 🚨";
-    
+    systemMsg += `\n\n🚨 REMINDER: Your FIRST question to the user MUST be to ask how many players they need for their mystery. DO NOT generate ANY mystery content without knowing the player count. 🚨`;
+
     // Add special instruction to prioritize user-entered messages over auto-generated ones
     systemMsg += "\n\n⚠️ IMPORTANT: You should prioritize responding to messages explicitly entered by users rather than auto-generated prompts. Pay special attention to user inputs that ask specific questions or provide detailed requirements.";
-    
+
     return systemMsg;
   };
 

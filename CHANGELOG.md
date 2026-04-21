@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-04-20
+
+### Feature: Intrigue mystery type alongside classic murder mysteries
+- Added new "Mystery Type" selector on the creation form with two card-style options: **Murder** (classic killing) and **Intrigue** (theft, scandal, sabotage, conspiracy — no one dies)
+- Broadens audience: corporate events, kid-friendly parties, and customers who find murder themes uncomfortable can now use the generator
+- Mystery Type and Mystery Style (Detective vs Character-Based) are now independent choices — every combination works (4 total routes)
+- New `mystery_type` column on `conversations` table (defaults to `'murder'` for backward compatibility)
+- System prompt adapts language and output format based on the selected type: intrigue mysteries use "crime", "culprit", "wronged party" instead of "murder", "killer", "victim"
+- Added mismatch detection in both directions: if the user selects intrigue but describes a killing (or vice versa), the chatbot gently flags the conflict and asks them to confirm
+- Make.com parent scenario now routes on both `mysteryStyle` and `mysteryType`, with dedicated prompts for each of the 4 combinations (Master Constraints, Host Guide, Script & Evidence)
+- Make.com child scenario (per-character script generation) receives `mysteryType` and adapts automatically via a preamble that matches the master constraints document's language
+- JSON field names kept as-is for downstream compatibility — the content within them uses intrigue language when appropriate
+- Translated all new UI strings across 13 locales (en, pt, fr, es, de, it, nl, sv, da, fi, ja, ko, zh-cn) using idiomatic terms for "Intrigue" in each language
+- Neutralized existing `mysteryStyleCharacterDescription` and `mysteryStyleDetectiveDescription` translations (e.g. pt "assassino" → "culpado", de "Mörder" → "Schuldige") so the Mystery Style descriptions work for both Murder and Intrigue types
+
 ## 2026-04-16
 
 ### Improvement: Characters now generated with defining personality traits

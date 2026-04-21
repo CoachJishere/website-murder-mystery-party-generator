@@ -14,6 +14,7 @@ export interface FormValues {
   playerCount?: number;
   timeFrame?: string;
   scriptType?: 'full' | 'pointForm'; // Changed back to match the expected type
+  mysteryType?: 'murder' | 'intrigue';
   additionalDetails?: string;
   [key: string]: any;
 }

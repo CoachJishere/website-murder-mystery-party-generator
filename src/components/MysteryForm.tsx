@@ -21,6 +21,7 @@ const formSchema = z.object({
   }).max(32, {
     message: "Maximum 32 players allowed"
   }),
+  mysteryType: z.enum(["murder", "intrigue"]).default("murder"),
   mysteryStyle: z.enum(["character", "detective"]).default("detective"),
   hasAccomplice: z.boolean().default(false),
   scriptType: z.enum(["full", "pointForm", "both"], {
@@ -53,6 +54,7 @@ const MysteryForm = ({
       userRequest: initialData?.userRequest || "",
       theme: initialData?.theme || "",
       playerCount: initialData?.playerCount || 6,
+      mysteryType: initialData?.mysteryType || "murder",
       mysteryStyle: initialData?.mysteryStyle || "detective",
       hasAccomplice: initialData?.hasAccomplice || false,
       scriptType: initialData?.scriptType || "full",
@@ -73,6 +75,7 @@ const MysteryForm = ({
         userRequest: initialData.userRequest || "",
         theme: initialData.theme || "",
         playerCount: initialData.playerCount || 6,
+        mysteryType: initialData.mysteryType || "murder",
         mysteryStyle: initialData.mysteryStyle || "detective",
         hasAccomplice: initialData.hasAccomplice || false,
         scriptType: initialData.scriptType || "full",
@@ -136,6 +139,59 @@ const MysteryForm = ({
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="mysteryType"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormLabel className="text-sm sm:text-base font-medium">{t('mysteryForm.mysteryTypeLabel')}</FormLabel>
+              <FormControl>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => field.onChange("murder")}
+                    className={`relative flex flex-col items-center gap-2 rounded-lg border-2 p-4 text-center transition-all cursor-pointer ${
+                      field.value === "murder"
+                        ? "border-primary bg-primary/5 shadow-sm"
+                        : "border-muted hover:border-muted-foreground/30 hover:bg-muted/50"
+                    }`}
+                  >
+                    <span className="text-2xl">🔪</span>
+                    <span className="text-sm sm:text-base font-semibold leading-tight">
+                      {t('mysteryForm.mysteryTypeMurderLabel')}
+                    </span>
+                    <span className="text-xs text-muted-foreground leading-snug">
+                      {t('mysteryForm.mysteryTypeMurderDescription')}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => field.onChange("intrigue")}
+                    className={`relative flex flex-col items-center gap-2 rounded-lg border-2 p-4 text-center transition-all cursor-pointer ${
+                      field.value === "intrigue"
+                        ? "border-primary bg-primary/5 shadow-sm"
+                        : "border-muted hover:border-muted-foreground/30 hover:bg-muted/50"
+                    }`}
+                  >
+                    <span className="text-2xl">🕵️</span>
+                    <span className="text-sm sm:text-base font-semibold leading-tight">
+                      {t('mysteryForm.mysteryTypeIntrigueLabel')}
+                    </span>
+                    <span className="text-xs text-muted-foreground leading-snug">
+                      {t('mysteryForm.mysteryTypeIntrigueDescription')}
+                    </span>
+                  </button>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="border-t pt-6 sm:pt-8">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-4 sm:mb-6">{t('mysteryForm.gameSettingsHeading')}</p>
+        </div>
 
         <FormField
           control={form.control}
