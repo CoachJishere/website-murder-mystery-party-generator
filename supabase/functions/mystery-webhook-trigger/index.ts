@@ -49,9 +49,10 @@ interface ExtractedCharacter {
 }
 
 // Primary extraction: regex-based (free, deterministic, <1ms)
-// Aggregates characters across ALL assistant messages (chronological order,
-// later messages overwrite earlier ones by name for refinements)
-function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | null {
+// If approvedMessageId is provided, extracts ONLY from that message (the concept
+// snapshot the user explicitly approved at purchase time).
+// Otherwise, falls back to the latest assistant message containing a CHARACTER LIST.
+function extractCharactersFromMessages(messages: any[], approvedMessageId?: string | null): ExtractedCharacter[] | null {
   // Build regex to match any locale's character list header
   // Pattern: ## <Header> (N PLAYERS) or ## <Header>
   const headerAlternatives = CHARACTER_LIST_HEADERS.map(h =>
@@ -67,24 +68,41 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
   // 1. Name - Description      (plain with dash)
   const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))\s*[-–—:]\s*(.+)/;
 
-  // Scan assistant messages in CHRONOLOGICAL order so later refinements overwrite earlier versions
   const assistantMessages = messages
     .filter((m: any) => m.role === 'assistant' || m.is_ai);
 
   console.log(`[CharExtract] Scanning ${assistantMessages.length} assistant messages (of ${messages.length} total)`);
 
-  // Aggregate characters across ALL messages using a Map (keyed by lowercase name)
+  // If the user explicitly approved a specific concept message at purchase time,
+  // use ONLY that message. This is the most reliable source — guaranteed to match
+  // what the user saw and approved on the preview page.
+  let latestMessageWithList: any = null;
+  if (approvedMessageId) {
+    latestMessageWithList = messages.find((m: any) => m.id === approvedMessageId);
+    if (latestMessageWithList) {
+      console.log(`[CharExtract] Using approved concept message ${approvedMessageId}`);
+    } else {
+      console.warn(`[CharExtract] approved_concept_message_id ${approvedMessageId} not found in messages, falling back to latest`);
+    }
+  }
+
+  // Fallback: find the LAST assistant message containing a CHARACTER LIST section.
+  if (!latestMessageWithList) {
+    for (const msg of assistantMessages) {
+      const content = msg.content || '';
+      if (content.match(sectionHeaderRegex)) {
+        latestMessageWithList = msg;
+      }
+    }
+  }
+
   const charMap = new Map<string, ExtractedCharacter>();
 
-  for (const msg of assistantMessages) {
-    const content = msg.content || '';
+  if (latestMessageWithList) {
+    const content = latestMessageWithList.content || '';
     const headerMatch = content.match(sectionHeaderRegex);
-    if (!headerMatch) {
-      continue;
-    }
 
-    console.log(`[CharExtract] Found header: "${headerMatch[0].trim()}"`);
-    // Found a character list header — parse the numbered lines after it
+    console.log(`[CharExtract] Using header from latest list: "${headerMatch[0].trim()}"`);
     const afterHeader = content.substring(headerMatch.index! + headerMatch[0].length);
     const lines = afterHeader.split('\n');
     let foundCharsInSection = false;
@@ -95,9 +113,9 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
 
       const charMatch = trimmed.match(characterLineRegex);
       if (charMatch) {
-        const name = (charMatch[1] || charMatch[2]).trim();
         // Replace inner double quotes with single quotes to prevent JSON parsing
         // errors in downstream Make.com scenarios that use string interpolation
+        const name = (charMatch[1] || charMatch[2]).trim().replace(/"/g, "'");
         const description = charMatch[3].trim().replace(/"/g, "'");
         charMap.set(name.toLowerCase(), { name, description });
         foundCharsInSection = true;
@@ -122,15 +140,17 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
   }
 
   console.log(`[CharExtract] Primary pattern insufficient, trying secondary (consecutive bold lines)...`);
-  // Secondary pattern: 4+ consecutive **Name** - Description lines (no section header)
-  // Also aggregates across all messages
+  // Secondary pattern: 4+ consecutive **Name** - Description lines (no section header).
+  // Iterate messages chronologically; LATER messages with a valid batch overwrite
+  // earlier ones, so we always use the most recent character list.
   const boldCharRegex = /^\*\*(.+?)\*\*\s*[-–—:]\s*(.+)/;
-  const secondaryMap = new Map<string, ExtractedCharacter>();
+  let secondaryMap = new Map<string, ExtractedCharacter>();
 
   for (const msg of assistantMessages) {
     const content = msg.content || '';
     const lines = content.split('\n');
     const batch: ExtractedCharacter[] = [];
+    const messageMap = new Map<string, ExtractedCharacter>();
 
     for (const line of lines) {
       const trimmed = line.trim();
@@ -139,16 +159,16 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
       const boldMatch = trimmed.match(boldCharRegex);
 
       if (numberedMatch) {
-        const name = (numberedMatch[1] || numberedMatch[2]).trim();
+        const name = (numberedMatch[1] || numberedMatch[2]).trim().replace(/"/g, "'");
         const description = numberedMatch[3].trim().replace(/"/g, "'");
         batch.push({ name, description });
       } else if (boldMatch) {
-        batch.push({ name: boldMatch[1].trim(), description: boldMatch[2].trim().replace(/"/g, "'") });
+        batch.push({ name: boldMatch[1].trim().replace(/"/g, "'"), description: boldMatch[2].trim().replace(/"/g, "'") });
       } else if (batch.length > 0 && trimmed !== '') {
         // Non-matching non-empty line — flush batch if 4+
         if (batch.length >= 4) {
           for (const c of batch) {
-            secondaryMap.set(c.name.toLowerCase(), c);
+            messageMap.set(c.name.toLowerCase(), c);
           }
         }
         batch.length = 0;
@@ -158,8 +178,13 @@ function extractCharactersFromMessages(messages: any[]): ExtractedCharacter[] | 
     // Flush remaining batch from this message
     if (batch.length >= 4) {
       for (const c of batch) {
-        secondaryMap.set(c.name.toLowerCase(), c);
+        messageMap.set(c.name.toLowerCase(), c);
       }
+    }
+
+    // If this message had a valid batch, REPLACE secondaryMap (overwrite older)
+    if (messageMap.size >= 4) {
+      secondaryMap = messageMap;
     }
   }
 
@@ -226,8 +251,9 @@ async function extractCharactersWithClaude(
 
     const parsed = JSON.parse(jsonMatch[0]) as ExtractedCharacter[];
     if (Array.isArray(parsed) && parsed.length >= 4 && parsed.every(c => c.name && c.description)) {
-      // Sanitize descriptions to prevent JSON issues in Make.com string interpolation
+      // Sanitize names and descriptions to prevent JSON issues in Make.com string interpolation
       for (const c of parsed) {
+        c.name = c.name.replace(/"/g, "'");
         c.description = c.description.replace(/"/g, "'");
       }
       console.log(`Claude fallback extracted ${parsed.length} characters`);
@@ -261,7 +287,7 @@ serve(async (req) => {
     // Retrieve conversation data with user_id and messages
     const { data: conversation, error: conversationError } = await supabase
       .from("conversations")
-      .select("*, messages(*), user_id, title, theme, player_count, script_type, mystery_style, mystery_type, has_accomplice")
+      .select("*, messages(*), user_id, title, theme, player_count, script_type, mystery_style, mystery_type, has_accomplice, approved_concept_message_id")
       .eq("id", conversationId)
       .single();
 
@@ -304,8 +330,14 @@ serve(async (req) => {
         }).join("\n\n---\n\n")
       : "";
 
-    // Extract character names before sending to Make.com
-    let extractedCharacters = extractCharactersFromMessages(conversation.messages);
+    // Extract character names before sending to Make.com.
+    // Prefer the approved concept message (snapshot at purchase time) so we get
+    // exactly what the user approved — not earlier draft versions with characters
+    // they may have explicitly removed.
+    let extractedCharacters = extractCharactersFromMessages(
+      conversation.messages,
+      conversation.approved_concept_message_id
+    );
     let extractionMethod = extractedCharacters ? 'regex' : 'none';
 
     if (!extractedCharacters) {

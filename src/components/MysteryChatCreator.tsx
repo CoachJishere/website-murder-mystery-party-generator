@@ -175,8 +175,23 @@ const MysteryChatCreator = () => {
         setGenerating(true);
         try {
             console.log("DEBUG (MysteryChatCreator): Generating final mystery with messages:", messages);
-            
+
             toast.info("Preparing your mystery preview...");
+
+            // Find the latest AI message containing a CHARACTER LIST — that's the
+            // concept the user is approving by clicking Generate. Snapshot it so the
+            // edge function extracts characters from exactly this message, not from
+            // earlier draft versions that may contain "ghost" characters.
+            const characterListRegex = /^#{2,3}\s+(?:Character List|Characters|Cast of Characters)/im;
+            const aiMessagesWithCharList = messages.filter(
+                m => m.is_ai && characterListRegex.test(m.content || '')
+            );
+            const approvedMessage = aiMessagesWithCharList.length > 0
+                ? aiMessagesWithCharList[aiMessagesWithCharList.length - 1]
+                : null;
+            const approvedMessageId = approvedMessage?.id?.startsWith('msg-') || approvedMessage?.id === 'initial-message'
+                ? null  // Skip client-generated IDs that aren't real DB rows
+                : approvedMessage?.id || null;
 
             // Save a flag that the user requested the final generation
             const { error: updateError } = await supabase
@@ -184,6 +199,7 @@ const MysteryChatCreator = () => {
                 .update({
                     generation_requested: true,
                     needs_package_generation: true, // Flag to indicate generation is needed
+                    approved_concept_message_id: approvedMessageId,
                     updated_at: new Date().toISOString(),
                 })
                 .eq("id", conversationId);

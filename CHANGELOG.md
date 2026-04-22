@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-04-22
+
+### Fix: Ghost characters from earlier draft versions sent to Make.com generation
+- Root cause: `mystery-webhook-trigger` Edge Function was aggregating characters across ALL assistant messages in the conversation, so removed-then-replaced characters from earlier drafts (e.g. "Sam Valentino", "Devon Rothschild") were still being extracted and sent for generation alongside the current cast — creating "ghost" character rows that never got scripts populated and made the parent scenario hang
+- Implemented Option B (snapshot at purchase time): when the user clicks Generate in `MysteryChatCreator.tsx`, we now identify the latest AI message containing a Character List and store its ID as `approved_concept_message_id` on the conversation
+- Edge function (v102) prefers the snapshot — extracts characters from exactly the message the user approved on the preview page, falling back to the latest list message if no snapshot exists (legacy conversations)
+- Eliminates the manual ghost-character cleanup step that was required for every multi-iteration mystery
+- Added new `approved_concept_message_id UUID REFERENCES messages(id)` column on `conversations`
+
+### Fix: Parent retry loop never caught child script failures
+- Root cause: `get_empty_characters` RPC was checking `description IS NULL OR character_role IS NULL`, but those columns are populated during basic-character creation (long before scripts are generated) — so the RPC always returned 0 even when round scripts were missing, and the parent's existing 3-pass retry loop never fired
+- RPC now joins to `conversations.mystery_style` and checks the actual script columns: `round2_script`/`round3_script`/`round4_script`/`final_statement` for detective style, `round2_innocent`/`round2_guilty`/`round2_accomplice` (etc) for character-based style
+- Customer recovery: completed Death In The Spotlight (25-player) — final character (Parker/Penelope Ashford) auto-recovered via the parent retry once the RPC was fixed; cleaned up 2 duplicate empty rows left by failed attempts
+
 ## 2026-04-20
 
 ### Feature: Intrigue mystery type alongside classic murder mysteries
