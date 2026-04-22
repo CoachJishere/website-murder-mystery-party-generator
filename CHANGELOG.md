@@ -2,6 +2,21 @@
 
 ## 2026-04-22
 
+### Fix: "Failed to load conversation" after submitting the mystery creation form
+- Root cause: adding the `approved_concept_message_id UUID REFERENCES messages(id)` column on `conversations` created a second FK path between `conversations` and `messages` (the existing one being `fk_messages_conversation_id` on `messages.conversation_id`). PostgREST can no longer auto-resolve the embed `messages(*)` and responds with HTTP 300 (Multiple Choices), which surfaces client-side as the `loadConversationFailed` toast — blocking every new chat because the post-create load immediately 300s
+- Fix: disambiguate every `.select("*, messages(*)")` call by specifying the FK hint `messages!fk_messages_conversation_id(*)`, matching the pattern the Supabase dashboard already generates
+- Updated call sites: `MysteryChat.tsx`, `ConversationManager.tsx`, `mysteryPackageService.ts`, `VercelChatbot.tsx`, `MysteryPurchase.tsx`, and the `mystery-webhook-trigger` Edge Function
+- The webhook-trigger change requires redeploying that Edge Function to take effect
+
+### UI: Refresh icon in generation progress card is now legible
+- Ghost-variant button inherited no explicit text color, so the refresh icon on the dark "Generating Your Mystery Package" card rendered in a washed-out tint that was hard to see
+- Set `text-muted-foreground hover:text-foreground` on both instances (progress card and failed-state card) so the icon is clearly visible at rest and pops on hover
+
+### UX: Instant transition from Generate button to progress card
+- Previously: clicking "Generate Mystery Package" left the user on the same card with a disabled "Starting Generation..." button (which rendered in the muted disabled-primary state and looked off) until the next poll cycle populated `generationStatus` — only a manual refresh would flip the UI to the proper "Generating Your Mystery Package" progress card
+- Now: `handleGeneratePackage` in `MysteryView.tsx` optimistically seeds `generationStatus` to `in_progress` on click, so the progress card renders immediately; on webhook error we roll the status back to `null` so the Generate button reappears for retry
+- Eliminates the inconsistent pre-/post-refresh UI the user was seeing after purchase
+
 ### Fix: Ghost characters from earlier draft versions sent to Make.com generation
 - Root cause: `mystery-webhook-trigger` Edge Function was aggregating characters across ALL assistant messages in the conversation, so removed-then-replaced characters from earlier drafts (e.g. "Sam Valentino", "Devon Rothschild") were still being extracted and sent for generation alongside the current cast — creating "ghost" character rows that never got scripts populated and made the parent scenario hang
 - Implemented Option B (snapshot at purchase time): when the user clicks Generate in `MysteryChatCreator.tsx`, we now identify the latest AI message containing a Character List and store its ID as `approved_concept_message_id` on the conversation

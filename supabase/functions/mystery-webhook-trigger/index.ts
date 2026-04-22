@@ -287,7 +287,7 @@ serve(async (req) => {
     // Retrieve conversation data with user_id and messages
     const { data: conversation, error: conversationError } = await supabase
       .from("conversations")
-      .select("*, messages(*), user_id, title, theme, player_count, script_type, mystery_style, mystery_type, has_accomplice, approved_concept_message_id")
+      .select("*, messages!fk_messages_conversation_id(*), user_id, title, theme, player_count, script_type, mystery_style, mystery_type, has_accomplice, approved_concept_message_id")
       .eq("id", conversationId)
       .single();
 

@@ -343,7 +343,7 @@ export async function generateCompletePackage(mysteryId: string, testMode = fals
     // Get conversation data
     const { data: conversation, error: conversationError } = await supabase
       .from("conversations")
-      .select("*, messages(*), user_id, theme, player_count, script_type, has_accomplice, additional_details")
+      .select("*, messages!fk_messages_conversation_id(*), user_id, theme, player_count, script_type, has_accomplice, additional_details")
       .eq("id", mysteryId)
       .single();
 

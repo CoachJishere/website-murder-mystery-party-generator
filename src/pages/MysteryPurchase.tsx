@@ -226,7 +226,7 @@ const MysteryPurchase = () => {
         
         const { data: conversation, error: convError } = await supabase
           .from('conversations')
-          .select('*, messages(*)')
+          .select('*, messages!fk_messages_conversation_id(*)')
           .eq('id', id)
           .maybeSingle();
 

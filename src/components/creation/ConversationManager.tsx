@@ -44,7 +44,7 @@ export const ConversationManager = ({
       
       const { data, error } = await supabase
         .from("conversations")
-        .select("*, messages(*), system_instruction")
+        .select("*, messages!fk_messages_conversation_id(*), system_instruction")
         .eq("id", id)
         .order("created_at", { ascending: true })
         .single();

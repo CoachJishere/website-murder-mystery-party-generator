@@ -37,7 +37,7 @@ const MysteryChatPage = () => {
             
             const { data, error } = await supabase
                 .from("conversations")
-                .select("*, messages(*)")
+                .select("*, messages!fk_messages_conversation_id(*)")
                 .eq("id", id)
                 .single();
 
