@@ -1230,3 +1230,13 @@ Investigation of the last 4 paid mysteries revealed character generation issues 
 - Notable: R76 had "cadeira" (furniture) for department chair, "letra" (alphabet) for letter document; R122-123 had entire English sentences left untranslated
 - 27% Excellent, 39% Very Good, 25% Good, 9% Fair; 0 PIDGIN or TRUNCATED
 - Full results appended to CHANGELOG_TRANSLATION_QA.md under "R62-R150 PT Content Audit"
+
+## 2026-04-22
+
+### Fix: Evidence card display — strip Visual Description, fix print parser
+
+- **Print cards were blank**: parser expected `## EVIDENCE: ROUND X` but generated content uses `### EVIDENCE CARD — ROUND X` — zero cards were being found
+- **3-section rule implemented**: print cards show Description only; online Clues tab shows Description + Implications; Visual Description is never shown to users in either view
+- Online view: strips `#### Visual Description` (h4) in addition to the existing `### VISUAL DESCRIPTION (FOR IMAGE GENERATION)` pattern
+- Print page: strips `#### What This Reveals`, `#### Who It Implicates`, `#### Implications`, and `#### Visual Description` before rendering
+- Multi-paragraph print descriptions now render as separate `<p>` tags instead of collapsing into one block
