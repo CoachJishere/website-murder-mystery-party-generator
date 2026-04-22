@@ -281,6 +281,21 @@ const MysteryView = () => {
     setGenerationTimedOut(false);
     timeoutNotifiedRef.current = false;
 
+    // Immediately show the progress card so the UI doesn't linger on the
+    // "Generate" button in its disabled state while we wait for the first
+    // poll to flip generationStatus to in_progress.
+    setGenerationStatus({
+      status: 'in_progress',
+      progress: 0,
+      currentStep: 'Package generation in progress...',
+      sections: {
+        hostGuide: false,
+        characters: false,
+        clues: false,
+      },
+    });
+    setLastUpdate(new Date());
+
     try {
       const estimatedTime = getEstimatedTime(mystery?.player_count || 6);
       toast.info(`Starting generation of your mystery package. This will take ${estimatedTime}...`);
@@ -300,6 +315,9 @@ const MysteryView = () => {
     } catch (error: any) {
       debugLog("Error starting package generation", error);
       setGenerating(false);
+      // Roll back the optimistic progress card so the user can retry from the
+      // Generate button instead of being stuck on an in_progress view.
+      setGenerationStatus(null);
       toast.error(error.message || "Failed to start package generation");
     }
   }, [id, debugLog]);
@@ -859,12 +877,12 @@ const MysteryView = () => {
                 )} />
                 <span className={cn(isMobile && "text-base")}>Generation Failed</span>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={handleManualRefresh} 
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleManualRefresh}
                 className={cn(
-                  "h-8 w-8 p-0",
+                  "h-8 w-8 p-0 text-muted-foreground hover:text-foreground",
                   isMobile && "self-end"
                 )}
                 title="Refresh status"
@@ -1008,12 +1026,12 @@ const MysteryView = () => {
             isMobile ? "text-lg flex-col space-y-2 items-start" : "flex-row"
           )}>
             <span className={cn(isMobile && "text-base")}>Generating Your Mystery Package</span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleManualRefresh} 
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleManualRefresh}
               className={cn(
-                "h-8 w-8 p-0",
+                "h-8 w-8 p-0 text-muted-foreground hover:text-foreground",
                 isMobile && "self-end"
               )}
               title="Refresh status"
