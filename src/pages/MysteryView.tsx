@@ -15,7 +15,7 @@ import {
   updateCharacterField,
 } from "@/services/mysteryPackageService";
 import { useAuth } from "@/context/AuthContext";
-import { RefreshCw, AlertTriangle, Clock, CheckCircle2, Eye, XCircle } from "lucide-react";
+import { RefreshCw, AlertTriangle, Clock, CheckCircle2, Eye, XCircle, Loader2 } from "lucide-react";
 import MysteryPackageTabView from "@/components/MysteryPackageTabView";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { MysteryCharacter } from "@/interfaces/mystery";
@@ -1059,14 +1059,14 @@ const MysteryView = () => {
                 "font-medium mb-2 flex items-center",
                 isMobile && "text-sm"
               )}>
-                <Clock className={cn(
-                  "mr-2",
+                <Loader2 className={cn(
+                  "mr-2 animate-spin text-primary",
                   isMobile ? "h-3 w-3" : "h-4 w-4"
                 )} />
                 <span>Current Step</span>
               </div>
               <p className={cn(
-                "text-muted-foreground break-words",
+                "text-muted-foreground break-words animate-pulse",
                 isMobile && "text-xs leading-relaxed"
               )}>
                 {generationStatus.currentStep}

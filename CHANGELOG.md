@@ -8,6 +8,10 @@
 - Updated call sites: `MysteryChat.tsx`, `ConversationManager.tsx`, `mysteryPackageService.ts`, `VercelChatbot.tsx`, `MysteryPurchase.tsx`, and the `mystery-webhook-trigger` Edge Function
 - The webhook-trigger change requires redeploying that Edge Function to take effect
 
+### UI: "Current Step" panel now has visible motion to signal processing
+- Previously the Current Step box was entirely static — no indication anything was actively happening during the ~10-minute generation window
+- Swapped the static Clock icon for a spinning `Loader2` in the primary color, and added a subtle `animate-pulse` to the step-description text so the panel visually breathes while work is in flight
+
 ### UI: Refresh icon in generation progress card is now legible
 - Ghost-variant button inherited no explicit text color, so the refresh icon on the dark "Generating Your Mystery Package" card rendered in a washed-out tint that was hard to see
 - Set `text-muted-foreground hover:text-foreground` on both instances (progress card and failed-state card) so the icon is clearly visible at rest and pops on hover
