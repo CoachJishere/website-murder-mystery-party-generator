@@ -15,6 +15,31 @@ interface EvidenceCard {
   imageUrl: string;
 }
 
+// Sections stripped from print cards (online-only content)
+const PRINT_STRIP = /^####\s+(Visual Description|Who It Implicates|What This Reveals|Implications)\b/i;
+
+function stripSectionsForPrint(lines: string[]): string[] {
+  const out: string[] = [];
+  let skip = false;
+  for (const line of lines) {
+    if (/^#+\s/.test(line)) {
+      skip = PRINT_STRIP.test(line);
+      if (!skip) out.push(line);
+    } else if (!skip) {
+      out.push(line);
+    }
+  }
+  return out;
+}
+
+function extractParagraphs(lines: string[]): string {
+  return lines
+    .filter(l => !/^#+\s/.test(l))
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 function parseEvidenceCards(
   evidenceCardsMarkdown: string,
   images: { round2?: string; round3?: string; round4?: string }
@@ -24,71 +49,37 @@ function parseEvidenceCards(
   const lines = normalized.split("\n");
   const imageList = [images.round2, images.round3, images.round4];
   const labels = ["Evidence — Round 2", "Evidence — Round 3", "Evidence — Round 4"];
+  const roundPatterns = [/ROUND\s*2/i, /ROUND\s*3/i, /ROUND\s*4/i];
 
-  // Try detective-style: ## EVIDENCE: ROUND 2/3/4
-  const detectivePatterns = [
-    /## EVIDENCE:?\s*ROUND 2/i,
-    /## EVIDENCE:?\s*ROUND 3/i,
-    /## EVIDENCE:?\s*ROUND 4/i,
-  ];
+  // h2/h3 but NOT h4+ — section delimiters
+  const isSection = (l: string) => /^#{2,3}(?!#)\s/.test(l);
 
-  let foundAny = false;
-
-  for (let r = 0; r < detectivePatterns.length; r++) {
+  for (let r = 0; r < 3; r++) {
     const imageUrl = imageList[r];
     if (!imageUrl) continue;
 
-    const startIdx = lines.findIndex((l) => detectivePatterns[r].test(l));
+    // Find the section heading for this round
+    const startIdx = lines.findIndex(l => isSection(l) && roundPatterns[r].test(l));
     if (startIdx === -1) continue;
-    foundAny = true;
 
-    const nextPattern = detectivePatterns[r + 1];
+    // Find the next section heading
     let endIdx = lines.length;
-    if (nextPattern) {
-      const nextStart = lines.findIndex((l, i) => i > startIdx && nextPattern.test(l));
-      if (nextStart !== -1) endIdx = nextStart;
+    for (let i = startIdx + 1; i < lines.length; i++) {
+      if (isSection(lines[i])) { endIdx = i; break; }
     }
 
-    const section = lines.slice(startIdx + 1, endIdx).join("\n");
-    const titleMatch = section.match(/###\s+(?!IMPLICATIONS|VISUAL DESCRIPTION)(.+)/i);
-    const title = titleMatch ? titleMatch[1].trim() : `Evidence Round ${r + 2}`;
-    const titleIdx = section.indexOf(titleMatch?.[0] || "");
-    const afterTitle = section.slice(titleIdx + (titleMatch?.[0]?.length || 0));
-    const nextHeading = afterTitle.search(/\n###\s/);
-    const description = (nextHeading !== -1 ? afterTitle.slice(0, nextHeading) : afterTitle)
-      .replace(/^\n+/, "").trim();
+    // Extract title: text after "ROUND N: " or "ROUND N — "
+    const heading = lines[startIdx];
+    const titleMatch = heading.match(/ROUND\s*\d+\s*[:\s—–-]+\s*(.+)/i);
+    const title = titleMatch ? titleMatch[1].replace(/^[:\s—–-]+/, '').trim() : labels[r];
 
-    if (title) {
+    // Filter section content for print (remove Implications + Visual Description)
+    const sectionLines = lines.slice(startIdx + 1, endIdx);
+    const printLines = stripSectionsForPrint(sectionLines);
+    const description = extractParagraphs(printLines);
+
+    if (description) {
       cards.push({ round: labels[r], title, description, imageUrl });
-    }
-  }
-
-  // Fallback: find any ## headings that look like evidence cards (improv-style)
-  if (!foundAny) {
-    const cardPattern = /^##\s+(?:EVIDENCE\s+CARD\s*#?\d+|.+(?:—|–|-).+)/i;
-    const cardStarts: number[] = [];
-    lines.forEach((l, i) => {
-      if (cardPattern.test(l.trim()) && !l.trim().startsWith('## EVIDENCE CARDS')) {
-        cardStarts.push(i);
-      }
-    });
-
-    for (let c = 0; c < Math.min(cardStarts.length, 3); c++) {
-      const imageUrl = imageList[c];
-      if (!imageUrl) continue;
-
-      const startIdx = cardStarts[c];
-      const endIdx = c + 1 < cardStarts.length ? cardStarts[c + 1] : lines.length;
-      const headerLine = lines[startIdx];
-
-      const titleMatch = headerLine.match(/[—–-]\s*(.+)$/);
-      const title = titleMatch ? titleMatch[1].trim() : headerLine.replace(/^#+\s*/, '').trim();
-
-      const sectionLines = lines.slice(startIdx + 1, endIdx)
-        .filter(l => !l.trim().startsWith('**Reveal:'));
-      const description = sectionLines.join("\n").replace(/^\n+/, "").trim();
-
-      cards.push({ round: labels[c], title, description, imageUrl });
     }
   }
 
@@ -167,7 +158,9 @@ export default function EvidenceCardPrint() {
               <img src={card.imageUrl} alt={card.title} className="ec-image" />
             </div>
             <h2 className="ec-title">{card.title}</h2>
-            <p className="ec-description">{card.description}</p>
+            {card.description.split(/\n\n+/).map((para, pi) => (
+              <p key={pi} className="ec-description">{para.replace(/\n/g, ' ').trim()}</p>
+            ))}
             <div className="ec-footer">
               Card {i + 1} of {cards.length}
             </div>
@@ -240,8 +233,11 @@ export default function EvidenceCardPrint() {
           font-size: 12px;
           line-height: 1.55;
           color: #333;
-          margin: 0;
+          margin: 0 0 6px 0;
           flex-shrink: 0;
+        }
+        .ec-description:last-of-type {
+          margin-bottom: 0;
         }
 
         .ec-footer {

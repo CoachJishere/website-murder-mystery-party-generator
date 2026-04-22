@@ -19,6 +19,21 @@ import { trackPackageTabViewed, trackFeedbackPromptShown, trackFeedbackPromptCli
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 
+function stripH4Section(markdown: string, pattern: RegExp): string {
+  const lines = markdown.split('\n');
+  const out: string[] = [];
+  let skip = false;
+  for (const line of lines) {
+    if (/^#+\s/.test(line)) {
+      skip = /^####\s/.test(line) && pattern.test(line);
+      if (!skip) out.push(line);
+    } else if (!skip) {
+      out.push(line);
+    }
+  }
+  return out.join('\n');
+}
+
 interface MysteryPackageData {
   title?: string;
   gameOverview?: string;
@@ -496,9 +511,10 @@ const MysteryPackageTabView = React.memo(({
       }
     }
 
-    // Strip visual description sections when images exist (they're redundant)
-    if (content && packageData?.evidenceCardImages) {
+    // Visual Description is only for image generation — never show to users
+    if (content) {
       content = content.replace(/### VISUAL DESCRIPTION \(FOR IMAGE GENERATION\)\s*\n[\s\S]*?(?=\n## |\n### (?!VISUAL)|$)/gi, '');
+      content = stripH4Section(content, /Visual Description/i);
     }
 
     return content;
