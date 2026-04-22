@@ -93,6 +93,7 @@ const Dashboard = () => {
         .from("conversations")
         .select("*, messages!fk_messages_conversation_id(id, content, created_at, is_ai, role)")
         .eq("user_id", userId)
+        .neq("display_status", "refunded")
         .order("updated_at", { ascending: false });
         
       if (error) {

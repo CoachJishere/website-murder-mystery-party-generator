@@ -938,10 +938,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "cirka 10 minutter",
-      "medium": "cirka 10 minutter",
-      "large": "cirka 10 minutter",
-      "xlarge": "cirka 10 minutter"
+      "small": "cirka 10 til 15 minutter",
+      "medium": "cirka 20 minutter",
+      "large": "cirka 25 til 30 minutter",
+      "xlarge": "op til 45 minutter"
     }
   },
   "mysteryPackage": {

@@ -365,13 +365,13 @@ serve(async (req) => {
       }
     }
 
-    // Pre-flight: hard fail if extracted count still doesn't match player_count
-    // (allow ±1 for inspector/host who may or may not be counted as a player).
-    // Without this, mismatches silently send the wrong character count to
-    // Make.com and produce a half-broken generation that's expensive to recover.
+    // Pre-flight: hard fail if extracted count doesn't exactly match player_count.
+    // Exact match required — the approved concept message and player_count must
+    // agree. Any mismatch (ghost characters, AI generating n+1, etc.) causes an
+    // expensive half-broken generation that requires manual recovery.
     if (extractedCharacters && playerCount > 0) {
       const diff = Math.abs(extractedCharacters.length - playerCount);
-      if (diff > 1) {
+      if (diff > 0) {
         const errMsg = `Character extraction mismatch: extracted ${extractedCharacters.length} characters but mystery is configured for ${playerCount} players. Aborting webhook to prevent broken generation.`;
         console.error(`[Validation] ${errMsg}`);
         return new Response(

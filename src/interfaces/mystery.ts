@@ -26,7 +26,7 @@ export interface Conversation {
   premise?: string;
   purchase_date?: string;
   is_purchased?: boolean;
-  display_status?: "draft" | "purchased" | "archived" | "generating";
+  display_status?: "draft" | "purchased" | "archived" | "generating" | "refunded";
   has_complete_package?: boolean;
   needs_package_generation?: boolean;
   package_generated_at?: string;
@@ -37,8 +37,8 @@ export interface Mystery {
   title: string;
   created_at: string;
   updated_at: string;
-  status: "draft" | "purchased" | "archived" | "generating";
-  display_status?: "draft" | "purchased" | "archived" | "generating";
+  status: "draft" | "purchased" | "archived" | "generating" | "refunded";
+  display_status?: "draft" | "purchased" | "archived" | "generating" | "refunded";
   mystery_data?: MysteryData;
   is_paid?: boolean;
   messages?: any[];

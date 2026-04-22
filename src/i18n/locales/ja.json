@@ -938,10 +938,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "約10分",
-      "medium": "約10分",
-      "large": "約10分",
-      "xlarge": "約10分"
+      "small": "約10〜15分",
+      "medium": "約20分",
+      "large": "約25〜30分",
+      "xlarge": "最大45分"
     }
   },
   "mysteryPackage": {

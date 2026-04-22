@@ -938,10 +938,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "ungefär 10 minuter",
-      "medium": "ungefär 10 minuter",
-      "large": "ungefär 10 minuter",
-      "xlarge": "ungefär 10 minuter"
+      "small": "ungefär 10 till 15 minuter",
+      "medium": "ungefär 20 minuter",
+      "large": "ungefär 25 till 30 minuter",
+      "xlarge": "upp till 45 minuter"
     }
   },
   "mysteryPackage": {
