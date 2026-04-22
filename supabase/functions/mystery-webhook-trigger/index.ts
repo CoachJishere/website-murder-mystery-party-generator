@@ -365,6 +365,31 @@ serve(async (req) => {
       }
     }
 
+    // Pre-flight: hard fail if extracted count still doesn't match player_count
+    // (allow ±1 for inspector/host who may or may not be counted as a player).
+    // Without this, mismatches silently send the wrong character count to
+    // Make.com and produce a half-broken generation that's expensive to recover.
+    if (extractedCharacters && playerCount > 0) {
+      const diff = Math.abs(extractedCharacters.length - playerCount);
+      if (diff > 1) {
+        const errMsg = `Character extraction mismatch: extracted ${extractedCharacters.length} characters but mystery is configured for ${playerCount} players. Aborting webhook to prevent broken generation.`;
+        console.error(`[Validation] ${errMsg}`);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: errMsg,
+            extractedCount: extractedCharacters.length,
+            expectedCount: playerCount,
+            extractionMethod,
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" }
+          }
+        );
+      }
+    }
+
     // Build individual message fields for Make.com
     const messageFields: any = {};
     conversation.messages.forEach((msg: any, index: number) => {

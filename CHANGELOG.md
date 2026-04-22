@@ -9,6 +9,22 @@
 - Eliminates the manual ghost-character cleanup step that was required for every multi-iteration mystery
 - Added new `approved_concept_message_id UUID REFERENCES messages(id)` column on `conversations`
 
+### Improvement: Diagnostic log for every character generation attempt
+- New `child_generation_attempts` table + Postgres trigger that fires on every `mystery_characters` INSERT
+- Captures `package_id`, `conversation_id`, `character_name`, `mystery_style`, and length of intro/round2/round3/round4/final fields, plus a `has_full_scripts` generated column
+- Indexed on `(package_id, attempted_at DESC)` and a partial index on failures for fast triage
+- Lets us answer "which characters failed and how many attempts did each take" in a single query instead of forensic reconstruction next time a customer reports an issue
+
+### Fix: Pre-flight character count validation in mystery-webhook-trigger (v103)
+- Hard-fail (HTTP 400) if extracted character count differs from `player_count` by more than 1, after the existing Claude fallback runs
+- Prevents silently sending a mismatched character count to Make.com (which produces a half-broken generation that's expensive to recover)
+- Returns a structured error with `extractedCount`, `expectedCount`, and `extractionMethod` for client display
+
+### Improvement: Make.com child Anthropic calls now retry on transient failures
+- Replaced the silent `Resume` (detective route) and `Rollback` (character-based route) error handlers on the child scenario's Anthropic modules with `Break` handlers (3 retries, 60s interval, autoComplete=true)
+- Matches the pattern already used on the Parse JSON module (which is why JSON failures self-healed but Anthropic failures didn't)
+- New blueprint at `temp-files/MM Live - Child (Unified)3-WithRetry.blueprint.json` — re-imported into existing scenario
+
 ### Fix: Parent retry loop never caught child script failures
 - Root cause: `get_empty_characters` RPC was checking `description IS NULL OR character_role IS NULL`, but those columns are populated during basic-character creation (long before scripts are generated) — so the RPC always returned 0 even when round scripts were missing, and the parent's existing 3-pass retry loop never fired
 - RPC now joins to `conversations.mystery_style` and checks the actual script columns: `round2_script`/`round3_script`/`round4_script`/`final_statement` for detective style, `round2_innocent`/`round2_guilty`/`round2_accomplice` (etc) for character-based style
