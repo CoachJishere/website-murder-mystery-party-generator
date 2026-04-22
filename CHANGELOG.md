@@ -15,6 +15,39 @@
 - Indexed on `(package_id, attempted_at DESC)` and a partial index on failures for fast triage
 - Lets us answer "which characters failed and how many attempts did each take" in a single query instead of forensic reconstruction next time a customer reports an issue
 
+**How to inspect failures (run in Supabase SQL editor):**
+
+Per-attempt log for a specific conversation:
+```sql
+SELECT character_name, attempted_at, intro_length, round2_length,
+       round3_length, round4_length, final_length, has_full_scripts
+FROM child_generation_attempts
+WHERE conversation_id = '<conversation-uuid>'
+ORDER BY attempted_at;
+```
+
+Just the failures across all packages:
+```sql
+SELECT conversation_id, character_name, attempted_at, intro_length, round2_length
+FROM child_generation_attempts
+WHERE has_full_scripts = false
+ORDER BY attempted_at DESC
+LIMIT 50;
+```
+
+Failure rate per character (for spotting "always-fails" patterns):
+```sql
+SELECT character_name,
+       COUNT(*) as attempts,
+       SUM(CASE WHEN has_full_scripts THEN 1 ELSE 0 END) as successes,
+       SUM(CASE WHEN NOT has_full_scripts THEN 1 ELSE 0 END) as failures
+FROM child_generation_attempts
+WHERE attempted_at > NOW() - INTERVAL '7 days'
+GROUP BY character_name
+HAVING SUM(CASE WHEN NOT has_full_scripts THEN 1 ELSE 0 END) > 0
+ORDER BY failures DESC;
+```
+
 ### Fix: Pre-flight character count validation in mystery-webhook-trigger (v103)
 - Hard-fail (HTTP 400) if extracted character count differs from `player_count` by more than 1, after the existing Claude fallback runs
 - Prevents silently sending a mismatched character count to Make.com (which produces a half-broken generation that's expensive to recover)
