@@ -910,7 +910,21 @@ const MysteryPackageTabView = React.memo(({
                   <div className="flex justify-end mb-4">
                     <Button
                       size="sm"
-                      onClick={() => window.print()}
+                      onClick={() => {
+                        // Hide the React root via inline style (beats all CSS specificity) so
+                        // only the portal'd .evidence-print-inline div prints. Restore on afterprint.
+                        const root = document.getElementById('root');
+                        if (!root) { window.print(); return; }
+                        const prevDisplay = root.style.display;
+                        const restore = () => {
+                          root.style.display = prevDisplay;
+                          window.removeEventListener('afterprint', restore);
+                        };
+                        window.addEventListener('afterprint', restore);
+                        root.style.display = 'none';
+                        // Let layout flush before the print dialog captures the page
+                        requestAnimationFrame(() => window.print());
+                      }}
                       style={{ backgroundColor: 'var(--color-red)', color: 'var(--color-cream)' }}
                     >
                       <Printer className="h-4 w-4 mr-2" />
