@@ -513,12 +513,14 @@ const MysteryPackageTabView = React.memo(({
       }
     }
 
-    // Visual Description is only for image generation — never show to users
-    // Discovered is a detective-narrative section from older blueprints — strip online (same as print)
+    // Strip h4 sections that are only for image generation, game logic, or spoilers
     if (content) {
       content = content.replace(/### VISUAL DESCRIPTION \(FOR IMAGE GENERATION\)\s*\n[\s\S]*?(?=\n## |\n### (?!VISUAL)|$)/gi, '');
       content = stripH4Section(content, /Visual Description/i);
-      content = stripH4Section(content, /^Discovered$/i);
+      content = stripH4Section(content, /\bDiscovered\b/i);
+      content = stripH4Section(content, /What This Reveals/i);
+      content = stripH4Section(content, /Who It Implicates/i);
+      content = stripH4Section(content, /\bImplications\b/i);
     }
 
     return content;

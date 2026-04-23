@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-04-23
+
+### Improvement: Parent11 blueprint — evidence card sections now use explicit #### headers
+- Changed evidence card template from flat text under `### [Evidence Name]` to explicit `#### DESCRIPTION`, `#### IMPLICATIONS`, `#### VISUAL DESCRIPTION (FOR IMAGE GENERATION)` subsections
+- `#### DESCRIPTION` instruction tightened to physical facts only — no detective narrative or emotional language — so printed cards stay clean
+- Online tab already strips `#### VISUAL DESCRIPTION` via `stripH4Section`; structure now matches the 3-part model (print: Description only, online: Description + Implications, image gen: Visual Description)
+- `master_context` merge fix: removed fragile SetVariable string-surgery; Supabase upsert modules now write both Claude outputs directly concatenated — no comma, no merge failure
+- Restored `max_tokens` 8192 → 24000 across all 16 Claude modules (Haiku 4.5 supports 64k output; 8192 was an unnecessary reduction)
+
+### Fix: Evidence cards tab — strip all spoiler/metadata h4 sections
+- Previous `/^Discovered$/i` pattern was broken: `^` anchors didn't match against the full heading line `"#### Discovered"`, so it silently stripped nothing
+- Fixed with `\bDiscovered\b`; also added stripping for `What This Reveals`, `Who It Implicates`, `Implications` — same sections already stripped in print view
+- Older blueprint output (e.g. Deadwood Saloon) that uses these h4 sections now shows only physical description and narrative body text in the tab
+
+### Fix: Evidence card print repeating on every page (portal approach)
+- `position: fixed` in print CSS stamps the element on every page of the document — all 3 cards appeared on each page
+- Replaced with `createPortal(…, document.body)` so `.evidence-print-inline` is a direct body child; the `body > *:not(.evidence-print-inline)` selector now works correctly and prints exactly 3 landscape pages
+
 ## 2026-04-22
 
 ### Fix: Evidence card print — blank output on window.print()
