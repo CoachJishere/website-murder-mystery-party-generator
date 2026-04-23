@@ -2,6 +2,12 @@
 
 ## 2026-04-23
 
+### Feature: Deadwood Saloon (79ab2ac3) — evidence cards + images regenerated as Blueprint 11 reference implementation
+- `evidence_cards` rewritten: three `## EVIDENCE: ROUND N` sections, each with `### [Name]`, `#### DESCRIPTION` (≤3 sentences, forensics-report voice, no character names or narrative framing), `#### IMPLICATIONS` (neutral across all suspects — no pointing at one character), `#### VISUAL DESCRIPTION` (4-sentence strict format: composition+subject+texture / lighting / depth-of-field / bans+period)
+- 3 images regenerated via `black-forest-labs/flux-1.1-pro`, uploaded to `evidence-images/{package_id}/round{2,3,4}.webp` via `store-evidence-images` edge function
+- Verification: all three `#### DESCRIPTION`/`#### IMPLICATIONS`/`#### VISUAL DESCRIPTION` headers present, 3 round sections, all 3 image URLs return HTTP 200
+- This package is the reference other conversations should read before rewriting their own evidence cards
+
 ### Fix: Death At The Velvet Rose (package 546eec7e) — evidence cards and images rebuilt to Blueprint 11 spec
 
 - Rewrote `evidence_cards` from legacy format (`### EVIDENCE CARD — ROUND X: SUBTITLE`, `#### Discovered`, `#### Physical Description`, `#### What This Reveals`, `#### Who It Implicates`) to Blueprint 11 spec (`## EVIDENCE: ROUND N`, `### [Name]`, `#### DESCRIPTION`, `#### IMPLICATIONS`, `#### VISUAL DESCRIPTION (FOR IMAGE GENERATION)`)
