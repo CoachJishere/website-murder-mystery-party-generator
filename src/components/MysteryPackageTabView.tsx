@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { trackPackageTabViewed, trackFeedbackPromptShown, trackFeedbackPromptClicked } from "@/lib/analytics";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
+import { parseEvidenceCards } from "@/utils/evidenceCardUtils";
 
 function stripH4Section(markdown: string, pattern: RegExp): string {
   const lines = markdown.split('\n');
@@ -894,10 +895,7 @@ const MysteryPackageTabView = React.memo(({
                   <div className="flex justify-end mb-4">
                     <Button
                       size="sm"
-                      onClick={() => {
-                        const printUrl = `/evidence-card-print?packageId=${packageId}`;
-                        window.open(printUrl, '_blank');
-                      }}
+                      onClick={() => window.print()}
                       style={{ backgroundColor: 'var(--color-red)', color: 'var(--color-cream)' }}
                     >
                       <Printer className="h-4 w-4 mr-2" />
@@ -905,6 +903,62 @@ const MysteryPackageTabView = React.memo(({
                     </Button>
                   </div>
                 )}
+
+                {/* Hidden print-only evidence cards — rendered inline so window.print() works without a new tab */}
+                {packageData?.evidenceCardImages && evidenceCards && (() => {
+                  const images = packageData.evidenceCardImages as { round2?: string; round3?: string; round4?: string };
+                  const cards = parseEvidenceCards(typeof evidenceCards === 'string' ? evidenceCards : '', images);
+                  if (cards.length === 0) return null;
+                  return (
+                    <div className="evidence-print-inline">
+                      <style>{`
+                        @media screen { .evidence-print-inline { display: none !important; } }
+                        @media print {
+                          body > *:not(.evidence-print-inline) { display: none !important; }
+                          .evidence-print-inline { display: block !important; }
+                          .epi-page {
+                            width: 100%; height: 210mm; max-height: 210mm;
+                            padding: 8mm 12mm 6mm; box-sizing: border-box;
+                            display: flex; flex-direction: column;
+                            page-break-after: always; page-break-inside: avoid; overflow: hidden;
+                          }
+                          .epi-page:last-child { page-break-after: auto; }
+                          .epi-round {
+                            font-size: 10px; font-weight: 700; text-transform: uppercase;
+                            letter-spacing: 3px; color: #C81400 !important; margin-bottom: 10px;
+                          }
+                          .epi-image-frame {
+                            width: 100%; flex: 1 1 auto; min-height: 0; overflow: hidden;
+                            border-radius: 4px; background: #f0ece4; margin-bottom: 12px;
+                          }
+                          .epi-image { width: 100%; height: 100%; object-fit: cover; display: block; }
+                          .epi-desc {
+                            font-size: 12px; line-height: 1.55; color: #333;
+                            margin: 0 0 6px 0; flex-shrink: 0;
+                          }
+                          .epi-footer {
+                            font-size: 9px; color: #bbb !important; text-align: right;
+                            margin-top: 10px; flex-shrink: 0;
+                          }
+                          * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                        }
+                        @page { size: A4 landscape; margin: 0; }
+                      `}</style>
+                      {cards.map((card, i) => (
+                        <div key={i} className="epi-page">
+                          <div className="epi-round">{card.round}</div>
+                          <div className="epi-image-frame">
+                            <img src={card.imageUrl} alt={card.round} className="epi-image" />
+                          </div>
+                          {card.description.split(/\n\n+/).map((para, pi) => (
+                            <p key={pi} className="epi-desc">{para.replace(/\n/g, ' ').trim()}</p>
+                          ))}
+                          <div className="epi-footer">Card {i + 1} of {cards.length}</div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
 
                 {/* Evidence card images with lightbox */}
                 {packageData?.evidenceCardImages && (
