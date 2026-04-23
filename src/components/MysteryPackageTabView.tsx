@@ -929,6 +929,9 @@ const MysteryPackageTabView = React.memo(({
                       <style>{`
                         @media screen { .evidence-print-inline { display: none !important; } }
                         @media print {
+                          /* print.css forces the active tabpanel visible; override so only our cards print */
+                          [role="tabpanel"][data-state="active"],
+                          [role="tabpanel"] { display: none !important; }
                           body > *:not(.evidence-print-inline) { display: none !important; }
                           .evidence-print-inline { display: block !important; }
                           .epi-page {
