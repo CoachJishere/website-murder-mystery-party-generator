@@ -40,18 +40,21 @@ export function parseEvidenceCards(
   const labels = ["Evidence — Round 2", "Evidence — Round 3", "Evidence — Round 4"];
   const roundPatterns = [/ROUND\s*2/i, /ROUND\s*3/i, /ROUND\s*4/i];
 
-  const isSection = (l: string) => /^#{2,3}(?!#)\s/.test(l);
+  // A round boundary is an h2/h3 that mentions ROUND N. Any other h3 (e.g. Blueprint 11's
+  // `### [Evidence Name]` sub-heading) is WITHIN the round, not a boundary.
+  const isRoundBoundary = (l: string) =>
+    /^#{2,3}(?!#)\s/.test(l) && /\bROUND\s*\d/i.test(l);
 
   for (let r = 0; r < 3; r++) {
     const imageUrl = imageList[r];
     if (!imageUrl) continue;
 
-    const startIdx = lines.findIndex(l => isSection(l) && roundPatterns[r].test(l));
+    const startIdx = lines.findIndex(l => isRoundBoundary(l) && roundPatterns[r].test(l));
     if (startIdx === -1) continue;
 
     let endIdx = lines.length;
     for (let i = startIdx + 1; i < lines.length; i++) {
-      if (isSection(lines[i])) { endIdx = i; break; }
+      if (isRoundBoundary(lines[i])) { endIdx = i; break; }
     }
 
     const heading = lines[startIdx];
