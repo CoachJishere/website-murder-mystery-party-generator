@@ -36,6 +36,13 @@ function stripH4Section(markdown: string, pattern: RegExp): string {
   return out.join('\n');
 }
 
+// Removes the #### heading line but keeps the body text beneath it
+function stripH4Label(markdown: string, pattern: RegExp): string {
+  return markdown.split('\n').filter(line =>
+    !(/^####\s/.test(line) && pattern.test(line))
+  ).join('\n');
+}
+
 interface MysteryPackageData {
   title?: string;
   gameOverview?: string;
@@ -513,14 +520,17 @@ const MysteryPackageTabView = React.memo(({
       }
     }
 
-    // Strip h4 sections that are only for image generation, game logic, or spoilers
+    // Strip sections/labels not meant for host display
     if (content) {
+      // Remove entire sections (heading + body) — image-gen or spoiler content
       content = content.replace(/### VISUAL DESCRIPTION \(FOR IMAGE GENERATION\)\s*\n[\s\S]*?(?=\n## |\n### (?!VISUAL)|$)/gi, '');
       content = stripH4Section(content, /Visual Description/i);
       content = stripH4Section(content, /\bDiscovered\b/i);
       content = stripH4Section(content, /What This Reveals/i);
       content = stripH4Section(content, /Who It Implicates/i);
-      content = stripH4Section(content, /\bImplications\b/i);
+      // Remove only the heading label, keep the body text — useful narrative for hosts
+      content = stripH4Label(content, /\bDescription\b/i);   // #### DESCRIPTION, #### Physical Description
+      content = stripH4Label(content, /\bImplications\b/i);  // #### IMPLICATIONS
     }
 
     return content;

@@ -2,6 +2,13 @@
 
 ## 2026-04-23
 
+### Fix: Evidence cards tab — clean heading display for Blueprint 11 and legacy formats
+- Added `stripH4Label` helper: removes only the `####` heading line, keeps body text (vs `stripH4Section` which removes heading + entire body)
+- `#### DESCRIPTION` / `#### Physical Description`: label stripped, body text kept — hosts see clean paragraphs without sub-headings
+- `#### IMPLICATIONS`: label stripped, body text kept — host retains the gameplay context
+- `#### Who It Implicates` / `#### What This Reveals` / `#### Discovered` / `#### Visual Description`: entire section removed (spoilers / image-gen only)
+- Deadwood Saloon (`79ab2ac3`) evidence_cards rewritten in Blueprint 11 format: 3 rounds, `#### DESCRIPTION` + `#### IMPLICATIONS` + `#### VISUAL DESCRIPTION`, two evidence items consolidated per round
+
 ### Improvement: Parent11 blueprint — evidence card sections now use explicit #### headers
 - Changed evidence card template from flat text under `### [Evidence Name]` to explicit `#### DESCRIPTION`, `#### IMPLICATIONS`, `#### VISUAL DESCRIPTION (FOR IMAGE GENERATION)` subsections
 - `#### DESCRIPTION` instruction tightened to physical facts only — no detective narrative or emotional language — so printed cards stay clean
