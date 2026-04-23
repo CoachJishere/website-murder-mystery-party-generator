@@ -2,6 +2,19 @@
 
 ## 2026-04-23
 
+### Fix: Evidence card parser compatible with Blueprint 11 sub-headings
+- Parser was treating any h2/h3 as a round boundary — so Blueprint 11's `### [Evidence Name]` sub-heading under `## EVIDENCE: ROUND N` was stopping extraction immediately, leaving descriptions empty and the print portal returning `null` (blank print preview)
+- Fixed: only h2/h3 lines containing `ROUND N` count as boundaries; any other h3 stays inside the round
+- Legacy `### EVIDENCE CARD — ROUND 2` format still parses (matches the new regex too)
+
+### Fix: Evidence card print — hide #root via inline style instead of CSS
+- Previous CSS approach (`body > *:not(.evidence-print-inline) { display: none }`) was losing the specificity fight against `print.css`'s `[role=tabpanel][data-state=active] { display: block !important }` — the active Clues tab re-showed itself alongside the portal, printing the whole page
+- Replaced with JS: Print button now sets `#root.style.display = 'none'` (inline style beats all CSS), calls `window.print()`, restores on `afterprint`. Guaranteed isolation regardless of global CSS
+
+### Fix: Cache-bust evidence card image URLs per page load
+- Supabase Storage files live at stable URLs (`.../round{N}.webp`) that never change across regenerations, so browser disk cache would serve the old image even after admins uploaded new ones
+- Every `<img>` src (tab grid, lightbox, print-inline) now gets a `?v=<mount_time>` query param — each fresh page load pulls the current storage version
+
 ### Feature: Deadwood Saloon (79ab2ac3) — evidence cards + images regenerated as Blueprint 11 reference implementation
 - `evidence_cards` rewritten: three `## EVIDENCE: ROUND N` sections, each with `### [Name]`, `#### DESCRIPTION` (≤3 sentences, forensics-report voice, no character names or narrative framing), `#### IMPLICATIONS` (neutral across all suspects — no pointing at one character), `#### VISUAL DESCRIPTION` (4-sentence strict format: composition+subject+texture / lighting / depth-of-field / bans+period)
 - 3 images regenerated via `black-forest-labs/flux-1.1-pro`, uploaded to `evidence-images/{package_id}/round{2,3,4}.webp` via `store-evidence-images` edge function
