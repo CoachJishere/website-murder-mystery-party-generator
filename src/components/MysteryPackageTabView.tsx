@@ -914,8 +914,13 @@ const MysteryPackageTabView = React.memo(({
                       <style>{`
                         @media screen { .evidence-print-inline { display: none !important; } }
                         @media print {
-                          body > *:not(.evidence-print-inline) { display: none !important; }
-                          .evidence-print-inline { display: block !important; }
+                          body { visibility: hidden !important; }
+                          .evidence-print-inline {
+                            visibility: visible !important;
+                            position: fixed !important;
+                            top: 0; left: 0; width: 100%;
+                          }
+                          .evidence-print-inline * { visibility: visible !important; }
                           .epi-page {
                             width: 100%; height: 210mm; max-height: 210mm;
                             padding: 8mm 12mm 6mm; box-sizing: border-box;

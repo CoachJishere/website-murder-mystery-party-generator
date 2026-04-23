@@ -2,6 +2,26 @@
 
 ## 2026-04-22
 
+### Fix: Evidence card print — blank output on window.print()
+- Previous CSS used `body > *:not(.evidence-print-inline) { display: none }` which hides `#root` (a direct body child), cascading down and making the print div invisible despite matching `:not()`
+- Replaced with the visibility isolation pattern: `body { visibility: hidden }` + `.evidence-print-inline, .evidence-print-inline * { visibility: visible }` + `position: fixed` — this correctly reveals only the print cards regardless of DOM nesting depth
+
+### Fix: Inline evidence card print + shared parse utility (531f954)
+- Moved evidence card print from `window.open('/evidence-card-print?packageId=xxx')` to an inline hidden `<div>` rendered in the Clues tab; `window.print()` is called directly
+- Eliminates 404s in Lovable preview, local dev, and any environment without a server rewrite rule
+- Extracted `parseEvidenceCards` + `EvidenceCard` into `src/utils/evidenceCardUtils.ts` so both `MysteryPackageTabView` and `EvidenceCardPrint` share the same logic
+
+### Feature: Manual package generation — Death On The Dance Floor (ec22e358)
+- Generated full mystery party kit for "Death On The Dance Floor" (18-player disco murder mystery, purchased by miller_jm@hotmail.com) bypassing Make.com pipeline
+- Inserted all package-level fields into `mystery_packages`: game_overview, master_context, host_guide, detective_script, materials, preparation_instructions, timeline, hosting_tips, evidence_cards
+- Inserted all 18 characters into `mystery_characters` with complete 7-field scripts (introduction, rumors, round2–4 scripts, final_statement, accusations) — 1 murderer (Jett Midnight), 1 accomplice (Nico Nightshade), 16 suspects
+- Marked conversation `b53854bd` as `has_complete_package=true`, `needs_package_generation=false`, `display_status=purchased`
+
+### Feature: Manual package text generation — Death At The Deadwood Saloon (79ab2ac3)
+- Generated and inserted all 8 package-level text fields directly into Supabase for the Wild West 1882 mystery (9 players, accomplice mechanic)
+- Fields written: `game_overview`, `master_context`, `host_guide`, `detective_script`, `materials`, `preparation_instructions`, `timeline`, `hosting_tips`
+- Bypasses Make.com pipeline; characters to be inserted separately in a subsequent step
+
 ### Fix: Pre-flight character count validation tightened to exact match
 - Edge function (v105) now hard-fails if extracted character count differs from `player_count` by even 1 (previously allowed ±1 tolerance)
 - Prevents ghost characters from sneaking through when the AI lists N+1 characters in the approved message — stops expensive half-broken generations requiring manual recovery
@@ -32,6 +52,17 @@
 - Generated round scripts for 2 characters missing them (Abby Lee/Abbott Miller, Sarah/Samuel Palin) using Claude Code agent with host_guide + existing character scripts as context
 - Updated `player_count` from 18 → 19 to match actual character count (AI generated 19 characters)
 - Mystery is now 19/19 characters complete with correct murderer/accomplice role assignments
+
+### Fix: TLC Reunion — deep quality audit and full script repair (DB-only)
+- Root cause: `master_context` in `mystery_packages` was stored as a bare comma (`,`) — effectively empty — so the Make.com child scenario had no mystery context when generating round scripts, producing systematic errors across the full character set
+- **Victim name corrections**: 4 characters (Breaking Amish, Mama June, Toddlers & Tiaras, Gypsy/Grey) had wrong victim names ("Dave", "Vicky", "Vicky Spotlight", "Chad", "Chad Chaddington IV") in their scripts; corrected to "Buddy Valastro" across all affected rounds via SQL `REPLACE()`
+- **Accomplice final statement rewrites**: All 4 accomplice characters (Breaking Amish, Toddlers & Tiaras, Pauly D, Michelle/Duggar) named a specific character as the murderer in their final statement — incompatible with the random murderer selection mechanic where any of 4 characters could be the murderer; rewritten to reference "the murderer" / "the person who told me I was their accomplice" generically
+- **Randy Fenoli Round 4**: Original script placed him at home alone from 7 PM onward (left the boutique, not at the party); rewrites to place him at the garden terrace and bar area for a plausible party alibi
+- **Toddlers & Tiaras Rounds 2 and 3**: Completely wrong mystery — scripts referenced a crypto scandal, "Chad Chaddington IV", a Bachelor Contestant, and an Influencer (from a different mystery entirely); fully rewritten for the TLC reunion / Buddy Valastro poisoning context
+- **Breaking Amish Round 4**: Alibi referenced "the Deadliest Catch Captain" — a non-cast character; rewritten to reference Gypsy/Grey and Big Ed (both confirmed present in the same area from their own scripts)
+- **Abby Lee Round 4**: Alibi referenced Randy Fenoli, but Randy's Round 4 said he was home all evening; rewritten to reference Mama June (at catering table) and Gypsy/Grey (in common area)
+- **Sarah Palin Round 4**: Alibi referenced Pauly D (wrong time window) and Willie Robertson (in his room); rewritten to reference Lisa Rinna and Big Ed (both confirmed at bar area)
+- **Verification**: Final SQL check across all 19 characters confirmed zero wrong victim name references, zero named-murderer accomplice finals, zero NULL script fields
 
 ### Fix: "Failed to load conversation" after submitting the mystery creation form
 - Root cause: adding the `approved_concept_message_id UUID REFERENCES messages(id)` column on `conversations` created a second FK path between `conversations` and `messages` (the existing one being `fk_messages_conversation_id` on `messages.conversation_id`). PostgREST can no longer auto-resolve the embed `messages(*)` and responds with HTTP 300 (Multiple Choices), which surfaces client-side as the `loadConversationFailed` toast — blocking every new chat because the post-create load immediately 300s
