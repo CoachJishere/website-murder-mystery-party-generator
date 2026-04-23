@@ -15,8 +15,8 @@ interface EvidenceCard {
   imageUrl: string;
 }
 
-// Sections stripped from print cards (online-only content)
-const PRINT_STRIP = /^####\s+(Visual Description|Who It Implicates|What This Reveals|Implications)\b/i;
+// Sections stripped from print cards — only Physical Description (or future Description) survives
+const PRINT_STRIP = /^####\s+(Visual Description|Who It Implicates|What This Reveals|Implications|Discovered)\b/i;
 
 function stripSectionsForPrint(lines: string[]): string[] {
   const out: string[] = [];
@@ -155,9 +155,8 @@ export default function EvidenceCardPrint() {
           <div key={i} className="ec-page">
             <div className="ec-round">{card.round}</div>
             <div className="ec-image-frame">
-              <img src={card.imageUrl} alt={card.title} className="ec-image" />
+              <img src={card.imageUrl} alt={card.round} className="ec-image" />
             </div>
-            <h2 className="ec-title">{card.title}</h2>
             {card.description.split(/\n\n+/).map((para, pi) => (
               <p key={pi} className="ec-description">{para.replace(/\n/g, ' ').trim()}</p>
             ))}
@@ -216,16 +215,6 @@ export default function EvidenceCardPrint() {
           height: 100%;
           object-fit: cover;
           display: block;
-        }
-
-        .ec-title {
-          font-family: 'Playfair Display', 'Georgia', serif;
-          font-size: 20px;
-          font-weight: 700;
-          color: #1a1a1a;
-          margin: 0 0 6px 0;
-          line-height: 1.25;
-          flex-shrink: 0;
         }
 
         .ec-description {
