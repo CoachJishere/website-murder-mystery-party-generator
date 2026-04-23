@@ -2,6 +2,12 @@
 
 ## 2026-04-23
 
+### Fix: Deadwood Saloon (79ab2ac3) game_overview leading heading
+- Field started with `# Death At The Deadwood Saloon` + `## A Murder Mystery for 9 Players — Deadwood Gulch, 1882` before the body
+- `EditableSection` uses the first `#`/`##` line as the section's fixed H3 label and renders everything after (including any remaining H1/H2) as body → resulted in 3 visible titles stacked on the Host Guide tab: the page header, then "DEATH AT THE DEADWOOD SALOON" (as section label), then the subtitle (as body H2)
+- Replaced the title + subtitle with the canonical `## GAME OVERVIEW` heading used by every Blueprint-11-generated package — now the Host Guide tab shows only the page-level mystery title plus a single "Game Overview" section heading
+- **Not systemic.** Surveyed 10 recent packages: 8 use `## GAME OVERVIEW`, 1 uses `## Welcome to the Train`, 1 has no heading, and only Deadwood (manually authored in this conversation) had the dual title/subtitle pattern. Blueprint 11 itself is fine; this was a one-off authoring mistake
+
 ### Fix: Evidence card parser compatible with Blueprint 11 sub-headings
 - Parser was treating any h2/h3 as a round boundary — so Blueprint 11's `### [Evidence Name]` sub-heading under `## EVIDENCE: ROUND N` was stopping extraction immediately, leaving descriptions empty and the print portal returning `null` (blank print preview)
 - Fixed: only h2/h3 lines containing `ROUND N` count as boundaries; any other h3 stays inside the round
