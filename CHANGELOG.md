@@ -2,6 +2,24 @@
 
 ## 2026-04-23
 
+### Fix: Death At The Velvet Rose (package 546eec7e) — evidence cards and images rebuilt to Blueprint 11 spec
+
+- Rewrote `evidence_cards` from legacy format (`### EVIDENCE CARD — ROUND X: SUBTITLE`, `#### Discovered`, `#### Physical Description`, `#### What This Reveals`, `#### Who It Implicates`) to Blueprint 11 spec (`## EVIDENCE: ROUND N`, `### [Name]`, `#### DESCRIPTION`, `#### IMPLICATIONS`, `#### VISUAL DESCRIPTION (FOR IMAGE GENERATION)`)
+- DESCRIPTION sections: max 3 sentences, pure physical facts, no narrator voice, no alibi references
+- IMPLICATIONS sections: neutral — presents how multiple parties could have accessed/placed the evidence
+- VISUAL DESCRIPTION prompts: corrected to 4-sentence structure (composition + subject + texture in one sentence; raking light; depth of field; bans + period)
+- Regenerated all 3 evidence images via Replicate `black-forest-labs/flux-1.1-pro` with new spec-compliant prompts
+- Re-uploaded to Supabase Storage `evidence-images/546eec7e-f886-4457-b6fe-a7204e13c5d9/round{2,3,4}.webp`; all URLs return 200
+- Verification: `ec_length=5278`, all boolean checks true, all 3 images set
+
+### Fix: Death On The Silver Screen (package 41a581cc) — evidence cards and images rebuilt to Blueprint 11 spec
+- Rewrote `evidence_cards` to match Blueprint 11 structure: correct intro text, `### [Evidence Name]` subsection per round, `#### DESCRIPTION` / `#### IMPLICATIONS` / `#### VISUAL DESCRIPTION (FOR IMAGE GENERATION)` subsections
+- Round 3 evidence changed from "drink cabinet lock scratches" (faint-trace category) to "prop department sign-out log" (notebook page with visible writing — visually concrete per BP11 selection rules)
+- All three VISUAL DESCRIPTION prompts rewritten to strict 5-sentence FLUX 1.1 Pro structure: Extreme close-up composition, texture/contrast with concrete adjectives, raking 45° tungsten side-light, shallow depth-of-field, no-figures ban + period style
+- Removed banned language from all prompts: "dim warm lamp light", "moody atmosphere", "dramatic shadows", "soft glow"
+- Regenerated all 3 evidence images via Replicate flux-1.1-pro with new prompts; uploaded to evidence-images storage bucket; all three URLs return 200
+- Verification: ec_length 5095, all boolean checks true
+
 ### Fix: Evidence cards tab — clean heading display for Blueprint 11 and legacy formats
 - Added `stripH4Label` helper: removes only the `####` heading line, keeps body text (vs `stripH4Section` which removes heading + entire body)
 - `#### DESCRIPTION` / `#### Physical Description`: label stripped, body text kept — hosts see clean paragraphs without sub-headings
@@ -15,6 +33,32 @@
 - Online tab already strips `#### VISUAL DESCRIPTION` via `stripH4Section`; structure now matches the 3-part model (print: Description only, online: Description + Implications, image gen: Visual Description)
 - `master_context` merge fix: removed fragile SetVariable string-surgery; Supabase upsert modules now write both Claude outputs directly concatenated — no comma, no merge failure
 - Restored `max_tokens` 8192 → 24000 across all 16 Claude modules (Haiku 4.5 supports 64k output; 8192 was an unnecessary reduction)
+
+### Improvement: Parent11 — Part 2 prompts now bias evidence selection toward visually concrete objects
+- Master constraints generation (Part 2 prompts in modules 3000/4010/4020/4030) now instructs model to PRIORITISE VISUAL CONCRETENESS when choosing each round's evidence item
+- Prefers physically distinctive objects (engraved items, torn fabric, labelled bottles, notebook pages, sealed letters, distinctive weapons, signet rings) over faint traces, subtle residues, or barely visible marks
+- When trace evidence is required by the murder method, instructs model to name the CONTAINER or surrounding object as the depicted item (e.g. "labelled poison bottle" not "faint chemical residue")
+- Applied to 7 places: 1 markdown spec section + 3 evidenceProgression JSON templates (Murder routes) + 3 evidenceNeutrality JSON templates (alt route)
+
+### Note: FLUX model is already at top tier (flux-1.1-pro), no model upgrade needed
+- Investigated whether to upgrade from FLUX Schnell → FLUX Dev as suggested in image-quality feedback note
+- Confirmed Replicate module in blueprint already calls `black-forest-labs/flux-1.1-pro` (12 modules across all routes) — the highest-quality FLUX tier, not Schnell
+- The Round 4 gunpowder image issue was a prompt problem (hedged language being dropped), not a model capability problem; tightened VISUAL DESCRIPTION rules should resolve it on next regeneration
+
+### Improvement: Parent11 — VISUAL DESCRIPTION rewritten for FLUX 1.1 Pro detail rendering
+- Replaced the loose VISUAL DESCRIPTION template with a strict 5-sentence structure (corrected to reference the actual model `flux-1.1-pro`, not Schnell):
+  1. Composition + subject (close-up macro, evidence FILLS THE FRAME)
+  2. Texture + contrast (concrete adjectives only — BANNED: "faint", "subtle", "trace", "hint of")
+  3. Hard directional lighting (BANNED: "dim", "soft glow", "moody", "dramatic shadows" — produces blur)
+  4. Shallow depth-of-field (evidence razor-sharp, background out-of-focus)
+  5. Bans + period (no human figures, no faces, no wide scene)
+- Reason: FLUX Schnell drops hedged language and inserts atmosphere when subject is implicit; Round 4 gunpowder smear came back as a moody silhouette because the prompt said "faint grey smear catching the light" (all dropped words)
+- Applied to all 6 VISUAL DESCRIPTION instructions (3 rounds × 2 evidence-card-generating routes)
+
+### Improvement: Parent11 — DESCRIPTION voice hardened + one-section-per-round structural rule
+- DESCRIPTION instruction now mandates "FORENSICS REPORT" voice and explicitly PROHIBITS: detective/narrator framing ("On close examination...", "the deputy noticed...", "had no business being..."), references to character alibis or how evidence was discovered, and emotional/dramatic language
+- Added structural rule before evidence card template: exactly ONE `## EVIDENCE: ROUND N` section per round (3 total across rounds 2/3/4), no continuation/split sections (no "ROUND 2: MOTIVES (CONTINUED)" or "PART 2"), one `### [Evidence Name]` item per round with one DESCRIPTION/IMPLICATIONS/VISUAL DESCRIPTION subsection — matches the one-image-per-round print constraint
+- Both fixes applied to all routes that generate evidence cards (6 DESCRIPTION instructions, 2 structural rule injections)
 
 ### Fix: Evidence cards tab — strip all spoiler/metadata h4 sections
 - Previous `/^Discovered$/i` pattern was broken: `^` anchors didn't match against the full heading line `"#### Discovered"`, so it silently stripped nothing
