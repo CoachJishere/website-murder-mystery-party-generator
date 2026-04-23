@@ -66,8 +66,17 @@ interface MysteryPackageTabViewProps {
   onCharacterFieldUpdate?: (characterId: string, fieldName: string, value: string) => Promise<void>;
 }
 
+// Evidence images live at stable URLs (…/round{N}.webp). When admins regenerate them
+// the URL doesn't change, so browser disk cache can hold stale copies past the
+// server's no-cache header. Bust per page load with a mount-time version param.
+function bustCache(url: string, version: number): string {
+  if (!url) return url;
+  return url + (url.includes('?') ? '&' : '?') + 'v=' + version;
+}
+
 function EvidenceCardImageGrid({ images, isMobile }: { images: { round2?: string; round3?: string; round4?: string }; isMobile: boolean }) {
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const cacheVersion = useMemo(() => Date.now(), []);
 
   return (
     <>
@@ -75,15 +84,16 @@ function EvidenceCardImageGrid({ images, isMobile }: { images: { round2?: string
         {(['round2', 'round3', 'round4'] as const).map((round) => {
           const url = images[round];
           if (!url) return null;
+          const bustedUrl = bustCache(url, cacheVersion);
           const roundLabel = round === 'round2' ? 'Round 2' : round === 'round3' ? 'Round 3' : 'Round 4';
           return (
             <div
               key={round}
               className="rounded-lg overflow-hidden border border-border cursor-pointer hover:opacity-90 transition-opacity"
-              onClick={() => setLightboxUrl(url)}
+              onClick={() => setLightboxUrl(bustedUrl)}
             >
               <img
-                src={url}
+                src={bustedUrl}
                 alt={`Evidence - ${roundLabel}`}
                 className="w-full aspect-video object-cover"
               />
@@ -953,7 +963,7 @@ const MysteryPackageTabView = React.memo(({
                         <div key={i} className="epi-page">
                           <div className="epi-round">{card.round}</div>
                           <div className="epi-image-frame">
-                            <img src={card.imageUrl} alt={card.round} className="epi-image" />
+                            <img src={bustCache(card.imageUrl, Date.now())} alt={card.round} className="epi-image" />
                           </div>
                           {card.description.split(/\n\n+/).map((para, pi) => (
                             <p key={pi} className="epi-desc">{para.replace(/\n/g, ' ').trim()}</p>
