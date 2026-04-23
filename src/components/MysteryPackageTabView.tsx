@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -513,9 +514,11 @@ const MysteryPackageTabView = React.memo(({
     }
 
     // Visual Description is only for image generation — never show to users
+    // Discovered is a detective-narrative section from older blueprints — strip online (same as print)
     if (content) {
       content = content.replace(/### VISUAL DESCRIPTION \(FOR IMAGE GENERATION\)\s*\n[\s\S]*?(?=\n## |\n### (?!VISUAL)|$)/gi, '');
       content = stripH4Section(content, /Visual Description/i);
+      content = stripH4Section(content, /^Discovered$/i);
     }
 
     return content;
@@ -904,23 +907,18 @@ const MysteryPackageTabView = React.memo(({
                   </div>
                 )}
 
-                {/* Hidden print-only evidence cards — rendered inline so window.print() works without a new tab */}
+                {/* Print-only evidence cards — portalled to body so CSS body > *:not() selector works */}
                 {packageData?.evidenceCardImages && evidenceCards && (() => {
                   const images = packageData.evidenceCardImages as { round2?: string; round3?: string; round4?: string };
                   const cards = parseEvidenceCards(typeof evidenceCards === 'string' ? evidenceCards : '', images);
                   if (cards.length === 0) return null;
-                  return (
+                  return createPortal(
                     <div className="evidence-print-inline">
                       <style>{`
                         @media screen { .evidence-print-inline { display: none !important; } }
                         @media print {
-                          body { visibility: hidden !important; }
-                          .evidence-print-inline {
-                            visibility: visible !important;
-                            position: fixed !important;
-                            top: 0; left: 0; width: 100%;
-                          }
-                          .evidence-print-inline * { visibility: visible !important; }
+                          body > *:not(.evidence-print-inline) { display: none !important; }
+                          .evidence-print-inline { display: block !important; }
                           .epi-page {
                             width: 100%; height: 210mm; max-height: 210mm;
                             padding: 8mm 12mm 6mm; box-sizing: border-box;
@@ -961,7 +959,8 @@ const MysteryPackageTabView = React.memo(({
                           <div className="epi-footer">Card {i + 1} of {cards.length}</div>
                         </div>
                       ))}
-                    </div>
+                    </div>,
+                    document.body
                   );
                 })()}
 
