@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { trackEvent } from "@/lib/analytics";
 import { useTranslation } from "react-i18next";
-import { Search, Youtube, Music2, Instagram, MessageCircle, Users, BookOpen, HelpCircle } from "lucide-react";
+import { Search, Youtube, Music2, Instagram, MessageCircle, Users, BookOpen, HelpCircle, Globe } from "lucide-react";
 
 const ATTRIBUTION_SOURCES = [
   { id: "google", icon: Search, color: "#4285F4" },
+  { id: "search_other", icon: Globe, color: "#9CA3AF" },
   { id: "youtube", icon: Youtube, color: "#FF0000" },
   { id: "tiktok", icon: Music2, color: "#00F2EA" },
   { id: "instagram", icon: Instagram, color: "#E4405F" },
@@ -66,15 +67,25 @@ export default function AttributionSurvey({ open, onComplete, userId }: Attribut
   const handleSkip = async () => {
     setSaving(true);
     try {
+      // Read current skip count so we can increment it; allow up to one re-prompt later.
+      const { data: current } = await supabase
+        .from("profiles")
+        .select("attribution_skip_count")
+        .eq("id", userId)
+        .maybeSingle();
+
+      const nextSkipCount = ((current?.attribution_skip_count as number) ?? 0) + 1;
+
       await supabase
         .from("profiles")
         .update({
           attribution_source: "skipped",
+          attribution_skip_count: nextSkipCount,
           attribution_surveyed_at: new Date().toISOString(),
         })
         .eq("id", userId);
 
-      trackEvent("attribution_survey_skipped");
+      trackEvent("attribution_survey_skipped", { skip_count: nextSkipCount });
     } catch (error) {
       console.error("Failed to save attribution skip:", error);
     } finally {
@@ -90,15 +101,19 @@ export default function AttributionSurvey({ open, onComplete, userId }: Attribut
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => {}}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        // Treat closing-without-answering as a soft skip so we can re-prompt later.
+        if (!next && !saving) handleSkip();
+      }}
+    >
       <DialogContent
-        className="sm:max-w-md [&>button:last-child]:hidden"
+        className="sm:max-w-md"
         style={{
           backgroundColor: "var(--color-charcoal)",
           border: "1px solid rgba(245,240,232,0.15)",
         }}
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <DialogHeader className="text-center sm:text-center">
           <DialogTitle
@@ -115,7 +130,7 @@ export default function AttributionSurvey({ open, onComplete, userId }: Attribut
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-3 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 max-h-[60vh] overflow-y-auto">
           {ATTRIBUTION_SOURCES.map(({ id, icon: Icon, color }) => (
             <button
               key={id}

@@ -9,6 +9,7 @@ import { HelmetProvider } from "react-helmet-async";
 import LoadingBoundary from "@/components/LoadingBoundary";
 import { useEffect } from "react";
 import { initGA, trackPageView } from "@/lib/analytics";
+import { captureLandingAttribution } from "@/lib/attribution";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { WelcomeDiscountRibbon } from "@/components/WelcomeDiscountRibbon";
 import Index from "./pages/Index";
@@ -70,6 +71,8 @@ const RouteTracker = () => {
   useEffect(() => {
     // Initialize GA on first load
     initGA();
+    // Capture UTM/referrer once per browser, before any signup
+    captureLandingAttribution();
   }, []);
 
   useEffect(() => {

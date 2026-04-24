@@ -47,15 +47,47 @@ const Dashboard = () => {
         // Fetch user's mysteries
         await fetchMysteries(data.session.user.id);
 
-        // Check if user needs attribution survey
+        // Check if user needs attribution survey.
+        // Defer the first ask until either (a) they have at least one mystery,
+        // or (b) this is at least their second visit to the dashboard. This
+        // avoids high-intent buyers blowing past the prompt right after signup.
         const { data: profile } = await supabase
           .from("profiles")
-          .select("attribution_surveyed_at")
+          .select("attribution_source, attribution_skip_count, attribution_surveyed_at")
           .eq("id", data.session.user.id)
           .single();
 
-        if (profile && !profile.attribution_surveyed_at) {
-          setShowAttribution(true);
+        if (profile) {
+          const SECOND_VISIT_KEY = "mm_dashboard_visited_v1";
+          const isSecondVisit = !!localStorage.getItem(SECOND_VISIT_KEY);
+          if (!isSecondVisit) localStorage.setItem(SECOND_VISIT_KEY, "1");
+
+          let userHasMystery = false;
+          try {
+            const { count } = await supabase
+              .from("conversations")
+              .select("id", { count: "exact", head: true })
+              .eq("user_id", data.session.user.id);
+            userHasMystery = (count ?? 0) > 0;
+          } catch { /* ignore */ }
+
+          const eligibleToAsk = isSecondVisit || userHasMystery;
+
+          const neverAnswered = !profile.attribution_source;
+          const skippedRecently = profile.attribution_source === "skipped";
+          const skipCount = profile.attribution_skip_count ?? 0;
+          const lastAt = profile.attribution_surveyed_at
+            ? new Date(profile.attribution_surveyed_at).getTime()
+            : 0;
+          const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+          const enoughTimeSinceSkip = Date.now() - lastAt > sevenDaysMs;
+
+          const shouldShow =
+            eligibleToAsk &&
+            (neverAnswered ||
+              (skippedRecently && skipCount < 2 && enoughTimeSinceSkip));
+
+          if (shouldShow) setShowAttribution(true);
         }
       } catch (error) {
         console.error("Dashboard auth check error:", error);

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { persistAttributionToProfile } from "@/lib/attribution";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -118,6 +119,9 @@ const AuthCallback = () => {
             } catch (error) {
               console.error("Error generating welcome discount:", error);
             }
+
+            // Persist captured UTM/referrer to profile (non-blocking)
+            persistAttributionToProfile(data.session.user.id);
           }
 
           toast.success("Successfully signed in with Google!");

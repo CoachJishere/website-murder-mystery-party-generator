@@ -1,6 +1,49 @@
 # Changelog
 
+## 2026-04-24
+
+### Feature: UTM/referrer attribution capture on signup
+- New `profiles` columns: `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`, `landing_referrer`, `landing_page`. Captured into `localStorage` on first external landing (skips internal navs and same-host referrers), then persisted into the user's profile on signup (email + Google OAuth). First-touch only — never overwrites existing non-NULL columns
+- Why: self-reported attribution is biased (high-intent buyers skip the survey, browsers answer it). Silent UTM/referrer capture gives ground-truth that can be cross-referenced with the survey
+- New helper `src/lib/attribution.ts`; capture wired in `RouteTracker` (`App.tsx`); persistence wired in `SignUp.tsx` and `AuthCallback.tsx`
+
+### Improvement: Attribution survey UX overhauled
+- Defer first prompt: only shown after the user either has at least one mystery OR is on their second-or-later dashboard visit. Avoids the "high-intent buyer skips past" selection bias
+- Skip is no longer terminal: re-prompt once after 7 days (max two skips, then permanently quiet). Backed by new `attribution_skip_count` column
+- Allow natural dismissal: closing the modal (Esc / outside click) now counts as a soft skip, not a forced lock-out
+- Added "Bing / Other search" option (DuckDuckGo and bare-typed "GOOGLE" were both showing up as Other previously)
+- Mobile layout: switched 2-column grid to single-column on small viewports + scroll cap, so all 9 options are reachable without obstruction
+- Migration: `add_utm_attribution_to_profiles`
+
 ## 2026-04-23
+
+### Fix: Death At Hollowcrest Manor (7b3766fe) Iris/Ivan rumor about victim retargeted to a cast member
+- Preventative audit of paid mystery "Death At Hollowcrest Manor" (20-character random-murderer format, victim Cornelius Hollowcrest). Swept `rumors`, `introduction`, `secret`, `accusations`, `background`, `relationships` across all 20 `mystery_characters` rows
+- Only contamination found: Iris/Ivan Thornfield's `rumors` second entry was `**About Cornelius:**` — rumors should target other living suspects, not the victim. Rewrote to `**About Lucian Vale:**` preserving Iris's painter-perception voice and the agitation/atmosphere theme. Other two rumors (about Quinn Mortimer and Noel Fairchild) untouched
+- Broader proper-name scan across all 5 audit fields surfaced only cast tokens, "Cornelius/Hollowcrest" (canonical victim, OK as referent), and in-world organizations (Threshold Circle, Preservation Society) / English place names (Edinburgh, Yorkshire) — no further rewrites required
+- 1 UPDATE run via `to_jsonb(text)`. Customer-supplied verification regex returns 0 rows. `master_context` is NULL on this package — random-murderer mystery, no fixed murderer/accomplice pairing to preserve
+
+### Fix: TLC Reunion (fb085089) rumors/intro/secret/accusations/background scrubbed of contamination
+- Customer (Christina) re-flagged that "Rumors to Spread" still referenced non-cast characters and the wrong victim ("Vicky"/"Chad"/"Dave Hester"). Audit expanded the sweep across `rumors`, `introduction`, `secret`, `accusations`, and `background` for all 19 `mystery_characters` rows
+- Found contamination across 5 fields: 12 characters had dirty `rumors` (referencing Anfisa, Colt Johnson, Angela Deem, Carson Kressley, Bethenny Frankel, Dr. Phil, JoJo Siwa, Gordon Ramsay, Nicholas Godejohn, Michelle Dean, Taylor Swift, Neil deGrasse Tyson, Crypto Bro, Bachelor Contestant, Martha Stewart, Colleen Ballinger, Ina Garten, Duff Goldman, Anthony Bourdain, Paula Deen, Tan France, Oprah, Simon Cowell, Bill Klein, the Property Brothers, Sal Vulcano, Brian Quinn, Megan McKenna, Scotty T, Stephen Bear, Sig Hansen, Teresa Giudice, Lisa Vanderpump, Kyle Richards, Garcelle Beauvais, Buddy's family members Mary/Joey/Grace, Storage Wars, Pawn Stars, Deadliest Catch, Real Housewives, Rebecca Romney, Jarrod Schulz, Jen Arnold); 2 dirty `introduction`s (Breaking Amish Cast, Mama June, Toddlers & Tiaras); 4 dirty `secret`s (Breaking Amish, Mama June, Theresa Caputo, Toddlers & Tiaras, Pauly D); 4 dirty `accusations` (Guy Fieri, Gypsy Rose, Mama June, Toddlers & Tiaras, Michelle Duggar, Pauly D, Breaking Amish, Theresa Caputo, Kate Gosselin); 4 dirty `background`s (Breaking Amish, Kate Gosselin, Mama June, Toddlers & Tiaras)
+- Rewrote each contaminated field replacing wrong-victim references with "Buddy"/"Buddy Valastro" and swapping non-cast targets for plausibly-grounded members of the 19-cast list. Preserved STOP markers and accomplice instruction blocks; preserved murderer/accomplice pairings (no `character_role` changes)
+- For accomplice secrets that named a specific covered-for murderer (Theresa Caputo → Gordon Ramsay, Toddlers child → Bachelor Contestant, Pauly D → Jen Arnold, Breaking Amish → Deadliest Catch Captain), retargeted to a cast member or generic "your true ally" so the secret stays internally coherent without inventing pairings
+- Total ~25 UPDATE statements; final verification SQL (both customer-supplied regex and broader noncast-name detector across all 5 fields) returned 0 rows. `quick_reference` is NULL on all 19 — skipped
+- Tricky: original rumors used `## RUMORS TO SPREAD`; clean siblings use `### RUMORS TO SPREAD` — standardized rewrites to `###` to match the rest of the package
+
+### Audit: Death At Villa Amore (02337aff) follow-up sweep of rumors/intro/secret/accusations/background — clean
+- After this morning's `relationships` rewrite, ran a wider audit across `rumors`, `introduction`, `secret`, `accusations`, and `background` for all 7 `mystery_characters` rows looking for non-cast contamination and wrong-victim references
+- Customer-supplied verification regex (`**About <Name>:**` rumor targets) returns 0 contaminated rows — the only "mismatch" hits ("Frankie Bellini") are first-name false positives, since Frankie is the canonical nickname for Francesca Bellini per `master_context`
+- Broader proper-name pair scan across all 5 fields surfaced only cast members, the canonical victim Beatrice Romano, and canonical NPCs already established in `master_context` (Alessandro Conti = Giulia's groom and Dane's business partner; Zia Beatrice; Lake Como; Villa Amore). No rewrites required — no UPDATEs run
+
+### Fix: Death At Villa Amore (02337aff) character relationships restructured to ALLIES/RIVALS format with cast-only references
+- All 7 characters' `relationships` sections now use the standard `## YOUR RELATIONSHIPS` > `**ALLIES:**` / `**RIVALS & ENEMIES:**` structure with 2-3 entries per subsection, drawn exclusively from the 7-person cast and grounded in each character's actual background. Coordinated symmetrically (e.g. Val ↔ Sage food/wellness tension, Frankie ↔ Riley suspicion) and kept victim Beatrice Romano out of the peer blocks. One-off content fix
+
+### Fix: TLC Reunion (fb085089) character relationships referenced non-cast names
+- Customer (Christina) flagged that every character's `relationships` section referenced real-world celebrities and fictional NPCs ("Danny the baker," etc.) who weren't in the 19-person cast — unusable at the table
+- Rewrote `relationships` for all 19 `mystery_characters` rows with 3 ALLIES + 3 RIVALS each, drawn exclusively from the cast list; kept victim Buddy Valastro out of peer-relationship blocks (he's handled separately in the mystery)
+- Coordinated the network to be symmetric (e.g. Abby Lee ↔ Mama June hostility appears on both sides; Honey Boo Boo ↔ Toddlers & Tiaras child alliance appears on both sides)
+- Verified with regex over `relationships::text`: all 114 `**bolded**` name references resolve to the 19-person cast by first-name/slash-variant. One-off content fix, not systemic
 
 ### Fix: Deadwood Saloon (79ab2ac3) game_overview leading heading
 - Field started with `# Death At The Deadwood Saloon` + `## A Murder Mystery for 9 Players — Deadwood Gulch, 1882` before the body
@@ -58,6 +101,13 @@
 - Online tab already strips `#### VISUAL DESCRIPTION` via `stripH4Section`; structure now matches the 3-part model (print: Description only, online: Description + Implications, image gen: Visual Description)
 - `master_context` merge fix: removed fragile SetVariable string-surgery; Supabase upsert modules now write both Claude outputs directly concatenated — no comma, no merge failure
 - Restored `max_tokens` 8192 → 24000 across all 16 Claude modules (Haiku 4.5 supports 64k output; 8192 was an unnecessary reduction)
+
+### Improvement: Child (Unified) v4 — CAST-ONLY CONSTRAINT on character relationships
+- New blueprint file: `MM Live - Child (Unified)4-CastConstraint.blueprint.json`
+- Root cause found via Christina's TLC Reunion feedback: the character-generation prompt said "List friendly/hostile relationships from matrix" but didn't enforce that names must stay within the provided cast — model fell back to real-world celebrity castmates (90 Day Fiancé, Storage Wars, Pawn Stars, RHOBH etc.) and fictional NPCs (e.g. "Danny the baker", "Mary Buddy's sister")
+- Audit of Christina's package (`fb085089`): 15 of 19 characters had relationships referencing non-cast names
+- Fix: rewrote the `relationships` prompt to add explicit CAST-ONLY CONSTRAINT — "names MUST come from the cast list provided in input; DO NOT reference real-world celebrities, the character's real-life castmates, or fictional NPCs"; also requires symmetry (A↔B) and 1-2 sentence grounded explanations
+- Previous versions preserved (Child Unified, 2, 3-WithRetry) — v4 is the new one to import
 
 ### Improvement: Parent11 — Part 2 prompts now bias evidence selection toward visually concrete objects
 - Master constraints generation (Part 2 prompts in modules 3000/4010/4020/4030) now instructs model to PRIORITISE VISUAL CONCRETENESS when choosing each round's evidence item

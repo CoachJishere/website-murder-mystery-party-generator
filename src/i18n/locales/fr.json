@@ -1069,6 +1069,7 @@
     "description": "Cela nous aide à comprendre d'où vient notre communauté.",
     "sources": {
       "google": "Recherche Google",
+      "search_other": "Bing / Autre moteur",
       "youtube": "YouTube",
       "tiktok": "TikTok",
       "instagram": "Instagram",

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Mail, User, Lock, ArrowRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { trackSignUp } from "@/lib/analytics";
+import { persistAttributionToProfile } from "@/lib/attribution";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useTranslation } from "react-i18next";
@@ -75,6 +76,9 @@ const SignUp = () => {
         }).catch((error) => {
           console.error("Error generating welcome discount:", error);
         });
+
+        // Persist captured UTM/referrer to profile (non-blocking)
+        persistAttributionToProfile(data.user.id);
       }
 
       // Allow users to access dashboard immediately

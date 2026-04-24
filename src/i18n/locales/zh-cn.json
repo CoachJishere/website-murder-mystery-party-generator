@@ -1068,6 +1068,7 @@
     "description": "这帮助我们了解社区来自哪里。",
     "sources": {
       "google": "Google 搜索",
+      "search_other": "Bing / 其他搜索",
       "youtube": "YouTube",
       "tiktok": "TikTok",
       "instagram": "Instagram",
