@@ -391,6 +391,7 @@
       },
       "prompt": {
         "defaultStart": "살인 미스터리를 만들고 싶습니다",
+        "defaultStartIntrigue": "음모 미스터리를 만들고 싶습니다",
         "withTheme": "{{theme}} 테마로 {{playerCount}}명의 플레이어를 위한 {{scriptType}} 스크립트",
         "withoutTheme": "{{playerCount}}명의 플레이어를 위한 {{scriptType}} 스크립트",
         "withAccomplice": "공범 메커니즘 포함",

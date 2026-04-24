@@ -393,6 +393,7 @@
       },
       "prompt": {
         "defaultStart": "I want to create a murder mystery",
+        "defaultStartIntrigue": "I want to create an intrigue mystery",
         "withTheme": "with a {{theme}} theme for {{playerCount}} players with {{scriptType}} scripts",
         "withoutTheme": "for {{playerCount}} players with {{scriptType}} scripts",
         "withAccomplice": "Include an accomplice mechanism",

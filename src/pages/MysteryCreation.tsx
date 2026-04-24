@@ -96,7 +96,10 @@ const MysteryCreation = () => {
     };
     
         const createFormattedInitialMessage = (data: any) => {
-            let message = t("mysteryCreation.wizard.prompt.defaultStart");
+            const defaultStartKey = data.mysteryType === 'intrigue'
+                ? "mysteryCreation.wizard.prompt.defaultStartIntrigue"
+                : "mysteryCreation.wizard.prompt.defaultStart";
+            let message = t(defaultStartKey);
 
             // Combine hero input (userRequest) and form theme when both exist
             const heroInput = data.userRequest && data.userRequest.trim();

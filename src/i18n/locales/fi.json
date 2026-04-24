@@ -391,6 +391,7 @@
       },
       "prompt": {
         "defaultStart": "Haluan luoda murhamysteerin",
+        "defaultStartIntrigue": "Haluan luoda intriigimysteerin",
         "withTheme": "{{theme}}-teemalla {{playerCount}} pelaajalle {{scriptType}}-käsikirjoituksilla",
         "withoutTheme": "{{playerCount}} pelaajalle {{scriptType}}-käsikirjoituksilla",
         "withAccomplice": "Sisällytä rikoskumppanimekanismi",

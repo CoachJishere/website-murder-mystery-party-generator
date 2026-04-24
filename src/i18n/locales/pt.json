@@ -393,6 +393,7 @@
       },
       "prompt": {
         "defaultStart": "Quero criar um mistério de assassinato",
+        "defaultStartIntrigue": "Quero criar um mistério de intriga",
         "withTheme": "com um tema {{theme}} para {{playerCount}} jogadores com scripts {{scriptType}}",
         "withoutTheme": "para {{playerCount}} jogadores com scripts {{scriptType}}",
         "withAccomplice": "Incluir um mecanismo de cúmplice",

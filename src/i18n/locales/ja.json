@@ -391,6 +391,7 @@
       },
       "prompt": {
         "defaultStart": "殺人ミステリーを作成したいです",
+        "defaultStartIntrigue": "謀略ミステリーを作成したいです",
         "withTheme": "{{theme}}テーマで{{playerCount}}人のプレイヤー向け、{{scriptType}}スクリプト付き",
         "withoutTheme": "{{playerCount}}人のプレイヤー向け、{{scriptType}}スクリプト付き",
         "withAccomplice": "共犯者メカニズムを含める",

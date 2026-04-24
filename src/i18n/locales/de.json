@@ -391,6 +391,7 @@
       },
       "prompt": {
         "defaultStart": "Ich möchte ein Krimi-Mysterium erstellen",
+        "defaultStartIntrigue": "Ich möchte ein Intrigenspiel erstellen",
         "withTheme": "mit einem {{theme}}-Thema für {{playerCount}} Spieler mit {{scriptType}}-Skripten",
         "withoutTheme": "für {{playerCount}} Spieler mit {{scriptType}}-Skripten",
         "withAccomplice": "Einen Komplizenmechanismus einbeziehen",

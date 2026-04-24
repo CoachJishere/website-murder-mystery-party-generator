@@ -391,6 +391,7 @@
       },
       "prompt": {
         "defaultStart": "Ik wil een moordmysterie creëren",
+        "defaultStartIntrigue": "Ik wil een intriegemysterie creëren",
         "withTheme": "met een {{theme}}-thema voor {{playerCount}} spelers met {{scriptType}} scripts",
         "withoutTheme": "voor {{playerCount}} spelers met {{scriptType}} scripts",
         "withAccomplice": "Een handlanger-mechanisme opnemen",

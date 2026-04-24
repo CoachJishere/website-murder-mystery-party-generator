@@ -391,6 +391,7 @@
       },
       "prompt": {
         "defaultStart": "I want to create a murder mystery",
+        "defaultStartIntrigue": "Jeg vil skabe et intrigemysterium",
         "withTheme": "med et {{theme}}-tema for {{playerCount}} spillere med {{scriptType}}-manuskripter",
         "withoutTheme": "for {{playerCount}} spillere med {{scriptType}}-manuskripter",
         "withAccomplice": "Inkluder en medskyldig-mekanisme",

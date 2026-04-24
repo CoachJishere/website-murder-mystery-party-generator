@@ -391,6 +391,7 @@
       },
       "prompt": {
         "defaultStart": "Voglio creare un mistero con delitto",
+        "defaultStartIntrigue": "Voglio creare un mistero d'intrigo",
         "withTheme": "con un tema {{theme}} per {{playerCount}} giocatori con script {{scriptType}}",
         "withoutTheme": "per {{playerCount}} giocatori con script {{scriptType}}",
         "withAccomplice": "Includere un meccanismo di complice",

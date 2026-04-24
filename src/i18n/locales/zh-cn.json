@@ -391,6 +391,7 @@
       },
       "prompt": {
         "defaultStart": "我想创建一个谋杀悬疑故事",
+        "defaultStartIntrigue": "我想创建一个阴谋悬疑故事",
         "withTheme": "以{{theme}}为主题，适合{{playerCount}}位玩家，使用{{scriptType}}剧本",
         "withoutTheme": "适合{{playerCount}}位玩家，使用{{scriptType}}剧本",
         "withAccomplice": "包含同谋机制",
