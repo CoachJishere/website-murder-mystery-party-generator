@@ -2,6 +2,11 @@
 
 ## 2026-04-24
 
+### Fix: Character profile field order and accusations label
+- `introduction` now appears before `secret` in the character accordion — matches the game's logical sequence (character introduces themselves in Round 1 before secrets are explored)
+- Renamed "Round-by-Round Summary" label to "Accusations" — the field is either a plain accusation speech ("I accuse X because…") in newer mysteries or a per-round strategy summary in older ones; the neutral label works for both
+- The order follows the TLC sample reference: description → background → relationships → introduction → secret → rumors → round scripts → accusations → final statement
+
 ### Fix: TLC Reunion — Honey Boo Boo secret motive now matches confession
 - `secret` field previously said she needed Buddy alive as a class-action lawsuit witness (making her appear innocent), directly contradicting her `final_statement` confession which reveals she killed him over blackmail footage from her childhood show
 - Updated `secret` to reflect the actual motive: Buddy had been blackmailing her with unaired childhood footage for two years; tonight he escalated to releasing it unless she left TLC entirely; she and Sarah acted to stop him

@@ -60,7 +60,7 @@ const CHARACTER_FIELD_LABELS: Record<string, string> = {
   round4_innocent: 'Round 4 — Innocent',
   round4_guilty: 'Round 4 — Guilty',
   round4_accomplice: 'Round 4 — Accomplice',
-  accusations: 'Round-by-Round Summary',
+  accusations: 'Accusations',
   final_statement: 'Final Statement',
   final_innocent: 'Final Statement — Innocent',
   final_guilty: 'Final Statement — Guilty',
@@ -893,8 +893,8 @@ const MysteryPackageTabView = React.memo(({
                     { key: 'description', content: character.description },
                     { key: 'background', content: character.background },
                     { key: 'relationships', content: typeof character.relationships === 'string' ? character.relationships : undefined },
-                    { key: 'secret', content: character.secret },
                     { key: 'introduction', content: character.introduction },
+                    { key: 'secret', content: character.secret },
                     { key: 'rumors', content: character.rumors },
                     // Round 2: use script field for detective-style, innocent/guilty for character-based
                     ...(hasDetectiveScripts
