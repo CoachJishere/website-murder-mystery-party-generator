@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
-import { Loader2, Wand2, Eye, Mail, MessageSquare, X, Download, Printer } from "lucide-react";
+import { Loader2, Wand2, Eye, Mail, MessageSquare, X, Download, Printer, Share2 } from "lucide-react";
 import { MysteryCharacter } from "@/interfaces/mystery";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -538,9 +538,49 @@ const MysteryPackageTabView = React.memo(({
 
   // Check if mystery is complete enough to share
   const canShareMystery = useMemo(() => {
-    return (packageData && (hostGuide || detectiveScript || evidenceCards)) || 
+    return (packageData && (hostGuide || detectiveScript || evidenceCards)) ||
            (characters && characters.length > 0);
   }, [packageData, hostGuide, detectiveScript, evidenceCards, characters]);
+
+  const [isSharing, setIsSharing] = useState(false);
+  const handleShareRecap = useCallback(async () => {
+    if (!conversationId || isSharing) return;
+    setIsSharing(true);
+    try {
+      const { data: pkg, error } = await supabase
+        .from("mystery_packages")
+        .select("recap_token")
+        .eq("conversation_id", conversationId)
+        .maybeSingle();
+
+      if (error || !pkg?.recap_token) {
+        toast.error("Couldn't generate share link — please try again");
+        return;
+      }
+
+      const recapUrl = `https://www.mysterymaker.party/recap/${pkg.recap_token}`;
+      const shareTitle = mysteryTitle || "My Mystery Maker recap";
+      const shareText = `Check out the recap of ${shareTitle}`;
+
+      if (typeof navigator !== "undefined" && (navigator as any).share) {
+        try {
+          await (navigator as any).share({ title: shareTitle, text: shareText, url: recapUrl });
+          return;
+        } catch {
+          // User cancelled or share failed — fall through to clipboard
+        }
+      }
+
+      try {
+        await navigator.clipboard.writeText(recapUrl);
+        toast.success("Recap link copied to clipboard");
+      } catch {
+        toast.error(`Copy failed — link: ${recapUrl}`);
+      }
+    } finally {
+      setIsSharing(false);
+    }
+  }, [conversationId, isSharing, mysteryTitle]);
 
   // Simplified loading component for individual tabs with mobile optimization
   const LoadingTabContent = useCallback(({ message, estimatedTime: loadingTime }: { message: string; estimatedTime: string }) => (
@@ -608,6 +648,20 @@ const MysteryPackageTabView = React.memo(({
             >
               <Download className="h-4 w-4" />
               {t('mysteryPackage.export.saveAsPdf')}
+            </Button>
+            <Button
+              onClick={handleShareRecap}
+              disabled={isSharing}
+              variant="outline"
+              className={cn(
+                "gap-2 print:hidden",
+                isMobile && "w-full"
+              )}
+              style={{ borderColor: 'rgba(245,240,232,0.5)', color: 'var(--color-cream)' }}
+              title="Share a public recap of this mystery (no spoilers)"
+            >
+              <Share2 className="h-4 w-4" />
+              Share Recap
             </Button>
           </div>
         )}

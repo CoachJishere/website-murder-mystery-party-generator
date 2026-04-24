@@ -2,6 +2,16 @@
 
 ## 2026-04-24
 
+### Feature: Public shareable recap page (/recap/:token)
+- New public route `/recap/:token` renders a privacy-safe summary of a host's mystery: title, theme, player count, hosted month, character cast list, optionally a top guest quote with average rating. Designed for hosts to share to IG stories / Twitter / group chats post-party
+- New `mystery_packages.recap_token` column (UUID, unique, auto-generated) — distinct from `host_access_token` so a publicly shared recap link cannot be swapped to `/host/...` for full host package access
+- New SECURITY DEFINER RPC `get_recap_data(recap_token)` — returns ONLY safe fields. Excludes solutions, character roles, guest names/emails, host email, scripts, evidence content, host guide. Granted to anon + authenticated
+- Victim characters filtered out of the cast list (preserves the "who got murdered" surprise even on shared links)
+- "Share Recap" button added to the host-facing mystery view action bar. Uses Web Share API on supported clients (mobile native share sheet), falls back to clipboard copy with toast confirmation on desktop
+- Helmet OG/Twitter card meta tags include the mystery title and a derived description. Note: client-rendered OG tags work for Twitter, LinkedIn, Slack, and Discord crawlers (which execute JS); Facebook's older crawler may need a follow-up SSR pass if the FB share quality matters
+- Migration: `add_recap_token_and_rpc`
+- All 108 existing mystery_packages received recap_tokens via the column DEFAULT — no backfill needed
+
 ### Feature: Post-party "invite friends" email at +14 days
 - New `invite_friends` followup email type. Trigger `schedule_followup_emails` now schedules two rows on generation completion: `how_did_it_go` at +21d (existing) and `invite_friends` at +14d (new). The 14-day cadence lands a week before the Trustpilot ask, while the host's party is freshest in mind
 - Edge function `send-followup-emails` rewritten to dispatch on `email_type`. invite_friends template is light, low-pressure, and visually distinct from the Trustpilot ask (red CTA vs. green) so they don't read as duplicates

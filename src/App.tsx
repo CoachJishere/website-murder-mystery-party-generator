@@ -31,6 +31,7 @@ import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
 import CharacterAccess from "./pages/CharacterAccess";
 import HostAccess from "./pages/HostAccess";
+import Recap from "./pages/Recap";
 import BlogIndex from "./pages/BlogIndex";
 import BlogPost from "./pages/BlogPost";
 import PaymentSuccess from "./pages/PaymentSuccess";
@@ -132,6 +133,8 @@ const AppRoutes = () => {
         <Route path="/character/:token" element={<CharacterAccess />} />
         {/* Host access route (public) */}
         <Route path="/host/:token" element={<HostAccess />} />
+        {/* Public shareable recap (privacy-safe subset) */}
+        <Route path="/recap/:token" element={<Recap />} />
         {/* Feedback route (public, accessed from follow-up emails) */}
         <Route path="/feedback/:conversationId" element={<Feedback />} />
 
