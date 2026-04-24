@@ -8,12 +8,13 @@
 - Homepage YouTube embed now uses `enablejsapi=1`; a `homepage_video_played` event fires once per session when playback starts (via `postMessage` from the YouTube IFrame API)
 - PostHog project key stored as `VITE_POSTHOG_KEY` Vercel env var — never in the repo
 
-### Fix: Intrigue mystery type generating murder content
-- Root cause was in the `mystery-ai` Edge Function — it builds its own system prompt from scratch and has no awareness of mystery type; the `systemInstruction` prop from the frontend was always sent as `null` and never reached the AI
-- Added `mysteryType` to the Edge Function request body; all four system-prompt branches now have intrigue-specific variants using THE CRIME / THE WRONGED PARTY / CRIME METHOD format with an explicit "no one dies" constraint
-- Added `initialMysteryType` prop to `MysteryChat`; `ConversationManager` now passes `formData.mysteryType` through to the Edge Function on every request
-- Added intrigue section labels (`theCrime`, `wrongedParty`, `crimeMethod`) to all 13 locale files for localised section headings
-- Earlier fix (same day): auto-generated initial chat message also hardcoded "murder mystery" — fixed by adding `defaultStartIntrigue` translation key
+### Fix: Intrigue mystery type generating murder content (confirmed working)
+- Four bugs combined to cause this — all fixed and verified end-to-end
+- **Bug 1 (auto-generated user message):** `createFormattedInitialMessage` in `MysteryCreation.tsx` always started with "I want to create a murder mystery" regardless of the selected type; added `defaultStartIntrigue` translation key to all 13 locale files and now picks the correct key based on `mysteryType`
+- **Bug 2 (Edge Function unaware of mystery type):** `mystery-ai` builds its own system prompt from scratch; the frontend `systemInstruction` prop was always sent as `null` and ignored; added `mysteryType` to the request body and gave all four prompt branches (pre-concept, first message, follow-up, refinement) intrigue-specific variants using THE CRIME / THE WRONGED PARTY / CRIME METHOD format with an explicit "no one dies" constraint
+- **Bug 3 (state timing):** `useState(initialMysteryType || 'murder')` captured `undefined` on first render because `formData` loads asynchronously — locked in as `'murder'` forever; fixed by adding `initialMysteryType` to the existing `useEffect` that syncs all other initial props
+- **Bug 4 (wrong page):** `ConversationManager` is not used in the `/mystery/chat/:id` route — `MysteryChatPage` renders `MysteryChat` directly and never passed `initialMysteryType` at all; now reads `mystery_type` from the top-level conversation record (individual column) with fallback to `mystery_data` JSONB
+- Added intrigue section labels (`theCrime`, `wrongedParty`, `crimeMethod`) to all 13 locale files for localised section headings in the generated concept
 
 ### Fix: Character profile field order and accusations label
 - `introduction` now appears before `secret` in the character accordion — matches the game's logical sequence (character introduces themselves in Round 1 before secrets are explored)
