@@ -7,10 +7,13 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
  * Called by a daily pg_cron job. Processes pending rows in followup_emails
  * where scheduled_for <= now.
  *
- * For "how_did_it_go" emails:
- * - Checks if positive guest feedback exists → sends Trustpilot email with social proof
- * - Otherwise → sends standard Trustpilot review request
- * - Both include a secondary link to the internal feedback page
+ * Dispatches by email_type:
+ *   - how_did_it_go (+21d post-generation): Trustpilot review request,
+ *     with social proof if any guest left positive feedback.
+ *   - invite_friends (+14d post-generation): light "share with friends"
+ *     prompt, sent only to paid hosts who haven't unsubscribed.
+ *
+ * Both honor conversations.unsubscribed_from_followups.
  */
 
 const TRUSTPILOT_REVIEW_URL = "https://ca.trustpilot.com/evaluate/mysterymaker.party";
@@ -34,7 +37,6 @@ serve(async (req) => {
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   try {
-    // Find all pending followup emails that are due
     const { data: pendingEmails, error: fetchError } = await supabase
       .from("followup_emails")
       .select(`
@@ -61,10 +63,9 @@ serve(async (req) => {
 
     for (const email of pendingEmails) {
       try {
-        // Check if conversation is unsubscribed
         const { data: convo } = await supabase
           .from("conversations")
-          .select("title, unsubscribed_from_followups")
+          .select("title, unsubscribed_from_followups, is_paid")
           .eq("id", email.conversation_id)
           .single();
 
@@ -78,7 +79,13 @@ serve(async (req) => {
           continue;
         }
 
-        // Get host email
+        // invite_friends only goes to paid hosts (a free draft owner has
+        // nothing meaningful to share yet).
+        if (email.email_type === "invite_friends" && !convo.is_paid) {
+          await markSkipped(supabase, email.id, "not_paid");
+          continue;
+        }
+
         const { data: userData } = await supabase.auth.admin.getUserById(email.user_id);
         const hostEmail = userData?.user?.email;
 
@@ -91,32 +98,40 @@ serve(async (req) => {
           || userData?.user?.user_metadata?.name
           || hostEmail.split("@")[0];
 
-        // Check if host already submitted feedback
-        const { data: existingFeedback } = await supabase
-          .from("mystery_feedback")
-          .select("id")
-          .eq("conversation_id", email.conversation_id)
-          .maybeSingle();
-
-        if (existingFeedback) {
-          await markSkipped(supabase, email.id, "host_already_gave_feedback");
-          continue;
-        }
-
         const mysteryTitle = convo.title || "Your Mystery";
 
-        // Check for positive guest feedback on this mystery
-        const guestFeedback = await getPositiveGuestFeedback(supabase, email.conversation_id);
+        let subject: string;
+        let htmlBody: string;
 
-        const feedbackUrl = `https://www.mysterymaker.party/feedback/${email.conversation_id}`;
-        const shareUrl = buildShareUrl(email.user_id);
-        const htmlBody = guestFeedback
-          ? buildGuestTriggeredEmail(hostName, mysteryTitle, guestFeedback, feedbackUrl, shareUrl)
-          : buildStandardEmail(hostName, mysteryTitle, feedbackUrl, shareUrl);
+        if (email.email_type === "invite_friends") {
+          const shareUrl = buildShareUrl(email.user_id, "invite_friends");
+          subject = `Friends keep asking about ${mysteryTitle}?`;
+          htmlBody = buildInviteFriendsEmail(hostName, mysteryTitle, shareUrl, email.conversation_id);
+        } else {
+          // how_did_it_go (existing path)
+          const { data: existingFeedback } = await supabase
+            .from("mystery_feedback")
+            .select("id")
+            .eq("conversation_id", email.conversation_id)
+            .maybeSingle();
 
-        const subject = guestFeedback
-          ? `Your guests loved ${mysteryTitle}!`
-          : `How was ${mysteryTitle}?`;
+          if (existingFeedback) {
+            await markSkipped(supabase, email.id, "host_already_gave_feedback");
+            continue;
+          }
+
+          const guestFeedback = await getPositiveGuestFeedback(supabase, email.conversation_id);
+          const feedbackUrl = `https://www.mysterymaker.party/feedback/${email.conversation_id}`;
+          const shareUrl = buildShareUrl(email.user_id, "trustpilot_followup");
+
+          htmlBody = guestFeedback
+            ? buildGuestTriggeredEmail(hostName, mysteryTitle, guestFeedback, feedbackUrl, shareUrl)
+            : buildStandardEmail(hostName, mysteryTitle, feedbackUrl, shareUrl);
+
+          subject = guestFeedback
+            ? `Your guests loved ${mysteryTitle}!`
+            : `How was ${mysteryTitle}?`;
+        }
 
         const resendResponse = await fetch("https://api.resend.com/emails", {
           method: "POST",
@@ -139,14 +154,13 @@ serve(async (req) => {
           continue;
         }
 
-        // Mark as sent
         await supabase
           .from("followup_emails")
           .update({ status: "sent", sent_at: new Date().toISOString() })
           .eq("id", email.id);
 
         sentCount++;
-        console.log(`Sent ${guestFeedback ? "guest-triggered" : "standard"} followup for ${email.conversation_id}`);
+        console.log(`Sent ${email.email_type} for ${email.conversation_id}`);
       } catch (err) {
         errors.push(`${email.id}: ${err.message}`);
         console.error(`Error processing ${email.id}:`, err);
@@ -179,7 +193,6 @@ async function markSkipped(supabase: any, emailId: string, reason: string) {
 }
 
 async function getPositiveGuestFeedback(supabase: any, conversationId: string) {
-  // Find guest feedback for this mystery (4-5 stars)
   const { data: packages } = await supabase
     .from("mystery_packages")
     .select("id")
@@ -226,6 +239,30 @@ async function getPositiveGuestFeedback(supabase: any, conversationId: string) {
   };
 }
 
+function buildShareUrl(userId: string, campaign: string): string {
+  // UTM-tagged share link — designed so it can be upgraded to a true ?ref=CODE
+  // when the two-sided referral coupon system lands without changing the email.
+  const params = new URLSearchParams({
+    utm_source: "share",
+    utm_medium: "email",
+    utm_campaign: campaign,
+    utm_content: `host-${userId}`,
+  });
+  return `https://www.mysterymaker.party/?${params.toString()}`;
+}
+
+function buildShareSection(shareUrl: string): string {
+  return `
+    <div style="margin: 24px 0 8px 0; padding: 16px; background: rgba(245,240,232,0.04); border: 1px solid rgba(245,240,232,0.1); border-radius: 6px;">
+      <p style="margin: 0 0 8px 0; color: #F5F0E8; font-size: 14px; font-weight: 600;">Friends will love this too</p>
+      <p style="margin: 0 0 12px 0; color: rgba(245,240,232,0.6); font-size: 13px;">
+        If your guests asked "where did you get this?" — send them here. Each mystery is one-of-a-kind.
+      </p>
+      <a href="${shareUrl}" style="display: inline-block; color: #F5F0E8; font-size: 13px; text-decoration: none; padding: 8px 14px; border: 1px solid rgba(245,240,232,0.25); border-radius: 4px;">Share Mystery Maker →</a>
+    </div>
+  `;
+}
+
 function buildGuestTriggeredEmail(
   hostName: string,
   mysteryTitle: string,
@@ -245,7 +282,7 @@ function buildGuestTriggeredEmail(
       </div>`
     : "";
 
-  return buildEmailShell(
+  return buildTrustpilotShell(
     hostName,
     `Great news - your guests enjoyed <strong style="color: #F5F0E8;">${mysteryTitle}</strong>!`,
     `${guestLine}${highlightBlock}
@@ -263,7 +300,7 @@ function buildStandardEmail(
   feedbackUrl: string,
   shareUrl: string
 ): string {
-  return buildEmailShell(
+  return buildTrustpilotShell(
     hostName,
     `How was <strong style="color: #F5F0E8;">${mysteryTitle}</strong>?`,
     `<p style="color: rgba(245,240,232,0.7);">
@@ -274,31 +311,60 @@ function buildStandardEmail(
   );
 }
 
-function buildShareUrl(userId: string): string {
-  // UTM-tagged share link — designed so it can be upgraded to a true ?ref=CODE
-  // when the two-sided referral coupon system lands without changing the email.
-  const params = new URLSearchParams({
-    utm_source: "share",
-    utm_medium: "email",
-    utm_campaign: "trustpilot_followup",
-    utm_content: `host-${userId}`,
-  });
-  return `https://www.mysterymaker.party/?${params.toString()}`;
-}
-
-function buildShareSection(shareUrl: string): string {
+function buildInviteFriendsEmail(
+  hostName: string,
+  mysteryTitle: string,
+  shareUrl: string,
+  conversationId: string
+): string {
+  const unsubUrl = `https://www.mysterymaker.party/feedback/${conversationId}?unsubscribe=true`;
   return `
-    <div style="margin: 24px 0 8px 0; padding: 16px; background: rgba(245,240,232,0.04); border: 1px solid rgba(245,240,232,0.1); border-radius: 6px;">
-      <p style="margin: 0 0 8px 0; color: #F5F0E8; font-size: 14px; font-weight: 600;">Friends will love this too</p>
-      <p style="margin: 0 0 12px 0; color: rgba(245,240,232,0.6); font-size: 13px;">
-        If your guests asked "where did you get this?" — send them here. Each mystery is one-of-a-kind.
-      </p>
-      <a href="${shareUrl}" style="display: inline-block; color: #F5F0E8; font-size: 13px; text-decoration: none; padding: 8px 14px; border: 1px solid rgba(245,240,232,0.25); border-radius: 4px;">Share Mystery Maker →</a>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; background: #000000;">
+  <div style="background: #C81400; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
+    <h1 style="color: #F5F0E8; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">MYSTERY MAKER</h1>
+  </div>
+
+  <div style="background: #111111; padding: 30px; border-radius: 0 0 8px 8px;">
+    <p style="font-size: 18px; margin-bottom: 8px; color: #F5F0E8;">Hi ${hostName},</p>
+
+    <p style="color: rgba(245,240,232,0.85); margin-bottom: 16px;">
+      Hope <strong style="color: #F5F0E8;">${mysteryTitle}</strong> was a hit. We bet at least one guest leaned over that night and asked,
+      <em>"where did you get this?"</em>
+    </p>
+
+    <p style="color: rgba(245,240,232,0.7); margin-bottom: 24px;">
+      Every mystery on Mystery Maker is generated from scratch, so no two parties play the same one. If a friend wants to host their own,
+      send them the link below — they'll get to design something built around their own theme, guest count, and inside jokes.
+    </p>
+
+    <div style="text-align: center; margin: 28px 0;">
+      <a href="${shareUrl}" style="display: inline-block; background: #C81400; color: #ffffff; padding: 14px 36px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px;">Share Mystery Maker →</a>
     </div>
-  `;
+
+    <p style="color: rgba(245,240,232,0.5); font-size: 13px; text-align: center; margin: 16px 0 0 0;">
+      Or just copy this link: <span style="color: rgba(245,240,232,0.7);">mysterymaker.party</span>
+    </p>
+
+    <p style="color: rgba(245,240,232,0.3); font-size: 12px; text-align: center; margin: 28px 0 0 0; padding-top: 20px; border-top: 1px solid rgba(245,240,232,0.1);">
+      <a href="${unsubUrl}" style="color: rgba(245,240,232,0.3); text-decoration: underline;">Unsubscribe from follow-up emails</a>
+    </p>
+  </div>
+
+  <div style="text-align: center; padding: 16px; font-size: 12px;">
+    <a href="https://www.mysterymaker.party" style="color: rgba(245,240,232,0.3); text-decoration: none;">mysterymaker.party</a>
+  </div>
+</body>
+</html>
+  `.trim();
 }
 
-function buildEmailShell(
+function buildTrustpilotShell(
   hostName: string,
   headline: string,
   bodyContent: string,

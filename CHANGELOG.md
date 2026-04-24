@@ -2,6 +2,12 @@
 
 ## 2026-04-24
 
+### Feature: Post-party "invite friends" email at +14 days
+- New `invite_friends` followup email type. Trigger `schedule_followup_emails` now schedules two rows on generation completion: `how_did_it_go` at +21d (existing) and `invite_friends` at +14d (new). The 14-day cadence lands a week before the Trustpilot ask, while the host's party is freshest in mind
+- Edge function `send-followup-emails` rewritten to dispatch on `email_type`. invite_friends template is light, low-pressure, and visually distinct from the Trustpilot ask (red CTA vs. green) so they don't read as duplicates
+- Skip rules for invite_friends: respects `unsubscribed_from_followups`, only sends to paid hosts (`is_paid = true`), no point asking a free-draft owner to share
+- Edge function redeployed (v9). Trigger updated via `schedule_invite_friends_followup` migration. Existing completed mysteries are NOT backfilled — only new generations get the second email
+
 ### Feature: Word-of-mouth share CTAs on Trustpilot email + guest character packet
 - Trustpilot followup email (`send-followup-emails`) now includes a small "Friends will love this too" share section below the review CTA. Link is UTM-tagged with `utm_source=share`, `utm_medium=email`, `utm_campaign=trustpilot_followup`, `utm_content=host-{user_id}` so we can attribute the resulting traffic. URL pattern is designed to upgrade to `?ref={code}` once the two-sided referral system lands without changing the email
 - Guest character packet (`/character/:token`) now ends with a footer: "Loved playing as {character}? Host your own custom mystery at mysterymaker.party". Every printed packet becomes a low-friction leaflet — every guest is a host candidate. UTM-tagged `utm_source=share&utm_medium=character_packet&utm_campaign=guest_footer`. Footer is a `div`, not a `<footer>` element, so it survives the print rules that hide page chrome
