@@ -59,7 +59,7 @@ export default function MysteryChat({
   const [currentHasAccomplice, setCurrentHasAccomplice] = useState(initialHasAccomplice || false);
   const [currentScriptType, setCurrentScriptType] = useState(initialScriptType || 'full');
   const [currentAdditionalDetails, setCurrentAdditionalDetails] = useState(initialAdditionalDetails || '');
-  const [currentMysteryType] = useState<'murder' | 'intrigue'>(initialMysteryType || 'murder');
+  const [currentMysteryType, setCurrentMysteryType] = useState<'murder' | 'intrigue'>(initialMysteryType || 'murder');
   const [hasTriggeredInitialResponse, setHasTriggeredInitialResponse] = useState(false);
   const { isAuthenticated } = useAuth();
   const isMobile = useIsMobile();
@@ -145,7 +145,10 @@ export default function MysteryChat({
     if (initialAdditionalDetails) {
       setCurrentAdditionalDetails(initialAdditionalDetails);
     }
-  }, [initialTheme, initialPlayerCount, initialHasAccomplice, initialScriptType, initialAdditionalDetails]);
+    if (initialMysteryType) {
+      setCurrentMysteryType(initialMysteryType);
+    }
+  }, [initialTheme, initialPlayerCount, initialHasAccomplice, initialScriptType, initialAdditionalDetails, initialMysteryType]);
 
   // FIXED: Enhanced function to properly detect if we have player count info
   const hasPlayerCountInfo = () => {
