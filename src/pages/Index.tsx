@@ -1,5 +1,6 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
+import { capture } from "@/lib/posthog";
 import {
   motion,
   useScroll,
@@ -495,6 +496,44 @@ function SupportCTA() {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// YOUTUBE VIDEO WITH PLAY TRACKING
+// ═══════════════════════════════════════════════════════════════
+const YouTubeTracked = () => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const hasTracked = useRef(false);
+
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      if (!iframeRef.current || e.source !== iframeRef.current.contentWindow) return;
+      try {
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        // YouTube sends info=1 when playback starts
+        if (data?.event === 'onStateChange' && data?.info === 1 && !hasTracked.current) {
+          hasTracked.current = true;
+          capture('homepage_video_played', { video_id: '8WInnaFHMY0' });
+        }
+      } catch {
+        // non-JSON messages from other sources
+      }
+    };
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, []);
+
+  return (
+    <iframe
+      ref={iframeRef}
+      className="absolute top-0 left-0 w-full h-full rounded-lg"
+      src="https://www.youtube.com/embed/8WInnaFHMY0?enablejsapi=1"
+      title="Watch a Demo"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+    />
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
 // MAIN INDEX PAGE
 // ═══════════════════════════════════════════════════════════════
 const Index = () => {
@@ -538,14 +577,7 @@ const Index = () => {
                 </h2>
                 <div className="max-w-4xl mx-auto">
                   <div className="relative pb-[56.25%] h-0">
-                    <iframe
-                      className="absolute top-0 left-0 w-full h-full rounded-lg"
-                      src="https://www.youtube.com/embed/8WInnaFHMY0"
-                      title="Watch a Demo"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
+                    <YouTubeTracked />
                   </div>
                 </div>
               </div>

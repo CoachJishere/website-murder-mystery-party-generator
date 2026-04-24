@@ -10,6 +10,7 @@ import LoadingBoundary from "@/components/LoadingBoundary";
 import { useEffect } from "react";
 import { initGA, trackPageView } from "@/lib/analytics";
 import { captureLandingAttribution } from "@/lib/attribution";
+import { initPostHog, capturePageView } from "@/lib/posthog";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { WelcomeDiscountRibbon } from "@/components/WelcomeDiscountRibbon";
 import Index from "./pages/Index";
@@ -69,15 +70,15 @@ const RouteTracker = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Initialize GA on first load
     initGA();
-    // Capture UTM/referrer once per browser, before any signup
+    initPostHog();
     captureLandingAttribution();
   }, []);
 
   useEffect(() => {
-    // Track page view on route change
-    trackPageView(location.pathname + location.search);
+    const path = location.pathname + location.search;
+    trackPageView(path);
+    capturePageView(path);
   }, [location]);
 
   return null;
