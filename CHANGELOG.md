@@ -2,6 +2,10 @@
 
 ## 2026-04-24
 
+### UI: Dashboard link restyled as a pronounced button in the header
+- Authenticated users were confusing the logo with the dashboard entry point because the "Dashboard" link was styled identically to "Support" — flat cream text on red. Now the dashboard link renders as a cream-filled pill button with red text, a subtle shadow, and a lift-on-hover transform so it reads as the primary nav action
+- Only the desktop header changed; mobile menu is unaffected
+
 ### Feature: Public shareable recap page (/recap/:token)
 - New public route `/recap/:token` renders a privacy-safe summary of a host's mystery: title, theme, player count, hosted month, character cast list, optionally a top guest quote with average rating. Designed for hosts to share to IG stories / Twitter / group chats post-party
 - New `mystery_packages.recap_token` column (UUID, unique, auto-generated) — distinct from `host_access_token` so a publicly shared recap link cannot be swapped to `/host/...` for full host package access
@@ -65,6 +69,13 @@
 - Rewrote `relationships` for all 19 `mystery_characters` rows with 3 ALLIES + 3 RIVALS each, drawn exclusively from the cast list; kept victim Buddy Valastro out of peer-relationship blocks (he's handled separately in the mystery)
 - Coordinated the network to be symmetric (e.g. Abby Lee ↔ Mama June hostility appears on both sides; Honey Boo Boo ↔ Toddlers & Tiaras child alliance appears on both sides)
 - Verified with regex over `relationships::text`: all 114 `**bolded**` name references resolve to the 19-person cast by first-name/slash-variant. One-off content fix, not systemic
+
+### Fix: Character profile tab — labelled sections and parsed accusations JSON
+- Every character field (description, background, introduction, round scripts, etc.) is stored as plain text without an embedded `#` heading, so `EditableSection` was rendering them with no label — a wall of unstructured paragraphs with three mystery "Point Form" headers (from within round scripts) and a raw JSON blob from `accusations`
+- Added `fallbackLabel` prop to `EditableSection` — displays the friendly label as the section H3 when the content has no embedded heading (embedded heading still wins where present)
+- Added `CHARACTER_FIELD_LABELS` map in `MysteryPackageTabView` — `round2_script` → "Round 2 Script", `accusations` → "Round-by-Round Summary", etc., covering all detective-style and character-based fields
+- Added `formatAccusations` — parses the `{round2, round3, round4}` JSON into bolded markdown lines so hosts see "**Round 2:** …" instead of raw JSON
+- Systemic display fix — benefits every package without touching DB content
 
 ### Fix: Deadwood Saloon (79ab2ac3) game_overview leading heading
 - Field started with `# Death At The Deadwood Saloon` + `## A Murder Mystery for 9 Players — Deadwood Gulch, 1882` before the body

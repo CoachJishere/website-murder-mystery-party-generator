@@ -12,6 +12,8 @@ interface EditableSectionProps {
   onSave: (newContent: string) => Promise<void>;
   canEdit: boolean;
   sectionLabel: string;
+  /** Shown as an H3 label when the content has no embedded `#` heading. */
+  fallbackLabel?: string;
   isMobile: boolean;
   className?: string;
 }
@@ -70,6 +72,7 @@ const EditableSection: React.FC<EditableSectionProps> = ({
   onSave,
   canEdit,
   sectionLabel,
+  fallbackLabel,
   isMobile,
   className,
 }) => {
@@ -100,8 +103,10 @@ const EditableSection: React.FC<EditableSectionProps> = ({
     return md;
   }, []);
 
-  const header = extractHeader(content);
-  const bodyContent = getBodyContent(content);
+  const extractedHeader = extractHeader(content);
+  const header = extractedHeader ?? (fallbackLabel || null);
+  // If we're using the fallback label, the full content is the body; otherwise strip the embedded heading
+  const bodyContent = extractedHeader ? getBodyContent(content) : content;
 
   const handleEdit = useCallback(() => {
     setEditValue(stripMarkdownForEditing(bodyContent));

@@ -36,6 +36,55 @@ function stripH4Section(markdown: string, pattern: RegExp): string {
   return out.join('\n');
 }
 
+// Display label for each editable character field. Field data is plain text with no
+// embedded section heading, so we supply one via EditableSection's fallbackLabel prop.
+const CHARACTER_FIELD_LABELS: Record<string, string> = {
+  description: 'Description',
+  background: 'Background',
+  relationships: 'Relationships',
+  secret: 'Secret',
+  introduction: 'Introduction',
+  rumors: 'Rumors',
+  round2_script: 'Round 2 Script',
+  round2_questions: 'Round 2 Questions',
+  round2_innocent: 'Round 2 — Innocent',
+  round2_guilty: 'Round 2 — Guilty',
+  round2_accomplice: 'Round 2 — Accomplice',
+  round3_script: 'Round 3 Script',
+  round3_questions: 'Round 3 Questions',
+  round3_innocent: 'Round 3 — Innocent',
+  round3_guilty: 'Round 3 — Guilty',
+  round3_accomplice: 'Round 3 — Accomplice',
+  round4_script: 'Round 4 Script',
+  round4_questions: 'Round 4 Questions',
+  round4_innocent: 'Round 4 — Innocent',
+  round4_guilty: 'Round 4 — Guilty',
+  round4_accomplice: 'Round 4 — Accomplice',
+  accusations: 'Round-by-Round Summary',
+  final_statement: 'Final Statement',
+  final_innocent: 'Final Statement — Innocent',
+  final_guilty: 'Final Statement — Guilty',
+  final_accomplice: 'Final Statement — Accomplice',
+};
+
+// accusations is stored as a JSON string with {round2, round3, round4} summaries.
+// Convert to readable markdown so it renders cleanly instead of leaking raw JSON.
+function formatAccusations(raw: string | undefined | null): string | undefined {
+  if (!raw || typeof raw !== 'string') return raw ?? undefined;
+  const trimmed = raw.trim();
+  if (!trimmed.startsWith('{')) return raw;
+  try {
+    const parsed = JSON.parse(trimmed);
+    const parts: string[] = [];
+    if (parsed.round2) parts.push(`**Round 2:** ${parsed.round2}`);
+    if (parsed.round3) parts.push(`**Round 3:** ${parsed.round3}`);
+    if (parsed.round4) parts.push(`**Round 4:** ${parsed.round4}`);
+    return parts.length ? parts.join('\n\n') : raw;
+  } catch {
+    return raw;
+  }
+}
+
 interface MysteryPackageData {
   title?: string;
   gameOverview?: string;
@@ -874,8 +923,8 @@ const MysteryPackageTabView = React.memo(({
                           { key: 'round4_accomplice', content: character.round4_accomplice },
                         ]),
                     { key: 'round4_questions', content: character.round4_questions },
-                    // Accusations
-                    { key: 'accusations', content: character.accusations },
+                    // Accusations (stored as JSON string; format as readable markdown)
+                    { key: 'accusations', content: formatAccusations(character.accusations) },
                     // Final statement: use final_statement for detective-style, innocent/guilty for character-based
                     ...(hasDetectiveScripts && character.final_statement
                       ? [{ key: 'final_statement', content: character.final_statement }]
@@ -921,6 +970,7 @@ const MysteryPackageTabView = React.memo(({
                                   }
                                   canEdit={!!onCharacterFieldUpdate}
                                   sectionLabel={`${character.character_name} - ${field.key}`}
+                                  fallbackLabel={CHARACTER_FIELD_LABELS[field.key]}
                                   isMobile={isMobile}
                                 />
                               ))}
