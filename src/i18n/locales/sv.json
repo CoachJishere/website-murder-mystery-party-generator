@@ -373,7 +373,10 @@
       "victim": "Victim",
       "characterList": "Character List",
       "players": "players",
-      "murderMethod": "Murder Method"
+      "murderMethod": "Murder Method",
+      "theCrime": "Brottet",
+      "wrongedParty": "Den Drabbade Parten",
+      "crimeMethod": "Brottsmetod"
     },
     "wizard": {
       "title": "Create Your Mystery",

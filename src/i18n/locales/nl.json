@@ -373,7 +373,10 @@
       "victim": "Slachtoffer",
       "characterList": "Personagelijst",
       "players": "spelers",
-      "murderMethod": "Moordmethode"
+      "murderMethod": "Moordmethode",
+      "theCrime": "De Misdaad",
+      "wrongedParty": "De Benadeelde Partij",
+      "crimeMethod": "Misdaadmethode"
     },
     "wizard": {
       "title": "Creëer Uw Mysterie",

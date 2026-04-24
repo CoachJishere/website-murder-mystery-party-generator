@@ -373,7 +373,10 @@
       "victim": "Uhri",
       "characterList": "Hahmoluettelo",
       "players": "Pelaajat",
-      "murderMethod": "Murhamenetelmä"
+      "murderMethod": "Murhamenetelmä",
+      "theCrime": "Rikos",
+      "wrongedParty": "Vahinkoa Kärsinyt Osapuoli",
+      "crimeMethod": "Rikoksen Menetelmä"
     },
     "wizard": {
       "title": "Luo mysteerisi",

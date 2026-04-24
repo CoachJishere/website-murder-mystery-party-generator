@@ -373,7 +373,10 @@
       "victim": "受害者",
       "characterList": "角色列表",
       "players": "玩家",
-      "murderMethod": "谋杀方式"
+      "murderMethod": "谋杀方式",
+      "theCrime": "犯罪事件",
+      "wrongedParty": "受害方",
+      "crimeMethod": "犯罪方式"
     },
     "wizard": {
       "title": "创建您的谜团",

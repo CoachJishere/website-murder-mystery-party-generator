@@ -375,7 +375,10 @@
       "victim": "Vítima",
       "characterList": "Lista de Personagens",
       "players": "jogadores",
-      "murderMethod": "Método de Assassinato"
+      "murderMethod": "Método de Assassinato",
+      "theCrime": "O Crime",
+      "wrongedParty": "A Parte Lesada",
+      "crimeMethod": "Método do Crime"
     },
     "wizard": {
       "title": "Crie Seu Mistério",

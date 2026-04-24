@@ -374,7 +374,10 @@
       "victim": "Victime",
       "characterList": "Liste des personnages",
       "players": "Joueurs",
-      "murderMethod": "Méthode de meurtre"
+      "murderMethod": "Méthode de meurtre",
+      "theCrime": "Le Crime",
+      "wrongedParty": "La Partie Lésée",
+      "crimeMethod": "Méthode du Crime"
     },
     "wizard": {
       "title": "Créez votre mystère",

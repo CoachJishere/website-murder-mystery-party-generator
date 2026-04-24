@@ -254,6 +254,7 @@ IMPORTANT: Only flag a mismatch ONCE per conversation. If the user has already c
         initialHasAccomplice={formData?.hasAccomplice}
         initialScriptType={formData?.scriptType as 'full' | 'pointForm'}
         initialAdditionalDetails={formData?.additionalDetails}
+        initialMysteryType={formData?.mysteryType || 'murder'}
         savedMysteryId={conversationId || undefined}
         onSave={handleSaveMessage}
         initialMessages={messages}

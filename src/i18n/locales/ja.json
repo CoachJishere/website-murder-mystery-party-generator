@@ -373,7 +373,10 @@
       "victim": "被害者",
       "characterList": "キャラクターリスト",
       "players": "プレイヤー",
-      "murderMethod": "殺害方法"
+      "murderMethod": "殺害方法",
+      "theCrime": "犯罪事件",
+      "wrongedParty": "被害者",
+      "crimeMethod": "犯罪の手口"
     },
     "wizard": {
       "title": "ミステリーを作成",

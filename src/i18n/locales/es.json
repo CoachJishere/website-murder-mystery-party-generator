@@ -373,7 +373,10 @@
       "victim": "Víctima",
       "characterList": "Lista de Personajes",
       "players": "jugadores",
-      "murderMethod": "Método de Asesinato"
+      "murderMethod": "Método de Asesinato",
+      "theCrime": "El Crimen",
+      "wrongedParty": "La Parte Perjudicada",
+      "crimeMethod": "Método del Crimen"
     },
     "wizard": {
       "title": "Crea Tu Misterio",

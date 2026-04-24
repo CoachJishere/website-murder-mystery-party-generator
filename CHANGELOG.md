@@ -3,8 +3,11 @@
 ## 2026-04-24
 
 ### Fix: Intrigue mystery type generating murder content
-- Auto-generated initial chat message hardcoded "I want to create a murder mystery" regardless of the mystery type the user selected in the form — the AI followed the user message, not the system prompt, so intrigue selections always produced murder mysteries
-- Added `defaultStartIntrigue` translation key to all 13 locale files; `createFormattedInitialMessage` now picks the correct key based on `data.mysteryType`
+- Root cause was in the `mystery-ai` Edge Function — it builds its own system prompt from scratch and has no awareness of mystery type; the `systemInstruction` prop from the frontend was always sent as `null` and never reached the AI
+- Added `mysteryType` to the Edge Function request body; all four system-prompt branches now have intrigue-specific variants using THE CRIME / THE WRONGED PARTY / CRIME METHOD format with an explicit "no one dies" constraint
+- Added `initialMysteryType` prop to `MysteryChat`; `ConversationManager` now passes `formData.mysteryType` through to the Edge Function on every request
+- Added intrigue section labels (`theCrime`, `wrongedParty`, `crimeMethod`) to all 13 locale files for localised section headings
+- Earlier fix (same day): auto-generated initial chat message also hardcoded "murder mystery" — fixed by adding `defaultStartIntrigue` translation key
 
 ### Fix: Character profile field order and accusations label
 - `introduction` now appears before `secret` in the character accordion — matches the game's logical sequence (character introduces themselves in Round 1 before secrets are explored)

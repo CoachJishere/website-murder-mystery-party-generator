@@ -373,7 +373,10 @@
       "victim": "Opfer",
       "characterList": "Charakterliste",
       "players": "Spieler",
-      "murderMethod": "Mordmethode"
+      "murderMethod": "Mordmethode",
+      "theCrime": "Das Verbrechen",
+      "wrongedParty": "Die Geschädigte Partei",
+      "crimeMethod": "Verbrechensmethode"
     },
     "wizard": {
       "title": "Erstellen Sie Ihr Mysterium",

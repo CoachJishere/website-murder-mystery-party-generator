@@ -18,6 +18,7 @@ interface MysteryChatProps {
   initialHasAccomplice?: boolean;
   initialScriptType?: 'full' | 'pointForm';
   initialAdditionalDetails?: string;
+  initialMysteryType?: 'murder' | 'intrigue';
   savedMysteryId?: string;
   onSave: (message: Message) => Promise<void>;
   onGenerateFinal?: (messages: Message[]) => Promise<void>;
@@ -36,6 +37,7 @@ export default function MysteryChat({
   initialHasAccomplice,
   initialScriptType,
   initialAdditionalDetails,
+  initialMysteryType,
   savedMysteryId,
   onSave,
   onGenerateFinal,
@@ -57,6 +59,7 @@ export default function MysteryChat({
   const [currentHasAccomplice, setCurrentHasAccomplice] = useState(initialHasAccomplice || false);
   const [currentScriptType, setCurrentScriptType] = useState(initialScriptType || 'full');
   const [currentAdditionalDetails, setCurrentAdditionalDetails] = useState(initialAdditionalDetails || '');
+  const [currentMysteryType] = useState<'murder' | 'intrigue'>(initialMysteryType || 'murder');
   const [hasTriggeredInitialResponse, setHasTriggeredInitialResponse] = useState(false);
   const { isAuthenticated } = useAuth();
   const isMobile = useIsMobile();
@@ -242,7 +245,8 @@ export default function MysteryChat({
         messages: messages,
         promptVersion: 'free',
         preventTruncation: true,
-        language: language || 'en' // Default to English if no language is provided
+        language: language || 'en', // Default to English if no language is provided
+        mysteryType: currentMysteryType
       };
 
       // Only add system prompt if we have one

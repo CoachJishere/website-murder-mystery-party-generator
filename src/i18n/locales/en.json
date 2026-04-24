@@ -375,7 +375,10 @@
       "victim": "Victim",
       "characterList": "Character List",
       "players": "players",
-      "murderMethod": "Murder Method"
+      "murderMethod": "Murder Method",
+      "theCrime": "The Crime",
+      "wrongedParty": "The Wronged Party",
+      "crimeMethod": "Crime Method"
     },
     "wizard": {
       "title": "Create Your Mystery",

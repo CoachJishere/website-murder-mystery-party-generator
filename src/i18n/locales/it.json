@@ -373,7 +373,10 @@
       "victim": "Vittima",
       "characterList": "Elenco Personaggi",
       "players": "Giocatori",
-      "murderMethod": "Metodo del delitto"
+      "murderMethod": "Metodo del delitto",
+      "theCrime": "Il Crimine",
+      "wrongedParty": "La Parte Lesa",
+      "crimeMethod": "Metodo del Crimine"
     },
     "wizard": {
       "title": "Crea il tuo mistero",

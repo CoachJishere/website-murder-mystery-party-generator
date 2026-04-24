@@ -20,14 +20,25 @@ function detectLocale(firstUserMsg: string): Locale {
   return 'en';
 }
 
-async function buildLabels(locale: Locale) {
+async function buildLabels(locale: Locale, mysteryType: string = 'murder') {
   try {
     // Fetch from your deployed website
     const response = await fetch(`https://mysterymaker.party/locales/${locale}.json`);
     if (!response.ok) throw new Error('Failed to fetch locale');
-    
+
     const localeData = await response.json();
     const sec = localeData.mysteryCreation.sections;
+
+    if (mysteryType === 'intrigue') {
+      return {
+        premise: sec.premise,
+        theCrime: sec.theCrime || 'The Crime',
+        wrongedParty: sec.wrongedParty || 'The Wronged Party',
+        characterList: sec.characterList,
+        playersWord: sec.players,
+        crimeMethod: sec.crimeMethod || 'Crime Method',
+      };
+    }
     return {
       premise: sec.premise,
       victim: sec.victim,
@@ -37,7 +48,16 @@ async function buildLabels(locale: Locale) {
     };
   } catch (error) {
     console.error(`Failed to load locale ${locale}, falling back to English`);
-    // Fallback to hardcoded English
+    if (mysteryType === 'intrigue') {
+      return {
+        premise: 'PREMISE',
+        theCrime: 'THE CRIME',
+        wrongedParty: 'THE WRONGED PARTY',
+        characterList: 'CHARACTER LIST',
+        playersWord: 'PLAYERS',
+        crimeMethod: 'CRIME METHOD',
+      };
+    }
     return {
       premise: 'PREMISE',
       victim: 'VICTIM',
@@ -104,7 +124,7 @@ serve(async (req) => {
 
   try {
     const requestBody = await req.json();
-    const { messages, system, promptVersion } = requestBody;
+    const { messages, system, promptVersion, mysteryType = 'murder' } = requestBody;
 
     if (!messages || !Array.isArray(messages)) {
       throw new Error('Messages array is required');
@@ -191,7 +211,8 @@ You don't need to explain the format unprompted. Only clarify if the user is des
       const lastUserMessage = messages.filter(msg => msg.role === 'user').pop()?.content || '';
       const firstUserMessage = messages.find(msg => msg.role === 'user')?.content || '';
       const detectedLocale = detectLocale(firstUserMessage);
-      const labels = await buildLabels(detectedLocale);
+      const labels = await buildLabels(detectedLocale, mysteryType);
+      const isIntrigue = mysteryType === 'intrigue';
 
       // --- Check if a mystery concept has already been presented ---
       const conceptAlreadyGenerated = messages.some(msg =>
@@ -243,14 +264,17 @@ You don't need to explain the format unprompted. Only clarify if the user is des
       if (conceptAlreadyGenerated) {
         // === POST-CONCEPT: Refinement mode ===
 
-        if (databasePrompt) {
+        if (databasePrompt && !isIntrigue) {
           systemPrompt = applyDatabasePrompt();
         } else {
-          systemPrompt = `You are a murder mystery CONCEPT designer helping refine a mystery.
+          const mysteryLabel = isIntrigue ? 'intrigue mystery' : 'murder mystery';
+          systemPrompt = `You are a ${mysteryLabel} CONCEPT designer helping refine a mystery.
 
 <language_instruction>
 Always respond in the same language the user writes to you.
 </language_instruction>
+
+${isIntrigue ? 'IMPORTANT: This is an INTRIGUE mystery — no one dies. The central crime is a theft, scandal, sabotage, conspiracy, betrayal, or other non-lethal event. Never introduce a murder or a dead victim.' : ''}
 
 Continue helping the user adjust characters, motives, relationships, backstories, and story elements. They can go as deep as they want on character concepts.
 
@@ -270,12 +294,18 @@ Always respond in the same language the user writes to you.
 
       } else if (!hasPlayerCount) {
         // === PRE-CONCEPT: Need player count ===
+        const mysteryLabel = isIntrigue ? 'intrigue mystery' : 'murder mystery';
+        const occasionTest = isIntrigue
+          ? 'WHY a crime (theft, scandal, sabotage, betrayal) would occur here'
+          : 'WHY someone might get murdered here';
 
-        systemPrompt = `You are an enthusiastic, creative murder mystery concept designer.
+        systemPrompt = `You are an enthusiastic, creative ${mysteryLabel} concept designer.
 
 <language_instruction>
 Always respond in the same language the user writes to you.
 </language_instruction>
+
+${isIntrigue ? 'IMPORTANT: This is an INTRIGUE mystery — no one dies. The central crime is a non-lethal event: a theft, scandal, sabotage, conspiracy, or betrayal. Never introduce a murder or a dead victim.' : ''}
 
 Your job is to react to their idea, ask how many players they need (between 4 and 32), and decide whether you need ONE clarifying question before you can design their mystery.
 
@@ -309,8 +339,60 @@ ${contentBoundaries}`;
         // Ask ONE clarifying question if the theme could go multiple directions,
         // or generate the concept directly if the theme is already specific enough.
 
-        if (databasePrompt) {
+        if (databasePrompt && !isIntrigue) {
           systemPrompt = applyDatabasePrompt();
+        } else if (isIntrigue) {
+          systemPrompt = `You are an enthusiastic, creative intrigue mystery concept designer.
+
+<language_instruction>
+Always respond in the same language the user writes to you.
+</language_instruction>
+
+IMPORTANT: This is an INTRIGUE mystery — no one dies. The central crime is a non-lethal event: a theft, scandal, sabotage, conspiracy, or betrayal. Never use the words "murder", "kill", "dead", "victim", or "shot". The wronged party is ALIVE and seeking justice.
+
+The user has already provided a theme and player count. Your job is to decide: should you ask ONE clarifying question, or go straight to generating the concept?
+
+<clarifying_question_decision>
+Ask yourself: "Does this theme evoke a specific enough world — setting, era, vibe, AND a compelling occasion for a crime (theft, scandal, sabotage, betrayal) — or would one question unlock a much better mystery?"
+
+ASK ONE clarifying question when knowing more would meaningfully improve the mystery:
+- What was stolen/exposed/sabotaged? The nature of the crime matters.
+- Who was wronged — an individual, a family, a business, a nation?
+- What's the occasion that brings everyone together?
+
+DO NOT ask — go straight to generating — when the theme is specific enough to picture the scene, the crime, and who's affected.
+
+When you DO ask, make it specific — suggest 2-3 concrete directions. Keep it brief and enthusiastic.
+</clarifying_question_decision>
+
+If you decide to ask a clarifying question, do NOT generate any mystery content yet — just ask warmly and briefly.
+
+If you decide the theme is specific enough, generate the full concept using this EXACT format:
+
+# "[CREATIVE TITLE]"
+
+## ${(labels as any).premise}
+[2-3 paragraphs setting the scene. IMPORTANT: No one dies — the central event is a theft, scandal, sabotage, conspiracy, betrayal, or other non-lethal crime. Make it dramatic and high-stakes.]
+
+## ${(labels as any).theCrime}
+[What was stolen, leaked, sabotaged, exposed, or destroyed. Be specific and dramatic — make the stakes clear even without a death.]
+
+## ${(labels as any).wrongedParty}
+**[Name]** - [Who was wronged by this crime, what they lost, why it matters deeply to them, and their current emotional state. This person is ALIVE and seeking justice.]
+
+## ${(labels as any).characterList} (${playerCount} ${(labels as any).playersWord})
+1. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to the crime or wronged party]
+2. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to the crime or wronged party]
+[Continue for all ${playerCount} characters]
+
+Each character MUST have a vivid personality trait or quirk — not just a job title. This makes them instantly memorable and fun to play. All ${playerCount} listed characters must be SUSPECTS with motives connected to the crime. The Inspector/Detective is NOT included — that role is played by the host.
+
+## ${(labels as any).crimeMethod}
+[How the crime was executed — the planning, the tools or access required, and what clues might exist. What makes this crime clever or daring?]
+
+${contentBoundaries}
+
+If generating the concept, always end by asking if it works for them and mentioning they can refine or hit 'Generate Mystery' for the complete package.`;
         } else {
           systemPrompt = `You are an enthusiastic, creative murder mystery concept designer.
 
@@ -349,7 +431,7 @@ If you decide the theme is specific enough, generate the full concept using this
 ## ${labels.premise}
 [2-3 paragraphs setting the scene]
 
-## ${labels.victim}
+## ${(labels as any).victim}
 **[Victim Name]** - [Vivid description]
 
 ## ${labels.characterList} (${playerCount} ${labels.playersWord})
@@ -361,7 +443,7 @@ Each character MUST have a vivid personality trait or quirk (e.g. "a jittery acc
 
 IMPORTANT: The victim is NOT included in the ${playerCount} characters. The Inspector/Detective is also NOT included — that role is played by the host. All ${playerCount} listed characters must be SUSPECTS with motives, secrets, and connections to the victim.
 
-## ${labels.murderMethod}
+## ${(labels as any).murderMethod}
 [How the murder was committed, clues]
 
 ${contentBoundaries}
@@ -372,8 +454,43 @@ If generating the concept, always end by asking if it works for them and mention
       } else {
         // === HAS PLAYER COUNT + FOLLOW-UP CONVERSATION: Generate concept ===
 
-        if (databasePrompt) {
+        if (databasePrompt && !isIntrigue) {
           systemPrompt = applyDatabasePrompt();
+        } else if (isIntrigue) {
+          systemPrompt = `You are an intrigue mystery CONCEPT DESIGNER. The user has provided enough information to generate a concept.
+
+<language_instruction>
+Always respond in the same language the user writes to you.
+</language_instruction>
+
+IMPORTANT: This is an INTRIGUE mystery — no one dies. The central crime is a non-lethal event: a theft, scandal, sabotage, conspiracy, or betrayal. Never use the words "murder", "kill", "dead", "victim", or "shot". The wronged party is ALIVE and seeking justice.
+
+Create a complete mystery CONCEPT using this EXACT format:
+
+# "[CREATIVE TITLE]"
+
+## ${(labels as any).premise}
+[2-3 paragraphs setting the scene. No one dies — the central event is a theft, scandal, sabotage, conspiracy, betrayal, or other non-lethal crime. Make it dramatic and high-stakes.]
+
+## ${(labels as any).theCrime}
+[What was stolen, leaked, sabotaged, exposed, or destroyed. Be specific and dramatic.]
+
+## ${(labels as any).wrongedParty}
+**[Name]** - [Who was wronged by this crime, what they lost, why it matters deeply to them, and their current emotional state. This person is ALIVE and seeking justice.]
+
+## ${(labels as any).characterList} (${playerCount} ${(labels as any).playersWord})
+1. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to the crime or wronged party]
+2. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to the crime or wronged party]
+[Continue for all ${playerCount} characters]
+
+Each character MUST have a vivid personality trait or quirk — not just a job title. All ${playerCount} listed characters must be SUSPECTS with motives connected to the crime. The Inspector/Detective is NOT included — that role is played by the host.
+
+## ${(labels as any).crimeMethod}
+[How the crime was executed — planning, tools, access, and clues. What makes it clever or daring?]
+
+${contentBoundaries}
+
+Always end your response by asking if the concept works for them. Mention they can continue refining character concepts, motives, or story elements. Once satisfied, they can hit 'Generate Mystery' to create their complete package.`;
         } else {
           systemPrompt = `You are a murder mystery CONCEPT DESIGNER. The user has provided enough information to generate a concept.
 
@@ -388,7 +505,7 @@ Create a complete mystery CONCEPT using this format:
 ## ${labels.premise}
 [2-3 paragraphs setting the scene, describing the event where the murder takes place, and creating dramatic tension]
 
-## ${labels.victim}
+## ${(labels as any).victim}
 **[Victim Name]** - [Vivid description of the victim, their role in the story, personality traits, and why they might have made enemies]
 
 ## ${labels.characterList} (${playerCount} ${labels.playersWord})
@@ -400,7 +517,7 @@ Each character MUST have a vivid personality trait or quirk (e.g. "a jittery acc
 
 IMPORTANT: The victim is NOT included in the ${playerCount} characters. The Inspector/Detective is also NOT included — that role is played by the host. All ${playerCount} listed characters must be SUSPECTS with motives, secrets, and connections to the victim.
 
-## ${labels.murderMethod}
+## ${(labels as any).murderMethod}
 [Paragraph describing how the murder was committed, interesting details about the method, and what clues might be found]
 
 ${contentBoundaries}
