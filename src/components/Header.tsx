@@ -47,10 +47,10 @@ const Header = () => {
           {isAuthenticated && (
             <Link
               to="/dashboard"
-              className="text-[15px] transition-colors"
-              style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 500, textDecoration: 'none', cursor: 'pointer' }}
-              onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
-              onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
+              className="text-[15px] transition-all px-4 py-2 rounded-md"
+              style={{ backgroundColor: 'var(--color-cream)', color: 'var(--color-red)', fontFamily: 'var(--font-body)', fontWeight: 600, textDecoration: 'none', cursor: 'pointer', boxShadow: '0 1px 2px rgba(0,0,0,0.15)' }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 3px 6px rgba(0,0,0,0.2)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.15)'; }}
             >
               {t('navigation.dashboard')}
             </Link>

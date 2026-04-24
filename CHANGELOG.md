@@ -2,6 +2,17 @@
 
 ## 2026-04-24
 
+### Fix: TLC Reunion — Honey Boo Boo secret motive now matches confession
+- `secret` field previously said she needed Buddy alive as a class-action lawsuit witness (making her appear innocent), directly contradicting her `final_statement` confession which reveals she killed him over blackmail footage from her childhood show
+- Updated `secret` to reflect the actual motive: Buddy had been blackmailing her with unaired childhood footage for two years; tonight he escalated to releasing it unless she left TLC entirely; she and Sarah acted to stop him
+- DB-only fix for package `fb085089-6cfb-4d3f-969c-1b276ff1c323`
+
+### Fix: TLC Reunion — Sarah Palin rumors removed stale accomplice instructions
+- `rumors` field contained an old `### ACCOMPLICE INSTRUCTIONS` block pairing her with Michelle/Michael Duggar as the murderer — leftover from an earlier generation run before the murderer/accomplice roles were locked
+- Sarah's actual role is accomplice to Honey Boo Boo (correctly reflected in all round scripts and `final_statement`); the stale instructions were confusing and incorrect
+- Removed the block; `rumors` now opens directly with the three spread-able rumors (unchanged)
+- DB-only fix for package `fb085089-6cfb-4d3f-969c-1b276ff1c323`
+
 ### UI: Dashboard link restyled as a pronounced button in the header
 - Authenticated users were confusing the logo with the dashboard entry point because the "Dashboard" link was styled identically to "Support" — flat cream text on red. Now the dashboard link renders as a cream-filled pill button with red text, a subtle shadow, and a lift-on-hover transform so it reads as the primary nav action
 - Only the desktop header changed; mobile menu is unaffected
