@@ -140,10 +140,11 @@ const MysteryChatPage = () => {
                 )}>
                     {/* Chat Interface - Full Page Scrolling */}
                     <MysteryChat
-                        initialTheme={conversationData?.mystery_data?.theme || ""}
-                        initialPlayerCount={conversationData?.mystery_data?.playerCount}
-                        initialScriptType={conversationData?.mystery_data?.scriptType as 'full' | 'pointForm'}
-                        initialAdditionalDetails={conversationData?.mystery_data?.additionalDetails}
+                        initialTheme={conversationData?.mystery_data?.theme || conversationData?.theme || ""}
+                        initialPlayerCount={conversationData?.mystery_data?.playerCount || conversationData?.player_count}
+                        initialScriptType={(conversationData?.mystery_data?.scriptType || conversationData?.script_type) as 'full' | 'pointForm'}
+                        initialAdditionalDetails={conversationData?.mystery_data?.additionalDetails || conversationData?.additional_details}
+                        initialMysteryType={(conversationData?.mystery_data?.mysteryType || conversationData?.mystery_type || 'murder') as 'murder' | 'intrigue'}
                         savedMysteryId={id}
                         onSave={handleSaveMessage}
                         onGenerateFinal={handleGenerateFullMystery}
