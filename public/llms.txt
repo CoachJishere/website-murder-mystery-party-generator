@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 92 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 93 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -131,4 +131,5 @@ This index organizes 92 published guides by topic cluster. All guides are availa
 ## Kits, Tools & Comparisons
 
 - [Best Murder Mystery Games: Honest Reviews of Top Kits & Why Custom Alternatives Win](https://www.mysterymaker.party/blog/best-murder-mystery-party-games-review): Honest reviews of top murder mystery game kits by group size. Commercial vs. custom options, what actually works for different parties.
+- [Food Critic Murder Mystery Themes: Culinary Reviews and Restaurant Revenge](https://www.mysterymaker.party/blog/food-critic-murder-mystery-themes-culinary-reviews-restaurant-revenge): Create murder mysteries featuring food critic characters who work through restaurant reviews, culinary feuds, and kitchen secrets. Generate custom critic-driven
 
