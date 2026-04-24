@@ -2,6 +2,12 @@
 
 ## 2026-04-24
 
+### Feature: PostHog analytics + homepage video play tracking
+- Installed `posthog-js` and initialised alongside existing GA4 in `App.tsx`
+- Tracks `$pageview` on every route change via PostHog
+- Homepage YouTube embed now uses `enablejsapi=1`; a `homepage_video_played` event fires once per session when playback starts (via `postMessage` from the YouTube IFrame API)
+- PostHog project key stored as `VITE_POSTHOG_KEY` Vercel env var — never in the repo
+
 ### Fix: Intrigue mystery type generating murder content
 - Root cause was in the `mystery-ai` Edge Function — it builds its own system prompt from scratch and has no awareness of mystery type; the `systemInstruction` prop from the frontend was always sent as `null` and never reached the AI
 - Added `mysteryType` to the Edge Function request body; all four system-prompt branches now have intrigue-specific variants using THE CRIME / THE WRONGED PARTY / CRIME METHOD format with an explicit "no one dies" constraint
