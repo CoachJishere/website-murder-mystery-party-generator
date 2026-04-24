@@ -109,9 +109,10 @@ serve(async (req) => {
         const guestFeedback = await getPositiveGuestFeedback(supabase, email.conversation_id);
 
         const feedbackUrl = `https://www.mysterymaker.party/feedback/${email.conversation_id}`;
+        const shareUrl = buildShareUrl(email.user_id);
         const htmlBody = guestFeedback
-          ? buildGuestTriggeredEmail(hostName, mysteryTitle, guestFeedback, feedbackUrl)
-          : buildStandardEmail(hostName, mysteryTitle, feedbackUrl);
+          ? buildGuestTriggeredEmail(hostName, mysteryTitle, guestFeedback, feedbackUrl, shareUrl)
+          : buildStandardEmail(hostName, mysteryTitle, feedbackUrl, shareUrl);
 
         const subject = guestFeedback
           ? `Your guests loved ${mysteryTitle}!`
@@ -229,7 +230,8 @@ function buildGuestTriggeredEmail(
   hostName: string,
   mysteryTitle: string,
   guestFeedback: any,
-  feedbackUrl: string
+  feedbackUrl: string,
+  shareUrl: string
 ): string {
   const starDisplay = "★".repeat(guestFeedback.topRating) + "☆".repeat(5 - guestFeedback.topRating);
   const guestLine = guestFeedback.count === 1
@@ -250,14 +252,16 @@ function buildGuestTriggeredEmail(
     <p style="color: rgba(245,240,232,0.7); margin-top: 20px;">
       If you had a great time hosting, we'd really appreciate a quick Trustpilot review. It takes about 30 seconds and helps other hosts find us.
     </p>`,
-    feedbackUrl
+    feedbackUrl,
+    shareUrl
   );
 }
 
 function buildStandardEmail(
   hostName: string,
   mysteryTitle: string,
-  feedbackUrl: string
+  feedbackUrl: string,
+  shareUrl: string
 ): string {
   return buildEmailShell(
     hostName,
@@ -265,15 +269,41 @@ function buildStandardEmail(
     `<p style="color: rgba(245,240,232,0.7);">
       We hope you and your guests had an amazing time! If you enjoyed hosting, we'd really appreciate a quick Trustpilot review. It takes about 30 seconds and helps other hosts discover Mystery Maker.
     </p>`,
-    feedbackUrl
+    feedbackUrl,
+    shareUrl
   );
+}
+
+function buildShareUrl(userId: string): string {
+  // UTM-tagged share link — designed so it can be upgraded to a true ?ref=CODE
+  // when the two-sided referral coupon system lands without changing the email.
+  const params = new URLSearchParams({
+    utm_source: "share",
+    utm_medium: "email",
+    utm_campaign: "trustpilot_followup",
+    utm_content: `host-${userId}`,
+  });
+  return `https://www.mysterymaker.party/?${params.toString()}`;
+}
+
+function buildShareSection(shareUrl: string): string {
+  return `
+    <div style="margin: 24px 0 8px 0; padding: 16px; background: rgba(245,240,232,0.04); border: 1px solid rgba(245,240,232,0.1); border-radius: 6px;">
+      <p style="margin: 0 0 8px 0; color: #F5F0E8; font-size: 14px; font-weight: 600;">Friends will love this too</p>
+      <p style="margin: 0 0 12px 0; color: rgba(245,240,232,0.6); font-size: 13px;">
+        If your guests asked "where did you get this?" — send them here. Each mystery is one-of-a-kind.
+      </p>
+      <a href="${shareUrl}" style="display: inline-block; color: #F5F0E8; font-size: 13px; text-decoration: none; padding: 8px 14px; border: 1px solid rgba(245,240,232,0.25); border-radius: 4px;">Share Mystery Maker →</a>
+    </div>
+  `;
 }
 
 function buildEmailShell(
   hostName: string,
   headline: string,
   bodyContent: string,
-  feedbackUrl: string
+  feedbackUrl: string,
+  shareUrl: string
 ): string {
   return `
 <!DOCTYPE html>
@@ -298,9 +328,11 @@ function buildEmailShell(
       <a href="${TRUSTPILOT_REVIEW_URL}" style="display: inline-block; background: #00b67a; color: #ffffff; padding: 14px 36px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px;">Leave a Trustpilot Review ★</a>
     </div>
 
-    <div style="text-align: center; margin-bottom: 24px;">
+    <div style="text-align: center; margin-bottom: 16px;">
       <a href="${feedbackUrl}" style="color: rgba(245,240,232,0.5); font-size: 13px; text-decoration: underline;">Or share detailed feedback with us directly</a>
     </div>
+
+    ${buildShareSection(shareUrl)}
 
     <p style="color: rgba(245,240,232,0.3); font-size: 12px; text-align: center; margin: 24px 0 0 0; padding-top: 20px; border-top: 1px solid rgba(245,240,232,0.1);">
       <a href="${feedbackUrl}?unsubscribe=true" style="color: rgba(245,240,232,0.3); text-decoration: underline;">Unsubscribe from follow-up emails</a>

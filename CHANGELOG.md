@@ -2,6 +2,11 @@
 
 ## 2026-04-24
 
+### Feature: Word-of-mouth share CTAs on Trustpilot email + guest character packet
+- Trustpilot followup email (`send-followup-emails`) now includes a small "Friends will love this too" share section below the review CTA. Link is UTM-tagged with `utm_source=share`, `utm_medium=email`, `utm_campaign=trustpilot_followup`, `utm_content=host-{user_id}` so we can attribute the resulting traffic. URL pattern is designed to upgrade to `?ref={code}` once the two-sided referral system lands without changing the email
+- Guest character packet (`/character/:token`) now ends with a footer: "Loved playing as {character}? Host your own custom mystery at mysterymaker.party". Every printed packet becomes a low-friction leaflet — every guest is a host candidate. UTM-tagged `utm_source=share&utm_medium=character_packet&utm_campaign=guest_footer`. Footer is a `div`, not a `<footer>` element, so it survives the print rules that hide page chrome
+- Edge function `send-followup-emails` redeployed (v8)
+
 ### Feature: UTM/referrer attribution capture on signup
 - New `profiles` columns: `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`, `landing_referrer`, `landing_page`. Captured into `localStorage` on first external landing (skips internal navs and same-host referrers), then persisted into the user's profile on signup (email + Google OAuth). First-touch only — never overwrites existing non-NULL columns
 - Why: self-reported attribution is biased (high-intent buyers skip the survey, browsers answer it). Silent UTM/referrer capture gives ground-truth that can be cross-referenced with the survey

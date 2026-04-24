@@ -307,6 +307,21 @@ const CharacterAccess: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+
+        <div className="character-packet-footer mt-8 text-center text-sm text-muted-foreground border-t border-border/40 pt-6">
+          <p className="mb-1">
+            Loved playing as <strong className="text-foreground">{assignment.mystery_characters.character_name}</strong>?
+          </p>
+          <p>
+            Host your own custom mystery at{" "}
+            <a
+              href="https://www.mysterymaker.party/?utm_source=share&utm_medium=character_packet&utm_campaign=guest_footer"
+              className="text-primary underline"
+            >
+              mysterymaker.party
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
