@@ -2,6 +2,19 @@
 
 ## 2026-04-25
 
+### Fix: Better dark-mode contrast on "We're Finalizing Your Mystery" warning card
+- Amber-on-dark colors were nearly unreadable; added `dark:text-amber-200` / `dark:text-amber-300` variants throughout the card
+- Refresh button now has proper hover states for both light and dark modes
+
+### Milestone: Mystery generation pipeline end-to-end working
+- After multi-day debugging session, all generation issues resolved as of this commit
+- Full backend now runs reliably: master_context, host guide content, character scripts (point form), evidence cards, detective/investigator script, evidence images all populate cleanly
+- Frontend renders the new static host guide template with adaptive Detective/Investigator + Murderer/Culprit terminology, phased generation progress with live character count, evidence card print without Significance section
+- Make.com Parent27 (split architecture: 3 separate Claude calls for Detective Script + Evidence Cards + Image Prompts instead of one monolithic JSON), Child v10 (expanded pointForm enforcement covering introduction/rumors/accusations + corrected rumors targeting to skip Friendly relationships)
+- Cost ~$2/mystery on Haiku 4.5 across the board
+
+
+
 ### Refactor: Static host guide template — most content is universal across mysteries
 - New `HostGuideTemplate.tsx` component renders all the universal hosting content (preparation steps, slip-draw mechanics, time guidelines, detective setup choice, round-by-round flow, hosting tips) as a static template parameterised by mystery type and player count
 - The Make.com prompt no longer regenerates this content per mystery — it only produces dynamic fields (`gameOverview`, `themedMaterials`, `mysteryTips`)

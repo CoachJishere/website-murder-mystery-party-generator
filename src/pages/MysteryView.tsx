@@ -1136,22 +1136,22 @@ const MysteryView = () => {
           {generationStatus?.status === 'needs_review' ||
            (characters.length === 0 && !generating && generationStatus?.status === 'completed') ? (
             <Card className={cn(
-              "mb-6 border-amber-500/30",
+              "mb-6 border-amber-500/40",
               isMobile && "mx-2"
             )}>
               <CardHeader className={cn(isMobile && "p-4 pb-3")}>
                 <CardTitle className={cn(
-                  "flex items-center space-x-2 text-amber-800",
+                  "flex items-center space-x-2 text-amber-700 dark:text-amber-300",
                   isMobile && "text-base"
                 )}>
                   <AlertTriangle className={cn(
-                    "text-amber-600",
+                    "text-amber-600 dark:text-amber-400",
                     isMobile ? "h-4 w-4" : "h-5 w-5"
                   )} />
                   <span>We're Finalizing Your Mystery</span>
                 </CardTitle>
                 <CardDescription className={cn(
-                  "text-amber-700",
+                  "text-amber-700 dark:text-amber-200",
                   isMobile && "text-sm"
                 )}>
                   Your mystery was generated but some character content needs attention.
@@ -1161,9 +1161,9 @@ const MysteryView = () => {
                 "space-y-4",
                 isMobile && "p-4 pt-0 space-y-3"
               )}>
-                <Alert className="border-amber-500/30">
+                <Alert className="border-amber-500/40">
                   <CheckCircle2 className={cn(
-                    "text-green-500",
+                    "text-green-500 dark:text-green-400",
                     isMobile ? "h-3 w-3" : "h-4 w-4"
                   )} />
                   <AlertTitle className={cn(isMobile && "text-sm")}>Don't worry — your mystery is safe!</AlertTitle>
@@ -1172,7 +1172,7 @@ const MysteryView = () => {
                   </AlertDescription>
                 </Alert>
                 <p className={cn(
-                  "text-sm text-amber-700",
+                  "text-sm text-amber-700 dark:text-amber-200",
                   isMobile && "text-xs"
                 )}>
                   You can safely close this page and come back later. If the issue persists, please reach out to{" "}
@@ -1182,7 +1182,7 @@ const MysteryView = () => {
                   variant="outline"
                   size="sm"
                   onClick={handleManualRefresh}
-                  className="border-amber-300 text-amber-800 hover:bg-amber-100"
+                  className="border-amber-400 text-amber-700 hover:bg-amber-50 dark:border-amber-500 dark:text-amber-200 dark:hover:bg-amber-950/30"
                 >
                   <RefreshCw className={cn("mr-2", isMobile ? "h-3 w-3" : "h-4 w-4")} />
                   Check Again
