@@ -1189,9 +1189,13 @@ const MysteryView = () => {
                 </Button>
               </CardContent>
             </Card>
-          ) : ((mystery?.is_paid || generationStatus?.status === 'completed' ||
-            (!generating && !generationStatus && packageData && packageData.gameOverview &&
-             packageData.hostGuide)) && characters.length > 0) ? (
+          ) : (
+            // Show TabView only when generation is genuinely complete (or wasn't tracked at all
+            // for legacy mysteries). Removed the is_paid fallback — that fired the moment
+            // characters landed mid-generation, hiding the progress UI before evidence/detective
+            // had finished generating.
+            ((generationStatus?.status === 'completed' && characters.length > 0) ||
+             (!generating && !generationStatus && packageData?.gameOverview && characters.length > 0))) ? (
             <MysteryPackageTabView
               packageContent={packageContent || ""}
               mysteryTitle={getMysteryTitle()}
