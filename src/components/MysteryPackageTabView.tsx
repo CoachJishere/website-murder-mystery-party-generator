@@ -98,6 +98,9 @@ interface MysteryPackageData {
   evidenceCardImages?: { round2?: string; round3?: string; round4?: string } | null;
   relationshipMatrix?: string;
   detectiveScript?: string;
+  // Used by GenerationProgress to derive realistic phase state from real DB content
+  master_context?: string | null;
+  extracted_characters?: any;
 }
 
 interface MysteryPackageTabViewProps {

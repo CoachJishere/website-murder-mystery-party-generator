@@ -105,6 +105,8 @@ const MysteryView = () => {
           evidence_cards,
           evidence_card_images,
           detective_script,
+          master_context,
+          extracted_characters,
           id
         `)
         .eq("conversation_id", id)
@@ -132,6 +134,8 @@ const MysteryView = () => {
           evidenceCards: packageData.evidence_cards,
           evidenceCardImages: packageData.evidence_card_images,
           detectiveScript: packageData.detective_script,
+          master_context: packageData.master_context,
+          extracted_characters: packageData.extracted_characters,
         };
         
         console.log("✅ [DEBUG] Structured package data loaded");
@@ -1071,11 +1075,19 @@ const MysteryView = () => {
     }
     if (charactersExpected === 0) charactersExpected = mystery?.player_count || 0;
 
+    // Pass real DB content signals to GenerationProgress so it derives a
+    // realistic progress that ticks gradually as content lands — instead of
+    // trusting generation_status.progress which can jump to 100 prematurely.
     return (
       <GenerationProgress
-        progress={generationStatus.progress ?? 0}
+        hasMasterContext={!!packageData?.master_context}
+        hasGameOverview={!!packageData?.gameOverview}
+        hasMaterials={!!packageData?.materials}
         charactersDone={characters.length}
         charactersExpected={charactersExpected}
+        hasEvidence={!!packageData?.evidenceCards}
+        hasDetective={!!packageData?.detectiveScript}
+        hasImages={!!packageData?.evidenceCardImages}
         isMobile={isMobile}
       />
     );
