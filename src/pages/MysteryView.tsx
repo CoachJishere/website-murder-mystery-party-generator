@@ -1133,8 +1133,11 @@ const MysteryView = () => {
               The old fallback path (is_paid && gameOverview) was firing prematurely
               during in_progress generation because gameOverview lands at 60% but
               characters land later — causing a false positive between those steps. */}
-          {generationStatus?.status === 'needs_review' ||
-           (characters.length === 0 && !generating && generationStatus?.status === 'completed') ? (
+          {/* Only show the actual warning when generation_status is *explicitly* needs_review.
+              The earlier "completed but chars==0" case is misleading — that just means the parent
+              flipped status to completed before all children finished inserting (timing race).
+              For that case, fall through to the GenerationProgress UI further down. */}
+          {generationStatus?.status === 'needs_review' ? (
             <Card className={cn(
               "mb-6 border-amber-500/40",
               isMobile && "mx-2"
@@ -1190,11 +1193,12 @@ const MysteryView = () => {
               </CardContent>
             </Card>
           ) : (
-            // Show TabView only when generation is genuinely complete (or wasn't tracked at all
-            // for legacy mysteries). Removed the is_paid fallback — that fired the moment
-            // characters landed mid-generation, hiding the progress UI before evidence/detective
-            // had finished generating.
-            ((generationStatus?.status === 'completed' && characters.length > 0) ||
+            // Show TabView only when ALL major content has landed:
+            // characters AND evidence_cards AND detective_script. status=completed alone isn't
+            // enough — the parent sometimes flips to completed before children/evidence finish.
+            // For legacy mysteries (no status tracking), fall back to gameOverview presence.
+            ((generationStatus?.status === 'completed' && characters.length > 0
+              && !!packageData?.evidenceCards && !!packageData?.detectiveScript) ||
              (!generating && !generationStatus && packageData?.gameOverview && characters.length > 0))) ? (
             <MysteryPackageTabView
               packageContent={packageContent || ""}
@@ -1216,8 +1220,13 @@ const MysteryView = () => {
               onCharacterFieldUpdate={handleCharacterFieldUpdate}
             />
           ) : (
-            // Show generation progress or start button
-            generationStatus?.status === 'in_progress' ? renderGenerationProgress() : (
+            // Show generation progress or start button.
+            // Also treat "completed but content not all in" as still-in-progress, since the
+            // parent sometimes flips to completed before children/evidence finish (timing race).
+            (generationStatus?.status === 'in_progress' ||
+             (generationStatus?.status === 'completed' &&
+              (characters.length === 0 || !packageData?.evidenceCards || !packageData?.detectiveScript)))
+              ? renderGenerationProgress() : (
               <Card className={cn(
                 "mb-6",
                 isMobile && "mx-2"
