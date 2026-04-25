@@ -100,14 +100,12 @@ You have two ways to handle the ${investigator} narration:
 
 ${timeGuidelines(playerCount)} (for ${playerCount ?? 6} players).
 
-| Phase | Duration |
-|---|---|
-| Welcome & character introductions | 20–25 min |${isCharacterBased ? `\n| Slip draw (${culprit} selection) | 5 min |` : ""}
-| Round 2: Motives | 20 min |
-| Round 3: Means | 20 min |
-| Round 4: Opportunity | 20 min |
-| Accusations & final statements | 15–20 min |
-| The Reveal | 10 min |
+- **Welcome & character introductions:** 20–25 min${isCharacterBased ? `\n- **Slip draw (${culprit} selection):** 5 min` : ""}
+- **Round 2 — Motives:** 20 min
+- **Round 3 — Means:** 20 min
+- **Round 4 — Opportunity:** 20 min
+- **Accusations & final statements:** 15–20 min
+- **The Reveal:** 10 min
 
 Round timing scales with group size — smaller groups (4–6) move quickly, larger groups (12+) need more time per round.
 
@@ -133,12 +131,12 @@ You can either:
 
 Each round follows the same pattern:
 
-1. **${Investigator} reads the round opening** (from the ${Investigator} Guide)
+1. **The ${Investigator}'s round opening is delivered** — read aloud by whoever is playing the ${investigator}, OR played as a pre-recorded audio file (whichever delivery method you chose). Found in the ${Investigator} Guide.
 2. **Reveal evidence** for that round (Round 2 = motives, Round 3 = means, Round 4 = opportunity)
 3. **Players ask each other questions** using their character page's question/response options for that round
-4. **${Investigator} prompts pacing** — keep things moving, don't let one round drag
+4. **Keep pacing tight** — don't let one round drag. The host (regardless of whether they're playing the ${investigator} or a suspect) keeps time
 
-After Round 4, the ${investigator} guides the **Accusations** phase: each player names who they think is the ${culprit} and gives a one-sentence reason. Then **Final Statements**, where each player makes one last plea or confession. Finally, the **Reveal** — the ${culprit} stands and reads their confession aloud.
+After Round 4, the **Accusations** phase: each player names who they think is the ${culprit} and gives a one-sentence reason. Then **Final Statements**, where each player makes one last plea or confession. Finally, the **Reveal** — the ${culprit} stands and reads their confession aloud.
 
 ## Hosting Tips
 
@@ -184,21 +182,8 @@ After Round 4, the ${investigator} guides the **Accusations** phase: each player
         </div>
       )}
 
-      {/* Mystery-specific hosting tips (if any) */}
-      {hostingTips && (
-        <div>
-          <h3 className={cn("font-semibold mb-3", isMobile ? "text-base" : "text-lg")}>
-            Tips Specific to This Mystery
-          </h3>
-          <EditableSection
-            content={hostingTips}
-            onSave={(val) => onPackageFieldUpdate?.("hosting_tips", val) ?? Promise.resolve()}
-            canEdit={!!onPackageFieldUpdate}
-            sectionLabel=""
-            isMobile={isMobile}
-          />
-        </div>
-      )}
+      {/* Dynamic mysteryTips removed — the static template's "Hosting Tips" section
+          covers general advice well; per-mystery tips were noisy and unformatted. */}
     </div>
   );
 };
