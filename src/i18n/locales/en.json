@@ -974,6 +974,7 @@
       "characters": "Characters ({{count}})",
       "clues": "Evidence",
       "inspector": "Detective Guide",
+      "inspectorIntrigue": "Investigator Guide",
       "relationships": "Relationships"
     },
     "mobileTabs": {
@@ -981,6 +982,7 @@
       "characters": "Characters ({{count}})",
       "clues": "Evidence",
       "inspector": "Detective",
+      "inspectorIntrigue": "Investigator",
       "relations": "Relations"
     },
     "loading": {
@@ -988,7 +990,7 @@
       "generatingMessage": "Currently generating your complete mystery. This process is now in progress.<br />This page will automatically refresh once the mystery is complete.",
       "characters": "Developing unique character profiles with backgrounds, motivations, and secrets for your mystery game.",
       "clues": "Crafting evidence cards, clues, and investigative materials that will help solve your mystery.",
-      "inspector": "Writing the detective's script and investigation timeline to guide the mystery solving process.",
+      "inspector": "Writing the investigator's script and timeline to guide the mystery solving process.",
       "matrix": "Building the character relationship matrix showing connections, conflicts, and hidden relationships."
     },
     "placeholder": {
@@ -997,7 +999,7 @@
       "button": "Generate Package",
       "characters": "Character guides will be available after generation starts.",
       "clues": "Evidence cards will be available after generation starts.",
-      "inspector": "Detective guide will be available after generation starts.",
+      "inspector": "Investigator guide will be available after generation starts.",
       "matrix": "Relationship matrix will be available after generation starts."
     },
     "matrix": {

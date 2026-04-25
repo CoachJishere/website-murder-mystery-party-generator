@@ -1,5 +1,41 @@
 # Changelog
 
+## 2026-04-25
+
+### Refactor: Static host guide template — most content is universal across mysteries
+- New `HostGuideTemplate.tsx` component renders all the universal hosting content (preparation steps, slip-draw mechanics, time guidelines, detective setup choice, round-by-round flow, hosting tips) as a static template parameterised by mystery type and player count
+- The Make.com prompt no longer regenerates this content per mystery — it only produces dynamic fields (`gameOverview`, `themedMaterials`, `mysteryTips`)
+- Eliminates ~80% of host-guide tokens per generation, cuts cost, removes a recurring source of hallucinated content (e.g. "arrive 90 min early", "sealed envelopes")
+- Terminology adapts to mystery type: Detective/Murderer for murder, Investigator/Culprit for intrigue
+- Time table scales by player count (≤8 = ~1.5h, ≤14 = ~2h, ≤20 = ~2.5h, 20+ = ~3h)
+
+### Feature: Phased generation progress with live character count
+- New `GenerationProgress.tsx` component replaces the previous status card during in-progress generation
+- Shows overall progress bar + 4 named phases: "Story foundation set", "World and host guide", "Creating characters (X of Y ready)", "Evidence and detective script"
+- Active phase has a spinning loader; done phases get a green checkmark
+- Live character count updates as each child scenario completes (subscribes to `mystery_characters` INSERT events via Realtime)
+- Removes the misleading "automatically checks every 15 seconds" copy — page now updates from real DB events, not polling
+
+### Fix: Supabase Realtime publication for mystery tables
+- `mystery_packages` and `mystery_characters` added to the `supabase_realtime` publication so postgres_changes events actually fire
+- Without this, the page subscribed to events that never came; `lastUpdate` was stuck at page-load time
+- Now drives the new GenerationProgress live updates and the auto-refresh on the mystery view
+
+### Fix: Tightened "We're Finalizing Your Mystery" warning trigger
+- The card was firing prematurely during normal in-progress generation because of a fallback condition `(is_paid && gameOverview)` that matched at 60% (when `gameOverview` lands but characters haven't arrived yet)
+- Removed the soft fallback; warning now only fires when `generation_status = 'needs_review'` OR `generation_status = 'completed' && characters.length === 0` — i.e., only when there's a real problem
+- Manual refresh button now bypasses the 10-second throttle and refetches package + character data (was previously a no-op when clicked within the throttle window)
+- Realtime handler also refetches characters now (was only refetching mystery_packages, leaving `characters` state stale)
+
+### Fix: Adaptive Detective/Investigator tab terminology by mystery type
+- Tab label was a single i18n key showing the same string for both murder and intrigue mysteries
+- Now reads `mystery_type`: "Detective Guide" for murder, "Investigator Guide" for intrigue (matches the script content terminology)
+- Added `inspectorIntrigue` keys to en.json desktop + mobile tabs
+
+### Fix: Evidence card print strips Significance section
+- New evidence prompt format includes a `#### SIGNIFICANCE (Host Only)` block alongside the description; the print parser was including both
+- `PRINT_STRIP` regex now also matches `Significance` so printed cards show only the description + image, as intended
+
 ## 2026-04-24
 
 ### Feature: PostHog analytics + homepage video play tracking
@@ -7,6 +43,12 @@
 - Tracks `$pageview` on every route change via PostHog
 - Homepage YouTube embed now uses `enablejsapi=1`; a `homepage_video_played` event fires once per session when playback starts (via `postMessage` from the YouTube IFrame API)
 - PostHog project key stored as `VITE_POSTHOG_KEY` Vercel env var — never in the repo
+
+### Feature: Intrigue mystery gathering hook — premise and Make.com generation
+- Intrigue mysteries need an explicit in-world reason for suspects to stay ("nobody leaves" equivalent from murder mysteries). Added the **gathering hook** requirement across the full stack
+- **mystery-ai (v160):** Both intrigue generation branches now instruct the AI to include in the PREMISE: (1) what occasion brings all suspects together, (2) that the wronged party summoned everyone and engaged an outside investigator, (3) why no one can simply leave (venue control, time pressure, or leaving = guilt). The wronged party description now also notes they are NOT a suspect but ARE present and determined
+- **Make.com Parent12:** Updated three intrigue modules — Part 1 Planning (2417) adds `gatheringMechanism`, `retentionReason`, `investigatorEngagement` fields to the wronged party profile and JSON output spec; Part 2 Gameplay (4020) requires Round 1 evidence to reference and support the gathering hook; Host Guide (2419) adds a `wronged_party_framing` step before the detective opening with explicit three-part opening structure (identity + engagement → the crime → why no one leaves)
+- Blueprint saved as `temp-files/MM Live - Parent12.blueprint.json` — import this into Make.com to replace Parent11
 
 ### Fix: Intrigue mystery type generating murder content (confirmed working)
 - Four bugs combined to cause this — all fixed and verified end-to-end

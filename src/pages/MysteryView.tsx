@@ -24,6 +24,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { trackMysteryCreation, trackGenerationCompleted, trackGenerationFailed } from "@/lib/analytics";
+import GenerationProgress from "@/components/GenerationProgress";
 
 interface MysteryPackageData {
   title?: string;
@@ -626,13 +627,18 @@ const MysteryView = () => {
         }, 
         async (payload) => {
           console.log("🔔 [REALTIME] Real-time update received:", payload);
-          
-          // Trigger immediate status check when update is received
+
+          // Trigger immediate status check + character/package refresh.
+          // Without the package re-fetch, characters state stays stale and
+          // the "We're Finalizing" warning fires even after children land.
           try {
-            await checkGenerationStatus();
-            console.log("🔔 [REALTIME] Status check triggered by real-time update");
+            await Promise.all([
+              checkGenerationStatus(),
+              fetchStructuredPackageData(),
+            ]);
+            console.log("🔔 [REALTIME] Status + package refresh triggered by real-time update");
           } catch (error) {
-            console.error("🔔 [REALTIME] Error during real-time triggered status check:", error);
+            console.error("🔔 [REALTIME] Error during real-time triggered refresh:", error);
           }
         }
       )
@@ -645,7 +651,37 @@ const MysteryView = () => {
       console.log("🔔 [REALTIME] Unsubscribing from real-time updates");
       subscription.unsubscribe();
     };
-  }, [id, checkGenerationStatus]);
+  }, [id, checkGenerationStatus, fetchStructuredPackageData]);
+
+  // Realtime subscription for mystery_characters INSERTs.
+  // Each child scenario insert triggers a refetch so the live "X of Y characters ready"
+  // count in the GenerationProgress component updates as children land.
+  useEffect(() => {
+    if (!packageId) return;
+
+    console.log("🔔 [REALTIME] Setting up mystery_characters subscription for packageId:", packageId);
+
+    const subscription = supabase
+      .channel(`mystery_characters_${packageId}`)
+      .on('postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'mystery_characters',
+          filter: `package_id=eq.${packageId}`,
+        },
+        async () => {
+          try {
+            await fetchStructuredPackageData();
+          } catch (error) {
+            console.error("🔔 [REALTIME] Error refreshing on character insert:", error);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => { subscription.unsubscribe(); };
+  }, [packageId, fetchStructuredPackageData]);
 
   // Generation timeout detection — 15 minutes
   const GENERATION_TIMEOUT_MS = 15 * 60 * 1000;
@@ -816,11 +852,17 @@ const MysteryView = () => {
     fetchMystery();
   }, [id, fetchStructuredPackageData, fetchMessages]);
 
-  // Manual refresh function
-  const handleManualRefresh = useCallback(() => {
+  // Manual refresh function — bypasses the 10s throttle on checkGenerationStatus,
+  // and re-pulls character/package data (the throttled path doesn't always do that).
+  const handleManualRefresh = useCallback(async () => {
     debugLog("Manual refresh triggered");
-    checkGenerationStatus();
-  }, [checkGenerationStatus, debugLog]);
+    lastStatusCheck.current = 0; // bypass throttle
+    await Promise.all([
+      checkGenerationStatus(),
+      fetchStructuredPackageData(),
+    ]);
+    setLastUpdate(new Date());
+  }, [checkGenerationStatus, fetchStructuredPackageData, debugLog]);
 
   // Field-level update handler for mystery_packages
   const handlePackageFieldUpdate = useCallback(async (fieldName: string, value: string) => {
@@ -1015,121 +1057,27 @@ const MysteryView = () => {
       );
     }
 
+    // Compute character generation progress for the live count.
+    // extracted_characters is set early in the parent flow; mystery_characters rows
+    // arrive as children complete. Falls back to player_count if extracted not yet set.
+    let charactersExpected = 0;
+    if (packageData?.extracted_characters) {
+      try {
+        const extracted = typeof packageData.extracted_characters === 'string'
+          ? JSON.parse(packageData.extracted_characters)
+          : packageData.extracted_characters;
+        if (Array.isArray(extracted)) charactersExpected = extracted.length;
+      } catch { /* fall back below */ }
+    }
+    if (charactersExpected === 0) charactersExpected = mystery?.player_count || 0;
+
     return (
-      <Card className={cn(
-        "mb-6",
-        isMobile && "mx-2"
-      )}>
-        <CardHeader className={cn(isMobile && "p-4 pb-3")}>
-          <CardTitle className={cn(
-            "flex items-center justify-between",
-            isMobile ? "text-lg flex-col space-y-2 items-start" : "flex-row"
-          )}>
-            <span className={cn(isMobile && "text-base")}>Generating Your Mystery Package</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleManualRefresh}
-              className={cn(
-                "h-8 w-8 p-0 text-muted-foreground hover:text-foreground",
-                isMobile && "self-end"
-              )}
-              title="Refresh status"
-            >
-              <RefreshCw className="h-4 w-4" />
-            </Button>
-          </CardTitle>
-          <CardDescription className={cn(isMobile && "text-sm")}>
-            Your mystery is being carefully crafted and will take approximately {getEstimatedTime(mystery?.player_count || 6)} to complete. Please be patient - your mystery is being crafted with care! This page will automatically refresh once the mystery has fully generated.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className={cn(
-          "space-y-4",
-          isMobile && "p-4 pt-0 space-y-3"
-        )}>
-          <div className={cn(
-            "flex flex-col md:flex-row gap-4 text-sm",
-            isMobile && "gap-3"
-          )}>
-            <div className={cn(
-              "flex-1 border rounded-md p-3",
-              isMobile && "p-3"
-            )}>
-              <div className={cn(
-                "font-medium mb-2 flex items-center",
-                isMobile && "text-sm"
-              )}>
-                <Loader2 className={cn(
-                  "mr-2 animate-spin text-primary",
-                  isMobile ? "h-3 w-3" : "h-4 w-4"
-                )} />
-                <span>Current Step</span>
-              </div>
-              <p className={cn(
-                "text-muted-foreground break-words animate-pulse",
-                isMobile && "text-xs leading-relaxed"
-              )}>
-                {generationStatus.currentStep}
-              </p>
-            </div>
-            
-            <div className={cn(
-              "flex-1 border rounded-md p-3",
-              isMobile && "p-3"
-            )}>
-              <div className={cn(
-                "font-medium mb-2",
-                isMobile && "text-sm"
-              )}>
-                Generation Progress
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center">
-                  <div className={`h-2 w-2 rounded-full mr-2 ${generationStatus.sections?.hostGuide ? "bg-green-500" : "bg-muted"}`}></div>
-                  <span className={cn(
-                    generationStatus.sections?.hostGuide ? "" : "text-muted-foreground",
-                    isMobile && "text-xs"
-                  )}>
-                    Host Guide
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div className={`h-2 w-2 rounded-full mr-2 ${generationStatus.sections?.characters ? "bg-green-500" : "bg-muted"}`}></div>
-                  <span className={cn(
-                    generationStatus.sections?.characters ? "" : "text-muted-foreground",
-                    isMobile && "text-xs"
-                  )}>
-                    Character Guides
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div className={`h-2 w-2 rounded-full mr-2 ${generationStatus.sections?.clues ? "bg-green-500" : "bg-muted"}`}></div>
-                  <span className={cn(
-                    generationStatus.sections?.clues ? "" : "text-muted-foreground",
-                    isMobile && "text-xs"
-                  )}>
-                    Clues & Materials
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <p className={cn(
-            "text-sm text-muted-foreground",
-            isMobile && "text-xs"
-          )}>
-            <strong>Auto-refresh:</strong> This page automatically checks for updates every 15 seconds.
-            {lastUpdate && ` Last update: ${lastUpdate.toLocaleTimeString()}`}
-          </p>
-          <p className={cn(
-            "text-sm text-muted-foreground",
-            isMobile && "text-xs"
-          )}>
-            Having issues? <a href="/support" className="underline text-primary hover:text-primary/80">Contact support</a>
-          </p>
-        </CardContent>
-      </Card>
+      <GenerationProgress
+        progress={generationStatus.progress ?? 0}
+        charactersDone={characters.length}
+        charactersExpected={charactersExpected}
+        isMobile={isMobile}
+      />
     );
   };
 
@@ -1181,10 +1129,12 @@ const MysteryView = () => {
           "container mx-auto max-w-4xl",
           isMobile && "max-w-full"
         )}>
-          {/* Show "finalizing" card if needs_review OR if generation looks complete but characters are missing */}
+          {/* Show "finalizing" card only when status definitively says so.
+              The old fallback path (is_paid && gameOverview) was firing prematurely
+              during in_progress generation because gameOverview lands at 60% but
+              characters land later — causing a false positive between those steps. */}
           {generationStatus?.status === 'needs_review' ||
-           (characters.length === 0 && !generating &&
-            (generationStatus?.status === 'completed' || (mystery?.is_paid && packageData?.gameOverview))) ? (
+           (characters.length === 0 && !generating && generationStatus?.status === 'completed') ? (
             <Card className={cn(
               "mb-6 border-amber-500/30",
               isMobile && "mx-2"
@@ -1254,6 +1204,10 @@ const MysteryView = () => {
               estimatedTime={getEstimatedTime(mystery?.player_count || 6)}
               packageId={packageId || undefined}
               isPaid={mystery?.is_paid}
+              mysteryType={mystery?.mystery_type}
+              mysteryStyle={mystery?.mystery_style}
+              hasAccomplice={mystery?.has_accomplice}
+              playerCount={mystery?.player_count}
               onPackageFieldUpdate={packageId ? handlePackageFieldUpdate : undefined}
               onCharacterFieldUpdate={handleCharacterFieldUpdate}
             />

@@ -5,7 +5,7 @@ export interface EvidenceCard {
   imageUrl: string;
 }
 
-const PRINT_STRIP = /^####\s+(Visual Description|Who It Implicates|What This Reveals|Implications|Discovered)\b/i;
+const PRINT_STRIP = /^####\s+(Visual Description|Who It Implicates|What This Reveals|Implications|Discovered|Significance)\b/i;
 
 function stripSectionsForPrint(lines: string[]): string[] {
   const out: string[] = [];

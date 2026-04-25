@@ -20,6 +20,7 @@ import { trackPackageTabViewed, trackFeedbackPromptShown, trackFeedbackPromptCli
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { parseEvidenceCards } from "@/utils/evidenceCardUtils";
+import HostGuideTemplate from "./HostGuideTemplate";
 
 function stripH4Section(markdown: string, pattern: RegExp): string {
   const lines = markdown.split('\n');
@@ -111,6 +112,11 @@ interface MysteryPackageTabViewProps {
   estimatedTime: string;
   packageId?: string;
   isPaid?: boolean;
+  // Mystery context — used by HostGuideTemplate to parameterize static content.
+  mysteryType?: string | null;
+  mysteryStyle?: string | null;
+  hasAccomplice?: boolean | null;
+  playerCount?: number | null;
   onPackageFieldUpdate?: (fieldName: string, value: string) => Promise<void>;
   onCharacterFieldUpdate?: (characterId: string, fieldName: string, value: string) => Promise<void>;
 }
@@ -190,6 +196,10 @@ const MysteryPackageTabView = React.memo(({
   estimatedTime,
   packageId,
   isPaid,
+  mysteryType,
+  mysteryStyle,
+  hasAccomplice,
+  playerCount,
   onPackageFieldUpdate,
   onCharacterFieldUpdate,
 }: MysteryPackageTabViewProps) => {
@@ -351,44 +361,56 @@ const MysteryPackageTabView = React.memo(({
       content += `${character.round2_questions}\n\n`;
     }
 
-    if (character.round2_innocent && !isStub(character.round2_innocent)) {
-      content += `${character.round2_innocent}\n\n`;
-    }
-
-    if (character.round2_guilty && !isStub(character.round2_guilty)) {
-      content += `${character.round2_guilty}\n\n`;
+    if (character.round2_script && !isStub(character.round2_script)) {
+      content += `${character.round2_script}\n\n`;
+    } else {
+      if (character.round2_innocent && !isStub(character.round2_innocent)) {
+        content += `${character.round2_innocent}\n\n`;
+      }
+      if (character.round2_guilty && !isStub(character.round2_guilty)) {
+        content += `${character.round2_guilty}\n\n`;
+      }
     }
 
     if (character.round3_questions) {
       content += `${character.round3_questions}\n\n`;
     }
 
-    if (character.round3_innocent && !isStub(character.round3_innocent)) {
-      content += `${character.round3_innocent}\n\n`;
-    }
-
-    if (character.round3_guilty && !isStub(character.round3_guilty)) {
-      content += `${character.round3_guilty}\n\n`;
+    if (character.round3_script && !isStub(character.round3_script)) {
+      content += `${character.round3_script}\n\n`;
+    } else {
+      if (character.round3_innocent && !isStub(character.round3_innocent)) {
+        content += `${character.round3_innocent}\n\n`;
+      }
+      if (character.round3_guilty && !isStub(character.round3_guilty)) {
+        content += `${character.round3_guilty}\n\n`;
+      }
     }
 
     if (character.round4_questions) {
       content += `${character.round4_questions}\n\n`;
     }
 
-    if (character.round4_innocent && !isStub(character.round4_innocent)) {
-      content += `${character.round4_innocent}\n\n`;
+    if (character.round4_script && !isStub(character.round4_script)) {
+      content += `${character.round4_script}\n\n`;
+    } else {
+      if (character.round4_innocent && !isStub(character.round4_innocent)) {
+        content += `${character.round4_innocent}\n\n`;
+      }
+      if (character.round4_guilty && !isStub(character.round4_guilty)) {
+        content += `${character.round4_guilty}\n\n`;
+      }
     }
 
-    if (character.round4_guilty && !isStub(character.round4_guilty)) {
-      content += `${character.round4_guilty}\n\n`;
-    }
-
-    if (character.final_innocent && !isStub(character.final_innocent)) {
-      content += `${character.final_innocent}\n\n`;
-    }
-
-    if (character.final_guilty && !isStub(character.final_guilty)) {
-      content += `${character.final_guilty}\n\n`;
+    if (character.final_statement && !isStub(character.final_statement)) {
+      content += `${character.final_statement}\n\n`;
+    } else {
+      if (character.final_innocent && !isStub(character.final_innocent)) {
+        content += `${character.final_innocent}\n\n`;
+      }
+      if (character.final_guilty && !isStub(character.final_guilty)) {
+        content += `${character.final_guilty}\n\n`;
+      }
     }
     
     // Convert any escaped newlines to actual newlines for proper markdown rendering
@@ -708,7 +730,10 @@ const MysteryPackageTabView = React.memo(({
             )}
             style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 500 }}
           >
-            {t(isMobile ? 'mysteryPackage.mobileTabs.inspector' : 'mysteryPackage.tabs.inspector')}
+            {/* Tab label adapts to mystery type: "Detective" for murder, "Investigator" for intrigue. */}
+            {mysteryType === 'intrigue'
+              ? t(isMobile ? 'mysteryPackage.mobileTabs.inspectorIntrigue' : 'mysteryPackage.tabs.inspectorIntrigue')
+              : t(isMobile ? 'mysteryPackage.mobileTabs.inspector' : 'mysteryPackage.tabs.inspector')}
           </TabsTrigger>
         </TabsList>
 
@@ -718,62 +743,17 @@ const MysteryPackageTabView = React.memo(({
             isMobile && "text-sm"
           )}>
             {packageData && (packageData.gameOverview || packageData.hostGuide) ? (
-              <div className="space-y-6">
-                {packageData.gameOverview && (
-                  <EditableSection
-                    content={packageData.gameOverview}
-                    onSave={(val) => onPackageFieldUpdate?.('game_overview', val) ?? Promise.resolve()}
-                    canEdit={!!onPackageFieldUpdate}
-                    sectionLabel="Game Overview"
-                    isMobile={isMobile}
-                  />
-                )}
-                {packageData.materials && (
-                  <EditableSection
-                    content={packageData.materials}
-                    onSave={(val) => onPackageFieldUpdate?.('materials', val) ?? Promise.resolve()}
-                    canEdit={!!onPackageFieldUpdate}
-                    sectionLabel="Materials"
-                    isMobile={isMobile}
-                  />
-                )}
-                {packageData.preparation && (
-                  <EditableSection
-                    content={packageData.preparation}
-                    onSave={(val) => onPackageFieldUpdate?.('preparation_instructions', val) ?? Promise.resolve()}
-                    canEdit={!!onPackageFieldUpdate}
-                    sectionLabel="Preparation"
-                    isMobile={isMobile}
-                  />
-                )}
-                {packageData.timeline && (
-                  <EditableSection
-                    content={packageData.timeline}
-                    onSave={(val) => onPackageFieldUpdate?.('timeline', val) ?? Promise.resolve()}
-                    canEdit={!!onPackageFieldUpdate}
-                    sectionLabel="Timeline"
-                    isMobile={isMobile}
-                  />
-                )}
-                {packageData.hostGuide && (
-                  <EditableSection
-                    content={packageData.hostGuide}
-                    onSave={(val) => onPackageFieldUpdate?.('host_guide', val) ?? Promise.resolve()}
-                    canEdit={!!onPackageFieldUpdate}
-                    sectionLabel="Host Guide"
-                    isMobile={isMobile}
-                  />
-                )}
-                {packageData.hostingTips && (
-                  <EditableSection
-                    content={packageData.hostingTips}
-                    onSave={(val) => onPackageFieldUpdate?.('hosting_tips', val) ?? Promise.resolve()}
-                    canEdit={!!onPackageFieldUpdate}
-                    sectionLabel="Hosting Tips"
-                    isMobile={isMobile}
-                  />
-                )}
-              </div>
+              <HostGuideTemplate
+                mysteryType={mysteryType}
+                mysteryStyle={mysteryStyle}
+                hasAccomplice={hasAccomplice}
+                playerCount={playerCount}
+                gameOverview={packageData.gameOverview}
+                materials={packageData.materials}
+                hostingTips={packageData.hostingTips}
+                onPackageFieldUpdate={onPackageFieldUpdate}
+                isMobile={isMobile}
+              />
             ) : hostGuide ? (
               <div className={cn("prose max-w-none overflow-x-auto", isMobile && "prose-sm")}>
                 <ReactMarkdown>{hostGuide}</ReactMarkdown>
