@@ -61,7 +61,6 @@ const HostGuideTemplate: React.FC<HostGuideTemplateProps> = ({
 - ${Investigator} script (${investigator} dialogue for each round, in the ${Investigator} Guide tab)
 - Container for slips of paper (hat, bowl, decorative box)
 - Slips of paper for ${culprit} selection${hasAccomplice ? " (and accomplice selection)" : ""}
-- Pens or pencils for accusations
 - Timer or clock${isMobile ? "" : "\n- Optional: themed décor, music, food/drink"}
 
 ## Preparation Before the Party
