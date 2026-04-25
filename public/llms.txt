@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 93 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 94 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -58,6 +58,7 @@ This index organizes 93 published guides by topic cluster. All guides are availa
 - [Creating the Perfect Pharmacist Character for Your Murder Mystery Party](https://www.mysterymaker.party/blog/creating-the-perfect-pharmacist-character-for-your-murder-mystery-party): Prescribe danger with knowledgeable pharmacist characters who understand medicines and chemical mysteries.
 - [Creating the Perfect Social Media Influencer Characters for Your Murder Mystery Party](https://www.mysterymaker.party/blog/creating-the-perfect-social-media-influencer-characters-for-your-murder-mystery-party): Influence investigations with trendy social media influencer characters who understand online secrets and digital drama.
 - [Fashion Week Murder Mystery Party Planning: Strut Into Danger and Style](https://www.mysterymaker.party/blog/fashion-week-murder-mystery-party-planning-strut-into-danger-and-style): Strut into danger with high-fashion murder mystery parties featuring designers, models, and runway rivalries.
+- [Forensic Expert Murder Mystery Themes: Crime Scene Analysis and Scientific Investigation](https://www.mysterymaker.party/blog/forensic-expert-murder-mystery-themes-crime-scene-analysis-scientific-investigation): Create murder mysteries featuring forensic expert characters who analyze evidence, process crime scenes, and apply scientific methods. Generate custom forensics
 - [Film Noir Murder Mystery Parties: How to Build Detective Experiences That Actually Work](https://www.mysterymaker.party/blog/unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime): So you want to run a film noir murder mystery party. Here's how to design detective cases that capture that cinematic atmosphere without falling into the noir c
 - [Unique Pirate Murder Mystery Plot Ideas](https://www.mysterymaker.party/blog/unique-pirate-murder-mystery-plot-ideas): Build pirate murder mystery plots that actually work — treasure disputes, mutiny conspiracies, and crew conflicts tailored to your specific group.
 - [Unique School Reunion Murder Mystery Plots That Uncover Buried Secrets](https://www.mysterymaker.party/blog/unique-school-reunion-murder-mystery-plots-that-uncover-buried-secrets): School reunion murder mysteries transform nostalgic gatherings into investigations where old friends become suspects and buried secrets turn deadly.
