@@ -105,6 +105,14 @@ export interface MysteryCharacter {
   round4_guilty?: string;
   round4_accomplice?: string;
   accusations?: string;
+  // Point-form siblings (populated by generate-pointform-summaries Edge Function for script_type='both')
+  introduction_pointform?: string;
+  rumors_pointform?: string;
+  accusations_pointform?: string;
+  round2_script_pointform?: string;
+  round3_script_pointform?: string;
+  round4_script_pointform?: string;
+  final_statement_pointform?: string;
   final_statement?: string;
   final_innocent?: string;
   final_guilty?: string;

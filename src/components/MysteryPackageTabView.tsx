@@ -120,6 +120,9 @@ interface MysteryPackageTabViewProps {
   mysteryStyle?: string | null;
   hasAccomplice?: boolean | null;
   playerCount?: number | null;
+  // Host's chosen format for spoken fields. 'both' triggers stacked detailed+pointform
+  // rendering; 'pointForm' shows bullets only; 'full' (default) shows prose only.
+  scriptType?: 'full' | 'pointForm' | 'both' | null;
   onPackageFieldUpdate?: (fieldName: string, value: string) => Promise<void>;
   onCharacterFieldUpdate?: (characterId: string, fieldName: string, value: string) => Promise<void>;
 }
@@ -203,9 +206,11 @@ const MysteryPackageTabView = React.memo(({
   mysteryStyle,
   hasAccomplice,
   playerCount,
+  scriptType: scriptTypeProp,
   onPackageFieldUpdate,
   onCharacterFieldUpdate,
 }: MysteryPackageTabViewProps) => {
+  const scriptType: 'full' | 'pointForm' | 'both' = scriptTypeProp || 'full';
   const [activeTab, setActiveTab] = useState("host-guide");
   const [statusMessage, setStatusMessage] = useState("Starting generation...");
   const [showGuestManager, setShowGuestManager] = useState(false);
@@ -817,17 +822,29 @@ const MysteryPackageTabView = React.memo(({
                   // Detective-style uses round_script fields (with headers); character-based uses innocent/guilty fields
                   const hasDetectiveScripts = !!(character.round2_script || character.round3_script || character.round4_script);
 
+                  // Compose detailed prose + point-form bullets per the host's script_type choice.
+                  // For 'both', stack: detailed (with its own header) followed by "**Point Form:**" + bullets.
+                  const composeFormat = (detailed?: string, pointForm?: string): string | undefined => {
+                    const d = (detailed || '').trim();
+                    const p = (pointForm || '').trim();
+                    if (!d && !p) return undefined;
+                    if (scriptType === 'full' || !p) return d || undefined;
+                    if (scriptType === 'pointForm') return p || d || undefined;
+                    if (!d) return p;
+                    return `${d}\n\n**Point Form:**\n\n${p}`;
+                  };
+
                   // Define character fields to render as editable sections
                   const characterFields: Array<{ key: string; content: string | undefined }> = [
                     { key: 'description', content: character.description },
                     { key: 'background', content: character.background },
                     { key: 'relationships', content: typeof character.relationships === 'string' ? character.relationships : undefined },
-                    { key: 'introduction', content: character.introduction },
+                    { key: 'introduction', content: composeFormat(character.introduction, character.introduction_pointform) },
                     { key: 'secret', content: character.secret },
-                    { key: 'rumors', content: character.rumors },
+                    { key: 'rumors', content: composeFormat(character.rumors, character.rumors_pointform) },
                     // Round 2: use script field for detective-style, innocent/guilty for character-based
                     ...(hasDetectiveScripts
-                      ? [{ key: 'round2_script', content: character.round2_script }]
+                      ? [{ key: 'round2_script', content: composeFormat(character.round2_script, character.round2_script_pointform) }]
                       : [
                           { key: 'round2_innocent', content: character.round2_innocent },
                           { key: 'round2_guilty', content: character.round2_guilty },
@@ -836,7 +853,7 @@ const MysteryPackageTabView = React.memo(({
                     { key: 'round2_questions', content: character.round2_questions },
                     // Round 3
                     ...(hasDetectiveScripts
-                      ? [{ key: 'round3_script', content: character.round3_script }]
+                      ? [{ key: 'round3_script', content: composeFormat(character.round3_script, character.round3_script_pointform) }]
                       : [
                           { key: 'round3_innocent', content: character.round3_innocent },
                           { key: 'round3_guilty', content: character.round3_guilty },
@@ -845,7 +862,7 @@ const MysteryPackageTabView = React.memo(({
                     { key: 'round3_questions', content: character.round3_questions },
                     // Round 4
                     ...(hasDetectiveScripts
-                      ? [{ key: 'round4_script', content: character.round4_script }]
+                      ? [{ key: 'round4_script', content: composeFormat(character.round4_script, character.round4_script_pointform) }]
                       : [
                           { key: 'round4_innocent', content: character.round4_innocent },
                           { key: 'round4_guilty', content: character.round4_guilty },
@@ -853,10 +870,10 @@ const MysteryPackageTabView = React.memo(({
                         ]),
                     { key: 'round4_questions', content: character.round4_questions },
                     // Accusations (stored as JSON string; format as readable markdown)
-                    { key: 'accusations', content: formatAccusations(character.accusations) },
+                    { key: 'accusations', content: composeFormat(formatAccusations(character.accusations), character.accusations_pointform) },
                     // Final statement: use final_statement for detective-style, innocent/guilty for character-based
                     ...(hasDetectiveScripts && character.final_statement
-                      ? [{ key: 'final_statement', content: character.final_statement }]
+                      ? [{ key: 'final_statement', content: composeFormat(character.final_statement, character.final_statement_pointform) }]
                       : [
                           { key: 'final_innocent', content: character.final_innocent },
                           { key: 'final_guilty', content: character.final_guilty },

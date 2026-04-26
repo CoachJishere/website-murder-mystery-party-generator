@@ -1228,6 +1228,7 @@ const MysteryView = () => {
               mysteryStyle={mystery?.mystery_style}
               hasAccomplice={mystery?.has_accomplice}
               playerCount={mystery?.player_count}
+              scriptType={mystery?.script_type as 'full' | 'pointForm' | 'both' | null | undefined}
               onPackageFieldUpdate={packageId ? handlePackageFieldUpdate : undefined}
               onCharacterFieldUpdate={handleCharacterFieldUpdate}
             />

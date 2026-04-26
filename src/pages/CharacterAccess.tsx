@@ -19,31 +19,48 @@ interface CharacterAssignment {
     background: string;
     secret: string;
     introduction: string;
+    introduction_pointform?: string | null;
     rumors: string;
+    rumors_pointform?: string | null;
+    accusations?: string | null;
+    accusations_pointform?: string | null;
     round2_questions: string;
     round3_questions: string;
+    round4_questions: string;
+    // Legacy per-role columns (character-based mysteries)
     round2_innocent: string;
     round2_guilty: string;
     round2_accomplice: string;
     round3_innocent: string;
     round3_guilty: string;
     round3_accomplice: string;
-    round4_questions: string;
     round4_innocent: string;
     round4_guilty: string;
     round4_accomplice: string;
     final_innocent: string;
     final_guilty: string;
     final_accomplice: string;
+    // Unified columns (detective-style mysteries)
+    round2_script?: string | null;
+    round2_script_pointform?: string | null;
+    round3_script?: string | null;
+    round3_script_pointform?: string | null;
+    round4_script?: string | null;
+    round4_script_pointform?: string | null;
+    final_statement?: string | null;
+    final_statement_pointform?: string | null;
     relationships: any;
     secrets: any;
   };
 }
 
+type ScriptType = 'full' | 'pointForm' | 'both';
+
 const CharacterAccess: React.FC = () => {
   const { t } = useTranslation();
   const { token } = useParams<{ token: string }>();
   const [assignment, setAssignment] = useState<CharacterAssignment | null>(null);
+  const [scriptType, setScriptType] = useState<ScriptType>('full');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -93,6 +110,15 @@ const CharacterAccess: React.FC = () => {
         ...assignmentData,
         mystery_characters: characterData
       });
+
+      // Fetch the host's display preference (full / pointForm / both) for this packet
+      const { data: meta } = await supabase
+        .rpc('get_packet_metadata_by_token', { access_token_param: token })
+        .single();
+      const t = (meta as any)?.script_type;
+      if (t === 'full' || t === 'pointForm' || t === 'both') {
+        setScriptType(t);
+      }
     } catch (error: any) {
       console.error('Error loading character assignment:', error);
       setError(`Failed to load character: ${error.message || 'Unknown error'}`);
@@ -112,92 +138,108 @@ const CharacterAccess: React.FC = () => {
       .trim();
   };
 
+  // Format a "spoken" field that has detailed prose + optional point-form sibling.
+  // Output respects the host's script_type choice:
+  //   full      -> detailed only
+  //   pointForm -> bullets only (with synthesized header from fallbackHeader if needed)
+  //   both      -> detailed first, then "**Point Form:**" + bullets stacked underneath
+  const formatScriptField = (
+    detailed: string | null | undefined,
+    pointForm: string | null | undefined,
+    fallbackHeader: string,
+  ): string => {
+    const d = (detailed || '').trim();
+    const p = (pointForm || '').trim();
+    if (!d && !p) return '';
+    if (scriptType === 'full' || !p) return d;
+    if (scriptType === 'pointForm') {
+      // Bullets don't carry their own section header — synthesize one if needed
+      return p.startsWith('#') || p.startsWith('**') ? p : `## ${fallbackHeader}\n\n${p}`;
+    }
+    // 'both' — stack detailed (with its baked-in header) + point-form section
+    if (!d) return p;
+    return `${d}\n\n**Point Form:**\n\n${p}`;
+  };
+
   const buildCharacterGuideContent = (character: any): string => {
     let content = `# ${character.character_name} - Your Character\n\n`;
 
-    if (character.description) {
-      content += `${cleanMarkdownHeaders(character.description)}\n\n`;
+    // Static character info — no pointform variants
+    if (character.description) content += `${cleanMarkdownHeaders(character.description)}\n\n`;
+    if (character.background) content += `${cleanMarkdownHeaders(character.background)}\n\n`;
+    if (character.relationships && typeof character.relationships === 'string') {
+      content += `${cleanMarkdownHeaders(character.relationships)}\n\n`;
     }
+    if (character.secret) content += `${cleanMarkdownHeaders(character.secret)}\n\n`;
 
-    if (character.background) {
-      content += `${cleanMarkdownHeaders(character.background)}\n\n`;
-    }
+    // Round 1 setup — has pointform variants
+    const introBlock = formatScriptField(
+      character.introduction, character.introduction_pointform,
+      'ROUND 1: YOUR INTRODUCTION',
+    );
+    if (introBlock) content += `${cleanMarkdownHeaders(introBlock)}\n\n`;
 
-    if (character.secret) {
-      content += `${cleanMarkdownHeaders(character.secret)}\n\n`;
-    }
+    const rumorsBlock = formatScriptField(
+      character.rumors, character.rumors_pointform,
+      'RUMORS TO SPREAD',
+    );
+    if (rumorsBlock) content += `${cleanMarkdownHeaders(rumorsBlock)}\n\n`;
 
-    if (character.introduction) {
-      content += `${cleanMarkdownHeaders(character.introduction)}\n\n`;
-    }
+    // Rounds 2-4 — prefer unified `round_script` (detective-style); fall back to per-role
+    // columns (legacy character-based) only when the unified column is absent.
+    const renderRound = (roundNum: 2 | 3 | 4) => {
+      const questions = character[`round${roundNum}_questions`];
+      if (questions) content += `${cleanMarkdownHeaders(questions)}\n\n`;
 
-    if (character.rumors) {
-      content += `${cleanMarkdownHeaders(character.rumors)}\n\n`;
-    }
-
-    // Add round responses
-    if (character.round2_questions) {
-      content += `${cleanMarkdownHeaders(character.round2_questions)}\n\n`;
-
-      if (character.round2_innocent) {
-        content += `**If You're Innocent:**\n${cleanMarkdownHeaders(character.round2_innocent)}\n\n`;
+      const unified = character[`round${roundNum}_script`];
+      const unifiedPF = character[`round${roundNum}_script_pointform`];
+      if (unified) {
+        const block = formatScriptField(unified, unifiedPF, `ROUND ${roundNum}`);
+        if (block) content += `${cleanMarkdownHeaders(block)}\n\n`;
+        return;
       }
 
-      if (character.round2_guilty) {
-        content += `**If You're Guilty:**\n${cleanMarkdownHeaders(character.round2_guilty)}\n\n`;
+      // Legacy per-role variants (no pointform support yet for these)
+      if (character[`round${roundNum}_innocent`]) {
+        content += `**If You're Innocent:**\n${cleanMarkdownHeaders(character[`round${roundNum}_innocent`])}\n\n`;
       }
-
-      if (character.round2_accomplice) {
-        content += `**If You're an Accomplice:**\n${cleanMarkdownHeaders(character.round2_accomplice)}\n\n`;
+      if (character[`round${roundNum}_guilty`]) {
+        content += `**If You're Guilty:**\n${cleanMarkdownHeaders(character[`round${roundNum}_guilty`])}\n\n`;
       }
-    }
-
-    if (character.round3_questions) {
-      content += `${cleanMarkdownHeaders(character.round3_questions)}\n\n`;
-
-      if (character.round3_innocent) {
-        content += `**If You're Innocent:**\n${cleanMarkdownHeaders(character.round3_innocent)}\n\n`;
+      if (character[`round${roundNum}_accomplice`]) {
+        content += `**If You're an Accomplice:**\n${cleanMarkdownHeaders(character[`round${roundNum}_accomplice`])}\n\n`;
       }
+    };
+    renderRound(2);
+    renderRound(3);
+    renderRound(4);
 
-      if (character.round3_guilty) {
-        content += `**If You're Guilty:**\n${cleanMarkdownHeaders(character.round3_guilty)}\n\n`;
+    // Final statement — prefer unified, fall back to per-role
+    if (character.final_statement) {
+      const finalBlock = formatScriptField(
+        character.final_statement, character.final_statement_pointform,
+        'FINAL STATEMENT',
+      );
+      if (finalBlock) content += `${cleanMarkdownHeaders(finalBlock)}\n\n`;
+    } else {
+      if (character.final_innocent) {
+        content += `**If You're Innocent (Final):**\n${cleanMarkdownHeaders(character.final_innocent)}\n\n`;
       }
-
-      if (character.round3_accomplice) {
-        content += `**If You're an Accomplice:**\n${cleanMarkdownHeaders(character.round3_accomplice)}\n\n`;
+      if (character.final_guilty) {
+        content += `**If You're Guilty (Final):**\n${cleanMarkdownHeaders(character.final_guilty)}\n\n`;
       }
-    }
-
-    if (character.round4_questions) {
-      content += `${cleanMarkdownHeaders(character.round4_questions)}\n\n`;
-
-      if (character.round4_innocent) {
-        content += `**If You're Innocent:**\n${cleanMarkdownHeaders(character.round4_innocent)}\n\n`;
-      }
-
-      if (character.round4_guilty) {
-        content += `**If You're Guilty:**\n${cleanMarkdownHeaders(character.round4_guilty)}\n\n`;
-      }
-
-      if (character.round4_accomplice) {
-        content += `**If You're an Accomplice:**\n${cleanMarkdownHeaders(character.round4_accomplice)}\n\n`;
+      if (character.final_accomplice) {
+        content += `**If You're an Accomplice (Final):**\n${cleanMarkdownHeaders(character.final_accomplice)}\n\n`;
       }
     }
 
-    if (character.final_innocent) {
-      content += `**If You're Innocent (Final):**\n${cleanMarkdownHeaders(character.final_innocent)}\n\n`;
-    }
-
-    if (character.final_guilty) {
-      content += `**If You're Guilty (Final):**\n${cleanMarkdownHeaders(character.final_guilty)}\n\n`;
-    }
-
-    if (character.final_accomplice) {
-      content += `**If You're an Accomplice (Final):**\n${cleanMarkdownHeaders(character.final_accomplice)}\n\n`;
-    }
-
+    // Accusations — has pointform variants (only populated for guilty/accomplice)
     if (character.accusations) {
-      content += `${cleanMarkdownHeaders(character.accusations)}\n\n`;
+      const accBlock = formatScriptField(
+        character.accusations, character.accusations_pointform,
+        'ACCUSATIONS',
+      );
+      if (accBlock) content += `${cleanMarkdownHeaders(accBlock)}\n\n`;
     }
 
     return content;

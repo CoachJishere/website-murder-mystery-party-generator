@@ -1,5 +1,51 @@
 # Changelog
 
+## 2026-04-26
+
+### Architecture: script_type='both' rendering — twin-column "always generate, conditionally display" pattern
+- Old approach asked one Claude call to emit both bullets AND prose inside a single JSON field. Model fidelity was unreliable: random characters got bullets-only, others prose-only, none got both. The dual-format-in-one-string pattern is fundamentally fragile for LLMs
+- New schema: every spoken field has a `*_pointform` sibling column (`introduction_pointform`, `rumors_pointform`, `accusations_pointform`, `round{2,3,4}_script_pointform`, `final_statement_pointform`). Detailed prose lives in the existing column; bullets live in the new one. Each generation call has ONE clear output mode
+- New Edge Function `generate-pointform-summaries` takes a `packageId` (and optionally `characterIds`), reads existing detailed fields, calls Claude Haiku 4.5 to summarize each into 4-7 bullets ≤20 words each, and updates the `*_pointform` columns. ~$0.05/character. Reusable as Call 4 of the future v14 child Make.com architecture
+- Frontend (`CharacterAccess.tsx` and `MysteryPackageTabView.tsx`): `script_type='full'` shows detailed only, `'pointForm'` shows bullets only, `'both'` stacks detailed (with its own ## header) followed by `**Point Form:**` + bullets. Stacked instead of tabbed because email clients, mobile webviews, and print all render uniformly without JS state
+- New RPC `get_packet_metadata_by_token` exposes the host's `script_type` choice to the guest packet route alongside the existing character data fetch
+
+### Fix: relationships field chain-of-thought leak (Ash, Benny in package 949b49ac)
+- Two characters in a freshly generated mystery had reasoning traces leaked into their `relationships` field — verbatim "Wait, this is wrong. Let me recalculate from the matrix... reviewing the relationship matrix:" followed by a neutral/hostile dump, then the corrected ALLIES/RIVALS section. Customer-facing content shouldn't contain the model's drafts or self-corrections
+- Root cause: the v12 child blueprint's `<no_meta_text_in_output>` block targeted instructional preambles ("CRITICAL: Target 3 DIFFERENT characters") but didn't address mid-output reasoning leaks. Asking the model to "use the relationship matrix" sometimes triggered it to show its work
+- v13 child blueprint adds a `NO CHAIN OF THOUGHT IN OUTPUT` section listing the exact leak phrases ("Wait,", "Let me recalculate", "reviewing the relationship matrix", "Disregard", duplicate `**RIVALS & ENEMIES:**` blocks) and flags `relationships` as the highest-risk field. `<final_format_check>` adds a CoT scan pass that runs before emitting. Imported into the existing unified child scenario — webhook URL unchanged
+- After v13 + a delete/re-fire cycle, all 16 characters' relationships fields are clean. Verified across the cast
+
+### Fix: child Make.com upsert was INSERT-only — caused unique-constraint warnings on re-runs
+- The `supabase:upsertARecord` module in the child blueprint had no `onConflict` parameter, so PostgREST fell through to plain INSERT against `mystery_characters`. Worked fine on first generation (rows didn't exist yet), but every backfill / re-run hit the `(package_id, character_name)` unique constraint and silently lost the regenerated content
+- Discovered while backfilling package 949b49ac after v13 prompt changes. Worked around by deleting rows before re-firing. Permanent fix is a v14 blueprint patch (TODO) — for now, document the workflow
+
+### Fix: package 949b49ac (Midnight Confessions) — stale bullet-only round_scripts replaced with prose
+- Three characters (Perry, Quinn, Victor) came back with bullets in `round_script` columns despite the prompt asking for full prose. Re-fired with `scriptType=full`; all three now have proper prose dialogue
+- Frankie/Frances Vale failed Make.com's `json:ParseJSON` step because the model produced rumors with single-quote dialogue and forgot the closing JSON `"` before the next key. Re-fired and landed cleanly. Underlying fragility is the size of the monolithic JSON output — split-call architecture (planned for v14) is the durable fix
+
+### Architecture: pointform columns added to mystery_characters
+- Migration `add_pointform_columns_to_mystery_characters` adds 7 nullable text columns. Backfilled for package 949b49ac via the new summarizer Edge Function
+
+### Architecture: child Make.com scenario v14 — split-call architecture (BOTH routes)
+- Both Route 0 (detective) and Route 1 (character-based) now use the split-call pattern. Character-based has 5 Claude calls (Context, Round 1, Innocent Scripts, Guilty Scripts, Accomplice Scripts) — the accomplice call has a Make.com module filter on `hasAccomplice="true"` so it auto-skips when the mechanism doesn't apply
+- 12 new role-variant pointform columns added: `round{2,3,4}_{innocent,guilty,accomplice}_pointform`, `final_{innocent,guilty,accomplice}_pointform`. Migration `add_role_variant_pointform_columns`
+- `generate-pointform-summaries` Edge Function updated: SOURCE_FIELDS now includes both unified columns (detective) and per-role variants (character-based). Builds the prompt only with fields that are actually populated for the character. Skips empty fields entirely so character-based mysteries don't waste tokens on unified columns and vice versa
+- Edge Function also accepts `characterName` (not just `characterIds`) — works around the fact that Make.com's `supabase:upsertARecord` connector doesn't return the inserted row's id in output. The webhook's `characterName` is always available, so the v14 blueprint's HTTP step uses `{{63.characterName}}` as the reliable reference
+
+### Architecture: child Make.com scenario v14 — split-call architecture (detective route)
+- Single 25KB Claude call per character replaced with three focused calls + an HTTP step that invokes the summarizer Edge Function. Each Claude call has a small, well-scoped output schema; each call's JSON is small enough to parse reliably. Eliminates the "model forgets a closing quote at end of long output" failure (Frankie/Frances Vale's JSON parse failure was this exact mode)
+- Scenario flow for Route 0 (mystery_style='detective'): searchRows (find existing row by package_id+character_name) → Claude Call 1 (context: description, background, relationships, secret, introduction, characterRole) → Parse → Sleep → Upsert → Claude Call 2 (rumors, accusations) → Parse → Sleep → Upsert (UPDATE by id from Upsert 1) → Claude Call 3 (round2/3/4_script + questions, final_statement) → Parse → Sleep → Upsert (UPDATE by id from Upsert 1) → HTTP POST to generate-pointform-summaries
+- Re-run safe: the searchRows step finds an existing character row if one is present, so Upsert 1 UPDATEs that row instead of failing on the unique constraint. First-time generation still INSERTs cleanly (search returns nothing → id reference resolves empty → Make.com omits → Postgres generates UUID via DEFAULT)
+- script_type=both is no longer asked of the model. The summarizer step (Claude Haiku 4.5 via the Edge Function) takes the prose just written by the upserts and produces clean bullet summaries into the `*_pointform` columns. No more "model picks one format randomly" failure
+- Cost: ~$3.20/mystery for child generation (was ~$1.60). With prompt caching across the 3 Claude calls' shared preamble, real input cost increase is small
+- Blueprint at `temp-files/MM Live - Child (Unified)14-SplitCalls.blueprint.json`. Route 1 (character-based) is unchanged — separate work pending
+- v13 preserved at `temp-files/MM Live - Child (Unified)13-NoCotAndBoth.blueprint.json` for rollback
+
+### Fix: TLC Reunion (fb085089) materials field reduced to theme-only props
+- The `materials` field renders under the "Theme-Specific Props (Optional)" header in `HostGuideTemplate`, but TLC's content was the old verbose format mixing universal items (printed character guides, name tags, timer, slips of paper, pens) with the actual theme bits — causing visible duplication with the static template's universal Materials list rendered just above
+- Rewrote to 6 theme-only bullets: TLC reunion backdrop, mock show posters, Go-Go Juice prop bottle (Mountain Dew + Red Bull as murder weapon), faux paparazzi cameras, themed refreshments, reality TV background music
+- DB-only fix for package `fb085089-6cfb-4d3f-969c-1b276ff1c323`. Audited Villa Amore (`02337aff`) and BEFORE THE NIKAH (`c7d0995f`) — same duplication pattern but left untouched per request
+
 ## 2026-04-25
 
 ### Fix: Better dark-mode contrast on "We're Finalizing Your Mystery" warning card
