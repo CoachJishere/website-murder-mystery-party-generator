@@ -6,7 +6,9 @@
     "signUp": "S'inscrire",
     "signOut": "Se déconnecter",
     "account": "Compte",
-    "support": "Support"
+    "support": "Support",
+    "accountSettings": "Paramètres du compte",
+    "toggleMenu": "Ouvrir le menu"
   },
   "hero": {
     "title": "Créez des soirées mystère en quelques minutes",
@@ -270,13 +272,20 @@
       "requiredField": "Ce champ est obligatoire",
       "termsRequired": "Vous devez accepter les conditions d'utilisation",
       "networkError": "Erreur réseau. Veuillez réessayer.",
-      "unknownError": "Une erreur inconnue est survenue. Veuillez réessayer."
+      "unknownError": "Une erreur inconnue est survenue. Veuillez réessayer.",
+      "googleSignInFailed": "Échec de la connexion avec Google",
+      "googleSignInInitFailed": "Impossible de lancer la connexion avec Google.",
+      "unexpected": "Une erreur inattendue s'est produite"
     },
     "success": {
       "accountCreated": "Compte créé ! Veuillez vérifier votre e-mail pour valider votre compte.",
       "passwordReset": "Lien de réinitialisation de mot de passe envoyé",
       "passwordUpdated": "Mot de passe mis à jour",
       "signedOut": "Déconnecté"
+    },
+    "signInPrompt": {
+      "description": "Inscrivez-vous gratuitement pour créer votre propre soirée enquête personnalisée, ou connectez-vous à votre compte.",
+      "or": "ou"
     }
   },
   "dashboard": {

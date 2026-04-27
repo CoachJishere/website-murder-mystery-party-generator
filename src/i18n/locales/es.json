@@ -6,7 +6,9 @@
     "signUp": "Registrarse",
     "signOut": "Cerrar Sesión",
     "account": "Ajustes",
-    "support": "Soporte"
+    "support": "Soporte",
+    "accountSettings": "Configuración de la cuenta",
+    "toggleMenu": "Abrir menú"
   },
   "hero": {
     "title": "Crea Fiestas de Misterio de Asesinato en Minutos",
@@ -269,13 +271,20 @@
       "requiredField": "Este campo es obligatorio",
       "termsRequired": "Debes aceptar los términos del servicio",
       "networkError": "Error de red. Por favor, inténtalo de nuevo.",
-      "unknownError": "Algo salió mal. Por favor, inténtalo de nuevo."
+      "unknownError": "Algo salió mal. Por favor, inténtalo de nuevo.",
+      "googleSignInFailed": "No se pudo iniciar sesión con Google",
+      "googleSignInInitFailed": "No se pudo iniciar el inicio de sesión con Google.",
+      "unexpected": "Se produjo un error inesperado"
     },
     "success": {
       "accountCreated": "¡Cuenta creada con éxito! Por favor, revisa tu correo electrónico para verificar tu cuenta.",
       "passwordReset": "Correo electrónico de restablecimiento de contraseña enviado con éxito",
       "passwordUpdated": "Contraseña actualizada con éxito",
       "signedOut": "Sesión cerrada con éxito"
+    },
+    "signInPrompt": {
+      "description": "Regístrate gratis para crear tu propio misterio de asesinato personalizado, o inicia sesión en tu cuenta.",
+      "or": "o"
     }
   },
   "dashboard": {

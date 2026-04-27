@@ -6,7 +6,9 @@
     "signUp": "Rekisteröidy",
     "signOut": "Kirjaudu ulos",
     "account": "Tili",
-    "support": "Tuki"
+    "support": "Tuki",
+    "accountSettings": "Tilin asetukset",
+    "toggleMenu": "Avaa valikko"
   },
   "hero": {
     "title": "Luo murhamysteerijuhlia minuuteissa",
@@ -269,13 +271,20 @@
       "requiredField": "Tämä kenttä on pakollinen",
       "termsRequired": "Sinun on hyväksyttävä käyttöehdot",
       "networkError": "Verkkovirhe. Yritä uudelleen.",
-      "unknownError": "Tuntematon virhe tapahtui. Yritä uudelleen."
+      "unknownError": "Tuntematon virhe tapahtui. Yritä uudelleen.",
+      "googleSignInFailed": "Google-kirjautuminen epäonnistui",
+      "googleSignInInitFailed": "Google-kirjautumisen aloitus epäonnistui.",
+      "unexpected": "Tapahtui odottamaton virhe"
     },
     "success": {
       "accountCreated": "Tili luotu! Tarkista sähköpostisi vahvistaaksesi tilisi.",
       "passwordReset": "Salasanan nollauslinkki lähetetty",
       "passwordUpdated": "Salasana päivitetty",
       "signedOut": "Uloskirjautunut"
+    },
+    "signInPrompt": {
+      "description": "Rekisteröidy ilmaiseksi luodaksesi oman räätälöidyn murhamysteerin tai kirjaudu olemassa olevalle tilille.",
+      "or": "tai"
     }
   },
   "dashboard": {

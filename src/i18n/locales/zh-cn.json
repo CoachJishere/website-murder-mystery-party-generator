@@ -6,7 +6,9 @@
     "signUp": "注册",
     "signOut": "登出",
     "account": "设置",
-    "support": "支持"
+    "support": "支持",
+    "accountSettings": "账户设置",
+    "toggleMenu": "打开菜单"
   },
   "hero": {
     "title": "几分钟内创建谋杀悬疑派对",
@@ -269,13 +271,20 @@
       "requiredField": "此字段为必填项",
       "termsRequired": "您必须接受服务条款",
       "networkError": "网络错误。请重试。",
-      "unknownError": "发生了一些错误。请重试。"
+      "unknownError": "发生了一些错误。请重试。",
+      "googleSignInFailed": "Google 登录失败",
+      "googleSignInInitFailed": "无法启动 Google 登录。",
+      "unexpected": "发生意外错误"
     },
     "success": {
       "accountCreated": "账户已创建！请检查您的电子邮件以验证您的账户。",
       "passwordReset": "密码重置电子邮件已发送",
       "passwordUpdated": "密码已更新",
       "signedOut": "已登出"
+    },
+    "signInPrompt": {
+      "description": "免费注册以创建您自己的定制谋杀谜案,或登录现有账户。",
+      "or": "或"
     }
   },
   "dashboard": {

@@ -2,11 +2,13 @@
   "navigation": {
     "home": "Home",
     "dashboard": "대시보드",
-    "signIn": "Sign In",
-    "signUp": "Sign Up",
+    "signIn": "로그인",
+    "signUp": "회원가입",
     "signOut": "로그아웃",
     "account": "Settings",
-    "support": "지원"
+    "support": "지원",
+    "accountSettings": "계정 설정",
+    "toggleMenu": "메뉴 열기"
   },
   "hero": {
     "title": "몇 분 만에 살인 미스터리 파티 만들기",
@@ -269,13 +271,20 @@
       "requiredField": "이 필드는 필수입니다",
       "termsRequired": "이용 약관에 동의해야 합니다",
       "networkError": "네트워크 오류입니다. 다시 시도하세요.",
-      "unknownError": "문제가 발생했습니다. 다시 시도하세요."
+      "unknownError": "문제가 발생했습니다. 다시 시도하세요.",
+      "googleSignInFailed": "Google 로그인에 실패했습니다",
+      "googleSignInInitFailed": "Google 로그인을 시작할 수 없습니다.",
+      "unexpected": "예기치 않은 오류가 발생했습니다"
     },
     "success": {
       "accountCreated": "계정이 성공적으로 생성되었습니다! 이메일을 확인하여 계정을 인증하세요.",
       "passwordReset": "비밀번호 재설정 이메일이 성공적으로 전송되었습니다",
       "passwordUpdated": "비밀번호가 성공적으로 업데이트되었습니다",
       "signedOut": "성공적으로 로그아웃되었습니다"
+    },
+    "signInPrompt": {
+      "description": "무료로 가입하여 나만의 머더 미스터리를 만들거나 기존 계정에 로그인하세요.",
+      "or": "또는"
     }
   },
   "dashboard": {

@@ -6,7 +6,9 @@
     "signUp": "Sign Up",
     "signOut": "Sign Out",
     "account": "Settings",
-    "support": "Support"
+    "support": "Support",
+    "accountSettings": "Account Settings",
+    "toggleMenu": "Toggle menu"
   },
   "hero": {
     "title": "Create Murder Mystery Parties in Minutes",
@@ -270,13 +272,20 @@
       "requiredField": "This field is required",
       "termsRequired": "You must accept the terms of service",
       "networkError": "Network error. Please try again.",
-      "unknownError": "Something went wrong. Please try again."
+      "unknownError": "Something went wrong. Please try again.",
+      "googleSignInFailed": "Failed to sign in with Google",
+      "googleSignInInitFailed": "Failed to initiate Google sign-in.",
+      "unexpected": "An unexpected error occurred"
     },
     "success": {
       "accountCreated": "Account created successfully! Please check your email to verify your account.",
       "passwordReset": "Password reset email sent successfully",
       "passwordUpdated": "Password updated successfully",
       "signedOut": "Signed out successfully"
+    },
+    "signInPrompt": {
+      "description": "Sign up for free to create your own custom murder mystery, or log into an existing account.",
+      "or": "or"
     }
   },
   "dashboard": {

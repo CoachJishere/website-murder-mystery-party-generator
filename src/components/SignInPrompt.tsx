@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface SignInPromptProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ const GoogleLogo = () => (
 
 const SignInPrompt = ({ isOpen, onClose }: SignInPromptProps) => {
   const [googleLoading, setGoogleLoading] = useState(false);
+  const { t } = useTranslation();
 
   const handleGoogleSignIn = async () => {
     try {
@@ -38,17 +40,17 @@ const SignInPrompt = ({ isOpen, onClose }: SignInPromptProps) => {
       });
 
       if (error) {
-        toast.error(`Failed to sign in with Google: ${error.message}`);
+        toast.error(`${t("auth.errors.googleSignInFailed")}: ${error.message}`);
         setGoogleLoading(false);
         return;
       }
 
       if (!data?.url) {
-        toast.error("Failed to initiate Google sign-in.");
+        toast.error(t("auth.errors.googleSignInInitFailed"));
         setGoogleLoading(false);
       }
     } catch (error: any) {
-      toast.error(`An unexpected error occurred: ${error.message || "Unknown error"}`);
+      toast.error(`${t("auth.errors.unexpected")}: ${error.message || t("auth.errors.unknownError")}`);
       setGoogleLoading(false);
     }
   };
@@ -61,13 +63,13 @@ const SignInPrompt = ({ isOpen, onClose }: SignInPromptProps) => {
             className="text-xl text-center uppercase"
             style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-display)' }}
           >
-            Welcome Back
+            {t("auth.signIn.title")}
           </DialogTitle>
           <DialogDescription
             className="text-center pt-2"
             style={{ color: 'var(--color-cream-muted)', fontFamily: 'var(--font-body)' }}
           >
-            Sign up for free to create your own custom murder mystery, or log into an existing account.
+            {t("auth.signInPrompt.description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -96,13 +98,13 @@ const SignInPrompt = ({ isOpen, onClose }: SignInPromptProps) => {
             ) : (
               <GoogleLogo />
             )}
-            <span>Continue with Google</span>
+            <span>{t("auth.signIn.googleButton")}</span>
           </button>
 
           {/* Divider */}
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(245,240,232,0.15)' }} />
-            <span style={{ color: 'rgba(245,240,232,0.4)', fontFamily: 'var(--font-body)', fontSize: '14px' }}>or</span>
+            <span style={{ color: 'rgba(245,240,232,0.4)', fontFamily: 'var(--font-body)', fontSize: '14px' }}>{t("auth.signInPrompt.or")}</span>
             <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(245,240,232,0.15)' }} />
           </div>
 
@@ -122,7 +124,7 @@ const SignInPrompt = ({ isOpen, onClose }: SignInPromptProps) => {
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#A01000')}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-red)')}
           >
-            Sign Up
+            {t("navigation.signUp")}
           </Link>
 
           {/* Sign In (secondary) */}
@@ -148,7 +150,7 @@ const SignInPrompt = ({ isOpen, onClose }: SignInPromptProps) => {
               e.currentTarget.style.color = 'var(--color-cream)';
             }}
           >
-            Sign In
+            {t("navigation.signIn")}
           </Link>
         </div>
       </DialogContent>

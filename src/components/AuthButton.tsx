@@ -11,10 +11,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { useTranslation } from "react-i18next";
 
 const AuthButton = () => {
   const { user, isAuthenticated, signOut } = useAuth();
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
@@ -48,7 +50,7 @@ const AuthButton = () => {
             e.currentTarget.style.color = 'var(--color-cream)';
           }}
         >
-          Sign In
+          {t("navigation.signIn")}
         </Link>
         <Link
           to="/sign-up"
@@ -66,7 +68,7 @@ const AuthButton = () => {
           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#1A1A1A')}
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#000000')}
         >
-          Sign Up
+          {t("navigation.signUp")}
         </Link>
       </div>
     );
@@ -123,7 +125,7 @@ const AuthButton = () => {
           </div>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link to="/account" className="cursor-pointer">Account Settings</Link>
+            <Link to="/account" className="cursor-pointer">{t("navigation.accountSettings")}</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -134,7 +136,7 @@ const AuthButton = () => {
               setOpen(false);
             }}
           >
-            Sign Out
+            {t("navigation.signOut")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

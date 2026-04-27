@@ -6,7 +6,9 @@
     "signUp": "Sign Up",
     "signOut": "Sign Out",
     "account": "Settings",
-    "support": "Support"
+    "support": "Support",
+    "accountSettings": "Kontoinställningar",
+    "toggleMenu": "Öppna meny"
   },
   "hero": {
     "title": "Create Murder Mystery Parties in Minutes",
@@ -269,13 +271,20 @@
       "requiredField": "This field is required",
       "termsRequired": "You must accept the terms of service",
       "networkError": "Network error. Please try again.",
-      "unknownError": "Something went wrong. Please try again."
+      "unknownError": "Something went wrong. Please try again.",
+      "googleSignInFailed": "Det gick inte att logga in med Google",
+      "googleSignInInitFailed": "Det gick inte att starta Google-inloggningen.",
+      "unexpected": "Ett oväntat fel inträffade"
     },
     "success": {
       "accountCreated": "Account created successfully! Please check your email to verify your account.",
       "passwordReset": "Password reset email sent successfully",
       "passwordUpdated": "Password updated successfully",
       "signedOut": "Signed out successfully"
+    },
+    "signInPrompt": {
+      "description": "Registrera dig gratis för att skapa ditt eget skräddarsydda mordmysterium, eller logga in på ett befintligt konto.",
+      "or": "eller"
     }
   },
   "dashboard": {

@@ -6,7 +6,9 @@
     "signUp": "Registrieren",
     "signOut": "Abmelden",
     "account": "Konto",
-    "support": "Unterstützung"
+    "support": "Unterstützung",
+    "accountSettings": "Kontoeinstellungen",
+    "toggleMenu": "Menü öffnen"
   },
   "hero": {
     "title": "Erstellen Sie Krimi-Partys in wenigen Minuten",
@@ -269,13 +271,20 @@
       "requiredField": "Dieses Feld ist erforderlich",
       "termsRequired": "Sie müssen den Nutzungsbedingungen zustimmen",
       "networkError": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
-      "unknownError": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut."
+      "unknownError": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut.",
+      "googleSignInFailed": "Anmeldung mit Google fehlgeschlagen",
+      "googleSignInInitFailed": "Google-Anmeldung konnte nicht gestartet werden.",
+      "unexpected": "Ein unerwarteter Fehler ist aufgetreten"
     },
     "success": {
       "accountCreated": "Konto erfolgreich erstellt! Bitte überprüfen Sie Ihre E-Mails, um Ihr Konto zu verifizieren.",
       "passwordReset": "E-Mail zum Zurücksetzen des Passworts erfolgreich gesendet",
       "passwordUpdated": "Passwort erfolgreich aktualisiert",
       "signedOut": "Erfolgreich abgemeldet"
+    },
+    "signInPrompt": {
+      "description": "Registriere dich kostenlos, um dein eigenes Krimi-Dinner zu erstellen, oder melde dich in deinem Konto an.",
+      "or": "oder"
     }
   },
   "dashboard": {

@@ -2,11 +2,13 @@
   "navigation": {
     "home": "Home",
     "dashboard": "ダッシュボード",
-    "signIn": "Sign In",
-    "signUp": "Sign Up",
+    "signIn": "サインイン",
+    "signUp": "新規登録",
     "signOut": "サインアウト",
     "account": "Settings",
-    "support": "サポート"
+    "support": "サポート",
+    "accountSettings": "アカウント設定",
+    "toggleMenu": "メニューを開く"
   },
   "hero": {
     "title": "数分で殺人ミステリーパーティーを作成",
@@ -269,13 +271,20 @@
       "requiredField": "この項目は必須です",
       "termsRequired": "利用規約に同意する必要があります",
       "networkError": "ネットワークエラーです。もう一度お試しください。",
-      "unknownError": "問題が発生しました。もう一度お試しください。"
+      "unknownError": "問題が発生しました。もう一度お試しください。",
+      "googleSignInFailed": "Googleでのサインインに失敗しました",
+      "googleSignInInitFailed": "Googleサインインを開始できませんでした。",
+      "unexpected": "予期しないエラーが発生しました"
     },
     "success": {
       "accountCreated": "アカウントが正常に作成されました！メールを確認してアカウントを認証してください。",
       "passwordReset": "パスワードリセットメールが正常に送信されました",
       "passwordUpdated": "パスワードが正常に更新されました",
       "signedOut": "正常にサインアウトしました"
+    },
+    "signInPrompt": {
+      "description": "無料で登録してオリジナルのマーダーミステリーを作成するか、既存のアカウントにログインしてください。",
+      "or": "または"
     }
   },
   "dashboard": {

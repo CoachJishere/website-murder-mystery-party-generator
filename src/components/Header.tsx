@@ -63,7 +63,7 @@ const Header = () => {
           className="md:hidden p-3 -mr-3 min-w-[44px] min-h-[44px] flex items-center justify-center"
           style={{ color: 'var(--color-cream)' }}
           onClick={toggleMenu}
-          aria-label="Toggle menu"
+          aria-label={t("navigation.toggleMenu")}
           aria-expanded={isMenuOpen}
         >
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}

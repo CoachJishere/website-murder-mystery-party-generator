@@ -6,7 +6,9 @@
     "signUp": "Registreren",
     "signOut": "Uitloggen",
     "account": "Account",
-    "support": "Ondersteuning"
+    "support": "Ondersteuning",
+    "accountSettings": "Accountinstellingen",
+    "toggleMenu": "Menu openen"
   },
   "hero": {
     "title": "Creëer Moordmysteriefeesten in Minuten",
@@ -269,13 +271,20 @@
       "requiredField": "Dit veld is verplicht",
       "termsRequired": "U moet de servicevoorwaarden accepteren",
       "networkError": "Netwerkfout. Probeer het opnieuw.",
-      "unknownError": "Er is iets misgegaan. Probeer het opnieuw."
+      "unknownError": "Er is iets misgegaan. Probeer het opnieuw.",
+      "googleSignInFailed": "Inloggen met Google mislukt",
+      "googleSignInInitFailed": "Inloggen met Google kon niet worden gestart.",
+      "unexpected": "Er is een onverwachte fout opgetreden"
     },
     "success": {
       "accountCreated": "Account succesvol aangemaakt! Controleer uw e-mail om uw account te verifiëren.",
       "passwordReset": "E-mail voor wachtwoordherstel succesvol verzonden",
       "passwordUpdated": "Wachtwoord succesvol bijgewerkt",
       "signedOut": "Succesvol uitgelogd"
+    },
+    "signInPrompt": {
+      "description": "Meld je gratis aan om je eigen aangepaste moordmysterie te maken, of log in op een bestaand account.",
+      "or": "of"
     }
   },
   "dashboard": {

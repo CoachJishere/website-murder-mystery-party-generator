@@ -6,7 +6,9 @@
     "signUp": "Iscriviti",
     "signOut": "Esci",
     "account": "Account",
-    "support": "Supporto"
+    "support": "Supporto",
+    "accountSettings": "Impostazioni account",
+    "toggleMenu": "Apri menu"
   },
   "hero": {
     "title": "Crea Feste con Delitto in Pochi Minuti",
@@ -269,13 +271,20 @@
       "requiredField": "Questo campo è obbligatorio",
       "termsRequired": "Devi accettare i termini di servizio",
       "networkError": "Errore di rete. Riprova.",
-      "unknownError": "Si è verificato un errore sconosciuto. Riprova."
+      "unknownError": "Si è verificato un errore sconosciuto. Riprova.",
+      "googleSignInFailed": "Accesso con Google non riuscito",
+      "googleSignInInitFailed": "Impossibile avviare l'accesso con Google.",
+      "unexpected": "Si è verificato un errore imprevisto"
     },
     "success": {
       "accountCreated": "Account creato! Controlla la tua email per verificare il tuo account.",
       "passwordReset": "Link per la reimpostazione della password inviato",
       "passwordUpdated": "Password aggiornata",
       "signedOut": "Disconnesso"
+    },
+    "signInPrompt": {
+      "description": "Registrati gratuitamente per creare la tua festa di mistero personalizzata, o accedi al tuo account.",
+      "or": "o"
     }
   },
   "dashboard": {

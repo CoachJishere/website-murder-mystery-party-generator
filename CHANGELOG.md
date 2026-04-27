@@ -2,6 +2,13 @@
 
 ## 2026-04-27
 
+### Fix: header Sign In/Sign Up buttons + auth dialog stuck on English
+- Despite Header.tsx itself using `t()`, the desktop header rendered `<AuthButton />` which hardcoded "Sign In", "Sign Up", "Account Settings", and "Sign Out" — so a Spanish visitor on a Spanish-localized page still saw EN auth buttons. Mobile header was already correctly i18n'd; the bug only ever showed up on desktop
+- Wired [AuthButton.tsx](src/components/AuthButton.tsx) to existing `navigation.signIn` / `signUp` / `signOut` keys (already populated for all 13 locales) plus new `navigation.accountSettings`. Same surface as the mobile menu now, so Spanish desktop users see "Iniciar Sesión" / "Registrarse" / "Configuración de la cuenta" / "Cerrar Sesión"
+- [SignInPrompt.tsx](src/components/SignInPrompt.tsx) (the dialog the hero shows on submit-when-not-authenticated) was fully hardcoded — title, description, Google button, divider, both CTAs, and three toast error messages. Wired to existing `auth.signIn.title` / `auth.signIn.googleButton` and new `auth.signInPrompt.{description,or}` + `auth.errors.{googleSignInFailed,googleSignInInitFailed,unexpected}`
+- [Header.tsx](src/components/Header.tsx) mobile-menu toggle's `aria-label="Toggle menu"` localized via new `navigation.toggleMenu`
+- Side-fix: `navigation.signIn` and `navigation.signUp` in `ja.json` and `ko.json` were stuck on the English literal (not actually translated at original i18n setup time). Patched to サインイン/新規登録 (ja) and 로그인/회원가입 (ko)
+
 ### Fix: chatbox typewriter rendered half-EN / half-target-language placeholder
 - Spanish (and every non-EN/PT locale) saw the typewriter placeholder render as `Create a mystery Diseña un misterio en un mundo de fantasía…` — a literal English prefix glued to the full localized prompt. Two bugs combined: `hero.typewriterPrefix` only existed in `en.json` so all other locales fell back to the English literal, and the suffix-strip regex in [Hero.tsx](src/components/Hero.tsx) only handled English and Portuguese verb prefixes (`Create a mystery` / `Crie um mistério`)
 - A locale-by-locale verb-list patch wouldn't scale: Spanish prompts alone use `Crea`, `Diseña`, `Desarrolla`, `Construye`, `Quiero organizar`. Instead, dropped the static prefix entirely — each localized prompt already contains a natural-language opener, so the full prompt now cycles through the typewriter
