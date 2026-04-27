@@ -2,6 +2,25 @@
 
 ## 2026-04-27
 
+### Fix: chatbox typewriter rendered half-EN / half-target-language placeholder
+- Spanish (and every non-EN/PT locale) saw the typewriter placeholder render as `Create a mystery Diseña un misterio en un mundo de fantasía…` — a literal English prefix glued to the full localized prompt. Two bugs combined: `hero.typewriterPrefix` only existed in `en.json` so all other locales fell back to the English literal, and the suffix-strip regex in [Hero.tsx](src/components/Hero.tsx) only handled English and Portuguese verb prefixes (`Create a mystery` / `Crie um mistério`)
+- A locale-by-locale verb-list patch wouldn't scale: Spanish prompts alone use `Crea`, `Diseña`, `Desarrolla`, `Construye`, `Quiero organizar`. Instead, dropped the static prefix entirely — each localized prompt already contains a natural-language opener, so the full prompt now cycles through the typewriter
+- Removes the `STATIC_PREFIX` span and the prefix-strip `useCallback` dependency surface; works correctly for all 13 locales by construction with no per-locale verb maintenance
+
+### UX: Localize remaining hardcoded English on homepage
+- Stats counter labels (`Mysteries Created` / `Themes Possible` / `To Get Started`), the `Verified Trustpilot Review` badge under each tilt-card, the YouTube iframe `title="Watch a Demo"`, and the three parallax testimonials (Sophia / Will / Jed) were rendered as literal English regardless of i18n locale. All wrapped in `t()` against new `home.*` keys in [Index.tsx](src/pages/Index.tsx)
+- The parallax testimonials are real customer reviews — translating them is a slight artistic licence, but holding back creates a worse trust signal than a localized version for non-EN visitors who can't read the originals
+
+### SEO: Localize homepage `<title>`, meta description, `og:locale`, and `<html lang>`
+- The blog already emits proper `hreflang` alternates and per-language meta via DB-stored `posts.title` / `posts.meta_description` ([BlogPost.tsx:432-475](src/pages/BlogPost.tsx#L432-L475)) — verified 421 Spanish posts have native-language `meta_description`. The homepage was the gap: `<Head>` shipped a hardcoded English title/description and inherited `<html lang="en">` from [index.html](index.html), so Google saw an English page even when the visitor was browsing in Spanish
+- [Head.tsx](src/components/Head.tsx) now reads from `i18n`: defaults `title`/`description` to `home.seo.*` keys, sets `<html lang>` via Helmet (BCP-47, `zh-Hans` for Chinese), and emits `og:locale` from a small i18n-code → OG-locale map. Existing callers that pass an explicit title/description are unaffected
+- [Index.tsx](src/pages/Index.tsx) drops the literal English title/description and uses the i18n fallback path
+
+### UX: Stop showing English testimonials to non-English visitors
+- [TestimonialsSection.tsx](src/components/TestimonialsSection.tsx) was always rendering the latest 6 public reviews from `mystery_feedback`, but the table has no `language` column and ~all paid hosts to date have been EN-speaking — so a Spanish visitor saw English reviews on a Spanish-localized page, which costs trust at the worst possible moment
+- For non-EN locales, skip the `mystery_feedback` fetch entirely and fall straight through to the existing translated `testimonials.testimonialN.*` keys (already populated in all 13 locale files). EN behavior unchanged
+- TODO marker left for the better long-term fix: add `mystery_feedback.language` (populated at submission time from `i18n.resolvedLanguage`) and language-match real testimonials instead of falling back to hardcoded copy
+
 ### UX: Swap homepage demo video
 - Replaced YouTube embed ID `8WInnaFHMY0` with `IFZdtPfUtPo` in [Index.tsx](src/pages/Index.tsx) (and the matching `homepage_video_played` PostHog event payload) and [DarkHomePreview.tsx](src/pages/DarkHomePreview.tsx) so analytics keeps tracking the currently-displayed video
 

@@ -95,6 +95,35 @@
       "sentientPlantColony": "Crea un misterio de asesinato en una sociedad de plantas inteligentes y móviles con una compleja jerarquía social."
     }
   },
+  "home": {
+    "stats": {
+      "mysteriesCreated": "Misterios creados",
+      "themesPossible": "Temas posibles",
+      "toGetStarted": "Para empezar",
+      "minutesShort": "min"
+    },
+    "verifiedTrustpilotReview": "Reseña verificada de Trustpilot",
+    "watchDemo": "Ver una demo",
+    "seo": {
+      "title": "Crea fiestas personalizadas de misterio de asesinato",
+      "description": "Genera escenarios únicos de fiestas de misterio con nuestra herramienta de IA. Personaliza temas, personajes y tramas para eventos inolvidables.",
+      "brand": "Generador de Fiestas de Misterio de Asesinato"
+    },
+    "parallaxTestimonials": {
+      "sophia": {
+        "text": "¡¡¡Mi equipo del trabajo y yo nos divertimos muchísimo con nuestro misterio de asesinato personalizado!!! Pudimos meter la ubicación y el escenario donde realmente estábamos (un viñedo en las montañas de Tródos, Chipre) y elegir nuestro tema (mitología griega), y creó algo realmente único. Que el escenario coincidiera lo hizo sentir real y súper divertido. Además puedes poner el número exacto de participantes, así está perfectamente diseñado. ¡Muchísimo mejor que los misterios genéricos que he probado antes! Súper recomendable.",
+        "author": "Sophia"
+      },
+      "will": {
+        "text": "¡¡¡Ahhh, mi mujer y yo nos lo pasamos increíble con nuestros amigos usando este pack!!! Tengo amigos muy fans del teatro, así que muchos se disfrazaron a lo grande (algunos incluso se memorizaron sus papeles) y todo el mundo se rió un montón. Semanas después seguimos hablando de ello y ya queremos organizar el próximo.",
+        "author": "Will Treaty"
+      },
+      "jed": {
+        "text": "Vale, entré bastante escéptico porque NO soy nada de rol y mi amiga me convenció para hacer uno temático de White Lotus para su cena. Estaba listo para sentir vergüenza ajena toda la noche. En cambio, me quedé absorto durante 3 horas interrogando a todos y me dio rabia genuina cuando resultó que no era yo el asesino. Increíble. No dejes pasar esto si alguien te lo propone.",
+        "author": "Jed"
+      }
+    }
+  },
   "howItWorks": {
     "step1": {
       "title": "Describe tu misterio de asesinato ideal.",

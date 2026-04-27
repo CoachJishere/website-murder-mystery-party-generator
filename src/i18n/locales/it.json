@@ -95,6 +95,35 @@
       "sentientPlantColony": "Crea un mistero con delitto in una comunità di piante senzienti e mobili con una complessa gerarchia sociale."
     }
   },
+  "home": {
+    "stats": {
+      "mysteriesCreated": "Misteri creati",
+      "themesPossible": "Temi possibili",
+      "toGetStarted": "Per iniziare",
+      "minutesShort": "min"
+    },
+    "verifiedTrustpilotReview": "Recensione Trustpilot verificata",
+    "watchDemo": "Guarda una demo",
+    "seo": {
+      "title": "Crea feste di mistero su misura",
+      "description": "Genera scenari unici di feste di mistero con il nostro strumento basato sull'IA. Personalizza temi, personaggi e trame per eventi indimenticabili.",
+      "brand": "Generatore di Feste di Mistero"
+    },
+    "parallaxTestimonials": {
+      "sophia": {
+        "text": "Il mio team di lavoro e io ci siamo divertiti tantissimo con il nostro mistery party personalizzato!!! Abbiamo potuto inserire il luogo e l'ambientazione reali (una cantina sulle montagne di Troodos, a Cipro) e scegliere il nostro tema (mitologia greca), e ha creato qualcosa di davvero unico. Che l'ambientazione corrispondesse l'ha reso reale e super divertente. In più puoi inserire il numero esatto di partecipanti, quindi è perfettamente calibrato. Molto meglio dei mistery party generici che ho fatto in passato. Lo consiglio davvero!",
+        "author": "Sophia"
+      },
+      "will": {
+        "text": "Ahhh. Io e mia moglie ci siamo divertiti tantissimo con i nostri amici grazie a questo pacchetto!!! Ho parecchi amici appassionati di teatro, quindi molti si sono travestiti alla grande (alcuni hanno persino memorizzato le battute) e tutti si sono goduti la serata. A distanza di settimane ne parliamo ancora e non vediamo l'ora di organizzarne un altro.",
+        "author": "Will Treaty"
+      },
+      "jed": {
+        "text": "Ok, ci sono entrato piuttosto scettico perché NON sono per niente tipo da gioco di ruolo, e una mia amica mi ha convinto a fare un'ambientazione tipo White Lotus per la sua cena. Mi aspettavo di provare imbarazzo per tutta la sera. Invece sono rimasto completamente assorto per 3 ore a interrogare tutti, e sinceramente deluso quando ho scoperto che non ero io l'assassino. Pazzesco. Se qualcuno ve lo propone, non perdetevelo.",
+        "author": "Jed"
+      }
+    }
+  },
   "howItWorks": {
     "step1": {
       "title": "Descrivi il tuo mistero con delitto ideale.",

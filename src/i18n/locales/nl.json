@@ -95,6 +95,35 @@
       "sentientPlantColony": "Creëer een moordmysterie in een samenleving van intelligente, mobiele planten met een complexe sociale hiërarchie."
     }
   },
+  "home": {
+    "stats": {
+      "mysteriesCreated": "Mysteries gemaakt",
+      "themesPossible": "Mogelijke thema's",
+      "toGetStarted": "Om te starten",
+      "minutesShort": "min"
+    },
+    "verifiedTrustpilotReview": "Geverifieerde Trustpilot-review",
+    "watchDemo": "Bekijk een demo",
+    "seo": {
+      "title": "Maak op maat gemaakte moordmysterie-feesten",
+      "description": "Genereer unieke moordmysterie-scenario's met onze AI-tool. Pas thema's, personages en plots aan voor onvergetelijke evenementen.",
+      "brand": "Moordmysterie-Feestgenerator"
+    },
+    "parallaxTestimonials": {
+      "sophia": {
+        "text": "Mijn werkteam en ik hebben zoveel plezier gehad met ons aangepaste moordmysterie!!! We konden de echte locatie en setting invoeren waar we waren (een wijnhuis in het Troodos-gebergte op Cyprus) en ons eigen thema kiezen (Griekse mythologie), en het creëerde iets heel unieks. Dat de setting klopte maakte het echt en super leuk. Plus je vult het exacte aantal deelnemers in, dus alles is perfect afgestemd. Veel beter dan de generieke moordmysteries die ik eerder heb gedaan. Echt een aanrader!",
+        "author": "Sophia"
+      },
+      "will": {
+        "text": "Ahhh. Mijn vrouw en ik hebben zo'n geweldige avond gehad met onze vrienden dankzij dit pakket!!! Ik heb veel theatergekke vrienden, dus velen waren helemaal verkleed (sommigen hadden hun rol zelfs uit hun hoofd geleerd) en iedereen genoot enorm. Weken later praten we er nog over en kunnen we niet wachten op de volgende.",
+        "author": "Will Treaty"
+      },
+      "jed": {
+        "text": "Oké, ik ging er behoorlijk sceptisch in omdat ik ECHT geen rollenspeltype ben, en een vriendin overtuigde me om een White Lotus-eiland-versie voor haar diner te doen. Ik was klaar om de hele avond plaatsvervangende schaamte te voelen. In plaats daarvan was ik 3 uur lang volledig opgeslorpt in iedereen ondervragen, en oprecht teleurgesteld toen bleek dat ik niet de moordenaar was. Fantastisch. Als iemand dit voorstelt, doe het.",
+        "author": "Jed"
+      }
+    }
+  },
   "howItWorks": {
     "step1": {
       "title": "Beschrijf uw ideale moordmysterie.",

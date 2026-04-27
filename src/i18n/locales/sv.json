@@ -95,6 +95,35 @@
       "sentientPlantColony": "Create a murder mystery in a society of intelligent, mobile plants with a complex social hierarchy."
     }
   },
+  "home": {
+    "stats": {
+      "mysteriesCreated": "Skapade mysterier",
+      "themesPossible": "Möjliga teman",
+      "toGetStarted": "För att komma igång",
+      "minutesShort": "min"
+    },
+    "verifiedTrustpilotReview": "Verifierad Trustpilot-recension",
+    "watchDemo": "Se en demo",
+    "seo": {
+      "title": "Skapa skräddarsydda mordmysterie-fester",
+      "description": "Generera unika mordmysterie-scenarion med vårt AI-drivna verktyg. Anpassa teman, karaktärer och intriger för oförglömliga evenemang.",
+      "brand": "Mordmysterie-festgenerator"
+    },
+    "parallaxTestimonials": {
+      "sophia": {
+        "text": "Mitt arbetslag och jag hade så kul med vårt skräddarsydda mordmysterium!!! Vi kunde fylla i den verkliga platsen och miljön där vi var (en vingård i Troodos-bergen på Cypern) och välja vårt eget tema (grekisk mytologi), och det skapade något helt unikt. Att miljön stämde gjorde det äkta och superkul. Dessutom anger man det exakta antalet deltagare, så allt är perfekt anpassat. Mycket bättre än de generiska mordmysterierna jag spelat tidigare. Rekommenderas verkligen!",
+        "author": "Sophia"
+      },
+      "will": {
+        "text": "Ahhh. Min fru och jag hade en så fantastisk kväll med våra vänner tack vare det här paketet!!! Jag har många teaternördsvänner, så flera klädde ut sig totalt (några hade till och med lärt sig sina repliker utantill) och alla hade jättekul. Vi pratar fortfarande om det veckor senare och längtar tills vi kan göra om det.",
+        "author": "Will Treaty"
+      },
+      "jed": {
+        "text": "Okej, jag gick in i det ganska skeptisk eftersom jag verkligen INTE är någon rollspelstyp, och en vän övertalade mig att göra en White Lotus-version till hennes middag. Jag var beredd på att skämmas hela kvällen. Istället var jag helt uppslukad i 3 timmar av att förhöra alla och uppriktigt besviken när det visade sig att jag inte var mördaren. Helt otroligt. Tacka ja om någon föreslår det.",
+        "author": "Jed"
+      }
+    }
+  },
   "howItWorks": {
     "step1": {
       "title": "Describe your ideal murder mystery.",

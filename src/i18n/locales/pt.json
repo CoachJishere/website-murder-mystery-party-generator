@@ -96,6 +96,35 @@
       "sentientPlantColony": "Crie um mistério em uma sociedade de plantas inteligentes e móveis."
     }
   },
+  "home": {
+    "stats": {
+      "mysteriesCreated": "Mistérios criados",
+      "themesPossible": "Temas possíveis",
+      "toGetStarted": "Para começar",
+      "minutesShort": "min"
+    },
+    "verifiedTrustpilotReview": "Avaliação verificada do Trustpilot",
+    "watchDemo": "Assistir a uma demo",
+    "seo": {
+      "title": "Crie festas de mistério de assassinato personalizadas",
+      "description": "Gere cenários únicos de festas de mistério com a nossa ferramenta baseada em IA. Personalize temas, personagens e enredos para eventos inesquecíveis.",
+      "brand": "Gerador de Festas de Mistério de Assassinato"
+    },
+    "parallaxTestimonials": {
+      "sophia": {
+        "text": "Eu e a minha equipa de trabalho divertimo-nos imenso com o nosso mistério de assassinato personalizado!!! Conseguimos colocar o local e o cenário onde estávamos realmente (uma quinta vinícola nas montanhas de Troodos, em Chipre) e escolhemos o nosso tema (mitologia grega), e criou algo verdadeiramente único. O facto de o cenário coincidir tornou tudo real e super divertido. Além disso, indicas o número exato de participantes, por isso fica perfeitamente desenhado. Muito melhor do que os mistérios genéricos que já fiz. Recomendo vivamente!",
+        "author": "Sophia"
+      },
+      "will": {
+        "text": "Ahhh. Eu e a minha mulher divertimo-nos imenso com os nossos amigos com este pacote!!! Tenho muitos amigos apaixonados por teatro, por isso muitos disfarçaram-se a sério (alguns até decoraram as falas) e toda a gente se riu muito. Semanas depois ainda falamos nisto e mal podemos esperar pelo próximo.",
+        "author": "Will Treaty"
+      },
+      "jed": {
+        "text": "Então, entrei bastante céptico porque NÃO sou nada do género de role-play, e uma amiga convenceu-me a fazer um com tema de White Lotus para o jantar dela. Estava preparado para passar a noite com vergonha alheia. Em vez disso, fiquei completamente absorto durante 3 horas a interrogar toda a gente e fiquei mesmo desiludido quando descobri que não era eu o assassino. Incrível. Não recusem se alguém vos propuser isto.",
+        "author": "Jed"
+      }
+    }
+  },
   "howItWorks": {
     "step1": {
       "title": "Descreva o seu mistério de assassinato ideal.",

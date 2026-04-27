@@ -134,6 +134,7 @@ const staggerItem = {
 };
 
 function StatsSection() {
+  const { t } = useTranslation();
   return (
     <section className="py-20 px-6" style={{ backgroundColor: BLACK }}>
       <motion.div
@@ -144,9 +145,9 @@ function StatsSection() {
         className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8"
       >
         {[
-          { value: 500, suffix: "+", label: "Mysteries Created" },
-          { value: 999, suffix: "+", label: "Themes Possible" },
-          { value: 5, suffix: " min", label: "To Get Started" },
+          { value: 500, suffix: "+", label: t("home.stats.mysteriesCreated") },
+          { value: 999, suffix: "+", label: t("home.stats.themesPossible") },
+          { value: 5, suffix: ` ${t("home.stats.minutesShort")}`, label: t("home.stats.toGetStarted") },
         ].map((stat, i) => (
           <motion.div key={i} variants={staggerItem} className="text-center">
             <div className="text-3xl sm:text-4xl md:text-6xl" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
@@ -376,6 +377,7 @@ function FeaturesStaggered() {
 // TESTIMONIALS — 3D Tilt Cards
 // ═══════════════════════════════════════════════════════════════
 function TiltTestimonialCard({ text, author, initial: initChar, stars }: { text: string; author: string; initial: string; stars: number }) {
+  const { t } = useTranslation();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [6, -6]), { stiffness: 300, damping: 30 });
@@ -416,7 +418,7 @@ function TiltTestimonialCard({ text, author, initial: initChar, stars }: { text:
           <div>
             <p className="font-semibold text-sm" style={{ color: CREAM, fontFamily: "var(--font-body)" }}>{author}</p>
             <p className="text-xs mt-0.5" style={{ color: CREAM_35, fontFamily: "var(--font-body)" }}>
-              <span style={{ color: '#1da66f' }}>★</span> Verified Trustpilot Review
+              <span style={{ color: '#1da66f' }}>★</span> {t("home.verifiedTrustpilotReview")}
             </p>
           </div>
         </div>
@@ -426,22 +428,23 @@ function TiltTestimonialCard({ text, author, initial: initChar, stars }: { text:
 }
 
 function TestimonialsParallax() {
+  const { t } = useTranslation();
   const testimonials = [
     {
-      text: "My work team and I had so much fun with our custom murder mystery!!! We were able to enter the location and setting of where we really were (winery in Trodos mountains, Cyprus) and put in a theme of our choice (Greek mythology) and it created something so unique. The fact that the setting matched made it feel real and super fun! Plus you get to enter the exact number of participants, so it's perfectly designed. So much better than just the generic murder mysteries I've done in the past. I highly recommend!",
-      author: "Sophia",
+      text: t("home.parallaxTestimonials.sophia.text"),
+      author: t("home.parallaxTestimonials.sophia.author"),
       initial: "S",
       stars: 5,
     },
     {
-      text: "Ahhh. My wife and I had such a blast with our friends using this party package!!! I'm friends with a lot of theater geeks so many of us dressed up over the top (some hardcore nerds memorized their parts) but everyone had a lotta fun. Still talking about it weeks later and we can't wait to schedule the next one.",
-      author: "Will Treaty",
+      text: t("home.parallaxTestimonials.will.text"),
+      author: t("home.parallaxTestimonials.will.author"),
       initial: "W",
       stars: 5,
     },
     {
-      text: "Ok so I went into this pretty sceptical because I am NOT a roleplay person and my friend convinced me to do a White Lotus island one for her dinner party. I was ready to cringe the whole time. Instead I was fully absorbed for like 3 hours interrogating everyone and genuinely upset when it turned out I wasn't the murderer. Incredible. Absolutely do not sleep on this if someone suggests it.",
-      author: "Jed",
+      text: t("home.parallaxTestimonials.jed.text"),
+      author: t("home.parallaxTestimonials.jed.author"),
       initial: "J",
       stars: 5,
     },
@@ -499,6 +502,7 @@ function SupportCTA() {
 // YOUTUBE VIDEO WITH PLAY TRACKING
 // ═══════════════════════════════════════════════════════════════
 const YouTubeTracked = () => {
+  const { t } = useTranslation();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const hasTracked = useRef(false);
 
@@ -525,7 +529,7 @@ const YouTubeTracked = () => {
       ref={iframeRef}
       className="absolute top-0 left-0 w-full h-full rounded-lg"
       src="https://www.youtube.com/embed/IFZdtPfUtPo?enablejsapi=1"
-      title="Watch a Demo"
+      title={t("home.watchDemo")}
       frameBorder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowFullScreen
@@ -548,8 +552,8 @@ const Index = () => {
       style={{ backgroundColor: BLACK }}
     >
       <Head
-        title="Create Custom Murder Mystery Parties"
-        description="Generate unique murder mystery party scenarios with our AI-powered tool. Customize themes, characters, and plots for unforgettable events."
+        title={t("home.seo.title")}
+        description={t("home.seo.description")}
       />
       <SkipToContent />
       <Header />

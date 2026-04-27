@@ -95,6 +95,35 @@
       "sentientPlantColony": "Luo murhamysteeri älykkäiden, liikkuvien kasvien yhteisössä, jolla on monimutkainen sosiaalinen hierarkia."
     }
   },
+  "home": {
+    "stats": {
+      "mysteriesCreated": "Luotuja mysteerejä",
+      "themesPossible": "Mahdollisia teemoja",
+      "toGetStarted": "Aloittamiseen",
+      "minutesShort": "min"
+    },
+    "verifiedTrustpilotReview": "Vahvistettu Trustpilot-arvostelu",
+    "watchDemo": "Katso demo",
+    "seo": {
+      "title": "Luo räätälöityjä murhamysteeri-juhlia",
+      "description": "Luo ainutlaatuisia murhamysteeri-skenaarioita tekoälypohjaisella työkalullamme. Mukauta teemat, hahmot ja juonet unohtumattomiin tapahtumiin.",
+      "brand": "Murhamysteeri-juhlageneraattori"
+    },
+    "parallaxTestimonials": {
+      "sophia": {
+        "text": "Työporukkani kanssa meillä oli niin hauskaa räätälöidyn murhamysteerimme parissa!!! Pystyimme syöttämään todellisen sijainnin ja ympäristön, jossa olimme (viinitila Troodos-vuoristossa Kyproksella) ja valitsemaan oman teeman (kreikkalainen mytologia), ja se loi jotain todella ainutlaatuista. Se että ympäristö vastasi todellisuutta teki kokemuksesta aidon ja superhauskan. Lisäksi voit antaa tarkan osallistujamäärän, joten kaikki on täydellisesti suunniteltu. Paljon parempi kuin geneeriset murhamysteerit, joita olen aiemmin kokeillut. Suosittelen vahvasti!",
+        "author": "Sophia"
+      },
+      "will": {
+        "text": "Ahhh. Vaimoni kanssa meillä oli mahtava ilta ystäviemme kanssa tämän paketin avulla!!! Minulla on paljon teatterihullu-ystäviä, joten monet pukeutuivat täysillä (osa oli jopa opetellut osansa ulkoa) ja kaikilla oli mahtavaa. Puhumme siitä yhä viikkojen jälkeen, ja odotamme jo seuraavaa.",
+        "author": "Will Treaty"
+      },
+      "jed": {
+        "text": "Okei, lähdin mukaan aika skeptisenä, koska EN todellakaan ole roolipelaaja-tyyppiä, ja eräs ystävä suostutteli minut tekemään White Lotus -aiheisen illallisilleen. Olin valmistautunut myötähäpeään koko illan. Sen sijaan olin täysin uppoutunut kolmen tunnin ajan kaikkien kuulusteluun, ja olin aidosti pettynyt, kun selvisi etten ollutkaan murhaaja. Uskomatonta. Älkää jättäkö väliin, jos joku tätä ehdottaa.",
+        "author": "Jed"
+      }
+    }
+  },
   "howItWorks": {
     "step1": {
       "title": "Kuvaile ihanteellinen murhamysteerisi.",

@@ -11,10 +11,18 @@ interface RealTestimonial {
 }
 
 const TestimonialsSection: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [realTestimonials, setRealTestimonials] = useState<RealTestimonial[]>([]);
 
+  // Real testimonials in mystery_feedback are virtually all English (paid hosts
+  // to date have been EN). Showing English testimonials to non-EN visitors hurts
+  // trust more than it helps — fall back to translated hardcoded ones instead.
+  // TODO: when mystery_feedback.language exists, language-match real ones here.
+  const currentLang = (i18n.resolvedLanguage || i18n.language || "en").toLowerCase().split("-")[0];
+  const useRealTestimonials = currentLang === "en";
+
   useEffect(() => {
+    if (!useRealTestimonials) return;
     const fetchTestimonials = async () => {
       const { data } = await supabase
         .from("mystery_feedback" as any)
@@ -33,7 +41,7 @@ const TestimonialsSection: React.FC = () => {
     };
 
     fetchTestimonials();
-  }, []);
+  }, [useRealTestimonials]);
 
   const hardcodedTestimonials = [1, 2, 3].map((i) => ({
     text: t(`testimonials.testimonial${i}.text`),

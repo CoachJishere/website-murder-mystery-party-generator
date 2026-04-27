@@ -95,6 +95,35 @@
       "sentientPlantColony": "Créez un mystère de meurtre dans une communauté de plantes intelligentes et mobiles avec une hiérarchie sociale complexe."
     }
   },
+  "home": {
+    "stats": {
+      "mysteriesCreated": "Mystères créés",
+      "themesPossible": "Thèmes possibles",
+      "toGetStarted": "Pour commencer",
+      "minutesShort": "min"
+    },
+    "verifiedTrustpilotReview": "Avis Trustpilot vérifié",
+    "watchDemo": "Voir une démo",
+    "seo": {
+      "title": "Créez des soirées enquête sur mesure",
+      "description": "Générez des scénarios uniques de soirées enquête grâce à notre outil propulsé par l'IA. Personnalisez thèmes, personnages et intrigues pour des événements inoubliables.",
+      "brand": "Générateur de Soirées Enquête"
+    },
+    "parallaxTestimonials": {
+      "sophia": {
+        "text": "Mon équipe et moi nous sommes éclatés avec notre soirée enquête personnalisée !!! On a pu indiquer le lieu et le décor où nous étions réellement (un domaine viticole dans les montagnes du Troodos, à Chypre) et choisir notre thème (mythologie grecque), ça a créé quelque chose de vraiment unique. Que le décor corresponde a rendu le tout super réaliste et fun. En plus tu mets le nombre exact de participants, donc c'est parfaitement calibré. Tellement mieux que les soirées enquête génériques que j'ai faites avant. Je recommande vivement !",
+        "author": "Sophia"
+      },
+      "will": {
+        "text": "Ahhh. Ma femme et moi avons passé une soirée géniale avec nos amis grâce à ce pack !!! J'ai pas mal d'amis fans de théâtre alors beaucoup se sont déguisés à fond (certains avaient même appris leur texte par cœur) et tout le monde s'est éclaté. On en parle encore des semaines après et on a hâte de remettre ça.",
+        "author": "Will Treaty"
+      },
+      "jed": {
+        "text": "Bon, j'y suis allé super sceptique parce que je ne suis PAS du tout du genre jeu de rôle, et une amie m'a convaincu d'en faire un sur le thème White Lotus pour son dîner. Je m'attendais à passer la soirée à être gêné. À la place, j'étais complètement absorbé pendant 3 heures à interroger tout le monde et franchement déçu de ne pas être le meurtrier. Incroyable. Si on vous propose ça, foncez.",
+        "author": "Jed"
+      }
+    }
+  },
   "howItWorks": {
     "step1": {
       "title": "Décrivez votre mystère de meurtre idéal.",

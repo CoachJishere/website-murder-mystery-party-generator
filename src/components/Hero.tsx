@@ -60,7 +60,6 @@ const Hero = () => {
   const navigate = useNavigate();
 
   // ── Typewriter cycling placeholder ──
-  const STATIC_PREFIX = t('hero.typewriterPrefix', 'Create a mystery ');
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
   const [currentThemeIndex, setCurrentThemeIndex] = useState(0);
@@ -72,12 +71,12 @@ const Hero = () => {
     setCurrentThemeIndex(Math.floor(Math.random() * MYSTERY_THEMES.length));
   }, [MYSTERY_THEMES.length]);
 
-  // Get only the suffix (strip "Create a mystery " from the prompt)
+  // Use the full localized prompt as-is. Each locale's prompts already contain
+  // a natural-language prefix ("Crea un misterio…", "Diseña un misterio…"),
+  // so prepending an English "Create a mystery " static label produced
+  // half-EN/half-target-language placeholders.
   const getCurrentSuffix = useCallback(() => {
-    const fullPrompt = MYSTERY_THEMES[currentThemeIndex]?.prompt || "";
-    const prefixPattern = /^Create a mystery\s*/i;
-    const ptPrefixPattern = /^Crie um mistério\s*/i;
-    return fullPrompt.replace(prefixPattern, "").replace(ptPrefixPattern, "");
+    return MYSTERY_THEMES[currentThemeIndex]?.prompt || "";
   }, [currentThemeIndex, MYSTERY_THEMES]);
 
   // Typewriter effect
@@ -227,7 +226,6 @@ const Hero = () => {
                 <div className="pt-3">
                   <div className="px-4 pt-2 text-left">
                     <span className="text-[15px] leading-snug" style={{ color: 'rgba(0, 0, 0, 0.4)' }}>
-                      <span>{STATIC_PREFIX}</span>
                       <span>{displayText}</span>
                       <span className="inline-block w-[2px] h-[1em] ml-[1px] animate-pulse align-middle" style={{ backgroundColor: 'rgba(200, 20, 0, 0.5)' }} />
                     </span>

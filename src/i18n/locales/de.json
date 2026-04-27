@@ -95,6 +95,35 @@
       "sentientPlantColony": "Erstellen Sie ein Krimi-Mysterium in einer Gesellschaft intelligenter, mobiler Pflanzen mit einer komplexen sozialen Hierarchie."
     }
   },
+  "home": {
+    "stats": {
+      "mysteriesCreated": "Erstellte Krimis",
+      "themesPossible": "Mögliche Themen",
+      "toGetStarted": "Für den Start",
+      "minutesShort": "Min"
+    },
+    "verifiedTrustpilotReview": "Verifizierte Trustpilot-Bewertung",
+    "watchDemo": "Demo ansehen",
+    "seo": {
+      "title": "Maßgeschneiderte Krimi-Dinner-Partys erstellen",
+      "description": "Erstelle einzigartige Krimi-Dinner-Szenarien mit unserem KI-gestützten Tool. Themen, Charaktere und Handlungen frei anpassbar – für unvergessliche Events.",
+      "brand": "Krimi-Dinner-Generator"
+    },
+    "parallaxTestimonials": {
+      "sophia": {
+        "text": "Mein Arbeitsteam und ich hatten so viel Spaß mit unserem maßgeschneiderten Krimi-Dinner!!! Wir konnten den genauen Ort und das Setting eingeben, an dem wir wirklich waren (ein Weingut in den Troodos-Bergen, Zypern), dazu unser Wunschthema (griechische Mythologie) – und es entstand etwas wirklich Einzigartiges. Dass das Setting passte, machte alles real und richtig lustig. Außerdem gibt man die genaue Teilnehmerzahl an, alles passt perfekt. Viel besser als die generischen Krimi-Dinner, die ich früher gemacht habe. Klare Empfehlung!",
+        "author": "Sophia"
+      },
+      "will": {
+        "text": "Ahhh. Meine Frau und ich hatten mit unseren Freunden so einen großartigen Abend mit diesem Paket!!! Ich habe viele Theater-Nerds als Freunde, also haben sich einige richtig hardcore verkleidet (manche haben ihre Rollen sogar auswendig gelernt) und alle hatten riesigen Spaß. Wir reden Wochen später noch davon und können den nächsten kaum erwarten.",
+        "author": "Will Treaty"
+      },
+      "jed": {
+        "text": "Also, ich bin da ziemlich skeptisch reingegangen, weil ich GAR kein Rollenspiel-Typ bin – aber eine Freundin hat mich überzeugt, einen White-Lotus-Krimi für ihr Dinner zu machen. Ich war bereit, mich den ganzen Abend zu fremdschämen. Stattdessen war ich 3 Stunden voll dabei, habe alle verhört und war ehrlich enttäuscht, dass ich nicht der Mörder war. Unfassbar gut. Wenn das jemand vorschlägt, unbedingt zusagen.",
+        "author": "Jed"
+      }
+    }
+  },
   "howItWorks": {
     "step1": {
       "title": "Beschreiben Sie Ihr ideales Krimi-Mysterium.",
