@@ -86,7 +86,7 @@ const SignUp = () => {
       const hasSession = !!data.session;
 
       if (!hasSession) {
-        toast.success("Account created! Check your email to verify and unlock all features.");
+        toast.success(t("auth.success.accountCreatedVerifyEmail"));
       } else {
         toast.success(t("auth.success.accountCreated"));
       }
@@ -117,14 +117,14 @@ const SignUp = () => {
 
       if (error) {
         console.error("Google sign in error:", error);
-        toast.error(`Failed to sign in with Google: ${error.message}`);
+        toast.error(`${t("auth.errors.googleSignInFailed")}: ${error.message}`);
         setSocialLoading(null);
       } else {
         trackSignUp('google');
       }
     } catch (error: any) {
       console.error("Google sign in catch block:", error);
-      toast.error(`An unexpected error occurred: ${error.message || "Unknown error"}`);
+      toast.error(`${t("auth.errors.unexpected")}: ${error.message || t("auth.errors.unknownError")}`);
       setSocialLoading(null);
     }
   };
@@ -167,7 +167,7 @@ const SignUp = () => {
                     />
                   </svg>
                 )}
-                <span>Continue with Google</span>
+                <span>{t("auth.signIn.googleButton")}</span>
               </Button>
             </div>
 
@@ -176,7 +176,7 @@ const SignUp = () => {
                 <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+                <span className="bg-card px-2 text-muted-foreground">{t("auth.signIn.orDivider")}</span>
               </div>
             </div>
 

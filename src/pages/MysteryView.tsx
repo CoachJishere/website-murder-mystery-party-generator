@@ -250,7 +250,7 @@ const MysteryView = () => {
   // Resume generation handler
   const handleResumeGeneration = useCallback(async () => {
     if (!id) {
-      toast.error("Mystery ID is missing");
+      toast.error(t("mysteryView.toasts.mysteryIdMissing"));
       return;
     }
 
@@ -258,26 +258,26 @@ const MysteryView = () => {
     setGenerationTimedOut(false);
     timeoutNotifiedRef.current = false;
     try {
-      toast.info("Resuming your mystery generation...");
+      toast.info(t("mysteryView.toasts.resumingGeneration"));
 
       // Reset notification state on resume
       packageReadyNotified.current = false;
-      
+
       await resumePackageGeneration(id);
-      
+
       debugLog("Resume generation initiated");
-      
+
     } catch (error: any) {
       debugLog("Error resuming package generation", error);
       setGenerating(false);
-      toast.error(error.message || "Failed to resume generation");
+      toast.error(error.message || t("mysteryView.toasts.resumeFailed"));
     }
-  }, [id, debugLog]);
+  }, [id, debugLog, t]);
 
   // Generate package handler
   const handleGeneratePackage = useCallback(async () => {
     if (!id) {
-      toast.error("Mystery ID is missing");
+      toast.error(t("mysteryView.toasts.mysteryIdMissing"));
       return;
     }
 
@@ -303,7 +303,7 @@ const MysteryView = () => {
 
     try {
       const estimatedTime = getEstimatedTime(mystery?.player_count || 6);
-      toast.info(`Starting generation of your mystery package. This will take ${estimatedTime}...`);
+      toast.info(t("mysteryView.toasts.startingGeneration", { time: estimatedTime }));
 
       // Just call the webhook - don't wait for completion
       await generateCompletePackage(id);
@@ -316,16 +316,16 @@ const MysteryView = () => {
       });
 
       debugLog("Generation started, auto-refresh will check status");
-      
+
     } catch (error: any) {
       debugLog("Error starting package generation", error);
       setGenerating(false);
       // Roll back the optimistic progress card so the user can retry from the
       // Generate button instead of being stuck on an in_progress view.
       setGenerationStatus(null);
-      toast.error(error.message || "Failed to start package generation");
+      toast.error(error.message || t("mysteryView.toasts.startGenerationFailed"));
     }
-  }, [id, debugLog]);
+  }, [id, debugLog, t]);
 
   // Enhanced status checking with comprehensive completion detection
   const checkGenerationStatus = useCallback(async () => {
@@ -510,7 +510,7 @@ const MysteryView = () => {
 
           // Show success notification only once
           if (!packageReadyNotified.current) {
-            toast.success("Your mystery package is ready!", {
+            toast.success(t("mysteryView.toasts.packageReady"), {
               duration: 10000,
               id: 'mystery-completed'
             });
@@ -547,27 +547,27 @@ const MysteryView = () => {
         });
         
         // Show detailed error message with current step
-        const errorMessage = status.currentStep || "Generation failed at an unknown step";
-        
+        const errorMessage = status.currentStep || t("mysteryView.errors.unknownStep");
+
         if (status.resumable) {
           toast.error(
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <AlertTriangle className="h-4 w-4 text-orange-500" />
-                <span className="font-semibold">Generation Paused</span>
+                <span className="font-semibold">{t("mysteryView.errors.generationPaused")}</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 {errorMessage}
               </p>
               <p className="text-sm text-muted-foreground">
-                Don't worry - your progress has been saved and you can resume where you left off.
+                {t("mysteryView.errors.progressSavedResume")}
               </p>
               <Button size="sm" onClick={handleResumeGeneration} className="w-full">
                 <RefreshCw className="h-3 w-3 mr-1" />
-                Resume Generation
+                {t("mysteryView.buttons.resumeGeneration")}
               </Button>
               <p className="text-xs text-muted-foreground text-center">
-                Still having trouble? <a href="/support" className="underline text-primary hover:text-primary/80">Contact support</a>
+                {t("mysteryView.errors.stillTrouble")} <a href="/support" className="underline text-primary hover:text-primary/80">{t("mysteryView.errors.contactSupport")}</a>
               </p>
             </div>,
             {
@@ -580,20 +580,20 @@ const MysteryView = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <XCircle className="h-4 w-4 text-red-500" />
-                <span className="font-semibold">Generation Failed</span>
+                <span className="font-semibold">{t("mysteryView.errors.generationFailed")}</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 {errorMessage}
               </p>
               <p className="text-sm text-muted-foreground">
-                You can try generating your mystery package again.
+                {t("mysteryView.errors.canTryAgain")}
               </p>
               <Button size="sm" onClick={handleGeneratePackage} className="w-full">
                 <RefreshCw className="h-3 w-3 mr-1" />
-                Try Again
+                {t("mysteryView.buttons.tryAgain")}
               </Button>
               <p className="text-xs text-muted-foreground text-center">
-                Still having trouble? <a href="/support" className="underline text-primary hover:text-primary/80">Contact support</a>
+                {t("mysteryView.errors.stillTrouble")} <a href="/support" className="underline text-primary hover:text-primary/80">{t("mysteryView.errors.contactSupport")}</a>
               </p>
             </div>,
             {
@@ -921,7 +921,7 @@ const MysteryView = () => {
                   "text-red-500",
                   isMobile ? "h-4 w-4" : "h-5 w-5"
                 )} />
-                <span className={cn(isMobile && "text-base")}>Generation Failed</span>
+                <span className={cn(isMobile && "text-base")}>{t("mysteryView.errors.generationFailed")}</span>
               </div>
               <Button
                 variant="ghost"
@@ -931,7 +931,7 @@ const MysteryView = () => {
                   "h-8 w-8 p-0 text-muted-foreground hover:text-foreground",
                   isMobile && "self-end"
                 )}
-                title="Refresh status"
+                title={t("mysteryView.buttons.refreshStatus")}
               >
                 <RefreshCw className="h-4 w-4" />
               </Button>
@@ -940,7 +940,7 @@ const MysteryView = () => {
               "text-red-600",
               isMobile && "text-sm"
             )}>
-              {generationStatus.currentStep || "An error occurred during generation"}
+              {generationStatus.currentStep || t("mysteryView.errors.errorDuringGeneration")}
             </CardDescription>
           </CardHeader>
           <CardContent className={cn(
@@ -951,23 +951,23 @@ const MysteryView = () => {
               <AlertTriangle className={cn(
                 isMobile ? "h-3 w-3" : "h-4 w-4"
               )} />
-              <AlertTitle className={cn(isMobile && "text-sm")}>What happened?</AlertTitle>
+              <AlertTitle className={cn(isMobile && "text-sm")}>{t("mysteryView.errors.whatHappened")}</AlertTitle>
               <AlertDescription className={cn(isMobile && "text-xs")}>
-                {generationStatus.resumable 
-                  ? "Your generation encountered an issue but can be resumed from where it left off. Your progress has been saved."
-                  : "The generation process failed and needs to be restarted. Don't worry - this happens sometimes and trying again usually works."
+                {generationStatus.resumable
+                  ? t("mysteryView.errors.resumableExplanation")
+                  : t("mysteryView.errors.nonResumableExplanation")
                 }
               </AlertDescription>
             </Alert>
-            
+
             <div className={cn(
               "flex space-x-2",
               isMobile && "flex-col space-x-0 space-y-2"
             )}>
               {generationStatus.resumable ? (
-                <Button 
-                  onClick={handleResumeGeneration} 
-                  disabled={generating} 
+                <Button
+                  onClick={handleResumeGeneration}
+                  disabled={generating}
                   className={cn(
                     "flex-1",
                     isMobile && "w-full text-sm h-10"
@@ -977,12 +977,12 @@ const MysteryView = () => {
                     "mr-2",
                     isMobile ? "h-3 w-3" : "h-4 w-4"
                   )} />
-                  Resume Generation
+                  {t("mysteryView.buttons.resumeGeneration")}
                 </Button>
               ) : (
-                <Button 
-                  onClick={handleGeneratePackage} 
-                  disabled={generating} 
+                <Button
+                  onClick={handleGeneratePackage}
+                  disabled={generating}
                   className={cn(
                     "flex-1",
                     isMobile && "w-full text-sm h-10"
@@ -992,7 +992,7 @@ const MysteryView = () => {
                     "mr-2",
                     isMobile ? "h-3 w-3" : "h-4 w-4"
                   )} />
-                  Try Again
+                  {t("mysteryView.buttons.tryAgain")}
                 </Button>
               )}
             </div>
@@ -1017,13 +1017,13 @@ const MysteryView = () => {
                 "text-amber-600",
                 isMobile ? "h-4 w-4" : "h-5 w-5"
               )} />
-              <span>Taking Longer Than Expected</span>
+              <span>{t("mysteryView.timeout.title")}</span>
             </CardTitle>
             <CardDescription className={cn(
               "text-amber-700",
               isMobile && "text-sm"
             )}>
-              Your mystery was generated but we're having an issue displaying the content.
+              {t("mysteryView.timeout.description")}
             </CardDescription>
           </CardHeader>
           <CardContent className={cn(
@@ -1035,16 +1035,16 @@ const MysteryView = () => {
                 "text-green-500",
                 isMobile ? "h-3 w-3" : "h-4 w-4"
               )} />
-              <AlertTitle className={cn(isMobile && "text-sm")}>Don't worry — your mystery is safe!</AlertTitle>
+              <AlertTitle className={cn(isMobile && "text-sm")}>{t("mysteryView.timeout.reassuranceTitle")}</AlertTitle>
               <AlertDescription className={cn(isMobile && "text-xs")}>
-                Our technical team has been automatically notified and will resolve this as soon as possible. You don't need to do anything — we'll make sure your complete mystery package is available for you shortly.
+                {t("mysteryView.timeout.reassuranceBody")}
               </AlertDescription>
             </Alert>
             <p className={cn(
               "text-sm text-amber-700",
               isMobile && "text-xs"
             )}>
-              You can safely close this page and come back later. If the issue persists, please reach out to{" "}
+              {t("mysteryView.timeout.closePage")}{" "}
               <a href="mailto:support@mysterymaker.party" className="underline font-medium">support@mysterymaker.party</a>.
             </p>
             <Button
@@ -1054,7 +1054,7 @@ const MysteryView = () => {
               className="border-amber-300 text-amber-800 hover:bg-amber-100"
             >
               <RefreshCw className={cn("mr-2", isMobile ? "h-3 w-3" : "h-4 w-4")} />
-              Check Again
+              {t("mysteryView.buttons.checkAgain")}
             </Button>
           </CardContent>
         </Card>
@@ -1107,7 +1107,7 @@ const MysteryView = () => {
               "text-center mt-4",
               isMobile && "text-sm mt-3"
             )}>
-              Loading your mystery...
+              {t("mysteryView.loadingMystery")}
             </p>
           </div>
         </main>
@@ -1163,13 +1163,13 @@ const MysteryView = () => {
                     "text-amber-600 dark:text-amber-400",
                     isMobile ? "h-4 w-4" : "h-5 w-5"
                   )} />
-                  <span>We're Finalizing Your Mystery</span>
+                  <span>{t("mysteryView.finalizing.title")}</span>
                 </CardTitle>
                 <CardDescription className={cn(
                   "text-amber-700 dark:text-amber-200",
                   isMobile && "text-sm"
                 )}>
-                  Your mystery was generated but some character content needs attention.
+                  {t("mysteryView.finalizing.description")}
                 </CardDescription>
               </CardHeader>
               <CardContent className={cn(
@@ -1181,16 +1181,16 @@ const MysteryView = () => {
                     "text-green-500 dark:text-green-400",
                     isMobile ? "h-3 w-3" : "h-4 w-4"
                   )} />
-                  <AlertTitle className={cn(isMobile && "text-sm")}>Don't worry — your mystery is safe!</AlertTitle>
+                  <AlertTitle className={cn(isMobile && "text-sm")}>{t("mysteryView.timeout.reassuranceTitle")}</AlertTitle>
                   <AlertDescription className={cn(isMobile && "text-xs")}>
-                    Our technical team has been automatically notified and will resolve this as soon as possible. You don't need to do anything — we'll make sure your complete mystery package is available for you shortly.
+                    {t("mysteryView.timeout.reassuranceBody")}
                   </AlertDescription>
                 </Alert>
                 <p className={cn(
                   "text-sm text-amber-700 dark:text-amber-200",
                   isMobile && "text-xs"
                 )}>
-                  You can safely close this page and come back later. If the issue persists, please reach out to{" "}
+                  {t("mysteryView.timeout.closePage")}{" "}
                   <a href="mailto:support@mysterymaker.party" className="underline font-medium">support@mysterymaker.party</a>.
                 </p>
                 <Button
@@ -1200,7 +1200,7 @@ const MysteryView = () => {
                   className="border-amber-400 text-amber-700 hover:bg-amber-50 dark:border-amber-500 dark:text-amber-200 dark:hover:bg-amber-950/30"
                 >
                   <RefreshCw className={cn("mr-2", isMobile ? "h-3 w-3" : "h-4 w-4")} />
-                  Check Again
+                  {t("mysteryView.buttons.checkAgain")}
                 </Button>
               </CardContent>
             </Card>

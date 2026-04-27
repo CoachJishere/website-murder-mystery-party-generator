@@ -6,10 +6,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, Star, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation, Trans } from "react-i18next";
 
 const GuestFeedback: React.FC = () => {
   const { token } = useParams<{ token: string }>();
   const [searchParams] = useSearchParams();
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -29,7 +31,7 @@ const GuestFeedback: React.FC = () => {
 
   useEffect(() => {
     if (!token) {
-      setError("Invalid feedback link.");
+      setError(t("guestFeedback.errors.invalidLink"));
       setLoading(false);
       return;
     }
@@ -51,14 +53,14 @@ const GuestFeedback: React.FC = () => {
         .single();
 
       if (fetchError || !data) {
-        setError("Feedback link not found or expired.");
+        setError(t("guestFeedback.errors.linkExpired"));
         return;
       }
 
       setAssignmentId(data.id);
       setGuestName(data.guest_name);
       setCharacterName(data.character_name);
-      setMysteryTitle(data.mystery_title || "Your Mystery");
+      setMysteryTitle(data.mystery_title || t("guestFeedback.fallbackTitle"));
 
       // Check if feedback already submitted
       const { data: existingFeedback } = await supabase
@@ -72,7 +74,7 @@ const GuestFeedback: React.FC = () => {
       }
     } catch (err) {
       console.error("Error loading assignment:", err);
-      setError("Something went wrong. Please try again later.");
+      setError(t("guestFeedback.errors.generic"));
     } finally {
       setLoading(false);
     }
@@ -105,7 +107,7 @@ const GuestFeedback: React.FC = () => {
       setSubmitted(true);
     } catch (err) {
       console.error("Submit error:", err);
-      setError("Failed to submit feedback. Please try again.");
+      setError(t("guestFeedback.errors.submitFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -137,17 +139,21 @@ const GuestFeedback: React.FC = () => {
         <Card className="max-w-md w-full bg-[#111111] border-[#222]">
           <CardContent className="pt-8 pb-8 text-center">
             <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2 text-[#F5F0E8]">Thank You!</h2>
+            <h2 className="text-xl font-semibold mb-2 text-[#F5F0E8]">{t("guestFeedback.thankYou.title")}</h2>
             <p className="text-[#F5F0E8]/70 mb-8">
-              Your feedback for <strong className="text-[#F5F0E8]">{mysteryTitle}</strong> helps us create better mysteries.
+              <Trans
+                i18nKey="guestFeedback.thankYou.body"
+                values={{ title: mysteryTitle }}
+                components={{ strong: <strong className="text-[#F5F0E8]" /> }}
+              />
             </p>
             <div className="border-t border-[#222] pt-6">
-              <p className="text-[#F5F0E8]/60 text-sm mb-4">Ever thought about hosting your own mystery party?</p>
+              <p className="text-[#F5F0E8]/60 text-sm mb-4">{t("guestFeedback.thankYou.cta")}</p>
               <a
                 href="https://www.mysterymaker.party"
                 className="inline-block bg-[#C81400] text-[#F5F0E8] px-6 py-3 rounded-lg font-semibold hover:bg-[#A01000] transition-colors"
               >
-                Browse Our Mysteries
+                {t("guestFeedback.thankYou.browseButton")}
               </a>
             </div>
           </CardContent>
@@ -162,12 +168,16 @@ const GuestFeedback: React.FC = () => {
         {/* Header */}
         <div className="text-center py-8 px-6 rounded-t-lg bg-[#C81400]">
           <h1 className="text-2xl font-bold text-[#F5F0E8] tracking-wide uppercase">
-            How Was Your Mystery?
+            {t("guestFeedback.heading")}
           </h1>
           <p className="text-[#F5F0E8]/80 mt-2">{mysteryTitle}</p>
           {characterName && (
             <p className="text-[#F5F0E8]/60 text-sm mt-1">
-              You played <strong className="text-[#F5F0E8]/80">{characterName}</strong>
+              <Trans
+                i18nKey="guestFeedback.youPlayed"
+                values={{ character: characterName }}
+                components={{ strong: <strong className="text-[#F5F0E8]/80" /> }}
+              />
             </p>
           )}
         </div>
@@ -176,7 +186,7 @@ const GuestFeedback: React.FC = () => {
           <CardContent className="pt-6">
             {searchParams.get("rating") && (
               <div className="bg-green-900/30 border border-green-800/50 rounded-lg p-3 mb-6 text-center">
-                <p className="text-green-300 text-sm">Thanks for the rating! Want to tell us more?</p>
+                <p className="text-green-300 text-sm">{t("guestFeedback.thanksForRating")}</p>
               </div>
             )}
 
@@ -184,7 +194,7 @@ const GuestFeedback: React.FC = () => {
               {/* Star Rating */}
               <div>
                 <Label className="text-base font-semibold text-[#F5F0E8]">
-                  Rate your experience *
+                  {t("guestFeedback.fields.rating")}
                 </Label>
                 <div className="flex gap-1 mt-2">
                   {[1, 2, 3, 4, 5].map((n) => (
@@ -211,13 +221,13 @@ const GuestFeedback: React.FC = () => {
               {/* Best part */}
               <div>
                 <Label htmlFor="bestPart" className="text-base font-semibold text-[#F5F0E8]">
-                  What was the highlight of the evening?
+                  {t("guestFeedback.fields.highlight")}
                 </Label>
                 <Textarea
                   id="bestPart"
                   value={bestPart}
                   onChange={(e) => setBestPart(e.target.value)}
-                  placeholder="The big reveal, getting into character, the accusations..."
+                  placeholder={t("guestFeedback.placeholders.highlight")}
                   className="mt-2 bg-[#0a0a0a] border-[#333] text-[#F5F0E8] placeholder:text-[#555]"
                   rows={3}
                 />
@@ -232,17 +242,17 @@ const GuestFeedback: React.FC = () => {
                 {submitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Submitting...
+                    {t("guestFeedback.submitting")}
                   </>
                 ) : (
-                  "Submit Feedback"
+                  t("guestFeedback.submit")
                 )}
               </Button>
             </form>
 
             {/* One-time email notice */}
             <p className="text-[#F5F0E8]/30 text-xs text-center mt-6">
-              This is a one-time email about your recent mystery experience. You won't receive any other emails from us.
+              {t("guestFeedback.oneTimeNotice")}
             </p>
           </CardContent>
         </Card>

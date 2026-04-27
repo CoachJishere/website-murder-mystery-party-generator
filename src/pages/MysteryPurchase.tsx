@@ -365,7 +365,7 @@ const MysteryPurchase = () => {
 
     // Validate mystery ID
     if (!id) {
-      toast.error("Mystery not found. Please try again from the dashboard.");
+      toast.error(t("purchase.toasts.mysteryIdMissing"));
       navigate("/dashboard");
       return;
     }
@@ -373,7 +373,7 @@ const MysteryPurchase = () => {
     // Check if email is verified
     const isEmailVerified = user?.email_confirmed_at || user?.confirmed_at;
     if (!isEmailVerified) {
-      toast.error("Please verify your email address before purchasing. Check your inbox for the verification link.", {
+      toast.error(t("purchase.toasts.emailNotVerified"), {
         duration: 6000,
       });
       return;
@@ -381,13 +381,13 @@ const MysteryPurchase = () => {
 
     // Check if user email exists
     if (!user?.email) {
-      toast.error("User email not found. Please sign out and sign in again.");
+      toast.error(t("purchase.toasts.userEmailMissing"));
       return;
     }
 
     try {
       setProcessing(true);
-      toast.info("Redirecting to secure checkout...", { duration: 2000 });
+      toast.info(t("purchase.toasts.redirectingToCheckout"), { duration: 2000 });
 
       // Track checkout initiation
       trackBeginCheckout(id, mystery?.theme || undefined);
@@ -423,12 +423,12 @@ const MysteryPurchase = () => {
       console.error("Payment error:", error);
 
       // Provide specific error messages
-      let errorMessage = "Failed to start checkout. Please try again.";
+      let errorMessage = t("purchase.toasts.checkoutFailed");
 
       if (error.message?.includes("network")) {
-        errorMessage = "Network error. Please check your connection and try again.";
+        errorMessage = t("purchase.toasts.networkError");
       } else if (error.message?.includes("URL")) {
-        errorMessage = "Checkout configuration error. Please contact support.";
+        errorMessage = t("purchase.toasts.checkoutConfigError");
       }
 
       toast.error(errorMessage, { duration: 5000 });
@@ -592,7 +592,7 @@ const MysteryPurchase = () => {
                   isMobile && "p-4 pt-0 gap-3"
                 )}>
                   <p className="text-sm p-3 rounded-md" style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid rgba(245,240,232,0.15)', color: 'rgba(245,240,232,0.7)' }}>
-                    <strong>Fully editable:</strong> Don't worry — you can edit all character scripts, host guide content, and evidence cards after your mystery is generated.
+                    <strong>{t("purchase.fullyEditableLabel")}</strong> {t("purchase.fullyEditableNote")}
                   </p>
                   <Button 
                     className={cn(

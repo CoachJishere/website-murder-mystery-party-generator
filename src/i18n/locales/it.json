@@ -218,7 +218,8 @@
       "submitButton": "Accedi",
       "signingIn": "Accesso in corso...",
       "orDivider": "o continua con",
-      "googleButton": "Continua con Google"
+      "googleButton": "Continua con Google",
+      "success": "Accesso effettuato con successo!"
     },
     "signUp": {
       "title": "Crea il tuo account",
@@ -251,7 +252,8 @@
         "noEmail": "Non hai ricevuto l'email?",
         "tryAgain": "Riprova",
         "returnToSignIn": "Torna all'accesso"
-      }
+      },
+      "rememberedPrompt": "Ti sei ricordato la password?"
     },
     "resetPassword": {
       "title": "Imposta Nuova Password",
@@ -260,7 +262,10 @@
       "confirmPassword": "Conferma nuova password",
       "submitButton": "Aggiorna Password",
       "updating": "Aggiornamento...",
-      "success": "Password aggiornata"
+      "success": "Password aggiornata",
+      "invalidLinkToast": "Link di reimpostazione password non valido o scaduto",
+      "invalidLinkBody": "Il link per reimpostare la password non è valido o è scaduto. Richiedine uno nuovo.",
+      "requestNewLink": "Richiedi nuovo link"
     },
     "errors": {
       "invalidCredentials": "Email o password non validi",
@@ -274,17 +279,35 @@
       "unknownError": "Si è verificato un errore sconosciuto. Riprova.",
       "googleSignInFailed": "Accesso con Google non riuscito",
       "googleSignInInitFailed": "Impossibile avviare l'accesso con Google.",
-      "unexpected": "Si è verificato un errore imprevisto"
+      "unexpected": "Si è verificato un errore imprevisto",
+      "emailNotConfirmed": "Conferma la tua e-mail prima di accedere. Controlla la tua casella di posta."
     },
     "success": {
       "accountCreated": "Account creato! Controlla la tua email per verificare il tuo account.",
       "passwordReset": "Link per la reimpostazione della password inviato",
       "passwordUpdated": "Password aggiornata",
-      "signedOut": "Disconnesso"
+      "signedOut": "Disconnesso",
+      "accountCreatedVerifyEmail": "Account creato! Controlla la tua e-mail per verificare e sbloccare tutte le funzionalità."
     },
     "signInPrompt": {
       "description": "Registrati gratuitamente per creare la tua festa di mistero personalizzata, o accedi al tuo account.",
       "or": "o"
+    },
+    "callback": {
+      "successGoogle": "Accesso con Google effettuato con successo!",
+      "sessionNotEstablished": "Sessione di autenticazione non stabilita. Prova ad accedere di nuovo.",
+      "unexpectedFailure": "L'autenticazione è fallita a causa di un errore imprevisto. Riprova.",
+      "completing": "Completamento dell'autenticazione Google...",
+      "pleaseWait": "Attendi mentre verifichiamo il tuo account..."
+    },
+    "checkEmail": {
+      "title": "Controlla la tua e-mail",
+      "body": "Ti abbiamo inviato un link di verifica. Controlla la tua e-mail per confermare il tuo account.",
+      "returnToSignIn": "Torna all'accesso",
+      "didntReceive": "Non hai ricevuto un'e-mail?",
+      "tryAgain": "Riprova",
+      "noteLabel": "Nota:",
+      "devNote": "A scopo di test, potresti voler disabilitare la conferma e-mail nelle impostazioni del tuo progetto Supabase."
     }
   },
   "dashboard": {
@@ -366,7 +389,8 @@
     "title": "Impostazioni Account",
     "tabs": {
       "profile": "Profilo",
-      "security": "Sicurezza"
+      "security": "Sicurezza",
+      "billing": "Fatturazione"
     },
     "profile": {
       "title": "Informazioni Profilo",
@@ -398,6 +422,11 @@
         "deleting": "Eliminazione in corso...",
         "success": "Account eliminato"
       }
+    },
+    "loading": "Caricamento...",
+    "toasts": {
+      "deleted": "Il tuo account è stato eliminato",
+      "deleteFailed": "Impossibile eliminare l'account"
     }
   },
   "mysteryCreation": {
@@ -925,7 +954,13 @@
       "signInRequired": "Accedi per acquistare questo mistero.",
       "checkoutRedirect": "Reindirizzamento al checkout sicuro...",
       "checkoutFailed": "Reindirizzamento al checkout fallito. Riprova.",
-      "genericError": "Si è verificato un errore durante il caricamento dei dettagli del mistero."
+      "genericError": "Si è verificato un errore durante il caricamento dei dettagli del mistero.",
+      "mysteryIdMissing": "Mistero non trovato. Riprova dalla dashboard.",
+      "emailNotVerified": "Verifica il tuo indirizzo e-mail prima di acquistare. Controlla la tua casella di posta per il link di verifica.",
+      "userEmailMissing": "E-mail utente non trovata. Disconnettiti e accedi di nuovo.",
+      "redirectingToCheckout": "Reindirizzamento al checkout sicuro...",
+      "networkError": "Errore di rete. Controlla la connessione e riprova.",
+      "checkoutConfigError": "Errore di configurazione del checkout. Contatta l'assistenza."
     },
     "title": "Finalizza il tuo acquisto",
     "subtitle": "Ottieni accesso completo al tuo pacchetto mistero con delitto",
@@ -988,7 +1023,9 @@
         "summary": "Script riassunti"
       },
       "hasAccomplice": "Include complice"
-    }
+    },
+    "fullyEditableLabel": "Completamente modificabile:",
+    "fullyEditableNote": "Non preoccuparti — potrai modificare tutti i copioni dei personaggi, i contenuti della guida del conduttore e le carte degli indizi dopo aver generato il tuo mistero."
   },
   "mysteryPackage": {
     "shareWithGuests": "Condividi con gli Ospiti",
@@ -1088,6 +1125,10 @@
     "tabs": {
       "guide": "Guida dell'Organizzatore",
       "detective": "Kit Investigativo e Prove"
+    },
+    "errors": {
+      "notFound": "Materiali per il conduttore non trovati o accesso negato.",
+      "loadFailed": "Impossibile caricare i materiali del conduttore"
     }
   },
   "payment": {
@@ -1103,7 +1144,46 @@
       "medium": "circa 20 minuti",
       "large": "circa 25-30 minuti",
       "xlarge": "fino a 45 minuti"
-    }
+    },
+    "toasts": {
+      "mysteryIdMissing": "ID del mistero mancante",
+      "resumingGeneration": "Ripresa della generazione del tuo mistero...",
+      "resumeFailed": "Impossibile riprendere la generazione",
+      "startingGeneration": "Avvio della generazione del tuo pacchetto mistero. Ci vorranno {{time}}...",
+      "startGenerationFailed": "Impossibile avviare la generazione del pacchetto",
+      "packageReady": "Il tuo pacchetto mistero è pronto!"
+    },
+    "errors": {
+      "unknownStep": "La generazione è fallita in un passaggio sconosciuto",
+      "generationPaused": "Generazione in pausa",
+      "progressSavedResume": "Non preoccuparti — i tuoi progressi sono stati salvati e puoi riprendere da dove ti sei fermato.",
+      "stillTrouble": "Hai ancora problemi?",
+      "contactSupport": "Contatta l'assistenza",
+      "generationFailed": "Generazione fallita",
+      "canTryAgain": "Puoi provare a generare di nuovo il tuo pacchetto mistero.",
+      "whatHappened": "Cos'è successo?",
+      "resumableExplanation": "La tua generazione ha incontrato un problema ma può essere ripresa da dove si è interrotta. I tuoi progressi sono stati salvati.",
+      "nonResumableExplanation": "Il processo di generazione è fallito e deve essere riavviato. Non preoccuparti — succede a volte e riprovare di solito funziona.",
+      "errorDuringGeneration": "Si è verificato un errore durante la generazione"
+    },
+    "buttons": {
+      "resumeGeneration": "Riprendi generazione",
+      "tryAgain": "Riprova",
+      "checkAgain": "Controlla di nuovo",
+      "refreshStatus": "Aggiorna stato"
+    },
+    "timeout": {
+      "title": "Sta richiedendo più tempo del previsto",
+      "description": "Il tuo mistero è stato generato ma stiamo avendo un problema a mostrare i contenuti.",
+      "reassuranceTitle": "Non preoccuparti — il tuo mistero è al sicuro!",
+      "reassuranceBody": "Il nostro team tecnico è stato avvisato automaticamente e risolverà la cosa il prima possibile. Non devi fare nulla — ci assicureremo che il tuo pacchetto mistero completo sia presto disponibile.",
+      "closePage": "Puoi chiudere questa pagina in tutta sicurezza e tornare più tardi. Se il problema persiste, scrivici a"
+    },
+    "finalizing": {
+      "title": "Stiamo finalizzando il tuo mistero",
+      "description": "Il tuo mistero è stato generato ma alcuni contenuti dei personaggi richiedono attenzione."
+    },
+    "loadingMystery": "Caricamento del tuo mistero..."
   },
   "attribution": {
     "title": "Come hai sentito parlare di noi?",
@@ -1122,5 +1202,128 @@
     "otherPlaceholder": "Dicci dove...",
     "submit": "Invia",
     "skip": "Salta per ora"
+  },
+  "billing": {
+    "title": "Cronologia acquisti",
+    "fallbackTitle": "Festa di mistero",
+    "toasts": {
+      "loadFailed": "Impossibile caricare la cronologia degli acquisti"
+    },
+    "summary": {
+      "title": "Riepilogo acquisti",
+      "description": "I tuoi acquisti e download di feste di mistero",
+      "totalPurchased": "Totale misteri acquistati",
+      "totalSpent": "Totale speso"
+    },
+    "recent": {
+      "title": "Acquisti recenti"
+    },
+    "empty": {
+      "title": "Ancora nessun acquisto",
+      "body": "Quando acquisterai pacchetti mistero, appariranno qui",
+      "browseButton": "Sfoglia misteri"
+    },
+    "status": {
+      "completed": "Completato"
+    },
+    "actions": {
+      "view": "Visualizza",
+      "download": "Scarica"
+    }
+  },
+  "feedback": {
+    "errors": {
+      "invalidLink": "Link di feedback non valido.",
+      "notFound": "Mistero non trovato.",
+      "generic": "Qualcosa è andato storto. Riprova più tardi.",
+      "submitFailed": "Impossibile inviare il feedback. Riprova."
+    },
+    "fallbackTitle": "Il tuo mistero",
+    "unsubscribed": {
+      "title": "Disiscritto",
+      "body": "Sei stato disiscritto dalle e-mail di follow-up. Non te ne invieremo altre."
+    },
+    "thankYou": {
+      "title": "Grazie!",
+      "body": "Il tuo feedback per <strong>{{title}}</strong> è stato registrato. Lo apprezziamo davvero!",
+      "cta": "Pronto per un altro mistero?"
+    },
+    "heading": "Com'è andato il tuo mistero?",
+    "thanksForRating": "Grazie per la valutazione! Vuoi raccontarci di più?",
+    "fields": {
+      "rating": "Valuta la tua esperienza *",
+      "didHost": "Hai organizzato la festa?",
+      "attendeeCount": "Quante persone hanno partecipato?",
+      "bestPart": "Qual è stata la parte migliore?",
+      "nps": "Quanto è probabile che consigli Mystery Maker a un amico?",
+      "testimonial": "Qualcos'altro che vorresti condividere?"
+    },
+    "didHostOptions": {
+      "yes": "Sì!",
+      "notYet": "Non ancora",
+      "changedPlans": "Piani cambiati"
+    },
+    "placeholders": {
+      "attendeeCount": "es. 8",
+      "bestPart": "Il momento della rivelazione è stato incredibile...",
+      "testimonial": "Opzionale: condividi la tua esperienza, suggerimenti o una storia dalla festa...",
+      "displayName": "Nome visualizzato (es. Sara M.)"
+    },
+    "npsScale": {
+      "notLikely": "Poco probabile",
+      "veryLikely": "Molto probabile"
+    },
+    "publicOptIn": {
+      "label": "Mostra il mio feedback sul sito Mystery Maker",
+      "help": "Aiuta gli altri organizzatori a vedere cosa pensano i clienti reali!"
+    },
+    "submit": "Invia feedback",
+    "submitting": "Invio in corso..."
+  },
+  "guestFeedback": {
+    "errors": {
+      "invalidLink": "Link di feedback non valido.",
+      "linkExpired": "Link di feedback non trovato o scaduto.",
+      "generic": "Qualcosa è andato storto. Riprova più tardi.",
+      "submitFailed": "Impossibile inviare il feedback. Riprova."
+    },
+    "fallbackTitle": "Il tuo mistero",
+    "thankYou": {
+      "title": "Grazie!",
+      "body": "Il tuo feedback per <strong>{{title}}</strong> ci aiuta a creare misteri migliori.",
+      "cta": "Hai mai pensato di organizzare la tua festa di mistero?",
+      "browseButton": "Sfoglia i nostri misteri"
+    },
+    "heading": "Com'è andato il tuo mistero?",
+    "youPlayed": "Hai interpretato <strong>{{character}}</strong>",
+    "thanksForRating": "Grazie per la valutazione! Vuoi raccontarci di più?",
+    "fields": {
+      "rating": "Valuta la tua esperienza *",
+      "highlight": "Qual è stato il momento clou della serata?"
+    },
+    "placeholders": {
+      "highlight": "La grande rivelazione, entrare nel personaggio, le accuse..."
+    },
+    "submit": "Invia feedback",
+    "submitting": "Invio in corso...",
+    "oneTimeNotice": "Questa è un'e-mail una tantum sulla tua recente esperienza con il mistero. Non riceverai altre e-mail da noi."
+  },
+  "notFound": {
+    "metaTitle": "Pagina non trovata",
+    "metaDescription": "La pagina che stai cercando non esiste o è stata spostata.",
+    "heading": "Ops! Pagina non trovata",
+    "returnHome": "Torna alla home"
+  },
+  "characterAccess": {
+    "errors": {
+      "assignmentNotFound": "Assegnazione del personaggio non trovata o accesso negato.",
+      "dataNotFound": "Dati del personaggio non trovati.",
+      "loadFailed": "Impossibile caricare il personaggio"
+    },
+    "subtitle": "Visualizza la tua guida completa del personaggio e le istruzioni del gioco qui sotto.",
+    "footer": {
+      "lovedPlaying": "Ti è piaciuto interpretare <strong>{{character}}</strong>?",
+      "hostCta": "Organizza il tuo mistero personalizzato su"
+    }
   }
 }

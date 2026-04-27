@@ -41,7 +41,7 @@ const SignIn = () => {
         if (error.message.includes('Invalid login credentials')) {
           toast.error(t("auth.errors.invalidCredentials"));
         } else if (error.message.includes('Email not confirmed')) {
-          toast.error("Please confirm your email before logging in. Check your inbox.");
+          toast.error(t("auth.errors.emailNotConfirmed"));
           navigate("/check-email");
         } else {
           toast.error(t("auth.errors.unknownError"));
@@ -52,7 +52,7 @@ const SignIn = () => {
       if (data?.user) {
         console.log("Signin successful:", data);
         trackLogin('email');
-        toast.success("Signed in successfully!");
+        toast.success(t("auth.signIn.success"));
 
         // Delay navigation to ensure analytics event is sent
         setTimeout(() => {
@@ -86,7 +86,7 @@ const SignIn = () => {
 
       if (error) {
         console.error("Google sign-in error:", error);
-        toast.error(`Failed to sign in with Google: ${error.message}`);
+        toast.error(`${t("auth.errors.googleSignInFailed")}: ${error.message}`);
         setSocialLoading(null);
         return;
       }
@@ -95,12 +95,12 @@ const SignIn = () => {
         trackLogin('google');
       }
       if (!data?.url) {
-        toast.error("Failed to initiate Google sign-in.");
+        toast.error(t("auth.errors.googleSignInInitFailed"));
         setSocialLoading(null);
       }
     } catch (error: any) {
       console.error("Google sign-in error:", error);
-      toast.error(`An unexpected error occurred: ${error.message || "Unknown error"}`);
+      toast.error(`${t("auth.errors.unexpected")}: ${error.message || t("auth.errors.unknownError")}`);
       setSocialLoading(null);
     }
   };
@@ -143,7 +143,7 @@ const SignIn = () => {
                     />
                   </svg>
                 )}
-                <span>Continue with Google</span>
+                <span>{t("auth.signIn.googleButton")}</span>
               </Button>
             </div>
 
@@ -152,7 +152,7 @@ const SignIn = () => {
                 <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+                <span className="bg-card px-2 text-muted-foreground">{t("auth.signIn.orDivider")}</span>
               </div>
             </div>
 

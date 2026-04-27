@@ -24,9 +24,9 @@ const ResetPassword = () => {
     setHashPresent(!!hash);
     
     if (!hash) {
-      toast.error("Invalid or expired password reset link");
+      toast.error(t("auth.resetPassword.invalidLinkToast"));
     }
-  }, []);
+  }, [t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,10 +110,10 @@ const ResetPassword = () => {
             ) : (
               <div className="text-center">
                 <p className="text-muted-foreground mb-6">
-                  The password reset link is invalid or has expired. Please request a new one.
+                  {t("auth.resetPassword.invalidLinkBody")}
                 </p>
                 <Button asChild className="w-full">
-                  <a href="/forgot-password">Request New Link</a>
+                  <a href="/forgot-password">{t("auth.resetPassword.requestNewLink")}</a>
                 </Button>
               </div>
             )}

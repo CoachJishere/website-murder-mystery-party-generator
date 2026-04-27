@@ -218,7 +218,8 @@
       "submitButton": "サインイン",
       "signingIn": "サインイン中...",
       "orDivider": "または次の方法で続行",
-      "googleButton": "Googleで続行"
+      "googleButton": "Googleで続行",
+      "success": "サインインしました!"
     },
     "signUp": {
       "title": "アカウントを作成",
@@ -251,7 +252,8 @@
         "noEmail": "メールが届きませんでしたか？",
         "tryAgain": "再試行",
         "returnToSignIn": "サインインに戻る"
-      }
+      },
+      "rememberedPrompt": "パスワードを思い出しましたか?"
     },
     "resetPassword": {
       "title": "新しいパスワードを設定",
@@ -260,7 +262,10 @@
       "confirmPassword": "新しいパスワードを確認",
       "submitButton": "パスワードを更新",
       "updating": "更新中...",
-      "success": "パスワードが正常に更新されました"
+      "success": "パスワードが正常に更新されました",
+      "invalidLinkToast": "無効または期限切れのパスワードリセットリンクです",
+      "invalidLinkBody": "パスワードリセットリンクが無効または期限切れです。新しいものをリクエストしてください。",
+      "requestNewLink": "新しいリンクをリクエスト"
     },
     "errors": {
       "invalidCredentials": "メールアドレスまたはパスワードが無効です",
@@ -274,17 +279,35 @@
       "unknownError": "問題が発生しました。もう一度お試しください。",
       "googleSignInFailed": "Googleでのサインインに失敗しました",
       "googleSignInInitFailed": "Googleサインインを開始できませんでした。",
-      "unexpected": "予期しないエラーが発生しました"
+      "unexpected": "予期しないエラーが発生しました",
+      "emailNotConfirmed": "ログイン前にメールを確認してください。受信箱をご確認ください。"
     },
     "success": {
       "accountCreated": "アカウントが正常に作成されました！メールを確認してアカウントを認証してください。",
       "passwordReset": "パスワードリセットメールが正常に送信されました",
       "passwordUpdated": "パスワードが正常に更新されました",
-      "signedOut": "正常にサインアウトしました"
+      "signedOut": "正常にサインアウトしました",
+      "accountCreatedVerifyEmail": "アカウントが作成されました!メールを確認して認証し、すべての機能をロック解除してください。"
     },
     "signInPrompt": {
       "description": "無料で登録してオリジナルのマーダーミステリーを作成するか、既存のアカウントにログインしてください。",
       "or": "または"
+    },
+    "callback": {
+      "successGoogle": "Googleでサインインしました!",
+      "sessionNotEstablished": "認証セッションが確立されていません。再度サインインしてください。",
+      "unexpectedFailure": "予期しないエラーにより認証に失敗しました。もう一度お試しください。",
+      "completing": "Google認証を完了しています...",
+      "pleaseWait": "アカウントを確認していますのでお待ちください..."
+    },
+    "checkEmail": {
+      "title": "メールを確認してください",
+      "body": "認証リンクをお送りしました。メールを確認してアカウントを認証してください。",
+      "returnToSignIn": "サインインに戻る",
+      "didntReceive": "メールが届きませんでしたか?",
+      "tryAgain": "もう一度試す",
+      "noteLabel": "注:",
+      "devNote": "テスト目的のために、Supabaseプロジェクト設定でメール確認を無効にしたい場合があります。"
     }
   },
   "dashboard": {
@@ -366,7 +389,8 @@
     "title": "アカウント設定",
     "tabs": {
       "profile": "プロフィール",
-      "security": "セキュリティ"
+      "security": "セキュリティ",
+      "billing": "請求"
     },
     "profile": {
       "title": "プロフィール情報",
@@ -398,6 +422,11 @@
         "deleting": "削除中...",
         "success": "アカウントが正常に削除されました"
       }
+    },
+    "loading": "読み込み中...",
+    "toasts": {
+      "deleted": "アカウントが削除されました",
+      "deleteFailed": "アカウントの削除に失敗しました"
     }
   },
   "mysteryCreation": {
@@ -913,7 +942,13 @@
       "signInRequired": "このミステリーを購入するにはサインインしてください。",
       "checkoutRedirect": "安全な決済にリダイレクト中...",
       "checkoutFailed": "決済へのリダイレクトに失敗しました。もう一度お試しください。",
-      "genericError": "ミステリーの詳細を読み込み中にエラーが発生しました。"
+      "genericError": "ミステリーの詳細を読み込み中にエラーが発生しました。",
+      "mysteryIdMissing": "ミステリーが見つかりませんでした。ダッシュボードから再度お試しください。",
+      "emailNotVerified": "ご購入前にメールアドレスを確認してください。受信箱で確認リンクをご確認ください。",
+      "userEmailMissing": "ユーザーのメールが見つかりませんでした。サインアウトして再度サインインしてください。",
+      "redirectingToCheckout": "安全なチェックアウトにリダイレクトしています...",
+      "networkError": "ネットワークエラーです。接続を確認してもう一度お試しください。",
+      "checkoutConfigError": "チェックアウトの設定エラーです。サポートまでお問い合わせください。"
     },
     "title": "購入を完了",
     "subtitle": "殺人ミステリーパッケージへのフルアクセスを取得",
@@ -976,7 +1011,9 @@
         "summary": "要約スクリプト"
       },
       "hasAccomplice": "共犯者あり"
-    }
+    },
+    "fullyEditableLabel": "完全に編集可能:",
+    "fullyEditableNote": "ご安心ください — ミステリー生成後に、すべてのキャラクター台本、ホストガイドの内容、証拠カードを編集できます。"
   },
   "mysteryView": {
     "timing": {
@@ -984,7 +1021,46 @@
       "medium": "約20分",
       "large": "約25〜30分",
       "xlarge": "最大45分"
-    }
+    },
+    "toasts": {
+      "mysteryIdMissing": "ミステリーIDがありません",
+      "resumingGeneration": "ミステリー生成を再開しています...",
+      "resumeFailed": "生成を再開できませんでした",
+      "startingGeneration": "ミステリーパッケージの生成を開始します。これには {{time}} かかります...",
+      "startGenerationFailed": "パッケージ生成を開始できませんでした",
+      "packageReady": "ミステリーパッケージの準備ができました!"
+    },
+    "errors": {
+      "unknownStep": "不明なステップで生成に失敗しました",
+      "generationPaused": "生成が一時停止されました",
+      "progressSavedResume": "ご安心ください — 進行状況は保存されており、中断したところから再開できます。",
+      "stillTrouble": "まだ問題がありますか?",
+      "contactSupport": "サポートにお問い合わせ",
+      "generationFailed": "生成に失敗しました",
+      "canTryAgain": "ミステリーパッケージの生成を再度試すことができます。",
+      "whatHappened": "何が起きましたか?",
+      "resumableExplanation": "生成中に問題が発生しましたが、中断したところから再開できます。進行状況は保存されています。",
+      "nonResumableExplanation": "生成プロセスが失敗したため、再起動する必要があります。ご安心ください — 時々起こることで、再試行すると通常はうまくいきます。",
+      "errorDuringGeneration": "生成中にエラーが発生しました"
+    },
+    "buttons": {
+      "resumeGeneration": "生成を再開",
+      "tryAgain": "もう一度試す",
+      "checkAgain": "再度確認",
+      "refreshStatus": "ステータスを更新"
+    },
+    "timeout": {
+      "title": "予想より時間がかかっています",
+      "description": "ミステリーは生成されましたが、コンテンツの表示に問題があります。",
+      "reassuranceTitle": "ご安心ください — ミステリーは安全です!",
+      "reassuranceBody": "技術チームに自動的に通知され、できるだけ早く解決します。何もする必要はありません — 完全なミステリーパッケージがすぐにご利用いただけるようにします。",
+      "closePage": "このページを安全に閉じて、後で戻ることができます。問題が続く場合は、こちらまでご連絡ください"
+    },
+    "finalizing": {
+      "title": "ミステリーを最終化しています",
+      "description": "ミステリーは生成されましたが、一部のキャラクターコンテンツに注意が必要です。"
+    },
+    "loadingMystery": "ミステリーを読み込んでいます..."
   },
   "mysteryPackage": {
     "shareWithGuests": "ゲストと共有",
@@ -1103,6 +1179,10 @@
     "tabs": {
       "guide": "ホストガイド",
       "detective": "探偵・証拠キット"
+    },
+    "errors": {
+      "notFound": "ホスト資料が見つからないか、アクセスが拒否されました。",
+      "loadFailed": "ホスト資料を読み込めませんでした"
     }
   },
   "attribution": {
@@ -1122,5 +1202,128 @@
     "otherPlaceholder": "どこで知りましたか...",
     "submit": "送信",
     "skip": "今はスキップ"
+  },
+  "billing": {
+    "title": "購入履歴",
+    "fallbackTitle": "ミステリーパーティー",
+    "toasts": {
+      "loadFailed": "購入履歴の読み込みに失敗しました"
+    },
+    "summary": {
+      "title": "購入概要",
+      "description": "ミステリーパーティーの購入とダウンロード",
+      "totalPurchased": "購入したミステリー総数",
+      "totalSpent": "支出総額"
+    },
+    "recent": {
+      "title": "最近の購入"
+    },
+    "empty": {
+      "title": "まだ購入はありません",
+      "body": "ミステリーパッケージを購入すると、ここに表示されます",
+      "browseButton": "ミステリーを閲覧"
+    },
+    "status": {
+      "completed": "完了"
+    },
+    "actions": {
+      "view": "表示",
+      "download": "ダウンロード"
+    }
+  },
+  "feedback": {
+    "errors": {
+      "invalidLink": "無効なフィードバックリンクです。",
+      "notFound": "ミステリーが見つかりませんでした。",
+      "generic": "問題が発生しました。後でもう一度お試しください。",
+      "submitFailed": "フィードバックの送信に失敗しました。もう一度お試しください。"
+    },
+    "fallbackTitle": "あなたのミステリー",
+    "unsubscribed": {
+      "title": "登録解除されました",
+      "body": "フォローアップメールの登録を解除しました。これ以上送信しません。"
+    },
+    "thankYou": {
+      "title": "ありがとうございます!",
+      "body": "<strong>{{title}}</strong> へのフィードバックが記録されました。本当に感謝しています!",
+      "cta": "別のミステリーの準備はできましたか?"
+    },
+    "heading": "ミステリーはいかがでしたか?",
+    "thanksForRating": "評価ありがとうございます!もっと教えていただけますか?",
+    "fields": {
+      "rating": "経験を評価 *",
+      "didHost": "パーティーを主催しましたか?",
+      "attendeeCount": "何人参加しましたか?",
+      "bestPart": "一番良かった部分は?",
+      "nps": "Mystery Makerを友人に薦める可能性はどのくらいですか?",
+      "testimonial": "他に共有したいことは?"
+    },
+    "didHostOptions": {
+      "yes": "はい!",
+      "notYet": "まだ",
+      "changedPlans": "予定変更"
+    },
+    "placeholders": {
+      "attendeeCount": "例: 8",
+      "bestPart": "犯人が明かされる瞬間が信じられないほどでした...",
+      "testimonial": "任意: 経験、提案、パーティーの話をシェアしてください...",
+      "displayName": "表示名 (例: 田中美咲)"
+    },
+    "npsScale": {
+      "notLikely": "低い",
+      "veryLikely": "非常に高い"
+    },
+    "publicOptIn": {
+      "label": "Mystery Makerウェブサイトにフィードバックを表示",
+      "help": "他のホストが実際の顧客の意見を見られるよう手伝ってください!"
+    },
+    "submit": "フィードバックを送信",
+    "submitting": "送信中..."
+  },
+  "guestFeedback": {
+    "errors": {
+      "invalidLink": "無効なフィードバックリンクです。",
+      "linkExpired": "フィードバックリンクが見つからないか期限切れです。",
+      "generic": "問題が発生しました。後でもう一度お試しください。",
+      "submitFailed": "フィードバックの送信に失敗しました。もう一度お試しください。"
+    },
+    "fallbackTitle": "あなたのミステリー",
+    "thankYou": {
+      "title": "ありがとうございます!",
+      "body": "<strong>{{title}}</strong> へのフィードバックは、より良いミステリーを作成する助けになります。",
+      "cta": "自分自身のミステリーパーティーを主催することを考えたことはありますか?",
+      "browseButton": "ミステリーを閲覧"
+    },
+    "heading": "ミステリーはいかがでしたか?",
+    "youPlayed": "あなたは <strong>{{character}}</strong> を演じました",
+    "thanksForRating": "評価ありがとうございます!もっと教えていただけますか?",
+    "fields": {
+      "rating": "経験を評価 *",
+      "highlight": "夜のハイライトは何でしたか?"
+    },
+    "placeholders": {
+      "highlight": "大きな暴露、キャラクターになりきる、告発..."
+    },
+    "submit": "フィードバックを送信",
+    "submitting": "送信中...",
+    "oneTimeNotice": "これは最近のミステリー体験に関する一回限りのメールです。他のメールは届きません。"
+  },
+  "notFound": {
+    "metaTitle": "ページが見つかりません",
+    "metaDescription": "お探しのページは存在しないか、移動されました。",
+    "heading": "おっと!ページが見つかりません",
+    "returnHome": "ホームに戻る"
+  },
+  "characterAccess": {
+    "errors": {
+      "assignmentNotFound": "キャラクター割り当てが見つからないか、アクセスが拒否されました。",
+      "dataNotFound": "キャラクターデータが見つかりません。",
+      "loadFailed": "キャラクターを読み込めませんでした"
+    },
+    "subtitle": "完全なキャラクターガイドとゲームの説明を以下でご覧ください。",
+    "footer": {
+      "lovedPlaying": "<strong>{{character}}</strong> を演じるのが楽しかったですか?",
+      "hostCta": "あなた自身のカスタムミステリーを主催:"
+    }
   }
 }

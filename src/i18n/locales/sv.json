@@ -218,7 +218,8 @@
       "submitButton": "Sign In",
       "signingIn": "Signing in...",
       "orDivider": "or continue with",
-      "googleButton": "Continue with Google"
+      "googleButton": "Continue with Google",
+      "success": "Inloggad!"
     },
     "signUp": {
       "title": "Create Your Account",
@@ -251,7 +252,8 @@
         "noEmail": "Didn't receive an email?",
         "tryAgain": "Try again",
         "returnToSignIn": "Return to Sign In"
-      }
+      },
+      "rememberedPrompt": "Kom du ihåg ditt lösenord?"
     },
     "resetPassword": {
       "title": "Set New Password",
@@ -260,7 +262,10 @@
       "confirmPassword": "Confirm New Password",
       "submitButton": "Update Password",
       "updating": "Updating...",
-      "success": "Password updated successfully"
+      "success": "Password updated successfully",
+      "invalidLinkToast": "Ogiltig eller utgången länk för återställning av lösenord",
+      "invalidLinkBody": "Länken för att återställa lösenordet är ogiltig eller har gått ut. Begär en ny.",
+      "requestNewLink": "Begär ny länk"
     },
     "errors": {
       "invalidCredentials": "Invalid email or password",
@@ -274,17 +279,35 @@
       "unknownError": "Something went wrong. Please try again.",
       "googleSignInFailed": "Det gick inte att logga in med Google",
       "googleSignInInitFailed": "Det gick inte att starta Google-inloggningen.",
-      "unexpected": "Ett oväntat fel inträffade"
+      "unexpected": "Ett oväntat fel inträffade",
+      "emailNotConfirmed": "Bekräfta din e-post innan inloggning. Kolla din inkorg."
     },
     "success": {
       "accountCreated": "Account created successfully! Please check your email to verify your account.",
       "passwordReset": "Password reset email sent successfully",
       "passwordUpdated": "Password updated successfully",
-      "signedOut": "Signed out successfully"
+      "signedOut": "Signed out successfully",
+      "accountCreatedVerifyEmail": "Konto skapat! Kolla din e-post för att verifiera och låsa upp alla funktioner."
     },
     "signInPrompt": {
       "description": "Registrera dig gratis för att skapa ditt eget skräddarsydda mordmysterium, eller logga in på ett befintligt konto.",
       "or": "eller"
+    },
+    "callback": {
+      "successGoogle": "Inloggad med Google!",
+      "sessionNotEstablished": "Autentiseringssession kunde inte upprättas. Försök logga in igen.",
+      "unexpectedFailure": "Autentisering misslyckades på grund av ett oväntat fel. Försök igen.",
+      "completing": "Slutför Google-autentisering...",
+      "pleaseWait": "Vänta medan vi verifierar ditt konto..."
+    },
+    "checkEmail": {
+      "title": "Kontrollera din e-post",
+      "body": "Vi har skickat dig en verifieringslänk. Kontrollera din e-post för att bekräfta ditt konto.",
+      "returnToSignIn": "Tillbaka till inloggning",
+      "didntReceive": "Fick du inget e-post?",
+      "tryAgain": "Försök igen",
+      "noteLabel": "Obs:",
+      "devNote": "För testningsändamål kan du inaktivera e-postbekräftelse i dina Supabase-projektinställningar."
     }
   },
   "dashboard": {
@@ -366,7 +389,8 @@
     "title": "Account Settings",
     "tabs": {
       "profile": "Profile",
-      "security": "Security"
+      "security": "Security",
+      "billing": "Fakturering"
     },
     "profile": {
       "title": "Profile Information",
@@ -398,6 +422,11 @@
         "deleting": "Deleting...",
         "success": "Account deleted successfully"
       }
+    },
+    "loading": "Laddar...",
+    "toasts": {
+      "deleted": "Ditt konto har raderats",
+      "deleteFailed": "Kunde inte radera konto"
     }
   },
   "mysteryCreation": {
@@ -913,7 +942,13 @@
       "signInRequired": "Please sign in to purchase this mystery.",
       "checkoutRedirect": "Redirecting to secure checkout...",
       "checkoutFailed": "Failed to redirect to checkout. Please try again.",
-      "genericError": "An error occurred while loading mystery details."
+      "genericError": "An error occurred while loading mystery details.",
+      "mysteryIdMissing": "Mysterium hittades inte. Försök igen från instrumentpanelen.",
+      "emailNotVerified": "Verifiera din e-postadress innan köp. Kolla din inkorg för verifieringslänken.",
+      "userEmailMissing": "Användar-e-post hittades inte. Logga ut och in igen.",
+      "redirectingToCheckout": "Omdirigerar till säker kassa...",
+      "networkError": "Nätverksfel. Kontrollera din anslutning och försök igen.",
+      "checkoutConfigError": "Konfigurationsfel vid kassan. Kontakta supporten."
     },
     "title": "Complete Your Purchase",
     "subtitle": "Get full access to your murder mystery package",
@@ -976,7 +1011,9 @@
         "summary": "Sammanfattade manus"
       },
       "hasAccomplice": "Inkluderar medbrottsling"
-    }
+    },
+    "fullyEditableLabel": "Helt redigerbar:",
+    "fullyEditableNote": "Oroa dig inte — du kan redigera alla karaktärsmanus, värdguideinnehåll och bevis-kort efter att ditt mysterium har genererats."
   },
   "mysteryView": {
     "timing": {
@@ -984,7 +1021,46 @@
       "medium": "ungefär 20 minuter",
       "large": "ungefär 25 till 30 minuter",
       "xlarge": "upp till 45 minuter"
-    }
+    },
+    "toasts": {
+      "mysteryIdMissing": "Mysterie-ID saknas",
+      "resumingGeneration": "Återupptar generering av ditt mysterium...",
+      "resumeFailed": "Kunde inte återuppta generering",
+      "startingGeneration": "Startar generering av ditt mysteriepaket. Detta tar {{time}}...",
+      "startGenerationFailed": "Kunde inte starta paketgenerering",
+      "packageReady": "Ditt mysteriepaket är klart!"
+    },
+    "errors": {
+      "unknownStep": "Genereringen misslyckades vid ett okänt steg",
+      "generationPaused": "Generering pausad",
+      "progressSavedResume": "Oroa dig inte — dina framsteg har sparats och du kan fortsätta där du slutade.",
+      "stillTrouble": "Fortfarande problem?",
+      "contactSupport": "Kontakta supporten",
+      "generationFailed": "Generering misslyckades",
+      "canTryAgain": "Du kan försöka generera ditt mysteriepaket igen.",
+      "whatHappened": "Vad hände?",
+      "resumableExplanation": "Din generering stötte på ett problem men kan återupptas där den slutade. Dina framsteg har sparats.",
+      "nonResumableExplanation": "Genereringsprocessen misslyckades och behöver startas om. Oroa dig inte — det händer ibland och att försöka igen brukar fungera.",
+      "errorDuringGeneration": "Ett fel uppstod under genereringen"
+    },
+    "buttons": {
+      "resumeGeneration": "Återuppta generering",
+      "tryAgain": "Försök igen",
+      "checkAgain": "Kontrollera igen",
+      "refreshStatus": "Uppdatera status"
+    },
+    "timeout": {
+      "title": "Tar längre tid än förväntat",
+      "description": "Ditt mysterium genererades men vi har problem med att visa innehållet.",
+      "reassuranceTitle": "Oroa dig inte — ditt mysterium är säkert!",
+      "reassuranceBody": "Vårt tekniska team har automatiskt meddelats och kommer att lösa detta så snart som möjligt. Du behöver inte göra något — vi ser till att ditt kompletta mysteriepaket snart är tillgängligt för dig.",
+      "closePage": "Du kan tryggt stänga den här sidan och komma tillbaka senare. Om problemet kvarstår, kontakta oss på"
+    },
+    "finalizing": {
+      "title": "Vi slutför ditt mysterium",
+      "description": "Ditt mysterium genererades men något karaktärsinnehåll behöver uppmärksamhet."
+    },
+    "loadingMystery": "Laddar ditt mysterium..."
   },
   "mysteryPackage": {
     "shareWithGuests": "Share With Guests",
@@ -1051,6 +1127,10 @@
     "tabs": {
       "guide": "Värdguide",
       "detective": "Detektiv- & beviskit"
+    },
+    "errors": {
+      "notFound": "Värdmaterial hittades inte eller åtkomst nekad.",
+      "loadFailed": "Kunde inte ladda värdmaterial"
     }
   },
   "chatbot": {
@@ -1122,5 +1202,128 @@
     "otherPlaceholder": "Berätta var...",
     "submit": "Skicka",
     "skip": "Hoppa över för nu"
+  },
+  "billing": {
+    "title": "Köphistorik",
+    "fallbackTitle": "Mysterie-fest",
+    "toasts": {
+      "loadFailed": "Kunde inte ladda köphistorik"
+    },
+    "summary": {
+      "title": "Köpöversikt",
+      "description": "Dina köp och nedladdningar av mysterie-fester",
+      "totalPurchased": "Totalt antal mysterier köpta",
+      "totalSpent": "Totalt spenderat"
+    },
+    "recent": {
+      "title": "Senaste köp"
+    },
+    "empty": {
+      "title": "Inga köp än",
+      "body": "När du köper mysteriepaket visas de här",
+      "browseButton": "Bläddra bland mysterier"
+    },
+    "status": {
+      "completed": "Slutförd"
+    },
+    "actions": {
+      "view": "Visa",
+      "download": "Ladda ner"
+    }
+  },
+  "feedback": {
+    "errors": {
+      "invalidLink": "Ogiltig feedback-länk.",
+      "notFound": "Mysterium hittades inte.",
+      "generic": "Något gick fel. Försök igen senare.",
+      "submitFailed": "Kunde inte skicka feedback. Försök igen."
+    },
+    "fallbackTitle": "Ditt mysterium",
+    "unsubscribed": {
+      "title": "Avregistrerad",
+      "body": "Du har avregistrerat dig från uppföljningsmejl. Vi skickar inte fler."
+    },
+    "thankYou": {
+      "title": "Tack!",
+      "body": "Din feedback för <strong>{{title}}</strong> har registrerats. Vi uppskattar det verkligen!",
+      "cta": "Redo för ett till mysterium?"
+    },
+    "heading": "Hur gick ditt mysterium?",
+    "thanksForRating": "Tack för betyget! Vill du berätta mer?",
+    "fields": {
+      "rating": "Betygsätt din upplevelse *",
+      "didHost": "Var du värd för festen?",
+      "attendeeCount": "Hur många deltog?",
+      "bestPart": "Vad var det bästa?",
+      "nps": "Hur sannolikt är det att du rekommenderar Mystery Maker till en vän?",
+      "testimonial": "Något annat du vill dela med dig av?"
+    },
+    "didHostOptions": {
+      "yes": "Ja!",
+      "notYet": "Inte än",
+      "changedPlans": "Ändrade planer"
+    },
+    "placeholders": {
+      "attendeeCount": "t.ex. 8",
+      "bestPart": "Avslöjandet var fantastiskt...",
+      "testimonial": "Valfritt: dela din upplevelse, förslag eller en historia från festen...",
+      "displayName": "Visningsnamn (t.ex. Sara M.)"
+    },
+    "npsScale": {
+      "notLikely": "Osannolikt",
+      "veryLikely": "Mycket sannolikt"
+    },
+    "publicOptIn": {
+      "label": "Visa min feedback på Mystery Maker-webbplatsen",
+      "help": "Hjälp andra värdar att se vad riktiga kunder tycker!"
+    },
+    "submit": "Skicka feedback",
+    "submitting": "Skickar..."
+  },
+  "guestFeedback": {
+    "errors": {
+      "invalidLink": "Ogiltig feedback-länk.",
+      "linkExpired": "Feedback-länk hittades inte eller har gått ut.",
+      "generic": "Något gick fel. Försök igen senare.",
+      "submitFailed": "Kunde inte skicka feedback. Försök igen."
+    },
+    "fallbackTitle": "Ditt mysterium",
+    "thankYou": {
+      "title": "Tack!",
+      "body": "Din feedback för <strong>{{title}}</strong> hjälper oss att skapa bättre mysterier.",
+      "cta": "Har du någonsin tänkt på att vara värd för din egen mysterie-fest?",
+      "browseButton": "Bläddra bland våra mysterier"
+    },
+    "heading": "Hur var ditt mysterium?",
+    "youPlayed": "Du spelade <strong>{{character}}</strong>",
+    "thanksForRating": "Tack för betyget! Vill du berätta mer?",
+    "fields": {
+      "rating": "Betygsätt din upplevelse *",
+      "highlight": "Vad var kvällens höjdpunkt?"
+    },
+    "placeholders": {
+      "highlight": "Den stora avslöjelsen, att gå in i karaktären, anklagelserna..."
+    },
+    "submit": "Skicka feedback",
+    "submitting": "Skickar...",
+    "oneTimeNotice": "Detta är ett engångsmejl om din senaste mysterieupplevelse. Du kommer inte att få några andra mejl från oss."
+  },
+  "notFound": {
+    "metaTitle": "Sidan hittades inte",
+    "metaDescription": "Sidan du letar efter finns inte eller har flyttats.",
+    "heading": "Hoppsan! Sidan hittades inte",
+    "returnHome": "Tillbaka till hemsidan"
+  },
+  "characterAccess": {
+    "errors": {
+      "assignmentNotFound": "Karaktärstilldelning hittades inte eller åtkomst nekad.",
+      "dataNotFound": "Karaktärsdata hittades inte.",
+      "loadFailed": "Kunde inte ladda karaktär"
+    },
+    "subtitle": "Se din kompletta karaktärsguide och spelinstruktioner nedan.",
+    "footer": {
+      "lovedPlaying": "Älskade du att spela <strong>{{character}}</strong>?",
+      "hostCta": "Var värd för ditt eget skräddarsydda mysterium på"
+    }
   }
 }

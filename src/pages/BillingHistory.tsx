@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { CreditCard, Download, Eye, Calendar, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface Purchase {
   id: string;
@@ -21,6 +22,7 @@ interface Purchase {
 
 const BillingHistory = () => {
   const { user, isAuthenticated } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,13 +56,13 @@ const BillingHistory = () => {
         created_at: conv.purchase_date || conv.created_at,
         amount: 24.99, // Fixed price for now
         status: "completed",
-        mystery_title: conv.title || conv.theme || "Mystery Party",
+        mystery_title: conv.title || conv.theme || t("billing.fallbackTitle"),
       }));
 
       setPurchases(purchaseData);
     } catch (error: any) {
       console.error("Error fetching purchases:", error);
-      toast.error("Failed to load purchase history");
+      toast.error(t("billing.toasts.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -88,27 +90,27 @@ const BillingHistory = () => {
 
       <main className="flex-1 py-12 px-4">
         <div className="container mx-auto max-w-4xl">
-          <h1 className="text-3xl font-bold mb-8">Purchase History</h1>
+          <h1 className="text-3xl font-bold mb-8">{t("billing.title")}</h1>
 
           {/* Summary Card */}
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="h-5 w-5" />
-                Purchase Summary
+                {t("billing.summary.title")}
               </CardTitle>
               <CardDescription>
-                Your mystery party purchases and downloads
+                {t("billing.summary.description")}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 bg-muted/50 rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-1">Total Mysteries Purchased</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t("billing.summary.totalPurchased")}</p>
                   <p className="text-2xl font-bold">{purchases.length}</p>
                 </div>
                 <div className="p-4 bg-muted/50 rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-1">Total Spent</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t("billing.summary.totalSpent")}</p>
                   <p className="text-2xl font-bold">${(purchases.length * 24.99).toFixed(2)}</p>
                 </div>
               </div>
@@ -120,19 +122,19 @@ const BillingHistory = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="h-5 w-5" />
-                Recent Purchases
+                {t("billing.recent.title")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {purchases.length === 0 ? (
                 <div className="text-center py-12">
                   <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No purchases yet</h3>
+                  <h3 className="text-lg font-semibold mb-2">{t("billing.empty.title")}</h3>
                   <p className="text-muted-foreground mb-6">
-                    When you purchase mystery packages, they'll appear here
+                    {t("billing.empty.body")}
                   </p>
                   <Button onClick={() => navigate("/dashboard")}>
-                    Browse Mysteries
+                    {t("billing.empty.browseButton")}
                   </Button>
                 </div>
               ) : (
@@ -153,7 +155,7 @@ const BillingHistory = () => {
                             ${purchase.amount.toFixed(2)}
                           </span>
                           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Completed
+                            {t("billing.status.completed")}
                           </span>
                         </div>
                       </div>
@@ -164,7 +166,7 @@ const BillingHistory = () => {
                           onClick={() => handleViewMystery(purchase.conversation_id)}
                         >
                           <Eye className="h-4 w-4 mr-1" />
-                          View
+                          {t("billing.actions.view")}
                         </Button>
                         <Button
                           variant="outline"
@@ -172,7 +174,7 @@ const BillingHistory = () => {
                           onClick={() => navigate(`/mystery/${purchase.conversation_id}`)}
                         >
                           <Download className="h-4 w-4 mr-1" />
-                          Download
+                          {t("billing.actions.download")}
                         </Button>
                       </div>
                     </div>

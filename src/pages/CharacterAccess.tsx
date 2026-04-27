@@ -7,7 +7,7 @@ import "../styles/print.css";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from 'react-markdown';
 import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 
 interface CharacterAssignment {
   id: string;
@@ -90,7 +90,7 @@ const CharacterAccess: React.FC = () => {
 
       if (assignmentError) {
         console.error('Assignment error:', assignmentError);
-        setError('Character assignment not found or access denied.');
+        setError(t('characterAccess.errors.assignmentNotFound'));
         return;
       }
 
@@ -101,7 +101,7 @@ const CharacterAccess: React.FC = () => {
 
       if (characterError) {
         console.error('Character error:', characterError);
-        setError('Character data not found.');
+        setError(t('characterAccess.errors.dataNotFound'));
         return;
       }
 
@@ -121,7 +121,7 @@ const CharacterAccess: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Error loading character assignment:', error);
-      setError(`Failed to load character: ${error.message || 'Unknown error'}`);
+      setError(`${t('characterAccess.errors.loadFailed')}: ${error.message || t('auth.errors.unknownError')}`);
     } finally {
       setLoading(false);
     }
@@ -381,7 +381,7 @@ const CharacterAccess: React.FC = () => {
             <h1 className="text-2xl font-bold">{t('character.access.welcome', { name: assignment.guest_name })}</h1>
           </div>
           <p className="text-muted-foreground">
-            View your complete character guide and game instructions below.
+            {t('characterAccess.subtitle')}
           </p>
           <Button
             onClick={() => window.print()}
@@ -449,10 +449,14 @@ const CharacterAccess: React.FC = () => {
 
         <div className="character-packet-footer mt-8 text-center text-sm text-muted-foreground border-t border-border/40 pt-6">
           <p className="mb-1">
-            Loved playing as <strong className="text-foreground">{assignment.mystery_characters.character_name}</strong>?
+            <Trans
+              i18nKey="characterAccess.footer.lovedPlaying"
+              values={{ character: assignment.mystery_characters.character_name }}
+              components={{ strong: <strong className="text-foreground" /> }}
+            />
           </p>
           <p>
-            Host your own custom mystery at{" "}
+            {t('characterAccess.footer.hostCta')}{" "}
             <a
               href="https://www.mysterymaker.party/?utm_source=share&utm_medium=character_packet&utm_campaign=guest_footer"
               className="text-primary underline"

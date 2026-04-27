@@ -7,11 +7,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, Star, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation, Trans } from "react-i18next";
 
 const Feedback: React.FC = () => {
   const { conversationId } = useParams<{ conversationId: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -33,7 +35,7 @@ const Feedback: React.FC = () => {
 
   useEffect(() => {
     if (!conversationId) {
-      setError("Invalid feedback link.");
+      setError(t("feedback.errors.invalidLink"));
       setLoading(false);
       return;
     }
@@ -86,11 +88,11 @@ const Feedback: React.FC = () => {
         .single();
 
       if (fetchError || !data) {
-        setError("Mystery not found.");
+        setError(t("feedback.errors.notFound"));
         return;
       }
 
-      setMysteryTitle(data.title || "Your Mystery");
+      setMysteryTitle(data.title || t("feedback.fallbackTitle"));
 
       // Check if feedback already submitted
       const { data: existingFeedback } = await supabase
@@ -104,7 +106,7 @@ const Feedback: React.FC = () => {
       }
     } catch (err) {
       console.error("Error loading mystery:", err);
-      setError("Something went wrong. Please try again later.");
+      setError(t("feedback.errors.generic"));
     } finally {
       setLoading(false);
     }
@@ -147,7 +149,7 @@ const Feedback: React.FC = () => {
       setSubmitted(true);
     } catch (err) {
       console.error("Submit error:", err);
-      setError("Failed to submit feedback. Please try again.");
+      setError(t("feedback.errors.submitFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -167,9 +169,9 @@ const Feedback: React.FC = () => {
         <Card className="max-w-md w-full">
           <CardContent className="pt-6 text-center">
             <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Unsubscribed</h2>
+            <h2 className="text-xl font-semibold mb-2">{t("feedback.unsubscribed.title")}</h2>
             <p className="text-muted-foreground">
-              You've been unsubscribed from follow-up emails. We won't send you any more.
+              {t("feedback.unsubscribed.body")}
             </p>
           </CardContent>
         </Card>
@@ -195,15 +197,19 @@ const Feedback: React.FC = () => {
         <Card className="max-w-md w-full">
           <CardContent className="pt-6 text-center">
             <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Thank You!</h2>
+            <h2 className="text-xl font-semibold mb-2">{t("feedback.thankYou.title")}</h2>
             <p className="text-muted-foreground mb-6">
-              Your feedback for <strong>{mysteryTitle}</strong> has been recorded. We really appreciate it!
+              <Trans
+                i18nKey="feedback.thankYou.body"
+                values={{ title: mysteryTitle }}
+                components={{ strong: <strong /> }}
+              />
             </p>
             <Button
               onClick={() => navigate("/")}
               className="bg-[#C81400] hover:bg-[#A01000] text-white"
             >
-              Ready for Another Mystery?
+              {t("feedback.thankYou.cta")}
             </Button>
           </CardContent>
         </Card>
@@ -219,7 +225,7 @@ const Feedback: React.FC = () => {
           className="text-center py-8 px-6 rounded-t-lg"
           style={{ background: "linear-gradient(135deg, #C81400 0%, #A01000 100%)" }}
         >
-          <h1 className="text-2xl font-bold text-white">How Did Your Mystery Go?</h1>
+          <h1 className="text-2xl font-bold text-white">{t("feedback.heading")}</h1>
           <p className="text-white/80 mt-2">{mysteryTitle}</p>
         </div>
 
@@ -227,14 +233,14 @@ const Feedback: React.FC = () => {
           <CardContent className="pt-6">
             {searchParams.get("rating") && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-6 text-center">
-                <p className="text-green-800 text-sm">Thanks for the rating! Want to tell us more?</p>
+                <p className="text-green-800 text-sm">{t("feedback.thanksForRating")}</p>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Star Rating */}
               <div>
-                <Label className="text-base font-semibold">Rate your experience *</Label>
+                <Label className="text-base font-semibold">{t("feedback.fields.rating")}</Label>
                 <div className="flex gap-1 mt-2">
                   {[1, 2, 3, 4, 5].map((n) => (
                     <button
@@ -259,12 +265,12 @@ const Feedback: React.FC = () => {
 
               {/* Did you host? */}
               <div>
-                <Label className="text-base font-semibold">Did you host the party?</Label>
+                <Label className="text-base font-semibold">{t("feedback.fields.didHost")}</Label>
                 <div className="flex gap-2 mt-2">
                   {[
-                    { value: "yes", label: "Yes!" },
-                    { value: "not_yet", label: "Not yet" },
-                    { value: "changed_plans", label: "Changed plans" },
+                    { value: "yes", label: t("feedback.didHostOptions.yes") },
+                    { value: "not_yet", label: t("feedback.didHostOptions.notYet") },
+                    { value: "changed_plans", label: t("feedback.didHostOptions.changedPlans") },
                   ].map((option) => (
                     <button
                       key={option.value}
@@ -286,7 +292,7 @@ const Feedback: React.FC = () => {
               {didHostParty === "yes" && (
                 <div>
                   <Label htmlFor="attendees" className="text-base font-semibold">
-                    How many people attended?
+                    {t("feedback.fields.attendeeCount")}
                   </Label>
                   <Input
                     id="attendees"
@@ -295,7 +301,7 @@ const Feedback: React.FC = () => {
                     max="50"
                     value={attendeeCount}
                     onChange={(e) => setAttendeeCount(e.target.value)}
-                    placeholder="e.g. 8"
+                    placeholder={t("feedback.placeholders.attendeeCount")}
                     className="mt-2 max-w-[120px]"
                   />
                 </div>
@@ -304,13 +310,13 @@ const Feedback: React.FC = () => {
               {/* Best part */}
               <div>
                 <Label htmlFor="bestPart" className="text-base font-semibold">
-                  What was the best part?
+                  {t("feedback.fields.bestPart")}
                 </Label>
                 <Textarea
                   id="bestPart"
                   value={bestPart}
                   onChange={(e) => setBestPart(e.target.value)}
-                  placeholder="The reveal moment was incredible..."
+                  placeholder={t("feedback.placeholders.bestPart")}
                   className="mt-2"
                   rows={3}
                 />
@@ -319,7 +325,7 @@ const Feedback: React.FC = () => {
               {/* NPS */}
               <div>
                 <Label className="text-base font-semibold">
-                  How likely are you to recommend Mystery Maker to a friend?
+                  {t("feedback.fields.nps")}
                 </Label>
                 <div className="flex gap-1 mt-2 flex-wrap">
                   {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
@@ -338,21 +344,21 @@ const Feedback: React.FC = () => {
                   ))}
                 </div>
                 <div className="flex justify-between text-xs text-muted-foreground mt-1 px-1">
-                  <span>Not likely</span>
-                  <span>Very likely</span>
+                  <span>{t("feedback.npsScale.notLikely")}</span>
+                  <span>{t("feedback.npsScale.veryLikely")}</span>
                 </div>
               </div>
 
               {/* Testimonial */}
               <div>
                 <Label htmlFor="testimonial" className="text-base font-semibold">
-                  Anything else you'd like to share?
+                  {t("feedback.fields.testimonial")}
                 </Label>
                 <Textarea
                   id="testimonial"
                   value={testimonial}
                   onChange={(e) => setTestimonial(e.target.value)}
-                  placeholder="Optional: share your experience, suggestions, or a story from the party..."
+                  placeholder={t("feedback.placeholders.testimonial")}
                   className="mt-2"
                   rows={3}
                 />
@@ -370,10 +376,10 @@ const Feedback: React.FC = () => {
                   />
                   <div>
                     <Label htmlFor="isPublic" className="text-sm font-medium cursor-pointer">
-                      Show my feedback on the Mystery Maker website
+                      {t("feedback.publicOptIn.label")}
                     </Label>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Help other hosts see what real customers think!
+                      {t("feedback.publicOptIn.help")}
                     </p>
                   </div>
                 </div>
@@ -383,7 +389,7 @@ const Feedback: React.FC = () => {
                     <Input
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
-                      placeholder="Display name (e.g. Sarah M.)"
+                      placeholder={t("feedback.placeholders.displayName")}
                       className="max-w-[200px]"
                     />
                   </div>
@@ -399,10 +405,10 @@ const Feedback: React.FC = () => {
                 {submitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Submitting...
+                    {t("feedback.submitting")}
                   </>
                 ) : (
-                  "Submit Feedback"
+                  t("feedback.submit")
                 )}
               </Button>
             </form>

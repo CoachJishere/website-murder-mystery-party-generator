@@ -218,7 +218,8 @@
       "submitButton": "登录",
       "signingIn": "正在登录...",
       "orDivider": "或继续使用",
-      "googleButton": "使用 Google 继续"
+      "googleButton": "使用 Google 继续",
+      "success": "登录成功!"
     },
     "signUp": {
       "title": "创建您的账户",
@@ -251,7 +252,8 @@
         "noEmail": "没有收到电子邮件？",
         "tryAgain": "再试一次",
         "returnToSignIn": "返回登录"
-      }
+      },
+      "rememberedPrompt": "想起密码了?"
     },
     "resetPassword": {
       "title": "设置新密码",
@@ -260,7 +262,10 @@
       "confirmPassword": "确认新密码",
       "submitButton": "更新密码",
       "updating": "正在更新...",
-      "success": "密码已更新"
+      "success": "密码已更新",
+      "invalidLinkToast": "密码重置链接无效或已过期",
+      "invalidLinkBody": "密码重置链接无效或已过期。请请求新的链接。",
+      "requestNewLink": "请求新链接"
     },
     "errors": {
       "invalidCredentials": "无效的电子邮件或密码",
@@ -274,17 +279,35 @@
       "unknownError": "发生了一些错误。请重试。",
       "googleSignInFailed": "Google 登录失败",
       "googleSignInInitFailed": "无法启动 Google 登录。",
-      "unexpected": "发生意外错误"
+      "unexpected": "发生意外错误",
+      "emailNotConfirmed": "登录前请确认您的邮箱。请查收邮件。"
     },
     "success": {
       "accountCreated": "账户已创建！请检查您的电子邮件以验证您的账户。",
       "passwordReset": "密码重置电子邮件已发送",
       "passwordUpdated": "密码已更新",
-      "signedOut": "已登出"
+      "signedOut": "已登出",
+      "accountCreatedVerifyEmail": "账户已创建!请查收邮件以验证并解锁所有功能。"
     },
     "signInPrompt": {
       "description": "免费注册以创建您自己的定制谋杀谜案,或登录现有账户。",
       "or": "或"
+    },
+    "callback": {
+      "successGoogle": "已通过 Google 成功登录!",
+      "sessionNotEstablished": "认证会话未建立。请重新登录。",
+      "unexpectedFailure": "由于意外错误,认证失败。请重试。",
+      "completing": "正在完成 Google 认证...",
+      "pleaseWait": "请稍候,正在验证您的账户..."
+    },
+    "checkEmail": {
+      "title": "请查收邮件",
+      "body": "我们已向您发送验证链接。请查收邮件以确认您的账户。",
+      "returnToSignIn": "返回登录",
+      "didntReceive": "未收到邮件?",
+      "tryAgain": "重试",
+      "noteLabel": "注意:",
+      "devNote": "出于测试目的,您可能需要在 Supabase 项目设置中禁用邮件确认。"
     }
   },
   "dashboard": {
@@ -366,7 +389,8 @@
     "title": "账户设置",
     "tabs": {
       "profile": "个人资料",
-      "security": "安全"
+      "security": "安全",
+      "billing": "账单"
     },
     "profile": {
       "title": "个人资料信息",
@@ -398,6 +422,11 @@
         "deleting": "正在删除...",
         "success": "账户已删除"
       }
+    },
+    "loading": "加载中...",
+    "toasts": {
+      "deleted": "您的账户已删除",
+      "deleteFailed": "删除账户失败"
     }
   },
   "mysteryCreation": {
@@ -959,7 +988,13 @@
       "signInRequired": "请登录以购买此谜团。",
       "checkoutRedirect": "正在重定向到安全结账...",
       "checkoutFailed": "重定向到结账失败。请重试。",
-      "genericError": "加载谜团详情时发生错误。"
+      "genericError": "加载谜团详情时发生错误。",
+      "mysteryIdMissing": "未找到谜案。请从仪表板重试。",
+      "emailNotVerified": "购买前请验证您的邮箱地址。请查收验证链接。",
+      "userEmailMissing": "未找到用户邮箱。请退出后重新登录。",
+      "redirectingToCheckout": "正在跳转至安全结账...",
+      "networkError": "网络错误。请检查您的连接并重试。",
+      "checkoutConfigError": "结账配置错误。请联系支持。"
     },
     "title": "完成您的购买",
     "subtitle": "完全访问您的谋杀悬疑包",
@@ -1022,7 +1057,9 @@
         "summary": "摘要剧本"
       },
       "hasAccomplice": "包含同谋"
-    }
+    },
+    "fullyEditableLabel": "完全可编辑:",
+    "fullyEditableNote": "别担心 — 您可以在生成谜案后编辑所有角色剧本、主持人指南内容和证据卡。"
   },
   "mysteryPackage": {
     "shareWithGuests": "与客人分享",
@@ -1070,6 +1107,10 @@
     "tabs": {
       "guide": "主持指南",
       "detective": "侦探与证据工具包"
+    },
+    "errors": {
+      "notFound": "未找到主持人资料或访问被拒绝。",
+      "loadFailed": "无法加载主持人资料"
     }
   },
   "payment": {
@@ -1103,7 +1144,46 @@
       "medium": "约20分钟",
       "large": "约25到30分钟",
       "xlarge": "最多45分钟"
-    }
+    },
+    "toasts": {
+      "mysteryIdMissing": "缺少谜案 ID",
+      "resumingGeneration": "正在恢复您的谜案生成...",
+      "resumeFailed": "无法恢复生成",
+      "startingGeneration": "正在开始生成您的谜案套装。预计需要 {{time}}...",
+      "startGenerationFailed": "无法开始套装生成",
+      "packageReady": "您的谜案套装已就绪!"
+    },
+    "errors": {
+      "unknownStep": "生成在未知步骤失败",
+      "generationPaused": "生成已暂停",
+      "progressSavedResume": "别担心 — 您的进度已保存,可以从中断处继续。",
+      "stillTrouble": "仍然有问题?",
+      "contactSupport": "联系支持",
+      "generationFailed": "生成失败",
+      "canTryAgain": "您可以尝试再次生成谜案套装。",
+      "whatHappened": "发生了什么?",
+      "resumableExplanation": "您的生成遇到问题,但可以从中断处恢复。您的进度已保存。",
+      "nonResumableExplanation": "生成过程失败,需要重新启动。别担心 — 这有时会发生,重试通常有效。",
+      "errorDuringGeneration": "生成过程中发生错误"
+    },
+    "buttons": {
+      "resumeGeneration": "恢复生成",
+      "tryAgain": "重试",
+      "checkAgain": "再次检查",
+      "refreshStatus": "刷新状态"
+    },
+    "timeout": {
+      "title": "用时比预期长",
+      "description": "您的谜案已生成,但显示内容时遇到问题。",
+      "reassuranceTitle": "别担心 — 您的谜案是安全的!",
+      "reassuranceBody": "我们的技术团队已自动收到通知,会尽快解决。您无需做任何事 — 我们会确保您的完整谜案套装很快可用。",
+      "closePage": "您可以安全地关闭此页面稍后再回来。如果问题持续存在,请联系"
+    },
+    "finalizing": {
+      "title": "我们正在完成您的谜案",
+      "description": "您的谜案已生成,但部分角色内容需要关注。"
+    },
+    "loadingMystery": "正在加载您的谜案..."
   },
   "attribution": {
     "title": "你是怎么知道我们的？",
@@ -1122,5 +1202,128 @@
     "otherPlaceholder": "告诉我们哪里...",
     "submit": "提交",
     "skip": "暂时跳过"
+  },
+  "billing": {
+    "title": "购买历史",
+    "fallbackTitle": "谜案派对",
+    "toasts": {
+      "loadFailed": "无法加载购买历史"
+    },
+    "summary": {
+      "title": "购买概要",
+      "description": "您的谜案派对购买和下载",
+      "totalPurchased": "已购买谜案总数",
+      "totalSpent": "总支出"
+    },
+    "recent": {
+      "title": "最近购买"
+    },
+    "empty": {
+      "title": "暂无购买",
+      "body": "当您购买谜案套装时,它们会出现在这里",
+      "browseButton": "浏览谜案"
+    },
+    "status": {
+      "completed": "已完成"
+    },
+    "actions": {
+      "view": "查看",
+      "download": "下载"
+    }
+  },
+  "feedback": {
+    "errors": {
+      "invalidLink": "反馈链接无效。",
+      "notFound": "未找到谜案。",
+      "generic": "出了点问题。请稍后重试。",
+      "submitFailed": "反馈提交失败。请重试。"
+    },
+    "fallbackTitle": "您的谜案",
+    "unsubscribed": {
+      "title": "已退订",
+      "body": "您已退订后续邮件。我们不会再向您发送。"
+    },
+    "thankYou": {
+      "title": "谢谢!",
+      "body": "您对 <strong>{{title}}</strong> 的反馈已记录。非常感谢!",
+      "cta": "准备好下一个谜案了吗?"
+    },
+    "heading": "您的谜案怎么样?",
+    "thanksForRating": "感谢评分!想告诉我们更多吗?",
+    "fields": {
+      "rating": "评价您的体验 *",
+      "didHost": "您主持了派对吗?",
+      "attendeeCount": "有多少人参加?",
+      "bestPart": "最棒的部分是什么?",
+      "nps": "您向朋友推荐 Mystery Maker 的可能性有多大?",
+      "testimonial": "还有什么想分享的吗?"
+    },
+    "didHostOptions": {
+      "yes": "是!",
+      "notYet": "还没",
+      "changedPlans": "计划变更"
+    },
+    "placeholders": {
+      "attendeeCount": "例如 8",
+      "bestPart": "揭晓时刻太精彩了...",
+      "testimonial": "可选:分享您的体验、建议或派对故事...",
+      "displayName": "显示名(例如 张小M)"
+    },
+    "npsScale": {
+      "notLikely": "不太可能",
+      "veryLikely": "非常可能"
+    },
+    "publicOptIn": {
+      "label": "在 Mystery Maker 网站上显示我的反馈",
+      "help": "帮助其他主持人看到真实客户的想法!"
+    },
+    "submit": "提交反馈",
+    "submitting": "提交中..."
+  },
+  "guestFeedback": {
+    "errors": {
+      "invalidLink": "反馈链接无效。",
+      "linkExpired": "未找到反馈链接或已过期。",
+      "generic": "出了点问题。请稍后重试。",
+      "submitFailed": "反馈提交失败。请重试。"
+    },
+    "fallbackTitle": "您的谜案",
+    "thankYou": {
+      "title": "谢谢!",
+      "body": "您对 <strong>{{title}}</strong> 的反馈帮助我们创建更好的谜案。",
+      "cta": "想过主持自己的谜案派对吗?",
+      "browseButton": "浏览我们的谜案"
+    },
+    "heading": "您的谜案怎么样?",
+    "youPlayed": "您扮演了 <strong>{{character}}</strong>",
+    "thanksForRating": "感谢评分!想告诉我们更多吗?",
+    "fields": {
+      "rating": "评价您的体验 *",
+      "highlight": "夜晚的亮点是什么?"
+    },
+    "placeholders": {
+      "highlight": "重大揭晓、入戏角色、指控..."
+    },
+    "submit": "提交反馈",
+    "submitting": "提交中...",
+    "oneTimeNotice": "这是关于您最近谜案体验的一次性邮件。您不会收到我们的其他邮件。"
+  },
+  "notFound": {
+    "metaTitle": "页面未找到",
+    "metaDescription": "您要找的页面不存在或已被移动。",
+    "heading": "哎呀!页面未找到",
+    "returnHome": "返回首页"
+  },
+  "characterAccess": {
+    "errors": {
+      "assignmentNotFound": "未找到角色分配或访问被拒绝。",
+      "dataNotFound": "未找到角色数据。",
+      "loadFailed": "无法加载角色"
+    },
+    "subtitle": "在下方查看您的完整角色指南和游戏说明。",
+    "footer": {
+      "lovedPlaying": "喜欢扮演 <strong>{{character}}</strong> 吗?",
+      "hostCta": "在以下地址主持您自己的定制谜案"
+    }
   }
 }

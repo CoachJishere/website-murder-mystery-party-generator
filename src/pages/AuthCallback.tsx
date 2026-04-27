@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { persistAttributionToProfile } from "@/lib/attribution";
+import { useTranslation } from "react-i18next";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleAuthCallback = async () => {
@@ -124,7 +126,7 @@ const AuthCallback = () => {
             persistAttributionToProfile(data.session.user.id);
           }
 
-          toast.success("Successfully signed in with Google!");
+          toast.success(t("auth.callback.successGoogle"));
           navigate("/dashboard");
         } else {
           console.log("❌ No session found in callback");
@@ -137,7 +139,7 @@ const AuthCallback = () => {
             userId: user.user?.id 
           });
           
-          toast.error("Authentication session not established. Please try signing in again.");
+          toast.error(t("auth.callback.sessionNotEstablished"));
           navigate("/sign-in");
         }
       } catch (error: any) {
@@ -147,23 +149,23 @@ const AuthCallback = () => {
           stack: error.stack,
           name: error.name
         });
-        toast.error("Authentication failed due to an unexpected error. Please try again.");
+        toast.error(t("auth.callback.unexpectedFailure"));
         navigate("/sign-in");
       }
     };
 
     // Add a small delay to ensure the URL is fully loaded
     const timer = setTimeout(handleAuthCallback, 100);
-    
+
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [navigate, t]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-muted-foreground">Completing Google authentication...</p>
-        <p className="text-sm text-muted-foreground mt-2">Please wait while we verify your account...</p>
+        <p className="text-muted-foreground">{t("auth.callback.completing")}</p>
+        <p className="text-sm text-muted-foreground mt-2">{t("auth.callback.pleaseWait")}</p>
       </div>
     </div>
   );

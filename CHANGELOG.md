@@ -2,6 +2,15 @@
 
 ## 2026-04-27
 
+### Localization: broad sweep across 12 user-facing pages
+- Followed up the homepage / header pass with the rest of the app. Audited every user-reachable page (skipped admin/preview/print/font-preview routes) and wrapped every hardcoded English string in `t()`. ~120 new keys, fully translated into all 13 locales
+- Conversion-path pages: [MysteryPurchase.tsx](src/pages/MysteryPurchase.tsx) (6 checkout-flow toast errors + the "Fully editable" explainer), [MysteryView.tsx](src/pages/MysteryView.tsx) (~25 strings — generation status messages, "Try Again"/"Resume Generation"/"Check Again" buttons, "Generation Failed" / "Taking Longer Than Expected" / "We're Finalizing Your Mystery" cards, all reassurance copy + `support@mysterymaker.party` instructions), and the auth set: [SignIn.tsx](src/pages/SignIn.tsx), [SignUp.tsx](src/pages/SignUp.tsx), [AuthCallback.tsx](src/pages/AuthCallback.tsx) (was 0 t() calls), [CheckEmail.tsx](src/pages/CheckEmail.tsx) (was 0 t() calls), [ResetPassword.tsx](src/pages/ResetPassword.tsx), [ForgotPassword.tsx](src/pages/ForgotPassword.tsx)
+- Account / post-purchase pages: [AccountSettings.tsx](src/pages/AccountSettings.tsx) (Profile/Security/Billing tabs + delete-account toasts), [BillingHistory.tsx](src/pages/BillingHistory.tsx) (entire page — Purchase Summary, Total Spent, Status badges, View/Download buttons), [Feedback.tsx](src/pages/Feedback.tsx) (~30 strings — full feedback form including ratings, NPS scale, public-opt-in copy), [GuestFeedback.tsx](src/pages/GuestFeedback.tsx)
+- Lower-traffic pages: [NotFound.tsx](src/pages/NotFound.tsx) (404 + meta tags), [HostAccess.tsx](src/pages/HostAccess.tsx) and [CharacterAccess.tsx](src/pages/CharacterAccess.tsx) (error messages + footer CTAs)
+- For interpolated strings with HTML (e.g. "Your feedback for **{{title}}**…"), used `<Trans>` component instead of plain `t()` so the `<strong>` tag survives translation
+- Already-localized pages (audited but no work needed): PaymentSuccess, MysteryCreation, MysteryChat, Dashboard, MysteryDashboard, Support
+- Skipped intentionally: AdminDashboard (admin-only), all *Preview / *Print / FontPreview pages (dev tooling), Privacy (legal copy — separate effort), BlogIndex/BlogPost (already DB-localized via `posts.title` / `posts.meta_description`)
+
 ### Fix: header Sign In/Sign Up buttons + auth dialog stuck on English
 - Despite Header.tsx itself using `t()`, the desktop header rendered `<AuthButton />` which hardcoded "Sign In", "Sign Up", "Account Settings", and "Sign Out" — so a Spanish visitor on a Spanish-localized page still saw EN auth buttons. Mobile header was already correctly i18n'd; the bug only ever showed up on desktop
 - Wired [AuthButton.tsx](src/components/AuthButton.tsx) to existing `navigation.signIn` / `signUp` / `signOut` keys (already populated for all 13 locales) plus new `navigation.accountSettings`. Same surface as the mobile menu now, so Spanish desktop users see "Iniciar Sesión" / "Registrarse" / "Configuración de la cuenta" / "Cerrar Sesión"

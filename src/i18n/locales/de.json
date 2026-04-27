@@ -218,7 +218,8 @@
       "submitButton": "Anmelden",
       "signingIn": "Anmelden...",
       "orDivider": "oder fortfahren mit",
-      "googleButton": "Mit Google fortfahren"
+      "googleButton": "Mit Google fortfahren",
+      "success": "Anmeldung erfolgreich!"
     },
     "signUp": {
       "title": "Erstellen Sie Ihr Konto",
@@ -251,7 +252,8 @@
         "noEmail": "Keine E-Mail erhalten?",
         "tryAgain": "Erneut versuchen",
         "returnToSignIn": "Zurück zur Anmeldung"
-      }
+      },
+      "rememberedPrompt": "Erinnerst du dich an dein Passwort?"
     },
     "resetPassword": {
       "title": "Neues Passwort festlegen",
@@ -260,7 +262,10 @@
       "confirmPassword": "Neues Passwort bestätigen",
       "submitButton": "Passwort aktualisieren",
       "updating": "Wird aktualisiert...",
-      "success": "Passwort erfolgreich aktualisiert"
+      "success": "Passwort erfolgreich aktualisiert",
+      "invalidLinkToast": "Ungültiger oder abgelaufener Passwort-Reset-Link",
+      "invalidLinkBody": "Der Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen. Bitte fordere einen neuen an.",
+      "requestNewLink": "Neuen Link anfordern"
     },
     "errors": {
       "invalidCredentials": "Ungültige E-Mail-Adresse oder Passwort",
@@ -274,17 +279,35 @@
       "unknownError": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut.",
       "googleSignInFailed": "Anmeldung mit Google fehlgeschlagen",
       "googleSignInInitFailed": "Google-Anmeldung konnte nicht gestartet werden.",
-      "unexpected": "Ein unerwarteter Fehler ist aufgetreten"
+      "unexpected": "Ein unerwarteter Fehler ist aufgetreten",
+      "emailNotConfirmed": "Bitte bestätige deine E-Mail vor der Anmeldung. Sieh in deinem Posteingang nach."
     },
     "success": {
       "accountCreated": "Konto erfolgreich erstellt! Bitte überprüfen Sie Ihre E-Mails, um Ihr Konto zu verifizieren.",
       "passwordReset": "E-Mail zum Zurücksetzen des Passworts erfolgreich gesendet",
       "passwordUpdated": "Passwort erfolgreich aktualisiert",
-      "signedOut": "Erfolgreich abgemeldet"
+      "signedOut": "Erfolgreich abgemeldet",
+      "accountCreatedVerifyEmail": "Konto erstellt! Sieh in deinem Posteingang nach, um zu bestätigen und alle Funktionen freizuschalten."
     },
     "signInPrompt": {
       "description": "Registriere dich kostenlos, um dein eigenes Krimi-Dinner zu erstellen, oder melde dich in deinem Konto an.",
       "or": "oder"
+    },
+    "callback": {
+      "successGoogle": "Erfolgreich mit Google angemeldet!",
+      "sessionNotEstablished": "Authentifizierungssitzung konnte nicht hergestellt werden. Bitte versuche dich erneut anzumelden.",
+      "unexpectedFailure": "Authentifizierung aufgrund eines unerwarteten Fehlers fehlgeschlagen. Bitte versuche es erneut.",
+      "completing": "Google-Authentifizierung wird abgeschlossen...",
+      "pleaseWait": "Bitte warte, während wir dein Konto verifizieren..."
+    },
+    "checkEmail": {
+      "title": "Sieh in deinen E-Mails nach",
+      "body": "Wir haben dir einen Bestätigungslink geschickt. Bitte sieh in deinen E-Mails nach, um dein Konto zu bestätigen.",
+      "returnToSignIn": "Zurück zur Anmeldung",
+      "didntReceive": "Keine E-Mail erhalten?",
+      "tryAgain": "Erneut versuchen",
+      "noteLabel": "Hinweis:",
+      "devNote": "Zu Testzwecken kannst du die E-Mail-Bestätigung in deinen Supabase-Projekteinstellungen deaktivieren."
     }
   },
   "dashboard": {
@@ -366,7 +389,8 @@
     "title": "Kontoeinstellungen",
     "tabs": {
       "profile": "Profil",
-      "security": "Sicherheit"
+      "security": "Sicherheit",
+      "billing": "Abrechnung"
     },
     "profile": {
       "title": "Profilinformationen",
@@ -398,6 +422,11 @@
         "deleting": "Wird gelöscht...",
         "success": "Konto erfolgreich gelöscht"
       }
+    },
+    "loading": "Lädt...",
+    "toasts": {
+      "deleted": "Dein Konto wurde gelöscht",
+      "deleteFailed": "Konto konnte nicht gelöscht werden"
     }
   },
   "mysteryCreation": {
@@ -925,7 +954,13 @@
       "signInRequired": "Bitte melden Sie sich an, um dieses Mysterium zu kaufen.",
       "checkoutRedirect": "Weiterleitung zum sicheren Checkout...",
       "checkoutFailed": "Fehler bei der Weiterleitung zum Checkout. Bitte versuchen Sie es erneut.",
-      "genericError": "Beim Laden der Mysterien-Details ist ein Fehler aufgetreten."
+      "genericError": "Beim Laden der Mysterien-Details ist ein Fehler aufgetreten.",
+      "mysteryIdMissing": "Krimi nicht gefunden. Bitte versuche es vom Dashboard aus erneut.",
+      "emailNotVerified": "Bitte bestätige deine E-Mail-Adresse vor dem Kauf. Sieh in deinem Posteingang nach dem Bestätigungslink.",
+      "userEmailMissing": "Benutzer-E-Mail nicht gefunden. Bitte melde dich ab und wieder an.",
+      "redirectingToCheckout": "Weiterleitung zum sicheren Checkout...",
+      "networkError": "Netzwerkfehler. Bitte überprüfe deine Verbindung und versuche es erneut.",
+      "checkoutConfigError": "Checkout-Konfigurationsfehler. Bitte kontaktiere den Support."
     },
     "title": "Schließen Sie Ihren Kauf ab",
     "subtitle": "Erhalten Sie vollen Zugriff auf Ihr Krimi-Mysterienpaket",
@@ -988,7 +1023,9 @@
         "summary": "Zusammenfassungen"
       },
       "hasAccomplice": "Mit Komplize"
-    }
+    },
+    "fullyEditableLabel": "Vollständig bearbeitbar:",
+    "fullyEditableNote": "Keine Sorge — du kannst nach der Generierung deines Krimis alle Charakterskripte, Inhalte des Hostleitfadens und Beweiskarten bearbeiten."
   },
   "mysteryPackage": {
     "shareWithGuests": "Mit Gästen teilen",
@@ -1085,7 +1122,46 @@
       "medium": "etwa 20 Minuten",
       "large": "etwa 25 bis 30 Minuten",
       "xlarge": "bis zu 45 Minuten"
-    }
+    },
+    "toasts": {
+      "mysteryIdMissing": "Krimi-ID fehlt",
+      "resumingGeneration": "Generierung deines Krimis wird fortgesetzt...",
+      "resumeFailed": "Fortsetzung der Generierung fehlgeschlagen",
+      "startingGeneration": "Generierung deines Krimi-Pakets wird gestartet. Dies dauert {{time}}...",
+      "startGenerationFailed": "Start der Paketgenerierung fehlgeschlagen",
+      "packageReady": "Dein Krimi-Paket ist fertig!"
+    },
+    "errors": {
+      "unknownStep": "Generierung schlug bei einem unbekannten Schritt fehl",
+      "generationPaused": "Generierung pausiert",
+      "progressSavedResume": "Keine Sorge — dein Fortschritt wurde gespeichert und du kannst dort weitermachen, wo du aufgehört hast.",
+      "stillTrouble": "Immer noch Probleme?",
+      "contactSupport": "Support kontaktieren",
+      "generationFailed": "Generierung fehlgeschlagen",
+      "canTryAgain": "Du kannst versuchen, dein Krimi-Paket erneut zu generieren.",
+      "whatHappened": "Was ist passiert?",
+      "resumableExplanation": "Bei deiner Generierung gab es ein Problem, sie kann aber dort fortgesetzt werden, wo sie aufgehört hat. Dein Fortschritt wurde gespeichert.",
+      "nonResumableExplanation": "Der Generierungsprozess ist fehlgeschlagen und muss neu gestartet werden. Keine Sorge — das passiert manchmal und ein erneuter Versuch funktioniert meistens.",
+      "errorDuringGeneration": "Während der Generierung ist ein Fehler aufgetreten"
+    },
+    "buttons": {
+      "resumeGeneration": "Generierung fortsetzen",
+      "tryAgain": "Erneut versuchen",
+      "checkAgain": "Erneut prüfen",
+      "refreshStatus": "Status aktualisieren"
+    },
+    "timeout": {
+      "title": "Dauert länger als erwartet",
+      "description": "Dein Krimi wurde generiert, aber es gibt ein Problem bei der Anzeige des Inhalts.",
+      "reassuranceTitle": "Keine Sorge — dein Krimi ist sicher!",
+      "reassuranceBody": "Unser technisches Team wurde automatisch benachrichtigt und wird dies so schnell wie möglich beheben. Du musst nichts tun — wir stellen sicher, dass dein vollständiges Krimi-Paket bald für dich verfügbar ist.",
+      "closePage": "Du kannst diese Seite gefahrlos schließen und später wiederkommen. Wenn das Problem weiterhin besteht, schreib uns an"
+    },
+    "finalizing": {
+      "title": "Wir finalisieren deinen Krimi",
+      "description": "Dein Krimi wurde generiert, aber einige Charakterinhalte benötigen Aufmerksamkeit."
+    },
+    "loadingMystery": "Dein Krimi wird geladen..."
   },
   "hostAccess": {
     "loading": "Gastgebermaterialien werden geladen...",
@@ -1096,6 +1172,10 @@
     "tabs": {
       "guide": "Gastgeberanleitung",
       "detective": "Detektiv- & Beweis-Kit"
+    },
+    "errors": {
+      "notFound": "Host-Materialien nicht gefunden oder Zugriff verweigert.",
+      "loadFailed": "Host-Materialien konnten nicht geladen werden"
     }
   },
   "payment": {
@@ -1122,5 +1202,128 @@
     "otherPlaceholder": "Sag uns woher...",
     "submit": "Absenden",
     "skip": "Jetzt überspringen"
+  },
+  "billing": {
+    "title": "Kaufverlauf",
+    "fallbackTitle": "Krimi-Dinner",
+    "toasts": {
+      "loadFailed": "Kaufverlauf konnte nicht geladen werden"
+    },
+    "summary": {
+      "title": "Kaufübersicht",
+      "description": "Deine Krimi-Dinner-Käufe und Downloads",
+      "totalPurchased": "Insgesamt gekaufte Krimis",
+      "totalSpent": "Insgesamt ausgegeben"
+    },
+    "recent": {
+      "title": "Letzte Käufe"
+    },
+    "empty": {
+      "title": "Noch keine Käufe",
+      "body": "Wenn du Krimi-Pakete kaufst, erscheinen sie hier",
+      "browseButton": "Krimis durchsuchen"
+    },
+    "status": {
+      "completed": "Abgeschlossen"
+    },
+    "actions": {
+      "view": "Anzeigen",
+      "download": "Herunterladen"
+    }
+  },
+  "feedback": {
+    "errors": {
+      "invalidLink": "Ungültiger Feedback-Link.",
+      "notFound": "Krimi nicht gefunden.",
+      "generic": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
+      "submitFailed": "Feedback konnte nicht gesendet werden. Bitte versuche es erneut."
+    },
+    "fallbackTitle": "Dein Krimi",
+    "unsubscribed": {
+      "title": "Abgemeldet",
+      "body": "Du wurdest von Folge-E-Mails abgemeldet. Wir senden dir keine weiteren mehr."
+    },
+    "thankYou": {
+      "title": "Danke!",
+      "body": "Dein Feedback zu <strong>{{title}}</strong> wurde aufgezeichnet. Wir wissen das wirklich zu schätzen!",
+      "cta": "Bereit für ein weiteres Krimi-Dinner?"
+    },
+    "heading": "Wie war dein Krimi-Dinner?",
+    "thanksForRating": "Danke für die Bewertung! Möchtest du uns mehr erzählen?",
+    "fields": {
+      "rating": "Bewerte deine Erfahrung *",
+      "didHost": "Hast du den Abend ausgerichtet?",
+      "attendeeCount": "Wie viele Personen haben teilgenommen?",
+      "bestPart": "Was war das Beste?",
+      "nps": "Wie wahrscheinlich ist es, dass du Mystery Maker einem Freund empfiehlst?",
+      "testimonial": "Möchtest du sonst noch etwas teilen?"
+    },
+    "didHostOptions": {
+      "yes": "Ja!",
+      "notYet": "Noch nicht",
+      "changedPlans": "Pläne geändert"
+    },
+    "placeholders": {
+      "attendeeCount": "z. B. 8",
+      "bestPart": "Der Auflösungsmoment war unglaublich...",
+      "testimonial": "Optional: teile deine Erfahrung, Vorschläge oder eine Geschichte vom Abend...",
+      "displayName": "Anzeigename (z. B. Sarah M.)"
+    },
+    "npsScale": {
+      "notLikely": "Unwahrscheinlich",
+      "veryLikely": "Sehr wahrscheinlich"
+    },
+    "publicOptIn": {
+      "label": "Mein Feedback auf der Mystery Maker-Website anzeigen",
+      "help": "Hilf anderen Hosts zu sehen, was echte Kunden denken!"
+    },
+    "submit": "Feedback senden",
+    "submitting": "Wird gesendet..."
+  },
+  "guestFeedback": {
+    "errors": {
+      "invalidLink": "Ungültiger Feedback-Link.",
+      "linkExpired": "Feedback-Link nicht gefunden oder abgelaufen.",
+      "generic": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
+      "submitFailed": "Feedback konnte nicht gesendet werden. Bitte versuche es erneut."
+    },
+    "fallbackTitle": "Dein Krimi",
+    "thankYou": {
+      "title": "Danke!",
+      "body": "Dein Feedback zu <strong>{{title}}</strong> hilft uns, bessere Krimis zu erstellen.",
+      "cta": "Schon mal darüber nachgedacht, dein eigenes Krimi-Dinner auszurichten?",
+      "browseButton": "Unsere Krimis durchsuchen"
+    },
+    "heading": "Wie war dein Krimi-Dinner?",
+    "youPlayed": "Du hast <strong>{{character}}</strong> gespielt",
+    "thanksForRating": "Danke für die Bewertung! Möchtest du uns mehr erzählen?",
+    "fields": {
+      "rating": "Bewerte deine Erfahrung *",
+      "highlight": "Was war das Highlight des Abends?"
+    },
+    "placeholders": {
+      "highlight": "Die große Enthüllung, in die Rolle schlüpfen, die Anschuldigungen..."
+    },
+    "submit": "Feedback senden",
+    "submitting": "Wird gesendet...",
+    "oneTimeNotice": "Dies ist eine einmalige E-Mail zu deinem aktuellen Krimi-Erlebnis. Du erhältst keine weiteren E-Mails von uns."
+  },
+  "notFound": {
+    "metaTitle": "Seite nicht gefunden",
+    "metaDescription": "Die Seite, die du suchst, existiert nicht oder wurde verschoben.",
+    "heading": "Hoppla! Seite nicht gefunden",
+    "returnHome": "Zurück zur Startseite"
+  },
+  "characterAccess": {
+    "errors": {
+      "assignmentNotFound": "Charakterzuweisung nicht gefunden oder Zugriff verweigert.",
+      "dataNotFound": "Charakterdaten nicht gefunden.",
+      "loadFailed": "Charakter konnte nicht geladen werden"
+    },
+    "subtitle": "Sieh dir unten deinen vollständigen Charakterleitfaden und die Spielanweisungen an.",
+    "footer": {
+      "lovedPlaying": "Hat es dir Spaß gemacht, <strong>{{character}}</strong> zu spielen?",
+      "hostCta": "Veranstalte dein eigenes maßgeschneidertes Krimi-Dinner auf"
+    }
   }
 }

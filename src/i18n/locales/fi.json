@@ -218,7 +218,8 @@
       "submitButton": "Kirjaudu sisään",
       "signingIn": "Kirjaudutaan sisään...",
       "orDivider": "tai jatka käyttämällä",
-      "googleButton": "Jatka Googlella"
+      "googleButton": "Jatka Googlella",
+      "success": "Kirjautuminen onnistui!"
     },
     "signUp": {
       "title": "Luo tilisi",
@@ -251,7 +252,8 @@
         "noEmail": "Etkö saanut sähköpostia?",
         "tryAgain": "Yritä uudelleen",
         "returnToSignIn": "Takaisin sisäänkirjautumiseen"
-      }
+      },
+      "rememberedPrompt": "Muistitko salasanasi?"
     },
     "resetPassword": {
       "title": "Aseta uusi salasana",
@@ -260,7 +262,10 @@
       "confirmPassword": "Vahvista uusi salasana",
       "submitButton": "Päivitä salasana",
       "updating": "Päivitetään...",
-      "success": "Salasana päivitetty"
+      "success": "Salasana päivitetty",
+      "invalidLinkToast": "Virheellinen tai vanhentunut salasanan palautuslinkki",
+      "invalidLinkBody": "Salasanan palautuslinkki on virheellinen tai vanhentunut. Pyydä uutta.",
+      "requestNewLink": "Pyydä uusi linkki"
     },
     "errors": {
       "invalidCredentials": "Virheellinen sähköposti tai salasana",
@@ -274,17 +279,35 @@
       "unknownError": "Tuntematon virhe tapahtui. Yritä uudelleen.",
       "googleSignInFailed": "Google-kirjautuminen epäonnistui",
       "googleSignInInitFailed": "Google-kirjautumisen aloitus epäonnistui.",
-      "unexpected": "Tapahtui odottamaton virhe"
+      "unexpected": "Tapahtui odottamaton virhe",
+      "emailNotConfirmed": "Vahvista sähköpostisi ennen kirjautumista. Tarkista postilaatikkosi."
     },
     "success": {
       "accountCreated": "Tili luotu! Tarkista sähköpostisi vahvistaaksesi tilisi.",
       "passwordReset": "Salasanan nollauslinkki lähetetty",
       "passwordUpdated": "Salasana päivitetty",
-      "signedOut": "Uloskirjautunut"
+      "signedOut": "Uloskirjautunut",
+      "accountCreatedVerifyEmail": "Tili luotu! Tarkista sähköpostisi vahvistaaksesi ja avataksesi kaikki ominaisuudet."
     },
     "signInPrompt": {
       "description": "Rekisteröidy ilmaiseksi luodaksesi oman räätälöidyn murhamysteerin tai kirjaudu olemassa olevalle tilille.",
       "or": "tai"
+    },
+    "callback": {
+      "successGoogle": "Google-kirjautuminen onnistui!",
+      "sessionNotEstablished": "Todennusistuntoa ei voitu luoda. Yritä kirjautua sisään uudelleen.",
+      "unexpectedFailure": "Todennus epäonnistui odottamattoman virheen vuoksi. Yritä uudelleen.",
+      "completing": "Viimeistellään Google-todennusta...",
+      "pleaseWait": "Odota hetki, kun vahvistamme tilisi..."
+    },
+    "checkEmail": {
+      "title": "Tarkista sähköpostisi",
+      "body": "Olemme lähettäneet sinulle vahvistuslinkin. Tarkista sähköpostisi vahvistaaksesi tilisi.",
+      "returnToSignIn": "Takaisin kirjautumiseen",
+      "didntReceive": "Etkö saanut sähköpostia?",
+      "tryAgain": "Yritä uudelleen",
+      "noteLabel": "Huom:",
+      "devNote": "Testaustarkoituksiin voit poistaa sähköpostivahvistuksen käytöstä Supabase-projektisi asetuksista."
     }
   },
   "dashboard": {
@@ -366,7 +389,8 @@
     "title": "Tiliasetukset",
     "tabs": {
       "profile": "Profiili",
-      "security": "Turvallisuus"
+      "security": "Turvallisuus",
+      "billing": "Laskutus"
     },
     "profile": {
       "title": "Profiilitiedot",
@@ -398,6 +422,11 @@
         "deleting": "Poistetaan...",
         "success": "Tili poistettu"
       }
+    },
+    "loading": "Ladataan...",
+    "toasts": {
+      "deleted": "Tilisi on poistettu",
+      "deleteFailed": "Tilin poistaminen epäonnistui"
     }
   },
   "mysteryCreation": {
@@ -925,7 +954,13 @@
       "signInRequired": "Kirjaudu sisään ostaaksesi tämän mysteerin.",
       "checkoutRedirect": "Uudelleenohjataan turvalliseen maksupalveluun...",
       "checkoutFailed": "Uudelleenohjaus maksupalveluun epäonnistui. Yritä uudelleen.",
-      "genericError": "Virhe tapahtui mysteerin tietojen lataamisen aikana."
+      "genericError": "Virhe tapahtui mysteerin tietojen lataamisen aikana.",
+      "mysteryIdMissing": "Mysteeriä ei löytynyt. Yritä uudelleen kojelaudasta.",
+      "emailNotVerified": "Vahvista sähköpostiosoitteesi ennen ostoa. Tarkista postilaatikkosi vahvistuslinkki.",
+      "userEmailMissing": "Käyttäjän sähköpostia ei löytynyt. Kirjaudu ulos ja sisään uudelleen.",
+      "redirectingToCheckout": "Ohjataan turvalliseen kassaan...",
+      "networkError": "Verkkovirhe. Tarkista yhteytesi ja yritä uudelleen.",
+      "checkoutConfigError": "Kassan konfigurointivirhe. Ota yhteyttä tukeen."
     },
     "title": "Viimeistele ostoksesi",
     "subtitle": "Hanki täysi pääsy murhamysteeripakettiisi",
@@ -988,7 +1023,9 @@
         "summary": "Tiivistetyt käsikirjoitukset"
       },
       "hasAccomplice": "Sisältää rikoskumppanin"
-    }
+    },
+    "fullyEditableLabel": "Täysin muokattavissa:",
+    "fullyEditableNote": "Älä huoli — voit muokata kaikkia hahmokäsikirjoituksia, isäntäoppaan sisältöä ja todistekortteja sen jälkeen kun mysteerisi on luotu."
   },
   "mysteryPackage": {
     "shareWithGuests": "Jaa vieraiden kanssa",
@@ -1085,7 +1122,46 @@
       "medium": "noin 20 minuuttia",
       "large": "noin 25–30 minuuttia",
       "xlarge": "enintään 45 minuuttia"
-    }
+    },
+    "toasts": {
+      "mysteryIdMissing": "Mysteerin tunnus puuttuu",
+      "resumingGeneration": "Jatketaan mysteerisi luomista...",
+      "resumeFailed": "Luomisen jatkaminen epäonnistui",
+      "startingGeneration": "Aloitetaan mysteeripakettisi luominen. Tämä kestää {{time}}...",
+      "startGenerationFailed": "Paketin luomisen aloitus epäonnistui",
+      "packageReady": "Mysteeripakettisi on valmis!"
+    },
+    "errors": {
+      "unknownStep": "Luominen epäonnistui tuntemattomassa vaiheessa",
+      "generationPaused": "Luominen keskeytetty",
+      "progressSavedResume": "Älä huoli — edistymisesi on tallennettu ja voit jatkaa siitä mihin jäit.",
+      "stillTrouble": "Edelleen ongelmia?",
+      "contactSupport": "Ota yhteyttä tukeen",
+      "generationFailed": "Luominen epäonnistui",
+      "canTryAgain": "Voit yrittää luoda mysteeripakettisi uudelleen.",
+      "whatHappened": "Mitä tapahtui?",
+      "resumableExplanation": "Luomisessasi tuli ongelma mutta sitä voi jatkaa siitä mihin se pysähtyi. Edistymisesi on tallennettu.",
+      "nonResumableExplanation": "Luomisprosessi epäonnistui ja se täytyy käynnistää uudelleen. Älä huoli — näin tapahtuu joskus ja uudelleen yrittäminen yleensä toimii.",
+      "errorDuringGeneration": "Luomisen aikana tapahtui virhe"
+    },
+    "buttons": {
+      "resumeGeneration": "Jatka luomista",
+      "tryAgain": "Yritä uudelleen",
+      "checkAgain": "Tarkista uudelleen",
+      "refreshStatus": "Päivitä tila"
+    },
+    "timeout": {
+      "title": "Kestää odotettua kauemmin",
+      "description": "Mysteerisi luotiin mutta meillä on ongelma sisällön näyttämisessä.",
+      "reassuranceTitle": "Älä huoli — mysteerisi on turvassa!",
+      "reassuranceBody": "Tekninen tiimimme on saanut automaattisen ilmoituksen ja ratkaisee tämän mahdollisimman pian. Sinun ei tarvitse tehdä mitään — varmistamme että täydellinen mysteeripakettisi on pian saatavilla.",
+      "closePage": "Voit sulkea tämän sivun turvallisesti ja palata myöhemmin. Jos ongelma jatkuu, ota yhteyttä osoitteeseen"
+    },
+    "finalizing": {
+      "title": "Viimeistelemme mysteeriäsi",
+      "description": "Mysteerisi luotiin mutta osa hahmojen sisällöstä vaatii huomiota."
+    },
+    "loadingMystery": "Ladataan mysteeriäsi..."
   },
   "hostAccess": {
     "loading": "Ladataan isännöintimateriaaleja...",
@@ -1096,6 +1172,10 @@
     "tabs": {
       "guide": "Isännöintiopas",
       "detective": "Etsivä- ja todistepaketti"
+    },
+    "errors": {
+      "notFound": "Isäntämateriaaleja ei löytynyt tai pääsy evätty.",
+      "loadFailed": "Isäntämateriaalien lataaminen epäonnistui"
     }
   },
   "payment": {
@@ -1122,5 +1202,128 @@
     "otherPlaceholder": "Kerro meille mistä...",
     "submit": "Lähetä",
     "skip": "Ohita toistaiseksi"
+  },
+  "billing": {
+    "title": "Ostohistoria",
+    "fallbackTitle": "Mysteerijuhlat",
+    "toasts": {
+      "loadFailed": "Ostohistorian lataaminen epäonnistui"
+    },
+    "summary": {
+      "title": "Ostoyhteenveto",
+      "description": "Mysteerijuhlaostosi ja lataukset",
+      "totalPurchased": "Ostettuja mysteerejä yhteensä",
+      "totalSpent": "Kulutettu yhteensä"
+    },
+    "recent": {
+      "title": "Viimeisimmät ostot"
+    },
+    "empty": {
+      "title": "Ei vielä ostoja",
+      "body": "Kun ostat mysteeripakkauksia, ne näkyvät tässä",
+      "browseButton": "Selaa mysteerejä"
+    },
+    "status": {
+      "completed": "Valmis"
+    },
+    "actions": {
+      "view": "Näytä",
+      "download": "Lataa"
+    }
+  },
+  "feedback": {
+    "errors": {
+      "invalidLink": "Virheellinen palautelinkki.",
+      "notFound": "Mysteeriä ei löytynyt.",
+      "generic": "Jokin meni pieleen. Yritä myöhemmin uudelleen.",
+      "submitFailed": "Palautteen lähettäminen epäonnistui. Yritä uudelleen."
+    },
+    "fallbackTitle": "Mysteerisi",
+    "unsubscribed": {
+      "title": "Tilaus peruttu",
+      "body": "Olet perunut seurantamentaasit. Emme lähetä sinulle enää uusia."
+    },
+    "thankYou": {
+      "title": "Kiitos!",
+      "body": "Palautteesi mysteerille <strong>{{title}}</strong> on tallennettu. Arvostamme sitä todella!",
+      "cta": "Valmis uuteen mysteeriin?"
+    },
+    "heading": "Miten mysteerisi sujui?",
+    "thanksForRating": "Kiitos arviosta! Haluatko kertoa lisää?",
+    "fields": {
+      "rating": "Arvioi kokemuksesi *",
+      "didHost": "Järjestitkö juhlat?",
+      "attendeeCount": "Kuinka moni osallistui?",
+      "bestPart": "Mikä oli paras osa?",
+      "nps": "Kuinka todennäköisesti suosittelisit Mystery Makeria ystävälle?",
+      "testimonial": "Mitä muuta haluaisit jakaa?"
+    },
+    "didHostOptions": {
+      "yes": "Kyllä!",
+      "notYet": "Ei vielä",
+      "changedPlans": "Suunnitelmat muuttuivat"
+    },
+    "placeholders": {
+      "attendeeCount": "esim. 8",
+      "bestPart": "Paljastushetki oli uskomaton...",
+      "testimonial": "Valinnainen: jaa kokemuksesi, ehdotuksesi tai tarina juhlista...",
+      "displayName": "Näyttönimi (esim. Sara M.)"
+    },
+    "npsScale": {
+      "notLikely": "Epätodennäköistä",
+      "veryLikely": "Erittäin todennäköistä"
+    },
+    "publicOptIn": {
+      "label": "Näytä palautteeni Mystery Maker -sivustolla",
+      "help": "Auta muita isäntiä näkemään mitä oikeat asiakkaat ajattelevat!"
+    },
+    "submit": "Lähetä palaute",
+    "submitting": "Lähetetään..."
+  },
+  "guestFeedback": {
+    "errors": {
+      "invalidLink": "Virheellinen palautelinkki.",
+      "linkExpired": "Palautelinkkiä ei löytynyt tai se on vanhentunut.",
+      "generic": "Jokin meni pieleen. Yritä myöhemmin uudelleen.",
+      "submitFailed": "Palautteen lähettäminen epäonnistui. Yritä uudelleen."
+    },
+    "fallbackTitle": "Mysteerisi",
+    "thankYou": {
+      "title": "Kiitos!",
+      "body": "Palautteesi mysteerille <strong>{{title}}</strong> auttaa meitä luomaan parempia mysteerejä.",
+      "cta": "Oletko ajatellut järjestää oman mysteerijuhlasi?",
+      "browseButton": "Selaa mysteerejämme"
+    },
+    "heading": "Millainen mysteerisi oli?",
+    "youPlayed": "Pelasit hahmoa <strong>{{character}}</strong>",
+    "thanksForRating": "Kiitos arviosta! Haluatko kertoa lisää?",
+    "fields": {
+      "rating": "Arvioi kokemuksesi *",
+      "highlight": "Mikä oli illan kohokohta?"
+    },
+    "placeholders": {
+      "highlight": "Suuri paljastus, hahmoon astuminen, syytökset..."
+    },
+    "submit": "Lähetä palaute",
+    "submitting": "Lähetetään...",
+    "oneTimeNotice": "Tämä on kertaluonteinen sähköposti viimeisimmästä mysteerikokemuksestasi. Et saa muita sähköposteja meiltä."
+  },
+  "notFound": {
+    "metaTitle": "Sivua ei löytynyt",
+    "metaDescription": "Etsimääsi sivua ei ole olemassa tai se on siirretty.",
+    "heading": "Hupsis! Sivua ei löytynyt",
+    "returnHome": "Takaisin etusivulle"
+  },
+  "characterAccess": {
+    "errors": {
+      "assignmentNotFound": "Hahmojakoa ei löytynyt tai pääsy evätty.",
+      "dataNotFound": "Hahmotietoja ei löytynyt.",
+      "loadFailed": "Hahmon lataaminen epäonnistui"
+    },
+    "subtitle": "Katso täydellinen hahmo-oppaasi ja peliohjeet alta.",
+    "footer": {
+      "lovedPlaying": "Pidettiitkö hahmosta <strong>{{character}}</strong>?",
+      "hostCta": "Järjestä oma räätälöity mysteerisi sivustolla"
+    }
   }
 }

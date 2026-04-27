@@ -218,7 +218,8 @@
       "submitButton": "Inloggen",
       "signingIn": "Inloggen...",
       "orDivider": "of ga verder met",
-      "googleButton": "Verdergaan met Google"
+      "googleButton": "Verdergaan met Google",
+      "success": "Succesvol ingelogd!"
     },
     "signUp": {
       "title": "Maak Uw Account Aan",
@@ -251,7 +252,8 @@
         "noEmail": "Geen e-mail ontvangen?",
         "tryAgain": "Probeer opnieuw",
         "returnToSignIn": "Terug naar Inloggen"
-      }
+      },
+      "rememberedPrompt": "Je wachtwoord weer herinnerd?"
     },
     "resetPassword": {
       "title": "Nieuw Wachtwoord Instellen",
@@ -260,7 +262,10 @@
       "confirmPassword": "Nieuw Wachtwoord Bevestigen",
       "submitButton": "Wachtwoord Bijwerken",
       "updating": "Bijwerken...",
-      "success": "Wachtwoord succesvol bijgewerkt"
+      "success": "Wachtwoord succesvol bijgewerkt",
+      "invalidLinkToast": "Ongeldige of verlopen wachtwoord-resetlink",
+      "invalidLinkBody": "De link om het wachtwoord te resetten is ongeldig of verlopen. Vraag een nieuwe aan.",
+      "requestNewLink": "Nieuwe link aanvragen"
     },
     "errors": {
       "invalidCredentials": "Ongeldig e-mailadres of wachtwoord",
@@ -274,17 +279,35 @@
       "unknownError": "Er is iets misgegaan. Probeer het opnieuw.",
       "googleSignInFailed": "Inloggen met Google mislukt",
       "googleSignInInitFailed": "Inloggen met Google kon niet worden gestart.",
-      "unexpected": "Er is een onverwachte fout opgetreden"
+      "unexpected": "Er is een onverwachte fout opgetreden",
+      "emailNotConfirmed": "Bevestig je e-mail voordat je inlogt. Kijk in je inbox."
     },
     "success": {
       "accountCreated": "Account succesvol aangemaakt! Controleer uw e-mail om uw account te verifiëren.",
       "passwordReset": "E-mail voor wachtwoordherstel succesvol verzonden",
       "passwordUpdated": "Wachtwoord succesvol bijgewerkt",
-      "signedOut": "Succesvol uitgelogd"
+      "signedOut": "Succesvol uitgelogd",
+      "accountCreatedVerifyEmail": "Account aangemaakt! Bekijk je e-mail om te verifiëren en alle functies te ontgrendelen."
     },
     "signInPrompt": {
       "description": "Meld je gratis aan om je eigen aangepaste moordmysterie te maken, of log in op een bestaand account.",
       "or": "of"
+    },
+    "callback": {
+      "successGoogle": "Succesvol ingelogd met Google!",
+      "sessionNotEstablished": "Authenticatiesessie niet tot stand gebracht. Probeer opnieuw in te loggen.",
+      "unexpectedFailure": "Authenticatie mislukt door een onverwachte fout. Probeer het opnieuw.",
+      "completing": "Google-authenticatie voltooien...",
+      "pleaseWait": "Even geduld terwijl we je account verifiëren..."
+    },
+    "checkEmail": {
+      "title": "Controleer je e-mail",
+      "body": "We hebben je een verificatielink gestuurd. Bekijk je e-mail om je account te bevestigen.",
+      "returnToSignIn": "Terug naar inloggen",
+      "didntReceive": "Geen e-mail ontvangen?",
+      "tryAgain": "Probeer opnieuw",
+      "noteLabel": "Opmerking:",
+      "devNote": "Voor testdoeleinden wil je misschien e-mailbevestiging uitschakelen in je Supabase-projectinstellingen."
     }
   },
   "dashboard": {
@@ -366,7 +389,8 @@
     "title": "Accountinstellingen",
     "tabs": {
       "profile": "Profiel",
-      "security": "Beveiliging"
+      "security": "Beveiliging",
+      "billing": "Facturering"
     },
     "profile": {
       "title": "Profielinformatie",
@@ -398,6 +422,11 @@
         "deleting": "Verwijderen...",
         "success": "Account succesvol verwijderd"
       }
+    },
+    "loading": "Laden...",
+    "toasts": {
+      "deleted": "Je account is verwijderd",
+      "deleteFailed": "Account verwijderen mislukt"
     }
   },
   "mysteryCreation": {
@@ -925,7 +954,13 @@
       "signInRequired": "Gelieve in te loggen om dit mysterie te kopen.",
       "checkoutRedirect": "Doorverwijzen naar beveiligde checkout...",
       "checkoutFailed": "Doorverwijzen naar checkout mislukt. Probeer het opnieuw.",
-      "genericError": "Er is een fout opgetreden bij het laden van mysterie details."
+      "genericError": "Er is een fout opgetreden bij het laden van mysterie details.",
+      "mysteryIdMissing": "Mysterie niet gevonden. Probeer opnieuw vanuit het dashboard.",
+      "emailNotVerified": "Verifieer je e-mailadres voordat je koopt. Kijk in je inbox voor de verificatielink.",
+      "userEmailMissing": "Gebruikers-e-mail niet gevonden. Log uit en weer in.",
+      "redirectingToCheckout": "Doorsturen naar veilige afrekening...",
+      "networkError": "Netwerkfout. Controleer je verbinding en probeer het opnieuw.",
+      "checkoutConfigError": "Configuratiefout bij afrekenen. Neem contact op met support."
     },
     "title": "Voltooi Uw Aankoop",
     "subtitle": "Krijg volledige toegang tot uw moordmysteriepakket",
@@ -988,7 +1023,9 @@
         "summary": "Samengevatte scripts"
       },
       "hasAccomplice": "Inclusief medeplichtige"
-    }
+    },
+    "fullyEditableLabel": "Volledig bewerkbaar:",
+    "fullyEditableNote": "Geen zorgen — je kunt alle personageteksten, gastheergidsinhoud en bewijskaarten bewerken nadat je mysterie is gegenereerd."
   },
   "mysteryPackage": {
     "shareWithGuests": "Delen met Gasten",
@@ -1085,7 +1122,46 @@
       "medium": "ongeveer 20 minuten",
       "large": "ongeveer 25 tot 30 minuten",
       "xlarge": "tot 45 minuten"
-    }
+    },
+    "toasts": {
+      "mysteryIdMissing": "Mysterie-ID ontbreekt",
+      "resumingGeneration": "Generatie van je mysterie wordt hervat...",
+      "resumeFailed": "Hervatten van generatie mislukt",
+      "startingGeneration": "Generatie van je mysteriepakket starten. Dit duurt {{time}}...",
+      "startGenerationFailed": "Starten van pakketgeneratie mislukt",
+      "packageReady": "Je mysteriepakket is klaar!"
+    },
+    "errors": {
+      "unknownStep": "Generatie mislukte bij een onbekende stap",
+      "generationPaused": "Generatie gepauzeerd",
+      "progressSavedResume": "Geen zorgen — je voortgang is opgeslagen en je kunt verdergaan waar je gebleven bent.",
+      "stillTrouble": "Nog steeds problemen?",
+      "contactSupport": "Neem contact op met support",
+      "generationFailed": "Generatie mislukt",
+      "canTryAgain": "Je kunt proberen je mysteriepakket opnieuw te genereren.",
+      "whatHappened": "Wat is er gebeurd?",
+      "resumableExplanation": "Bij je generatie is een probleem opgetreden, maar deze kan worden hervat waar deze is gestopt. Je voortgang is opgeslagen.",
+      "nonResumableExplanation": "Het generatieproces is mislukt en moet opnieuw worden gestart. Geen zorgen — dit gebeurt soms en opnieuw proberen werkt meestal.",
+      "errorDuringGeneration": "Er is een fout opgetreden tijdens de generatie"
+    },
+    "buttons": {
+      "resumeGeneration": "Generatie hervatten",
+      "tryAgain": "Opnieuw proberen",
+      "checkAgain": "Opnieuw controleren",
+      "refreshStatus": "Status vernieuwen"
+    },
+    "timeout": {
+      "title": "Duurt langer dan verwacht",
+      "description": "Je mysterie is gegenereerd, maar we hebben een probleem met het weergeven van de inhoud.",
+      "reassuranceTitle": "Geen zorgen — je mysterie is veilig!",
+      "reassuranceBody": "Ons technische team is automatisch op de hoogte gesteld en zal dit zo snel mogelijk oplossen. Je hoeft niets te doen — we zorgen ervoor dat je volledige mysteriepakket binnenkort beschikbaar is.",
+      "closePage": "Je kunt deze pagina veilig sluiten en later terugkomen. Als het probleem aanhoudt, neem dan contact met ons op via"
+    },
+    "finalizing": {
+      "title": "We ronden je mysterie af",
+      "description": "Je mysterie is gegenereerd, maar enkele personageinhoud heeft aandacht nodig."
+    },
+    "loadingMystery": "Je mysterie wordt geladen..."
   },
   "hostAccess": {
     "loading": "Hostmateriaal laden...",
@@ -1096,6 +1172,10 @@
     "tabs": {
       "guide": "Hostgids",
       "detective": "Detective- & Bewijspakket"
+    },
+    "errors": {
+      "notFound": "Gastheermateriaal niet gevonden of toegang geweigerd.",
+      "loadFailed": "Gastheermateriaal kon niet worden geladen"
     }
   },
   "payment": {
@@ -1122,5 +1202,128 @@
     "otherPlaceholder": "Vertel ons waar...",
     "submit": "Versturen",
     "skip": "Nu overslaan"
+  },
+  "billing": {
+    "title": "Aankoopgeschiedenis",
+    "fallbackTitle": "Moordmysterie",
+    "toasts": {
+      "loadFailed": "Aankoopgeschiedenis kon niet worden geladen"
+    },
+    "summary": {
+      "title": "Aankoopoverzicht",
+      "description": "Je aankopen en downloads van moordmysteries",
+      "totalPurchased": "Totaal aantal mysteries gekocht",
+      "totalSpent": "Totaal uitgegeven"
+    },
+    "recent": {
+      "title": "Recente aankopen"
+    },
+    "empty": {
+      "title": "Nog geen aankopen",
+      "body": "Wanneer je mysteriepakketten koopt, verschijnen ze hier",
+      "browseButton": "Bekijk mysteries"
+    },
+    "status": {
+      "completed": "Voltooid"
+    },
+    "actions": {
+      "view": "Bekijken",
+      "download": "Downloaden"
+    }
+  },
+  "feedback": {
+    "errors": {
+      "invalidLink": "Ongeldige feedback-link.",
+      "notFound": "Mysterie niet gevonden.",
+      "generic": "Er is iets misgegaan. Probeer het later opnieuw.",
+      "submitFailed": "Feedback verzenden mislukt. Probeer het opnieuw."
+    },
+    "fallbackTitle": "Je mysterie",
+    "unsubscribed": {
+      "title": "Uitgeschreven",
+      "body": "Je bent uitgeschreven van vervolgmails. We sturen je geen meer."
+    },
+    "thankYou": {
+      "title": "Bedankt!",
+      "body": "Je feedback voor <strong>{{title}}</strong> is geregistreerd. We waarderen het enorm!",
+      "cta": "Klaar voor nog een mysterie?"
+    },
+    "heading": "Hoe ging je mysterie?",
+    "thanksForRating": "Bedankt voor de beoordeling! Wil je ons meer vertellen?",
+    "fields": {
+      "rating": "Beoordeel je ervaring *",
+      "didHost": "Was jij de gastheer van het feest?",
+      "attendeeCount": "Hoeveel mensen waren erbij?",
+      "bestPart": "Wat was het beste deel?",
+      "nps": "Hoe waarschijnlijk is het dat je Mystery Maker aanbeveelt aan een vriend?",
+      "testimonial": "Nog iets anders dat je wilt delen?"
+    },
+    "didHostOptions": {
+      "yes": "Ja!",
+      "notYet": "Nog niet",
+      "changedPlans": "Plannen veranderd"
+    },
+    "placeholders": {
+      "attendeeCount": "bijv. 8",
+      "bestPart": "Het onthullingsmoment was geweldig...",
+      "testimonial": "Optioneel: deel je ervaring, suggesties of een verhaal van het feest...",
+      "displayName": "Weergavenaam (bijv. Sarah M.)"
+    },
+    "npsScale": {
+      "notLikely": "Onwaarschijnlijk",
+      "veryLikely": "Zeer waarschijnlijk"
+    },
+    "publicOptIn": {
+      "label": "Toon mijn feedback op de Mystery Maker-website",
+      "help": "Help andere gastheren te zien wat echte klanten denken!"
+    },
+    "submit": "Feedback verzenden",
+    "submitting": "Verzenden..."
+  },
+  "guestFeedback": {
+    "errors": {
+      "invalidLink": "Ongeldige feedback-link.",
+      "linkExpired": "Feedback-link niet gevonden of verlopen.",
+      "generic": "Er is iets misgegaan. Probeer het later opnieuw.",
+      "submitFailed": "Feedback verzenden mislukt. Probeer het opnieuw."
+    },
+    "fallbackTitle": "Je mysterie",
+    "thankYou": {
+      "title": "Bedankt!",
+      "body": "Je feedback voor <strong>{{title}}</strong> helpt ons betere mysteries te maken.",
+      "cta": "Wel eens nagedacht over het organiseren van je eigen moordmysterie?",
+      "browseButton": "Bekijk onze mysteries"
+    },
+    "heading": "Hoe was je mysterie?",
+    "youPlayed": "Je speelde <strong>{{character}}</strong>",
+    "thanksForRating": "Bedankt voor de beoordeling! Wil je ons meer vertellen?",
+    "fields": {
+      "rating": "Beoordeel je ervaring *",
+      "highlight": "Wat was het hoogtepunt van de avond?"
+    },
+    "placeholders": {
+      "highlight": "De grote onthulling, in de rol kruipen, de beschuldigingen..."
+    },
+    "submit": "Feedback verzenden",
+    "submitting": "Verzenden...",
+    "oneTimeNotice": "Dit is een eenmalige e-mail over je recente mysterie-ervaring. Je ontvangt geen andere e-mails van ons."
+  },
+  "notFound": {
+    "metaTitle": "Pagina niet gevonden",
+    "metaDescription": "De pagina die je zoekt bestaat niet of is verplaatst.",
+    "heading": "Oeps! Pagina niet gevonden",
+    "returnHome": "Terug naar home"
+  },
+  "characterAccess": {
+    "errors": {
+      "assignmentNotFound": "Personagetoewijzing niet gevonden of toegang geweigerd.",
+      "dataNotFound": "Personagegegevens niet gevonden.",
+      "loadFailed": "Personage kon niet worden geladen"
+    },
+    "subtitle": "Bekijk hieronder je volledige personagegids en spelinstructies.",
+    "footer": {
+      "lovedPlaying": "Vond je het leuk om <strong>{{character}}</strong> te spelen?",
+      "hostCta": "Organiseer je eigen op maat gemaakte mysterie op"
+    }
   }
 }

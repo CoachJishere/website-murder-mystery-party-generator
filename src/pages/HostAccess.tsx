@@ -53,14 +53,14 @@ const HostAccess: React.FC = () => {
 
       if (fetchError) {
         console.error("Host package error:", fetchError);
-        setError("Host materials not found or access denied.");
+        setError(t("hostAccess.errors.notFound"));
         return;
       }
 
       setPackageData(data);
     } catch (err: any) {
       console.error("Error loading host package:", err);
-      setError(`Failed to load host materials: ${err.message || "Unknown error"}`);
+      setError(`${t("hostAccess.errors.loadFailed")}: ${err.message || t("auth.errors.unknownError")}`);
     } finally {
       setLoading(false);
     }

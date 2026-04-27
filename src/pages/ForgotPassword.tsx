@@ -87,7 +87,7 @@ const ForgotPassword = () => {
                 
                 <div className="mt-6 text-center">
                   <p className="text-sm text-muted-foreground">
-                    {"Remembered your password?"}{" "}
+                    {t("auth.forgotPassword.rememberedPrompt")}{" "}
                     <Link to="/sign-in" className="text-primary hover:underline">
                       {t('auth.forgotPassword.backToSignIn')}
                     </Link>

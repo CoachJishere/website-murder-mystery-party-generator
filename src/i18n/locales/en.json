@@ -219,7 +219,8 @@
       "submitButton": "Sign In",
       "signingIn": "Signing in...",
       "orDivider": "or continue with",
-      "googleButton": "Continue with Google"
+      "googleButton": "Continue with Google",
+      "success": "Signed in successfully!"
     },
     "signUp": {
       "title": "Create Your Account",
@@ -252,7 +253,8 @@
         "noEmail": "Didn't receive an email?",
         "tryAgain": "Try again",
         "returnToSignIn": "Return to Sign In"
-      }
+      },
+      "rememberedPrompt": "Remembered your password?"
     },
     "resetPassword": {
       "title": "Set New Password",
@@ -261,7 +263,10 @@
       "confirmPassword": "Confirm New Password",
       "submitButton": "Update Password",
       "updating": "Updating...",
-      "success": "Password updated successfully"
+      "success": "Password updated successfully",
+      "invalidLinkToast": "Invalid or expired password reset link",
+      "invalidLinkBody": "The password reset link is invalid or has expired. Please request a new one.",
+      "requestNewLink": "Request New Link"
     },
     "errors": {
       "invalidCredentials": "Invalid email or password",
@@ -275,17 +280,35 @@
       "unknownError": "Something went wrong. Please try again.",
       "googleSignInFailed": "Failed to sign in with Google",
       "googleSignInInitFailed": "Failed to initiate Google sign-in.",
-      "unexpected": "An unexpected error occurred"
+      "unexpected": "An unexpected error occurred",
+      "emailNotConfirmed": "Please confirm your email before logging in. Check your inbox."
     },
     "success": {
       "accountCreated": "Account created successfully! Please check your email to verify your account.",
       "passwordReset": "Password reset email sent successfully",
       "passwordUpdated": "Password updated successfully",
-      "signedOut": "Signed out successfully"
+      "signedOut": "Signed out successfully",
+      "accountCreatedVerifyEmail": "Account created! Check your email to verify and unlock all features."
     },
     "signInPrompt": {
       "description": "Sign up for free to create your own custom murder mystery, or log into an existing account.",
       "or": "or"
+    },
+    "callback": {
+      "successGoogle": "Successfully signed in with Google!",
+      "sessionNotEstablished": "Authentication session not established. Please try signing in again.",
+      "unexpectedFailure": "Authentication failed due to an unexpected error. Please try again.",
+      "completing": "Completing Google authentication...",
+      "pleaseWait": "Please wait while we verify your account..."
+    },
+    "checkEmail": {
+      "title": "Check Your Email",
+      "body": "We've sent you a verification link. Please check your email to confirm your account.",
+      "returnToSignIn": "Return to Sign In",
+      "didntReceive": "Didn't receive an email?",
+      "tryAgain": "Try again",
+      "noteLabel": "Note:",
+      "devNote": "For testing purposes, you may want to disable email confirmation in your Supabase project settings."
     }
   },
   "dashboard": {
@@ -368,7 +391,8 @@
     "title": "Account Settings",
     "tabs": {
       "profile": "Profile",
-      "security": "Security"
+      "security": "Security",
+      "billing": "Billing"
     },
     "profile": {
       "title": "Profile Information",
@@ -400,6 +424,11 @@
         "deleting": "Deleting...",
         "success": "Account deleted successfully"
       }
+    },
+    "loading": "Loading...",
+    "toasts": {
+      "deleted": "Your account has been deleted",
+      "deleteFailed": "Failed to delete account"
     }
   },
   "mysteryCreation": {
@@ -921,7 +950,13 @@
       "signInRequired": "Please sign in to purchase this mystery.",
       "checkoutRedirect": "Redirecting to secure checkout...",
       "checkoutFailed": "Failed to redirect to checkout. Please try again.",
-      "genericError": "An error occurred while loading mystery details."
+      "genericError": "An error occurred while loading mystery details.",
+      "mysteryIdMissing": "Mystery not found. Please try again from the dashboard.",
+      "emailNotVerified": "Please verify your email address before purchasing. Check your inbox for the verification link.",
+      "userEmailMissing": "User email not found. Please sign out and sign in again.",
+      "redirectingToCheckout": "Redirecting to secure checkout...",
+      "networkError": "Network error. Please check your connection and try again.",
+      "checkoutConfigError": "Checkout configuration error. Please contact support."
     },
     "title": "Complete Your Purchase",
     "subtitle": "Get full access to your murder mystery package",
@@ -984,7 +1019,9 @@
         "summary": "Summary scripts"
       },
       "hasAccomplice": "Includes accomplice"
-    }
+    },
+    "fullyEditableLabel": "Fully editable:",
+    "fullyEditableNote": "Don't worry — you can edit all character scripts, host guide content, and evidence cards after your mystery is generated."
   },
   "hostAccess": {
     "loading": "Loading host materials...",
@@ -995,6 +1032,10 @@
     "tabs": {
       "guide": "Host Guide",
       "detective": "Detective & Evidence Kit"
+    },
+    "errors": {
+      "notFound": "Host materials not found or access denied.",
+      "loadFailed": "Failed to load host materials"
     }
   },
   "mysteryView": {
@@ -1003,7 +1044,46 @@
       "medium": "about 20 minutes",
       "large": "about 25 to 30 minutes",
       "xlarge": "up to 45 minutes"
-    }
+    },
+    "toasts": {
+      "mysteryIdMissing": "Mystery ID is missing",
+      "resumingGeneration": "Resuming your mystery generation...",
+      "resumeFailed": "Failed to resume generation",
+      "startingGeneration": "Starting generation of your mystery package. This will take {{time}}...",
+      "startGenerationFailed": "Failed to start package generation",
+      "packageReady": "Your mystery package is ready!"
+    },
+    "errors": {
+      "unknownStep": "Generation failed at an unknown step",
+      "generationPaused": "Generation Paused",
+      "progressSavedResume": "Don't worry — your progress has been saved and you can resume where you left off.",
+      "stillTrouble": "Still having trouble?",
+      "contactSupport": "Contact support",
+      "generationFailed": "Generation Failed",
+      "canTryAgain": "You can try generating your mystery package again.",
+      "whatHappened": "What happened?",
+      "resumableExplanation": "Your generation encountered an issue but can be resumed from where it left off. Your progress has been saved.",
+      "nonResumableExplanation": "The generation process failed and needs to be restarted. Don't worry — this happens sometimes and trying again usually works.",
+      "errorDuringGeneration": "An error occurred during generation"
+    },
+    "buttons": {
+      "resumeGeneration": "Resume Generation",
+      "tryAgain": "Try Again",
+      "checkAgain": "Check Again",
+      "refreshStatus": "Refresh status"
+    },
+    "timeout": {
+      "title": "Taking Longer Than Expected",
+      "description": "Your mystery was generated but we're having an issue displaying the content.",
+      "reassuranceTitle": "Don't worry — your mystery is safe!",
+      "reassuranceBody": "Our technical team has been automatically notified and will resolve this as soon as possible. You don't need to do anything — we'll make sure your complete mystery package is available for you shortly.",
+      "closePage": "You can safely close this page and come back later. If the issue persists, please reach out to"
+    },
+    "finalizing": {
+      "title": "We're Finalizing Your Mystery",
+      "description": "Your mystery was generated but some character content needs attention."
+    },
+    "loadingMystery": "Loading your mystery..."
   },
   "mysteryPackage": {
     "shareWithGuests": "Share With Guests",
@@ -1154,6 +1234,129 @@
     },
     "purchase": {
       "expiresIn": "Welcome offer expires in {{time}}"
+    }
+  },
+  "billing": {
+    "title": "Purchase History",
+    "fallbackTitle": "Mystery Party",
+    "toasts": {
+      "loadFailed": "Failed to load purchase history"
+    },
+    "summary": {
+      "title": "Purchase Summary",
+      "description": "Your mystery party purchases and downloads",
+      "totalPurchased": "Total Mysteries Purchased",
+      "totalSpent": "Total Spent"
+    },
+    "recent": {
+      "title": "Recent Purchases"
+    },
+    "empty": {
+      "title": "No purchases yet",
+      "body": "When you purchase mystery packages, they'll appear here",
+      "browseButton": "Browse Mysteries"
+    },
+    "status": {
+      "completed": "Completed"
+    },
+    "actions": {
+      "view": "View",
+      "download": "Download"
+    }
+  },
+  "feedback": {
+    "errors": {
+      "invalidLink": "Invalid feedback link.",
+      "notFound": "Mystery not found.",
+      "generic": "Something went wrong. Please try again later.",
+      "submitFailed": "Failed to submit feedback. Please try again."
+    },
+    "fallbackTitle": "Your Mystery",
+    "unsubscribed": {
+      "title": "Unsubscribed",
+      "body": "You've been unsubscribed from follow-up emails. We won't send you any more."
+    },
+    "thankYou": {
+      "title": "Thank You!",
+      "body": "Your feedback for <strong>{{title}}</strong> has been recorded. We really appreciate it!",
+      "cta": "Ready for Another Mystery?"
+    },
+    "heading": "How Did Your Mystery Go?",
+    "thanksForRating": "Thanks for the rating! Want to tell us more?",
+    "fields": {
+      "rating": "Rate your experience *",
+      "didHost": "Did you host the party?",
+      "attendeeCount": "How many people attended?",
+      "bestPart": "What was the best part?",
+      "nps": "How likely are you to recommend Mystery Maker to a friend?",
+      "testimonial": "Anything else you'd like to share?"
+    },
+    "didHostOptions": {
+      "yes": "Yes!",
+      "notYet": "Not yet",
+      "changedPlans": "Changed plans"
+    },
+    "placeholders": {
+      "attendeeCount": "e.g. 8",
+      "bestPart": "The reveal moment was incredible...",
+      "testimonial": "Optional: share your experience, suggestions, or a story from the party...",
+      "displayName": "Display name (e.g. Sarah M.)"
+    },
+    "npsScale": {
+      "notLikely": "Not likely",
+      "veryLikely": "Very likely"
+    },
+    "publicOptIn": {
+      "label": "Show my feedback on the Mystery Maker website",
+      "help": "Help other hosts see what real customers think!"
+    },
+    "submit": "Submit Feedback",
+    "submitting": "Submitting..."
+  },
+  "guestFeedback": {
+    "errors": {
+      "invalidLink": "Invalid feedback link.",
+      "linkExpired": "Feedback link not found or expired.",
+      "generic": "Something went wrong. Please try again later.",
+      "submitFailed": "Failed to submit feedback. Please try again."
+    },
+    "fallbackTitle": "Your Mystery",
+    "thankYou": {
+      "title": "Thank You!",
+      "body": "Your feedback for <strong>{{title}}</strong> helps us create better mysteries.",
+      "cta": "Ever thought about hosting your own mystery party?",
+      "browseButton": "Browse Our Mysteries"
+    },
+    "heading": "How Was Your Mystery?",
+    "youPlayed": "You played <strong>{{character}}</strong>",
+    "thanksForRating": "Thanks for the rating! Want to tell us more?",
+    "fields": {
+      "rating": "Rate your experience *",
+      "highlight": "What was the highlight of the evening?"
+    },
+    "placeholders": {
+      "highlight": "The big reveal, getting into character, the accusations..."
+    },
+    "submit": "Submit Feedback",
+    "submitting": "Submitting...",
+    "oneTimeNotice": "This is a one-time email about your recent mystery experience. You won't receive any other emails from us."
+  },
+  "notFound": {
+    "metaTitle": "Page Not Found",
+    "metaDescription": "The page you are looking for doesn't exist or has been moved.",
+    "heading": "Oops! Page not found",
+    "returnHome": "Return to Home"
+  },
+  "characterAccess": {
+    "errors": {
+      "assignmentNotFound": "Character assignment not found or access denied.",
+      "dataNotFound": "Character data not found.",
+      "loadFailed": "Failed to load character"
+    },
+    "subtitle": "View your complete character guide and game instructions below.",
+    "footer": {
+      "lovedPlaying": "Loved playing as <strong>{{character}}</strong>?",
+      "hostCta": "Host your own custom mystery at"
     }
   }
 }

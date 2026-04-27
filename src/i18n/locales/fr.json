@@ -218,7 +218,8 @@
       "submitButton": "Se connecter",
       "signingIn": "Connexion en cours...",
       "orDivider": "ou continuez avec",
-      "googleButton": "Continuer avec Google"
+      "googleButton": "Continuer avec Google",
+      "success": "Connexion réussie !"
     },
     "signUp": {
       "title": "Créez votre compte",
@@ -252,7 +253,8 @@
         "noEmail": "Vous n'avez pas reçu l'e-mail ?",
         "tryAgain": "Réessayer",
         "returnToSignIn": "Retour à la connexion"
-      }
+      },
+      "rememberedPrompt": "Vous vous êtes souvenu de votre mot de passe ?"
     },
     "resetPassword": {
       "title": "Définir un nouveau mot de passe",
@@ -261,7 +263,10 @@
       "confirmPassword": "Confirmer le nouveau mot de passe",
       "submitButton": "Mettre à jour le mot de passe",
       "updating": "Mise à jour...",
-      "success": "Mot de passe mis à jour"
+      "success": "Mot de passe mis à jour",
+      "invalidLinkToast": "Lien de réinitialisation de mot de passe invalide ou expiré",
+      "invalidLinkBody": "Le lien de réinitialisation du mot de passe est invalide ou a expiré. Veuillez en demander un nouveau.",
+      "requestNewLink": "Demander un nouveau lien"
     },
     "errors": {
       "invalidCredentials": "E-mail ou mot de passe invalide",
@@ -275,17 +280,35 @@
       "unknownError": "Une erreur inconnue est survenue. Veuillez réessayer.",
       "googleSignInFailed": "Échec de la connexion avec Google",
       "googleSignInInitFailed": "Impossible de lancer la connexion avec Google.",
-      "unexpected": "Une erreur inattendue s'est produite"
+      "unexpected": "Une erreur inattendue s'est produite",
+      "emailNotConfirmed": "Veuillez confirmer votre e-mail avant de vous connecter. Consultez votre boîte de réception."
     },
     "success": {
       "accountCreated": "Compte créé ! Veuillez vérifier votre e-mail pour valider votre compte.",
       "passwordReset": "Lien de réinitialisation de mot de passe envoyé",
       "passwordUpdated": "Mot de passe mis à jour",
-      "signedOut": "Déconnecté"
+      "signedOut": "Déconnecté",
+      "accountCreatedVerifyEmail": "Compte créé ! Consultez votre e-mail pour vérifier et débloquer toutes les fonctionnalités."
     },
     "signInPrompt": {
       "description": "Inscrivez-vous gratuitement pour créer votre propre soirée enquête personnalisée, ou connectez-vous à votre compte.",
       "or": "ou"
+    },
+    "callback": {
+      "successGoogle": "Connexion avec Google réussie !",
+      "sessionNotEstablished": "La session d'authentification n'a pas pu être établie. Veuillez réessayer de vous connecter.",
+      "unexpectedFailure": "L'authentification a échoué en raison d'une erreur inattendue. Veuillez réessayer.",
+      "completing": "Finalisation de l'authentification Google...",
+      "pleaseWait": "Veuillez patienter pendant que nous vérifions votre compte..."
+    },
+    "checkEmail": {
+      "title": "Consultez votre e-mail",
+      "body": "Nous vous avons envoyé un lien de vérification. Veuillez consulter votre e-mail pour confirmer votre compte.",
+      "returnToSignIn": "Retour à la connexion",
+      "didntReceive": "Vous n'avez pas reçu d'e-mail ?",
+      "tryAgain": "Réessayer",
+      "noteLabel": "Remarque :",
+      "devNote": "À des fins de test, vous pouvez désactiver la confirmation par e-mail dans les paramètres de votre projet Supabase."
     }
   },
   "dashboard": {
@@ -367,7 +390,8 @@
     "title": "Paramètres du compte",
     "tabs": {
       "profile": "Profil",
-      "security": "Sécurité"
+      "security": "Sécurité",
+      "billing": "Facturation"
     },
     "profile": {
       "title": "Informations de profil",
@@ -399,6 +423,11 @@
         "deleting": "Suppression en cours...",
         "success": "Compte supprimé"
       }
+    },
+    "loading": "Chargement...",
+    "toasts": {
+      "deleted": "Votre compte a été supprimé",
+      "deleteFailed": "Échec de la suppression du compte"
     }
   },
   "mysteryCreation": {
@@ -923,6 +952,10 @@
     "tabs": {
       "guide": "Guide de l'hôte",
       "detective": "Kit de détective et preuves"
+    },
+    "errors": {
+      "notFound": "Matériaux d'animation introuvables ou accès refusé.",
+      "loadFailed": "Échec du chargement des matériaux d'animation"
     }
   },
   "payment": {
@@ -944,7 +977,13 @@
       "signInRequired": "Veuillez vous connecter pour acheter ce mystère.",
       "checkoutRedirect": "Redirection vers le paiement sécurisé...",
       "checkoutFailed": "Échec de la redirection vers le paiement. Veuillez réessayer.",
-      "genericError": "Une erreur est survenue lors du chargement des détails du mystère."
+      "genericError": "Une erreur est survenue lors du chargement des détails du mystère.",
+      "mysteryIdMissing": "Mystère introuvable. Veuillez réessayer depuis le tableau de bord.",
+      "emailNotVerified": "Veuillez vérifier votre adresse e-mail avant l'achat. Consultez votre boîte de réception pour le lien de vérification.",
+      "userEmailMissing": "E-mail utilisateur introuvable. Veuillez vous déconnecter et vous reconnecter.",
+      "redirectingToCheckout": "Redirection vers le paiement sécurisé...",
+      "networkError": "Erreur réseau. Vérifiez votre connexion et réessayez.",
+      "checkoutConfigError": "Erreur de configuration du paiement. Veuillez contacter l'assistance."
     },
     "title": "Finalisez votre achat",
     "subtitle": "Obtenez un accès complet à votre package de mystère de meurtre",
@@ -1007,7 +1046,9 @@
         "summary": "Scripts résumés"
       },
       "hasAccomplice": "Avec complice"
-    }
+    },
+    "fullyEditableLabel": "Entièrement modifiable :",
+    "fullyEditableNote": "Pas d'inquiétude — vous pourrez modifier tous les scripts de personnages, le contenu du guide d'animation et les cartes d'indices après la génération de votre mystère."
   },
   "mysteryPackage": {
     "shareWithGuests": "Partager avec les invités",
@@ -1104,7 +1145,46 @@
       "medium": "environ 20 minutes",
       "large": "environ 25 à 30 minutes",
       "xlarge": "jusqu'à 45 minutes"
-    }
+    },
+    "toasts": {
+      "mysteryIdMissing": "L'identifiant du mystère est manquant",
+      "resumingGeneration": "Reprise de la génération de votre mystère...",
+      "resumeFailed": "Échec de la reprise de la génération",
+      "startingGeneration": "Démarrage de la génération de votre kit mystère. Cela prendra {{time}}...",
+      "startGenerationFailed": "Échec du démarrage de la génération du kit",
+      "packageReady": "Votre kit mystère est prêt !"
+    },
+    "errors": {
+      "unknownStep": "La génération a échoué à une étape inconnue",
+      "generationPaused": "Génération en pause",
+      "progressSavedResume": "Pas d'inquiétude — votre progression a été sauvegardée et vous pouvez reprendre où vous vous êtes arrêté.",
+      "stillTrouble": "Toujours des problèmes ?",
+      "contactSupport": "Contacter l'assistance",
+      "generationFailed": "Échec de la génération",
+      "canTryAgain": "Vous pouvez réessayer de générer votre kit mystère.",
+      "whatHappened": "Que s'est-il passé ?",
+      "resumableExplanation": "Votre génération a rencontré un problème mais peut être reprise là où elle s'est arrêtée. Votre progression a été sauvegardée.",
+      "nonResumableExplanation": "Le processus de génération a échoué et doit être relancé. Pas d'inquiétude — cela arrive parfois et réessayer fonctionne généralement.",
+      "errorDuringGeneration": "Une erreur s'est produite pendant la génération"
+    },
+    "buttons": {
+      "resumeGeneration": "Reprendre la génération",
+      "tryAgain": "Réessayer",
+      "checkAgain": "Vérifier à nouveau",
+      "refreshStatus": "Actualiser le statut"
+    },
+    "timeout": {
+      "title": "Cela prend plus de temps que prévu",
+      "description": "Votre mystère a été généré mais nous avons un problème pour afficher le contenu.",
+      "reassuranceTitle": "Pas d'inquiétude — votre mystère est en sécurité !",
+      "reassuranceBody": "Notre équipe technique a été automatiquement notifiée et résoudra ce problème dès que possible. Vous n'avez rien à faire — nous nous assurerons que votre kit mystère complet soit bientôt disponible.",
+      "closePage": "Vous pouvez fermer cette page en toute sécurité et revenir plus tard. Si le problème persiste, contactez-nous à"
+    },
+    "finalizing": {
+      "title": "Nous finalisons votre mystère",
+      "description": "Votre mystère a été généré mais certains contenus de personnages nécessitent une attention."
+    },
+    "loadingMystery": "Chargement de votre mystère..."
   },
   "attribution": {
     "title": "Comment avez-vous entendu parler de nous ?",
@@ -1123,5 +1203,128 @@
     "otherPlaceholder": "Dites-nous où...",
     "submit": "Envoyer",
     "skip": "Passer pour l'instant"
+  },
+  "billing": {
+    "title": "Historique des achats",
+    "fallbackTitle": "Soirée enquête",
+    "toasts": {
+      "loadFailed": "Échec du chargement de l'historique des achats"
+    },
+    "summary": {
+      "title": "Résumé des achats",
+      "description": "Vos achats et téléchargements de soirées enquête",
+      "totalPurchased": "Total des mystères achetés",
+      "totalSpent": "Total dépensé"
+    },
+    "recent": {
+      "title": "Achats récents"
+    },
+    "empty": {
+      "title": "Aucun achat pour le moment",
+      "body": "Lorsque vous achèterez des kits mystère, ils apparaîtront ici",
+      "browseButton": "Parcourir les mystères"
+    },
+    "status": {
+      "completed": "Terminé"
+    },
+    "actions": {
+      "view": "Voir",
+      "download": "Télécharger"
+    }
+  },
+  "feedback": {
+    "errors": {
+      "invalidLink": "Lien de retour invalide.",
+      "notFound": "Mystère introuvable.",
+      "generic": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+      "submitFailed": "Échec de l'envoi du retour. Veuillez réessayer."
+    },
+    "fallbackTitle": "Votre mystère",
+    "unsubscribed": {
+      "title": "Désabonné",
+      "body": "Vous avez été désabonné des e-mails de suivi. Nous ne vous en enverrons plus."
+    },
+    "thankYou": {
+      "title": "Merci !",
+      "body": "Votre retour pour <strong>{{title}}</strong> a été enregistré. Nous vous en remercions sincèrement !",
+      "cta": "Prêt pour un autre mystère ?"
+    },
+    "heading": "Comment s'est passé votre mystère ?",
+    "thanksForRating": "Merci pour la note ! Voulez-vous nous en dire plus ?",
+    "fields": {
+      "rating": "Notez votre expérience *",
+      "didHost": "Avez-vous organisé la soirée ?",
+      "attendeeCount": "Combien de personnes ont participé ?",
+      "bestPart": "Quel a été le meilleur moment ?",
+      "nps": "Quelle est la probabilité que vous recommandiez Mystery Maker à un ami ?",
+      "testimonial": "Autre chose que vous aimeriez partager ?"
+    },
+    "didHostOptions": {
+      "yes": "Oui !",
+      "notYet": "Pas encore",
+      "changedPlans": "Plans modifiés"
+    },
+    "placeholders": {
+      "attendeeCount": "p. ex. 8",
+      "bestPart": "Le moment de la révélation était incroyable...",
+      "testimonial": "Optionnel : partagez votre expérience, vos suggestions ou une anecdote de la soirée...",
+      "displayName": "Nom à afficher (p. ex. Sarah M.)"
+    },
+    "npsScale": {
+      "notLikely": "Peu probable",
+      "veryLikely": "Très probable"
+    },
+    "publicOptIn": {
+      "label": "Afficher mon retour sur le site Mystery Maker",
+      "help": "Aidez d'autres organisateurs à voir ce que les vrais clients pensent !"
+    },
+    "submit": "Envoyer le retour",
+    "submitting": "Envoi en cours..."
+  },
+  "guestFeedback": {
+    "errors": {
+      "invalidLink": "Lien de retour invalide.",
+      "linkExpired": "Lien de retour introuvable ou expiré.",
+      "generic": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+      "submitFailed": "Échec de l'envoi du retour. Veuillez réessayer."
+    },
+    "fallbackTitle": "Votre mystère",
+    "thankYou": {
+      "title": "Merci !",
+      "body": "Votre retour pour <strong>{{title}}</strong> nous aide à créer de meilleurs mystères.",
+      "cta": "Avez-vous pensé à organiser votre propre soirée enquête ?",
+      "browseButton": "Parcourir nos mystères"
+    },
+    "heading": "Comment s'est passé votre mystère ?",
+    "youPlayed": "Vous avez joué <strong>{{character}}</strong>",
+    "thanksForRating": "Merci pour la note ! Voulez-vous nous en dire plus ?",
+    "fields": {
+      "rating": "Notez votre expérience *",
+      "highlight": "Quel a été le moment fort de la soirée ?"
+    },
+    "placeholders": {
+      "highlight": "La grande révélation, entrer dans le personnage, les accusations..."
+    },
+    "submit": "Envoyer le retour",
+    "submitting": "Envoi en cours...",
+    "oneTimeNotice": "Ceci est un e-mail unique sur votre récente expérience de mystère. Vous ne recevrez aucun autre e-mail de notre part."
+  },
+  "notFound": {
+    "metaTitle": "Page introuvable",
+    "metaDescription": "La page que vous recherchez n'existe pas ou a été déplacée.",
+    "heading": "Oups ! Page introuvable",
+    "returnHome": "Retour à l'accueil"
+  },
+  "characterAccess": {
+    "errors": {
+      "assignmentNotFound": "Attribution de personnage introuvable ou accès refusé.",
+      "dataNotFound": "Données du personnage introuvables.",
+      "loadFailed": "Échec du chargement du personnage"
+    },
+    "subtitle": "Consultez votre guide de personnage complet et les instructions du jeu ci-dessous.",
+    "footer": {
+      "lovedPlaying": "Vous avez aimé jouer <strong>{{character}}</strong> ?",
+      "hostCta": "Organisez votre propre mystère personnalisé sur"
+    }
   }
 }

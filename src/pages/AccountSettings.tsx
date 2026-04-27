@@ -10,6 +10,7 @@ import ProfileSettings from "@/components/account/ProfileSettings";
 import PasswordSettings from "@/components/account/PasswordSettings";
 import DeleteAccount from "@/components/account/DeleteAccount";
 import BillingSettings from "@/components/account/BillingSettings";
+import { useTranslation } from "react-i18next";
 
 interface UserMetadata {
   name?: string;
@@ -18,6 +19,7 @@ interface UserMetadata {
 
 const AccountSettings = () => {
   const { user, signOut } = useAuth();
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   
@@ -41,31 +43,31 @@ const AccountSettings = () => {
       if (error) throw error;
       
       await signOut();
-      toast.success("Your account has been deleted");
+      toast.success(t("account.toasts.deleted"));
     } catch (error: any) {
       console.error("Error deleting account:", error);
-      toast.error("Failed to delete account: " + error.message);
+      toast.error(`${t("account.toasts.deleteFailed")}: ${error.message}`);
       throw error; // Rethrow to be caught by the DeleteAccount component
     }
   };
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div>{t("account.loading")}</div>;
   }
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 py-12 px-4">
         <div className="container mx-auto max-w-4xl">
-          <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
-          
+          <h1 className="text-3xl font-bold mb-8">{t("account.title")}</h1>
+
           <Tabs defaultValue="profile">
             <TabsList className="mb-8 grid w-full grid-cols-3 md:w-auto md:inline-flex">
-              <TabsTrigger value="profile">Profile</TabsTrigger>
-              <TabsTrigger value="security">Security</TabsTrigger>
-              <TabsTrigger value="billing">Billing</TabsTrigger>
+              <TabsTrigger value="profile">{t("account.tabs.profile")}</TabsTrigger>
+              <TabsTrigger value="security">{t("account.tabs.security")}</TabsTrigger>
+              <TabsTrigger value="billing">{t("account.tabs.billing")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="profile">
