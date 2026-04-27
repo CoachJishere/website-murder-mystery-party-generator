@@ -185,8 +185,17 @@ const CharacterAccess: React.FC = () => {
     );
     if (rumorsBlock) content += `${cleanMarkdownHeaders(rumorsBlock)}\n\n`;
 
+    // For each role variant, strip its baked-in `## ROUND N:` heading so we don't
+    // get duplicate round headers when innocent + guilty + accomplice are stacked.
+    // We add a single round heading manually for the entire round block.
+    const stripRoundHeader = (s: string | null | undefined): string => {
+      if (!s) return '';
+      return s.replace(/^##\s+ROUND\s+\d+[^\n]*\n+/i, '').trim();
+    };
+
     // Rounds 2-4 — prefer unified `round_script` (detective-style); fall back to per-role
-    // columns (legacy character-based) only when the unified column is absent.
+    // columns (character-based) when the unified column is absent. Both paths respect
+    // the host's script_type choice (pointForm/full/both) via formatScriptField.
     const renderRound = (roundNum: 2 | 3 | 4) => {
       const questions = character[`round${roundNum}_questions`];
       if (questions) content += `${cleanMarkdownHeaders(questions)}\n\n`;
@@ -199,22 +208,34 @@ const CharacterAccess: React.FC = () => {
         return;
       }
 
-      // Legacy per-role variants (no pointform support yet for these)
-      if (character[`round${roundNum}_innocent`]) {
-        content += `**If You're Innocent:**\n${cleanMarkdownHeaders(character[`round${roundNum}_innocent`])}\n\n`;
+      // Per-role variants (character-based mysteries). Each variant has its own
+      // pointform sibling. We render a single round heading, then each role section
+      // with the format the host picked.
+      const variants: Array<{ label: string; key: string }> = [
+        { label: "If You're Innocent:",      key: 'innocent' },
+        { label: "If You're Guilty:",        key: 'guilty' },
+        { label: "If You're an Accomplice:", key: 'accomplice' },
+      ];
+      const roleBlocks: string[] = [];
+      for (const v of variants) {
+        const detailed = character[`round${roundNum}_${v.key}`];
+        const pointForm = character[`round${roundNum}_${v.key}_pointform`];
+        if (!detailed && !pointForm) continue;
+        const formatted = formatScriptField(detailed, pointForm, `ROUND ${roundNum}`);
+        if (!formatted) continue;
+        // Strip the variant's baked-in `## ROUND N` header — we'll add one round-level header above
+        const cleaned = stripRoundHeader(formatted);
+        roleBlocks.push(`**${v.label}**\n\n${cleaned}`);
       }
-      if (character[`round${roundNum}_guilty`]) {
-        content += `**If You're Guilty:**\n${cleanMarkdownHeaders(character[`round${roundNum}_guilty`])}\n\n`;
-      }
-      if (character[`round${roundNum}_accomplice`]) {
-        content += `**If You're an Accomplice:**\n${cleanMarkdownHeaders(character[`round${roundNum}_accomplice`])}\n\n`;
+      if (roleBlocks.length > 0) {
+        content += `## ROUND ${roundNum}\n\n${roleBlocks.join('\n\n')}\n\n`;
       }
     };
     renderRound(2);
     renderRound(3);
     renderRound(4);
 
-    // Final statement — prefer unified, fall back to per-role
+    // Final statement — prefer unified, fall back to per-role variants
     if (character.final_statement) {
       const finalBlock = formatScriptField(
         character.final_statement, character.final_statement_pointform,
@@ -222,14 +243,22 @@ const CharacterAccess: React.FC = () => {
       );
       if (finalBlock) content += `${cleanMarkdownHeaders(finalBlock)}\n\n`;
     } else {
-      if (character.final_innocent) {
-        content += `**If You're Innocent (Final):**\n${cleanMarkdownHeaders(character.final_innocent)}\n\n`;
+      const finalVariants: Array<{ label: string; key: string }> = [
+        { label: "If You're Innocent (Final):",      key: 'innocent' },
+        { label: "If You're Guilty (Final):",        key: 'guilty' },
+        { label: "If You're an Accomplice (Final):", key: 'accomplice' },
+      ];
+      const finalBlocks: string[] = [];
+      for (const v of finalVariants) {
+        const detailed = character[`final_${v.key}`];
+        const pointForm = character[`final_${v.key}_pointform`];
+        if (!detailed && !pointForm) continue;
+        const formatted = formatScriptField(detailed, pointForm, 'FINAL STATEMENT');
+        if (!formatted) continue;
+        finalBlocks.push(`**${v.label}**\n\n${formatted.replace(/^##\s+FINAL[^\n]*\n+/i, '').trim()}`);
       }
-      if (character.final_guilty) {
-        content += `**If You're Guilty (Final):**\n${cleanMarkdownHeaders(character.final_guilty)}\n\n`;
-      }
-      if (character.final_accomplice) {
-        content += `**If You're an Accomplice (Final):**\n${cleanMarkdownHeaders(character.final_accomplice)}\n\n`;
+      if (finalBlocks.length > 0) {
+        content += `## FINAL STATEMENT\n\n${finalBlocks.join('\n\n')}\n\n`;
       }
     }
 
