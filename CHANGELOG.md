@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-04-27
+
+### UX: Swap homepage demo video
+- Replaced YouTube embed ID `8WInnaFHMY0` with `IFZdtPfUtPo` in [Index.tsx](src/pages/Index.tsx) (and the matching `homepage_video_played` PostHog event payload) and [DarkHomePreview.tsx](src/pages/DarkHomePreview.tsx) so analytics keeps tracking the currently-displayed video
+
 ## 2026-04-26
 
 ### Architecture: script_type='both' rendering — twin-column "always generate, conditionally display" pattern
