@@ -822,16 +822,52 @@ const MysteryPackageTabView = React.memo(({
                   // Detective-style uses round_script fields (with headers); character-based uses innocent/guilty fields
                   const hasDetectiveScripts = !!(character.round2_script || character.round3_script || character.round4_script);
 
+                  // Wrap a prose body in straight quotes so it reads obviously as a script
+                  // to deliver. Strips leading inline "**IF YOU'RE INNOCENT**" / stage-direction
+                  // headers the model bakes in. Skips bullets and headings.
+                  const wrapProseInQuotes = (text: string): string => {
+                    if (!text) return text;
+                    let body = text.trim();
+                    if (body.startsWith('-') || body.startsWith('•') || body.startsWith('*')) return text;
+                    if (body.startsWith('#')) return text;
+                    while (true) {
+                      const stripped = body.replace(/^\*\*[^*\n]+\*\*\s*\n+/, '');
+                      if (stripped === body) break;
+                      body = stripped;
+                    }
+                    body = body.trim();
+                    if (!body) return text;
+                    if (body.startsWith('"') && body.endsWith('"')) return body;
+                    return `"${body}"`;
+                  };
+
+                  // For prose blocks that may include a leading `## SECTION` heading, split
+                  // the heading off, wrap only the prose body in quotes.
+                  const wrapPreservingHeading = (block: string): string => {
+                    const m = block.match(/^(##\s+[^\n]+\n+)([\s\S]*)$/);
+                    if (!m) return wrapProseInQuotes(block);
+                    return `${m[1]}${wrapProseInQuotes(m[2])}`;
+                  };
+
                   // Compose detailed prose + point-form bullets per the host's script_type choice.
-                  // For 'both', stack: detailed (with its own header) followed by "**Point Form:**" + bullets.
-                  const composeFormat = (detailed?: string, pointForm?: string): string | undefined => {
+                  // For 'full', return detailed (optionally wrapped in quotes if it's speech).
+                  // For 'both', stack: detailed (optionally quoted, after heading) + "**Point Form:**" + bullets.
+                  // For 'pointForm', return bullets unwrapped (they're tactical reminders, not speech).
+                  // `quoteProse` defaults to false; pass true only for spoken fields where the
+                  // body should display as something to deliver aloud.
+                  const composeFormat = (detailed?: string, pointForm?: string, quoteProse: boolean = false): string | undefined => {
                     const d = (detailed || '').trim();
                     const p = (pointForm || '').trim();
                     if (!d && !p) return undefined;
-                    if (scriptType === 'full' || !p) return d || undefined;
+                    if (scriptType === 'full' || !p) {
+                      if (!d) return undefined;
+                      return quoteProse ? wrapPreservingHeading(d) : d;
+                    }
                     if (scriptType === 'pointForm') return p || d || undefined;
                     if (!d) return p;
-                    return `${d}\n\n**Point Form:**\n\n${p}`;
+                    // 'both' — optionally wrap prose, then append point-form section
+                    const proseSection = quoteProse ? wrapPreservingHeading(d) : d;
+                    return `${proseSection}\n\n**Point Form:**\n\n${p}`;
                   };
 
                   // Define character fields to render as editable sections
@@ -839,47 +875,42 @@ const MysteryPackageTabView = React.memo(({
                     { key: 'description', content: character.description },
                     { key: 'background', content: character.background },
                     { key: 'relationships', content: typeof character.relationships === 'string' ? character.relationships : undefined },
-                    { key: 'introduction', content: composeFormat(character.introduction, character.introduction_pointform) },
+                    // Spoken fields below get quoteProse=true; rumors and accusations are
+                    // structured (lists / tactical bullets), so they don't get quote-wrapped.
+                    { key: 'introduction', content: composeFormat(character.introduction, character.introduction_pointform, true) },
                     { key: 'secret', content: character.secret },
                     { key: 'rumors', content: composeFormat(character.rumors, character.rumors_pointform) },
-                    // Round 2: use script field for detective-style, innocent/guilty for character-based.
-                    // Per-role variants ALSO get composeFormat treatment so script_type=pointForm
-                    // shows bullets (not the detailed prose) on character-based mysteries.
                     ...(hasDetectiveScripts
-                      ? [{ key: 'round2_script', content: composeFormat(character.round2_script, character.round2_script_pointform) }]
+                      ? [{ key: 'round2_script', content: composeFormat(character.round2_script, character.round2_script_pointform, true) }]
                       : [
-                          { key: 'round2_innocent',   content: composeFormat(character.round2_innocent,   character.round2_innocent_pointform) },
-                          { key: 'round2_guilty',     content: composeFormat(character.round2_guilty,     character.round2_guilty_pointform) },
-                          { key: 'round2_accomplice', content: composeFormat(character.round2_accomplice, character.round2_accomplice_pointform) },
+                          { key: 'round2_innocent',   content: composeFormat(character.round2_innocent,   character.round2_innocent_pointform,   true) },
+                          { key: 'round2_guilty',     content: composeFormat(character.round2_guilty,     character.round2_guilty_pointform,     true) },
+                          { key: 'round2_accomplice', content: composeFormat(character.round2_accomplice, character.round2_accomplice_pointform, true) },
                         ]),
                     { key: 'round2_questions', content: character.round2_questions },
-                    // Round 3
                     ...(hasDetectiveScripts
-                      ? [{ key: 'round3_script', content: composeFormat(character.round3_script, character.round3_script_pointform) }]
+                      ? [{ key: 'round3_script', content: composeFormat(character.round3_script, character.round3_script_pointform, true) }]
                       : [
-                          { key: 'round3_innocent',   content: composeFormat(character.round3_innocent,   character.round3_innocent_pointform) },
-                          { key: 'round3_guilty',     content: composeFormat(character.round3_guilty,     character.round3_guilty_pointform) },
-                          { key: 'round3_accomplice', content: composeFormat(character.round3_accomplice, character.round3_accomplice_pointform) },
+                          { key: 'round3_innocent',   content: composeFormat(character.round3_innocent,   character.round3_innocent_pointform,   true) },
+                          { key: 'round3_guilty',     content: composeFormat(character.round3_guilty,     character.round3_guilty_pointform,     true) },
+                          { key: 'round3_accomplice', content: composeFormat(character.round3_accomplice, character.round3_accomplice_pointform, true) },
                         ]),
                     { key: 'round3_questions', content: character.round3_questions },
-                    // Round 4
                     ...(hasDetectiveScripts
-                      ? [{ key: 'round4_script', content: composeFormat(character.round4_script, character.round4_script_pointform) }]
+                      ? [{ key: 'round4_script', content: composeFormat(character.round4_script, character.round4_script_pointform, true) }]
                       : [
-                          { key: 'round4_innocent',   content: composeFormat(character.round4_innocent,   character.round4_innocent_pointform) },
-                          { key: 'round4_guilty',     content: composeFormat(character.round4_guilty,     character.round4_guilty_pointform) },
-                          { key: 'round4_accomplice', content: composeFormat(character.round4_accomplice, character.round4_accomplice_pointform) },
+                          { key: 'round4_innocent',   content: composeFormat(character.round4_innocent,   character.round4_innocent_pointform,   true) },
+                          { key: 'round4_guilty',     content: composeFormat(character.round4_guilty,     character.round4_guilty_pointform,     true) },
+                          { key: 'round4_accomplice', content: composeFormat(character.round4_accomplice, character.round4_accomplice_pointform, true) },
                         ]),
                     { key: 'round4_questions', content: character.round4_questions },
-                    // Accusations (stored as JSON string; format as readable markdown)
                     { key: 'accusations', content: composeFormat(formatAccusations(character.accusations), character.accusations_pointform) },
-                    // Final statement
                     ...(hasDetectiveScripts && character.final_statement
-                      ? [{ key: 'final_statement', content: composeFormat(character.final_statement, character.final_statement_pointform) }]
+                      ? [{ key: 'final_statement', content: composeFormat(character.final_statement, character.final_statement_pointform, true) }]
                       : [
-                          { key: 'final_innocent',   content: composeFormat(character.final_innocent,   character.final_innocent_pointform) },
-                          { key: 'final_guilty',     content: composeFormat(character.final_guilty,     character.final_guilty_pointform) },
-                          { key: 'final_accomplice', content: composeFormat(character.final_accomplice, character.final_accomplice_pointform) },
+                          { key: 'final_innocent',   content: composeFormat(character.final_innocent,   character.final_innocent_pointform,   true) },
+                          { key: 'final_guilty',     content: composeFormat(character.final_guilty,     character.final_guilty_pointform,     true) },
+                          { key: 'final_accomplice', content: composeFormat(character.final_accomplice, character.final_accomplice_pointform, true) },
                         ]),
                   ];
 

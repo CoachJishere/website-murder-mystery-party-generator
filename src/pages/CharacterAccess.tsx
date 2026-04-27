@@ -138,11 +138,37 @@ const CharacterAccess: React.FC = () => {
       .trim();
   };
 
+  // Wrap a detailed prose body in straight quotes so it reads obviously as a
+  // line to deliver aloud. Strips any leading inline bold "labels" the model
+  // baked in (`**IF YOU'RE INNOCENT**`, `**WHEN ASKED ABOUT YOUR MOTIVE:**`)
+  // since we already show the role label above. Skips wrapping when content
+  // already starts with a bullet — bullets are tactical reminders, not speech.
+  const wrapProseInQuotes = (text: string): string => {
+    if (!text) return text;
+    let body = text.trim();
+    // Don't wrap bullet lists in quotes
+    if (body.startsWith('-') || body.startsWith('•') || body.startsWith('*')) return text;
+    // Don't wrap markdown headings as the spoken text
+    if (body.startsWith('#')) return text;
+    // Strip any number of leading inline bold "stage direction" headers that
+    // the model added (e.g. **IF YOU'RE INNOCENT**, **When asked about ...:**)
+    while (true) {
+      const stripped = body.replace(/^\*\*[^*\n]+\*\*\s*\n+/, '');
+      if (stripped === body) break;
+      body = stripped;
+    }
+    body = body.trim();
+    if (!body) return text;
+    // Already wrapped? Leave alone.
+    if (body.startsWith('"') && body.endsWith('"')) return body;
+    return `"${body}"`;
+  };
+
   // Format a "spoken" field that has detailed prose + optional point-form sibling.
   // Output respects the host's script_type choice:
-  //   full      -> detailed only
+  //   full      -> detailed only (prose wrapped in quotes for clarity)
   //   pointForm -> bullets only (with synthesized header from fallbackHeader if needed)
-  //   both      -> detailed first, then "**Point Form:**" + bullets stacked underneath
+  //   both      -> detailed prose (in quotes), then "**Point Form:**" + bullets stacked underneath
   const formatScriptField = (
     detailed: string | null | undefined,
     pointForm: string | null | undefined,
@@ -177,7 +203,15 @@ const CharacterAccess: React.FC = () => {
       character.introduction, character.introduction_pointform,
       'ROUND 1: YOUR INTRODUCTION',
     );
-    if (introBlock) content += `${cleanMarkdownHeaders(introBlock)}\n\n`;
+    if (introBlock) {
+      // Pull off the section heading, wrap the prose body in quotes, re-emit
+      const m = introBlock.match(/^(##\s+[^\n]+\n+)([\s\S]*)$/);
+      if (m && (scriptType === 'full' || (scriptType === 'both' && !introBlock.includes('**Point Form:**')))) {
+        content += `${m[1]}${wrapProseInQuotes(m[2])}\n\n`;
+      } else {
+        content += `${cleanMarkdownHeaders(introBlock)}\n\n`;
+      }
+    }
 
     const rumorsBlock = formatScriptField(
       character.rumors, character.rumors_pointform,
@@ -204,7 +238,23 @@ const CharacterAccess: React.FC = () => {
       const unifiedPF = character[`round${roundNum}_script_pointform`];
       if (unified) {
         const block = formatScriptField(unified, unifiedPF, `ROUND ${roundNum}`);
-        if (block) content += `${cleanMarkdownHeaders(block)}\n\n`;
+        if (block) {
+          // For prose modes, wrap the body in quotes (after the section heading)
+          const m = block.match(/^(##\s+[^\n]+\n+)([\s\S]*)$/);
+          if (m && scriptType === 'full') {
+            content += `${m[1]}${wrapProseInQuotes(m[2])}\n\n`;
+          } else if (m && scriptType === 'both') {
+            // Both mode: split prose from "**Point Form:**" section, wrap only the prose
+            const split = m[2].split(/\n+\*\*Point Form:\*\*\n+/);
+            if (split.length === 2) {
+              content += `${m[1]}${wrapProseInQuotes(split[0])}\n\n**Point Form:**\n\n${split[1]}\n\n`;
+            } else {
+              content += `${cleanMarkdownHeaders(block)}\n\n`;
+            }
+          } else {
+            content += `${cleanMarkdownHeaders(block)}\n\n`;
+          }
+        }
         return;
       }
 
@@ -225,7 +275,9 @@ const CharacterAccess: React.FC = () => {
         if (!formatted) continue;
         // Strip the variant's baked-in `## ROUND N` header — we'll add one round-level header above
         const cleaned = stripRoundHeader(formatted);
-        roleBlocks.push(`**${v.label}**\n\n${cleaned}`);
+        // Wrap the prose body in quotes so it reads obviously as a script to deliver
+        const quoted = wrapProseInQuotes(cleaned);
+        roleBlocks.push(`**${v.label}**\n\n${quoted}`);
       }
       if (roleBlocks.length > 0) {
         content += `## ROUND ${roundNum}\n\n${roleBlocks.join('\n\n')}\n\n`;
@@ -241,7 +293,21 @@ const CharacterAccess: React.FC = () => {
         character.final_statement, character.final_statement_pointform,
         'FINAL STATEMENT',
       );
-      if (finalBlock) content += `${cleanMarkdownHeaders(finalBlock)}\n\n`;
+      if (finalBlock) {
+        const m = finalBlock.match(/^(##\s+[^\n]+\n+)([\s\S]*)$/);
+        if (m && scriptType === 'full') {
+          content += `${m[1]}${wrapProseInQuotes(m[2])}\n\n`;
+        } else if (m && scriptType === 'both') {
+          const split = m[2].split(/\n+\*\*Point Form:\*\*\n+/);
+          if (split.length === 2) {
+            content += `${m[1]}${wrapProseInQuotes(split[0])}\n\n**Point Form:**\n\n${split[1]}\n\n`;
+          } else {
+            content += `${cleanMarkdownHeaders(finalBlock)}\n\n`;
+          }
+        } else {
+          content += `${cleanMarkdownHeaders(finalBlock)}\n\n`;
+        }
+      }
     } else {
       const finalVariants: Array<{ label: string; key: string }> = [
         { label: "If You're Innocent (Final):",      key: 'innocent' },
@@ -255,7 +321,9 @@ const CharacterAccess: React.FC = () => {
         if (!detailed && !pointForm) continue;
         const formatted = formatScriptField(detailed, pointForm, 'FINAL STATEMENT');
         if (!formatted) continue;
-        finalBlocks.push(`**${v.label}**\n\n${formatted.replace(/^##\s+FINAL[^\n]*\n+/i, '').trim()}`);
+        const cleaned = formatted.replace(/^##\s+FINAL[^\n]*\n+/i, '').trim();
+        const quoted = wrapProseInQuotes(cleaned);
+        finalBlocks.push(`**${v.label}**\n\n${quoted}`);
       }
       if (finalBlocks.length > 0) {
         content += `## FINAL STATEMENT\n\n${finalBlocks.join('\n\n')}\n\n`;
