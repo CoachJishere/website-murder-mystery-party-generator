@@ -73,10 +73,10 @@ serve(async (req) => {
       }
     }
 
-    // Get package info
+    // Get package info — also pulls last_notified_at for the email cooldown gate.
     const { data: pkg } = await supabase
       .from("mystery_packages")
-      .select("id, title, generation_status, generation_started_at, extracted_characters")
+      .select("id, title, generation_status, generation_started_at, extracted_characters, last_notified_at")
       .eq("conversation_id", conversation_id)
       .order("updated_at", { ascending: false })
       .limit(1)
@@ -244,6 +244,32 @@ serve(async (req) => {
       </div>
     `;
 
+    // Email cooldown: skip the actual send if we've already alerted on this
+    // package within the last 6 hours. Auto-recovery has already run above
+    // either way, so this just prevents support-inbox flooding for persistent
+    // failures (e.g. unrecoverable cases where recovery can't fix the issue).
+    const COOLDOWN_HOURS = 6;
+    const lastNotified = pkg?.last_notified_at ? new Date(pkg.last_notified_at) : null;
+    const cooldownUntil = lastNotified
+      ? new Date(lastNotified.getTime() + COOLDOWN_HOURS * 60 * 60 * 1000)
+      : null;
+    const inCooldown = cooldownUntil ? cooldownUntil > new Date() : false;
+
+    if (inCooldown) {
+      console.log(`Email cooldown active until ${cooldownUntil!.toISOString()} for package ${pkg?.id} — skipping email but recovery was attempted (${recovered.length} chars)`);
+      return new Response(
+        JSON.stringify({
+          success: true,
+          email_sent: false,
+          email_suppressed_reason: "cooldown",
+          cooldown_until: cooldownUntil!.toISOString(),
+          recovery_attempted: recovered,
+          recovery_skipped: skipped,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -263,10 +289,23 @@ serve(async (req) => {
       throw new Error(`Resend API error: ${emailResponse.status} ${errorText}`);
     }
 
-    console.log("Generation issue notification sent successfully");
+    // Stamp the cooldown timer so subsequent sweep cycles within 6h skip the email
+    if (pkg?.id) {
+      await supabase
+        .from("mystery_packages")
+        .update({ last_notified_at: new Date().toISOString() })
+        .eq("id", pkg.id);
+    }
+
+    console.log("Generation issue notification sent + cooldown stamped");
 
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({
+        success: true,
+        email_sent: true,
+        recovery_attempted: recovered,
+        recovery_skipped: skipped,
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
