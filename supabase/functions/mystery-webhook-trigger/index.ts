@@ -354,13 +354,40 @@ serve(async (req) => {
       }
     }
 
-    // Format all messages into a concatenated string for easier parsing
-    const conversationContent = conversation.messages
-      ? conversation.messages.map((msg: any) => {
-          const role = msg.role === "assistant" ? "AI" : "User";
-          return `${role}: ${msg.content}`;
-        }).join("\n\n---\n\n")
-      : "";
+    // Build conversationContent for the parent's planning prompts. When the
+    // user has an approved concept message (set above or earlier), we send
+    // ONLY that one message — not the full chat — so the planning prompt
+    // can't latch onto an earlier draft theme that the user pivoted away from.
+    //
+    // Madysn's "Murder Under The Big Top" (Apr 2026) hit this exact failure:
+    // her chat went lake-house family destination → circus pivot → final
+    // "MURDER UNDER THE BIG TOP" concept. The full conversation was sent to
+    // the parent, the master_context generation latched onto the early
+    // lake-house draft, and we got a schizophrenic package with circus
+    // characters but lake-house host content.
+    //
+    // For backwards compat with conversations where no approved message
+    // exists (rare now that we auto-snapshot), fall back to full content.
+    let conversationContent = "";
+    if (conversation.messages && conversation.messages.length > 0) {
+      const approvedId = conversation.approved_concept_message_id;
+      const approvedMsg = approvedId
+        ? (conversation.messages as any[]).find((m: any) => m.id === approvedId)
+        : null;
+      if (approvedMsg) {
+        // Single-source-of-truth path: just the locked-in concept message.
+        conversationContent = `AI: ${approvedMsg.content}`;
+        console.log(`[ConversationContent] Trimmed to approved concept message only (id=${approvedId}, ${approvedMsg.content.length} chars)`);
+      } else {
+        // Fallback: full conversation
+        conversationContent = (conversation.messages as any[])
+          .map((msg: any) => {
+            const role = msg.role === "assistant" ? "AI" : "User";
+            return `${role}: ${msg.content}`;
+          }).join("\n\n---\n\n");
+        console.log(`[ConversationContent] Sending full conversation (${conversationContent.length} chars, no approved snapshot found)`);
+      }
+    }
 
     // Extract character names before sending to Make.com.
     // Prefer the approved concept message (snapshot at purchase time) so we get
