@@ -48,16 +48,25 @@ serve(async (req) => {
     let characterCount = 0;
     let expectedCharacters = 0;
     let emptyCharacters: string[] = [];
+    // Map of character_name → description for auto-recovery webhook firing
+    let charDescriptions: Record<string, string> = {};
+    // Conversation-level metadata also needed for the webhook payload
+    let scriptType = "full";
+    let hasAccomplice = "false";
+    let mysteryType = "murder";
 
-    // Get conversation + user info
+    // Get conversation + user info (also pulls fields needed for auto-recovery webhook payload)
     const { data: conversation } = await supabase
       .from("conversations")
-      .select("title, user_id")
+      .select("title, user_id, script_type, has_accomplice, mystery_type")
       .eq("id", conversation_id)
       .single();
 
     if (conversation) {
       mysteryTitle = conversation.title || mysteryTitle;
+      scriptType = conversation.script_type || "full";
+      hasAccomplice = String(conversation.has_accomplice ?? false);
+      mysteryType = conversation.mystery_type || "murder";
       if (conversation.user_id) {
         const { data: userData } = await supabase.auth.admin.getUserById(conversation.user_id);
         userEmail = userData?.user?.email || "Unknown";
@@ -80,14 +89,37 @@ serve(async (req) => {
         ? new Date(pkg.generation_started_at).toLocaleString("en-AU", { timeZone: "Australia/Sydney" })
         : "Unknown";
 
-      // Parse expected characters
+      // Parse expected characters AND build a name→description lookup for
+      // auto-recovery. The mystery_packages.extracted_characters JSONB is
+      // sometimes stored as a STRING containing comma-separated `{...}, {...}`
+      // (no outer brackets), which makes a straight JSON.parse fail.
       if (pkg.extracted_characters) {
+        const raw = typeof pkg.extracted_characters === "string"
+          ? pkg.extracted_characters
+          : JSON.stringify(pkg.extracted_characters);
+        let parsedArray: any[] | null = null;
         try {
-          const extracted = typeof pkg.extracted_characters === "string"
-            ? JSON.parse(pkg.extracted_characters)
-            : pkg.extracted_characters;
-          expectedCharacters = Array.isArray(extracted) ? extracted.length : 0;
-        } catch { /* ignore */ }
+          const parsed = JSON.parse(raw);
+          parsedArray = Array.isArray(parsed) ? parsed : null;
+        } catch {
+          try {
+            const wrapped = JSON.parse(`[${raw.trim()}]`);
+            parsedArray = Array.isArray(wrapped) ? wrapped : null;
+          } catch {
+            parsedArray = null;
+          }
+        }
+        if (parsedArray) {
+          expectedCharacters = parsedArray.length;
+          for (const c of parsedArray) {
+            if (c?.name && typeof c.name === "string") {
+              charDescriptions[c.name] = String(c.description || "");
+            }
+          }
+        } else {
+          // Last-resort fallback for the count when even the wrapped parse fails
+          expectedCharacters = (raw.match(/"name"\s*:/g) || []).length;
+        }
       }
 
       // Check for empty characters
@@ -110,6 +142,63 @@ serve(async (req) => {
       ? `<tr>
           <td style="padding: 8px 0; color: #6b7280;">Empty Characters:</td>
           <td style="padding: 8px 0; color: #dc2626; font-weight: 600;">${emptyCharacters.join(", ")}</td>
+        </tr>`
+      : "";
+
+    // Auto-recovery: for each empty character with a known description, fire a
+    // v14 child webhook to regenerate. Make.com's v14 child uses searchRows so
+    // a re-fire UPDATEs the existing row in place. We don't wait for completion;
+    // the next sweep cycle will detect whether recovery succeeded.
+    const CHILD_WEBHOOK = "https://hook.eu2.make.com/3l26wasbsjzh5396np25qoyv8g82u6j3";
+    const recovered: string[] = [];
+    const skipped: string[] = [];
+    for (const charName of emptyCharacters) {
+      const description = charDescriptions[charName];
+      if (!description) {
+        skipped.push(charName); // can't recover without a description in master_context
+        continue;
+      }
+      try {
+        const resp = await fetch(CHILD_WEBHOOK, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            packageId: pkg?.id,
+            characterName: charName,
+            characterDescription: description,
+            characterIndex: 1, // not used for re-fires
+            scriptType,
+            hasAccomplice,
+            mysteryType,
+          }),
+        });
+        if (resp.ok) {
+          recovered.push(charName);
+        } else {
+          skipped.push(charName);
+        }
+      } catch (e) {
+        console.error(`Auto-recovery webhook failed for ${charName}:`, e);
+        skipped.push(charName);
+      }
+    }
+
+    const recoveryHtml = recovered.length > 0
+      ? `<tr>
+          <td style="padding: 8px 0; color: #6b7280;">Auto-Recovery:</td>
+          <td style="padding: 8px 0; color: #059669; font-weight: 600;">
+            Re-fire webhook sent for: ${recovered.join(", ")}<br>
+            <span style="font-size: 12px; font-weight: normal; color: #6b7280;">
+              Allow ~3 minutes, then re-check. If still empty after recovery, manual intervention needed.
+            </span>
+          </td>
+        </tr>`
+      : skipped.length > 0
+      ? `<tr>
+          <td style="padding: 8px 0; color: #6b7280;">Auto-Recovery:</td>
+          <td style="padding: 8px 0; color: #d97706;">
+            Skipped (no description available in extracted_characters): ${skipped.join(", ")}
+          </td>
         </tr>`
       : "";
 
@@ -142,6 +231,7 @@ serve(async (req) => {
               <td style="padding: 8px 0;">${characterCount} generated / ${expectedCharacters} expected</td>
             </tr>
             ${emptyCharsHtml}
+            ${recoveryHtml}
             <tr>
               <td style="padding: 8px 0; color: #6b7280;">Package Status:</td>
               <td style="padding: 8px 0; font-family: monospace; font-size: 11px; word-break: break-all;">${packageStatus}</td>
