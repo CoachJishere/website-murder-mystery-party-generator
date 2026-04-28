@@ -657,9 +657,10 @@ const MysteryView = () => {
     };
   }, [id, checkGenerationStatus, fetchStructuredPackageData]);
 
-  // Realtime subscription for mystery_characters INSERTs.
-  // Each child scenario insert triggers a refetch so the live "X of Y characters ready"
-  // count in the GenerationProgress component updates as children land.
+  // Realtime subscription for mystery_characters INSERT and UPDATE events.
+  // INSERT: each child scenario completion → live "X of Y characters ready" count updates.
+  // UPDATE: auto-recovery (or manual edits) fills in previously-missing fields →
+  //         the UI silently refreshes so the customer never sees empty sections.
   useEffect(() => {
     if (!packageId) return;
 
@@ -669,7 +670,7 @@ const MysteryView = () => {
       .channel(`mystery_characters_${packageId}`)
       .on('postgres_changes',
         {
-          event: 'INSERT',
+          event: '*', // INSERT + UPDATE + DELETE (DELETE never happens in normal flow)
           schema: 'public',
           table: 'mystery_characters',
           filter: `package_id=eq.${packageId}`,
@@ -678,7 +679,7 @@ const MysteryView = () => {
           try {
             await fetchStructuredPackageData();
           } catch (error) {
-            console.error("🔔 [REALTIME] Error refreshing on character insert:", error);
+            console.error("🔔 [REALTIME] Error refreshing on character change:", error);
           }
         }
       )
