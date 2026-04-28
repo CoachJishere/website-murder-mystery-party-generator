@@ -36,7 +36,15 @@ interface MysteryPackageData {
   hostingTips?: string;
   evidenceCards?: string;
   detectiveScript?: string;
+  // Set by a DB trigger when generation_status flips to needs_review; cleared
+  // when it flips away. Used to gate the customer-facing warning so they don't
+  // see it during the auto-recovery window (< 10 min).
+  needs_review_at?: string | null;
 }
+
+// Window during which auto-recovery is expected to heal partial failures.
+// While needs_review is younger than this, the warning is suppressed.
+const NEEDS_REVIEW_SILENT_WINDOW_MS = 10 * 60 * 1000;
 
 const MysteryView = () => {
   const [mystery, setMystery] = useState<any | null>(null);
@@ -107,6 +115,7 @@ const MysteryView = () => {
           detective_script,
           master_context,
           extracted_characters,
+          needs_review_at,
           id
         `)
         .eq("conversation_id", id)
@@ -136,6 +145,7 @@ const MysteryView = () => {
           detectiveScript: packageData.detective_script,
           master_context: packageData.master_context,
           extracted_characters: packageData.extracted_characters,
+          needs_review_at: packageData.needs_review_at,
         };
         
         console.log("✅ [DEBUG] Structured package data loaded");
@@ -1142,75 +1152,46 @@ const MysteryView = () => {
           "container mx-auto max-w-4xl",
           isMobile && "max-w-full"
         )}>
-          {/* Show "finalizing" card only when status definitively says so.
-              The old fallback path (is_paid && gameOverview) was firing prematurely
-              during in_progress generation because gameOverview lands at 60% but
-              characters land later — causing a false positive between those steps. */}
-          {/* Only show the actual warning when generation_status is *explicitly* needs_review.
-              The earlier "completed but chars==0" case is misleading — that just means the parent
-              flipped status to completed before all children finished inserting (timing race).
-              For that case, fall through to the GenerationProgress UI further down. */}
-          {generationStatus?.status === 'needs_review' ? (
-            <Card className={cn(
-              "mb-6 border-amber-500/40",
-              isMobile && "mx-2"
-            )}>
-              <CardHeader className={cn(isMobile && "p-4 pb-3")}>
-                <CardTitle className={cn(
-                  "flex items-center space-x-2 text-amber-700 dark:text-amber-300",
-                  isMobile && "text-base"
-                )}>
-                  <AlertTriangle className={cn(
-                    "text-amber-600 dark:text-amber-400",
-                    isMobile ? "h-4 w-4" : "h-5 w-5"
-                  )} />
-                  <span>{t("mysteryView.finalizing.title")}</span>
-                </CardTitle>
-                <CardDescription className={cn(
-                  "text-amber-700 dark:text-amber-200",
-                  isMobile && "text-sm"
-                )}>
-                  {t("mysteryView.finalizing.description")}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className={cn(
-                "space-y-4",
-                isMobile && "p-4 pt-0 space-y-3"
+          {/* Stale-needs-review banner: only renders if the package has been
+              flagged needs_review for longer than the silent recovery window
+              (~10 min). For fresher needs_review states, auto-recovery is
+              probably still working — we hide the banner so the customer
+              doesn't see a warning for issues that'll fix themselves. */}
+          {(() => {
+            if (generationStatus?.status !== 'needs_review') return null;
+            const ts = packageData?.needs_review_at;
+            const ageMs = ts ? Date.now() - new Date(ts).getTime() : Infinity;
+            if (ageMs < NEEDS_REVIEW_SILENT_WINDOW_MS) return null;
+            return (
+              <Alert className={cn(
+                "mb-4 border-amber-400/60 bg-amber-50/50 dark:bg-amber-950/20",
+                isMobile && "mx-2"
               )}>
-                <Alert className="border-amber-500/40">
-                  <CheckCircle2 className={cn(
-                    "text-green-500 dark:text-green-400",
-                    isMobile ? "h-3 w-3" : "h-4 w-4"
-                  )} />
-                  <AlertTitle className={cn(isMobile && "text-sm")}>{t("mysteryView.timeout.reassuranceTitle")}</AlertTitle>
-                  <AlertDescription className={cn(isMobile && "text-xs")}>
-                    {t("mysteryView.timeout.reassuranceBody")}
-                  </AlertDescription>
-                </Alert>
-                <p className={cn(
-                  "text-sm text-amber-700 dark:text-amber-200",
-                  isMobile && "text-xs"
-                )}>
-                  {t("mysteryView.timeout.closePage")}{" "}
-                  <a href="mailto:support@mysterymaker.party" className="underline font-medium">support@mysterymaker.party</a>.
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleManualRefresh}
-                  className="border-amber-400 text-amber-700 hover:bg-amber-50 dark:border-amber-500 dark:text-amber-200 dark:hover:bg-amber-950/30"
-                >
-                  <RefreshCw className={cn("mr-2", isMobile ? "h-3 w-3" : "h-4 w-4")} />
-                  {t("mysteryView.buttons.checkAgain")}
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            // Show TabView only when ALL major content has landed:
-            // characters AND evidence_cards AND detective_script. status=completed alone isn't
-            // enough — the parent sometimes flips to completed before children/evidence finish.
-            // For legacy mysteries (no status tracking), fall back to gameOverview presence.
-            ((generationStatus?.status === 'completed' && characters.length > 0
+                <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                <AlertTitle className="text-sm font-medium text-amber-900 dark:text-amber-200">
+                  {t("mysteryView.finalizing.title")}
+                </AlertTitle>
+                <AlertDescription className="text-xs text-amber-800 dark:text-amber-300/90">
+                  {t("mysteryView.finalizing.description")}
+                  {" "}
+                  <button
+                    onClick={handleManualRefresh}
+                    className="underline font-medium hover:text-amber-900 dark:hover:text-amber-100"
+                  >
+                    {t("mysteryView.buttons.checkAgain")}
+                  </button>
+                  {" · "}
+                  <a href="mailto:support@mysterymaker.party" className="underline">support@mysterymaker.party</a>
+                </AlertDescription>
+              </Alert>
+            );
+          })()}
+
+          {/* Show TabView when content is sufficiently present. We INCLUDE
+              `needs_review` here so the customer can see/use their mystery
+              while auto-recovery patches gaps in the background. */}
+          {((((generationStatus?.status === 'completed' || generationStatus?.status === 'needs_review')
+              && characters.length > 0
               && !!packageData?.evidenceCards && !!packageData?.detectiveScript) ||
              (!generating && !generationStatus && packageData?.gameOverview && characters.length > 0))) ? (
             <MysteryPackageTabView
