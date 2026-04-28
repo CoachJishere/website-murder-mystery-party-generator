@@ -302,6 +302,38 @@ serve(async (req) => {
 
     console.log(`Found conversation with ${conversation.messages?.length || 0} messages`);
 
+    // Snapshot the approved concept message at generation time. The original
+    // chat-creation path (MysteryChatCreator) wrote this column, but the live
+    // /mystery/chat path doesn't — so for every real customer the column was
+    // null and the parent had to rely on theme+messages, which led to confused
+    // outputs when the chat-defined concept drifted from the form-selected theme
+    // (e.g. theme="Family Reunion" but chat pivoted to "circus" → parent merged
+    // them into a schizophrenic lake-house-with-circus-names mystery).
+    //
+    // Capturing the id here ensures the latest assistant CHARACTER LIST message
+    // becomes the single source of truth — both for our local extraction and
+    // for the parent webhook's prompt (which receives this as approvedConceptMessageId).
+    if (!conversation.approved_concept_message_id && conversation.messages) {
+      const characterListRegex = /^#{2,3}\s+(?:Character List|Characters|Cast of Characters)/im;
+      const aiMessagesWithCharList = (conversation.messages as any[])
+        .filter((m: any) => (m.role === 'assistant' || m.is_ai) && characterListRegex.test(m.content || ''))
+        .sort((a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+      const candidate = aiMessagesWithCharList[aiMessagesWithCharList.length - 1];
+      // Only snapshot real DB ids, not client-generated msg- placeholders
+      if (candidate?.id && !String(candidate.id).startsWith('msg-') && candidate.id !== 'initial-message') {
+        const { error: snapErr } = await supabase
+          .from("conversations")
+          .update({ approved_concept_message_id: candidate.id })
+          .eq("id", conversationId);
+        if (snapErr) {
+          console.warn(`[ConceptSnapshot] Failed to write approved_concept_message_id: ${snapErr.message}`);
+        } else {
+          conversation.approved_concept_message_id = candidate.id;
+          console.log(`[ConceptSnapshot] Captured approved_concept_message_id=${candidate.id} (latest CHARACTER LIST message at ${candidate.created_at})`);
+        }
+      }
+    }
+
     // Extract user_id from the conversation
     const userId = conversation.user_id;
     
