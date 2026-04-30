@@ -1,6 +1,754 @@
 {
+  "redirects": [
+    {
+      "source": "/blog/how-to-host-a-zombie-apocalypse-murder-mystery-that-will-have-your-guests-fighting-for-survival-fr",
+      "destination": "/blog/how-to-host-a-zombie-apocalypse-murder-mystery-that-will-have-your-guests-fighting-for-survival",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/how-to-host-a-zombie-apocalypse-murder-mystery-that-will-have-your-guests-fighting-for-survival-fr",
+      "destination": "/fr/blog/how-to-host-a-zombie-apocalypse-murder-mystery-that-will-have-your-guests-fighting-for-survival",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-butler-murder-mystery-themes-manor-murders-household-secrets",
+      "destination": "/blog/butler-murder-mystery-themes-manor-murders-household-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-butler-murder-mystery-themes-manor-murders-household-secrets",
+      "destination": "/ko/blog/butler-murder-mystery-themes-manor-murders-household-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-fix-confusing-murder-mystery-clues-sv",
+      "destination": "/blog/how-to-fix-confusing-murder-mystery-clues",
+      "permanent": true
+    },
+    {
+      "source": "/sv/blog/how-to-fix-confusing-murder-mystery-clues-sv",
+      "destination": "/sv/blog/how-to-fix-confusing-murder-mystery-clues",
+      "permanent": true
+    },
+    {
+      "source": "/blog/murder-mystery-party-for-teenagers-guide-fr",
+      "destination": "/blog/murder-mystery-party-for-teenagers-guide",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/murder-mystery-party-for-teenagers-guide-fr",
+      "destination": "/fr/blog/murder-mystery-party-for-teenagers-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime-fr",
+      "destination": "/blog/unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime-fr",
+      "destination": "/fr/blog/unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime",
+      "permanent": true
+    },
+    {
+      "source": "/blog/1920s-speakeasy-murder-mystery-party-guide-zh-cn",
+      "destination": "/blog/1920s-speakeasy-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/zh-cn/blog/1920s-speakeasy-murder-mystery-party-guide-zh-cn",
+      "destination": "/zh-cn/blog/1920s-speakeasy-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/1920s-speakeasy-murder-mystery-party-guide-fr",
+      "destination": "/blog/1920s-speakeasy-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-unique-school-reunion-murder-mystery-plots-that-uncover-buried-secrets",
+      "destination": "/blog/unique-school-reunion-murder-mystery-plots-that-uncover-buried-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/1920s-speakeasy-murder-mystery-party-guide-fr",
+      "destination": "/fr/blog/1920s-speakeasy-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-unique-school-reunion-murder-mystery-plots-that-uncover-buried-secrets",
+      "destination": "/ja/blog/unique-school-reunion-murder-mystery-plots-that-uncover-buried-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/blog/chef-murder-mystery-themes-culinary-crimes-kitchen-secrets-fr",
+      "destination": "/blog/chef-murder-mystery-themes-culinary-crimes-kitchen-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-host-a-superhero-murder-mystery-party-powers-secret-identities-and-super-villains-fr",
+      "destination": "/blog/how-to-host-a-superhero-murder-mystery-party-powers-secret-identities-and-super-villains",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/chef-murder-mystery-themes-culinary-crimes-kitchen-secrets-fr",
+      "destination": "/fr/blog/chef-murder-mystery-themes-culinary-crimes-kitchen-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/how-to-host-a-superhero-murder-mystery-party-powers-secret-identities-and-super-villains-fr",
+      "destination": "/fr/blog/how-to-host-a-superhero-murder-mystery-party-powers-secret-identities-and-super-villains",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue-fr",
+      "destination": "/blog/how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-how-to-fix-guests-breaking-character-keep-your-murder-mystery-party-immersive",
+      "destination": "/blog/how-to-fix-guests-breaking-character-keep-your-murder-mystery-party-immersive",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue-fr",
+      "destination": "/fr/blog/how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-how-to-fix-guests-breaking-character-keep-your-murder-mystery-party-immersive",
+      "destination": "/ja/blog/how-to-fix-guests-breaking-character-keep-your-murder-mystery-party-immersive",
+      "permanent": true
+    },
+    {
+      "source": "/blog/1920s-speakeasy-murder-mystery-party-guide-it",
+      "destination": "/blog/1920s-speakeasy-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/it/blog/1920s-speakeasy-murder-mystery-party-guide-it",
+      "destination": "/it/blog/1920s-speakeasy-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-host-a-prohibition-era-murder-mystery-bootleg-your-way-to-excitement-fr",
+      "destination": "/blog/how-to-host-a-prohibition-era-murder-mystery-bootleg-your-way-to-excitement",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-murder-mystery-party-for-small-groups-ideas",
+      "destination": "/blog/murder-mystery-party-for-small-groups-ideas",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-unique-archaeological-dig-murder-mystery-unearth-ancient-secrets-and-modern-murders",
+      "destination": "/blog/unique-archaeological-dig-murder-mystery-unearth-ancient-secrets-and-modern-murders",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/how-to-host-a-prohibition-era-murder-mystery-bootleg-your-way-to-excitement-fr",
+      "destination": "/fr/blog/how-to-host-a-prohibition-era-murder-mystery-bootleg-your-way-to-excitement",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-murder-mystery-party-for-small-groups-ideas",
+      "destination": "/ja/blog/murder-mystery-party-for-small-groups-ideas",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-unique-archaeological-dig-murder-mystery-unearth-ancient-secrets-and-modern-murders",
+      "destination": "/ja/blog/unique-archaeological-dig-murder-mystery-unearth-ancient-secrets-and-modern-murders",
+      "permanent": true
+    },
+    {
+      "source": "/blog/5-masquerade-ball-murder-mystery-themes-that-will-leave-your-guests-speechless-fr",
+      "destination": "/blog/5-masquerade-ball-murder-mystery-themes-that-will-leave-your-guests-speechless",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-host-a-fairy-tale-murder-mystery-party-once-upon-a-crime-fr",
+      "destination": "/blog/how-to-host-a-fairy-tale-murder-mystery-party-once-upon-a-crime",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-innocent-bystander-murder-mystery-themes-wrong-place-wrong-time",
+      "destination": "/blog/innocent-bystander-murder-mystery-themes-wrong-place-wrong-time",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/5-masquerade-ball-murder-mystery-themes-that-will-leave-your-guests-speechless-fr",
+      "destination": "/fr/blog/5-masquerade-ball-murder-mystery-themes-that-will-leave-your-guests-speechless",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/how-to-host-a-fairy-tale-murder-mystery-party-once-upon-a-crime-fr",
+      "destination": "/fr/blog/how-to-host-a-fairy-tale-murder-mystery-party-once-upon-a-crime",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-innocent-bystander-murder-mystery-themes-wrong-place-wrong-time",
+      "destination": "/ko/blog/innocent-bystander-murder-mystery-themes-wrong-place-wrong-time",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue-ja",
+      "destination": "/blog/how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-5-vintage-circus-murder-mystery-themes-step-into-the-big-top-of-intrigue",
+      "destination": "/blog/5-vintage-circus-murder-mystery-themes-step-into-the-big-top-of-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-cruise-ship-murder-mystery-party-guide-set-sail-for-murder-on-the-high-seas",
+      "destination": "/blog/cruise-ship-murder-mystery-party-guide-set-sail-for-murder-on-the-high-seas",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-journalist-murder-mystery-themes-investigative-reporters-deadly-stories",
+      "destination": "/blog/journalist-murder-mystery-themes-investigative-reporters-deadly-stories",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-lawyer-murder-mystery-themes-courtroom-drama-legal-intrigue",
+      "destination": "/blog/lawyer-murder-mystery-themes-courtroom-drama-legal-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-lawyer-murder-mystery-themes-courtroom-drama-legal-intrigue",
+      "destination": "/blog/lawyer-murder-mystery-themes-courtroom-drama-legal-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-lawyer-murder-mystery-themes-courtroom-drama-legal-intrigue",
+      "destination": "/ko/blog/lawyer-murder-mystery-themes-courtroom-drama-legal-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue-ja",
+      "destination": "/ja/blog/how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-5-vintage-circus-murder-mystery-themes-step-into-the-big-top-of-intrigue",
+      "destination": "/ja/blog/5-vintage-circus-murder-mystery-themes-step-into-the-big-top-of-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-cruise-ship-murder-mystery-party-guide-set-sail-for-murder-on-the-high-seas",
+      "destination": "/ja/blog/cruise-ship-murder-mystery-party-guide-set-sail-for-murder-on-the-high-seas",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-journalist-murder-mystery-themes-investigative-reporters-deadly-stories",
+      "destination": "/ja/blog/journalist-murder-mystery-themes-investigative-reporters-deadly-stories",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-lawyer-murder-mystery-themes-courtroom-drama-legal-intrigue",
+      "destination": "/ja/blog/lawyer-murder-mystery-themes-courtroom-drama-legal-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-host-a-hollywood-murder-mystery-party-fr",
+      "destination": "/blog/how-to-host-a-hollywood-murder-mystery-party",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-murder-mystery-party-for-corporate-events",
+      "destination": "/blog/murder-mystery-party-for-corporate-events",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-murder-mystery-party-for-small-groups-ideas",
+      "destination": "/blog/murder-mystery-party-for-small-groups-ideas",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/how-to-host-a-hollywood-murder-mystery-party-fr",
+      "destination": "/fr/blog/how-to-host-a-hollywood-murder-mystery-party",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-murder-mystery-party-for-small-groups-ideas",
+      "destination": "/ko/blog/murder-mystery-party-for-small-groups-ideas",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-murder-mystery-party-for-corporate-events",
+      "destination": "/ja/blog/murder-mystery-party-for-corporate-events",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-murder-mystery-party-for-teenagers-guide",
+      "destination": "/blog/murder-mystery-party-for-teenagers-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/5-haunted-mansion-murder-mystery-themes-de",
+      "destination": "/blog/5-haunted-mansion-murder-mystery-themes",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-host-a-victorian-murder-mystery-party-fr",
+      "destination": "/blog/how-to-host-a-victorian-murder-mystery-party",
+      "permanent": true
+    },
+    {
+      "source": "/blog/jazz-club-murder-mystery-party-planning-swing-into-prohibition-era-crime-fr",
+      "destination": "/blog/jazz-club-murder-mystery-party-planning-swing-into-prohibition-era-crime",
+      "permanent": true
+    },
+    {
+      "source": "/blog/murder-mystery-party-for-corporate-events-fr",
+      "destination": "/blog/murder-mystery-party-for-corporate-events",
+      "permanent": true
+    },
+    {
+      "source": "/blog/murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery-fr",
+      "destination": "/blog/murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery",
+      "permanent": true
+    },
+    {
+      "source": "/blog/murder-mystery-party-for-game-night-groups-transform-your-regular-game-night-fr",
+      "destination": "/blog/murder-mystery-party-for-game-night-groups-transform-your-regular-game-night",
+      "permanent": true
+    },
+    {
+      "source": "/blog/unique-archaeological-dig-murder-mystery-unearth-ancient-secrets-and-modern-murders-fr",
+      "destination": "/blog/unique-archaeological-dig-murder-mystery-unearth-ancient-secrets-and-modern-murders",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ancient-egypt-murder-mystery-party-guide-ja",
+      "destination": "/blog/ancient-egypt-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-ancient-egypt-murder-mystery-party-guide",
+      "destination": "/blog/ancient-egypt-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-chef-murder-mystery-themes-culinary-crimes-kitchen-secrets",
+      "destination": "/blog/chef-murder-mystery-themes-culinary-crimes-kitchen-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-how-to-fix-confusing-murder-mystery-clues",
+      "destination": "/blog/how-to-fix-confusing-murder-mystery-clues",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-murder-mystery-party-for-holiday-gatherings-festive-fun-meets-family-intrigue",
+      "destination": "/blog/murder-mystery-party-for-holiday-gatherings-festive-fun-meets-family-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/de/blog/5-haunted-mansion-murder-mystery-themes-de",
+      "destination": "/de/blog/5-haunted-mansion-murder-mystery-themes",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/how-to-host-a-victorian-murder-mystery-party-fr",
+      "destination": "/fr/blog/how-to-host-a-victorian-murder-mystery-party",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/jazz-club-murder-mystery-party-planning-swing-into-prohibition-era-crime-fr",
+      "destination": "/fr/blog/jazz-club-murder-mystery-party-planning-swing-into-prohibition-era-crime",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/murder-mystery-party-for-corporate-events-fr",
+      "destination": "/fr/blog/murder-mystery-party-for-corporate-events",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery-fr",
+      "destination": "/fr/blog/murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/murder-mystery-party-for-game-night-groups-transform-your-regular-game-night-fr",
+      "destination": "/fr/blog/murder-mystery-party-for-game-night-groups-transform-your-regular-game-night",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/unique-archaeological-dig-murder-mystery-unearth-ancient-secrets-and-modern-murders-fr",
+      "destination": "/fr/blog/unique-archaeological-dig-murder-mystery-unearth-ancient-secrets-and-modern-murders",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-chef-murder-mystery-themes-culinary-crimes-kitchen-secrets",
+      "destination": "/ko/blog/chef-murder-mystery-themes-culinary-crimes-kitchen-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-how-to-fix-confusing-murder-mystery-clues",
+      "destination": "/ko/blog/how-to-fix-confusing-murder-mystery-clues",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-murder-mystery-party-for-holiday-gatherings-festive-fun-meets-family-intrigue",
+      "destination": "/ko/blog/murder-mystery-party-for-holiday-gatherings-festive-fun-meets-family-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-murder-mystery-party-for-teenagers-guide",
+      "destination": "/ja/blog/murder-mystery-party-for-teenagers-guide",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ancient-egypt-murder-mystery-party-guide-ja",
+      "destination": "/ja/blog/ancient-egypt-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-ancient-egypt-murder-mystery-party-guide",
+      "destination": "/ja/blog/ancient-egypt-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-detective-murder-mystery-themes-professional-investigators-sleuth-dynamics",
+      "destination": "/blog/detective-murder-mystery-themes-professional-investigators-sleuth-dynamics",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-fix-guests-breaking-character-keep-your-murder-mystery-party-immersive-fr",
+      "destination": "/blog/how-to-fix-guests-breaking-character-keep-your-murder-mystery-party-immersive",
+      "permanent": true
+    },
+    {
+      "source": "/blog/murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable-fr",
+      "destination": "/blog/murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable",
+      "permanent": true
+    },
+    {
+      "source": "/blog/spa-resort-murder-mystery-party-guide-relax-into-danger-and-luxury-fr",
+      "destination": "/blog/spa-resort-murder-mystery-party-guide-relax-into-danger-and-luxury",
+      "permanent": true
+    },
+    {
+      "source": "/blog/unique-school-reunion-murder-mystery-plots-that-uncover-buried-secrets-fr",
+      "destination": "/blog/unique-school-reunion-murder-mystery-plots-that-uncover-buried-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/blog/5-masquerade-ball-murder-mystery-themes-that-will-leave-your-guests-speechless-it",
+      "destination": "/blog/5-masquerade-ball-murder-mystery-themes-that-will-leave-your-guests-speechless",
+      "permanent": true
+    },
+    {
+      "source": "/blog/innocent-bystander-murder-mystery-themes-wrong-place-wrong-time-it",
+      "destination": "/blog/innocent-bystander-murder-mystery-themes-wrong-place-wrong-time",
+      "permanent": true
+    },
+    {
+      "source": "/blog/5-haunted-mansion-murder-mystery-themes-ja",
+      "destination": "/blog/5-haunted-mansion-murder-mystery-themes",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-5-spy-thriller-murder-mystery-themes-that-will-have-your-guests-going-undercover",
+      "destination": "/blog/5-spy-thriller-murder-mystery-themes-that-will-have-your-guests-going-undercover",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-chef-murder-mystery-themes-culinary-crimes-kitchen-secrets",
+      "destination": "/blog/chef-murder-mystery-themes-culinary-crimes-kitchen-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-unique-pirate-murder-mystery-plot-ideas",
+      "destination": "/blog/unique-pirate-murder-mystery-plot-ideas",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-how-to-fix-unrealistic-murder-mystery-plots-create-believable-storylines-that-captivate",
+      "destination": "/blog/how-to-fix-unrealistic-murder-mystery-plots-create-believable-storylines-that-captivate",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-jazz-club-murder-mystery-party-planning-swing-into-prohibition-era-crime",
+      "destination": "/blog/jazz-club-murder-mystery-party-planning-swing-into-prohibition-era-crime",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/how-to-fix-guests-breaking-character-keep-your-murder-mystery-party-immersive-fr",
+      "destination": "/fr/blog/how-to-fix-guests-breaking-character-keep-your-murder-mystery-party-immersive",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable-fr",
+      "destination": "/fr/blog/murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/spa-resort-murder-mystery-party-guide-relax-into-danger-and-luxury-fr",
+      "destination": "/fr/blog/spa-resort-murder-mystery-party-guide-relax-into-danger-and-luxury",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/unique-school-reunion-murder-mystery-plots-that-uncover-buried-secrets-fr",
+      "destination": "/fr/blog/unique-school-reunion-murder-mystery-plots-that-uncover-buried-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/it/blog/5-masquerade-ball-murder-mystery-themes-that-will-leave-your-guests-speechless-it",
+      "destination": "/it/blog/5-masquerade-ball-murder-mystery-themes-that-will-leave-your-guests-speechless",
+      "permanent": true
+    },
+    {
+      "source": "/it/blog/innocent-bystander-murder-mystery-themes-wrong-place-wrong-time-it",
+      "destination": "/it/blog/innocent-bystander-murder-mystery-themes-wrong-place-wrong-time",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-detective-murder-mystery-themes-professional-investigators-sleuth-dynamics",
+      "destination": "/ko/blog/detective-murder-mystery-themes-professional-investigators-sleuth-dynamics",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-how-to-fix-unrealistic-murder-mystery-plots-create-believable-storylines-that-captivate",
+      "destination": "/ko/blog/how-to-fix-unrealistic-murder-mystery-plots-create-believable-storylines-that-captivate",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-jazz-club-murder-mystery-party-planning-swing-into-prohibition-era-crime",
+      "destination": "/ko/blog/jazz-club-murder-mystery-party-planning-swing-into-prohibition-era-crime",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/5-haunted-mansion-murder-mystery-themes-ja",
+      "destination": "/ja/blog/5-haunted-mansion-murder-mystery-themes",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-5-spy-thriller-murder-mystery-themes-that-will-have-your-guests-going-undercover",
+      "destination": "/ja/blog/5-spy-thriller-murder-mystery-themes-that-will-have-your-guests-going-undercover",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-chef-murder-mystery-themes-culinary-crimes-kitchen-secrets",
+      "destination": "/ja/blog/chef-murder-mystery-themes-culinary-crimes-kitchen-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-unique-pirate-murder-mystery-plot-ideas",
+      "destination": "/ja/blog/unique-pirate-murder-mystery-plot-ideas",
+      "permanent": true
+    },
+    {
+      "source": "/blog/5-beach-resort-murder-mystery-themes-that-will-make-your-vacation-unforgettable-de",
+      "destination": "/blog/5-beach-resort-murder-mystery-themes-that-will-make-your-vacation-unforgettable",
+      "permanent": true
+    },
+    {
+      "source": "/blog/murder-mystery-party-for-office-teams-build-bonds-through-collaborative-investigation-fr",
+      "destination": "/blog/murder-mystery-party-for-office-teams-build-bonds-through-collaborative-investigation",
+      "permanent": true
+    },
+    {
+      "source": "/blog/unique-pirate-murder-mystery-plot-ideas-fr",
+      "destination": "/blog/unique-pirate-murder-mystery-plot-ideas",
+      "permanent": true
+    },
+    {
+      "source": "/blog/unique-train-station-murder-mystery-plots-all-aboard-for-danger-and-intrigue-fr",
+      "destination": "/blog/unique-train-station-murder-mystery-plots-all-aboard-for-danger-and-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/blog/haunted-hotel-murder-mystery-party-guide-check-in-to-terror-and-suspense-ja",
+      "destination": "/blog/haunted-hotel-murder-mystery-party-guide-check-in-to-terror-and-suspense",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-butler-murder-mystery-themes-manor-murders-household-secrets",
+      "destination": "/blog/butler-murder-mystery-themes-manor-murders-household-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-how-to-host-a-hollywood-murder-mystery-party",
+      "destination": "/blog/how-to-host-a-hollywood-murder-mystery-party",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-how-to-host-a-prohibition-era-murder-mystery-bootleg-your-way-to-excitement",
+      "destination": "/blog/how-to-host-a-prohibition-era-murder-mystery-bootleg-your-way-to-excitement",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-how-to-host-a-steampunk-murder-mystery-party-gear-up-for-victorian-sci-fi-crime",
+      "destination": "/blog/how-to-host-a-steampunk-murder-mystery-party-gear-up-for-victorian-sci-fi-crime",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery",
+      "destination": "/blog/murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ja-unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime",
+      "destination": "/blog/unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-ancient-egypt-murder-mystery-party-guide",
+      "destination": "/blog/ancient-egypt-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-art-gallery-murder-mystery-party-planning-create-sophisticated-creative-crimes",
+      "destination": "/blog/art-gallery-murder-mystery-party-planning-create-sophisticated-creative-crimes",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-how-to-fix-overly-complex-murder-mysteries",
+      "destination": "/blog/how-to-fix-overly-complex-murder-mysteries",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-how-to-host-a-space-station-murder-mystery",
+      "destination": "/blog/how-to-host-a-space-station-murder-mystery",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-journalist-murder-mystery-themes-investigative-reporters-deadly-stories",
+      "destination": "/blog/journalist-murder-mystery-themes-investigative-reporters-deadly-stories",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable",
+      "destination": "/blog/murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-murder-mystery-party-for-game-night-groups-transform-your-regular-game-night",
+      "destination": "/blog/murder-mystery-party-for-game-night-groups-transform-your-regular-game-night",
+      "permanent": true
+    },
+    {
+      "source": "/blog/ko-socialite-murder-mystery-themes-high-society-scandals-elite-intrigue",
+      "destination": "/blog/socialite-murder-mystery-themes-high-society-scandals-elite-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-fix-overly-complex-murder-mysteries-pt",
+      "destination": "/blog/how-to-fix-overly-complex-murder-mysteries",
+      "permanent": true
+    },
+    {
+      "source": "/de/blog/5-beach-resort-murder-mystery-themes-that-will-make-your-vacation-unforgettable-de",
+      "destination": "/de/blog/5-beach-resort-murder-mystery-themes-that-will-make-your-vacation-unforgettable",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/murder-mystery-party-for-office-teams-build-bonds-through-collaborative-investigation-fr",
+      "destination": "/fr/blog/murder-mystery-party-for-office-teams-build-bonds-through-collaborative-investigation",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/unique-pirate-murder-mystery-plot-ideas-fr",
+      "destination": "/fr/blog/unique-pirate-murder-mystery-plot-ideas",
+      "permanent": true
+    },
+    {
+      "source": "/fr/blog/unique-train-station-murder-mystery-plots-all-aboard-for-danger-and-intrigue-fr",
+      "destination": "/fr/blog/unique-train-station-murder-mystery-plots-all-aboard-for-danger-and-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/pt/blog/how-to-fix-overly-complex-murder-mysteries-pt",
+      "destination": "/pt/blog/how-to-fix-overly-complex-murder-mysteries",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-ancient-egypt-murder-mystery-party-guide",
+      "destination": "/ko/blog/ancient-egypt-murder-mystery-party-guide",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-art-gallery-murder-mystery-party-planning-create-sophisticated-creative-crimes",
+      "destination": "/ko/blog/art-gallery-murder-mystery-party-planning-create-sophisticated-creative-crimes",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-how-to-fix-overly-complex-murder-mysteries",
+      "destination": "/ko/blog/how-to-fix-overly-complex-murder-mysteries",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-how-to-host-a-space-station-murder-mystery",
+      "destination": "/ko/blog/how-to-host-a-space-station-murder-mystery",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-journalist-murder-mystery-themes-investigative-reporters-deadly-stories",
+      "destination": "/ko/blog/journalist-murder-mystery-themes-investigative-reporters-deadly-stories",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable",
+      "destination": "/ko/blog/murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-murder-mystery-party-for-game-night-groups-transform-your-regular-game-night",
+      "destination": "/ko/blog/murder-mystery-party-for-game-night-groups-transform-your-regular-game-night",
+      "permanent": true
+    },
+    {
+      "source": "/ko/blog/ko-socialite-murder-mystery-themes-high-society-scandals-elite-intrigue",
+      "destination": "/ko/blog/socialite-murder-mystery-themes-high-society-scandals-elite-intrigue",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/haunted-hotel-murder-mystery-party-guide-check-in-to-terror-and-suspense-ja",
+      "destination": "/ja/blog/haunted-hotel-murder-mystery-party-guide-check-in-to-terror-and-suspense",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-butler-murder-mystery-themes-manor-murders-household-secrets",
+      "destination": "/ja/blog/butler-murder-mystery-themes-manor-murders-household-secrets",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-how-to-host-a-hollywood-murder-mystery-party",
+      "destination": "/ja/blog/how-to-host-a-hollywood-murder-mystery-party",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-how-to-host-a-prohibition-era-murder-mystery-bootleg-your-way-to-excitement",
+      "destination": "/ja/blog/how-to-host-a-prohibition-era-murder-mystery-bootleg-your-way-to-excitement",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-how-to-host-a-steampunk-murder-mystery-party-gear-up-for-victorian-sci-fi-crime",
+      "destination": "/ja/blog/how-to-host-a-steampunk-murder-mystery-party-gear-up-for-victorian-sci-fi-crime",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery",
+      "destination": "/ja/blog/murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery",
+      "permanent": true
+    },
+    {
+      "source": "/ja/blog/ja-unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime",
+      "destination": "/ja/blog/unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime",
+      "permanent": true
+    }
+  ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }

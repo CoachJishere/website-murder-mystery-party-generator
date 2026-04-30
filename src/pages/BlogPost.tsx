@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { format } from 'date-fns';
 import { supabase } from '@/lib/supabase';
@@ -242,15 +242,20 @@ export default function BlogPost() {
   }, [slug, effectiveLanguage]); // Add effectiveLanguage to dependencies
 
   if (error) {
+    // Slug doesn't exist in this language. Most of these are orphaned URLs from
+    // a prior publishing pipeline that Google still has indexed. Send users to
+    // the locale's blog index instead of a dead-end "Post not found" screen,
+    // and emit noindex so Google deindexes the orphan over time. High-impact
+    // exact-match orphans are handled with proper 301s in vercel.json; this is
+    // the catch-all for everything else.
+    const blogIndexPath = lang ? `/${lang}/blog` : '/blog';
     return (
-      <div className="min-h-screen bg-[#000000] py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-6">Related Posts</h2>
-          <Link to={lang ? `/${lang}/blog` : '/blog'} className="text-[#C81400] hover:underline">
-            ← Back to Blog
-          </Link>
-        </div>
-      </div>
+      <>
+        <Helmet>
+          <meta name="robots" content="noindex,follow" />
+        </Helmet>
+        <Navigate to={blogIndexPath} replace />
+      </>
     );
   }
 

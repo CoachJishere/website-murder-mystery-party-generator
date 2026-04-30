@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-04-30
+
+### SEO: Reclaim 7,416/year orphaned blog impressions across 13 locales
+- GSC sweep revealed 1,695 blog URLs Google has indexed (last 365d) that don't exist in `blog_posts` for the language they're served at — 7,416 impressions and 117 clicks/year landing on hard 404s. Spread across all 13 locales: ~860 EN, ~80–115 in each major non-EN locale, smaller tails in Nordic/CJK
+- Root cause: a prior publishing pipeline emitted translated slugs (e.g., `5-bailes-de-mascaras-con-misterio-y-asesinatos`, `einzigartige-zirkus-krimi-dinner-handlungsideen`) and lang-prefixed/suffixed slugs (e.g., `ko-butler-murder-mystery-themes-...`, `how-to-fix-confusing-murder-mystery-clues-sv`). Current schema uses shared English slugs differentiated by `language` column ([BlogPost.tsx:164](src/pages/BlogPost.tsx#L164)), so the old URLs orphaned. Only 98 of 421 posts per language are currently `status='published'`, meaning many old slugs map to topics that are still drafts and have no published canonical to redirect to
+- Two-tier fix:
+- **Tier 1 — graceful in-app redirect** ([BlogPost.tsx](src/pages/BlogPost.tsx)): when a slug isn't found, render `<Navigate to="/<lang>/blog" replace />` with `<meta name="robots" content="noindex,follow">` instead of throwing "Post not found." Catches all 1,695 orphans in one place; users land somewhere useful, Google deindexes naturally. Soft signal, but covers the long tail
+- **Tier 2 — 148 high-confidence 301 redirects in [vercel.json](vercel.json)**: only orphans where stripping a known language prefix or suffix yields an exact match in the published EN slug list (e.g., `ko-butler-murder-mystery-themes-...` → `butler-murder-mystery-themes-...`, `how-to-fix-confusing-murder-mystery-clues-sv` → `how-to-fix-confusing-murder-mystery-clues`). These are unambiguous — zero risk of wrong-target redirects. Recovers 754 impressions / 14 clicks/year via proper 301
+- Deliberately did **not** ship fuzzy translated-slug matching (e.g., `5-bailes-de-mascaras-...` → `5-masquerade-ball-...`). Token-overlap scoring produced a confident-but-wrong match for `unique-circus-murder-mystery-plot-ideas` → `unique-pirate-murder-mystery-plot-ideas` (5/6 tokens overlap, only theme word differs); estimated 10–20% of fuzzy matches would land on the wrong post. With only ~20 impressions/day at stake, the risk wasn't worth it. The Tier 1 catch-all handles those translated orphans
+
+### Fix: clear stuck `in_progress` package from Apr 12
+- Package `21976b4c` ("Death At The Velvet Rose", test account) had been pinned at `in_progress` / 20% since 2026-04-12 because the parent Make.com execution stalled before any character rows were created — falling outside the sweep's "completed-with-bad-characters" criteria
+- Make.com's Incomplete Executions queue replayed the stale parent on 2026-04-29, firing 10 child inserts with empty `characterName`/`packageId` and producing 10 NOT-NULL constraint warnings
+- Marked the package `failed` with `resumable: true` so the UI exits the stuck state. Diagnostic confirmed this is the only such occurrence since the monitoring/verification stack shipped (1 in 6+ months, test-account only) — leaving the systemic safeguards as-is rather than adding code for a non-recurring edge
+
 ## 2026-04-27
 
 ### Localization: broad sweep across 12 user-facing pages
