@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 98 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 99 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -127,6 +127,7 @@ This index organizes 98 published guides by topic cluster. All guides are availa
 ## Troubleshooting Common Problems
 
 - [Making Accessibility Work at Your Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-fix-accessibility-and-inclusion-issues-welcome-everyone-to-your-mystery-experience): Build accessible murder mystery parties where guests with disabilities participate fully. Practical strategies for welcoming everyone.
+- [Keeping Mystery Content Right for Your Age Mix](https://www.mysterymaker.party/blog/how-to-fix-age-inappropriate-content-issues-that-ruin-family-mystery-fun): Design mysteries that work for mixed-age groups. Keep the puzzle challenge while keeping everyone comfortable.
 - [How to Fix Boring Murder Mystery Parties](https://www.mysterymaker.party/blog/how-to-fix-boring-murder-mystery-parties): Your murder mystery party is flat because characters have nothing to do and the plot's predictable. Fix it with active roles, custom storylines, and interactive
 - [How to Fix Confusing Murder Mystery Clues](https://www.mysterymaker.party/blog/how-to-fix-confusing-murder-mystery-clues): Your clues are confusing guests because they're not designed around how your actual friends think. Here's how to fix it.
 - [How to Fix Guests Breaking Character: Keep Your Murder Mystery Party Immersive](https://www.mysterymaker.party/blog/how-to-fix-guests-breaking-character-keep-your-murder-mystery-party-immersive): Keep everyone in character with engaging custom roles and clear guidelines that maintain immersion throughout the party.
