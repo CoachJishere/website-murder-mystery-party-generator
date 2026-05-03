@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 101 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 102 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -131,6 +131,7 @@ This index organizes 101 published guides by topic cluster. All guides are avail
 - [Getting Audio Right at Your Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-fix-audio-and-sound-system-problems-that-could-kill-your-murder-mystery-party): Set up audio that works for mysteries. Clear dialogue, reliable equipment, and sound that supports your event instead of ruining it.
 - [How to Fix Boring Murder Mystery Parties](https://www.mysterymaker.party/blog/how-to-fix-boring-murder-mystery-parties): Your murder mystery party is flat because characters have nothing to do and the plot's predictable. Fix it with active roles, custom storylines, and interactive
 - [Fixing Character Assignment Without Losing Your Mind](https://www.mysterymaker.party/blog/how-to-fix-character-assignment-problems-that-ruin-murder-mystery-parties): Assign mystery characters that actually fit your guests. Match personalities with roles that work, not rigid characters that fail.
+- [Why Your Mystery Stalls (And How to Unblock It)](https://www.mysterymaker.party/blog/how-to-fix-communication-breakdown-issues-that-kill-murder-mystery-flow): Stop mysteries from stalling. Fix communication problems that trap clues and block investigation progress.
 - [How to Fix Confusing Murder Mystery Clues](https://www.mysterymaker.party/blog/how-to-fix-confusing-murder-mystery-clues): Your clues are confusing guests because they're not designed around how your actual friends think. Here's how to fix it.
 - [How to Fix Guests Breaking Character: Keep Your Murder Mystery Party Immersive](https://www.mysterymaker.party/blog/how-to-fix-guests-breaking-character-keep-your-murder-mystery-party-immersive): Keep everyone in character with engaging custom roles and clear guidelines that maintain immersion throughout the party.
 - [How to Fix Guests Who Won't Participate in Your Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-fix-guests-who-wont-participate-in-your-murder-mystery-party): Scared your shy guests will kill your party? Custom characters and gentle encouragement actually work—here's how to make everyone want to play.
