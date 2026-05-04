@@ -2,6 +2,13 @@
 
 ## 2026-05-04
 
+### SEO: trim long titles + metas across all 317 EN draft posts (Phase C of audit)
+- Audited the 317 EN draft posts queued for the daily-publish cron — 220 had titles over 60 chars (same systemic pattern as published) and 35 had metas over 160. These would have shipped broken to users one per day over the next ~10 months
+- Trimmed all 220 draft titles in a single SQL pass (avg 67 → 42, max 60). Same approach as published EN: keep primary keyword + intent at the front, drop colon subtitles, drop generic verbs ("ultimate," "complete") that just embellish. Slugs unchanged
+- Trimmed all 35 draft metas to ≤ 160 (max 160). Lead now opens with what the reader gets, not adjective stacking
+- Combined with the published pass: every English blog post (live + queued, 420 total) is now SERP-optimized
+- Non-EN draft titles + metas (~2,200 rows across 9 Latin languages) are still queued — they'll be translated language-by-language in subsequent passes
+
 ### SEO: trim long meta descriptions across all 13 languages (1,339 published metas)
 - After EN, audited all 12 other published locales — Latin-alphabet languages had 24-47 metas each over Google's 160-char SERP cutoff (longest: 319 chars, FR). Same systemic pattern as titles: original generation drifted past target. CJK locales were fine (Japanese chars carry more meaning per character)
 - Re-translated 339 over-limit metas across 9 Latin languages, plus extended the EN-trim concept to corresponding non-EN slugs for cross-language consistency. Used the established locale keyword from the title pass (Krimidinner / Soirée enquête / Cena con delitto / etc.) so meta and title share the topic signal
