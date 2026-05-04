@@ -47,14 +47,8 @@ const calculateReadingTime = (content: string): number => {
   return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
 };
 
-interface GroupedPost {
-  post_date: string;
-  posts: BlogPost[];
-  primaryPost: BlogPost;
-}
-
 export default function BlogIndex() {
-  const [groupedPosts, setGroupedPosts] = useState<GroupedPost[]>([]);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { lang } = useParams<{ lang?: string }>();
@@ -70,51 +64,21 @@ export default function BlogIndex() {
   }, [lang]);
 
   useEffect(() => {
-    const fetchAndGroupPosts = async () => {
+    const fetchPosts = async () => {
       try {
         setLoading(true);
-        
+
         const { data, error: fetchError } = await supabase
           .from('blog_posts')
           .select('id, slug, title, meta_description, published_at, post_date, reading_time, status, language, theme, content')
           .eq('status', 'published')
           .eq('language', currentLanguage)
-          .order('post_date', { ascending: false })
-          .order('language', { ascending: true });
+          .order('post_date', { ascending: false, nullsFirst: false })
+          .order('published_at', { ascending: false });
 
         if (fetchError) throw fetchError;
-        
-        if (!data) {
-          setGroupedPosts([]);
-          return;
-        }
 
-        // Group posts by post_date
-        const postsByDate = data.reduce<Record<string, BlogPost[]>>((acc, post) => {
-          const date = post.post_date || post.published_at.split('T')[0];
-          if (!acc[date]) {
-            acc[date] = [];
-          }
-          acc[date].push(post);
-          return acc;
-        }, {});
-
-        // Create grouped posts with primary post selection
-        const grouped = Object.entries(postsByDate).map(([date, posts]) => {
-          // Since we're already filtering by language, just use the first post
-          return {
-            post_date: date,
-            posts,
-            primaryPost: posts[0]
-          };
-        });
-
-        // Sort grouped posts by date (newest first)
-        grouped.sort((a, b) => 
-          new Date(b.post_date).getTime() - new Date(a.post_date).getTime()
-        );
-
-        setGroupedPosts(grouped);
+        setPosts(data ?? []);
       } catch (err) {
         console.error('Error fetching blog posts:', err);
         setError('Failed to load blog posts. Please try again later.');
@@ -123,8 +87,8 @@ export default function BlogIndex() {
       }
     };
 
-    fetchAndGroupPosts();
-  }, [i18n.language]); // React to language changes
+    fetchPosts();
+  }, [currentLanguage]);
 
 
   if (error) {
@@ -192,57 +156,39 @@ export default function BlogIndex() {
                 </Card>
               ))}
             </div>
-          ) : groupedPosts.length > 0 ? (
-            <div className="space-y-8">
-              {groupedPosts.map((group) => {
-                const formattedDate = format(parseISO(group.post_date), 'MMMM d, yyyy', {
+          ) : posts.length > 0 ? (
+            <div className="space-y-6">
+              {posts.map((post) => {
+                const dateSource = post.post_date || post.published_at.split('T')[0];
+                const formattedDate = format(parseISO(dateSource), 'MMMM d, yyyy', {
                   locale: dateLocales[currentLanguage] || undefined
                 });
-                const { primaryPost } = group;
-                
+                const readingTime = post.reading_time || calculateReadingTime(post.content || '');
+                const href = lang ? `/${lang}/blog/${post.slug}` : `/blog/${post.slug}`;
+
                 return (
-                  <div key={group.post_date} className="space-y-2">
-                    <h2 className="text-xl font-semibold text-foreground">{formattedDate}</h2>
-                    <Card className="hover:shadow-lg transition-shadow">
-                      <CardHeader>
-                        <CardTitle className="text-xl">
-                          <Link to={lang ? `/${lang}/blog/${primaryPost.slug}` : `/blog/${primaryPost.slug}`} className="hover:text-[#C81400] transition-colors">
-                            {primaryPost.title}
-                          </Link>
-                        </CardTitle>
-                        <CardDescription className="flex items-center gap-4 text-sm">
-                          <span>{formattedDate}</span>
-                          <span>•</span>
-                          <span>{primaryPost.reading_time || calculateReadingTime(primaryPost.content || '')} {t('blog.minRead', { count: primaryPost.reading_time || calculateReadingTime(primaryPost.content || '') })}</span>
-                          {group.posts.length > 1 && (
-                            <>
-                              <span>•</span>
-                              <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
-                                {group.posts.length} {group.posts.length === 1 ? 'post' : 'posts'}
-                              </span>
-                            </>
-                          )}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-foreground">{primaryPost.meta_description}</p>
-                        <div className="flex justify-between items-center mt-4">
-                          <Link 
-                            to={lang ? `/${lang}/blog/${primaryPost.slug}` : `/blog/${primaryPost.slug}`} 
-                            className="text-[#C81400] hover:underline font-medium"
-                          >
-                            {t('blog.readMore')}
-                          </Link>
-                          
-                          {group.posts.length > 1 && (
-                            <div className="text-sm text-muted-foreground">
-                              Available in: {group.posts.map(p => p.language.toUpperCase()).join(', ')}
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
+                  <Card key={post.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="text-xl">
+                        <Link to={href} className="hover:text-[#C81400] transition-colors">
+                          {post.title}
+                        </Link>
+                      </CardTitle>
+                      <CardDescription className="flex items-center gap-4 text-sm">
+                        <span>{formattedDate}</span>
+                        <span>•</span>
+                        <span>{readingTime} {t('blog.minRead', { count: readingTime })}</span>
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-foreground">{post.meta_description}</p>
+                      <div className="mt-4">
+                        <Link to={href} className="text-[#C81400] hover:underline font-medium">
+                          {t('blog.readMore')}
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
                 );
               })}
             </div>

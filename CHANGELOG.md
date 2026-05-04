@@ -1,8 +1,31 @@
 # Changelog
 
+## 2026-05-04
+
+### Fix: blog index was hiding 57 of every 58 same-day posts
+- A spot-check of `/blog` showed only one card for March 17, 2026 ("Unique Pirate Murder Mystery Plot Ideas — 58 posts") with a broken `Available in: EN, EN, EN…` badge repeated 58 times
+- Two coupled bugs in [src/pages/BlogIndex.tsx](src/pages/BlogIndex.tsx):
+  1. The query already filters by current `language`, but the render still grouped posts by date and rendered only `posts[0]` as the card. Every additional post on that date was reachable only by direct URL — 57 EN posts hidden behind the March 17 card alone (Make.com's daily-publish job back-filled 58 posts on its first run, all stamped with the same `published_at`)
+  2. The `Available in:` badge mapped `group.posts.map(p => p.language.toUpperCase())` over a list that was already single-language, so it printed the same code N times instead of advertising sister translations
+- Replaced the date-grouping reducer with a flat list — every published post in the current language gets its own card. Removed the `Available in:` badge entirely (its original purpose — surfacing translations of the same article — was never implemented and the language filter made it actively wrong)
+- Backfilled `post_date` for all 1,339 published rows (every locale × every post had `post_date IS NULL`); set to `published_at::date` so future sorting and grouping work without falling through to the `published_at.split('T')[0]` fallback
+
+### Audit: blog post length is far above the assumed 5k-character target
+- Spot-check of one Ancient Greece post showed ~20k chars; audit confirmed this is systemic, not isolated. Across 103 published posts × 13 languages: Latin-alphabet locales average 19k–22k chars (en avg 19,938; fr avg 22,252; de avg 21,447) with maxima above 30k. CJK locales are smaller by character count (zh-cn avg 6k, ja avg 9k, ko avg 10k) but reading time is comparable
+- Generation lives in Make.com (no prompt files in this repo), so this is a flag for the content pipeline rather than a code fix — surfacing it here so the next pass at the prompt knows the current output drifted ~4× past target
+
 ## 2026-04-30
 
-### SEO: Reclaim 7,416/year orphaned blog impressions across 13 locales
+### Fix: AI mystery concepts now fully localized — no English bleed-through
+- A Spanish concept came back with English section titles ("Characters", "Murder Method") despite the rest of the response being in Spanish. Same latent issue affected every non-English language
+- Two root causes in [supabase/functions/mystery-ai/index.ts](supabase/functions/mystery-ai/index.ts):
+  1. `buildLabels()` was fetching `https://mysterymaker.party/locales/<lang>.json`, but the deployed site does not serve those JSON files as static assets (they're bundled into the SPA). The fetch returned `index.html`, JSON parse failed, and the catch fell back to ALL-CAPS English labels for every locale
+  2. The function ignored the `language` field that `MysteryChat` already sends from `i18n.language`, instead doing fragile character-set regex on the user's first message — which silently misclassified Spanish/Italian/Portuguese as English whenever the user typed without diacritics
+- Inlined `LABELS_BY_LOCALE` for all 13 supported locales (kept in sync with `src/i18n/locales/*.json`), removed the network fetch, and switched locale resolution to: trust client-supplied `language` (normalized for tags like `es-ES`, `pt-BR`, `zh-CN`) → fall back to text detection only when absent
+- Replaced the weak "respond in the same language the user writes to you" directive with an explicit `Write the ENTIRE response in <LanguageName>` instruction that calls out section labels by name, so the model never leaves "Premise" / "Victim" / "Murder Method" untranslated even when the format template shows them in English
+- Filled in Danish section labels (all eight were untranslated) and the five remaining English Swedish labels in [da.json](src/i18n/locales/da.json) / [sv.json](src/i18n/locales/sv.json) so the UI matches what the AI now emits
+
+
 - GSC sweep revealed 1,695 blog URLs Google has indexed (last 365d) that don't exist in `blog_posts` for the language they're served at — 7,416 impressions and 117 clicks/year landing on hard 404s. Spread across all 13 locales: ~860 EN, ~80–115 in each major non-EN locale, smaller tails in Nordic/CJK
 - Root cause: a prior publishing pipeline emitted translated slugs (e.g., `5-bailes-de-mascaras-con-misterio-y-asesinatos`, `einzigartige-zirkus-krimi-dinner-handlungsideen`) and lang-prefixed/suffixed slugs (e.g., `ko-butler-murder-mystery-themes-...`, `how-to-fix-confusing-murder-mystery-clues-sv`). Current schema uses shared English slugs differentiated by `language` column ([BlogPost.tsx:164](src/pages/BlogPost.tsx#L164)), so the old URLs orphaned. Only 98 of 421 posts per language are currently `status='published'`, meaning many old slugs map to topics that are still drafts and have no published canonical to redirect to
 - Two-tier fix:
