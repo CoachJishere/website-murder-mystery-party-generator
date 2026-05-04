@@ -2,6 +2,18 @@
 
 ## 2026-05-04
 
+### Feature: real author identity across the blog (E-E-A-T pass)
+- 89 of 103 published EN posts had `author = "AI Assistant"` and the rest were `"Jonathan Miller"`. Both Google E-E-A-T and 2026 GEO research treat anonymous/AI authorship as a citation-killer — AI engines de-prioritize unverifiable authors and Google de-ranks YMYL-adjacent content from generic bylines
+- Set `author = 'Jonathan Miller'` across all 5,472 rows (every language, published + draft) so the daily-publish cron inherits the fix automatically when it flips drafts
+- Built [src/pages/About.tsx](src/pages/About.tsx) at `/about` and `/:lang/about` so the JSON-LD `author.url` from the previous commit actually resolves. Page includes a real bio, headshot ([public/images/MMbiopic.png](public/images/MMbiopic.png)), and Person schema with `sameAs` links to the verified external profiles (LinkedIn, YouTube). Narrativa Improv Festival is mentioned in bio prose only — the festival site doesn't currently list Jonathan as a co-founder, so wiring it into `sameAs` would fail AI verification and weaken the entity signal
+- Added a "By Jonathan Miller" byline below each post title in [BlogPost.tsx](src/pages/BlogPost.tsx) that links to `/about`. Closes the loop between the JSON-LD author entity and the on-page rendering — both Google and AI crawlers now see a consistent author claim from schema, byline, and dedicated bio page
+
+### SEO: trim long titles + meta descriptions on published EN posts
+- 74 of 103 EN titles were over Google's 55–60 char SERP truncation threshold (longest: 113 chars — "5 Haunted Library Murder Mystery Themes: Check Out Deadly Secrets with Ghostly Librarians and Supernatural Stacks"). Truncation hurts CTR and forces Google to guess at the cut point, often dropping the value-prop after the colon
+- Trimmed all 74 to 30–60 chars (avg dropped 68 → 42, max now exactly 60). Strategy: keep the primary topic keyword and intent (`5 X Themes`, `How to Host X`, `Murder Mystery for X`) at the front, drop colon subtitles that just embellish. Slugs unchanged — URL stability preserved
+- 30 EN meta descriptions were over Google's 160 char cutoff (longest: 258). Trimmed all to ≤ 160 (avg 144 → 134, max 160). Lead now opens with what the reader gets, not adjective-stacking
+- Both passes touched only `language='en' AND status='published'`. Drafts (~318 unique posts × 13 languages) and non-EN translations get their own audit passes next
+
 ### Fix: blog post schema missing `author` and `image` (Google Article requirements)
 - Audit against 2026 AEO/GEO best practices flagged that the `BlogPosting` JSON-LD in [src/pages/BlogPost.tsx](src/pages/BlogPost.tsx) emitted `headline`, `description`, dates, and publisher — but not `author` or `image`. Both are required by Google for Article rich results; without them Google logs Search Console warnings and skips the rich result entirely
 - Added `author` (Person, with `url` pointing at `/about`) and `image` to the JSON-LD. Author resolves from `post.author`, but treats the legacy `"AI Assistant"` value as missing and falls back to `Jonathan Miller` until the full author backfill lands (#2 in this audit pass)

@@ -28,6 +28,7 @@ import MysteryView from "./pages/MysteryView";
 import Showcase from "./pages/Showcase";
 import Privacy from "./pages/Privacy";
 import Support from "./pages/Support";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
 import CharacterAccess from "./pages/CharacterAccess";
@@ -209,6 +210,8 @@ const AppRoutes = () => {
         <Route path="/:lang/blog/:slug" element={<BlogPost />} />
         <Route path="/blog" element={<BlogIndex />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/:lang/about" element={<About />} />
         
         <Route path="*" element={<NotFound />} />
       </Routes>

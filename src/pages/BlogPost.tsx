@@ -508,6 +508,12 @@ export default function BlogPost() {
             
             <div className="flex flex-wrap items-center text-muted-foreground text-sm gap-4 mb-6">
               <div className="flex items-center">
+                By&nbsp;
+                <Link to={lang ? `/${lang}/about` : '/about'} className="text-[#C81400] hover:underline">
+                  {authorName}
+                </Link>
+              </div>
+              <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-1 text-[#C81400]" />
                 {post.reading_time || calculateReadingTime(post.content || '')} min read
               </div>
