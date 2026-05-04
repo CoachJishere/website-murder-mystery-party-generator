@@ -2,6 +2,10 @@
 
 ## 2026-05-04
 
+### SEO: trim DE/ES/FR draft titles (Phase D, partial)
+- Translated all 220 trimmed EN draft titles + Phase B residuals into German, Spanish, and French. ~720 draft title rows updated across these three locales. Used the established locale-specific keywords (Krimidinner / Misterio / Soirée enquête) for cross-language consistency with the published pass
+- IT, PT, NL, DA, SV, FI draft titles still queued — same approach, batched per language. These will publish over the next ~7-10 months as the daily-publish cron works through the queue, so there's runway to finish them in subsequent sessions
+
 ### SEO: trim long titles + metas across all 317 EN draft posts (Phase C of audit)
 - Audited the 317 EN draft posts queued for the daily-publish cron — 220 had titles over 60 chars (same systemic pattern as published) and 35 had metas over 160. These would have shipped broken to users one per day over the next ~10 months
 - Trimmed all 220 draft titles in a single SQL pass (avg 67 → 42, max 60). Same approach as published EN: keep primary keyword + intent at the front, drop colon subtitles, drop generic verbs ("ultimate," "complete") that just embellish. Slugs unchanged
