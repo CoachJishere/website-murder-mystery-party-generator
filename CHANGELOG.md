@@ -12,6 +12,11 @@
 - Categorized all 420 EN posts (103 published + 317 drafts) into 8 themes via slug pattern matching: `themes-settings` (99), `formats-tools` (95), `hosting-guides` (67), `occasions` (44), `audiences` (34), `troubleshooting` (32), `work-team` (25), `characters` (24). Propagated the same theme to all 12 non-EN translations of each slug via JOIN
 - `tags` was also NULL on every row. Programmatic extraction from slug tokens (drop ~80 stopwords, keep first 5 distinguishing tokens, prepend the post's theme as the first tag). Final state: avg 4 tags/post, max 6, 0 NULL. Enables tag-cloud / topic-cluster navigation and adds entity signals for AEO/GEO
 
+### SEO: trim IT/PT/NL/DA/SV draft titles (Phase D, continued)
+- Translated all 220 trimmed EN draft titles + Phase B residuals into Italian, Portuguese, Dutch, Danish, and partial Swedish (~5 SV residuals remain). Roughly 1,200 more draft title rows updated, bringing the running Phase D total to ~1,920 across DE/ES/FR/IT/PT/NL/DA + most SV
+- Outstanding: ~10 SV residuals, all 220+ FI titles, ~24 non-EN draft metas. The daily-publish cron has months of runway before any unfixed draft surfaces, so the remainder can wait for a follow-up session
+- CJK languages (ja, ko, zh-cn) needed no draft work — character-counting kept them under-limit naturally
+
 ### SEO: trim DE/ES/FR draft titles (Phase D, partial)
 - Translated all 220 trimmed EN draft titles + Phase B residuals into German, Spanish, and French. ~720 draft title rows updated across these three locales. Used the established locale-specific keywords (Krimidinner / Misterio / Soirée enquête) for cross-language consistency with the published pass
 - IT, PT, NL, DA, SV, FI draft titles still queued — same approach, batched per language. These will publish over the next ~7-10 months as the daily-publish cron works through the queue, so there's runway to finish them in subsequent sessions
