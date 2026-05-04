@@ -2,6 +2,11 @@
 
 ## 2026-05-04
 
+### SEO: trim long meta descriptions across all 13 languages (1,339 published metas)
+- After EN, audited all 12 other published locales — Latin-alphabet languages had 24-47 metas each over Google's 160-char SERP cutoff (longest: 319 chars, FR). Same systemic pattern as titles: original generation drifted past target. CJK locales were fine (Japanese chars carry more meaning per character)
+- Re-translated 339 over-limit metas across 9 Latin languages, plus extended the EN-trim concept to corresponding non-EN slugs for cross-language consistency. Used the established locale keyword from the title pass (Krimidinner / Soirée enquête / Cena con delitto / etc.) so meta and title share the topic signal
+- Final state: avg 128-139 chars (Latin), 45-69 (CJK); max 160 everywhere; 0 over-limit across all 1,339 published rows. Combined with the title pass: every published post now has both H1/SERP title and meta description optimized for Google SERP visibility AND topic-cluster consistency across locales
+
 ### SEO: trim long titles + re-translate across all 13 languages (1,339 published titles)
 - After EN, audited all 12 other published locales — 70-90 titles per Latin-alphabet language were over Google's 60-char SERP truncation; longest was 150 chars (FR). CJK locales (ja/ko/zh-cn) were mostly fine because each character carries more meaning
 - Standardized one primary "murder mystery" keyword per locale (existing translations used 4+ different terms within each language, fragmenting topic-cluster signals): de=Krimidinner, fr=Soirée enquête, es=Misterio de Asesinato, it=Cena con delitto, pt=Mistério, nl=Moordmysterie, da/sv=Mordmysterium, fi=Murhamysteeri, ja=マーダーミステリー, ko=머더 미스터리, zh-cn=谋杀谜案. Choices reflect highest-volume commercial terms in each market
