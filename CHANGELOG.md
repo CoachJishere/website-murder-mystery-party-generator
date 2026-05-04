@@ -2,6 +2,14 @@
 
 ## 2026-05-04
 
+### SEO: trim long titles + re-translate across all 13 languages (1,339 published titles)
+- After EN, audited all 12 other published locales — 70-90 titles per Latin-alphabet language were over Google's 60-char SERP truncation; longest was 150 chars (FR). CJK locales (ja/ko/zh-cn) were mostly fine because each character carries more meaning
+- Standardized one primary "murder mystery" keyword per locale (existing translations used 4+ different terms within each language, fragmenting topic-cluster signals): de=Krimidinner, fr=Soirée enquête, es=Misterio de Asesinato, it=Cena con delitto, pt=Mistério, nl=Moordmysterie, da/sv=Mordmysterium, fi=Murhamysteeri, ja=マーダーミステリー, ko=머더 미스터리, zh-cn=谋杀谜案. Choices reflect highest-volume commercial terms in each market
+- Re-translated all 74 trimmed EN titles into 12 languages, plus fixed Phase B residuals (4-16 per Latin language) where EN was already short but the local title still ran long. Also re-translated CJK even though already under-limit, for cross-language consistency with the new EN concept
+- Final state: avg 39-43 chars (Latin), 12-21 chars (CJK); max 60 everywhere; 0 over-limit across all 1,339 published rows
+- Caught + fixed one pre-existing data quality issue: the FR row for `5-ancient-egyptian-temple-murder-themes` had a Spanish title sitting in the FR slot. Replaced with proper French translation as part of the FR pass
+- Drafts (4,133 rows: ~318 unique slugs × 13 languages) are still untouched — those get the same treatment in the next phase before tomorrow's daily-publish cron starts flipping them
+
 ### Fix: CI build broken by @supabase/realtime-js requiring native WebSocket on Node 20
 - The previous three commits (schema fix, /about page, headshot) failed to deploy because `npm run build` runs `node scripts/generate-sitemap.mjs` after `vite build`, and the script calls `createClient` from `@supabase/supabase-js@2.49.4`. The newer realtime-js inside that version requires a native WebSocket constructor; Node 20 (used by GitHub Actions and Vercel build) doesn't ship one. Result: build exited 1, no deploy
 - Added `ws@8.20.0` as a direct dependency and created [scripts/_supabase-node.mjs](scripts/_supabase-node.mjs) — a thin wrapper around `createClient` that injects `realtime: { transport: ws }`. Build-time and CI scripts import from here instead of `@supabase/supabase-js` directly, so when we move to Node 22+ (which has native WebSocket) only the wrapper changes
