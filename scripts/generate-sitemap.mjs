@@ -1,7 +1,7 @@
 // scripts/generate-sitemap.mjs
 // Generates a static sitemap.xml at build time by querying Supabase for all published blog posts.
 // Also creates static HTML route files so GitHub Pages returns 200 (not 404) for blog URLs.
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from './_supabase-node.mjs';
 import { writeFileSync, readFileSync, mkdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';

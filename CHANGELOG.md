@@ -2,6 +2,12 @@
 
 ## 2026-05-04
 
+### Fix: CI build broken by @supabase/realtime-js requiring native WebSocket on Node 20
+- The previous three commits (schema fix, /about page, headshot) failed to deploy because `npm run build` runs `node scripts/generate-sitemap.mjs` after `vite build`, and the script calls `createClient` from `@supabase/supabase-js@2.49.4`. The newer realtime-js inside that version requires a native WebSocket constructor; Node 20 (used by GitHub Actions and Vercel build) doesn't ship one. Result: build exited 1, no deploy
+- Added `ws@8.20.0` as a direct dependency and created [scripts/_supabase-node.mjs](scripts/_supabase-node.mjs) — a thin wrapper around `createClient` that injects `realtime: { transport: ws }`. Build-time and CI scripts import from here instead of `@supabase/supabase-js` directly, so when we move to Node 22+ (which has native WebSocket) only the wrapper changes
+- Migrated [scripts/generate-sitemap.mjs](scripts/generate-sitemap.mjs) (build) and [scripts/apply-crosslinks.mjs](scripts/apply-crosslinks.mjs) (called by daily-publish workflow) to the wrapper. Updated [.github/workflows/publish-daily-blog.yml](.github/workflows/publish-daily-blog.yml) to install `ws` alongside `@supabase/supabase-js` so tomorrow's daily publish doesn't hit the same crash. Other Node-side scripts (backfills, analytics fetchers) still use the raw client; they're local-only and can be migrated when next touched
+- Verified locally: `npm run build` now completes through sitemap generation. **Side-finding logged separately**: the sitemap script returns "Found 1000 published blog posts" but the database has 1,339 — Supabase REST defaults to a 1000-row cap and the script doesn't paginate, so ~339 published URLs are missing from sitemap.xml. Pre-existing, not introduced by this commit; flagged for a follow-up
+
 ### Feature: real author identity across the blog (E-E-A-T pass)
 - 89 of 103 published EN posts had `author = "AI Assistant"` and the rest were `"Jonathan Miller"`. Both Google E-E-A-T and 2026 GEO research treat anonymous/AI authorship as a citation-killer — AI engines de-prioritize unverifiable authors and Google de-ranks YMYL-adjacent content from generic bylines
 - Set `author = 'Jonathan Miller'` across all 5,472 rows (every language, published + draft) so the daily-publish cron inherits the fix automatically when it flips drafts
