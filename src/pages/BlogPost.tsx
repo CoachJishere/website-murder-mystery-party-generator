@@ -38,13 +38,16 @@ interface BlogPost {
   published_at: string;
   updated_at: string;
   reading_time: number;
-  featured_image?: string;
+  featured_image_url?: string;
+  author?: string;
   related_posts?: RelatedPost[];
   status?: string;
   language: string;
   post_date: string;
   theme?: string;
 }
+
+const FALLBACK_SHARE_IMAGE = 'https://www.mysterymaker.party/images/homepage-share-image.png';
 
 const CTA_SECTION = ({ theme = 'light' as 'light' | 'dark' } = {}) => {
   return (
@@ -280,11 +283,19 @@ export default function BlogPost() {
   }
 
   // Generate JSON-LD structured data
+  const shareImage = post.featured_image_url || FALLBACK_SHARE_IMAGE;
+  const authorName = post.author && post.author !== 'AI Assistant' ? post.author : 'Jonathan Miller';
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": post.title,
     "description": post.meta_description,
+    "image": shareImage,
+    "author": {
+      "@type": "Person",
+      "name": authorName,
+      "url": "https://www.mysterymaker.party/about"
+    },
     "datePublished": post.published_at,
     "dateModified": post.updated_at || post.published_at,
     "publisher": {
@@ -292,7 +303,7 @@ export default function BlogPost() {
       "name": "Mystery Maker",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.mysterymaker.party/images/homepage-share-image.png"
+        "url": FALLBACK_SHARE_IMAGE
       }
     },
     "mainEntityOfPage": {
@@ -461,8 +472,11 @@ export default function BlogPost() {
           <meta property="og:description" content={post?.meta_description || ''} />
           <meta property="og:type" content="article" />
           <meta property="og:locale" content={effectiveLanguage} />
-          {post?.featured_image && (
-            <meta property="og:image" content={post.featured_image} />
+          <meta property="og:image" content={shareImage} />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:image" content={shareImage} />
+          {post?.author && (
+            <meta name="author" content={authorName} />
           )}
           <script type="application/ld+json">
             {JSON.stringify(jsonLd)}
@@ -518,10 +532,10 @@ export default function BlogPost() {
               </button>
             </div>
             
-            {post.featured_image && (
+            {post.featured_image_url && (
               <div className="mb-8 rounded-lg overflow-hidden">
-                <img 
-                  src={post.featured_image} 
+                <img
+                  src={post.featured_image_url}
                   alt={post.title}
                   className="w-full h-auto object-cover"
                 />

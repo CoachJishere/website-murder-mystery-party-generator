@@ -2,6 +2,13 @@
 
 ## 2026-05-04
 
+### Fix: blog post schema missing `author` and `image` (Google Article requirements)
+- Audit against 2026 AEO/GEO best practices flagged that the `BlogPosting` JSON-LD in [src/pages/BlogPost.tsx](src/pages/BlogPost.tsx) emitted `headline`, `description`, dates, and publisher — but not `author` or `image`. Both are required by Google for Article rich results; without them Google logs Search Console warnings and skips the rich result entirely
+- Added `author` (Person, with `url` pointing at `/about`) and `image` to the JSON-LD. Author resolves from `post.author`, but treats the legacy `"AI Assistant"` value as missing and falls back to `Jonathan Miller` until the full author backfill lands (#2 in this audit pass)
+- Image resolves from `post.featured_image_url`; falls back to the homepage share image so the schema validates today and starts using real per-post images automatically once the image backfill ships in the coming weeks
+- Also wired the same `shareImage` into `og:image` (previously only emitted when a per-post image existed → bare social shares for every post) and added `twitter:card=summary_large_image` + `twitter:image` so Twitter/X cards render properly. Added `<meta name="author">` for non-Schema crawlers
+- **Latent bug fixed in the same pass**: the React `BlogPost` interface declared `featured_image?: string` while the database column is `featured_image_url`. All references (interface, JSON-LD attempt, og:image conditional, hero `<img>`) were reading the wrong field — meaning even when real images arrive, none would have rendered. Renamed everywhere
+
 ### Fix: blog index was hiding 57 of every 58 same-day posts
 - A spot-check of `/blog` showed only one card for March 17, 2026 ("Unique Pirate Murder Mystery Plot Ideas — 58 posts") with a broken `Available in: EN, EN, EN…` badge repeated 58 times
 - Two coupled bugs in [src/pages/BlogIndex.tsx](src/pages/BlogIndex.tsx):
