@@ -4,7 +4,7 @@
 
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
 import { google } from 'googleapis';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from './_supabase-node.mjs';
 import { writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';

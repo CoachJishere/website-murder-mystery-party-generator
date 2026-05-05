@@ -15,7 +15,7 @@
  *   node scripts/sync-blog-map.mjs
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from './_supabase-node.mjs';
 import ExcelJS from 'exceljs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';

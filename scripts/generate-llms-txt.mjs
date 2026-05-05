@@ -8,7 +8,7 @@
  * Output: public/llms.txt (served at mysterymaker.party/llms.txt)
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from './_supabase-node.mjs';
 import { readFileSync, writeFileSync } from 'fs';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;

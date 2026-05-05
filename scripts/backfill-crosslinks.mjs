@@ -7,7 +7,7 @@
  * Requires: SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from './_supabase-node.mjs';
 import { readFileSync } from 'fs';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
