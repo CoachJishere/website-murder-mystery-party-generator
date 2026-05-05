@@ -101,7 +101,7 @@ Numbered "Fix X in N Steps" block near the top of every how-to-fix post, with an
 | how-to-fix-guests-breaking-character-... | 🟡 EN |
 | how-to-fix-guests-who-wont-participate-... | 🟡 EN |
 | how-to-fix-overly-complex-murder-mysteries | ✅ all 13 langs |
-| how-to-fix-poor-mystery-pacing-issues-... | 🟡 EN |
+| how-to-fix-poor-mystery-pacing-issues-... | ✅ all 13 langs |
 | how-to-fix-unrealistic-murder-mystery-plots-... | 🟡 EN |
 | how-to-fix-unsatisfying-mystery-endings-... | 🟡 EN |
 
