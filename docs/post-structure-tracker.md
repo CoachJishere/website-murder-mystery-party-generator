@@ -89,7 +89,7 @@ Numbered "Fix X in N Steps" block near the top of every how-to-fix post, with an
 
 | Slug | Status |
 |------|--------|
-| how-to-fix-accessibility-and-inclusion-issues-... | 🟡 EN |
+| how-to-fix-accessibility-and-inclusion-issues-... | 🟡 11/13 — DA + FR skipped (translation stubs lack H2 structure, need rebuild first) |
 | how-to-fix-age-inappropriate-content-issues-... | 🟡 EN |
 | how-to-fix-audio-and-sound-system-problems-... | 🟡 EN |
 | how-to-fix-boring-murder-mystery-parties | ✅ all 13 langs |
