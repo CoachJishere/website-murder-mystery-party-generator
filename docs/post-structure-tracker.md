@@ -93,7 +93,7 @@ Numbered "Fix X in N Steps" block near the top of every how-to-fix post, with an
 | how-to-fix-age-inappropriate-content-issues-... | 🟡 EN |
 | how-to-fix-audio-and-sound-system-problems-... | 🟡 EN |
 | how-to-fix-boring-murder-mystery-parties | ✅ all 13 langs |
-| how-to-fix-character-assignment-problems-... | 🟡 EN |
+| how-to-fix-character-assignment-problems-... | ✅ all 13 langs |
 | how-to-fix-communication-breakdown-issues-... | 🟡 EN |
 | how-to-fix-confusing-murder-mystery-clues | ✅ all 13 langs |
 | how-to-fix-cultural-sensitivity-issues-... | 🟡 EN |
