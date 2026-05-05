@@ -50,10 +50,10 @@ GEO value: massive. AI engines love numbered lists for "what are 5 X themes?" qu
 | 23 | 5-spy-thriller-murder-mystery-themes-... | 🟡 EN only — non-EN needs full content restructure (bold-text headings instead of H2s) |
 | 24 | 5-university-campus-murder-mystery-themes-... | ✅ all 13 langs |
 | 25 | 5-vampire-ball-murder-mystery-themes-... | ✅ all 13 langs |
-| 26 | 5-victorian-london-murder-mystery-themes-... | 🟡 EN |
-| 27 | 5-viking-longship-murder-mystery-themes-... | 🟡 EN |
-| 28 | 5-vintage-circus-murder-mystery-themes-... | 🟡 EN |
-| 29 | 5-wild-west-ghost-town-murder-mystery-themes-... | 🟡 EN |
+| 26 | 5-victorian-london-murder-mystery-themes-... | ✅ all 13 langs |
+| 27 | 5-viking-longship-murder-mystery-themes-... | ✅ all 13 langs |
+| 28 | 5-vintage-circus-murder-mystery-themes-... | ✅ all 13 langs |
+| 29 | 5-wild-west-ghost-town-murder-mystery-themes-... | ✅ all 13 langs |
 
 ## Priority 2: Comparison/review posts (~7)
 
