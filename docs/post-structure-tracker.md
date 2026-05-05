@@ -26,34 +26,34 @@ GEO value: massive. AI engines love numbered lists for "what are 5 X themes?" qu
 | # | Slug | Status |
 |---|------|--------|
 | 1 | 5-haunted-library-murder-mystery-themes-... | ✅ all 13 langs |
-| 2 | 5-haunted-mansion-murder-mystery-themes | 🔲 |
-| 3 | 5-ancient-egyptian-temple-murder-themes | 🔲 |
-| 4 | 5-ancient-greece-murder-mystery-themes-... | 🔲 |
-| 5 | 5-ancient-rome-murder-mystery-themes-... | 🔲 |
-| 6 | 5-beach-resort-murder-mystery-themes-... | 🔲 |
-| 7 | 5-casino-murder-mystery-party-themes-... | 🔲 |
-| 8 | 5-enchanted-forest-murder-mystery-themes-... | 🔲 |
-| 9 | 5-gothic-romance-murder-mystery-themes-... | 🔲 |
-| 10 | 5-masquerade-ball-murder-mystery-themes-... | 🔲 |
-| 11 | 5-medieval-tournament-murder-mystery-themes-... | 🔲 |
-| 12 | 5-mountain-lodge-murder-mystery-themes-... | 🔲 |
-| 13 | 5-noir-detective-murder-mystery-themes-... | 🔲 |
-| 14 | 5-old-hollywood-murder-mystery-themes-... | 🔲 |
-| 15 | 5-pirate-ship-murder-mystery-themes-... | 🔲 |
-| 16 | 5-prohibition-speakeasy-murder-mystery-themes | 🔲 |
-| 17 | 5-renaissance-fair-murder-mystery-themes-... | 🔲 |
-| 18 | 5-renaissance-murder-mystery-party-themes | 🔲 |
-| 19 | 5-roaring-twenties-murder-mystery-themes-... | 🔲 |
-| 20 | 5-royal-palace-murder-mystery-themes-... | 🔲 |
-| 21 | 5-secret-agent-murder-mystery-themes-... | 🔲 |
-| 22 | 5-secret-society-murder-mystery-themes-... | 🔲 |
-| 23 | 5-spy-thriller-murder-mystery-themes-... | 🔲 |
-| 24 | 5-university-campus-murder-mystery-themes-... | 🔲 |
-| 25 | 5-vampire-ball-murder-mystery-themes-... | 🔲 |
-| 26 | 5-victorian-london-murder-mystery-themes-... | 🔲 |
-| 27 | 5-viking-longship-murder-mystery-themes-... | 🔲 |
-| 28 | 5-vintage-circus-murder-mystery-themes-... | 🔲 |
-| 29 | 5-wild-west-ghost-town-murder-mystery-themes-... | 🔲 |
+| 2 | 5-haunted-mansion-murder-mystery-themes | 🟡 EN |
+| 3 | 5-ancient-egyptian-temple-murder-themes | 🟡 EN |
+| 4 | 5-ancient-greece-murder-mystery-themes-... | 🟡 EN |
+| 5 | 5-ancient-rome-murder-mystery-themes-... | 🟡 EN |
+| 6 | 5-beach-resort-murder-mystery-themes-... | 🟡 EN |
+| 7 | 5-casino-murder-mystery-party-themes-... | 🟡 EN (5th theme written + TOC) |
+| 8 | 5-enchanted-forest-murder-mystery-themes-... | 🟡 EN |
+| 9 | 5-gothic-romance-murder-mystery-themes-... | 🟡 EN (3 themes written + TOC) |
+| 10 | 5-masquerade-ball-murder-mystery-themes-... | 🟡 EN |
+| 11 | 5-medieval-tournament-murder-mystery-themes-... | 🟡 EN |
+| 12 | 5-mountain-lodge-murder-mystery-themes-... | 🟡 EN |
+| 13 | 5-noir-detective-murder-mystery-themes-... | 🟡 EN |
+| 14 | 5-old-hollywood-murder-mystery-themes-... | 🟡 EN |
+| 15 | 5-pirate-ship-murder-mystery-themes-... | 🟡 EN |
+| 16 | 5-prohibition-speakeasy-murder-mystery-themes | 🟡 EN |
+| 17 | 5-renaissance-fair-murder-mystery-themes-... | 🟡 EN |
+| 18 | 5-renaissance-murder-mystery-party-themes | 🟡 EN |
+| 19 | 5-roaring-twenties-murder-mystery-themes-... | 🟡 EN |
+| 20 | 5-royal-palace-murder-mystery-themes-... | 🟡 EN |
+| 21 | 5-secret-agent-murder-mystery-themes-... | 🟡 EN |
+| 22 | 5-secret-society-murder-mystery-themes-... | 🟡 EN |
+| 23 | 5-spy-thriller-murder-mystery-themes-... | 🟡 EN (bold→H3 + TOC) |
+| 24 | 5-university-campus-murder-mystery-themes-... | 🟡 EN |
+| 25 | 5-vampire-ball-murder-mystery-themes-... | 🟡 EN |
+| 26 | 5-victorian-london-murder-mystery-themes-... | 🟡 EN |
+| 27 | 5-viking-longship-murder-mystery-themes-... | 🟡 EN |
+| 28 | 5-vintage-circus-murder-mystery-themes-... | 🟡 EN |
+| 29 | 5-wild-west-ghost-town-murder-mystery-themes-... | 🟡 EN |
 
 ## Priority 2: Comparison/review posts (~7)
 

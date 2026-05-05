@@ -2,6 +2,15 @@
 
 ## 2026-05-04
 
+### GEO: numbered TOCs added to all 29 EN "5-X-themes" listicle posts (#9 complete on EN side)
+- Hand-wrote a numbered table-of-contents block at the top of every "5 X murder mystery themes" listicle in English. Each TOC lists all 5 themes as `[Theme name](#anchor) — one-line teaser` so AI engines (ChatGPT, Perplexity, Google AI Overviews) can extract a clean numbered list when a user asks "what are 5 X murder mystery themes?". Anchors resolve to `## Theme N: Name` H2s already in the post; rehype-slug (added earlier) generates the IDs at render time
+- 26 posts had clean `## Theme N: Name` structure and got TOC-only inserts. 3 posts needed structural rework first:
+  - **spy-thriller**: 5 themes were rendered as `**Bold Text**` instead of headings — converted all 5 to `### Theme N: Name` then added the TOC
+  - **casino**: post promised "5 themes" but only delivered 4 prose scenarios — restructured the 4 into H3 themes 1-4 and wrote a 5th "Private High-Roller Game Gone Wrong" theme to honor the slug commitment
+  - **gothic-romance**: only 2 themes (`## The Cursed Inheritance Manor`, `## The Forbidden Love Triangle Tragedy`) — wrote 3 new themes (Wedding Night Tragedy, Governess and the Locked Wing, Romantic Rival's Revenge) at full depth matching existing themes, then added the TOC
+- All cell-by-cell, one slug per `UPDATE blog_posts SET content = ... WHERE id = X`. No regex across rows, no Python, no bulk operations. Verified with `position('themes covered in this guide' in content) > 0` for all 29 EN slugs
+- Translation sweep across 12 non-EN languages × 29 listicles is the next step for full coverage
+
 ### GEO: answer-first blocks at top of every post (5,472 rows, 13 locales)
 - The single highest-leverage AEO/GEO change per the 2026 research: AI engines (ChatGPT, Perplexity, Google AI Overviews) scan the first 200-300 words for a clear answer block to extract as a citation. Original posts opened with anecdotal storytelling — great for humans, terrible for AI extraction
 - Prepended a locale-aware blockquote at the top of `content` for every blog row, using the post's existing meta description (which is already an SEO-optimized 130-150 char concise answer, so no new writing needed): EN=`> **Quick answer:**`, DE=`> **Kurz gesagt:**`, ES=`> **En resumen:**`, FR=`> **En bref :**`, IT=`> **In breve:**`, PT=`> **Em resumo:**`, NL=`> **Kort gezegd:**`, DA=`> **Kort fortalt:**`, SV=`> **Kort sagt:**`, FI=`> **Lyhyesti:**`, JA=`> **要約：**`, KO=`> **요약:**`, ZH=`> **摘要：**`
