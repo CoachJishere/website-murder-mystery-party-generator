@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReactMarkdown from 'react-markdown';
+import rehypeSlug from 'rehype-slug';
 import { ArrowRight, Clock, Users, BookOpen, ChevronRight, Copy, Check } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -559,9 +560,10 @@ export default function BlogPost() {
 
           <div className="prose prose-lg max-w-none mb-12">
             <ReactMarkdown
+              rehypePlugins={[rehypeSlug]}
               components={{
-                h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-[#C81400] mt-8 mb-4" {...props} />,
-                h3: ({node, ...props}) => <h3 className="text-xl font-semibold text-[#C81400] mt-6 mb-3" {...props} />,
+                h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-[#C81400] mt-8 mb-4 scroll-mt-20" {...props} />,
+                h3: ({node, ...props}) => <h3 className="text-xl font-semibold text-[#C81400] mt-6 mb-3 scroll-mt-20" {...props} />,
                 ul: ({node, ...props}) => <ul className="list-disc ml-6 mb-4 space-y-2" {...props} />,
                 li: ({node, ...props}) => <li className="text-foreground" {...props} />,
                 strong: ({node, ...props}) => <strong className="font-semibold text-[#C81400]" {...props} />,
