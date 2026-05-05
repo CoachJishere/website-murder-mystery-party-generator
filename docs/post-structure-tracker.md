@@ -35,8 +35,8 @@ GEO value: massive. AI engines love numbered lists for "what are 5 X themes?" qu
 | 8 | 5-enchanted-forest-murder-mystery-themes-... | ✅ all 13 langs |
 | 9 | 5-gothic-romance-murder-mystery-themes-... | 🟡 EN only — non-EN needs full content restructure (only ~2 theme H2s present) |
 | 10 | 5-masquerade-ball-murder-mystery-themes-... | ✅ all 13 langs |
-| 11 | 5-medieval-tournament-murder-mystery-themes-... | 🟡 EN |
-| 12 | 5-mountain-lodge-murder-mystery-themes-... | 🟡 EN |
+| 11 | 5-medieval-tournament-murder-mystery-themes-... | ✅ all 13 langs |
+| 12 | 5-mountain-lodge-murder-mystery-themes-... | ✅ all 13 langs |
 | 13 | 5-noir-detective-murder-mystery-themes-... | 🟡 EN |
 | 14 | 5-old-hollywood-murder-mystery-themes-... | 🟡 EN |
 | 15 | 5-pirate-ship-murder-mystery-themes-... | 🟡 EN |
