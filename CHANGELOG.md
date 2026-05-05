@@ -2,6 +2,12 @@
 
 ## 2026-05-05
 
+### GEO: numbered setup checklists added to all 9 EN how-to-host posts (Priority 4)
+- "Setup Checklist for Your X Murder Mystery" numbered blocks at the top of every published how-to-host-X post (9 slugs: fairy tale, Hollywood, medieval castle, prohibition era, space station, steampunk, superhero, Victorian, zombie apocalypse). Each step links via `#anchor` to the H2 section that elaborates that step.
+- Same pattern as the how-to-fix blocks but framed as setup actions instead of fixes — matches the AI-engine query pattern of "how do I set up a [theme] murder mystery party?" with a clean numbered answer
+- Inserted right after the `> **Quick answer:**` line so the checklist is the first structural element on the page. Cell-by-cell, one slug per UPDATE
+- Translation sweep across 12 non-EN languages × 9 posts is the next step
+
 ### GEO: numbered fix-step blocks added to all 15 EN how-to-fix posts (Priority 3)
 - "Fix X in N Steps" numbered blocks at the top of every published how-to-fix-X post (15 slugs). Each step links via `#anchor` to the H2 section that elaborates that step, so AI engines extract a clean numbered "how to fix X" list and humans can jump to the relevant elaboration.
 - Anchor IDs derived from existing translated H2s via rehype-slug (added at render time). Where an "Answer-First Checklist" or "Quick Start Checklist" prose paragraph already existed, it was replaced with the numbered block; otherwise the block was inserted right after the `> **Quick answer:**` line so it's the first structural element on the page.

@@ -105,9 +105,21 @@ Numbered "Fix X in N Steps" block near the top of every how-to-fix post, with an
 | how-to-fix-unrealistic-murder-mystery-plots-... | 🟡 EN |
 | how-to-fix-unsatisfying-mystery-endings-... | 🟡 EN |
 
-## Priority 4: how-to-host-X guides (10)
+## Priority 4: how-to-host-X guides (9 published)
 
-Setup checklist near the top.
+Numbered "Setup Checklist for Your X Murder Mystery" block near the top of every how-to-host post, with anchor links into the H2 sections that elaborate each step.
+
+| Slug | Status |
+|------|--------|
+| how-to-host-a-fairy-tale-murder-mystery-... | 🟡 EN |
+| how-to-host-a-hollywood-murder-mystery-party | 🟡 EN |
+| how-to-host-a-medieval-castle-murder-mystery-... | 🟡 EN |
+| how-to-host-a-prohibition-era-murder-mystery-... | 🟡 EN |
+| how-to-host-a-space-station-murder-mystery | 🟡 EN |
+| how-to-host-a-steampunk-murder-mystery-party-... | 🟡 EN |
+| how-to-host-a-superhero-murder-mystery-party-... | 🟡 EN |
+| how-to-host-a-victorian-murder-mystery-party | 🟡 EN |
+| how-to-host-a-zombie-apocalypse-murder-mystery-... | 🟡 EN |
 
 ## Priority 5: Remaining theme/setting/character posts
 
