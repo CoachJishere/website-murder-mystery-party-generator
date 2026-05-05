@@ -2,6 +2,10 @@
 
 ## 2026-05-05
 
+### GEO: Priority 3 translation sweep — 7 of 15 how-to-fix posts ✅ all 13 langs
+- Translated the numbered fix-step block into 12 non-EN languages (DE, ES, FR, IT, PT, NL, DA, SV, FI, JA, KO, ZH-CN) for: boring-mystery, confusing-clues, overly-complex, poor-pacing, character-assignment, group-dynamics, communication-breakdown.
+- Each language gets locale-quality teasers and anchor IDs computed against that locale's existing translated H2s. 8 how-to-fix posts and all 9 how-to-host posts still need translation in a follow-up session.
+
 ### GEO: numbered setup checklists added to all 9 EN how-to-host posts (Priority 4)
 - "Setup Checklist for Your X Murder Mystery" numbered blocks at the top of every published how-to-host-X post (9 slugs: fairy tale, Hollywood, medieval castle, prohibition era, space station, steampunk, superhero, Victorian, zombie apocalypse). Each step links via `#anchor` to the H2 section that elaborates that step.
 - Same pattern as the how-to-fix blocks but framed as setup actions instead of fixes — matches the AI-engine query pattern of "how do I set up a [theme] murder mystery party?" with a clean numbered answer
