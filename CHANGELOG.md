@@ -2,9 +2,17 @@
 
 ## 2026-05-05
 
-### GEO: Priority 3 translation sweep — 7 of 15 how-to-fix posts ✅ all 13 langs
-- Translated the numbered fix-step block into 12 non-EN languages (DE, ES, FR, IT, PT, NL, DA, SV, FI, JA, KO, ZH-CN) for: boring-mystery, confusing-clues, overly-complex, poor-pacing, character-assignment, group-dynamics, communication-breakdown.
-- Each language gets locale-quality teasers and anchor IDs computed against that locale's existing translated H2s. 8 how-to-fix posts and all 9 how-to-host posts still need translation in a follow-up session.
+### Improvement: swap evidence-card image generation from Replicate Flux to Imagen 4
+- Replaced Replicate Flux 1.1 Pro with Google Imagen 4 (`imagen-4.0-generate-001`) via the Gemini API for the 3 evidence card images per game. Same price tier, noticeably higher quality.
+- Make.com side: Parent33 blueprint built from Parent32 — all 12 image HTTP modules (3 rounds × 4 route variants) re-pointed to `generativelanguage.googleapis.com/.../imagen-4.0-generate-001:predict`, headers swapped to `x-goog-api-key`, body replaced with `:predict` shape (`16:9`, JPEG q85). The 4 "Store Evidence Images" Supabase calls now post `image_base64` instead of `image_urls` and read `predictions[1].bytesBase64Encoded` from the Imagen response. API key is left as `<<GEMINI_API_KEY>>` placeholder for paste-in at import.
+- `store-evidence-images` Edge Function extended to accept either `image_urls` (legacy URL-fetch path, kept for Parent32 rollback safety) or `image_base64` (new path, decodes and uploads directly). File extension and content-type now driven by an explicit `mime_type` field instead of being hardcoded to webp. Storage destination, DB column, and downstream consumer are unchanged — only the upstream provider and transport format moved.
+- Build script `temp-files/build-parent-v33.py` is idempotent and self-documenting so this swap (or a revert) is one command.
+
+### GEO: Priority 3 translation sweep — 11 of 15 how-to-fix posts ✅ all 13 langs (with 2 partials, 2 untranslatable)
+- Translated the numbered fix-step block into 12 non-EN languages (DE, ES, FR, IT, PT, NL, DA, SV, FI, JA, KO, ZH-CN) for the remaining 4 how-to-fix posts: audio-and-sound, cultural-sensitivity, unrealistic-plots, unsatisfying-endings.
+- Earlier in the session: boring-mystery, confusing-clues, overly-complex, poor-pacing, character-assignment, group-dynamics, communication-breakdown, age-inappropriate, guests-breaking-character, guests-who-wont-participate. 2 posts partial (accessibility 11/13 — DA/FR translation stubs lack H2 structure).
+- For posts where a language's translated content drifted from the EN H2 schema (FI/JA/ZH-CN on a few posts), the fix block was adapted to that language's actual H2s rather than forcing the standard 5. Anchor IDs computed against that locale's existing translated H2s; rehype-slug resolves at render time.
+- Priority 3 effectively complete (11 ✅, 2 partial that need content rebuilds, 2 EN-only how-to-fix don't exist as separate slugs). Priority 4 (9 how-to-host posts × 12 langs = 108 cells) is next.
 
 ### GEO: numbered setup checklists added to all 9 EN how-to-host posts (Priority 4)
 - "Setup Checklist for Your X Murder Mystery" numbered blocks at the top of every published how-to-host-X post (9 slugs: fairy tale, Hollywood, medieval castle, prohibition era, space station, steampunk, superhero, Victorian, zombie apocalypse). Each step links via `#anchor` to the H2 section that elaborates that step.

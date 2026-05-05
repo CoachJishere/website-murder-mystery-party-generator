@@ -91,19 +91,19 @@ Numbered "Fix X in N Steps" block near the top of every how-to-fix post, with an
 |------|--------|
 | how-to-fix-accessibility-and-inclusion-issues-... | 🟡 11/13 — DA + FR skipped (translation stubs lack H2 structure, need rebuild first) |
 | how-to-fix-age-inappropriate-content-issues-... | ✅ all 13 langs |
-| how-to-fix-audio-and-sound-system-problems-... | 🟡 EN |
+| how-to-fix-audio-and-sound-system-problems-... | ✅ all 13 langs |
 | how-to-fix-boring-murder-mystery-parties | ✅ all 13 langs |
 | how-to-fix-character-assignment-problems-... | ✅ all 13 langs |
 | how-to-fix-communication-breakdown-issues-... | ✅ all 13 langs |
 | how-to-fix-confusing-murder-mystery-clues | ✅ all 13 langs |
-| how-to-fix-cultural-sensitivity-issues-... | 🟡 EN |
+| how-to-fix-cultural-sensitivity-issues-... | ✅ all 13 langs |
 | how-to-fix-group-dynamics-problems | ✅ all 13 langs |
 | how-to-fix-guests-breaking-character-... | ✅ all 13 langs |
 | how-to-fix-guests-who-wont-participate-... | ✅ all 13 langs |
 | how-to-fix-overly-complex-murder-mysteries | ✅ all 13 langs |
 | how-to-fix-poor-mystery-pacing-issues-... | ✅ all 13 langs |
-| how-to-fix-unrealistic-murder-mystery-plots-... | 🟡 EN |
-| how-to-fix-unsatisfying-mystery-endings-... | 🟡 EN |
+| how-to-fix-unrealistic-murder-mystery-plots-... | ✅ all 13 langs |
+| how-to-fix-unsatisfying-mystery-endings-... | ✅ all 13 langs |
 
 ## Priority 4: how-to-host-X guides (9 published)
 
