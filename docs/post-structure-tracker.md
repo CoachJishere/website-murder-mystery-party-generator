@@ -83,9 +83,27 @@ Other comparison posts (mostly drafts, will publish over coming year):
 | murder-mystery-vs-escape-room-which-is-better (draft) | 🔲 |
 | whodunit-vs-murder-mystery-differences (draft) | 🔲 |
 
-## Priority 3: how-to-fix-X posts (12)
+## Priority 3: how-to-fix-X posts (15 published)
 
-Numbered fix steps near the top.
+Numbered "Fix X in N Steps" block near the top of every how-to-fix post, with anchor links into the H2 sections that elaborate each step.
+
+| Slug | Status |
+|------|--------|
+| how-to-fix-accessibility-and-inclusion-issues-... | 🟡 EN |
+| how-to-fix-age-inappropriate-content-issues-... | 🟡 EN |
+| how-to-fix-audio-and-sound-system-problems-... | 🟡 EN |
+| how-to-fix-boring-murder-mystery-parties | 🟡 EN |
+| how-to-fix-character-assignment-problems-... | 🟡 EN |
+| how-to-fix-communication-breakdown-issues-... | 🟡 EN |
+| how-to-fix-confusing-murder-mystery-clues | 🟡 EN |
+| how-to-fix-cultural-sensitivity-issues-... | 🟡 EN |
+| how-to-fix-group-dynamics-problems | 🟡 EN |
+| how-to-fix-guests-breaking-character-... | 🟡 EN |
+| how-to-fix-guests-who-wont-participate-... | 🟡 EN |
+| how-to-fix-overly-complex-murder-mysteries | 🟡 EN |
+| how-to-fix-poor-mystery-pacing-issues-... | 🟡 EN |
+| how-to-fix-unrealistic-murder-mystery-plots-... | 🟡 EN |
+| how-to-fix-unsatisfying-mystery-endings-... | 🟡 EN |
 
 ## Priority 4: how-to-host-X guides (10)
 

@@ -2,6 +2,12 @@
 
 ## 2026-05-05
 
+### GEO: numbered fix-step blocks added to all 15 EN how-to-fix posts (Priority 3)
+- "Fix X in N Steps" numbered blocks at the top of every published how-to-fix-X post (15 slugs). Each step links via `#anchor` to the H2 section that elaborates that step, so AI engines extract a clean numbered "how to fix X" list and humans can jump to the relevant elaboration.
+- Anchor IDs derived from existing translated H2s via rehype-slug (added at render time). Where an "Answer-First Checklist" or "Quick Start Checklist" prose paragraph already existed, it was replaced with the numbered block; otherwise the block was inserted right after the `> **Quick answer:**` line so it's the first structural element on the page.
+- Posts updated: accessibility, age-inappropriate, audio, boring, character-assignment, communication-breakdown, confusing-clues, cultural-sensitivity, group-dynamics, guests-breaking-character, guests-who-wont-participate, overly-complex, poor-pacing, unrealistic-plots, unsatisfying-endings. Cell-by-cell, one slug per UPDATE
+- Translation sweep across 12 non-EN languages × 15 posts is the next step
+
 ### GEO: TOC translation sweep — 26 of 29 listicles ✅ all 13 langs (312+ rows updated)
 - Hand-translated the numbered TOC into 12 non-EN languages (DE, ES, FR, IT, PT, NL, DA, SV, FI, JA, KO, ZH-CN) for 26 of the 29 "5-X-themes" listicles. Each row got a locale-quality TOC heading, locale-quality teaser sentences, and anchor IDs computed against that locale's existing translated H2s (so anchors resolve at render via rehype-slug). Cell-by-cell discipline maintained throughout — every UPDATE scoped to one row by `WHERE language = ? AND slug = ?`
 - 26 listicles × 12 langs = 312 cell updates this session, on top of 7 backfill rows for haunted-library (the 7 langs from the prior session whose TOC was actually missing)
