@@ -15,16 +15,34 @@ const supabase = createClient(
 
 const SITE = 'https://www.mysterymaker.party';
 
+async function fetchAllPublishedPosts() {
+  // Supabase REST defaults to a 1000-row cap. We have ~1,339 published rows
+  // across all languages, so paginate via `.range()` to get them all.
+  const PAGE_SIZE = 1000;
+  let all = [];
+  for (let from = 0; ; from += PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('slug, language, updated_at, post_date')
+      .eq('status', 'published')
+      .order('post_date', { ascending: false })
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (error) throw error;
+    if (!data || data.length === 0) break;
+    all = all.concat(data);
+    if (data.length < PAGE_SIZE) break;
+  }
+  return all;
+}
+
 async function generateSitemap() {
   console.log('Generating sitemap...');
 
-  const { data: posts, error } = await supabase
-    .from('blog_posts')
-    .select('slug, language, updated_at, post_date')
-    .eq('status', 'published')
-    .order('post_date', { ascending: false });
-
-  if (error) {
+  let posts;
+  try {
+    posts = await fetchAllPublishedPosts();
+  } catch (error) {
     console.error('Error fetching blog posts:', error);
     process.exit(1);
   }

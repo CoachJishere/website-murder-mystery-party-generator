@@ -513,6 +513,14 @@ export default function BlogPost() {
                   {authorName}
                 </Link>
               </div>
+              {(post.updated_at || post.published_at) && (
+                <div className="flex items-center">
+                  <span className="text-muted-foreground/70">Updated&nbsp;</span>
+                  <time dateTime={post.updated_at || post.published_at}>
+                    {format(new Date(post.updated_at || post.published_at), 'MMM d, yyyy')}
+                  </time>
+                </div>
+              )}
               <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-1 text-[#C81400]" />
                 {post.reading_time || calculateReadingTime(post.content || '')} min read

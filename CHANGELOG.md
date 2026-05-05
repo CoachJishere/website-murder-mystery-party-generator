@@ -12,6 +12,20 @@
 - Categorized all 420 EN posts (103 published + 317 drafts) into 8 themes via slug pattern matching: `themes-settings` (99), `formats-tools` (95), `hosting-guides` (67), `occasions` (44), `audiences` (34), `troubleshooting` (32), `work-team` (25), `characters` (24). Propagated the same theme to all 12 non-EN translations of each slug via JOIN
 - `tags` was also NULL on every row. Programmatic extraction from slug tokens (drop ~80 stopwords, keep first 5 distinguishing tokens, prepend the post's theme as the first tag). Final state: avg 4 tags/post, max 6, 0 NULL. Enables tag-cloud / topic-cluster navigation and adds entity signals for AEO/GEO
 
+### Fix: sitemap was missing 339 of 1,339 published URLs (Supabase REST 1000-row cap)
+- `scripts/generate-sitemap.mjs` queried Supabase without pagination, so the build only ever wrote 1,000 URLs to sitemap.xml. With 1,339 published rows (across all locales) that meant **~339 published URLs were never indexable via sitemap** — Google could only find them via internal linking
+- Added `fetchAllPublishedPosts()` that loops with `.range()` until exhausted. Build output went from "Found 1000 published blog posts / 1013 route files" to "Found 1339 / 1352 route files"
+- Net result: every published row across all 13 languages is now in the sitemap
+
+### Feature: visible "Updated" date in blog post byline (#12 from audit)
+- `dateModified` was already in the JSON-LD from the schema pass earlier this session, but never rendered visibly on the page. 2026 AEO best practices treat a visible "last updated" stamp as a small trust signal both Google and AI engines weight when assessing content freshness
+- Added a `<time dateTime>` element next to the author byline in [BlogPost.tsx](src/pages/BlogPost.tsx), rendering as e.g. "Updated May 4, 2026" between the author link and the reading-time pill
+
+### Security: 0 npm audit vulnerabilities (was 10)
+- `npm audit` reported 10 vulnerabilities (4 high, 6 moderate) across `brace-expansion`, `lodash`, `picomatch`, `postcss`, and `vite`. Most were transitive deps; `postcss` and `vite` were direct
+- Ran `npm audit fix` (auto-resolved 4 packages, non-breaking) plus a single patch bump from `vite@7.3.1` → `^7.3.2` to clear the dev-server-only path-traversal/fs.deny/websocket-file-read advisories
+- Final state: `npm audit` clean
+
 ### GEO: structural improvements to comparison posts (#9, partial)
 - Added a clean markdown comparison table at the top of the published [Best Murder Mystery Games review](best-murder-mystery-party-games-review) — extracted Night of Mystery, Broadway Murder Mysteries, Playing With Murder, Masters of Mystery, Hunt A Killer, Deadbolt Mystery Society, The Dinner Detective, and MysteryMaker into one structured comparison the post had buried in prose. Tables are heavily favored by Perplexity/ChatGPT/Google AI Overviews for citation; positioning it right after the answer-first block maximizes extraction
 - **#9 deferred for the rest of the catalog:** Audited the "5-X-themes" listicle posts (29 published) for safe auto-conversion to numbered/bullet lists — H2 counts vary 1-15 with no consistent "5 themes = 5 H2s" pattern, so reliable extraction isn't possible. Other structural improvements (converting prose-lists to bullets, splitting >250-word sections with H3s, adding tables to other comparison posts) require careful per-post hand-editing — programmatic regex changes across 5,472 rows risk corrupting content for marginal gain. The answer-first blocks (shipped earlier) already capture the biggest GEO win identified in the audit
