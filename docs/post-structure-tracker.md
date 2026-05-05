@@ -44,8 +44,8 @@ GEO value: massive. AI engines love numbered lists for "what are 5 X themes?" qu
 | 17 | 5-renaissance-fair-murder-mystery-themes-... | ✅ all 13 langs |
 | 18 | 5-renaissance-murder-mystery-party-themes | ✅ all 13 langs |
 | 19 | 5-roaring-twenties-murder-mystery-themes-... | ✅ all 13 langs |
-| 20 | 5-royal-palace-murder-mystery-themes-... | 🟡 EN |
-| 21 | 5-secret-agent-murder-mystery-themes-... | 🟡 EN |
+| 20 | 5-royal-palace-murder-mystery-themes-... | ✅ all 13 langs |
+| 21 | 5-secret-agent-murder-mystery-themes-... | ✅ all 13 langs |
 | 22 | 5-secret-society-murder-mystery-themes-... | 🟡 EN |
 | 23 | 5-spy-thriller-murder-mystery-themes-... | 🟡 EN (bold→H3 + TOC) |
 | 24 | 5-university-campus-murder-mystery-themes-... | 🟡 EN |
