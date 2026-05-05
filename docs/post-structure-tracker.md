@@ -97,7 +97,7 @@ Numbered "Fix X in N Steps" block near the top of every how-to-fix post, with an
 | how-to-fix-communication-breakdown-issues-... | 🟡 EN |
 | how-to-fix-confusing-murder-mystery-clues | ✅ all 13 langs |
 | how-to-fix-cultural-sensitivity-issues-... | 🟡 EN |
-| how-to-fix-group-dynamics-problems | 🟡 EN |
+| how-to-fix-group-dynamics-problems | ✅ all 13 langs |
 | how-to-fix-guests-breaking-character-... | 🟡 EN |
 | how-to-fix-guests-who-wont-participate-... | 🟡 EN |
 | how-to-fix-overly-complex-murder-mysteries | ✅ all 13 langs |
