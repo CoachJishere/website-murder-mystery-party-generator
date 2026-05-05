@@ -2,6 +2,12 @@
 
 ## 2026-05-05
 
+### GEO: Priority 4 translation sweep — 8 of 9 how-to-host posts ✅ all 13 langs (107 cells)
+- Translated the numbered "Setup Checklist for Your X Murder Mystery" block into 12 non-EN languages (DE, ES, FR, IT, PT, NL, DA, SV, FI, JA, KO, ZH-CN) for all 9 published how-to-host posts: fairy-tale, Hollywood, medieval-castle, prohibition-era, space-station, steampunk, superhero, Victorian, zombie-apocalypse.
+- Each language gets a locale-quality checklist title and 5–6 step teasers; anchor IDs computed against that locale's existing translated H2s and resolve at render via rehype-slug. Cell-by-cell discipline: every UPDATE scoped to one row by `WHERE language = ? AND slug = ?`.
+- 1 row deferred: SV version of how-to-host-a-hollywood is a translation stub with only 6 H2s and missing the standard step structure — flagged in `docs/post-structure-tracker.md` as needing content rebuild before the checklist can land.
+- Priority 4 effectively complete (8 ✅, 1 partial waiting on rebuild). Priority 1, 3 (with caveats) and 4 are now in the can; remaining work: 3 listicle content rebuilds (Priority 1 stragglers), Priority 2 comparison posts (mostly drafts), and Priority 5 (lower-leverage theme/setting/character posts).
+
 ### Improvement: swap evidence-card image generation from Replicate Flux to Imagen 4
 - Replaced Replicate Flux 1.1 Pro with Google Imagen 4 (`imagen-4.0-generate-001`) via the Gemini API for the 3 evidence card images per game. Same price tier, noticeably higher quality.
 - Make.com side: Parent33 blueprint built from Parent32 — all 12 image HTTP modules (3 rounds × 4 route variants) re-pointed to `generativelanguage.googleapis.com/.../imagen-4.0-generate-001:predict`, headers swapped to `x-goog-api-key`, body replaced with `:predict` shape (`16:9`, JPEG q85). The 4 "Store Evidence Images" Supabase calls now post `image_base64` instead of `image_urls` and read `predictions[1].bytesBase64Encoded` from the Imagen response. API key is left as `<<GEMINI_API_KEY>>` placeholder for paste-in at import.

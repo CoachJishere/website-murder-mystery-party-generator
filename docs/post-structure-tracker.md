@@ -111,15 +111,15 @@ Numbered "Setup Checklist for Your X Murder Mystery" block near the top of every
 
 | Slug | Status |
 |------|--------|
-| how-to-host-a-fairy-tale-murder-mystery-... | 🟡 EN |
-| how-to-host-a-hollywood-murder-mystery-party | 🟡 EN |
-| how-to-host-a-medieval-castle-murder-mystery-... | 🟡 EN |
-| how-to-host-a-prohibition-era-murder-mystery-... | 🟡 EN |
-| how-to-host-a-space-station-murder-mystery | 🟡 EN |
-| how-to-host-a-steampunk-murder-mystery-party-... | 🟡 EN |
-| how-to-host-a-superhero-murder-mystery-party-... | 🟡 EN |
-| how-to-host-a-victorian-murder-mystery-party | 🟡 EN |
-| how-to-host-a-zombie-apocalypse-murder-mystery-... | 🟡 EN |
+| how-to-host-a-fairy-tale-murder-mystery-... | ✅ all 13 langs |
+| how-to-host-a-hollywood-murder-mystery-party | 🟡 12/13 — SV skipped (translation stub, only 6 H2s, needs rebuild) |
+| how-to-host-a-medieval-castle-murder-mystery-... | ✅ all 13 langs |
+| how-to-host-a-prohibition-era-murder-mystery-... | ✅ all 13 langs |
+| how-to-host-a-space-station-murder-mystery | ✅ all 13 langs |
+| how-to-host-a-steampunk-murder-mystery-party-... | ✅ all 13 langs |
+| how-to-host-a-superhero-murder-mystery-party-... | ✅ all 13 langs |
+| how-to-host-a-victorian-murder-mystery-party | ✅ all 13 langs |
+| how-to-host-a-zombie-apocalypse-murder-mystery-... | ✅ all 13 langs |
 
 ## Priority 5: Remaining theme/setting/character posts
 
