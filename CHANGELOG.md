@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-05
+
+### GEO: TOC translation sweep — 26 of 29 listicles ✅ all 13 langs (312+ rows updated)
+- Hand-translated the numbered TOC into 12 non-EN languages (DE, ES, FR, IT, PT, NL, DA, SV, FI, JA, KO, ZH-CN) for 26 of the 29 "5-X-themes" listicles. Each row got a locale-quality TOC heading, locale-quality teaser sentences, and anchor IDs computed against that locale's existing translated H2s (so anchors resolve at render via rehype-slug). Cell-by-cell discipline maintained throughout — every UPDATE scoped to one row by `WHERE language = ? AND slug = ?`
+- 26 listicles × 12 langs = 312 cell updates this session, on top of 7 backfill rows for haunted-library (the 7 langs from the prior session whose TOC was actually missing)
+- 3 listicles deferred — non-EN versions don't have the theme-H2 structure that the EN side received in the prior session: **5-casino** (post promises "5 themes" but body delivers prose only — needs 5 themes written + structured in 12 langs), **5-gothic-romance** (only 2 of 5 themes present in body — needs 3 more written in 12 langs), **5-spy-thriller** (themes are bold text, not H2s — needs heading conversion in 12 langs). Tracked in `docs/post-structure-tracker.md` with the specific blocker noted on each
+- 1 row deferred for unrelated data quality: KO version of 5-ancient-egyptian-temple is missing themes 3-5 in body. The other 12 langs of that listicle did get TOCs
+
 ## 2026-05-04
 
 ### GEO: numbered TOCs added to all 29 EN "5-X-themes" listicle posts (#9 complete on EN side)
