@@ -119,15 +119,25 @@ function extractFaq(content) {
   if (!m) return null;
   const section = m[1];
   const qa = [];
-  // Pattern 1: ### Question? / answer
-  for (const x of section.matchAll(/###\s*(.+?\?)\s*\n([\s\S]*?)(?=\n###\s|\n## |$)/g)) {
+  // Pattern 1: ### Question? / answer. Accepts ASCII `?` or full-width `？`.
+  for (const x of section.matchAll(/###\s*(.+?[?？])\s*\n([\s\S]*?)(?=\n###\s|\n## |$)/g)) {
     const q = x[1].trim();
     const a = x[2].trim().replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\n+/g, ' ').trim();
     if (q && a) qa.push({ question: q, answer: a });
   }
-  // Pattern 2: **Q: …** \n A: … (some translations)
+  // Pattern 2: **Q: …** \n A: … (some translations) — letter-prefixed bold.
   if (qa.length === 0) {
-    for (const x of section.matchAll(/\*\*(?:Q|P|F|V|D|S|K):\s*(.+?\?)\s*\*\*\s*\n+\s*(?:A|R|S|V|D|K):\s*([\s\S]*?)(?=\n\*\*(?:Q|P|F|V|D|S|K):|$)/gi)) {
+    for (const x of section.matchAll(/\*\*(?:Q|P|F|V|D|S|K):\s*(.+?[?？])\s*\*\*\s*\n+\s*(?:A|R|S|V|D|K):\s*([\s\S]*?)(?=\n\*\*(?:Q|P|F|V|D|S|K):|$)/gi)) {
+      const q = x[1].trim();
+      const a = x[2].trim().replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\n+/g, ' ').trim();
+      if (q && a) qa.push({ question: q, answer: a });
+    }
+  }
+  // Pattern 3: **Question?** \n Answer paragraph — no letter prefix. The most
+  // common machine-translation output across non-EN locales: bold-question
+  // convention preserved but the Q:/A: letter prefixes dropped.
+  if (qa.length === 0) {
+    for (const x of section.matchAll(/\*\*([^*\n]+[?？])\*\*\s*\n+\s*([\s\S]*?)(?=\n\s*\*\*[^*\n]+[?？]\*\*|\n## |$)/g)) {
       const q = x[1].trim();
       const a = x[2].trim().replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\n+/g, ' ').trim();
       if (q && a) qa.push({ question: q, answer: a });

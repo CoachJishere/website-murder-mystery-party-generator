@@ -329,8 +329,9 @@ export default function BlogPost() {
     const faqSection = faqSectionMatch[1];
     const qaItems: { question: string; answer: string }[] = [];
 
-    // Pattern 1: ### Question? followed by answer text
-    const qaPairsH3 = faqSection.matchAll(/###\s*(.+?\?)\s*\n([\s\S]*?)(?=\n###\s|\n## |$)/g);
+    // Pattern 1: ### Question? followed by answer text. Accepts either ASCII `?`
+    // or full-width `？` (used in JA/ZH-CN — same character semantically).
+    const qaPairsH3 = faqSection.matchAll(/###\s*(.+?[?？])\s*\n([\s\S]*?)(?=\n###\s|\n## |$)/g);
     for (const match of qaPairsH3) {
       const question = match[1].trim();
       const answer = match[2].trim()
@@ -343,10 +344,30 @@ export default function BlogPost() {
       }
     }
 
-    // Pattern 2: **Q: Question?** / A: Answer format (used in some translations)
+    // Pattern 2: **Q: Question?** / A: Answer format (used in some translations).
+    // Letter prefix is one of Q/P/F/V/D/S/K (covers EN/PT/FR/NL/IT/ES/DE/FI/SV/DA).
     if (qaItems.length === 0) {
-      const qaPairsBold = faqSection.matchAll(/\*\*(?:Q|P|F|V|D|S|K):\s*(.+?\?)\s*\*\*\s*\n+\s*(?:A|R|S|V|D|K):\s*([\s\S]*?)(?=\n\*\*(?:Q|P|F|V|D|S|K):|$)/gi);
+      const qaPairsBold = faqSection.matchAll(/\*\*(?:Q|P|F|V|D|S|K):\s*(.+?[?？])\s*\*\*\s*\n+\s*(?:A|R|S|V|D|K):\s*([\s\S]*?)(?=\n\*\*(?:Q|P|F|V|D|S|K):|$)/gi);
       for (const match of qaPairsBold) {
+        const question = match[1].trim();
+        const answer = match[2].trim()
+          .replace(/\*\*([^*]+)\*\*/g, '$1')
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+          .replace(/\n+/g, ' ')
+          .trim();
+        if (question && answer) {
+          qaItems.push({ question, answer });
+        }
+      }
+    }
+
+    // Pattern 3: **Question?** with no letter prefix, followed by an answer paragraph.
+    // This is the most common machine-translation output across non-EN locales —
+    // the translator preserved the bold-question convention but dropped the
+    // English Q:/A: letter prefixes. ~437 cells across the blog use this format.
+    if (qaItems.length === 0) {
+      const qaPairsBoldPlain = faqSection.matchAll(/\*\*([^*\n]+[?？])\*\*\s*\n+\s*([\s\S]*?)(?=\n\s*\*\*[^*\n]+[?？]\*\*|\n## |$)/g);
+      for (const match of qaPairsBoldPlain) {
         const question = match[1].trim();
         const answer = match[2].trim()
           .replace(/\*\*([^*]+)\*\*/g, '$1')
