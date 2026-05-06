@@ -20,6 +20,7 @@ jobs:
         run: npm install @supabase/supabase-js ws github-slugger
 
       - name: Publish oldest draft blog post (all languages)
+        id: publish
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
@@ -37,11 +38,18 @@ jobs:
 
           if [ -z "$SLUG" ]; then
             echo "No draft posts remaining. All posts have been published!"
+            echo "slug=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           echo "Publishing slug: $SLUG"
           echo "Title: $TITLE"
+          # Expose the slug to downstream steps so IndexNow can scope its
+          # submission to exactly 13 URLs (one per language) — using
+          # --since=1 hour ago instead grabs every cell touched in that
+          # window, which on busy days is enough URLs to trip Bing's
+          # IndexNow abuse heuristics and return 403.
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
 
           # 2. Apply cross-links for all 13 languages
           if [ -f "cross_link_map.json" ]; then
@@ -101,17 +109,19 @@ jobs:
           node scripts/apply-p5-tocs.mjs --since="$SINCE"
 
       - name: Submit just-published URLs to IndexNow (Bing)
+        if: steps.publish.outputs.slug != ''
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        # `$SLUG` from the publish-post step is out of scope here, so query
-        # by `updated_at` instead — anything touched in the last hour is
-        # exactly what just got published. Submits all 13 language URLs so
+        # Submits the just-published slug × 13 languages = 13 URLs so
         # Bing/Yandex/Seznam/Naver index within minutes rather than waiting
         # on sitemap polling. Google does not consume IndexNow.
-        run: |
-          SINCE=$(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v-1H +%Y-%m-%dT%H:%M:%SZ)
-          node scripts/submit-indexnow.mjs --since="$SINCE"
+        #
+        # Uses the slug from the publish step rather than --since=1 hour
+        # ago: a content-edit pass that touches many rows would otherwise
+        # push hundreds of URLs in a single batch and trip Bing's IndexNow
+        # abuse heuristics (HTTP 403). Slug-scoped is always exactly 13.
+        run: node scripts/submit-indexnow.mjs --slug="${{ steps.publish.outputs.slug }}"
 
       - name: Commit updated llms.txt
         run: |
