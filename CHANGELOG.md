@@ -2,6 +2,51 @@
 
 ## 2026-05-06
 
+### SEO/AEO: P5 FAQ coverage to 100% — stubs rebuilt, machine-translation rewritten cell-by-cell
+
+- **Coverage**: 577 → 650 / 650 P5 cells now emit `FAQPage` JSON-LD with native-quality content. Zero stubs under 3KB remain. Zero cells without a canonical H2 FAQ heading the schema generator can match.
+- **4 stub rebuilds** — each cell was a sub-3KB translation skeleton that needed full content, not just FAQ. Wrote complete native-quality posts (~12–15KB each, intro + ANSWER-FIRST nugget + 5 H2 body sections + 6–7 H3 FAQ + closing CTA):
+  - `hacker-murder-mystery-themes` DE (~14.5KB)
+  - `hacker-murder-mystery-themes` FR (~14.7KB)
+  - `how-long-should-murder-mystery-party-last` DA (~12.2KB)
+  - `how-long-should-murder-mystery-party-last` FR (~13.2KB)
+- **45 translation polish rewrites** — cells that already had FAQ content but were broken machine-translation, cell-by-cell native rewrite of every FAQ in target locale (no regex bulk operations, every UPDATE scoped to one slug × one language). Slugs polished:
+  - `1920s-speakeasy-murder-mystery-party-guide` × 5 (JA/KO/NL/PT/ZH-CN)
+  - `cruise-ship-murder-mystery-party-guide-…` × 4 (JA/PT/SV/NL)
+  - `haunted-hotel-murder-mystery-party-guide-…` × 2 (JA/KO)
+  - `murder-mystery-party-for-holiday-gatherings-…` × 4 (JA/KO/SV/ZH-CN)
+  - `medical-examiner-murder-mystery-themes-…` × 3 (FR/PT/ZH-CN)
+  - `lawyer-murder-mystery-themes-…` × 2 (FR/PT)
+  - `unique-film-noir-murder-mystery-plots-…` × 3 (DA/ES/NL)
+  - `unique-pirate-murder-mystery-plot-ideas` × 3 (DA/ES/ZH-CN) — duplicate trailing FAQ section also stripped per cell
+  - `spa-resort-murder-mystery-party-guide-…` × 3 (ES/PT/SV) — converted ES/PT from `**P:**/R:` schema-pattern-2 into the cleaner `### Q?` H3 format
+  - `art-museum-…` SV, `detective-themes` JA, `fashion-week-…` NL, `free-mmp-printable` PT, `hacker-themes` PT, `how-long-should-…` PT, `innocent-bystander-…` SV, `mmp-for-birthday-…` FR/PT, `unique-school-reunion-…` PT, `unique-underwater-…` NL, `villain-themes` NL, `creating-pharmacist-…` DA/NL, `creating-social-media-influencer-…` NL, `creating-wedding-planner-…` NL
+- **2 cleanup operations** — removed orphan duplicate FAQ sections that the structural fix in the previous push had inadvertently left behind:
+  - `haunted-hotel-…` JA: stripped trailing duplicate `## 常見问题` (mixed simplified-Chinese inside JA cell — broken-translation artifact)
+  - `innocent-bystander-…` SV: stripped trailing duplicate `## Ofta ställa frågor`
+- **Hyphenated-Dutch repair**: a handful of NL cells (fashion-week, social-media-influencer, wedding-planner, villain-themes) had FAQ blocks where every word in the question text was hyphen-glued ("Hoe-zorg ik-dat huwelijksplanner-personage werkelijk-macht-in-geheimen-gevoel?") — fully unreadable. Rewrote each in proper native Dutch.
+- **Quality discipline**: every UPDATE is `REPLACE(content, '<exact stale text>', '<new native quality>')` scoped to one cell. No regex against multiple rows, no Python batch generation, no template loops. Each FAQ written to fit that specific cell's topical context (wild-west pacing nuances differ from cruise-ship hierarchy nuances differ from medical-examiner forensic nuances etc.).
+
+### IndexNow daily-publish workflow: HTTP 403 root-caused and hardened
+
+- **Symptom**: today's automated daily-publish run failed at the IndexNow step with `HTTP 403 Forbidden` after submitting 608 URLs in a single batch. Bing's IndexNow endpoint rejects oversize submissions as a probable abuse signal — normal daily-publish should be exactly 13 URLs (1 slug × 13 languages).
+- **Root cause**: the `Submit just-published URLs to IndexNow` step in `.github/workflows/publish-daily-blog.yml` was scoped by `--since="$(date -u -d '1 hour ago')"`. The recent FAQ-coverage push had bumped `updated_at` on hundreds of cells inside that one-hour window, so the script picked up everything touched in the database and submitted it all at once. Bing rejected the batch outright.
+- **Fix**: capture the just-published slug as a step output (`steps.publish.outputs.slug`) and pass `--slug=<slug>` to `submit-indexnow.mjs` instead. Always exactly 13 URLs regardless of what else moved in the database. Step is gated `if: steps.publish.outputs.slug != ''` so it skips cleanly when the publish queue is empty.
+- **Secondary fix**: moved the `Commit updated llms.txt` step to immediately after `Regenerate llms.txt`, before any of the apply-P5-TOC / IndexNow steps. Previously the commit happened *after* IndexNow, so today's 403 also orphaned the regenerated llms.txt — Vercel rebuild never saw it. The commit now lands regardless of what fails downstream.
+- **Manual remediation for today's run**: ran `node scripts/submit-indexnow.mjs --slug=how-to-fix-guests-arriving-late-problems-in-murder-mystery-parties` locally; 13/13 URLs accepted by Bing (HTTP 200). The next daily-publish (tomorrow's) will pick up the orphaned llms.txt regeneration.
+
+### Feature: Pinterest pin generation pipeline (Imagen 4 + Sharp + Supabase storage)
+
+- **New table `public.pinterest_pins`** ([supabase/migrations/20260506_create_pinterest_pins.sql](supabase/migrations/20260506_create_pinterest_pins.sql)) — holds blog-post-derived pin data (image_prompt, overlay_text, board, scheduled_date) with status state machine (`draft` → `approved` → `generating` → `generated` → `posted` / `failed`). Indexed on `(status, scheduled_date)` for the daily scheduler query.
+- **New public storage bucket `pinterest-pins`** with `pins/{id}.png` for finished 1000×1500 pins and `raw/{id}.png` for the 1:1 Imagen output (preserved for the future blog-hero workflow).
+- **Compositing pipeline** ([scripts/pinterest/lib/compose.mjs](scripts/pinterest/lib/compose.mjs)) — calls Imagen 4 (1:1, `imagen-4.0-generate-001`), composites a 1000×1500 pin with a 400px near-black band (#111111) on top of a 1000×1100 cover-cropped image. Headline rendered as SVG paths via opentype.js (Oswald 700, 64px, cream #F5F0E8) — bypasses librsvg's broken @font-face data-URI support which silently falls back to system Helvetica. URL "mysterymaker.party" rendered in Inter Medium 22px, plain text at the bottom of the band (no pill — research showed pill competes with headline for save-rate signal).
+- **Why Oswald 700**: Tailwind aggregate data shows 700+ weight headlines outperform 400–500 weight by ~12–18% on Pinterest save rate, driven by thumbnail readability at the 236px mobile-feed render size. Oswald keeps the condensed/editorial register of Anton (originally tested) while adding genuine bold weight.
+- **CLI test entry point** [scripts/pinterest/generate-pin.mjs](scripts/pinterest/generate-pin.mjs) — takes `--prompt`/`--overlay` to do a single one-off pin, or `--image <path>` to re-composite from a cached raw image (avoids re-charging Imagen during typography iteration). `--font {oswald|anton|bowlby}` and `--pill {true|false}` flags for layout experimentation.
+- **Supabase batch runner** [scripts/pinterest/run-generation.mjs](scripts/pinterest/run-generation.mjs) — reads `status='approved'` rows, locks each to `generating` (optimistic concurrency), generates → composites → uploads pin + raw image to storage → marks `generated` with both public URLs. Per-row try/catch records failures with `generation_error` so a bad prompt or rate-limit doesn't blow up the batch. `--dry-run` validates auth and row visibility without spending Imagen credits.
+- **Auth model**: requires `SUPABASE_SERVICE_ROLE_KEY` in `.env` (Node-only, never bundled to frontend). Service role bypasses RLS so the script can write to `pinterest_pins` and upload to storage without per-row policies. `IMAGEN_API_KEY` for Imagen 4 (Google Generative Language API).
+- **End-to-end validated** with one test row (1920s speakeasy prompt, status=approved, id `480806f4...`) — pipeline read the row, called Imagen, composited, uploaded, flipped status to `generated`. Live URL renders correctly: `pins/480806f4-c49e-4f21-bf0d-48b1663ed374.png`.
+- **Not yet wired**: spreadsheet-to-Supabase row seeding (next step, batch the ~90 live blog posts), Make.com Pinterest API posting (reads `generated` rows on `scheduled_date`), 1200×630 blog-hero crop workflow.
+
 ### SEO/AEO: Priority 5 FAQPage schema coverage — 646 of 650 cells now schema-firing (was 577)
 
 - **The gap.** P5 cells across 13 languages had inconsistent FAQ structures: some used `### FAQ` (H3 instead of H2), some had locale-specific bold-Q-prefix variants (`**Spørgsmål:`, `**質問：`), some used `**Question?**` plain bold without a Q-letter prefix, some had non-canonical H2 headings ("Frequently Asked Vragen" Dunglish, "经常问的问题", "Frågor om konstmuseummysterium"), and 24 cells had no FAQ at all. Result: the `generateFaqSchema` regex in `src/pages/BlogPost.tsx` extracted nothing for ~73 cells, so the `FAQPage` JSON-LD block silently didn't render — invisible to Google's rich-results panel and to AI engines that key off `Question`/`Answer` graphs.
