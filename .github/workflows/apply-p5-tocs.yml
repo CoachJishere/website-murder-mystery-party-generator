@@ -1,0 +1,49 @@
+name: Apply Priority 5 TOCs (backfill)
+
+# Manually-triggered workflow to apply the Priority 5 TOC block to every
+# eligible blog cell across all 13 languages. Idempotent — cells with the
+# locale TOC heading already present are skipped, so this is safe to run
+# multiple times (and a no-op once a cell is fully covered).
+#
+# Why this exists separately from publish-daily-blog.yml: the daily run
+# only touches the just-published slug (filtered by --since=1 hour ago).
+# This workflow does the full sweep — used as a one-shot backfill and
+# as a recovery path if a daily run is ever skipped.
+#
+# Trigger: GitHub Actions UI → "Apply Priority 5 TOCs (backfill)" → "Run workflow".
+# Inputs are optional; running with defaults processes every P5 cell.
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Optional: limit to one slug (all 13 langs)'
+        required: false
+        type: string
+      since:
+        description: 'Optional: limit to cells with updated_at >= ISO timestamp'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install @supabase/supabase-js ws github-slugger
+
+      - name: Apply P5 TOCs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.slug }}" ]; then ARGS="$ARGS --slug=${{ inputs.slug }}"; fi
+          if [ -n "${{ inputs.since }}" ]; then ARGS="$ARGS --since=${{ inputs.since }}"; fi
+          node scripts/apply-p5-tocs.mjs $ARGS

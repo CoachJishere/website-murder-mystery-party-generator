@@ -2,6 +2,13 @@
 
 ## 2026-05-06
 
+### SEO/GEO: Priority 5 TOC pipeline — wired into CI (one-click backfill + auto-apply on daily-publish)
+
+- **`apply-p5-tocs.mjs` gained `--slug=<slug>` and `--since=<ISO>` filter args** so it can scope to one slug × all 13 langs (used by the standalone backfill workflow when you want to redo a single article) or to anything touched in the last hour (used by the daily-publish step so each run only processes the just-published slug).
+- **New workflow `.github/workflows/apply-p5-tocs.yml`** with `workflow_dispatch` — one-click backfill via the GitHub Actions UI, no defaults required. Optional inputs `slug` and `since` for partial runs. Reads `SUPABASE_SERVICE_KEY` from existing repo secrets (no new config). Installs `github-slugger` alongside the existing `@supabase/supabase-js ws` dependency line.
+- **`publish-daily-blog.yml` gains an `Apply Priority 5 TOC` step** between `Regenerate llms.txt` and `Submit just-published URLs to IndexNow`. Uses `--since=1 hour ago` to scope to the just-published slug. Means every newly-published P5 post automatically gets its TOC at publish time forever — no separate backfill needed for new content.
+- **SQL paste fallback at `temp-files/p5-toc-backfill.sql`** (gitignored, 833 KB, 608 UPDATEs). Generated from the same `/tmp/p5-toc-updates.json` as the live MCP applications, minus the 24 cells already done. Pasteable into Supabase SQL Editor as a backup path if GH Actions isn't desired. Idempotent: re-paste is no-op since the inner `REPLACE` only fires when the matched H2 line is still present unmodified.
+
 ### SEO/GEO: Priority 5 TOC pipeline — generator + applier (24 cells live, 608 ready)
 
 - **Generator + applier** (`scripts/apply-p5-tocs.mjs`): mechanical TOC generator for the 50 unique Priority 5 slugs (theme/setting/character/event posts that aren't 5-X-themes / how-to-fix / how-to-host / best-comparison). Pulls the cell, extracts up to 5 substantive H2s (skipping FAQ, related-guides, last-updated, closing CTAs, and any H2 with a body shorter than 80 chars), takes the first sentence of each as a teaser, and prepends a numbered linked-anchor TOC block at the top of the post.

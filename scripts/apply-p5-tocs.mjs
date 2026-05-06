@@ -8,15 +8,20 @@
  * other half of the GEO work: a numbered TOC at the top of every P5 post
  * so AI engines can extract a clean numbered list of sections.
  *
- * Usage: SUPABASE_SERVICE_KEY=<service-role-key> node scripts/apply-p5-tocs.mjs
+ * Usage:
+ *   SUPABASE_SERVICE_KEY=<key> node scripts/apply-p5-tocs.mjs
+ *   SUPABASE_SERVICE_KEY=<key> node scripts/apply-p5-tocs.mjs --slug=<slug>
+ *   SUPABASE_SERVICE_KEY=<key> node scripts/apply-p5-tocs.mjs --since=<ISO>
+ *
+ * `--slug` limits to one slug × all 13 languages (used by the daily-publish
+ * workflow so each run only touches the just-published slug). `--since`
+ * limits to cells whose `updated_at` is >= the given ISO timestamp (also
+ * useful from the daily-publish workflow when the slug isn't in scope).
+ * Neither: scans every published P5 cell. Idempotent under all modes —
+ * cells with the locale TOC heading are skipped.
  *
  * The anon key in scripts/_supabase-node.mjs gets blocked by RLS on
- * blog_posts UPDATE, so a service-role key is required. The Vercel
- * deployment has it; locally, paste from `mcp supabase get_project_url` +
- * service key in Supabase dashboard.
- *
- * Idempotent: safe to re-run. Cells with the locale TOC heading already
- * present are skipped.
+ * blog_posts UPDATE, so a service-role key is required.
  */
 
 import GithubSlugger from 'github-slugger';
@@ -88,17 +93,25 @@ function extractTeaser(body) {
   return sentence.substring(0, 110);
 }
 
+const args = Object.fromEntries(process.argv.slice(2).map(a => {
+  const [k, v] = a.replace(/^--/, '').split('=');
+  return [k, v ?? true];
+}));
+
 const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
 async function fetchAllP5() {
   const all = [];
   for (let from = 0; ; from += 500) {
-    const { data, error } = await supabase
+    let q = supabase
       .from('blog_posts')
       .select('id,slug,language,content')
       .eq('status', 'published')
       .order('id', { ascending: true })
       .range(from, from + 499);
+    if (args.slug) q = q.eq('slug', args.slug);
+    if (args.since) q = q.gte('updated_at', args.since);
+    const { data, error } = await q;
     if (error) throw error;
     if (!data || data.length === 0) break;
     all.push(...data);

@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: npm install @supabase/supabase-js ws
+        run: npm install @supabase/supabase-js ws github-slugger
 
       - name: Publish oldest draft blog post (all languages)
         env:
@@ -85,6 +85,20 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node scripts/generate-llms-txt.mjs
+
+      - name: Apply Priority 5 TOC to just-published cells (idempotent)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        # Adds a numbered linked-anchor TOC at the top of every Priority 5
+        # post (theme/setting/character/event slugs that aren't 5-X-themes,
+        # how-to-fix, how-to-host, or best-comparison). Runs with --since to
+        # restrict scope to cells touched in the last hour, i.e. just the
+        # newly-published slug × 13 langs. Safe to re-run — idempotent skip
+        # for cells with the locale TOC heading already present.
+        run: |
+          SINCE=$(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v-1H +%Y-%m-%dT%H:%M:%SZ)
+          node scripts/apply-p5-tocs.mjs --since="$SINCE"
 
       - name: Submit just-published URLs to IndexNow (Bing)
         env:
