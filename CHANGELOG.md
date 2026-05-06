@@ -2,6 +2,24 @@
 
 ## 2026-05-06
 
+### Content: broken nested-link cleanup — 125 cells repaired cell-by-cell
+
+- **Symptom**: prior cross-link backfill passes had stacked link applications on top of already-linked text without unwrapping the previous link, leaving 125 cells with visible markdown garbage like `[[[[party — Genereer](/url1) je aangepaste moorddrama](/url2) in](/url3) minuten]**](/url4)` (4-deep nested wreckage in wild-west NL closing CTA), `[r](/url1)](/url2)](/url3)` (orphan word fragment + 3-deep URL stack in spa-resort NL), and `는](/url1)](/url2)` (Korean particle dangling outside any opening bracket in haunted-hotel KO).
+- **Distribution**: KO 71, NL 44, DA 6, JA 2, SV 1, ZH-CN 1. Concentrated in KO and NL because those languages had the most overlapping cross-link backfill passes.
+- **Fix discipline**: cell-by-cell, one UPDATE per cell. For each cell, identified the exact `]( first-url )]( second-url )` (or 3- and 4-deep) chain, then collapsed it to the most-recent (outermost) URL — that's the one the most recent backfill intended. For 16 NL cells the first-pass collapse exposed an orphan `[` on the surrounding text (e.g. `[gasten of mensen die geen [donkere thema's willen](/url)` had a leftover `[` before "gasten" from a deeper nesting layer); fixed those individually with second-pass REPLACEs that took out the leftover bracket without introducing new ones.
+- **Special cases**: 3 cells had structural breakage that needed bespoke fixes — `5-university-campus` KO had a malformed `[[…](url) 중](url)` Korean word fragment ("중" = "while") trapped between brackets; `mmp-for-small-groups` KO had a truncated URL `(/ko/blog/murder-mystery-party-for-4-playersarty-for-large-groups)` (two URLs run together by a bad past application); `5-noir-detective` KO had a `[[…](/butler) 게임](/ideas)` pattern where the Korean word "게임" was split across the outer link.
+- **Verification**: zero cells across 1,365 published rows now match `\[\[` (double opening bracket) or `\]\([^)]+\)\]\(` (nested-link chain). Schema generators, sitemap, llms.txt, prerendered HTML — all consume the cleaned content on next Vercel rebuild.
+
+### Content audit: cluster-orphan slugs documented (7 unique, not 11 as previously stated)
+
+- Earlier changelog entries claimed "11 cluster-orphan thin cells" remaining after the cross-link backfill. Recount: **7 unique slugs** with <3 published siblings in their cross_link_map cluster — not 11 cells. The "11" was conflating with a different "thin cells" metric (cells with <3 internal links overall).
+- **Actually orphan (0 published siblings in their cluster)**:
+  - `free-murder-mystery-games-printable` (sole `logistics` cluster member)
+  - `murder-mystery-party-for-small-groups-ideas` (sole `group_size` cluster member)
+- **Paired-cluster slugs (1 sibling each)**: `best-murder-mystery-party-games-review` ↔ `food-critic-murder-mystery-themes-…` (both `comparison`).
+- **Sparse-cluster slugs (2 siblings each)**: `1920s-speakeasy-…`, `ancient-egypt-…`, `unique-archaeological-dig-…` (all `theme_period`).
+- **Resolution**: not a content-edit problem. The fix is a cluster reassignment in `cross_link_map.json` — e.g., `free-mmp-printable` naturally fits `comparison` (it's about free-vs-paid options), `mmp-for-small-groups` could join a broader `format` or `group_size` cluster if more siblings get published. Recommend doing this as a one-pass JSON edit + Related-guides re-run rather than per-cell content fixes; surfaces it to user-input on which cluster each truly-orphan slug should join.
+
 ### SEO/AEO: P5 FAQ coverage to 100% — stubs rebuilt, machine-translation rewritten cell-by-cell
 
 - **Coverage**: 577 → 650 / 650 P5 cells now emit `FAQPage` JSON-LD with native-quality content. Zero stubs under 3KB remain. Zero cells without a canonical H2 FAQ heading the schema generator can match.
