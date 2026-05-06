@@ -94,6 +94,21 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node scripts/generate-llms-txt.mjs
 
+      - name: Commit updated llms.txt
+        # Run this immediately after regeneration, before any step that
+        # could fail. Previously this lived after the IndexNow step, so
+        # an IndexNow 403 would orphan the regenerated llms.txt.
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet public/llms.txt; then
+            echo "No changes to llms.txt"
+          else
+            git add public/llms.txt
+            git commit -m "chore: regenerate llms.txt after daily publish"
+            git push
+          fi
+
       - name: Apply Priority 5 TOC to just-published cells (idempotent)
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -122,15 +137,3 @@ jobs:
         # push hundreds of URLs in a single batch and trip Bing's IndexNow
         # abuse heuristics (HTTP 403). Slug-scoped is always exactly 13.
         run: node scripts/submit-indexnow.mjs --slug="${{ steps.publish.outputs.slug }}"
-
-      - name: Commit updated llms.txt
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet public/llms.txt; then
-            echo "No changes to llms.txt"
-          else
-            git add public/llms.txt
-            git commit -m "chore: regenerate llms.txt after daily publish"
-            git push
-          fi
