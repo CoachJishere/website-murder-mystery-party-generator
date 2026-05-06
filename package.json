@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/generate-sitemap.mjs",
+    "build": "vite build && node scripts/generate-sitemap.mjs && node scripts/prerender-blog.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -99,6 +99,7 @@
     "globals": "^15.15.0",
     "lovable-tagger": "^1.1.8",
     "postcss": "^8.5.3",
+    "rehype-stringify": "^10.0.1",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.30.1",

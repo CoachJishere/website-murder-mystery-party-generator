@@ -49,15 +49,20 @@ async function generateSitemap() {
 
   console.log(`Found ${posts.length} published blog posts`);
 
-  // Group by post_date to find language variants of the same article
-  // (each translation shares the same post_date but has a different slug)
-  const byDate = {};
+  // Group by SLUG (not post_date). All 13 translations of the same article
+  // share the same slug; only the `language` column differs. Earlier the script
+  // grouped by post_date — which is wrong because the daily-publish pipeline
+  // batches multiple distinct articles on the same day (one date = up to 58
+  // unrelated articles). That meant hreflang siblings were getting cross-
+  // pollinated across unrelated articles, telling Google "the FR version of
+  // /blog/foo is /fr/blog/bar" — broken international SEO at scale.
+  const bySlug = {};
   for (const p of posts) {
-    if (!byDate[p.post_date]) byDate[p.post_date] = [];
-    byDate[p.post_date].push(p);
+    if (!bySlug[p.slug]) bySlug[p.slug] = [];
+    bySlug[p.slug].push(p);
   }
 
-  const articleCount = Object.keys(byDate).length;
+  const articleCount = Object.keys(bySlug).length;
   console.log(`${articleCount} unique articles across ${posts.length} language variants`);
 
   // Static pages
@@ -81,7 +86,7 @@ async function generateSitemap() {
   }
 
   // Blog posts with hreflang alternates
-  for (const [postDate, variants] of Object.entries(byDate)) {
+  for (const [slug, variants] of Object.entries(bySlug)) {
     for (const variant of variants) {
       const lang = variant.language;
       const loc = lang === 'en'
@@ -93,13 +98,23 @@ async function generateSitemap() {
       xml += `    <changefreq>monthly</changefreq>\n`;
       xml += `    <priority>0.6</priority>\n`;
 
-      // hreflang alternates for all language variants of this article
+      // hreflang alternates for all language variants of this article.
+      // DB stores the language as lowercase 'zh-cn'; Google's canonical form
+      // for Simplified Chinese is 'zh-Hans', so we map at sitemap-emit time.
+      // Using lowercase compare so any future case drift in the DB still maps.
       for (const alt of variants) {
-        const altLang = alt.language === 'zh-CN' ? 'zh-Hans' : alt.language;
+        const altLang = alt.language.toLowerCase() === 'zh-cn' ? 'zh-Hans' : alt.language;
         const altLoc = alt.language === 'en'
           ? `${SITE}/blog/${alt.slug}`
           : `${SITE}/${alt.language}/blog/${alt.slug}`;
         xml += `    <xhtml:link rel="alternate" hreflang="${altLang}" href="${altLoc}" />\n`;
+      }
+
+      // x-default: Google's recommendation is to point at the EN variant when
+      // it exists (catches users for whom no other language hreflang matches).
+      const enVariant = variants.find(v => v.language === 'en');
+      if (enVariant) {
+        xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}/blog/${enVariant.slug}" />\n`;
       }
 
       xml += `  </url>\n`;
