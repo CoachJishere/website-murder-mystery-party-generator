@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-05-06
+
+### GEO: structural backlog cleanup — 6 deferred items closed (~205 cells)
+- **Priority 1 listicle rebuilds (3 slugs × 12 langs = 36 rebuilt cells, plus 1 backfill + 4 EN TOCs = 41 total):** all three deferred theme-structure rebuilds landed.
+  - **5-spy-thriller-***: bold-text theme names in 12 non-EN langs converted to `### Theme N: Name` H3s; TOCs added to all 13 langs (EN was missing one).
+  - **5-gothic-romance-***: themes 3–5 (Wedding Night Tragedy, Governess and Locked Wing, Romantic Rival's Revenge) written and translated into 12 non-EN langs; TOCs added to all 13 langs (EN included).
+  - **5-casino-***: 5 theme H2 sections (High-Stakes Tournament Murder, Casino Business Conspiracy, Vault Security Breach, Entertainment Industry Murder, Private High-Roller Game Gone Wrong) written and translated into 12 non-EN langs; TOCs added to all 12 (EN already had its TOC).
+  - **5-ancient-egyptian-temple-***: KO themes 3–5 backfilled with locale-quality translations of the EN body and a 5-theme TOC; previously broken H2 title corrected.
+- **Priority 2 (12 cells):** `best-murder-mystery-party-games-review` "At-a-Glance Comparison" table translated into all 12 non-EN langs with locale-translated column headers and "Best For" descriptions; brand names preserved.
+- **Priority 3 (2 cells):** `how-to-fix-accessibility-and-inclusion-issues-*` DA + FR translation stubs replaced with full 5-step fix-block + 5-section content rebuilds (~6,500 chars each) matching the EN structure.
+- **Priority 4 (1 cell):** SV `how-to-host-a-hollywood-murder-mystery-party` setup checklist added; checklist anchors target the SV translator's existing H3 step structure (which differs from EN's H2 step structure) rather than forcing a full rebuild.
+- All cell-by-cell discipline maintained: every UPDATE scoped to one slug × one language; no regex-against-multiple-rows operations. Tracker updated — Priority 1, 2, 3, 4 are now all ✅ across all 13 languages on every published post in scope.
+
 ## 2026-05-05
 
 ### GEO: Priority 4 translation sweep — 8 of 9 how-to-host posts ✅ all 13 langs (107 cells)

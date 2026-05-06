@@ -27,13 +27,13 @@ GEO value: massive. AI engines love numbered lists for "what are 5 X themes?" qu
 |---|------|--------|
 | 1 | 5-haunted-library-murder-mystery-themes-... | ✅ all 13 langs |
 | 2 | 5-haunted-mansion-murder-mystery-themes | ✅ all 13 langs |
-| 3 | 5-ancient-egyptian-temple-murder-themes | 🟡 12/13 — KO skipped (themes 3-5 missing in body, needs content rewrite first) |
+| 3 | 5-ancient-egyptian-temple-murder-themes | ✅ all 13 langs |
 | 4 | 5-ancient-greece-murder-mystery-themes-... | ✅ all 13 langs |
 | 5 | 5-ancient-rome-murder-mystery-themes-... | ✅ all 13 langs |
 | 6 | 5-beach-resort-murder-mystery-themes-... | ✅ all 13 langs |
-| 7 | 5-casino-murder-mystery-party-themes-... | 🟡 EN only — non-EN needs full content restructure (no theme H2s present) |
+| 7 | 5-casino-murder-mystery-party-themes-... | ✅ all 13 langs |
 | 8 | 5-enchanted-forest-murder-mystery-themes-... | ✅ all 13 langs |
-| 9 | 5-gothic-romance-murder-mystery-themes-... | 🟡 EN only — non-EN needs full content restructure (only ~2 theme H2s present) |
+| 9 | 5-gothic-romance-murder-mystery-themes-... | ✅ all 13 langs |
 | 10 | 5-masquerade-ball-murder-mystery-themes-... | ✅ all 13 langs |
 | 11 | 5-medieval-tournament-murder-mystery-themes-... | ✅ all 13 langs |
 | 12 | 5-mountain-lodge-murder-mystery-themes-... | ✅ all 13 langs |
@@ -47,7 +47,7 @@ GEO value: massive. AI engines love numbered lists for "what are 5 X themes?" qu
 | 20 | 5-royal-palace-murder-mystery-themes-... | ✅ all 13 langs |
 | 21 | 5-secret-agent-murder-mystery-themes-... | ✅ all 13 langs |
 | 22 | 5-secret-society-murder-mystery-themes-... | ✅ all 13 langs |
-| 23 | 5-spy-thriller-murder-mystery-themes-... | 🟡 EN only — non-EN needs full content restructure (bold-text headings instead of H2s) |
+| 23 | 5-spy-thriller-murder-mystery-themes-... | ✅ all 13 langs |
 | 24 | 5-university-campus-murder-mystery-themes-... | ✅ all 13 langs |
 | 25 | 5-vampire-ball-murder-mystery-themes-... | ✅ all 13 langs |
 | 26 | 5-victorian-london-murder-mystery-themes-... | ✅ all 13 langs |
@@ -63,7 +63,7 @@ Tables already added to:
 Other comparison posts (mostly drafts, will publish over coming year):
 | Slug | Status |
 |------|--------|
-| best-murder-mystery-party-games-review | 🟡 EN table done |
+| best-murder-mystery-party-games-review | ✅ all 13 langs |
 | ai-generated-murder-mystery-vs-prewritten-kits (draft) | 🔲 |
 | best-dinner-party-games-for-adults (draft) | 🔲 |
 | best-icebreaker-games-for-adult-parties (draft) | 🔲 |
@@ -89,7 +89,7 @@ Numbered "Fix X in N Steps" block near the top of every how-to-fix post, with an
 
 | Slug | Status |
 |------|--------|
-| how-to-fix-accessibility-and-inclusion-issues-... | 🟡 11/13 — DA + FR skipped (translation stubs lack H2 structure, need rebuild first) |
+| how-to-fix-accessibility-and-inclusion-issues-... | ✅ all 13 langs |
 | how-to-fix-age-inappropriate-content-issues-... | ✅ all 13 langs |
 | how-to-fix-audio-and-sound-system-problems-... | ✅ all 13 langs |
 | how-to-fix-boring-murder-mystery-parties | ✅ all 13 langs |
@@ -112,7 +112,7 @@ Numbered "Setup Checklist for Your X Murder Mystery" block near the top of every
 | Slug | Status |
 |------|--------|
 | how-to-host-a-fairy-tale-murder-mystery-... | ✅ all 13 langs |
-| how-to-host-a-hollywood-murder-mystery-party | 🟡 12/13 — SV skipped (translation stub, only 6 H2s, needs rebuild) |
+| how-to-host-a-hollywood-murder-mystery-party | ✅ all 13 langs |
 | how-to-host-a-medieval-castle-murder-mystery-... | ✅ all 13 langs |
 | how-to-host-a-prohibition-era-murder-mystery-... | ✅ all 13 langs |
 | how-to-host-a-space-station-murder-mystery | ✅ all 13 langs |
