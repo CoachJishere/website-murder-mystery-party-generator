@@ -2,6 +2,18 @@
 
 ## 2026-05-06
 
+### Translation polish: 20 cell tail sections rewritten in native quality (cell-by-cell)
+
+- **Scope**: cell-by-cell native-quality rewrite of post-FAQ tail sections (`## What happens when you do this right` + `## Ready to launch this?` and equivalents) for cells where machine-translation produced visibly broken or word-by-word literal output. No bulk regex, no Python — one slug × one language per UPDATE, with the exact source paragraphs scoped via `REPLACE(content, …)`.
+- **Cruise-ship × 12 langs (JA/PT/SV/NL polished in earlier session, plus today)**: DA, DE, ES, FI, FR, IT, KO, ZH-CN tails rewritten. Replaced patterns like SV `Verklig-magi är-kombinera elegans` (hyphen-glued literal compounds), DE `Bereit das zu launchen?` (English-anglicism), FR `Prêt pour lancer ça ?` (wrong preposition) → native idiomatic CTAs (`Bereit zum Ablegen?`, `Prêts à appareiller ?`, `Pronti a salpare?`, `Klar til at sætte sejl?`, `Valmiina lähtemään merille?`, `이제 출항할 준비가 되셨나요?`, `准备好启航了吗？`). Also fixed broken nested links in DA/DE/ES/FI/FR/IT/KO/ZH-CN closing CTAs that had ended up pointing to wrong destinations or wrapping the wrong text.
+- **Other-slug tails × 8 cells** with the same literal "real magic" opener pattern: `5-masquerade-ball` JA/KO/ZH-CN, `how-to-host-victorian` JA/ZH-CN, `how-to-host-zombie-apocalypse` JA/ZH-CN, `how-to-host-fairy-tale` KO. Each rewritten as a native closing flourish with the pillar idea preserved. Fairy-tale KO additionally collapsed a malformed run-on closing paragraph that had embedded `**최종 업데이트: 2026년 3월** ---` mid-prose with a duplicate CTA after it.
+- **Localized "Last Updated" markers**: SV cruise-ship `**Last updated: March 2026**` (English string left in by the original translation pass) → `**Senast uppdaterad: mars 2026**`. FR cruise-ship same fix → `**Dernière mise à jour : mars 2026**`.
+
+### Schema fix: KO pirate-ship FAQ heading-level corrected (## → ###)
+
+- `5-pirate-ship-murder-mystery-themes-…` KO had all 6 FAQ Q-headings at `##` level instead of `###`, breaking `generateFaqSchema` Q&A extraction (the regex requires `### Q?` for Pattern 1). Fixed each of the 6 question lines via individual REPLACEs.
+- Sweep query confirms 0 cells across all 12 non-EN languages now have the `## FAQ-heading\n\n## Q-heading` pattern.
+
 ### SEO/AEO: FAQPage schema regex gap closed — extraction now covers ~1,190 cells (was ~620)
 
 - **Discovery**: my prior "650/650 P5 schema-ready" claim was wrong. The metric I used was "has canonical H2 FAQ heading," but the schema generator (`generateFaqSchema` in [src/pages/BlogPost.tsx](src/pages/BlogPost.tsx) + mirror in [scripts/prerender-blog.mjs](scripts/prerender-blog.mjs)) also requires Pattern 1 (`### Q?` H3) or Pattern 2 (`**Q: Q?**\nA:` letter-prefixed bold) for Q&A extraction. Cells with H2 + `**Question?**` plain bold (no letter prefix) silently returned `qaItems.length === 0` and produced no `<script type="application/ld+json">` block at all.
