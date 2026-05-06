@@ -2,6 +2,27 @@
 
 ## 2026-05-06
 
+### SEO/AEO: FAQPage schema regex gap closed — extraction now covers ~1,190 cells (was ~620)
+
+- **Discovery**: my prior "650/650 P5 schema-ready" claim was wrong. The metric I used was "has canonical H2 FAQ heading," but the schema generator (`generateFaqSchema` in [src/pages/BlogPost.tsx](src/pages/BlogPost.tsx) + mirror in [scripts/prerender-blog.mjs](scripts/prerender-blog.mjs)) also requires Pattern 1 (`### Q?` H3) or Pattern 2 (`**Q: Q?**\nA:` letter-prefixed bold) for Q&A extraction. Cells with H2 + `**Question?**` plain bold (no letter prefix) silently returned `qaItems.length === 0` and produced no `<script type="application/ld+json">` block at all.
+- **Scope of the silent failure**: 437 cells using plain `**Question?**` bold (most common machine-translation output across non-EN locales) + 60 cells using full-width `？` instead of ASCII `?` (JA/ZH-CN where Pattern 1 regex's `\?` failed to match).
+- **Fix**: extended both regex copies (BlogPost.tsx + prerender-blog.mjs):
+  - Pattern 1 now accepts `[?？]` (ASCII or full-width question mark) — same character semantically, was missed by ASCII-only `\?`.
+  - Pattern 2 same `[?？]` extension.
+  - **New Pattern 3** added as a fallback: `**Question?**\n\nAnswer paragraph` with no letter prefix, scoped within the FAQ section, terminating at the next bold question or H2. Validated with two unit tests — Pattern 3 fires on machine-translation cells and does NOT false-match on Pattern-1 cells.
+- **Coverage**: cells where the schema will now extract Q&A jumped from ~620 to **1,190** (out of 1,211 with canonical H2 FAQ — the 21 still-uncovered are mostly cells whose body uses neither convention, e.g. plain prose Q&A without bold or H3 structure).
+
+### Content: 2 sub-3KB stubs rebuilt (how-to-fix-guests-arriving-late DE/FR)
+
+- Today's just-published slug `how-to-fix-guests-arriving-late-problems-in-murder-mystery-parties` shipped with thin DE (2,437 chars) and FR (2,519 chars) translation stubs. Same playbook as the 4 earlier stubs (hacker DE/FR, how-long DA/FR): full native-quality posts at ~10KB each with intro + ANSWER-FIRST framing + 5 H2 body sections + 7-question FAQ + closing CTA. Topic specifically tackles modular mystery structure, late-entry character roles, the briefing-packet catch-up system, and three escalation options for very late arrivals.
+
+### Content: 16 cells with unclosed `**` bold repaired
+
+- Final-sweep diagnostic surfaced 16 cells where total `**` count was odd — visible-text bug that renders literal `**` characters in the rendered HTML.
+- 10 of the 16 were `innocent-bystander-murder-mystery-themes-…` × all languages: same 3 lines per cell with pattern `**Bold-keyword** sentence text.**` — orphan trailing `**` after the answer. Fixed cell-by-cell, target-language-specific REPLACE per cell.
+- 6 one-off fixes: `5-renaissance` FR (date line missing leading `**`), `forensic-expert` DE (orphan leading `**` on a body paragraph), `how-to-fix-pacing` JA (orphan `**` line at end of cell), `how-to-fix-unrealistic` NL (bold-keyword line missing closing `**`), `how-to-host-prohibition` SV (date line missing closing `**`), `unique-pirate` SV (orphan `**` line).
+- Verification: 0 cells with odd `**` count remain across 1,365 published rows.
+
 ### Content: broken nested-link cleanup — 125 cells repaired cell-by-cell
 
 - **Symptom**: prior cross-link backfill passes had stacked link applications on top of already-linked text without unwrapping the previous link, leaving 125 cells with visible markdown garbage like `[[[[party — Genereer](/url1) je aangepaste moorddrama](/url2) in](/url3) minuten]**](/url4)` (4-deep nested wreckage in wild-west NL closing CTA), `[r](/url1)](/url2)](/url3)` (orphan word fragment + 3-deep URL stack in spa-resort NL), and `는](/url1)](/url2)` (Korean particle dangling outside any opening bracket in haunted-hotel KO).
