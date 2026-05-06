@@ -480,14 +480,13 @@ export default function BlogPost() {
     };
   };
 
-  // Generate ItemList schema for listicle posts (e.g., "5-X-themes" slugs).
-  // Reads the same numbered-linked-anchor block at the top of the post, but emits
-  // ItemList rather than HowTo because these posts are catalogs of options, not
-  // sequential instructions.
+  // Generate ItemList schema for any post that has a numbered linked-anchor
+  // block at the top and isn't a how-to (how-to gets HowTo schema instead).
+  // This catches the 5-X-themes listicles AND every P5 post that got a
+  // "What's in this guide" TOC via apply-p5-tocs.mjs — both share the same
+  // numbered-anchor structure.
   const generateItemListSchema = (content: string, postSlug: string) => {
-    // Detect listicle posts by slug pattern: starts with a number, mentions themes/ideas/ways/tips
-    const isListicle = /^\d+[-_].*(themes|ideas|ways|tips|reasons|examples|types)/i.test(postSlug);
-    if (!isListicle) return null;
+    if (/^how-to/i.test(postSlug)) return null;
 
     const items = parseNumberedAnchorBlock(content);
     if (!items || items.length < 3) return null;

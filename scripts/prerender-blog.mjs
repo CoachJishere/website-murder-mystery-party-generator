@@ -198,8 +198,11 @@ function buildSchemas(post, langVariants) {
     }
   }
 
-  // ItemList for listicles
-  if (/^\d+[-_].*(themes|ideas|ways|tips|reasons|examples|types)/i.test(post.slug)) {
+  // ItemList for any post that has a numbered linked-anchor block at the top
+  // and isn't a how-to (how-to gets HowTo schema instead). This catches the
+  // 5-X-themes listicles AND every P5 post that got a "What's in this guide"
+  // TOC via apply-p5-tocs.mjs — both share the same numbered-anchor structure.
+  if (!isHowTo) {
     const items = parseNumberedAnchorBlock(post.content);
     if (items && items.length >= 3) {
       schemas.push({
