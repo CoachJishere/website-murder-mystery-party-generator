@@ -2,6 +2,11 @@
 
 ## 2026-05-06
 
+### SEO/GEO: 301 coverage backfill + IndexNow submission for daily-publish
+
+- **301 redirect coverage** (`vercel.json`): cross-checked the 584 entries in `temp-files/orphan-decisions.jsonl` against the existing redirect table; added 16 missing entries (mostly ice-hotel / dream-world / rockstar / Celtic themes that have no published equivalent — they redirect to the locale's `/blog` index). Coverage went from 530/584 to 584/584 (100%).
+- **IndexNow submission pipeline** (`scripts/submit-indexnow.mjs` + `public/2f97a25b3da3a908fd3253c1f684c536.txt` + `.github/workflows/publish-daily-blog.yml`): new daily-publish step submits all 13 just-published URLs to Bing's IndexNow endpoint after the publish step completes. Bing/Yandex/Seznam/Naver now index within minutes of publish rather than waiting for sitemap polling. (Google does not consume IndexNow.) Verified end-to-end: HTTP 202 accepted on a 13-URL test batch.
+
 ### SEO/GEO: build-time prerender + sitemap fixes (catastrophic-bug class)
 
 - **Prerender pipeline** (`scripts/prerender-blog.mjs`, wired into `npm run build`): the entire site was a Vite SPA shell — every blog URL served `<title>Murder Mystery Party Generator</title>` and `<meta name="description" content="Lovable Generated Project" />` in the raw HTML, with all real metadata, hreflang, canonical, and JSON-LD injected client-side via `react-helmet-async`. Result: invisible to ChatGPT browse, Perplexity bot, LLM training crawlers, and Google's first-pass index. The new prerender (1) reads `dist/index.html` produced by `vite build`, (2) pulls every published `(slug, language, title, content, ...)` row, (3) renders markdown to HTML via the same unified pipeline (`remark-parse` → `remark-rehype` → `rehype-slug` → `rehype-raw` → `rehype-stringify`) the React side uses so anchor IDs match exactly, (4) computes per-post head (title, description, canonical, 13 hreflang variants + x-default, og:*, twitter:*) and every JSON-LD graph (BlogPosting, BreadcrumbList, FAQPage, HowTo, ItemList, Product comparison), (5) writes a fully populated `dist/<lang>/blog/<slug>/index.html` (or `dist/blog/<slug>/index.html` for EN). The React app still hydrates on top for users; bots and AI crawlers see real metadata and content from the first byte.

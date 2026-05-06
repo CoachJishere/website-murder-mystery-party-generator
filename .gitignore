@@ -48,6 +48,7 @@ Blog Database - Master.csv
 !scripts/_supabase-node.mjs
 !scripts/verify-anchors.mjs
 !scripts/prerender-blog.mjs
+!scripts/submit-indexnow.mjs
 *.sql
 *-REPORT*.md
 *-STATUS*.md

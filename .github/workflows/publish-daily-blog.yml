@@ -86,6 +86,19 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node scripts/generate-llms-txt.mjs
 
+      - name: Submit just-published URLs to IndexNow (Bing)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        # `$SLUG` from the publish-post step is out of scope here, so query
+        # by `updated_at` instead — anything touched in the last hour is
+        # exactly what just got published. Submits all 13 language URLs so
+        # Bing/Yandex/Seznam/Naver index within minutes rather than waiting
+        # on sitemap polling. Google does not consume IndexNow.
+        run: |
+          SINCE=$(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v-1H +%Y-%m-%dT%H:%M:%SZ)
+          node scripts/submit-indexnow.mjs --since="$SINCE"
+
       - name: Commit updated llms.txt
         run: |
           git config user.name "github-actions[bot]"
