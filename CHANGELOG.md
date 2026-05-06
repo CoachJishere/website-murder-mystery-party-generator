@@ -2,6 +2,14 @@
 
 ## 2026-05-06
 
+### SEO/GEO: Priority 5 TOC pipeline — generator + applier (24 cells live, 608 ready)
+
+- **Generator + applier** (`scripts/apply-p5-tocs.mjs`): mechanical TOC generator for the 50 unique Priority 5 slugs (theme/setting/character/event posts that aren't 5-X-themes / how-to-fix / how-to-host / best-comparison). Pulls the cell, extracts up to 5 substantive H2s (skipping FAQ, related-guides, last-updated, closing CTAs, and any H2 with a body shorter than 80 chars), takes the first sentence of each as a teaser, and prepends a numbered linked-anchor TOC block at the top of the post.
+- **TOC heading translated per locale**: en/"What's in this guide", es/"Qué hay en esta guía", fr/"Ce que contient ce guide", and 10 more.
+- **Idempotent**: skips cells that already have the locale TOC heading; safe to re-run.
+- **24 P5 cells already live** via cell-by-cell MCP application during this session (covers ~5 unique slugs across multiple languages). Remaining 608 cells (50 slugs × ~12 langs minus those done) will be applied in one shot via the script when run with a service-role key (RLS blocks anon-key UPDATE).
+- The same numbered-anchor block format flows into the existing render-time `ItemList` schema generator in `src/pages/BlogPost.tsx`, so once the script runs, every P5 post emits structured data that AI engines can extract as a clean numbered list.
+
 ### SEO: cross-link backfill — Related-guides footer for thin cells
 
 - 209 cells got a `## <Related guides translated>` footer with 3–5 cluster-sibling links per post. Sibling slugs picked from `cross_link_map.json`'s `cluster` field, filtered to siblings that are actually published, sibling titles pulled from each cell's matching-language row so links read locale-natively.
