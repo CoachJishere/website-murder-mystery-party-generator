@@ -2,6 +2,13 @@
 
 ## 2026-05-06
 
+### SEO: cross-link backfill — Related-guides footer for thin cells
+
+- 209 cells got a `## <Related guides translated>` footer with 3–5 cluster-sibling links per post. Sibling slugs picked from `cross_link_map.json`'s `cluster` field, filtered to siblings that are actually published, sibling titles pulled from each cell's matching-language row so links read locale-natively.
+- Why this rather than re-applying `cross_link_map`'s `lang_insertions`: those `match_text` strings are stale after recent content rebuilds (DA + FR accessibility, casino, gothic-romance, spy-thriller, P3/P4 fix/host posts). 3 cells had appliable insertions but they would have produced nested broken links because my rebuilds had already linked the same shorter phrase. The Related-guides footer is mechanical and never collides with existing in-paragraph links.
+- Heading translated per language (Related guides, Guías relacionadas, Guides associés, Verwandte Guides, Guide correlate, Gerelateerde gidsen, Guias relacionados, Relaterede guides, Relaterade guider, Aiheeseen liittyvät oppaat, 関連ガイド, 관련 가이드, 相关指南).
+- Result: thin cells (< 3 internal links) went from 220 → 11 (99.2% healthy). Average internal links per post went from 4.1 → 4.7. The remaining 11 are cluster orphans where < 3 published siblings exist.
+
 ### SEO/GEO: 301 coverage backfill + IndexNow submission for daily-publish
 
 - **301 redirect coverage** (`vercel.json`): cross-checked the 584 entries in `temp-files/orphan-decisions.jsonl` against the existing redirect table; added 16 missing entries (mostly ice-hotel / dream-world / rockstar / Celtic themes that have no published equivalent — they redirect to the locale's `/blog` index). Coverage went from 530/584 to 584/584 (100%).
