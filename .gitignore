@@ -46,6 +46,7 @@ Blog Database - Master.csv
 !scripts/apply-crosslinks.mjs
 !scripts/generate-llms-txt.mjs
 !scripts/_supabase-node.mjs
+!scripts/verify-anchors.mjs
 *.sql
 *-REPORT*.md
 *-STATUS*.md

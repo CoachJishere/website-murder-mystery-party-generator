@@ -375,6 +375,27 @@ export default function BlogPost() {
     };
   };
 
+  // Detect the "numbered linked-anchor block" — the structural pattern used by the
+  // GEO-optimized "Fix X in N Steps" / "Setup Checklist" / "5 X Themes" TOC blocks.
+  // Returns the parsed list items if found, in document order, or null.
+  const parseNumberedAnchorBlock = (content: string): { name: string; anchor: string; teaser: string }[] | null => {
+    const items: { name: string; anchor: string; teaser: string }[] = [];
+    // Match lines like: `1. **[Step name](#anchor-id)** — teaser text`
+    // The `**[...](#...)**` shape is what distinguishes this from any other numbered list.
+    const itemRegex = /^\d+\.\s+\*\*\[([^\]]+)\]\(#([^)]+)\)\*\*\s*[—-]\s*(.+)$/gm;
+    let m: RegExpExecArray | null;
+    while ((m = itemRegex.exec(content)) !== null) {
+      const name = m[1].trim();
+      const anchor = m[2].trim();
+      const teaser = m[3].trim().replace(/\*\*([^*]+)\*\*/g, '$1');
+      if (name && anchor && teaser) items.push({ name, anchor, teaser });
+    }
+    if (items.length < 2) return null;
+    return items;
+  };
+
+  const pageUrl = `https://www.mysterymaker.party${lang ? `/${lang}` : ''}/blog/${post.slug}`;
+
   // Generate HowTo schema from step-by-step tutorial content
   const generateHowToSchema = (content: string, title: string, postSlug: string) => {
     // Detect tutorial/how-to posts by slug (always English), title patterns, or content patterns
@@ -382,19 +403,35 @@ export default function BlogPost() {
     const isHowTo = /^how-to/i.test(postSlug) || /^how[\s-]to/i.test(title) || /^(Sådan|Kuinka|So |Wie du|Comment|Cómo|Como|Come |Hoe |Hur man|Hvordan)/i.test(title) || /方法/.test(title) || /## (?:step\s*\d|how to)/i.test(content);
     if (!isHowTo) return null;
 
-    const steps: { name: string; text: string }[] = [];
+    const steps: { name: string; text: string; url?: string }[] = [];
+
+    // Pattern 0 (preferred): the numbered linked-anchor block at the top of every
+    // GEO-optimized fix/host post. Each item maps 1:1 to a HowToStep with a stable
+    // anchor URL into the elaborating H2 section.
+    const linkedItems = parseNumberedAnchorBlock(content);
+    if (linkedItems && linkedItems.length >= 3) {
+      for (const item of linkedItems) {
+        steps.push({
+          name: item.name,
+          text: item.teaser.substring(0, 500),
+          url: `${pageUrl}#${item.anchor}`,
+        });
+      }
+    }
 
     // Pattern 1: ## Step N: Title / content
-    const stepMatches = content.matchAll(/##\s*(?:Step\s*\d+[:.]\s*)(.+?)\n([\s\S]*?)(?=\n## |$)/gi);
-    for (const match of stepMatches) {
-      const name = match[1].trim();
-      const text = match[2].trim()
-        .replace(/\*\*([^*]+)\*\*/g, '$1')
-        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-        .replace(/\n+/g, ' ')
-        .substring(0, 500);
-      if (name && text) {
-        steps.push({ name, text });
+    if (steps.length === 0) {
+      const stepMatches = content.matchAll(/##\s*(?:Step\s*\d+[:.]\s*)(.+?)\n([\s\S]*?)(?=\n## |$)/gi);
+      for (const match of stepMatches) {
+        const name = match[1].trim();
+        const text = match[2].trim()
+          .replace(/\*\*([^*]+)\*\*/g, '$1')
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+          .replace(/\n+/g, ' ')
+          .substring(0, 500);
+        if (name && text) {
+          steps.push({ name, text });
+        }
       }
     }
 
@@ -430,17 +467,109 @@ export default function BlogPost() {
       "@type": "HowTo",
       "name": title,
       "description": post.meta_description,
-      "step": steps.map((s, i) => ({
-        "@type": "HowToStep",
+      "step": steps.map((s, i) => {
+        const step: Record<string, unknown> = {
+          "@type": "HowToStep",
+          "position": i + 1,
+          "name": s.name,
+          "text": s.text,
+        };
+        if (s.url) step.url = s.url;
+        return step;
+      })
+    };
+  };
+
+  // Generate ItemList schema for listicle posts (e.g., "5-X-themes" slugs).
+  // Reads the same numbered-linked-anchor block at the top of the post, but emits
+  // ItemList rather than HowTo because these posts are catalogs of options, not
+  // sequential instructions.
+  const generateItemListSchema = (content: string, postSlug: string) => {
+    // Detect listicle posts by slug pattern: starts with a number, mentions themes/ideas/ways/tips
+    const isListicle = /^\d+[-_].*(themes|ideas|ways|tips|reasons|examples|types)/i.test(postSlug);
+    if (!isListicle) return null;
+
+    const items = parseNumberedAnchorBlock(content);
+    if (!items || items.length < 3) return null;
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": post.title,
+      "description": post.meta_description,
+      "numberOfItems": items.length,
+      "itemListOrder": "https://schema.org/ItemListOrderAscending",
+      "itemListElement": items.map((item, i) => ({
+        "@type": "ListItem",
         "position": i + 1,
-        "name": s.name,
-        "text": s.text
+        "name": item.name,
+        "url": `${pageUrl}#${item.anchor}`,
+        "description": item.teaser.substring(0, 300),
+      }))
+    };
+  };
+
+  // Generate BreadcrumbList schema (Home > Blog > Post). Locale-aware via lang prefix.
+  // Breadcrumb labels stay in English because schema.org consumers are language-agnostic
+  // for taxonomy and breadcrumb display is rendered from URL structure anyway.
+  const generateBreadcrumbSchema = () => {
+    const homeUrl = `https://www.mysterymaker.party${lang ? `/${lang}` : ''}/`;
+    const blogUrl = `https://www.mysterymaker.party${lang ? `/${lang}` : ''}/blog`;
+    return {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": homeUrl },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": blogUrl },
+        { "@type": "ListItem", "position": 3, "name": post.title, "item": pageUrl },
+      ]
+    };
+  };
+
+  // Generate ItemList schema for the games-comparison post. Each row in the
+  // "At-a-Glance Comparison" table is a SoftwareApplication (or Product) item.
+  // Detection by slug — this is one specific post per language.
+  const generateComparisonSchema = (postSlug: string) => {
+    if (postSlug !== 'best-murder-mystery-party-games-review') return null;
+
+    // The 9 products listed in the comparison table — fixed roster, locale-independent
+    // brand names. Descriptions stay short and factual; the per-locale "Best for" cell
+    // already lives in post.content for human readers.
+    const products = [
+      { name: 'MysteryMaker', url: 'https://www.mysterymaker.party/' },
+      { name: 'Night of Mystery', url: 'https://www.nightofmystery.com/' },
+      { name: 'Broadway Murder Mysteries', url: 'https://www.broadwaymurdermysteries.com/' },
+      { name: 'Playing With Murder', url: 'https://www.playingwithmurder.com/' },
+      { name: 'Masters of Mystery', url: 'https://www.mastersofmystery.com/' },
+      { name: 'Hunt A Killer', url: 'https://www.huntakiller.com/' },
+      { name: 'Deadbolt Mystery Society', url: 'https://www.deadboltmysterysociety.com/' },
+      { name: 'The Dinner Detective', url: 'https://www.thedinnerdetective.com/' },
+    ];
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": post.title,
+      "description": post.meta_description,
+      "numberOfItems": products.length,
+      "itemListElement": products.map((p, i) => ({
+        "@type": "ListItem",
+        "position": i + 1,
+        "item": {
+          "@type": "Product",
+          "name": p.name,
+          "url": p.url,
+          "category": "Murder Mystery Party Games",
+        }
       }))
     };
   };
 
   const faqSchema = generateFaqSchema(post.content);
   const howToSchema = generateHowToSchema(post.content, post.title, post.slug);
+  const itemListSchema = generateItemListSchema(post.content, post.slug);
+  const breadcrumbSchema = generateBreadcrumbSchema();
+  const comparisonSchema = generateComparisonSchema(post.slug);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#000000]">
@@ -492,6 +621,19 @@ export default function BlogPost() {
               {JSON.stringify(howToSchema)}
             </script>
           )}
+          {itemListSchema && (
+            <script type="application/ld+json">
+              {JSON.stringify(itemListSchema)}
+            </script>
+          )}
+          {comparisonSchema && (
+            <script type="application/ld+json">
+              {JSON.stringify(comparisonSchema)}
+            </script>
+          )}
+          <script type="application/ld+json">
+            {JSON.stringify(breadcrumbSchema)}
+          </script>
         </Helmet>
         <article className="max-w-4xl mx-auto">
           <header className="mb-12">

@@ -2,6 +2,20 @@
 
 ## 2026-05-06
 
+### SEO/GEO: schema markup expansion + anchor verification
+
+- **HowTo schema upgrade** (`src/pages/BlogPost.tsx`): added Pattern 0 to `generateHowToSchema` that detects the GEO-optimized "Fix X in N Steps" / "Setup Checklist" numbered linked-anchor block and emits each item as a `HowToStep` with a stable `url` into the elaborating H2 section. Replaces noisy fallback that previously emitted every H2 as a step. Now every published how-to-fix and how-to-host post (across 13 langs) emits a clean N-step `HowTo` graph that maps 1:1 to the visible numbered list.
+- **ItemList schema** for listicle posts: same numbered-anchor parser, dispatched by slug pattern (`/^\d+[-_].*(themes|ideas|ways|tips|reasons|examples|types)/`). Each "5 X themes" listicle now emits an `ItemList` with `position`, `name`, `url`, and `description` per theme.
+- **BreadcrumbList schema** emitted on every blog post (Home > Blog > Post), locale-aware via the `lang` URL prefix.
+- **Comparison schema** for `best-murder-mystery-party-games-review`: emits an `ItemList` of `Product` nodes for the 9 games in the comparison table, with brand URLs.
+- **Anchor verifier** (`scripts/verify-anchors.mjs`): Node script that re-runs the same `github-slugger` algorithm rehype-slug uses at render time, then compares every `[link](#anchor)` reference in every published cell against the actual H2/H3 slugs on that page. First run surfaced 28 broken anchors across 10 cells; all fixed cell-by-cell:
+  - 22 FR colon-space → double-hyphen mismatches (steampunk, zombie, prohibition, spy-thriller, casino, Hollywood) — `: ` produces `--` in github-slugger output but I'd anchored single `-`.
+  - 5 JA middle-dot `・` mismatches (vampire-ball, victorian-london, viking-longship) — github-slugger strips the middle dot but I'd kept it.
+  - 1 EN typo in `how-to-fix-character-assignment` (`whos-actually-inviting` → `who-youre-actually-inviting`).
+  - Re-verification: 3,503 in-page anchor refs across 1,352 published cells, zero broken.
+- **Meta description audit**: 0 missing, 0 duplicates across 1,352 cells. Locale-aware length thresholds (Latin 70–160, CJK 30–90) showed only 2 truly short ZH-CN descriptions (mountain-lodge, cruise-ship); both rewritten to ~50 chars each. The remaining 18 borderline-long CJK descriptions are still informative within their first sentence.
+- **Image alt text audit**: 0 cells use `featured_image_url` and 0 cells contain inline markdown images, so there's no image alt text liability across the blog. The one `<img>` in `BlogPost.tsx` (featured-image branch) already uses `post.title` as alt; the only other site `<img>` (Header avatar) is also alt-correct.
+
 ### GEO: structural backlog cleanup — 6 deferred items closed (~205 cells)
 - **Priority 1 listicle rebuilds (3 slugs × 12 langs = 36 rebuilt cells, plus 1 backfill + 4 EN TOCs = 41 total):** all three deferred theme-structure rebuilds landed.
   - **5-spy-thriller-***: bold-text theme names in 12 non-EN langs converted to `### Theme N: Name` H3s; TOCs added to all 13 langs (EN was missing one).
