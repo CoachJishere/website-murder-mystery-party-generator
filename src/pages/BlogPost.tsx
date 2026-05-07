@@ -597,7 +597,7 @@ export default function BlogPost() {
   return (
     <div className="min-h-screen flex flex-col bg-[#000000]">
       <Header />
-      <main className="flex-grow py-12 px-4">
+      <main className={`flex-grow pt-12 px-4 ${showStickyCTA ? 'pb-40 sm:pb-32' : 'pb-12'}`}>
         <Helmet>
           <title>{post?.title || 'Loading...'} | Mystery Maker</title>
           {post?.meta_description && (
@@ -750,7 +750,7 @@ export default function BlogPost() {
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {post.related_posts.map((related) => (
-                  <Card key={related.id} className="border-[#C81400] hover:shadow-md transition-shadow">
+                  <Card key={related.id} className="border-2 border-[#C81400] hover:shadow-md transition-shadow">
                     <CardContent className="p-6">
                       <h3 className="font-bold text-lg mb-2 text-[#C81400]">
                         <Link to={lang ? `/${lang}/blog/${related.slug}` : `/blog/${related.slug}`} className="hover:underline">

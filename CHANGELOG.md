@@ -2,6 +2,12 @@
 
 ## 2026-05-07
 
+### UI: Blog content no longer cut off by sticky CTA + cards visible on mobile
+
+- **Cutoff**: `<main>` had `py-12` (48px top + bottom). The sticky CTA bar is ~80px tall desktop / ~140px tall mobile (heading + subtext + button stack), so 48px wasn't enough — the last "You might also like" card got partially hidden behind the bar. Bumped bottom padding to `pb-40` (160px) on mobile / `pb-32` (128px) on desktop, applied only when `showStickyCTA` is true.
+- **Mobile card borders**: cards used `border-[#C81400]` (1px). On mobile DPI a 1px red border on a near-black `bg-card` (`#111`) doesn't anti-alias visibly, so cards appeared borderless. Bumped to `border-2` so the red outline reads on both desktop and mobile.
+- File: [src/pages/BlogPost.tsx:600](src/pages/BlogPost.tsx#L600), [src/pages/BlogPost.tsx:750](src/pages/BlogPost.tsx#L750).
+
 ### UX: "You might also like" capped at 3 + reordered to theme-first
 
 - **Bug**: the same-`post_date` query that fed "You might also like" had no `.limit()`, so on batch-publish days (thematic clusters or multi-language drops sharing one date) it returned 20+ results that all rendered as a 7-row wall under the article. The theme-related and recent-posts fallbacks were gated on `related.length < 3` and never fired in this case.
