@@ -2,6 +2,15 @@
 
 ## 2026-05-07
 
+### Translation polish: cruise-ship body fully rewritten — DE + ES + FR + IT + PT now complete (9 of 12 langs done)
+
+- **DE** (`Was diese Anleitung enthält` had calques like `Beweise, das wirklich auf einem Schiff gehört`, `Soziale Dynamiken, die Ermittlung antreiben`): full 11-section rewrite. Length 31,506 → 31,923 chars. Native German with proper grammar (`Beweise, die wirklich auf ein Schiff gehören`, `Soziale Dynamiken, die die Ermittlung vorantreiben`).
+- **ES** (`Cómo realmente estructurar el misterio desde cero`, `comandaban 2-3x el precio`): full 11-section rewrite. Length 32,473 → 32,439 chars. Native Spanish (`Cómo construir el misterio desde la base`).
+- **FR** (TOC/intro stilted with `Voici ce que vous essayez réellement de faire`, `Construire l'atmosphère qui ne submerg pas l'enquête`): TL;DR was already polished from earlier pass; rewrote remaining 11 body sections. Length 34,347 → 33,384 chars. Idiomatic French with proper subjunctive/conditional.
+- **IT** (`Come Effettivamente Strutturare Il Mistero Da Zero`, Italian Title Case applied to every H2): TL;DR already polished; rewrote remaining body. Length 32,151 → 31,478 chars. Sentence-case headers and natural Italian (`Come costruire il giallo dalle fondamenta`).
+- **PT** (`Desenvolvimento de personagem que realmente reflecte vida de navio`, `Indo Mais Fundo Se O Seu Grupo`): TL;DR already polished; rewrote 10 body sections in pt-PT. Length 31,459 → 30,746 chars. Idiomatic European Portuguese (`Ir mais fundo se o grupo gostar mesmo de pormenor marítimo`).
+- **Method**: same per-section anchored `regexp_replace` strategy. Caught and removed 1 orphan stilted "Specific scenarios" section in each of DE/ES/FR/IT/PT (each from the merged-section UPDATE that bypassed the standalone scenarios H2). Final per-cell H2 audit confirmed all 11 native sections + FAQ + tail intact.
+
 ### Translation polish: cruise-ship body fully rewritten — SV + FI + NL + DA complete (8 langs remaining)
 
 - **NL**: full body rewrite (11 H2 sections). Length 28,257 → 31,513 chars. Replaced broken Dutch (`werklijk reflecteer schip leven`, `Onderhoud venue eliminaties werk`) with native Dutch using natural article inflection.
