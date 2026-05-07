@@ -2,6 +2,28 @@
 
 ## 2026-05-07
 
+### Content: corpus-wide Quick answer rewrite — 1,283 cells across 13 languages
+
+- **Problem**: every published and draft post opened with a shallow keyword-stuffed `> **Quick answer:** ...` blockquote that ticked the AEO/GEO structural box but failed the extraction job. ChatGPT search, Perplexity, and Google AI Overview were getting noise snippets like "Plan the ultimate 1920s murder mystery with prohibition-era themes…" instead of actionable answers to the question implied by each title. Saves and trust signals weren't firing.
+- **Scope rewritten**: 105 EN published posts + 315 EN drafts + 863 translation cells (72 parents × 12 languages, FR has 71). New format hits 50-90 words, opens with "To run/host/plan…", names 2-4 concrete actions (pick, cast, plant, run), and includes specific numbers (group sizes, time blocks, round counts) — all grounded in what each post actually teaches, no invented content.
+- **Method**: per-post grounded rewrites — read each title, opening, and H2 structure before drafting, then UPDATE one row at a time via Supabase MCP `execute_sql` with `$old$...$old$` / `$new$...$new$` dollar-quoted REPLACE for EN and `regexp_replace(content, '\A> \*\*<localized-label>:\*\* [^\n]*', ...)` for translations to match each locale's canonical Quick-answer label (DA `Kort fortalt:`, DE `Kurz gesagt:`, ES `En resumen:`, FI `Lyhyesti:`, FR `En bref :`, IT `In breve:`, JA `要約：`, KO `요약:`, NL `Kort gezegd:`, PT `Em resumo:`, SV `Kort sagt:`, ZH-CN `摘要：`). One UPDATE per row, scoped by slug × language. No bulk regex on prose.
+- **Translations preserve identical action structure** across all 12 locales (same number of steps, same specific numbers) so AI engines extracting in any locale get equivalent value. Native voice over machine translation, though JA/KO/ZH-CN/FI would benefit from a native-speaker idiom polish before paid acquisition use.
+- **Out of scope, flagged for later**: the secondary `**Answer-first nugget:** …` lines (and their localized calques like ES `**Nugget de respuesta-primero:**`) that follow the Quick answer on some posts — same shallowness pattern, separate cleanup pass.
+- **Progress log**: every batch persisted to `temp-files/quick-answer-rewrite-progress.jsonl` with slug + language + batch ID for idempotency.
+
+### Audit + fix: 16 FAQ schema-extraction gaps closed (cells where FAQPage schema would silently emit nothing)
+
+- **Root pattern**: 16 cells had a FAQ heading but Q lines that didn't end with `?` or `？`, so `generateFaqSchema` extracted 0 Q&A pairs and the cells emitted no FAQPage schema. Three sub-patterns:
+  - **`### Question.` (period) at H3 level**: 5-haunted-mansion in EN/FI/IT/KO/NL + 5-masquerade-ball in FI/IT/NL — 8 cells, 7 questions each. Fixed via `regexp_replace(content, '(### [^\n]+)\.\n', '\1?\n', 'g')` per cell.
+  - **`### Question。` (Japanese full stop)**: 5-ancient-greece JA, 5-ancient-rome JA, 5-haunted-mansion JA, how-to-fix-audio JA — 4 cells. Fixed with the JA full-stop variant.
+  - **`**Question.**` bold-period in 3 mountain-lodge cells (FI/IT/NL)** — verified zero false-positives outside the FAQ section before applying.
+  - **JA audio-systems cell**: had FAQ Q-headers at `##` level (not `###`) AND missing `？`. 5 Q-headings demoted to `###` and rewritten one-by-one with natural-Japanese question phrasing.
+- **Sweep verification**: 0 cells across 1,365 published rows now have a FAQ heading without an extractable Q&A pattern. All FAQPage schemas should emit correctly on next Vercel rebuild.
+
+### Audit + fix: 1 broken nested link in today's just-published `how-to-fix-guests-solving-too-quickly` (KO)
+
+- Today's daily-publish (2026-05-07 11:00 UTC) shipped with one broken nested-link pattern in KO: `[평균 [파티를 위해 설계하고 있는가, 또는 당신의 미스터리를](url1)](url2)` — orphan `[평균 ` outside the inner link, plus a duplicated phrase fragment `푸는 당신의 미스터리를 푸는` in the surrounding prose. Collapsed to a single clean link to adults-guide, removed the orphan bracket, cleaned the duplicate. Sweep verifies 0 cells now match `\]\([^)]+\)\]\(`.
+
 ### Translation polish: cruise-ship body sweep COMPLETE — all 12 non-EN languages rewritten in native quality
 
 - **JA + KO + ZH-CN body rebuild**: the three CJK cells were stub-translations with much shorter bodies than EN (JA 13,002 chars, KO 14,822, ZH-CN 9,210 vs EN 29,040). Each had the same 11 H2 body sections as the European cells, but with abbreviated/literal machine output. Rebuilt all 11 sections per cell in native-quality prose, keeping the structure the same. Final lengths: JA 12,814 chars, KO 15,294 chars, ZH-CN 9,812 chars (Chinese compresses ~3x relative to English; Japanese and Korean ~2x).
