@@ -2,6 +2,14 @@
 
 ## 2026-05-07
 
+### Content: Answer-First Nugget cleanup — 104 redundant H2 + bold-inline blocks deleted across 12 languages
+
+- **Problem**: after the corpus-wide Quick answer rewrite, every post still carried a duplicative `## Answer-First Nugget` (or localized calque) section that re-stated the same answer the upgraded blockquote now delivered. Same shallowness pattern that justified the Quick answer rewrite, just one section lower. Flagged as out-of-scope earlier today; this is the follow-up pass.
+- **Scope deleted**: 104 cells total — H2 sections (84): EN 11, DA 5, NL 4, DE 6, ES 14, FR 9, PT 17, FI 3, SV 11, KO 6, ZH-CN 6; bold-inline `**Answer-first nugget:**` paragraphs (12): EN 9 + DE 3; final Pepita/Fragmento sweep across ES/IT/PT (8 cells the per-language patterns missed).
+- **Localized variants caught**: `Answer-First Nugget`, `The Quick Nugget`, `Antwort-Erste-Nugget` / `Antwort-Zuerst Checkliste` / `Antwort-First-Nugget`, `Respuesta Rápida` / `Pepita de Respuesta Primero` / `Fragmento Clave de Respuesta`, `Réponse rapide` / `Le Nugget Réponse-D'abord` / `Nugget réponse-d'abord`, `Resposta Rápida` / `Pérola de Resposta Primeiro` / `Pepita de Resposta`, `Vastaus ensin -tiivistelmä` / `Vastaus ensin pätkä`, `Snabbsvar` / `Svar-först nugget` / `Snabb svar nugget`, `Svar-Først Nugget`, `Antwoord-Eerste Nugget`, `답변 우선 너겟` / `답먼저 핵심`, `答案优先的要点` / `答案优先检查清单`.
+- **Method**: per-language `regexp_replace(content, '## [^\n]*?(<localized-anchors>)[^\n]*?\n(?:.|\n)*?(?=\n## |\n---)', '')` with leading `[^\n]*?` made non-greedy (PostgreSQL ARE's first-quantifier-wins greediness rule means a leading greedy `[^\n]*` would have eaten the entire post tail — verified the bug on the first dry-run, fixed by switching to non-greedy throughout). Lookahead `(?=\n## |\n---)` stops cleanly at the next H2 or horizontal rule. Bold-inline variant used a separate pattern with case-insensitive flag to catch `**ANSWER-FIRST NUGGET:**` uppercase variants in 2 wild-west posts where the header sat on its own line above the content paragraph.
+- **Verification**: post-sweep query against all known localized anchors returned zero remaining matches across all 13 languages.
+
 ### Content: corpus-wide Quick answer rewrite — 1,283 cells across 13 languages
 
 - **Problem**: every published and draft post opened with a shallow keyword-stuffed `> **Quick answer:** ...` blockquote that ticked the AEO/GEO structural box but failed the extraction job. ChatGPT search, Perplexity, and Google AI Overview were getting noise snippets like "Plan the ultimate 1920s murder mystery with prohibition-era themes…" instead of actionable answers to the question implied by each title. Saves and trust signals weren't firing.
