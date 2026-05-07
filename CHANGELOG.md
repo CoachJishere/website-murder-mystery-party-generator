@@ -2,6 +2,13 @@
 
 ## 2026-05-07
 
+### Translation polish: cruise-ship body sweep COMPLETE — all 12 non-EN languages rewritten in native quality
+
+- **JA + KO + ZH-CN body rebuild**: the three CJK cells were stub-translations with much shorter bodies than EN (JA 13,002 chars, KO 14,822, ZH-CN 9,210 vs EN 29,040). Each had the same 11 H2 body sections as the European cells, but with abbreviated/literal machine output. Rebuilt all 11 sections per cell in native-quality prose, keeping the structure the same. Final lengths: JA 12,814 chars, KO 15,294 chars, ZH-CN 9,812 chars (Chinese compresses ~3x relative to English; Japanese and Korean ~2x).
+- **Stub-rebuild idiom calls**: replaced literal calques like JA `本当の魔法` with idiomatic openers (`肝は…`), KO `실제 마법은` with `핵심은…`, ZH-CN `真正的魔力在于` with `关键在于…`. Cross-link anchors localized so the Markdown link wraps an idiomatic phrase rather than a translated noun.
+- **Final scope**: 12 non-EN cells × 11 H2 sections = ~132 individual `regexp_replace` operations, each scoped to one slug × one language with H2-anchored bounds. Per-cell post-write H2 audit caught and removed 6 orphan stilted "Specific scenarios" sections (DA, DE, ES, FR, IT, PT — all from merged-section UPDATEs that bypassed the standalone scenarios H2). Cell-by-cell discipline maintained throughout — no bulk regex on prose, no Python.
+- **Cruise-ship slug status**: TL;DR, TOC, all 11 body sections, FAQ + tail polished and structurally clean across all 13 languages (EN source + 12 translations).
+
 ### Translation polish: cruise-ship body fully rewritten — DE + ES + FR + IT + PT now complete (9 of 12 langs done)
 
 - **DE** (`Was diese Anleitung enthält` had calques like `Beweise, das wirklich auf einem Schiff gehört`, `Soziale Dynamiken, die Ermittlung antreiben`): full 11-section rewrite. Length 31,506 → 31,923 chars. Native German with proper grammar (`Beweise, die wirklich auf ein Schiff gehören`, `Soziale Dynamiken, die die Ermittlung vorantreiben`).
