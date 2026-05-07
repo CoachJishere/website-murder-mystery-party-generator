@@ -2,6 +2,13 @@
 
 ## 2026-05-07
 
+### Content: Answer-First Nugget cross-post sweep — 30 missed variants caught with broader patterns
+
+- **Audit prompt**: ran a cross-post anchor-link audit to check for orphan `]( #answer-first-nugget)` etc. links pointing at deleted anchors. Audit revealed not orphan links but 3 missed FI cells where the H2 used `Vastaus-Ensin` (hyphen + capitalized E) — my earlier `Vastaus ensin` (space) pattern hadn't caught them. Cleaned up the 3 cells (H2 + TOC each) and then ran a wider sweep with case-insensitive regex on broader keyword sets.
+- **Wider sweep caught**: `Vastaus-ensin palanen`, `Vastaus-ensimmäinen tarkistusluettelo` (FI — `ensimmäinen` = "first", different word from `ensin`), `Het Snelle Antwoord` / `Snel antwoord` / `Eerst het antwoord` / `Hier is het snelle antwoord` (NL — Dutch translations of "Quick answer" used as section headers), `La respuesta rápida` / `Aquí está la respuesta rápida` (ES), `La réponse rapide` / `Amorce de réponse rapide` / `Voici la réponse rapide` / `Réponse Directe` / `(La) réponse en premier` (FR), `Aqui está a resposta rápida` (PT), `Het antwoord-eerst` / `Antwoord-Eerste Checklist` / `Antwoord-eerst stukje` / `Antwoord-eerst kernidee` / `Antwoord-eerste inzicht` (NL), `The answer first` (EN birthday post). 30 cells total across 7 languages — all H2 sections + matching TOC entries deleted in single combined-regex passes.
+- **False positives confirmed not Answer-First sections**: NL `## Wanneer je groep het snel oplost` ("When your group solves quickly") and `## Wat als een van ons het snel oplost?` ("What if one of us solves it quickly?") both contain `het snel` but are legitimate body/FAQ content. Pattern boundary check confirmed.
+- **Verification**: zero true Answer-First H2/TOC/anchor matches remaining across all 13 languages.
+
 ### Content: Answer-First Nugget TOC sweep — 56 orphan anchor links removed across 11 languages
 
 - **Problem**: after deleting the redundant `## Answer-First Nugget` H2 sections (and localized calques) earlier today, the matching `**[Answer-First Nugget](#answer-first-nugget)**` lines at the top of each post's "What's in this guide" TOC pointed to anchors that no longer exist. 56 cells affected across DA/DE/EN/ES/FI/FR/KO/NL/PT/SV/ZH-CN.
