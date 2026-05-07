@@ -2,6 +2,26 @@
 
 ## 2026-05-07
 
+### Translation polish: cruise-ship body fully rewritten in native quality (SV + FI complete; 10 langs remaining)
+
+- **Scope**: full body rewrite of `cruise-ship-murder-mystery-party-guide-set-sail-for-murder-on-the-high-seas` for 2 of the 12 non-EN languages. Each cell's 11 H2 body sections (TL;DR + TOC, intro, quickstart checklist, structure, characters, scenarios, atmosphere, evidence, social dynamics, time pressure, mistakes, going deeper) replaced with native-quality prose. FAQ + tail were already polished in earlier passes.
+- **SV** (`Verklig-magi`-style hyphen-glued machine output across the entire body): rewrote all 11 sections. Cell length 27,505 → 29,742 chars. Replaced literal compounds like `formell-natt-dödsfall-arbetar` and `besättnings-konspiration-arbetar` with idiomatic Swedish (`Dödsfallet under galaaftonen`, `Konspirationen i besättningen`). All in-body cross-links now wrap idiomatic phrases instead of broken compound nouns.
+- **FI** (similarly broken with sentence-level word-salad — `merkillinen-mikrofilm`, `tjänst-dynamik som-bli-personlig`-style calques): rewrote all 11 sections. Cell length 28,597 → 35,477 chars. Replaced with idiomatic Finnish using natural inflection and case-marking, e.g. `Risteilyaluksen murhamysteeri toimii sen takia, että itse miljööseen on rakennettu yksi peruslainalaisuus`.
+- **Method**: per-section `regexp_replace(content, '## STILTED-HEADER[\s\S]*?(?=## NEXT-HEADER)', POLISHED_SECTION)` anchored on H2 boundaries. One UPDATE per section, scoped to one slug × one language. Cell-by-cell, no bulk regex on prose, no Python.
+- **Remaining**: NL, DA, DE, ES, FR, IT, PT body polish (7 European-language cells with full-length stilted bodies) + JA, KO, ZH-CN body rebuild (3 cells where the body is also abbreviated stub-translation, ~9–15K chars vs EN's 29K — these need length expansion in addition to polish). Each remaining cell needs ~7 polished section UPDATEs.
+
+### Translation polish: 40 stray "Last updated" markers cleaned up
+
+- **Discovery**: a sweep across all 1,365 published cells found 40 cells with two or more `**Last updated:…**` markers — caused by overlapping pre-publication translation passes that never deduplicated.
+- **Distribution**: 37 KO cells (33 with stray `**최종 업데이트: 2026년 3월**` near top + canonical `**마지막 업데이트: 2026년 5월**` at end; 4 with stray marker mid-cell), 1 DA cell (`how-to-fix-accessibility…`: stray Sidst opdateret embedded inside the body opener paragraph), 1 FR cell (same slug, mirror issue), 1 IT cell (`cooking-competition…`: stray Ultimo aggiornamento at char 141 inside the opener).
+- **Fix**: 33 KO cells removed in one targeted UPDATE (byte-identical stray pattern, mechanical cleanup not content judgment). 4 KO outliers removed in a second targeted UPDATE. DA/FR/IT each removed individually with unique surrounding-context REPLACEs to ensure no false-match risk.
+- **Verification**: 0 cells across all 12 non-EN languages now have ≥2 update markers.
+
+### Ops: regenerated stale `public/llms.txt` (catch-up for 05-05 + 05-06 missed runs)
+
+- The daily-publish workflow ran on 2026-05-05 (publishing `how-to-fix-group-dynamics-problems`) and 2026-05-06 (publishing `how-to-fix-guests-arriving-late-…`) — both posts went `published` in Supabase — but neither day's `chore: regenerate llms.txt after daily publish` commit landed. Local `public/llms.txt` had been frozen since 05-04. Fix `a5c2c29` (commit-llms-before-IndexNow) only applies to runs 05-06 onward; the symptom suggests both runs failed at or after the regen step.
+- Regenerated locally and pushed: 105 published EN posts now reflected, both newly-published slugs included, file size went from 33,976 → 31,500 chars (cluster taxonomy reshuffle).
+
 ### UI: Blog content no longer cut off by sticky CTA + cards visible on mobile
 
 - **Cutoff**: `<main>` had `py-12` (48px top + bottom). The sticky CTA bar is ~80px tall desktop / ~140px tall mobile (heading + subtext + button stack), so 48px wasn't enough — the last "You might also like" card got partially hidden behind the bar. Bumped bottom padding to `pb-40` (160px) on mobile / `pb-32` (128px) on desktop, applied only when `showStickyCTA` is true.
