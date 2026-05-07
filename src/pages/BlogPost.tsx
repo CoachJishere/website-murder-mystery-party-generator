@@ -176,57 +176,60 @@ export default function BlogPost() {
         // Since we're already filtering by language, just use the first result
         const selectedPost = allPosts[0];
 
-        // Get related posts with the same post_date but different slugs and same language
-        const { data: relatedPosts } = await supabase
-          .from('blog_posts')
-          .select('id, slug, title, reading_time, language, content')
-          .eq('post_date', selectedPost.post_date)
-          .neq('id', selectedPost.id)
-          .eq('status', 'published')
-          .eq('language', effectiveLanguage);
+        const RELATED_POSTS_LIMIT = 3;
 
-        // Get theme-related posts (excluding the current post and same post_date) in current language
+        // Primary signal: same theme (real topical relevance)
         const { data: themeRelated } = await supabase
           .from('blog_posts')
           .select('id, slug, title, reading_time, language, content')
           .eq('theme', selectedPost.theme)
           .eq('language', effectiveLanguage)
           .neq('id', selectedPost.id)
-          .neq('post_date', selectedPost.post_date) // Exclude same date
           .eq('status', 'published')
           .order('published_at', { ascending: false })
-          .limit(3);
+          .limit(RELATED_POSTS_LIMIT);
 
-        // Get recent posts to fill in if needed
-        let related = [...(relatedPosts || [])];
-        
-        // If we don't have enough related posts, add theme-related ones
-        if (related.length < 3 && themeRelated) {
-          const uniqueThemeRelated = themeRelated.filter(
-            p => !related.some(rp => rp.id === p.id)
-          );
-          related = [...related, ...uniqueThemeRelated.slice(0, 3 - related.length)];
+        let related = [...(themeRelated || [])];
+
+        // Secondary fill: same publish-date cluster (batch-published siblings)
+        if (related.length < RELATED_POSTS_LIMIT) {
+          const { data: sameDate } = await supabase
+            .from('blog_posts')
+            .select('id, slug, title, reading_time, language, content')
+            .eq('post_date', selectedPost.post_date)
+            .eq('language', effectiveLanguage)
+            .neq('id', selectedPost.id)
+            .eq('status', 'published')
+            .limit(RELATED_POSTS_LIMIT);
+
+          if (sameDate) {
+            const uniqueSameDate = sameDate.filter(
+              p => !related.some(rp => rp.id === p.id)
+            );
+            related = [...related, ...uniqueSameDate.slice(0, RELATED_POSTS_LIMIT - related.length)];
+          }
         }
 
-        // If we still don't have enough, get recent posts in current language
-        if (related.length < 3) {
+        // Last-resort fill: most recent posts in same language
+        if (related.length < RELATED_POSTS_LIMIT) {
           const { data: recentPosts } = await supabase
             .from('blog_posts')
             .select('id, slug, title, reading_time, language, content')
             .eq('language', effectiveLanguage)
             .neq('id', selectedPost.id)
-            .neq('post_date', selectedPost.post_date) // Exclude same date
             .eq('status', 'published')
             .order('published_at', { ascending: false })
-            .limit(3 - related.length);
-          
+            .limit(RELATED_POSTS_LIMIT);
+
           if (recentPosts) {
             const uniqueRecent = recentPosts.filter(
               p => !related.some(rp => rp.id === p.id)
             );
-            related = [...related, ...uniqueRecent];
+            related = [...related, ...uniqueRecent.slice(0, RELATED_POSTS_LIMIT - related.length)];
           }
         }
+
+        related = related.slice(0, RELATED_POSTS_LIMIT);
 
         const postData = { ...selectedPost, related_posts: related || [] };
         setPost(postData);

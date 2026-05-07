@@ -2,6 +2,13 @@
 
 ## 2026-05-07
 
+### UX: "You might also like" capped at 3 + reordered to theme-first
+
+- **Bug**: the same-`post_date` query that fed "You might also like" had no `.limit()`, so on batch-publish days (thematic clusters or multi-language drops sharing one date) it returned 20+ results that all rendered as a 7-row wall under the article. The theme-related and recent-posts fallbacks were gated on `related.length < 3` and never fired in this case.
+- **Fix**: capped at 3 (fills the existing `md:grid-cols-3` row cleanly — 3–6 is the documented sweet spot per NN/g et al.; click-through drops sharply above ~6 due to decision fatigue).
+- **Reordering**: theme-related is now the primary signal (real topical relevance), same-date is the secondary fill (only if theme returns <3), and most-recent is the last-resort fill. Same-date used to be primary, but publishing-batch grouping isn't a relevance signal — two posts published the same day might be unrelated.
+- File: [src/pages/BlogPost.tsx:179](src/pages/BlogPost.tsx#L179).
+
 ### UI: Blog sticky bottom CTA recolored — red background, cream button
 
 - Sticky CTA bar at the bottom of `/blog/:slug` previously used `--color-black` background, which blended into the blog page's black background and left the bar visually invisible (just a faint cream hairline border).
