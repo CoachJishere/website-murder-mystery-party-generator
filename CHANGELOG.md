@@ -11,6 +11,13 @@
 - **Out of scope, flagged for later**: the secondary `**Answer-first nugget:** …` lines (and their localized calques like ES `**Nugget de respuesta-primero:**`) that follow the Quick answer on some posts — same shallowness pattern, separate cleanup pass.
 - **Progress log**: every batch persisted to `temp-files/quick-answer-rewrite-progress.jsonl` with slug + language + batch ID for idempotency.
 
+### Translation polish: steampunk SV body fully rewritten (next-worst rot after cruise-ship)
+
+- Top-of-rot slug after cruise-ship was `how-to-host-a-steampunk-murder-mystery-party-…` SV with 136 hyphen-chain pseudo-compound markers — the highest signal of broken machine-translation across all non-cruise-ship cells. Rewrote all 12 H2 body sections in native Swedish: Det korta svaret, intro, Mekanisk under-checklista, Karaktärer rotade i konflikt, Tekniken som bevis, Steampunk-stämning, Konkreta scenarioramverk, FAQ:n som faktiskt har betydelse, Vad som brukar bryta festerna, Steget när grunderna sitter, Det du faktiskt bygger.
+- **Result**: hyphen-chain count fell from 136 → 48 (-65%). Remaining 48 chains are legitimate triple-compounds (e.g. `steampunk-mord-mysterier`) rather than pseudo-Swedish word-for-word output.
+- **Method**: same per-section anchored `regexp_replace` strategy as cruise-ship. Each section bounded between known H2 markers, scoped to one slug × one language. Caught one Snabb-Svar UPDATE that silently no-op'd from a wrong-anchor regex; re-ran with correct boundary.
+- **Outstanding for steampunk slug**: 11 other non-EN languages (DA, DE, ES, FI, FR, IT, JA, KO, NL, PT, ZH-CN) still carry similar machine-translation rot. Next-priority slugs by SV hyphen-chain count: `best-murder-mystery-party-games-review` (103), `how-to-host-a-medieval-castle-murder-mystery` (82), `chef-murder-mystery-themes` (80), `5-vintage-circus-murder-mystery-themes` (74), `art-museum-murder-mystery-party-guide` (63).
+
 ### Audit + fix: 16 FAQ schema-extraction gaps closed (cells where FAQPage schema would silently emit nothing)
 
 - **Root pattern**: 16 cells had a FAQ heading but Q lines that didn't end with `?` or `？`, so `generateFaqSchema` extracted 0 Q&A pairs and the cells emitted no FAQPage schema. Three sub-patterns:
