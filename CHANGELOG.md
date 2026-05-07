@@ -2,6 +2,13 @@
 
 ## 2026-05-07
 
+### Translation polish: cruise-ship body fully rewritten — SV + FI + NL + DA complete (8 langs remaining)
+
+- **NL**: full body rewrite (11 H2 sections). Length 28,257 → 31,513 chars. Replaced broken Dutch (`werklijk reflecteer schip leven`, `Onderhoud venue eliminaties werk`) with native Dutch using natural article inflection.
+- **DA**: full body rewrite (11 H2 sections). Length 27,679 → 30,033 chars. Replaced broken Danish (`Bygning atmosfære der ikke overvælde undersøgelse`, `Sociale dynamikker der drev undersøgelse fremad`) with idiomatic Danish.
+- **Self-correction during sweep**: my `regexp_replace` with `(?=## NEXT-HEADING)` lookahead pattern left orphan stilted sections behind in DA and FI when an UPDATE merged a section pair (Karaktär + Specifik scenarios) into one polished output. The subsequent UPDATE for "Specifik scenarios" then no-op'd because the section had been bypassed by the merge. Detected via H2 audit (`regexp_matches(content, '## ...', 'g')`) — found 1 orphan H2 in DA (`## Specifikke scenarier der skabe virkelig pres`), 2 orphans in FI (`## Spesifinen skenaariot, jotka luoda todellinen paine`, `## Virheet, jotka kääntyvät...`). All 3 orphans removed cell-by-cell with bounded `regexp_replace` between known anchors.
+- **Method**: same per-section anchored `regexp_replace` strategy as SV+FI. One UPDATE per H2 section. After each cell, full H2-list audit to catch any orphan headings before moving on (this would have caught the DA/FI orphans at write-time if I'd done it earlier — adding to the playbook).
+
 ### Translation polish: cruise-ship body fully rewritten in native quality (SV + FI complete; 10 langs remaining)
 
 - **Scope**: full body rewrite of `cruise-ship-murder-mystery-party-guide-set-sail-for-murder-on-the-high-seas` for 2 of the 12 non-EN languages. Each cell's 11 H2 body sections (TL;DR + TOC, intro, quickstart checklist, structure, characters, scenarios, atmosphere, evidence, social dynamics, time pressure, mistakes, going deeper) replaced with native-quality prose. FAQ + tail were already polished in earlier passes.
