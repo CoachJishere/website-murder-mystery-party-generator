@@ -2,6 +2,32 @@
 
 ## 2026-05-07
 
+### Improvement: monitoring sweep broadened to catch crashed Make runs that mark status=completed without persisting content
+
+- **Why**: today's customer ("The Purchasing Director") had `generation_status.status = "completed"` set by the verification flow but `generation_completed_at` was NULL because the parent's final upsert never ran (Imagen R4 crashed). The old `sweep_incomplete_packages()` gated entirely on `generation_completed_at IS NOT NULL`, so the broken package was invisible to the sweep. Customer experience: "completed" tabs with empty Inspector + Evidence content.
+- **Fix**: function now triggers on `(generation_status->>'status' = 'completed' OR generation_completed_at IS NOT NULL)` AND content checks expanded beyond character.description/character_role to also check `detective_script IS NULL OR length < 100`, `evidence_cards IS NULL OR length < 100`, and `evidence_card_images IS NULL`. New `missingFields` jsonb array on the flagged status payload tells `notify-generation-issue` exactly what's missing rather than always saying "characters".
+- **Verification**: dry-run query against last 7 days returned zero matches before applying — no false-positives on currently-completed packages. Migration `sweep_incomplete_packages_broaden_checks` applied via MCP.
+
+### Fix: Imagen JSON-escape applied to test blueprint v3
+
+- Same 5-step `replace()` chain as Parent34 applied to a duplicate of `MM Test - Evidence Images v2 (Imagen).blueprint.json` → `v3`. Prevents the same bug from re-appearing if anyone duplicates the test scenario as a starting point for a new Imagen integration. Operates on `1.round{2,3,4}_prompt` (webhook input fields) instead of `5003.data.round{2,3,4}` (parent's parsed JSON output).
+
+### Cleanup: removed dead saveStructuredPackageData function (~255 lines)
+
+- `src/services/mysteryPackageService.ts:saveStructuredPackageData` had zero callers in `src/` or `supabase/` — Make.com's parent scenario writes directly to Supabase via its own `upsertARecord` modules, bypassing this service entirely. The function was the source of the lingering `host_guide` / `preparation_instructions` / `timeline` / `hosting_tips` writes that the user flagged. Deleted whole function (lines 61–315). Type check passes. The `EDITABLE_PACKAGE_FIELDS` allowlist and `MysteryPackageTabView.buildCompleteHostGuide` reader paths kept intact for back-compat with packages generated before Apr 27 that still have content in those columns.
+
+### Deferred: Make Parent split-upsert (defense-in-depth, recommended Make UI follow-up)
+
+- **Idea**: in Parent34, module 185 (the final upsert) currently writes `detective_script`, `evidence_cards`, AND `evidence_card_images` together AFTER all 3 Imagen calls + `store-evidence-images` succeed. So a single Imagen crash also discards the LLM-generated detective script + evidence cards (already paid for). Splitting to a Phase-1 upsert (text only, before Imagen) and Phase-2 upsert (images only, after) would shrink blast radius.
+- **Status**: deferred. Parent34's JSON-escape fix removes the root cause, and today's broadened sweep would catch any regression within 30 minutes. Doing this in Make Designer UI (drag-and-drop) is much safer than blueprint JSON surgery across all 4 routes (Character Murder, Detective Murder, Character Intrigue, Detective Intrigue). Recommended 5-minute Make UI task.
+
+### Fix: Imagen 4 round-image JSON-body crash in parent scenario (Parent34)
+
+- **Problem**: customer "The Purchasing Director" (`bc4e6a74-f71d-468f-bb01-92cf1d2f45de`) hit `InvalidConfigurationError: The provided JSON body content is not valid JSON. Expected ',' or '}' after property value in JSON at position 276` on the Round 4 Imagen 4 HTTP call. Re-run hit the same error deterministically. Result: characters fully generated (15/15) but `host_guide`, `detective_script`, `evidence_cards`, and round images never persisted to the package — the final upsert runs after all 3 round images succeed, so the R4 crash aborted persistence even though `generation_status` was already marked `completed` by the monitoring sweep (false-positive — known pattern).
+- **Root cause**: all 12 Imagen calls in Parent33 (3 rounds × 4 routes) used `inputMethod: jsonString` with the LLM-generated prompt interpolated raw into the body template — `{"prompt": "{{5003.data.round4}}"}`. Any `"`, `\`, newline, CR, or tab in the prompt breaks the body's JSON. Make's own restore note literally warns: *"If values contain JSON reserved characters, you must escape them manually."*
+- **Fix**: duplicated `MM Live - Parent33.blueprint.json` → `Parent34.blueprint.json`. Wrapped each Imagen prompt interpolation in a 5-step regex `replace()` JSON-escape chain — backslash first (`\` → `\\`), then `"` → `\"`, then newline → `\n`, CR → `\r`, tab → `\t`. Backslash must run first or subsequent additions get re-escaped. Applied to all 12 calls: routes Character Murder (`5003.data.round{2,3,4}`), Detective Murder (`5007`), Character Intrigue (`5011`), Detective Intrigue (`5015`).
+- **Verification**: file is valid JSON, 0 remaining occurrences of the old vulnerable pattern, 12 occurrences of the escaped pattern. Empirical run still pending — the regex form `replace(...; "/pattern/g"; ...)` is documented Make IML but not previously used in this repo's blueprints.
+
 ### Content: Answer-First Nugget cross-post sweep — 30 missed variants caught with broader patterns
 
 - **Audit prompt**: ran a cross-post anchor-link audit to check for orphan `]( #answer-first-nugget)` etc. links pointing at deleted anchors. Audit revealed not orphan links but 3 missed FI cells where the H2 used `Vastaus-Ensin` (hyphen + capitalized E) — my earlier `Vastaus ensin` (space) pattern hadn't caught them. Cleaned up the 3 cells (H2 + TOC each) and then ran a wider sweep with case-insensitive regex on broader keyword sets.
@@ -32,6 +58,12 @@
 - **Translations preserve identical action structure** across all 12 locales (same number of steps, same specific numbers) so AI engines extracting in any locale get equivalent value. Native voice over machine translation, though JA/KO/ZH-CN/FI would benefit from a native-speaker idiom polish before paid acquisition use.
 - **Out of scope, flagged for later**: the secondary `**Answer-first nugget:** …` lines (and their localized calques like ES `**Nugget de respuesta-primero:**`) that follow the Quick answer on some posts — same shallowness pattern, separate cleanup pass.
 - **Progress log**: every batch persisted to `temp-files/quick-answer-rewrite-progress.jsonl` with slug + language + batch ID for idempotency.
+
+### Translation polish: steampunk DE body rewritten + DA started (continuing the next-priority slug sweep)
+
+- **DE**: full 12 H2 body sections rewritten in native German. Replaced calques like `Tatsächliche Szenario-Frameworks` and `Den Tech-Teil als Beweis fühlen lassen` with idiomatic German. Cleaned a duplicate `Letzte Aktualisierung: März 2026` marker that sat alongside the canonical `**Zuletzt aktualisiert: Mai 2026**`. Length 30,032 → 28,415 chars.
+- **DA**: TL;DR + intro section rewritten — 2 of 12 sections done. 10 remaining sections deferred for next session.
+- **Outstanding for steampunk slug**: DA 10 remaining + 9 other non-EN languages (IT, NL, PT, FR, KO, FI, ES, ZH-CN, JA). Same per-section anchored `regexp_replace` strategy. Realistic capacity is ~2 languages per session at native quality — so ~5 sessions to complete steampunk's full 11-language sweep.
 
 ### Translation polish: steampunk SV body fully rewritten (next-worst rot after cruise-ship)
 
