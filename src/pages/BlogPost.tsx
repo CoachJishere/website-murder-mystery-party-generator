@@ -770,19 +770,20 @@ export default function BlogPost() {
       
       {/* Bottom CTA for scrollers */}
       {showStickyCTA && (
-        <div className="fixed bottom-0 left-0 right-0 p-4" style={{ backgroundColor: 'var(--color-black)', borderTop: '1px solid var(--color-cream-border)' }}>
-          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center">
-            <div className="mb-4 sm:mb-0">
-              <h3 className="font-bold text-[#C81400]">
+        <div className="fixed bottom-0 left-0 right-0 p-4" style={{ backgroundColor: 'var(--color-red)', borderTop: '1px solid rgba(0, 0, 0, 0.25)' }}>
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="text-center sm:text-left">
+              <h3 className="font-bold" style={{ color: 'var(--color-cream)' }}>
                 Ready to create your own mystery?
               </h3>
-              <p className="text-center mb-6 text-muted-foreground">
+              <p className="text-sm" style={{ color: 'rgba(245, 240, 232, 0.85)' }}>
                 Get started today and create an unforgettable experience for your friends and family.
               </p>
             </div>
-            <Button 
-              asChild 
-              className="bg-[#C81400] hover:bg-[#A01000] text-white py-2 px-6 font-medium transition-colors"
+            <Button
+              asChild
+              className="py-2 px-6 font-medium transition-colors shrink-0"
+              style={{ backgroundColor: 'var(--color-cream)', color: 'var(--color-red)' }}
             >
               <Link to="/mystery/create">
                 Start Now

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-07
+
+### UI: Blog sticky bottom CTA recolored — red background, cream button
+
+- Sticky CTA bar at the bottom of `/blog/:slug` previously used `--color-black` background, which blended into the blog page's black background and left the bar visually invisible (just a faint cream hairline border).
+- Switched bar to `--color-red` (`#C81400`) background with cream heading + `rgba(245,240,232,0.85)` subtext. Button inverted: cream background with red text (was red on black) so it reads cleanly against the new red bar. Border-top changed from cream-border to a subtle dark divider for definition.
+- File: [src/pages/BlogPost.tsx:773](src/pages/BlogPost.tsx#L773).
+
 ## 2026-05-06
 
 ### Translation polish: 20 cell tail sections rewritten in native quality (cell-by-cell)
