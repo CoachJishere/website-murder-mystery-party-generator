@@ -2,6 +2,13 @@
 
 ## 2026-05-07
 
+### Content: Answer-First Nugget TOC sweep — 56 orphan anchor links removed across 11 languages
+
+- **Problem**: after deleting the redundant `## Answer-First Nugget` H2 sections (and localized calques) earlier today, the matching `**[Answer-First Nugget](#answer-first-nugget)**` lines at the top of each post's "What's in this guide" TOC pointed to anchors that no longer exist. 56 cells affected across DA/DE/EN/ES/FI/FR/KO/NL/PT/SV/ZH-CN.
+- **Method**: single regex pass — `regexp_replace(content, '\d+\. \*\*\[[^\]]*?(<localized-anchor-keywords>)[^\]]*?\][^\n]*\n', '', 'gi')` — matches a numbered list item whose bracketed title contains any localized Answer-First/Nugget/Quick-Answer phrase, deletes through end of line. Case-insensitive flag handles "Answer-First Nugget" vs "ANSWER-FIRST NUGGET" vs "Answer-first nugget" without separate patterns. CJK keywords (`답변 우선`, `답먼저`, `答案优先`) kept literal in the alternation since they have no case.
+- **Numbering decision**: deliberately did NOT renumber the rest of the TOC. The remaining items keep their original numbers (`2. **[…]**`, `3. **[…]**`), so the list now starts at 2. Avoided a renumbering pass at this scale rather than risk breaking same-document anchor jumps elsewhere or introducing an off-by-one bug in 56 cells. Visual numbering gap is the trade-off.
+- **Verification**: zero remaining TOC entries reference the deleted anchor across all 13 languages.
+
 ### Content: Answer-First Nugget cleanup — 104 redundant H2 + bold-inline blocks deleted across 12 languages
 
 - **Problem**: after the corpus-wide Quick answer rewrite, every post still carried a duplicative `## Answer-First Nugget` (or localized calque) section that re-stated the same answer the upgraded blockquote now delivered. Same shallowness pattern that justified the Quick answer rewrite, just one section lower. Flagged as out-of-scope earlier today; this is the follow-up pass.
