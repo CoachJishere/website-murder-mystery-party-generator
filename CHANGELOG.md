@@ -72,11 +72,13 @@
 - **Out of scope, flagged for later**: the secondary `**Answer-first nugget:** …` lines (and their localized calques like ES `**Nugget de respuesta-primero:**`) that follow the Quick answer on some posts — same shallowness pattern, separate cleanup pass.
 - **Progress log**: every batch persisted to `temp-files/quick-answer-rewrite-progress.jsonl` with slug + language + batch ID for idempotency.
 
-### Translation polish: steampunk DE body rewritten + DA started (continuing the next-priority slug sweep)
+### Translation polish: steampunk DE + DA + IT + NL bodies fully rewritten (5 of 11 non-EN languages done; SV completed earlier)
 
-- **DE**: full 12 H2 body sections rewritten in native German. Replaced calques like `Tatsächliche Szenario-Frameworks` and `Den Tech-Teil als Beweis fühlen lassen` with idiomatic German. Cleaned a duplicate `Letzte Aktualisierung: März 2026` marker that sat alongside the canonical `**Zuletzt aktualisiert: Mai 2026**`. Length 30,032 → 28,415 chars.
-- **DA**: TL;DR + intro section rewritten — 2 of 12 sections done. 10 remaining sections deferred for next session.
-- **Outstanding for steampunk slug**: DA 10 remaining + 9 other non-EN languages (IT, NL, PT, FR, KO, FI, ES, ZH-CN, JA). Same per-section anchored `regexp_replace` strategy. Realistic capacity is ~2 languages per session at native quality — so ~5 sessions to complete steampunk's full 11-language sweep.
+- **DE**: full 12 H2 body sections rewritten in native German. Cleaned a duplicate `Letzte Aktualisierung: März 2026` marker. Length 30,032 → 28,415 chars.
+- **DA**: full 12 sections in native Danish. Length 27,064 → 27,446 chars.
+- **IT**: full 12 sections in native Italian. Length 29,665 → 28,659 chars.
+- **NL**: full 11 sections in native Dutch (no duplicate Quick Answer header in NL structure). Length 27,521 → 27,286 chars.
+- **Outstanding for steampunk**: PT, FR, KO, FI, ES, ZH-CN, JA (6 polishes + 3 rebuilds). Same per-section anchored `regexp_replace` strategy. Continuing in this session as context allows.
 
 ### Translation polish: steampunk SV body fully rewritten (next-worst rot after cruise-ship)
 
