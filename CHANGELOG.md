@@ -2,6 +2,13 @@
 
 ## 2026-05-08
 
+### Translation polish: best-mmp-games-review — FI full rewrite + ZH-CN new row + DA/SV targeted fixes
+
+- **FI**: Complete 15-section rewrite from broken machine translation (gibberish headers like "Markkinat Split", "Faktisesti Differentiaation"; prose like "murhamysteeripelimarkkinat on sekava jos olet oikeastaan yritys valita jotain") to native Finnish. All headers corrected (e.g. "Käytännöllinen Isäntä Path" → "Käytännön isäntäpolku"), comparison table fixed ("hosted" → "järjestetty"), intro/TL;DR rewritten, all 8 FAQ Q&A rewritten. Length: ~25K chars.
+- **ZH-CN**: New row inserted (was entirely missing from the database). Full Simplified Chinese content created: 15 H2 sections + 8 FAQ Q&A in native Mandarin prose. Chinese-locale cross-links (/zh-CN/blog/...), correct punctuation throughout. Length: ~9K chars (Chinese characters are semantically dense; equivalent coverage to ~24K EN chars).
+- **DA**: Targeted fix — surviving Swedish calque "underhållning" → "underholdning" in the What I Actually Recommend section. (Main prose already polished in earlier session.)
+- **SV**: Targeted fix — surviving English word "soloplayer" → "ensamma spelare" in the Market Split section. (Main prose already polished in earlier session.)
+
 ### Translation polish: best-murder-mystery-party-games-review body completed across all 8 non-EN languages (DA, DE, ES, FR, IT, NL, PT, SV)
 
 - **Round 2 of the slug sweep**: after SV/NL/PT/IT (the worst-rotted four) earlier today, came back to the "functional but worth a polish" group (DA/DE/ES/FR). Mid-content sampling surfaced enough issues in all four to warrant rewriting them too.
