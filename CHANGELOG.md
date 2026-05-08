@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-05-09
+
+### Translation polish: steampunk JA + KO + ZH-CN body cleanup — slug 100% complete
+
+- **JA**: Removed orphan machine-translated block (duplicate prose of "The Thing You're Actually Building" left behind by a prior pass) and replaced with clean localized MysteryMaker CTA. Rewrote the final `## FAQ` section (7 Q&As) from stilted machine translation to natural Japanese — idiomatic phrasing, proper sentence-final forms, no calque structure.
+- **KO**: Same pattern as JA — orphan duplicate block removed, bad MysteryMaker CTA replaced with natural Korean, final `## FAQ` section (7 Q&As) rewritten from machine translation to native Korean. Natural sentence endings, no -합니다 overuse.
+- **ZH-CN**: Orphan duplicate block removed, bad MysteryMaker CTA replaced, final `## FAQ` section (7 Q&As) rewritten in native Simplified Chinese — correct particle use, natural syntax, no Western calques.
+- **Slug status**: all 11 non-EN language cells of `how-to-host-a-steampunk-murder-mystery-party-gear-up-for-victorian-sci-fi-crime` now fully polished. H2 audits clean on JA, KO, ZH-CN.
+
+### Audit: corpus-wide quality sweep — 82 issues fixed across 82 cells
+
+- **B1 — Untranslated "Last updated:" labels (65 cells)**: `Last updated:` replaced with locale equivalents across SV (28 cells → `Senast uppdaterad:`), DE (6 → `Zuletzt aktualisiert:`), NL (9 → `Laatst bijgewerkt:`), DA (3 → `Sidst opdateret:`), FR (8 → `Dernière mise à jour :`), IT (8 → `Ultimo aggiornamento:`), FI (3 → `Viimeksi päivitetty:`).
+- **B2 — H4-without-H3 hierarchy**: ✓ none found.
+- **B3 — Dead cross-links (17 cells)**: stripped link wrappers (kept anchor text) for broken targets including `murder-mystery-party-ideas` (8 cells across SV/PT/NL/JA), non-existent resort/yacht/decade slugs, `police-detective-...`, `nightclub-...`, `murder-mystery-party-planning-checklist`, and other phantom slugs across `free-murder-mystery-games-printable`, `casino-resort`, `ancient-egypt`, `1920s-speakeasy`, `detective`, `fashion-week`, `date-night` cells.
+- **B4 — FAQ section without Q&A**: ✓ none found.
+- **B5 — Duplicate Last Updated markers**: ✓ none found.
+- **B6 — Daily publish check**: 1 post published 2026-05-08 (`how-to-fix-inappropriate-murder-mystery-content-keep-your-party-fun-for-all`). Git log shows `llms.txt` regeneration pending from daily pipeline.
+
 ## 2026-05-08
 
 ### Audit: traffic-weighted polish priority ranking
