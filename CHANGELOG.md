@@ -29,6 +29,28 @@
 - **Skipped permanently for this kind of work**: JA/KO/ZH-CN/FI — these need native-speaker review, not AI polish that would just replace one form of rot with another.
 - **Method**: full content replacement per cell using dollar-quoted SQL strings (`$sv$...$sv$`, etc) to avoid escape issues with the apostrophes/quotation marks in the long-form prose. Verification: hyphen-chain counts on SV, char_length parity check vs EN source (24,106 chars; rewrites all within 24K–25.5K).
 
+### Fix: mystery-ai edge function — inline locale labels + explicit language normalization
+
+- **Problem**: the Edge Function fetched `https://mysterymaker.party/locales/${locale}.json` at request time to get section labels (Premise, Victim, Character List, etc). Any network hiccup or cold start caused the fetch to fail and fall back to uppercase English labels regardless of the user's language — section headings appeared in English even for non-English users.
+- **Fix**: inlined all 13 locale label sets directly in the function (`LABELS_BY_LOCALE` constant). `buildLabels` is now a synchronous lookup with no network dependency.
+- **Language normalization**: added `normalizeLocale(tag)` that accepts a `language` field from the client request body (e.g. `'es'`, `'es-ES'`, `'pt_BR'`, `'zh-CN'`). The client now passes the user's selected UI language explicitly rather than relying purely on character-set detection. Character-set detection retained as fallback only.
+- **Stronger language directive**: `<language_instruction>` now names the target language explicitly ("Write the ENTIRE response in Swedish") and lists every section label category that must be translated, instead of the vague "same language the user writes to you" phrasing that failed when users typed mostly proper nouns or English loanwords.
+- **DA/SV locale files**: `mysteryCreation.sections` fields were left in English in both DA and SV locale files. Translated all 8 fields to Danish and Swedish — needed for both the inlined Edge Function table and the front-end render path.
+
+### Fix: stripe-webhook — async webhook verification for Deno/Web Crypto compatibility
+
+- Changed `stripe.webhooks.constructEvent(...)` → `await stripe.webhooks.constructEventAsync(...)` — Deno uses Web Crypto which requires async hash ops; the sync variant hangs or throws.
+- Added `?target=deno` to the Stripe ESM import URL for the correct Deno-compatible build.
+- Added null-safe error access throughout (`err?.message || err`, `error?.message || String(error)`) to prevent secondary `TypeError` crashes masking the real error on webhook failures.
+
+### Feat: add AI referral traffic to analytics fetch pipeline
+
+- `scripts/fetch-all-analytics.sh` updated from 4 to 5 scripts. New step 4 runs `fetchAIReferrals.mjs` — GA4 session-source filter for AI referrers (ChatGPT, Perplexity, Claude, Gemini, etc.). Output: `temp-files/ai-referral-metrics.json`.
+
+### Deps: add Pinterest pin generator packages
+
+- `package.json`: added `@fontsource/oswald`, `opentype.js`, `sharp`, `playwright` to support `scripts/pinterest/` — the Pin image generator that builds overlay images for published blog posts. `@fontsource/oswald` provides heading font files; `opentype.js` parses them for server-side text metrics; `sharp` composites the final PNG; `playwright` captures blog screenshots for the mockup pipeline.
+
 ## 2026-05-07
 
 ### Improvement: monitoring sweep broadened to catch crashed Make runs that mark status=completed without persisting content

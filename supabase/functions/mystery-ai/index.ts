@@ -3,6 +3,48 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 type Locale = 'en' | 'es' | 'fr' | 'de' | 'ko' | 'ja' | 'zh-cn' | 'nl' | 'da' | 'sv' | 'fi' | 'it' | 'pt';
 
+// Section labels per locale. Kept in sync with src/i18n/locales/*.json mysteryCreation.sections.
+// Inlined here because the deployed site does not serve the bundled locale JSON as static files.
+const LABELS_BY_LOCALE: Record<Locale, {
+  premise: string;
+  victim: string;
+  characterList: string;
+  playersWord: string;
+  murderMethod: string;
+  theCrime: string;
+  wrongedParty: string;
+  crimeMethod: string;
+}> = {
+  en:    { premise: 'Premise',       victim: 'Victim',       characterList: 'Character List',     playersWord: 'players',     murderMethod: 'Murder Method',         theCrime: 'The Crime',     wrongedParty: 'The Wronged Party',         crimeMethod: 'Crime Method' },
+  es:    { premise: 'Premisa',       victim: 'Víctima',      characterList: 'Lista de Personajes', playersWord: 'jugadores',  murderMethod: 'Método de Asesinato',   theCrime: 'El Crimen',     wrongedParty: 'La Parte Perjudicada',      crimeMethod: 'Método del Crimen' },
+  fr:    { premise: 'Prémisse',      victim: 'Victime',      characterList: 'Liste des personnages', playersWord: 'Joueurs',  murderMethod: 'Méthode de meurtre',    theCrime: 'Le Crime',      wrongedParty: 'La Partie Lésée',           crimeMethod: 'Méthode du Crime' },
+  de:    { premise: 'Prämisse',      victim: 'Opfer',        characterList: 'Charakterliste',     playersWord: 'Spieler',     murderMethod: 'Mordmethode',           theCrime: 'Das Verbrechen', wrongedParty: 'Die Geschädigte Partei',   crimeMethod: 'Verbrechensmethode' },
+  it:    { premise: 'Premessa',      victim: 'Vittima',      characterList: 'Elenco Personaggi',  playersWord: 'Giocatori',   murderMethod: 'Metodo del delitto',    theCrime: 'Il Crimine',    wrongedParty: 'La Parte Lesa',             crimeMethod: 'Metodo del Crimine' },
+  pt:    { premise: 'Premissa',      victim: 'Vítima',       characterList: 'Lista de Personagens', playersWord: 'jogadores', murderMethod: 'Método de Assassinato', theCrime: 'O Crime',       wrongedParty: 'A Parte Lesada',            crimeMethod: 'Método do Crime' },
+  nl:    { premise: 'Premisse',      victim: 'Slachtoffer',  characterList: 'Personagelijst',     playersWord: 'spelers',     murderMethod: 'Moordmethode',          theCrime: 'De Misdaad',    wrongedParty: 'De Benadeelde Partij',      crimeMethod: 'Misdaadmethode' },
+  da:    { premise: 'Præmis',        victim: 'Offer',        characterList: 'Karakterliste',      playersWord: 'spillere',    murderMethod: 'Mordmetode',            theCrime: 'Forbrydelsen',  wrongedParty: 'Den Forurettede Part',      crimeMethod: 'Forbrydelsesmetode' },
+  sv:    { premise: 'Premiss',       victim: 'Offer',        characterList: 'Rollista',           playersWord: 'spelare',     murderMethod: 'Mordmetod',             theCrime: 'Brottet',       wrongedParty: 'Den Drabbade Parten',       crimeMethod: 'Brottsmetod' },
+  fi:    { premise: 'Perusasetelma', victim: 'Uhri',         characterList: 'Hahmoluettelo',      playersWord: 'Pelaajat',    murderMethod: 'Murhamenetelmä',        theCrime: 'Rikos',         wrongedParty: 'Vahinkoa Kärsinyt Osapuoli', crimeMethod: 'Rikoksen Menetelmä' },
+  ko:    { premise: '전제',          victim: '피해자',         characterList: '캐릭터 목록',          playersWord: '플레이어',     murderMethod: '살해 방법',              theCrime: '범죄',           wrongedParty: '피해 당사자',                crimeMethod: '범죄 방법' },
+  ja:    { premise: '前提',          victim: '被害者',         characterList: 'キャラクターリスト',     playersWord: 'プレイヤー',    murderMethod: '殺害方法',              theCrime: '犯罪事件',        wrongedParty: '被害者',                    crimeMethod: '犯罪の手口' },
+  'zh-cn': { premise: '前提',        victim: '受害者',         characterList: '角色列表',             playersWord: '玩家',         murderMethod: '谋杀方式',              theCrime: '犯罪事件',        wrongedParty: '受害方',                    crimeMethod: '犯罪方式' },
+};
+
+const KNOWN_LOCALES: ReadonlyArray<Locale> = Object.keys(LABELS_BY_LOCALE) as Locale[];
+
+// Normalize incoming language tag from the client (e.g. "es-ES", "pt_BR", "zh-CN") to a known Locale.
+function normalizeLocale(tag: unknown): Locale | null {
+  if (typeof tag !== 'string' || !tag) return null;
+  const lower = tag.toLowerCase().replace('_', '-');
+  if (KNOWN_LOCALES.includes(lower as Locale)) return lower as Locale;
+  // Match special two-part codes first (zh-cn, zh-tw → zh-cn).
+  if (lower.startsWith('zh')) return 'zh-cn';
+  const base = lower.split('-')[0];
+  if (KNOWN_LOCALES.includes(base as Locale)) return base as Locale;
+  return null;
+}
+
+// Fallback locale detection by character set, used only when the client did not send a language.
 function detectLocale(firstUserMsg: string): Locale {
   if (/[가-힣]/.test(firstUserMsg)) return 'ko';
   if (/[ひらがなカタカナ一-龯]/.test(firstUserMsg)) return 'ja';
@@ -20,53 +62,33 @@ function detectLocale(firstUserMsg: string): Locale {
   return 'en';
 }
 
-async function buildLabels(locale: Locale, mysteryType: string = 'murder') {
-  try {
-    // Fetch from your deployed website
-    const response = await fetch(`https://mysterymaker.party/locales/${locale}.json`);
-    if (!response.ok) throw new Error('Failed to fetch locale');
-
-    const localeData = await response.json();
-    const sec = localeData.mysteryCreation.sections;
-
-    if (mysteryType === 'intrigue') {
-      return {
-        premise: sec.premise,
-        theCrime: sec.theCrime || 'The Crime',
-        wrongedParty: sec.wrongedParty || 'The Wronged Party',
-        characterList: sec.characterList,
-        playersWord: sec.players,
-        crimeMethod: sec.crimeMethod || 'Crime Method',
-      };
-    }
+function buildLabels(locale: Locale, mysteryType: string = 'murder') {
+  const sec = LABELS_BY_LOCALE[locale] ?? LABELS_BY_LOCALE.en;
+  if (mysteryType === 'intrigue') {
     return {
       premise: sec.premise,
-      victim: sec.victim,
+      theCrime: sec.theCrime,
+      wrongedParty: sec.wrongedParty,
       characterList: sec.characterList,
-      playersWord: sec.players,
-      murderMethod: sec.murderMethod,
-    };
-  } catch (error) {
-    console.error(`Failed to load locale ${locale}, falling back to English`);
-    if (mysteryType === 'intrigue') {
-      return {
-        premise: 'PREMISE',
-        theCrime: 'THE CRIME',
-        wrongedParty: 'THE WRONGED PARTY',
-        characterList: 'CHARACTER LIST',
-        playersWord: 'PLAYERS',
-        crimeMethod: 'CRIME METHOD',
-      };
-    }
-    return {
-      premise: 'PREMISE',
-      victim: 'VICTIM',
-      characterList: 'CHARACTER LIST',
-      playersWord: 'PLAYERS',
-      murderMethod: 'MURDER METHOD',
+      playersWord: sec.playersWord,
+      crimeMethod: sec.crimeMethod,
     };
   }
+  return {
+    premise: sec.premise,
+    victim: sec.victim,
+    characterList: sec.characterList,
+    playersWord: sec.playersWord,
+    murderMethod: sec.murderMethod,
+  };
 }
+
+// Friendly language name for the language-instruction block in the system prompt.
+const LANGUAGE_NAMES: Record<Locale, string> = {
+  en: 'English', es: 'Spanish', fr: 'French', de: 'German', it: 'Italian',
+  pt: 'Portuguese', nl: 'Dutch', da: 'Danish', sv: 'Swedish', fi: 'Finnish',
+  ko: 'Korean', ja: 'Japanese', 'zh-cn': 'Chinese (Simplified)',
+};
 
 // CORS: restrict to production domains
 const ALLOWED_ORIGINS = [
@@ -124,7 +146,7 @@ serve(async (req) => {
 
   try {
     const requestBody = await req.json();
-    const { messages, system, promptVersion, mysteryType = 'murder' } = requestBody;
+    const { messages, system, promptVersion, mysteryType = 'murder', language } = requestBody;
 
     if (!messages || !Array.isArray(messages)) {
       throw new Error('Messages array is required');
@@ -210,8 +232,18 @@ You don't need to explain the format unprompted. Only clarify if the user is des
       const conversationText = messages.map(msg => msg.content || '').join(' ');
       const lastUserMessage = messages.filter(msg => msg.role === 'user').pop()?.content || '';
       const firstUserMessage = messages.find(msg => msg.role === 'user')?.content || '';
-      const detectedLocale = detectLocale(firstUserMessage);
-      const labels = await buildLabels(detectedLocale, mysteryType);
+      // Prefer the language the user has selected in the UI (sent by the client).
+      // Fall back to character-set detection only when no language tag is provided.
+      const detectedLocale: Locale = normalizeLocale(language) ?? detectLocale(firstUserMessage);
+      const labels = buildLabels(detectedLocale, mysteryType);
+      const languageName = LANGUAGE_NAMES[detectedLocale];
+      // Strong, explicit language directive — the entire response (including section headings,
+      // labels, and any framing text) must be written in the user's chosen language. The previous
+      // "same language the user writes to you" phrasing failed when the user typed mostly proper
+      // nouns or English loanwords, leaving section titles in English in the rendered concept.
+      const languageDirective = `<language_instruction>
+Write the ENTIRE response in ${languageName}. This includes every heading, every section label (such as the equivalents of "Premise", "Victim", "Character List", "Murder Method", "The Crime", "Wronged Party", "Crime Method"), every list item, and every sentence of prose. Do not leave any English in the output — even if section names below are shown in English in the format template, you must translate them into ${languageName} when you produce the response. Use the localized section labels provided in the format template verbatim.
+</language_instruction>`;
       const isIntrigue = mysteryType === 'intrigue';
 
       // --- Check if a mystery concept has already been presented ---
@@ -270,9 +302,7 @@ You don't need to explain the format unprompted. Only clarify if the user is des
           const mysteryLabel = isIntrigue ? 'intrigue mystery' : 'murder mystery';
           systemPrompt = `You are a ${mysteryLabel} CONCEPT designer helping refine a mystery.
 
-<language_instruction>
-Always respond in the same language the user writes to you.
-</language_instruction>
+${languageDirective}
 
 ${isIntrigue ? 'IMPORTANT: This is an INTRIGUE mystery — no one dies. The central crime is a theft, scandal, sabotage, conspiracy, betrayal, or other non-lethal event. Never introduce a murder or a dead victim.' : ''}
 
@@ -288,9 +318,7 @@ ${contentBoundaries}`;
         const invalidNumber = standaloneNumberMatch![1];
         systemPrompt = `The user provided ${invalidNumber} players. Politely let them know the range is 4 to 32 players and ask them to pick a number in that range.
 
-<language_instruction>
-Always respond in the same language the user writes to you.
-</language_instruction>`;
+${languageDirective}`;
 
       } else if (!hasPlayerCount) {
         // === PRE-CONCEPT: Need player count ===
@@ -301,9 +329,7 @@ Always respond in the same language the user writes to you.
 
         systemPrompt = `You are an enthusiastic, creative ${mysteryLabel} concept designer.
 
-<language_instruction>
-Always respond in the same language the user writes to you.
-</language_instruction>
+${languageDirective}
 
 ${isIntrigue ? 'IMPORTANT: This is an INTRIGUE mystery — no one dies. The central crime is a non-lethal event: a theft, scandal, sabotage, conspiracy, or betrayal. Never introduce a murder or a dead victim.' : ''}
 
@@ -344,9 +370,7 @@ ${contentBoundaries}`;
         } else if (isIntrigue) {
           systemPrompt = `You are an enthusiastic, creative intrigue mystery concept designer.
 
-<language_instruction>
-Always respond in the same language the user writes to you.
-</language_instruction>
+${languageDirective}
 
 IMPORTANT: This is an INTRIGUE mystery — no one dies. The central crime is a non-lethal event: a theft, scandal, sabotage, conspiracy, or betrayal. Never use the words "murder", "kill", "dead", "victim", or "shot". The wronged party is ALIVE and seeking justice.
 
@@ -372,13 +396,13 @@ If you decide the theme is specific enough, generate the full concept using this
 # "[CREATIVE TITLE]"
 
 ## ${(labels as any).premise}
-[2-3 paragraphs setting the scene. IMPORTANT: No one dies — the central event is a theft, scandal, sabotage, conspiracy, betrayal, or other non-lethal crime. Make it dramatic and high-stakes.]
+[2-3 paragraphs setting the scene. IMPORTANT: No one dies — the central event is a theft, scandal, sabotage, conspiracy, betrayal, or other non-lethal crime. Make it dramatic and high-stakes. The PREMISE must establish three things: (1) what occasion or setting brings all suspects together in one place; (2) that the wronged party summoned everyone and has engaged an outside investigator to get to the bottom of it; (3) a clear in-world reason why no one can simply leave — the wronged party controls the venue, or leaving would make someone the obvious culprit, or the matter must be resolved before the evening ends. This is your gathering hook.]
 
 ## ${(labels as any).theCrime}
 [What was stolen, leaked, sabotaged, exposed, or destroyed. Be specific and dramatic — make the stakes clear even without a death.]
 
 ## ${(labels as any).wrongedParty}
-**[Name]** - [Who was wronged by this crime, what they lost, why it matters deeply to them, and their current emotional state. This person is ALIVE and seeking justice.]
+**[Name]** - [Who was wronged by this crime, what they lost, why it matters deeply to them, and their current emotional state. This person is ALIVE and seeking justice. They summoned everyone present and engaged the investigator personally — they are NOT a suspect but ARE present, determined to see this resolved.]
 
 ## ${(labels as any).characterList} (${playerCount} ${(labels as any).playersWord})
 1. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to the crime or wronged party]
@@ -396,9 +420,7 @@ If generating the concept, always end by asking if it works for them and mention
         } else {
           systemPrompt = `You are an enthusiastic, creative murder mystery concept designer.
 
-<language_instruction>
-Always respond in the same language the user writes to you.
-</language_instruction>
+${languageDirective}
 
 The user has already provided a theme and player count. Your job is to decide: should you ask ONE clarifying question, or go straight to generating the concept?
 
@@ -459,9 +481,7 @@ If generating the concept, always end by asking if it works for them and mention
         } else if (isIntrigue) {
           systemPrompt = `You are an intrigue mystery CONCEPT DESIGNER. The user has provided enough information to generate a concept.
 
-<language_instruction>
-Always respond in the same language the user writes to you.
-</language_instruction>
+${languageDirective}
 
 IMPORTANT: This is an INTRIGUE mystery — no one dies. The central crime is a non-lethal event: a theft, scandal, sabotage, conspiracy, or betrayal. Never use the words "murder", "kill", "dead", "victim", or "shot". The wronged party is ALIVE and seeking justice.
 
@@ -470,13 +490,13 @@ Create a complete mystery CONCEPT using this EXACT format:
 # "[CREATIVE TITLE]"
 
 ## ${(labels as any).premise}
-[2-3 paragraphs setting the scene. No one dies — the central event is a theft, scandal, sabotage, conspiracy, betrayal, or other non-lethal crime. Make it dramatic and high-stakes.]
+[2-3 paragraphs setting the scene. No one dies — the central event is a theft, scandal, sabotage, conspiracy, betrayal, or other non-lethal crime. Make it dramatic and high-stakes. The PREMISE must establish: (1) what occasion or setting brings all suspects together; (2) that the wronged party summoned everyone and engaged an outside investigator; (3) why no one can simply leave — the wronged party controls the venue, or leaving would make someone the obvious culprit, or the matter must be resolved before the evening ends.]
 
 ## ${(labels as any).theCrime}
 [What was stolen, leaked, sabotaged, exposed, or destroyed. Be specific and dramatic.]
 
 ## ${(labels as any).wrongedParty}
-**[Name]** - [Who was wronged by this crime, what they lost, why it matters deeply to them, and their current emotional state. This person is ALIVE and seeking justice.]
+**[Name]** - [Who was wronged by this crime, what they lost, why it matters deeply to them, and their current emotional state. This person is ALIVE and seeking justice. They summoned everyone present and engaged the investigator personally — they are NOT a suspect but ARE present, determined to see this resolved.]
 
 ## ${(labels as any).characterList} (${playerCount} ${(labels as any).playersWord})
 1. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to the crime or wronged party]
@@ -494,9 +514,7 @@ Always end your response by asking if the concept works for them. Mention they c
         } else {
           systemPrompt = `You are a murder mystery CONCEPT DESIGNER. The user has provided enough information to generate a concept.
 
-<language_instruction>
-Always respond in the same language the user writes to you.
-</language_instruction>
+${languageDirective}
 
 Create a complete mystery CONCEPT using this format:
 

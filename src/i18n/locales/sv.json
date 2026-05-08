@@ -436,11 +436,11 @@
       "both": "both full and point form"
     },
     "sections": {
-      "premise": "Premise",
-      "victim": "Victim",
-      "characterList": "Character List",
-      "players": "players",
-      "murderMethod": "Murder Method",
+      "premise": "Premiss",
+      "victim": "Offer",
+      "characterList": "Rollista",
+      "players": "spelare",
+      "murderMethod": "Mordmetod",
       "theCrime": "Brottet",
       "wrongedParty": "Den Drabbade Parten",
       "crimeMethod": "Brottsmetod"

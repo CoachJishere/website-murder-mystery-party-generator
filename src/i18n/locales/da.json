@@ -436,14 +436,14 @@
       "both": "both full and point form"
     },
     "sections": {
-      "premise": "Premise",
-      "victim": "Victim",
-      "characterList": "Character List",
-      "players": "players",
-      "murderMethod": "Murder Method",
-      "theCrime": "The Crime",
-      "wrongedParty": "The Wronged Party",
-      "crimeMethod": "Crime Method"
+      "premise": "Præmis",
+      "victim": "Offer",
+      "characterList": "Karakterliste",
+      "players": "spillere",
+      "murderMethod": "Mordmetode",
+      "theCrime": "Forbrydelsen",
+      "wrongedParty": "Den Forurettede Part",
+      "crimeMethod": "Forbrydelsesmetode"
     },
     "wizard": {
       "title": "Create Your Mystery",
