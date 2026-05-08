@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-05-08
+
+### Translation polish: best-murder-mystery-party-games-review body fully rewritten in 4 languages (SV, NL, PT, IT)
+
+- **Slug context**: this is the next-priority slug after the cruise-ship and steampunk sweeps, identified by SV hyphen-chain count (89). Long-form review article with 16 H2 sections + 8 FAQ Q&A.
+- **SV** (89 hyphen-chains → 16, -82%): full body rewrite from broken pseudo-Swedish ("Marknaden splietta", "Prenumerations-låda", "Grupp-storlek faktisk spelar roll", "Värd-stress", verb forms wrong throughout) to native Swedish with proper compound words, definite/indefinite article inflection and adverb forms (`faktiskt` not `faktisk`, `fungerar` not `fungera`). Length 22,507 → 24,131 chars.
+- **NL** (severe rot despite low 5 hyphen-chains): grammar broken throughout — "Dit episodisch ervaringen levermaanden", "Je krijgt 6 kapittel verspreid 6 maanden", "Het is $2,03 miljard markt groei 12,6% jaarlijks". Full rewrite to idiomatic Dutch. Length 21,854 → 25,072 chars.
+- **PT** (untranslated English mid-sentence: "você é travado com whoever este jogo foi projetado para"): proper names like "Night of mistério" wrongly translated half-way; awkward calques like "se sente premium". Full rewrite in pt-PT register (kept BR-readable). Length 25,336 → 25,381 chars.
+- **IT** (calques + bad word order: "non padroni di casa di festa", "Le serie di scatola fisica", brand names half-translated to "Night of mistero"): full rewrite to native Italian with proper agreement and idiom (`schede personaggio`, `carte indizio`, `chi conduce`/`chi ospita` for "host"). Length 26,300 → 25,549 chars.
+- **Skipped this pass**: DA/DE/ES/FR — assessed as already in functional or near-native quality (DA reads natural, DE has minor Anglicisms but no broken grammar, ES/FR top samples natural). Worth a quality polish later but not the time investment in this batch.
+- **Skipped permanently for this kind of work**: JA/KO/ZH-CN/FI — these need native-speaker review, not AI polish that would just replace one form of rot with another.
+- **Method**: full content replacement per cell using dollar-quoted SQL strings (`$sv$...$sv$`, etc) to avoid escape issues with the apostrophes/quotation marks in the long-form prose. Verification: hyphen-chain counts on SV, char_length parity check vs EN source (24,106 chars; rewrites all within 24K–25.5K).
+
 ## 2026-05-07
 
 ### Improvement: monitoring sweep broadened to catch crashed Make runs that mark status=completed without persisting content
