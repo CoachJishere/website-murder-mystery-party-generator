@@ -18,6 +18,11 @@
 - **B5 — Duplicate Last Updated markers**: ✓ none found.
 - **B6 — Daily publish check**: 1 post published 2026-05-08 (`how-to-fix-inappropriate-murder-mystery-content-keep-your-party-fun-for-all`). Git log shows `llms.txt` regeneration pending from daily pipeline.
 
+### Translation polish: best-mmp-games-review — JA full rewrite + KO targeted fixes
+
+- **JA**: Full 15-section rewrite from machine translation to native Japanese prose. Comparison table updated to correct 7-column format with current product set (stale Masters of Mystery/Deadbolt/A Killing Affair rows replaced). Renamed 9 stilted H2 headers (e.g. "マーケット分裂" → "市場の分類", "グループサイズ実際に重要" → "グループサイズは本当に重要", "mysterymaker.partyが適合する場所" → "MysteryMakerの位置づけ"). Fixed 3 broken cross-links where full sentence clauses were used as anchor text; replaced with natural noun-phrase anchors. H2 audit: 15 headers clean. FAQ audit: 8 questions verified.
+- **KO**: Targeted fixes — 3 broken cross-link anchors corrected (sentence-fragment anchors → natural Korean noun phrases); `(hosted)` → `(전문 주최형)` in comparison table; wrong date `2026년 5월` → `2026년 3월`.
+
 ## 2026-05-08
 
 ### Audit: traffic-weighted polish priority ranking
