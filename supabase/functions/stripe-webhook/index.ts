@@ -1,7 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import Stripe from "https://esm.sh/stripe@14.17.0";
+import Stripe from "https://esm.sh/stripe@14.17.0?target=deno";
 
 // Configure CORS headers
 const corsHeaders = {
@@ -85,17 +85,17 @@ serve(async (req) => {
       throw new Error("Missing Stripe signature header");
     }
 
-    // Verify webhook signature
+    // Verify webhook signature (use async version for Deno/Web Crypto compatibility)
     let event: Stripe.Event;
     try {
-      event = stripe.webhooks.constructEvent(
+      event = await stripe.webhooks.constructEventAsync(
         body,
         signature,
         stripeWebhookSecret
       );
       console.log(`Verified Stripe webhook event: ${event.type}`);
     } catch (err) {
-      console.error("Webhook signature verification failed:", err.message);
+      console.error("Webhook signature verification failed:", err?.message || err);
       return new Response(
         JSON.stringify({ error: "Invalid signature" }),
         {
@@ -253,13 +253,13 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error("Error processing webhook:", error);
+    console.error("Error processing webhook:", error?.message || error, error?.stack);
 
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message,
-        stack: error.stack,
+        error: error?.message || String(error),
+        stack: error?.stack,
       }),
       {
         status: 500,
