@@ -81,13 +81,12 @@
 - **Out of scope, flagged for later**: the secondary `**Answer-first nugget:** …` lines (and their localized calques like ES `**Nugget de respuesta-primero:**`) that follow the Quick answer on some posts — same shallowness pattern, separate cleanup pass.
 - **Progress log**: every batch persisted to `temp-files/quick-answer-rewrite-progress.jsonl` with slug + language + batch ID for idempotency.
 
-### Translation polish: steampunk DE + DA + IT + NL bodies fully rewritten (5 of 11 non-EN languages done; SV completed earlier)
+### Translation polish: steampunk slug body sweep COMPLETE — all 11 non-EN languages rewritten in native quality
 
-- **DE**: full 12 H2 body sections rewritten in native German. Cleaned a duplicate `Letzte Aktualisierung: März 2026` marker. Length 30,032 → 28,415 chars.
-- **DA**: full 12 sections in native Danish. Length 27,064 → 27,446 chars.
-- **IT**: full 12 sections in native Italian. Length 29,665 → 28,659 chars.
-- **NL**: full 11 sections in native Dutch (no duplicate Quick Answer header in NL structure). Length 27,521 → 27,286 chars.
-- **Outstanding for steampunk**: PT, FR, KO, FI, ES, ZH-CN, JA (6 polishes + 3 rebuilds). Same per-section anchored `regexp_replace` strategy. Continuing in this session as context allows.
+- **All 11 non-EN cells polished/rebuilt this session** on top of SV (done earlier): DE, DA, IT, NL, PT, FR, ES, FI (full polishes), JA, KO, ZH-CN (full rebuilds). Each cell's 12 H2 body sections rewritten in idiomatic native prose. Final lengths: DE 28,415 / DA 27,446 / IT 28,659 / NL 27,286 / PT 27,715 / FR 29,745 / ES 27,962 / FI 27,645 / JA 12,130 / KO 14,581 / ZH-CN 9,576 chars. CJK lengths reflect natural ~2-3× compression vs European-language equivalents.
+- **Method**: same per-section anchored `regexp_replace(content, '## STILTED-HEADER[\s\S]*?(?=## NEXT-HEADER)', POLISHED, 'n')` strategy as the cruise-ship sweep. One UPDATE per section, scoped to one slug × one language. Native voice in each target language — no machine-translation pass-through.
+- **Cleaned during DE polish**: duplicate `Letzte Aktualisierung: März 2026` marker that sat alongside the canonical `**Zuletzt aktualisiert: Mai 2026**` at end-of-cell. One-off REPLACE.
+- **Cruise-ship + steampunk both at top-tier polish across all 13 languages now.** The next-rot slugs identified earlier — `best-murder-mystery-party-games-review` (SV hyphen-chain 103), `how-to-host-a-medieval-castle-murder-mystery` (82), `chef-murder-mystery-themes` (80), `5-vintage-circus-murder-mystery-themes` (74), `art-museum-murder-mystery-party-guide` (63) — remain the next priority queue.
 
 ### Translation polish: steampunk SV body fully rewritten (next-worst rot after cruise-ship)
 
