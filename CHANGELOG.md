@@ -25,6 +25,12 @@
 
 ## 2026-05-08
 
+### Translation polish: chef-murder-mystery-themes — SV + DE + FR full rewrites
+
+- **SV**: Full 8-section rewrite from hyphen-chain rot (80+ compound errors) to native Swedish prose. New idiomatic headers (e.g. "Varför kockkaraktärer skapar starkare mysterier", "Kockmysteriets format som faktiskt fungerar"). Compound words correctly merged (no hyphens). Length: ~19.7K chars.
+- **DE**: Full 8-section rewrite from machine translation to native German. New idiomatic headers (e.g. "Warum Kochfiguren Krimis besonders machen", "Koch-Krimi-Formate, die wirklich funktionieren"). Correct German compound words and register throughout. Length: ~21.4K chars.
+- **FR**: Full 8-section rewrite from calque-ridden machine translation to native French. Key fixes: "font coller les mystères" → "font de meilleurs suspects"; "se réduit le plus dur" → removed; "Oversimplifier" (English word embedded) → removed; "March 2026" → "mars 2026"; "Comment puis-je rendre le poison fonctionner" → "Comment gérer le poison sans tomber dans le technique". Cross-links to magician + photographer posts repositioned naturally. Length: ~21.3K chars.
+
 ### Audit: traffic-weighted polish priority ranking
 
 - Re-prioritized the translation polish queue based on actual GA4 pageviews (90-day window) × hyphen-chain rot signal; score = `views_90d × (max_chains > 50 ? 1.0 : 0.3)`.
