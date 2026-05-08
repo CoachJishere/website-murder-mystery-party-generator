@@ -4,9 +4,9 @@
 
 ### Audit: traffic-weighted polish priority ranking
 
-- Re-prioritized the translation polish queue based on actual GA4 pageviews (90-day window, all language variants) × hyphen-chain rot signal.
-- Output: `docs/polish-priority-ranked.md`.
-- Top finding: `1920s-speakeasy-murder-mystery-party-guide` is the site's highest-traffic slug (33 views/90d) with DE rot=81 — it never appeared in the SV-rot-only queue but is the clearest next priority after the current in-progress slugs.
+- Re-prioritized the translation polish queue based on actual GA4 pageviews (90-day window) × hyphen-chain rot signal; score = `views_90d × (max_chains > 50 ? 1.0 : 0.3)`.
+- Output: `docs/polish-priority.md` (note: `*TRANSLATION*.md` is gitignored; file saved under alternate name).
+- Top finding: `1920s-speakeasy-murder-mystery-party-guide` is the site's highest-traffic blog slug (23 views/90d, max hyphen-chains=81) and was completely absent from the SV-rot-only sweep — it is the clearest next priority.
 
 ### Translation polish: best-mmp-games-review — FI full rewrite + ZH-CN new row + DA/SV targeted fixes
 
