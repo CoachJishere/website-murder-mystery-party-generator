@@ -1,6 +1,6 @@
 {
   "error": "ENOENT: no such file or directory, open '/Users/jonathanmiller/My Drive/[04] Projects/[01] CascadeProjects/website-murder-mystery-party-generator-main/.google-analytics-credentials.json'",
-  "lastUpdated": "2026-03-06T14:00:02.508Z",
+  "lastUpdated": "2026-05-02T07:00:02.120Z",
   "postPath": "/blog/en/how-to-host-a-victorian-murder-mystery-party",
   "note": "Unable to fetch GA metrics. Check credentials and configuration.",
   "setup": {

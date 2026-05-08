@@ -61,12 +61,12 @@ log "📝 Log file: $LOG_FILE"
 echo ""
 
 # Track success/failure
-TOTAL_SCRIPTS=4
+TOTAL_SCRIPTS=5
 SUCCESS_COUNT=0
 FAILED_SCRIPTS=()
 
 # Script 1: Site-wide metrics
-log "📊 [1/4] Fetching site-wide metrics..."
+log "📊 [1/5] Fetching site-wide metrics..."
 if node "$SCRIPT_DIR/fetchSiteMetrics.mjs" >> "$LOG_FILE" 2>&1; then
     log_success "Site-wide metrics fetched successfully"
     ((SUCCESS_COUNT++))
@@ -77,7 +77,7 @@ fi
 echo ""
 
 # Script 2: All blog posts metrics (this takes the longest)
-log "📚 [2/4] Fetching all blog posts metrics (this may take several minutes)..."
+log "📚 [2/5] Fetching all blog posts metrics (this may take several minutes)..."
 log_warning "This script makes many API calls and includes rate limiting delays"
 if node "$SCRIPT_DIR/fetchAllBlogMetrics.mjs" >> "$LOG_FILE" 2>&1; then
     log_success "All blog posts metrics fetched successfully"
@@ -89,7 +89,7 @@ fi
 echo ""
 
 # Script 3: Victorian post GA4 metrics
-log "🎩 [3/4] Fetching Victorian post GA4 metrics..."
+log "🎩 [3/5] Fetching Victorian post GA4 metrics..."
 if node "$SCRIPT_DIR/fetchGAMetrics.mjs" >> "$LOG_FILE" 2>&1; then
     log_success "Victorian post GA4 metrics fetched successfully"
     ((SUCCESS_COUNT++))
@@ -99,8 +99,19 @@ else
 fi
 echo ""
 
-# Script 4: Victorian post GSC metrics
-log "🔍 [4/4] Fetching Victorian post GSC metrics..."
+# Script 4: AI referral traffic
+log "🤖 [4/5] Fetching AI referral traffic metrics..."
+if GA4_PROPERTY_ID=$GA4_PROPERTY_ID node "$SCRIPT_DIR/fetchAIReferrals.mjs" >> "$LOG_FILE" 2>&1; then
+    log_success "AI referral metrics fetched successfully"
+    ((SUCCESS_COUNT++))
+else
+    log_error "Failed to fetch AI referral metrics"
+    FAILED_SCRIPTS+=("fetchAIReferrals.mjs")
+fi
+echo ""
+
+# Script 5: Victorian post GSC metrics
+log "🔍 [5/5] Fetching Victorian post GSC metrics..."
 if node "$SCRIPT_DIR/fetchGSCMetrics.mjs" >> "$LOG_FILE" 2>&1; then
     log_success "Victorian post GSC metrics fetched successfully"
     ((SUCCESS_COUNT++))
@@ -131,6 +142,7 @@ else
     log "  - temp-files/site-metrics.json"
     log "  - temp-files/all-blog-metrics.json"
     log "  - temp-files/ga-metrics.json"
+    log "  - temp-files/ai-referral-metrics.json"
     log "  - temp-files/gsc-metrics.json"
 fi
 
