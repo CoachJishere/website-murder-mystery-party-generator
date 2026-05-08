@@ -2,6 +2,15 @@
 
 ## 2026-05-08
 
+### Translation polish: best-murder-mystery-party-games-review body completed across all 8 non-EN languages (DA, DE, ES, FR, IT, NL, PT, SV)
+
+- **Round 2 of the slug sweep**: after SV/NL/PT/IT (the worst-rotted four) earlier today, came back to the "functional but worth a polish" group (DA/DE/ES/FR). Mid-content sampling surfaced enough issues in all four to warrant rewriting them too.
+- **DA**: minor typos and verb-form errors ("vinlandssmysterier" double-s, "festvarter" missing æ, "mysterium tage" wrong conjugation). Mostly natural Danish but rough at the edges.
+- **DE**: broken word order ("Für Party-Hosting, sie passen nicht"), wrong gender ("stilles Luxus" → "stiller Luxus"), inconsistent Sie/du across the body, calques like "Thema-Raffinesse" and "Trend-Führung". Rewrote in consistent du-form with proper compound noun handling.
+- **ES**: invented words like "anfitrionando" / "anfitrionaje" (not Spanish — should be "siendo anfitrión"/"organizando"), Anglicisms like "no encajan en el caso de uso" and "alguien que sabe cómo lanzar una fiesta los diseñó". Full rewrite to natural register.
+- **FR**: caught a serious semantic bug — `Chefs` was used throughout for "hosts", but in French `chef` means "leader/boss/cook", NOT party host. The H2 "Kits Téléchargeables : Le Choix Pratique pour la Plupart des **Chefs**" was telling readers the kits were for cooks. Fixed to `hôtes` throughout. Also cleaned up calques like "Vous résolvez des pièces pendant des mois" and the unnecessary Anglicism "trendsetter".
+- **Slug status**: all 9 language versions of `best-murder-mystery-party-games-review` (EN source + 8 translations) now structurally clean and natively idiomatic. Lengths 24K–27K chars across the board (EN baseline 24K), 15 H2 sections per cell.
+
 ### Translation polish: best-murder-mystery-party-games-review body fully rewritten in 4 languages (SV, NL, PT, IT)
 
 - **Slug context**: this is the next-priority slug after the cruise-ship and steampunk sweeps, identified by SV hyphen-chain count (89). Long-form review article with 16 H2 sections + 8 FAQ Q&A.
