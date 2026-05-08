@@ -2,6 +2,12 @@
 
 ## 2026-05-08
 
+### Audit: traffic-weighted polish priority ranking
+
+- Re-prioritized the translation polish queue based on actual GA4 pageviews (90-day window, all language variants) × hyphen-chain rot signal.
+- Output: `docs/polish-priority-ranked.md`.
+- Top finding: `1920s-speakeasy-murder-mystery-party-guide` is the site's highest-traffic slug (33 views/90d) with DE rot=81 — it never appeared in the SV-rot-only queue but is the clearest next priority after the current in-progress slugs.
+
 ### Translation polish: best-mmp-games-review — FI full rewrite + ZH-CN new row + DA/SV targeted fixes
 
 - **FI**: Complete 15-section rewrite from broken machine translation (gibberish headers like "Markkinat Split", "Faktisesti Differentiaation"; prose like "murhamysteeripelimarkkinat on sekava jos olet oikeastaan yritys valita jotain") to native Finnish. All headers corrected (e.g. "Käytännöllinen Isäntä Path" → "Käytännön isäntäpolku"), comparison table fixed ("hosted" → "järjestetty"), intro/TL;DR rewritten, all 8 FAQ Q&A rewritten. Length: ~25K chars.
