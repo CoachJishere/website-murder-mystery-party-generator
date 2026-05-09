@@ -49,6 +49,7 @@ Blog Database - Master.csv
 !scripts/verify-anchors.mjs
 !scripts/prerender-blog.mjs
 !scripts/submit-indexnow.mjs
+!scripts/submit-sitemap-gsc.mjs
 !scripts/apply-p5-tocs.mjs
 *.sql
 *-REPORT*.md

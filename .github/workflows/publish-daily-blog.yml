@@ -137,3 +137,20 @@ jobs:
         # push hundreds of URLs in a single batch and trip Bing's IndexNow
         # abuse heuristics (HTTP 403). Slug-scoped is always exactly 13.
         run: node scripts/submit-indexnow.mjs --slug="${{ steps.publish.outputs.slug }}"
+
+      - name: Submit sitemap to Google Search Console
+        if: steps.publish.outputs.slug != ''
+        env:
+          GSC_SITE_URL: https://mysterymaker.party
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+        # Pings GSC to recrawl sitemap.xml after each daily publish.
+        # Required because (a) Google does not consume IndexNow and
+        # (b) sitemap re-fetch on Google's own schedule can lag days.
+        # Submission is idempotent — calling it daily is safe.
+        # Requires the GSC_SERVICE_ACCOUNT_JSON repo secret + the service
+        # account being added as Owner/Full on the GSC property at
+        # https://search.google.com/search-console (Settings → Users).
+        # `continue-on-error: true` because GSC submission failure must not
+        # block the publish — IndexNow handles Bing, this is Google bonus.
+        continue-on-error: true
+        run: node scripts/submit-sitemap-gsc.mjs
