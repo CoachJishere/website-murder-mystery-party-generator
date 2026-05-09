@@ -2,6 +2,16 @@
 
 ## 2026-05-09 (session 2)
 
+### Translation polish: 1920s-speakeasy — 12-language cross-link + budget + H2 sweep complete
+
+- **Slug**: `1920s-speakeasy-murder-mystery-party-guide`
+- **Scope this session**: DA, NL, FI, ES, IT, JA, KO, PT, ZH-CN (SV/DE/FR completed in prior session). Slug now 100% polished across all 12 non-EN cells.
+- **Cross-link rectification (canonical EN structure restored everywhere)**: Step 1 body → 1950s-diner; Section 5 Social Revolution → 1960s-mod; Section 5 Jazz-Age Atmosphere → 1970s-disco; Section 8 closing → murder-mystery-party-ideas; Section 9 final FAQ → ancient-egypt. All cells had broken anchor texts (links wrapping random sentence fragments) and/or links misplaced in wrong sections. Pattern: removed broken inline link → added natural standalone cross-link sentence at the canonical anchor location.
+- **Per-cell cross-link counts fixed**: ES (4 fixes), IT (9 fixes — every cross-link broken AND misplaced), JA (5 broken removed + 5 added), KO (1 broken removed + 5 added), PT (1 broken removed + 5 added), ZH-CN (4 broken removed + 5 added). DA/NL/FI received same fix pattern in prior session resumption.
+- **Budget localization**: $→€ on NL/FI/ES/IT/PT (number-preserving regex); $→¥/円 on JA (×150 yen conversion); $→₩/원 on KO (×1300 won conversion); $→元 on ZH-CN (×7 RMB conversion). DA budget already in kr.
+- **H2 anglicism cleanup (IT only)**: "Quick Start Checklist" → "Lista di Controllo Rapida"; "Step-by-Step" → "Passo per Passo"; "Jazz-Age" → "dell'Era del Jazz". Both H2 headers and matching TOC anchor links updated.
+- **H2 audit clean across all 9 languages worked this session**.
+
 ### Fix: non-EN crawlability audit — `<html lang>` was hardcoded to English on every prerendered page
 
 - **Audit scope**: sitemap coverage, hreflang emission, canonical URLs, robots.txt, vercel.json rewrites, live-site head tags across EN + SV + DE + JA cells.
