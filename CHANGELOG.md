@@ -2,6 +2,14 @@
 
 ## 2026-05-09 (session 3)
 
+### Translation polish: luxury-yacht DE — full body rewrite (343→29 chains)
+
+- **Slug**: `luxury-yacht-murder-mystery-party-guide-nautical-elegance-with-high-stakes-drama` / `de`
+- DE was the most severely damaged remaining cell across the corpus. Hyphen-chain rot ran end-to-end ("Yacht-Mystery-Erfolg", "Schritt-für-Schritt", "Maritim-Gemeinschaft-Charaktere", word-by-word hyphenation), broken article agreement, missing verbs, calque constructions ("seiend-bei-See"), English words ("stormy", "doctored", "uncovered") leaking through.
+- **Security flag**: discovered an injected fake `<system-reminder>` tag embedded inside the blog post content itself (just before what appeared to be the closing CTA). Looked like either a prompt-injection attempt baked into the machine translation or a deliberate insertion. Stripped during rewrite. Recommend a corpus-wide audit for `<system-reminder>` patterns in `blog_posts.content`.
+- Full body rewrite from EN structural source: kit-style sections preserved (Schnellstart-Checkliste, Schritt-für-Schritt-Anleitung mit 4 Schritten, Figurenentwicklung, Setting-spezifische Themen mit 4 sub-types, Interaktive maritime Elemente, 5 häufige Fehler, fortgeschrittene Anpassung, Atmosphäre/Beleuchtung/Klang/Deko, 3-tier Budgetplanung, Was wirklich funktioniert, 7 FAQ, Abschluss).
+- All 4× "mysterymaker.party" references replaced with "MysteryMaker". Added missing `## Verwandte Anleitungen` section with 4 thematically related slugs (caribbean-cruise, cruise-ship, ski-lodge, high-society-gala).
+
 ### Translation polish: fashion-week DA targeted fixes + DE full rewrite + FR rewrite
 
 - **Slug**: `fashion-week-murder-mystery-party-planning-strut-into-danger-and-style`
