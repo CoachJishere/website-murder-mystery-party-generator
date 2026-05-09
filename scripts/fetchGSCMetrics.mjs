@@ -24,7 +24,7 @@ const __dirname = dirname(__filename);
 const CONFIG = {
   siteUrl: process.env.GSC_SITE_URL || 'https://mysterymaker.party',
   credentialsPath: join(__dirname, '../.google-search-console-credentials.json'),
-  victorianPostUrl: 'https://mysterymaker.party/blog/en/how-to-host-a-victorian-murder-mystery-party',
+  victorianPostUrl: 'https://mysterymaker.party/blog/how-to-host-a-victorian-murder-mystery-party', // EN; non-EN would be https://mysterymaker.party/<lang>/blog/<slug>
   outputPath: join(__dirname, '../temp-files/gsc-metrics.json'),
   daysBack: 7
 };

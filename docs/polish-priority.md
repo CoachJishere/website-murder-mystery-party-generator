@@ -9,7 +9,9 @@
 
 ## Important caveat: GA4 path structure
 
-GA4 tracks blog URLs as `/blog/<slug>/` (no language prefix). The multilingual routes `/blog/<lang>/<slug>` are not yet appearing in GA4 data, meaning **per-language traffic breakdown is not available**. All traffic figures are slug-level aggregates (language-agnostic). Only 36 distinct blog paths have any recorded traffic in the 90-day window; all remaining slugs have 0 recorded views. Total blog pageviews in 90d: ~103.
+The multilingual routes are `/<lang>/blog/<slug>` (e.g. `/sv/blog/...`, `/de/blog/...`) — **not** `/blog/<lang>/<slug>` as initially assumed. At the time of this audit (90-day window), GA4 was capturing only the EN-format `/blog/<slug>/` path. The combination of (a) `index.html` firing an auto `page_view` on hard load without `send_page_view: false` and (b) the SPA `RouteTracker` sending only `page_path` without `page_location` meant non-EN SPA navigations were either dropped or misattributed. Net effect: per-language traffic breakdown was not available, and language-prefixed paths showed zero traffic. All figures below reflect this EN-only data — total blog pageviews in 90d: ~103, across 36 distinct paths.
+
+**Status:** the underlying GA4 tracking bug was fixed in `index.html` + `src/lib/analytics.ts` after this audit (see CHANGELOG). Re-run this report 1–2 weeks after the fix lands in production to capture the corrected non-EN traffic — rankings will likely shift substantially. When re-running, the audit script must look under `/<lang>/blog/...` paths, **not** `/blog/<lang>/...`.
 
 ---
 
@@ -126,7 +128,7 @@ The following high-traffic slugs had no polish work started at time of audit and
 
 ## Methodology notes
 
-- Traffic is **slug-level only** — language breakdown not available from current GA4 setup, because translated URLs (`/blog/sv/...`) are not registering in GA4. All traffic data reflects the English-path format.
+- Traffic is **slug-level only** — at audit time, GA4 was only capturing the EN-path format `/blog/<slug>/`. Translated URLs at `/<lang>/blog/<slug>` (e.g. `/sv/blog/best-mmp-games-review`) registered as zero traffic due to a double-bug in the GA4 setup: an unconfigured auto-page_view in `index.html` plus a missing `page_location` field in the SPA route tracker. Both were patched after this audit. Re-running this report in 1–2 weeks should surface the missing ~92% of pageviews and likely reorder the priority list.
 - A slug with 0 GA4 views might still have organic search impressions in GSC (not checked here — GSC data for this window was unavailable at audit time).
 - The hyphen-chain regex (`\m\w+-\w+-\w+\M`) is a machine-translation rot proxy, not a fluency score. A high count means word boundaries are collapsing into compound calques; it does not detect subtle semantic errors.
 - `max_chains` = worst single language version per slug. `total_chains` (available in DB) gives a cross-language rot burden but is not used in the score formula here to keep the metric simple.

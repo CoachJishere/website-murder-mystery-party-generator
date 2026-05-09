@@ -24,7 +24,7 @@ const __dirname = dirname(__filename);
 const CONFIG = {
   propertyId: process.env.GA4_PROPERTY_ID || 'YOUR_GA4_PROPERTY_ID', // e.g., '123456789'
   credentialsPath: join(__dirname, '../.google-analytics-credentials.json'),
-  victorianPostPath: '/blog/en/how-to-host-a-victorian-murder-mystery-party',
+  victorianPostPath: '/blog/how-to-host-a-victorian-murder-mystery-party', // EN; non-EN would be /<lang>/blog/<slug>
   outputPath: join(__dirname, '../temp-files/ga-metrics.json'),
   daysBack: 7 // Pull last 7 days of data
 };
