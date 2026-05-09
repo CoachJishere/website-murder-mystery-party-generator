@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-05-09 (session 3)
+
+### Translation polish: fashion-week DA targeted fixes + DE full rewrite + FR rewrite
+
+- **Slug**: `fashion-week-murder-mystery-party-planning-strut-into-danger-and-style`
+- **DA (33→28 chains)**: removed broken intro link to ski-lodge slug, cut statistics-bloat paragraph (1.7T USD industry stats), fixed "faldsvundulerer" non-word → "melder afbud", fixed H2/TOC headers "Designning af efterforskning" → "Design af efterforskning" and "De industriudynamikker, du skal" → "Industridynamikken du har brug for", fixed English leaks "Absolutely"→"Absolut" and "backdrop"→"baggrund", replaced 4× "mysterymaker.party" → "MysteryMaker", removed broken mid-sentence link to murder-mystery-party-ideas, fixed typo "modeemmystier"→"modemysterier" (3×), fixed "modesvære"→"modebranchen" and "moto-fotografi"→"modefotografi"
+- **DE (42→36 chains)**: full body rewrite. Original was severely damaged with "Zeigen" (showing) used as noun for "Show" throughout, broken article agreement, missing verbs, calque constructions. Removed 5 broken mid-sentence links (wild-west, abandoned-theme-park, murder-mystery-party-ideas, nightclub, ski-lodge slugs injected mid-sentence), removed statistics bloat, fixed all "mysterymaker.party"→"MysteryMaker", added missing `## Verwandte Anleitungen` section
+- **FR (27 chains)**: full body rewrite. Removed broken intro link to abandoned-theme-park, removed statistics bloat paragraph, removed 4 broken mid-sentence links (ski-lodge, wild-west, nightclub, murder-mystery-party-ideas slugs), fixed "stéréotyp" typo → "stéréotypes" in TOC, replaced 4× "mysterymaker.party" → "MysteryMaker", fixed pronoun mismatches and calque constructions throughout, polished translations like "se rétracte" (legal sense) → "se désiste", added missing `## Guides associés` section
+- Chain count caveat: numbers don't drop dramatically because the related-guides additions (4 URL slugs each, multi-hyphenated) offset broken links removed. Prose quality improvement is genuine across all three cells.
+
 ## 2026-05-09 (session 2)
 
 ### Translation polish: 1920s-speakeasy — 12-language cross-link + budget + H2 sweep complete
