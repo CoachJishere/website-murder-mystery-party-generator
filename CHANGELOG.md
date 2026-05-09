@@ -64,6 +64,26 @@
 - **DA** (21 chains): Full rewrite. Key fixes: "krydsbefrugter" (cross-pollinates — nonsense) → "påvirker"; "stavnene er høje" (wrong noun) → "indsatserne er enorme"; "konfliktkenarier" (non-word) → "konfliktscenarier"; "brugerdefinerede karakterer" (IT jargon) → "skræddersyede karakterer"; "lene sig ind i perioden" (calque) → "lade sig rive med af perioden"; "faktisk" adverb overuse cleared.
 - **NL** (21 chains): Full rewrite. Key fixes: "Het ding met" (calque) → "Het bijzondere aan"; "bewonen" (inhabit) → "vertolken"; "proplemiddelen" (non-word) → "rekwisieten"; "De Feestbesmetting" (contamination ≠ poisoning) → "De banketvergiftiging"; "actie" for player agency → "handelingsvrijheid"; "koppelingen" for headwear → "hoofddeksels"; two broken mid-sentence links fixed; "winterspelingen" → "wintermysteries"; period terminology corrected to Vroege/Hoge/Late Middeleeuwen. Skipped: FI (per native-review policy).
 
+### Translation polish: chef + medieval-castle + art-museum + vintage-circus — JA/KO/ZH-CN sweep
+
+- **chef-murder-mystery-themes-culinary-crimes-kitchen-secrets**:
+  - JA: Full 8-section rewrite from machine translation to native Japanese. Removed spurious `## 答えの最初のナゲット` H2 (old draft artifact). New natural headers (e.g. "シェフキャラクターが謎を際立たせる理由", "実際に効果的なシェフミステリーパターン"). Cross-links corrected to natural noun-phrase anchors. Final length: 7,383 chars.
+  - KO: Full 8-section rewrite from machine translation to native Korean. Removed spurious `## 정답 너겟` H2. New natural headers (e.g. "셰프 캐릭터가 미스터리를 살아있게 만드는 이유", "실제로 효과적인 셰프 미스터리 패턴"). Final length: 8,119 chars.
+  - ZH-CN: Targeted fixes — removed spurious `## 快速回答细节` H2; fixed broken header `## 厨师角色为什么让谋杀案坚持不懈` → `## 厨师角色让谜题与众不同的原因`; updated ToC anchor links.
+
+- **how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue**:
+  - ZH-CN: Removed spurious `## 快速计划检查清单` H2; fixed "建立你的中世界" → "建立你的中世纪世界" (typo in 中世界); fixed "演奏" → "扮演" in character-building section; updated ToC anchors.
+  - JA: Removed spurious `## クイック計画チェックリスト` H2; fixed 4 calque H2 headers: "グループに合わせてキャラクターをフィッティングする" → "グループへのキャラクター配役", "エネルギーを殺すミステーク" → "雰囲気を壊すミス", "あなたのグループが実際にプレイできるキャラクターを構築する" → "グループが演じやすいキャラクター設計", "実際の仕事" → "あなたの中世ミステリーを作る"; updated ToC anchor links.
+  - KO: Removed spurious `## 빠른 계획 체크리스트` H2; fixed 3 calque H2 headers: "당신의 그룹이 실제로 플레이할 수 있는 캐릭터 구축하기" → "그룹이 연기하기 좋은 캐릭터 설계", "에너지를 죽이는 실수들" → "분위기를 망치는 실수들", "실제 작업" → "당신의 중세 미스터리 만들기"; updated ToC anchor links.
+
+- **art-museum-murder-mystery-party-guide-sophisticated-gallery-adventures-with-curators-and-priceless-masterpieces**:
+  - JA: Confirmed clean — natural headers throughout, "雰囲気" used correctly (no "アトモスフィア" calque), CTA section uses "MysteryMakerで美術館ミステリーを作成する" (not raw URL path). Section `## 美術館ミステリーでよくある失敗` rewritten from machine translation.
+  - KO: Confirmed clean — 12 natural headers, "분위기" used correctly, CTA uses "MysteryMaker로 미술관 미스터리 만들기".
+
+- **5-vintage-circus-murder-mystery-themes-step-into-the-big-top-of-intrigue**:
+  - JA: Removed spurious `## 要点を先に答える` H2; fixed 3 calque H2 headers: "ヴィンテージサーカスミステリーを計画する：ステップバイステップ" → "ヴィンテージサーカスミステリーの計画：ステップ別ガイド", "カスタム対プリメイド：実際に機能するもの" → "オーダーメイドか既製か", "あなたが実際に構築しているもの" → "実際に作るもの".
+  - KO: Removed spurious `## 요점 먼저 답하기` H2; fixed 2 calque H2 headers: "사용자 정의 대 미리 만들어진 것: 실제로 작동하는 것" → "맞춤형 vs 기성품", "당신이 실제로 구축하고 있는 것" → "실제로 만드는 것".
+
 ## 2026-05-08
 
 ### Translation polish: chef-murder-mystery-themes — SV + DE + FR full rewrites
