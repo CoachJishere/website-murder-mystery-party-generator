@@ -1,34 +1,34 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-declare const gtag: any; // Will be available via the script in index.html
 declare global {
   interface Window {
     dataLayer: any[];
+    gtag?: (...args: any[]) => void;
   }
 }
 
 const GA_MEASUREMENT_ID = 'G-XGD48X4ZQS';
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Initialize GA4
+// Initialize GA4 — send_page_view is already disabled in index.html; this is a safety net.
 export const initGA = () => {
   if (isProduction && typeof window !== 'undefined') {
-    // dataLayer is initialized in index.html
-    if (typeof gtag === 'function') {
-      gtag('js', new Date());
-      gtag('config', GA_MEASUREMENT_ID, {
-        send_page_view: false, // We'll handle page views manually for SPA
+    if (typeof window.gtag === 'function') {
+      window.gtag('config', GA_MEASUREMENT_ID, {
+        send_page_view: false,
       });
     }
   }
 };
 
-// Track page views
+// Track page views — include page_location so GA4 populates URL dimensions correctly for SPA navigations.
 export const trackPageView = (path: string) => {
-  if (isProduction && typeof window !== 'undefined' && typeof gtag === 'function') {
-    gtag('event', 'page_view', {
+  if (isProduction && typeof window !== 'undefined' && typeof window.gtag === 'function') {
+    window.gtag('event', 'page_view', {
       page_path: path,
+      page_location: window.location.href,
+      page_title: document.title,
       send_to: GA_MEASUREMENT_ID,
     });
   }
@@ -36,19 +36,14 @@ export const trackPageView = (path: string) => {
 
 // Track custom events
 export const trackEvent = (action: string, params: Record<string, any> = {}) => {
-  if (isProduction && typeof window !== 'undefined' && typeof gtag === 'function') {
-    // Try both methods to ensure the event is sent
-    // Method 1: Direct dataLayer push
+  if (isProduction && typeof window !== 'undefined' && typeof window.gtag === 'function') {
     if (window.dataLayer) {
       window.dataLayer.push({
         event: action,
         ...params
       });
     }
-
-    // Method 2: gtag function call with explicit send_to
-    // This ensures events go to G-XGD48X4ZQS instead of being routed by GT tag
-    gtag('event', action, {
+    window.gtag('event', action, {
       ...params,
       send_to: GA_MEASUREMENT_ID,
     });
@@ -177,8 +172,6 @@ export const usePageTracking = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (isProduction) {
-      trackPageView(location.pathname + location.search);
-    }
-  }, [location]);
+    trackPageView(location.pathname + location.search);
+  }, [location.pathname, location.search]);
 };

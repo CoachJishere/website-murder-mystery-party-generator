@@ -80,7 +80,7 @@ const RouteTracker = () => {
     const path = location.pathname + location.search;
     trackPageView(path);
     capturePageView(path);
-  }, [location]);
+  }, [location.pathname, location.search]);
 
   return null;
 };

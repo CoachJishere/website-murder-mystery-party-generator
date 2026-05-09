@@ -2,6 +2,15 @@
 
 ## 2026-05-09
 
+### Fix: GA4 language-prefixed blog pageview tracking — ~92% of blog pageviews were invisible
+
+- **Root cause**: `index.html` called `gtag('config', 'G-XGD48X4ZQS')` without `send_page_view: false`, firing one automatic page_view on initial page load. The React `RouteTracker` then fired a second manual page_view via `trackPageView()` — but `trackPageView` sent only `page_path`, not `page_location`. GA4's `page_view` event requires `page_location` (full URL) to correctly populate URL-based dimensions. EN posts receive most traffic via direct organic visits (both auto + manual hits fire, URL visible in GA4), while non-EN posts are mostly reached via in-app SPA navigation (language switcher) where the manual `trackPageView` hit was the only one — and was malformed without `page_location`.
+- **`index.html`**: Added `send_page_view: false` to the initial `gtag('config', ...)` call. This eliminates the auto page_view on load and delegates all tracking to the SPA `RouteTracker`. No double-counting going forward.
+- **`src/lib/analytics.ts`**: `trackPageView` now sends `page_location: window.location.href` and `page_title: document.title` alongside `page_path`. This is GA4's documented `page_view` parameter set and ensures URL dimensions are correctly populated for SPA navigations to any route, including `/<lang>/blog/<slug>`. Removed redundant `gtag('js', new Date())` call from `initGA()` (already called once in index.html; calling it again from React on mount could reset session state). Replaced all bare `gtag(...)` calls with `window.gtag(...)` and declared `window.gtag` in the global `Window` interface.
+- **`src/App.tsx`**: Updated `RouteTracker`'s `useEffect` dependency from `[location]` (object reference) to `[location.pathname, location.search]` (scalar values). Prevents spurious re-fires on location object identity changes. Same change applied to `usePageTracking` hook in analytics.ts.
+- **Verification**: Deploy and open DevTools Network → filter `collect` → navigate to `/sv/blog/<slug>`, `/de/blog/<slug>`, `/ja/blog/<slug>`. Confirm `g/collect` request fires with `dl=https%3A%2F%2Fmysterymaker.party%2Fsv%2Fblog%2F...`. Check GA4 Realtime report within 30s. Full data visible in Pages report within 24–48h.
+- **Follow-up (not done)**: Once 1–2 weeks of clean non-EN data accumulates, re-run the traffic-weighted polish priority audit — rankings will likely shift significantly once the ~12 non-EN language variants' traffic is visible in GA4.
+
 ### Translation polish: steampunk JA + KO + ZH-CN body cleanup — slug 100% complete
 
 - **JA**: Removed orphan machine-translated block (duplicate prose of "The Thing You're Actually Building" left behind by a prior pass) and replaced with clean localized MysteryMaker CTA. Rewrote the final `## FAQ` section (7 Q&As) from stilted machine translation to natural Japanese — idiomatic phrasing, proper sentence-final forms, no calque structure.
@@ -22,6 +31,17 @@
 
 - **JA**: Full 15-section rewrite from machine translation to native Japanese prose. Comparison table updated to correct 7-column format with current product set (stale Masters of Mystery/Deadbolt/A Killing Affair rows replaced). Renamed 9 stilted H2 headers (e.g. "マーケット分裂" → "市場の分類", "グループサイズ実際に重要" → "グループサイズは本当に重要", "mysterymaker.partyが適合する場所" → "MysteryMakerの位置づけ"). Fixed 3 broken cross-links where full sentence clauses were used as anchor text; replaced with natural noun-phrase anchors. H2 audit: 15 headers clean. FAQ audit: 8 questions verified.
 - **KO**: Targeted fixes — 3 broken cross-link anchors corrected (sentence-fragment anchors → natural Korean noun phrases); `(hosted)` → `(전문 주최형)` in comparison table; wrong date `2026년 5월` → `2026년 3월`.
+
+### Translation polish: medieval-castle — 6-language sweep (SV/FR/PT/IT/DE/ES/DA/NL)
+
+- **SV** (81→9 chains): Full rewrite. Key fixes: "medeltids-slott-inställning" → "medeltidsslottsmiljö", "faktisk" adverb removed throughout, "behöva" → "behöver", word-for-word calques like "Sak omkring" eliminated.
+- **FR** (29→13 chains): Full rewrite. Key fixes: "Figure votre victime" (wrong verb) → "Imaginez votre victime"; "bassin de suspects" (calque) → "vivier de suspects"; "agentivité" (academic neologism) → "liberté d'action"; "ça a du sens que" (calque) → "il est logique que".
+- **PT** (27→9 chains): Full rewrite. Key fixes: "leaning para o período" (English loanword) → "aprofundar-se na época"; "Último atualização" (wrong gender) → "Última atualização"; "experienciam" (non-word) removed; broken list-item link fixed.
+- **IT** (25→8 chains): Full rewrite. Key fixes: "agency" (English) → "libertà d'azione"; "pool di sospetti" (calque) → "schiera di sospettati"; "l'energia flag" (English) → "la bandiera dell'energia" eliminated; "Capire la tua vittima" (wrong form) → "Conoscere la tua vittima".
+- **DE** (23 chains): Full rewrite. Key fixes: "Das Ding bei" (calque) → "Das Besondere an"; "bewohnen wollen" (wrong verb) → "verkörpern wollen"; "ausgefallen" (meaning sophisticated — wrong) → "vielschichtig/komplex"; broken markdown link fixed; "in die Periode lehnen" (calque) → "sich auf die Atmosphäre der Epoche einlassen". Consistent du-form throughout.
+- **ES** (24 chains): Full rewrite. Key fixes: "La cosa de los escenarios" (calque) → "Lo que tienen de especial los escenarios"; "Actualmente" (false friend for "actually") → "En realidad"; "se asentlen" (wrong subjunctive) → "se asienten"; broken links fixed; "## Guías relacionadas" section preserved.
+- **DA** (21 chains): Full rewrite. Key fixes: "krydsbefrugter" (cross-pollinates — nonsense) → "påvirker"; "stavnene er høje" (wrong noun) → "indsatserne er enorme"; "konfliktkenarier" (non-word) → "konfliktscenarier"; "brugerdefinerede karakterer" (IT jargon) → "skræddersyede karakterer"; "lene sig ind i perioden" (calque) → "lade sig rive med af perioden"; "faktisk" adverb overuse cleared.
+- **NL** (21 chains): Full rewrite. Key fixes: "Het ding met" (calque) → "Het bijzondere aan"; "bewonen" (inhabit) → "vertolken"; "proplemiddelen" (non-word) → "rekwisieten"; "De Feestbesmetting" (contamination ≠ poisoning) → "De banketvergiftiging"; "actie" for player agency → "handelingsvrijheid"; "koppelingen" for headwear → "hoofddeksels"; two broken mid-sentence links fixed; "winterspelingen" → "wintermysteries"; period terminology corrected to Vroege/Hoge/Late Middeleeuwen. Skipped: FI (per native-review policy).
 
 ## 2026-05-08
 
