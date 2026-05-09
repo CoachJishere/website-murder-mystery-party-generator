@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-05-09 (session 2)
+
+### Fix: non-EN crawlability audit — `<html lang>` was hardcoded to English on every prerendered page
+
+- **Audit scope**: sitemap coverage, hreflang emission, canonical URLs, robots.txt, vercel.json rewrites, live-site head tags across EN + SV + DE + JA cells.
+- **What was healthy**:
+  - `public/sitemap.xml` (built via `scripts/generate-sitemap.mjs`) contains 1,410 `<loc>` entries: 108 EN + 108 each across the 12 non-EN locales (1,404 cells), plus 5 static pages and 1 stray. Coverage is complete vs the DB.
+  - `scripts/prerender-blog.mjs` already emits a per-language self-canonical (`<link rel="canonical" href="https://www.mysterymaker.party/<lang>/blog/<slug>" />`), 13 hreflang siblings, and `x-default` → EN. Verified against the deployed `/sv/`, `/de/`, `/ja/` URLs.
+  - `public/robots.txt` has no `Disallow:` patterns blocking `/<lang>/blog/...`. `vercel.json` only rewrites `/(.*) → /index.html` as the SPA fallback — no path-stripping or language-collapse redirects.
+  - JSON-LD schema (BlogPosting, BreadcrumbList, FAQPage, optional HowTo/ItemList) preserved on every prerendered page.
+- **What was broken**: every non-EN prerendered page served `<html lang="en">` because the Vite template (`index.html`) hardcodes that attribute and the prerender script never overrode it. Google uses `<html lang>` as a primary language signal — combined with localized canonical URLs and hreflang siblings, the contradictory `lang="en"` weakened indexation of the 1,296 non-EN cells.
+- **Fix**: `scripts/prerender-blog.mjs:injectIntoTemplate()` now rewrites `<html lang="en">` to the post's language (`zh-cn` → `zh-Hans` to match the hreflang form). Single regex replace; no other behavior changed.
+- **Expected impact**: cleaner per-language signal alignment for Googlebot, Bingbot, and LLM crawlers. Effects should compound with the GA4 tracking fix landed earlier today as analytics start showing the true non-EN traffic baseline.
+- **Flagged for human review (not auto-fixed)**: DB has a duplicate `blog_posts` row for slug `best-murder-mystery-party-games-review` with `language='zh-CN'` (uppercase) alongside the canonical `language='zh-cn'` (lowercase) row. The uppercase row leaks into the sitemap as `/zh-CN/blog/...` and adds a phantom hreflang sibling. Recommend setting the `zh-CN` row to `status='draft'` (id `280784fd-f2d9-4673-abbd-d8256ffe22bf`) — destructive enough to warrant manual review.
+
 ## 2026-05-08 (session 2)
 
 ### Translation polish: circus/sv full body rebuild — all 11 H2 sections rewritten

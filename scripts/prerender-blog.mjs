@@ -300,6 +300,12 @@ function injectIntoTemplate(post, headTags, articleHtml) {
   // Replace placeholder <title> and <meta name="description"> with the per-post
   // versions, then append the rest of the head tags before </head>.
   let html = template;
+  // Override <html lang="en"> with the post's language. The Vite template ships
+  // with lang="en" hardcoded; without this rewrite every Swedish/German/Japanese
+  // prerendered page tells Google "this is English content," contradicting the
+  // hreflang/canonical signals. Map zh-cn → zh-Hans to match the hreflang form.
+  const htmlLang = post.language.toLowerCase() === 'zh-cn' ? 'zh-Hans' : post.language;
+  html = html.replace(/<html\s+lang="[^"]*"/, `<html lang="${htmlLang}"`);
   html = html.replace(/<title>[^<]*<\/title>/, '');
   html = html.replace(/<meta\s+name="description"[^>]*>/, '');
   html = html.replace(/<meta\s+name="author"[^>]*>/, ''); // strip Lovable author placeholder
