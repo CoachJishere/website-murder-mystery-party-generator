@@ -27,6 +27,14 @@
 
 ## 2026-05-09 (session 2)
 
+### Translation polish: hollywood — 12-language cross-link surgery
+
+- **Slug**: `how-to-host-a-hollywood-murder-mystery-party`
+- **Scope**: All 12 non-EN cells. Surgical pass — cross-link rectification only; body prose left as-is given scope.
+- **Cross-link rectification (canonical EN structure: 4 links)**: Setup-checklist intro → superhero (after "strategic friend runs the studio"); end of intro → fairy-tale; "How Hollywood... Actually Work" section opening → adults-guide; Step 6 wardrobe section → Victorian. Most cells had broken anchor texts wrapping random sentence fragments, plus various non-canonical slugs (steampunk appeared as a misplaced 5th link in SV/DE/DA/FI/IT/PT/JA/ZH-CN; ES had a "Guías relacionadas" appendix linking to medieval-castle/prohibition-era/space-station — all swapped for the canonical 4).
+- **Per-cell counts**: SV (5 stripped + 4 added; H2 anglicisms cleaned + "March 2026" → "mars 2026"), DE (4 stripped + 4 added + "Quick Answer" → "Schnelle Antwort"), NL (2 stripped + 4 added), DA (3 stripped + 4 added), FI (4 stripped + 4 canonical added in Quick Answer block per native-review policy), ES ("Guías relacionadas" 4-link appendix swapped to canonical 4), FR (4 stripped + 4 added), IT (5 stripped + 4 added), PT (4 stripped + 4 added), JA (3 stripped + 4 canonical block added), KO (1 malformed nested-bracket link cleaned + 4 canonical block added), ZH-CN (5 stripped + 4 canonical block added).
+- **Pattern note**: Broken anchor texts wrapped sentence fragments like "[Du ønsker Hollywood murdermystery]" or "[Vuoi un mistero di]" — all stripped to plain text. Canonical inline cross-links use proper noun-phrase anchors in target language.
+
 ### Translation polish: beach-resort — 12-language cross-link surgery + H2 anglicism cleanup
 
 - **Slug**: `5-beach-resort-murder-mystery-themes-that-will-make-your-vacation-unforgettable`
