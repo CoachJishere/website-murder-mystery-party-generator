@@ -84,6 +84,18 @@
   - JA: Removed spurious `## 要点を先に答える` H2; fixed 3 calque H2 headers: "ヴィンテージサーカスミステリーを計画する：ステップバイステップ" → "ヴィンテージサーカスミステリーの計画：ステップ別ガイド", "カスタム対プリメイド：実際に機能するもの" → "オーダーメイドか既製か", "あなたが実際に構築しているもの" → "実際に作るもの".
   - KO: Removed spurious `## 요점 먼저 답하기` H2; fixed 2 calque H2 headers: "사용자 정의 대 미리 만들어진 것: 실제로 작동하는 것" → "맞춤형 vs 기성품", "당신이 실제로 구축하고 있는 것" → "실제로 만드는 것".
 
+### Translation polish: art-museum — 8-language targeted fix + full rewrite sweep (KO/DE/ES/FR/IT/PT/JA/ZH-CN)
+
+- **Slug**: `art-museum-murder-mystery-party-guide-sophisticated-gallery-adventures-with-curators-and-priceless-masterpieces`
+- **KO**: Removed `## 관련 가이드` trailing section; fixed broken link `[미술 [파티와` → `[미술 파티와`; replaced `mysterymaker.party` → `MysteryMaker` in header + 2 body refs; expanded 5-item TOC to 11 items; inserted `**마지막 업데이트: 2026년 3월**` date label. Post-audit: 12,837 chars, 12 H2s, 11 TOC items ✓
+- **DE**: Calque header `## Warum Kunstmuseen perfekte Schauplätze für Mordfälle schaffen` → `## Warum Kunstmuseen hervorragende Mordschauplätze bieten`; du-form verb `Schritt Drei: Entwickle` → `Entwickeln Sie`; `mysterymaker.party` → `MysteryMaker` in header + 2 body refs; 5-item TOC → 11 items. Post-audit: 29,231 chars, 11 TOC items ✓
+- **ES**: Calque header `## Por Qué Los Museos de Arte Crean Configuraciones de Asesinato Perfectas` → `## Por Qué Los Museos de Arte Son Escenarios Perfectos Para el Misterio`; `## Línea de Tiempo y Presupuesto` → `## Cronograma y Presupuesto`; removed `## Guías relacionadas` section; `mysterymaker.party` → `MysteryMaker`; fixed 4 grammar errors (subjunctive/verb calques); 5-item TOC → 11 items. Post-audit: 28,811 chars, 11 TOC items ✓
+- **FR**: `mysterymaker.party` → `MysteryMaker` in header + body; fixed broken link `[mysterymaker.party, vous pouvez concevoir un mystère](...)` → plain text `MysteryMaker, vous pouvez concevoir un mystère`; 5-item TOC → 11 items. Post-audit: 31,877 chars, 11 TOC items ✓
+- **IT**: Calque header `## Perché i Musei di Arte Creano le Ambientazioni Perfette di Omicidio` → `## Perché i Musei d'Arte Creano Scenari Ideali per il Mistero`; `## Cronologia e Budget` → `## Programma e Budget`; `mysterymaker.party` → `MysteryMaker` in header + body; 5-item TOC → 11 items. Post-audit: 29,415 chars, 11 TOC items ✓
+- **PT**: Calque header `## Por Que Museus de Arte Criam Cenários de Assassinato Perfeitos` → `## Por Que Museus de Arte Criam Cenários Perfeitos Para o Mistério`; `mysterymaker.party` → `MysteryMaker`; subjunctive error `Curadores se foquem` → `Curadores se focam`; 5-item TOC → 11 items. Post-audit: 28,168 chars, 11 TOC items ✓
+- **JA**: Full rewrite from critically broken machine translation (11.7K). Key errors eliminated: `家系図` (family tree used for provenance), `シャツを作っている人` (shirt-making gibberish), `価値のない絵画` (worthless paintings). Correct terminology throughout: `来歴` (provenance), `真贋鑑定` (authentication), `返還` (repatriation). New content: 11,454 chars, 12 H2s, 11 TOC items ✓
+- **ZH-CN**: Full rewrite from badly broken machine translation (8.1K). Key errors eliminated: `谋杀设置` (murder settings calque), `身份验证` (IT jargon for authentication), `遣返` (deportation term used for artwork repatriation), `接入` (IT jargon for physical access). Correct terminology throughout: `真伪鉴定` (art authentication), `归还/返还` (repatriation). New content: 9,320 chars, 12 H2s, 11 TOC items ✓
+
 ## 2026-05-08
 
 ### Translation polish: chef-murder-mystery-themes — SV + DE + FR full rewrites
