@@ -27,6 +27,15 @@
 
 ## 2026-05-09 (session 2)
 
+### Translation polish: beach-resort — 12-language cross-link surgery + H2 anglicism cleanup
+
+- **Slug**: `5-beach-resort-murder-mystery-themes-that-will-make-your-vacation-unforgettable`
+- **Scope**: All 12 non-EN cells. Surgical pass — cross-link rectification + worst H2 anglicism cleanup; body prose left as-is given scope.
+- **Cross-link rectification (canonical EN structure)**: Theme 1 end → secret-agent; custom-section luxury paragraph → masquerade-ball; FAQ vacation-balance answer → spy-thriller; FAQ tropical-alternative answer → mountain-lodge; CTA closing → murder-mystery-party-ideas. Every cell had broken anchor texts (links wrapping random sentence fragments) and/or links misplaced in wrong sections; some cells had missing links (NL/ES/JA/KO had only 4 of 5; DA had 2 misplaced + a non-canonical "Relaterede guides" appendix).
+- **Per-cell cross-link counts**: SV (5 broken stripped + 5 canonical added), DE (5+5), NL (4+5), DA (2 stripped + Relaterede guides appendix removed + 5 added), FI (5+5; body/header rot left untouched per native-review policy from prior session), ES (2+5), FR (5+5), IT (5+5), PT (5+5), JA (4+5), KO (2+5; included malformed nested-bracket cleanup), ZH-CN (5+5).
+- **H2 anglicism cleanup (8 languages)**: SV ("Tropical Bröllopsmöte" → "Tropiskt Bröllopsresort", "custom" / "Props" replaced); DE ("Mystery" → "Mysterium" in Theme 3, calque "Die Planung funktioniert tatsächlich" → "Planung, die tatsächlich funktioniert", "Props" → "Requisiten"); NL (theme 4 "Trouwresort Ramp" → "Trouwresortdrama", theme 5 "Kusthuis Revival" → "Kustherbergrenovatie", calques cleaned); DA (theme 4/5 broken Danish, "Props" → "Rekvisitter", multiple calques); ES (calques + "Avivamiento" → "Renovación", "Props" → "Accesorios"); IT ("Historic Coastal Inn" English remnant → "Locanda Costiera Storica", "Prop" → "Le cose", calques); FR (calques like "La planification fonctionne réellement" → "Une planification qui fonctionne vraiment", "La pièce logistique" → "Le volet logistique"); PT (calques cleaned).
+- **Other fixes**: SV "Senast uppdaterad: March 2026" → "mars 2026"; DA non-canonical "Relaterede guides" appendix removed.
+
 ### Translation polish: 1920s-speakeasy — 12-language cross-link + budget + H2 sweep complete
 
 - **Slug**: `1920s-speakeasy-murder-mystery-party-guide`
