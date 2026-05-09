@@ -2,6 +2,13 @@
 
 ## 2026-05-09 (session 3)
 
+### Translation polish: wedding-planner NL — full body rewrite (340→26 chains)
+
+- **Slug**: `creating-the-perfect-wedding-planner-character-perfect-ceremonies-and-imperfect-murders` / `nl`
+- Same rot pattern as fashion-week NL: catastrophic word-by-word hyphenation across the entire body, with the FAQ section as the only clean island. FAQ preserved verbatim (genuinely native Dutch covering 7 Q&As about character weight, sympathy, vendor relevance, group size, non-trouwen-interesse audiences, modern relevance, and pitfalls).
+- Body rewritten from EN structural source: kit-style intro + TOC + 5 H2 sections (Specialiteit bouwen with luxury/budget/destination archetypes, Cliëntrelatie als personagefundament, Leveranciersnetwerken als relatieweb, Professionele reputatie en financiële werkelijkheid, Verborgen geheimen en drukpunten in huwelijksplanning).
+- Removed broken intro link to murder-mystery-themed-wedding-reception (was `[Ik voortdurend terugging deze-vraag huwelijksplanner [personages voor [mysterymaker.party]...]` — triple-nested broken markdown), removed broken CTA link to murder-mystery-party-for-adults-guide, removed statistics bloat ($1.1B industry, BLS median $54,640 quoted in mangled Dutch), replaced "mysterymaker.party" with "MysteryMaker" throughout, added missing `## Gerelateerde gidsen` section.
+
 ### Translation polish: luxury-yacht DE — full body rewrite (343→29 chains)
 
 - **Slug**: `luxury-yacht-murder-mystery-party-guide-nautical-elegance-with-high-stakes-drama` / `de`
