@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-05-08 (session 2)
+
+### Translation polish: circus/sv full body rebuild — all 11 H2 sections rewritten
+
+- **Slug**: `5-vintage-circus-murder-mystery-themes-step-into-the-big-top-of-intrigue` / `sv`
+- All 11 H2 sections rewritten from heavily rotted machine translation (hyphen-chain Swenglish) to native Swedish prose: intro, Tema 1–5, Planera, Anpassat, FAQ, Closing, CTA
+- Dead cross-link (`murder-mystery-party-ideas`) stripped from chef/sv body
+- H2 audit confirmed clean after rebuild
+
+### Translation polish: art-museum/sv intro + blockquote fixes
+
+- **Slug**: `art-museum-murder-mystery-party-guide-sophisticated-gallery-adventures-with-curators-and-priceless-masterpieces` / `sv`
+- Opening blockquote was garbage machine translation — replaced with proper Swedish summary matching EN structure
+- Duplicate rotted intro paragraphs (before TOC) replaced with clean bridging text; polished body sections below `---` were untouched
+- Dead cross-link (`murder-mystery-party-ideas`) stripped from closing section
+
+### Content quality: chef non-EN cells assessed — all clean
+
+- Checked DA, DE, ES, FI, FR, IT, JA, KO, NL, PT cells for `chef-murder-mystery-themes-culinary-crimes-kitchen-secrets`
+- All 10 non-EN cells confirmed polished; no rot found
+
 ## 2026-05-09
 
 ### Fix: GA4 language-prefixed blog pageview tracking — ~92% of blog pageviews were invisible
