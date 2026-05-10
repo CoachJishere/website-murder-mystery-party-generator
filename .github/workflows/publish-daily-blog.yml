@@ -61,9 +61,25 @@ jobs:
             echo "cross_link_map.json not found, skipping cross-links"
           fi
 
-          # 3. Update ALL language variants of this slug to published
+          # 3. Update language variants of this slug to published.
+          #
+          # IMPORTANT: ko and zh-cn are excluded from the publish flip because
+          # the upstream MT pipeline produced rotted output for those two
+          # locales (calque H2 headers, brand-as-H2 like "## mysterymaker.party
+          # 와 ...", body prose with literal English-syntax ordering, and avg
+          # length ~4.5k chars vs ~15.8k for European langs). Shipping those
+          # drafts daily was leaking rot into the live site. Drafts stay as
+          # drafts and will be regenerated from scratch in a separate pass.
+          #
+          # Cross-links above DO still run for ko + zh-cn (content edit only,
+          # no status change) so they're ready when regeneration lands.
+          #
+          # Follow-up (Path B): replace this whitelist with a per-slug rot-
+          # signal gate (calque H2 detector, length floor, brand-as-H2 check)
+          # so individual cells can be excluded on a case-by-case basis rather
+          # than blanket-excluding two whole languages.
           RESULT=$(curl -s -o /dev/null -w "%{http_code}" \
-            "${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.${SLUG}&status=eq.draft" \
+            "${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.${SLUG}&status=eq.draft&language=in.(en,es,fr,de,it,da,fi,nl,sv,pt,ja)" \
             -X PATCH \
             -H "apikey: ${SUPABASE_SERVICE_KEY}" \
             -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
@@ -72,7 +88,7 @@ jobs:
             -d "{\"status\": \"published\", \"published_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}")
 
           if [ "$RESULT" = "204" ]; then
-            echo "Successfully published '$TITLE' in all languages"
+            echo "Successfully published '$TITLE' (en/es/fr/de/it/da/fi/nl/sv/pt/ja; ko + zh-cn held back pending regeneration)"
           else
             echo "Failed to publish. HTTP status: $RESULT"
             exit 1

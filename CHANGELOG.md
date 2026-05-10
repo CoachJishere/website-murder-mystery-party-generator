@@ -2,6 +2,13 @@
 
 ## 2026-05-10
 
+### Fix: Daily-publish workflow no longer ships rotted KO + ZH-CN drafts
+
+- [.github/workflows/publish-daily-blog.yml:81-82](.github/workflows/publish-daily-blog.yml#L81-L82) — added a `language=in.(en,es,fr,de,it,da,fi,nl,sv,pt,ja)` filter to the PATCH that flips drafts to published, so `ko` and `zh-cn` cells stay as drafts.
+- Why: a draft-queue diagnostic confirmed both locales are systematically rotted from the upstream MT pipeline — calque H2 headers (e.g. `## mysterymaker.party와 角色装备`, literal English-syntax ordering in KO body prose), and ZH-CN cells averaging ~4.5k chars vs ~15.8k for European langs. Every scheduled run was leaking those cells live alongside acceptable EN/DE/FR/etc. siblings; ja sampled clean (CJK density explains the shorter length) so it stays in the whitelist.
+- Cross-link application still runs across all 13 languages (content-only, no status change), so the held-back KO + ZH-CN drafts will be wired up and ready when regeneration lands.
+- Follow-up: replace the blanket whitelist with a per-slug rot-signal gate (calque H2 detector, length floor, brand-as-H2 check) so individual cells can be excluded case-by-case. KO + ZH-CN drafts ultimately need full regeneration — flagged for a separate session.
+
 ### Fix: CSP no longer blocks Google Fonts, Microsoft Clarity, or GA4
 
 - [netlify.toml:56](netlify.toml#L56) — rebuilt the `Content-Security-Policy` header to allow the third-party assets the site actually loads:
