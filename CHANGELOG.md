@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-05-10
+
+### Fix: CSP no longer blocks Google Fonts, Microsoft Clarity, or GA4
+
+- [netlify.toml:56](netlify.toml#L56) — rebuilt the `Content-Security-Policy` header to allow the third-party assets the site actually loads:
+  - **Google Fonts** — added `https://fonts.googleapis.com` to `style-src` and a new `font-src 'self' https://fonts.gstatic.com data:` directive. Previously, the stylesheet `<link>` to `fonts.googleapis.com` was blocked by `style-src 'self' 'unsafe-inline'`, and the woff2 files on `fonts.gstatic.com` were blocked by the missing `font-src` (which fell back to `default-src 'self'`). Headings + logo silently rendered with the `cursive` fallback (Apple Chancery / Snell Roundhand on Mac Chrome) instead of Bowlby One.
+  - **Microsoft Clarity** — added `https://www.clarity.ms https://*.clarity.ms` to `script-src` and `https://*.clarity.ms` to `connect-src`. The tag in [index.html:25-31](index.html#L25-L31) was being silently blocked, so no session recordings or heatmaps were captured.
+  - **GA4** — added `https://www.googletagmanager.com` to `script-src` and `https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com` to `connect-src`. The `gtag.js` loader and beacon hits from [index.html:34-40](index.html#L34-L40) were both blocked, so no analytics traffic was reaching GA.
+- Why now: user noticed the script-style headings on the Spanish homepage in Chrome and asked for the fix; the same CSP misconfiguration was hiding all three third-party services since the policy was added.
+
+### Feature: Pinterest pipeline auto-flow (Postgres trigger → Edge Function → GitHub Actions → Make.com)
+
+- **Postgres trigger** ([20260510_pinterest_pins_auto_seed_trigger.sql](supabase/migrations/20260510_pinterest_pins_auto_seed_trigger.sql)) — when an EN blog post becomes published (INSERT or status flip to 'published'), seeds a draft `pinterest_pins` row with `priority=1` and `scheduled_date=today`. Skips posts that already have a pin.
+- **Edge Function `fill-pinterest-creative`** — picks up draft rows with empty creative, fetches the source blog post, calls Claude Haiku 4.5 with a system prompt that embeds the brief + voice exemplars (haunted mansion, office teams) + char limits + 8-board mapping rules. Parses JSON response, validates against board mapping + 730-char description cap, populates pin_title/description/image_prompt/overlay_text/pinterest_board/pinterest_board_id/theme_category, flips status to 'approved'. Falls to status='failed' with `generation_error` on parse/validation/API errors.
+- **`priority` column** ([20260509_pinterest_pins_add_priority.sql](supabase/migrations/20260509_pinterest_pins_add_priority.sql)) — smallint, default 10. New-publish pins get priority=1 to jump the queue ahead of backlog. Make.com Search Rows sorts by `priority asc, scheduled_date asc`.
+- **GitHub Actions workflow** ([.github/workflows/pinterest-image-gen.yml](.github/workflows/pinterest-image-gen.yml)) — runs daily 06:00 UTC, executes `run-generation.mjs --limit 65` to stay under Imagen 4's 70/day paid-tier-1 quota. Reads existing `SUPABASE_URL` / `SUPABASE_SERVICE_KEY` repo secrets, plus new `IMAGEN_API_KEY` secret.
+- **`blog_post_id` FK + `blog_hero_url` column** ([20260506_pinterest_pins_add_blog_hero_columns.sql](supabase/migrations/20260506_pinterest_pins_add_blog_hero_columns.sql)) — wires pin rows to source blog posts via UUID FK, plus stores the 1.91:1 / 1200×630 blog-hero crop URL alongside `pin_image_url` (Pinterest 2:3) and `raw_image_url` (Imagen 1:1). Single Imagen call → three derivatives.
+- **Runner auto-populates `blog_posts.featured_image_url`** — when a pin generates, the corresponding blog post's hero image is set from `blog_hero_url`. Only fills NULL (won't overwrite existing). Backfilled the 9 historical rows. Blog posts with pinterest pins now have working hero images on the blog template.
+- **`pinterest_board_id` column** ([20260509_pinterest_pins_add_board_id.sql](supabase/migrations/20260509_pinterest_pins_add_board_id.sql)) — captured Pinterest's numeric board IDs for all 8 boards via API list_boards once. Hardcoded mapping in Edge Function + backfilled all rows. Make.com `Create Pin` module uses board_id directly (not name lookup).
+- **End-to-end validated**: Haunted Mansion posted to Pinterest live on 2026-05-09, Office Teams 2026-05-10. 105 backlog pins now generated and queued (May 10–July 1, 1/day pilots May 10–16 then 2/day from May 17).
+- **Quota gotcha logged**: Imagen 4 paid tier 1 caps at 70 requests/day per project. Hit during 99-row backlog generation; 31 failed with quota error, recovered next day. Daily steady-state operation (1–2 new posts/day) sits well under the cap.
+- **Per-new-post cost**: ~$0.005 Claude Haiku creative + $0.04 Imagen 4 image = ~$0.05/post fully automated.
+
 ## 2026-05-09 (session 3)
 
 ### Translation polish: wedding-planner NL — full body rewrite (340→26 chains)
