@@ -2,6 +2,13 @@
 
 ## 2026-05-10
 
+### Fix: Bulk-retire `mysterymaker.party` brand-leak rot across all 13 languages
+
+- One-shot SQL UPDATE on `blog_posts` (drafts + published) replacing every bare-phrase `mysterymaker.party` (and capitalization variants `Mysterymaker.party`, `MysteryMaker.party`) with `MysteryMaker`. Regex: `regexp_replace(content, '(^|[^/@:.])mysterymaker\.party', '\1MysteryMaker', 'gi')` plus the same on `meta_description`. The leading negated class `[^/@:.]` exempts legitimate URL forms (`https://`, `://`, `@`, `www.`) so all 552 in-content `https://mysterymaker.party/...` links were preserved (310 in drafts + 242 in published, exactly matching pre-cleanup count).
+- Touched **4,174 rows** across 13 languages (pt, fr, it, sv, ja, zh-cn, nl, de, fi, es, ko, da, en plus a 1-row stray `zh-CN` casing). Substitutions: ~6,957 in `content` (4,658 drafts + 2,299 published) and 11 in `meta_description`. Post-update verification: zero bare-phrase remaining in either column for either status; URL form unchanged.
+- Pre-update snapshot retained as `blog_posts_brand_leak_backup_20260510` (id, content, status, language, slug, prior `updated_at`) for per-row rollback if any cell needs restoring. Drop the table once confidence is established.
+- Why: brand-leak rot was being inserted by the upstream content-generation pipeline as bare-phrase prose (e.g. "Platforms like MysteryMaker (mysterymaker.party) generate..."), uniformly across all 13 languages incl. EN source (228 EN bare instances). User had been hand-cleaning per-slug for weeks; one bulk pass with a URL-aware regex retires the rot category permanently rather than continuing the manual grind. Cosmetic redundancy in the parenthetical-brand pattern (`MysteryMaker (MysteryMaker)`) is acceptable rot reduction; a separate dedupe pass for that pattern is a follow-up if desired.
+
 ### Improvement: Per-slug rot-signal gate replaces blanket KO + ZH-CN exclusion
 
 - New: [scripts/check-rot-signals.mjs](scripts/check-rot-signals.mjs) — fetches `ko` + `zh-cn` drafts for a given slug from Supabase and runs five heuristics:
