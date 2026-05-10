@@ -2,6 +2,17 @@
 
 ## 2026-05-10
 
+### Feature: Localize all 6 transactional emails across 13 languages
+
+- All transactional emails (welcome, host kit, character assignment, guest feedback, host follow-up, discount reminders) now render in the recipient's preferred language. Previously every email was hardcoded English, silently undermining the localized homepage + chat + blog experience for non-EN users from the moment they signed up.
+- New [supabase/functions/_shared/email-i18n.ts](supabase/functions/_shared/email-i18n.ts): `Locale` type, `normalizeLocale()` (handles `es-ES`→`es`, `pt_BR`→`pt`, `zh-TW`→`zh-cn`, unknown→`en`), `pickByLocale<T>()`, and `getUserLanguage()` for per-user lookup. Each email function inlines its own per-locale string table (matching the [supabase/functions/mystery-ai/index.ts](supabase/functions/mystery-ai/index.ts) `LABELS_BY_LOCALE` pattern) so it stays self-contained and resilient to cold starts — no runtime fetch.
+- Schema: `profiles.language TEXT` (nullable) added via migration `add_profiles_language_column`. Frontend ([src/context/AuthContext.tsx](src/context/AuthContext.tsx)) syncs `i18n.language` → `profiles.language` on auth state change AND on language switch, so cron-triggered emails (followup, guest-feedback, discount-reminders) can resolve the right locale server-side.
+- Frontend-triggered emails (welcome, host, character) now pass `language: i18n.language` in the request body — see [src/pages/AuthCallback.tsx](src/pages/AuthCallback.tsx) and [src/components/MysteryGuestManager.tsx](src/components/MysteryGuestManager.tsx).
+- Guest-facing emails (character assignment, guest feedback) follow the **host's** language since guests have no profile; resolved via `assignment.mystery_id`→`conversations.user_id`→`profiles.language`.
+- Translation quality: each of the 13 languages was hand-written for idiomatic native prose (not MT) — locale-correct punctuation (FR NBSP, JP fullwidth, CJK ideographic), natural pricing conventions (`-20 %` FR/IT, `8折优惠` ZH for "20% off"), and platform-native register (e.g. `du` informal in DE/DA/SV/NL, `vous` formal in FR, `você` BR-PT, polite `さん`/`님` for JP/KO).
+- Verified: all 6 functions deployed; 13 test welcome-email sends (one per locale) returned `{success: true}` with the correct resolved `locale` echoed back.
+- Why this matters: an EN-only email lifecycle silently devalued every non-EN customer from minute one. This was the highest-leverage compounding fix on the lifecycle surface — every signup, every paid generation, every guest invite, and every retention touchpoint now lands in the customer's language.
+
 ### Fix: Bulk-retire `mysterymaker.party` brand-leak rot across all 13 languages
 
 - One-shot SQL UPDATE on `blog_posts` (drafts + published) replacing every bare-phrase `mysterymaker.party` (and capitalization variants `Mysterymaker.party`, `MysteryMaker.party`) with `MysteryMaker`. Regex: `regexp_replace(content, '(^|[^/@:.])mysterymaker\.party', '\1MysteryMaker', 'gi')` plus the same on `meta_description`. The leading negated class `[^/@:.]` exempts legitimate URL forms (`https://`, `://`, `@`, `www.`) so all 552 in-content `https://mysterymaker.party/...` links were preserved (310 in drafts + 242 in published, exactly matching pre-cleanup count).

@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const handleAuthCallback = async () => {
@@ -89,7 +89,8 @@ const AuthCallback = () => {
               const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
                 body: {
                   user_email: data.session.user.email,
-                  user_name: data.session.user.user_metadata?.name || data.session.user.email?.split('@')[0]
+                  user_name: data.session.user.user_metadata?.name || data.session.user.email?.split('@')[0],
+                  language: i18n.language,
                 }
               });
 

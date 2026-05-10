@@ -37,7 +37,7 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
   mysteryTitle = "Your Mystery",
   packageId
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [assignments, setAssignments] = useState<CharacterAssignment[]>([]);
   const [loading, setLoading] = useState(false);
   const [hostEmail, setHostEmail] = useState("");
@@ -112,7 +112,8 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
         body: {
           host_email: hostEmail.trim(),
           mystery_title: mysteryTitle,
-          access_token: accessToken
+          access_token: accessToken,
+          language: i18n.language,
         }
       });
 
@@ -237,7 +238,8 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
           character_name: character.character_name,
           character_details: character.description?.substring(0, 200) + '...' || 'Mystery character details...',
           access_token: result.data.access_token || 'temp-token',
-          mystery_title: mysteryTitle
+          mystery_title: mysteryTitle,
+          language: i18n.language,
         }
       });
     

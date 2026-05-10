@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase";
 import { User, Session } from "@supabase/supabase-js";
 
@@ -49,6 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
 
   // Simplified auth state handling with timeout protection
   useEffect(() => {
@@ -125,6 +127,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       subscription.unsubscribe();
     };
   }, []);
+
+  // Persist the user's UI language to profiles.language so transactional
+  // email edge functions can render emails in the right locale. Runs on auth
+  // changes and on i18n language changes.
+  useEffect(() => {
+    if (!user?.id || !i18n.language) return;
+
+    const sync = async (lang: string) => {
+      try {
+        const { data: existing } = await supabase
+          .from('profiles')
+          .select('language')
+          .eq('id', user.id)
+          .maybeSingle();
+        if (existing?.language !== lang) {
+          await supabase
+            .from('profiles')
+            .update({ language: lang })
+            .eq('id', user.id);
+        }
+      } catch (err) {
+        console.warn('Failed to sync profile language:', err);
+      }
+    };
+
+    sync(i18n.language);
+    const handler = (lng: string) => sync(lng);
+    i18n.on('languageChanged', handler);
+    return () => {
+      i18n.off('languageChanged', handler);
+    };
+  }, [user?.id, i18n]);
 
   // Sign in with email and password
   const signIn = async (email: string, password: string) => {
