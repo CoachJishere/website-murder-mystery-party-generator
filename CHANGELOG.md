@@ -2,6 +2,18 @@
 
 ## 2026-05-10
 
+### Improvement: Per-slug rot-signal gate replaces blanket KO + ZH-CN exclusion
+
+- New: [scripts/check-rot-signals.mjs](scripts/check-rot-signals.mjs) — fetches `ko` + `zh-cn` drafts for a given slug from Supabase and runs five heuristics:
+  1. **Length floor** (ko < 7,000 / zh-cn < 5,500 chars) — catches truncated MT output. Floors are conservatively below clean baselines and well above the rotted samples (zh-cn rot averaged ~4.5k).
+  2. **Brand-as-H2** — flags any header containing `mysterymaker.party` (literal URL form leaking into translated headers).
+  3. **Generic URL-as-H2** — any other `domain.tld` literal in a heading.
+  4. **Untranslated English run in H2** — 5+ consecutive Latin-alphabet words inside a heading (after stripping the brand).
+  5. **KO-specific calque smells** — declarative sentence-final endings (`합니다`, `입니다`, `있습니다`, etc.) at the end of an H2 (healthy KO uses noun phrases / `~하는 법`), and English-style explicit pronouns (`그들이`, `그것이`, ...) which Korean drops by default.
+- Smoke-tested all five against fixtures matching the rot patterns from the diagnostic — all fire correctly; clean fixtures pass.
+- [.github/workflows/publish-daily-blog.yml:80-106](.github/workflows/publish-daily-blog.yml#L80-L106) — workflow now invokes the gate before the PATCH, builds the `language=in.(...)` whitelist dynamically (always-on 11 locales + ko/zh-cn iff gate passes), and writes a markdown summary to `$GITHUB_STEP_SUMMARY` so the per-run verdict and reasons surface in the Actions UI without scrolling the log.
+- Why this over the blanket exclusion: most current ko + zh-cn drafts will continue to fail the gate (they're rotted), but once the regeneration pass lands, healthy cells will publish on a per-slug basis without further workflow edits. False positives (healthy draft held back) are recoverable; false negatives (rot shipped live) were the bug we are fixing.
+
 ### Fix: Daily-publish workflow no longer ships rotted KO + ZH-CN drafts
 
 - [.github/workflows/publish-daily-blog.yml:81-82](.github/workflows/publish-daily-blog.yml#L81-L82) — added a `language=in.(en,es,fr,de,it,da,fi,nl,sv,pt,ja)` filter to the PATCH that flips drafts to published, so `ko` and `zh-cn` cells stay as drafts.

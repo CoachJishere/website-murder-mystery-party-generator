@@ -61,25 +61,53 @@ jobs:
             echo "cross_link_map.json not found, skipping cross-links"
           fi
 
-          # 3. Update language variants of this slug to published.
+          # 3. Run the rot-signal gate to decide whether ko + zh-cn are safe
+          #    to include in this slug's publish flip. The other 11 locales
+          #    are always included.
           #
-          # IMPORTANT: ko and zh-cn are excluded from the publish flip because
-          # the upstream MT pipeline produced rotted output for those two
-          # locales (calque H2 headers, brand-as-H2 like "## mysterymaker.party
-          # 와 ...", body prose with literal English-syntax ordering, and avg
-          # length ~4.5k chars vs ~15.8k for European langs). Shipping those
-          # drafts daily was leaking rot into the live site. Drafts stay as
-          # drafts and will be regenerated from scratch in a separate pass.
+          # Why: the upstream MT pipeline produced systematically rotted
+          # ko + zh-cn (calque H2 headers, brand-as-H2 like
+          # "## mysterymaker.party와 ...", literal English-syntax ordering,
+          # zh-cn cells averaging ~4.5k chars vs ~15.8k for European langs).
+          # The previous fix blanket-excluded both languages; this gate
+          # promotes a passing cell on a per-slug basis once it's healthy
+          # (e.g. after regeneration), and continues to hold back rotted
+          # ones — even cells that look fine at length but flunk a calque
+          # check.
           #
-          # Cross-links above DO still run for ko + zh-cn (content edit only,
-          # no status change) so they're ready when regeneration lands.
-          #
-          # Follow-up (Path B): replace this whitelist with a per-slug rot-
-          # signal gate (calque H2 detector, length floor, brand-as-H2 check)
-          # so individual cells can be excluded on a case-by-case basis rather
-          # than blanket-excluding two whole languages.
+          # Cross-links above DO still run for ko + zh-cn (content edit
+          # only, no status change), so held-back drafts stay current.
+          GATE_JSON=$(node scripts/check-rot-signals.mjs "$SLUG")
+          echo "Rot-signal gate result:"
+          echo "$GATE_JSON" | jq .
+
+          LANGS="en,es,fr,de,it,da,fi,nl,sv,pt,ja"
+          for LANG in ko zh-cn; do
+            PASS=$(echo "$GATE_JSON" | jq -r --arg k "$LANG" '.[$k].pass')
+            REASONS=$(echo "$GATE_JSON" | jq -r --arg k "$LANG" '.[$k].reasons | join("; ")')
+            if [ "$PASS" = "true" ]; then
+              LANGS="$LANGS,$LANG"
+              echo "  $LANG: PASS — included"
+            else
+              echo "  $LANG: HOLD — $REASONS"
+            fi
+          done
+
+          # GitHub Actions step summary so the rot-gate verdict shows up in
+          # the run UI without having to scroll the log.
+          {
+            echo "## Rot-signal gate ($SLUG)"
+            echo ""
+            echo "| lang | present | pass | length | reasons |"
+            echo "|------|---------|------|--------|---------|"
+            echo "$GATE_JSON" | jq -r 'to_entries[] | "| \(.key) | \(.value.present) | \(.value.pass) | \(.value.length) | \(.value.reasons | join("; ")) |"'
+            echo ""
+            echo "**Published languages:** \`$LANGS\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # 4. PATCH only the languages that passed the gate.
           RESULT=$(curl -s -o /dev/null -w "%{http_code}" \
-            "${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.${SLUG}&status=eq.draft&language=in.(en,es,fr,de,it,da,fi,nl,sv,pt,ja)" \
+            "${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.${SLUG}&status=eq.draft&language=in.(${LANGS})" \
             -X PATCH \
             -H "apikey: ${SUPABASE_SERVICE_KEY}" \
             -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
@@ -88,7 +116,7 @@ jobs:
             -d "{\"status\": \"published\", \"published_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}")
 
           if [ "$RESULT" = "204" ]; then
-            echo "Successfully published '$TITLE' (en/es/fr/de/it/da/fi/nl/sv/pt/ja; ko + zh-cn held back pending regeneration)"
+            echo "Successfully published '$TITLE' (langs: $LANGS)"
           else
             echo "Failed to publish. HTTP status: $RESULT"
             exit 1
