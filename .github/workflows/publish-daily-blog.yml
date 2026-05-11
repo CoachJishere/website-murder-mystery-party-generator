@@ -154,7 +154,17 @@ jobs:
           else
             git add public/llms.txt
             git commit -m "chore: regenerate llms.txt after daily publish"
-            git push
+            # Rebase onto any commits that landed on main while the workflow
+            # was running (e.g. a parallel push by the human or another
+            # workflow), then push. Without this, a non-fast-forward reject
+            # orphans the regenerated llms.txt — see 2026-05-11 race.
+            for attempt in 1 2 3; do
+              if git push; then
+                break
+              fi
+              echo "push rejected (attempt $attempt) — rebasing and retrying"
+              git pull --rebase origin main
+            done
           fi
 
       - name: Apply Priority 5 TOC to just-published cells (idempotent)

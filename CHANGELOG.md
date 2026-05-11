@@ -2,6 +2,11 @@
 
 ## 2026-05-11
 
+### Fix: Daily-publish llms.txt push survives concurrent commits on main
+
+- [.github/workflows/publish-daily-blog.yml:157-166](.github/workflows/publish-daily-blog.yml#L157-L166) — wrapped the `git push` of the regenerated `llms.txt` in a 3-attempt rebase-and-retry loop. Today's manual run failed at this step with a non-fast-forward reject because a parallel commit landed on main during the workflow run, orphaning the regenerated llms.txt locally.
+- The actual blog publish succeeded (PATCH ran, rot-gate emitted its verdict) — only the post-publish llms.txt commit was lost. Next day's run will regenerate llms.txt anyway, so no recovery action needed for today.
+
 ### Fix: phantom zh-CN duplicate row demoted to draft
 
 - One blog_posts row with `language='zh-CN'` (uppercase) coexisted with the canonical `language='zh-cn'` (lowercase) for slug `best-murder-mystery-party-games-review`. Flagged in the 2026-05-09 crawlability audit but not auto-fixed for caution. The uppercase row leaked into `sitemap.xml` as `/zh-CN/blog/...` and produced a phantom hreflang sibling that contradicted the canonical lowercase form, weakening per-language signal alignment for Googlebot/Bingbot/LLM crawlers.
