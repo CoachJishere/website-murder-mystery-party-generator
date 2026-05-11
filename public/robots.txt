@@ -31,3 +31,50 @@ Disallow: /dashboard
 Disallow: /account
 Disallow: /mystery/create
 Disallow: /mystery/edit/
+
+# Explicit allowlist for AI / LLM crawlers.
+# Default `User-agent: *` already allows these, but listing explicitly
+# (a) clarifies intent to crawler operators, (b) defends against any CDN
+# or WAF layer that blocks these UAs by default, and (c) signals public
+# acceptance of AI training / AI-search use cases relevant for GEO.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Bytespider
+Allow: /

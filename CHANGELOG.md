@@ -2,6 +2,16 @@
 
 ## 2026-05-11
 
+### Fix: phantom zh-CN duplicate row demoted to draft
+
+- One blog_posts row with `language='zh-CN'` (uppercase) coexisted with the canonical `language='zh-cn'` (lowercase) for slug `best-murder-mystery-party-games-review`. Flagged in the 2026-05-09 crawlability audit but not auto-fixed for caution. The uppercase row leaked into `sitemap.xml` as `/zh-CN/blog/...` and produced a phantom hreflang sibling that contradicted the canonical lowercase form, weakening per-language signal alignment for Googlebot/Bingbot/LLM crawlers.
+- Demoted `id=280784fd-f2d9-4673-abbd-d8256ffe22bf` → `status='draft'`. Reversible — re-set to `published` if it turns out to be needed. Next sitemap regeneration will drop the `/zh-CN/...` URL automatically.
+
+### GEO: explicit AI / LLM crawler allowlist in robots.txt
+
+- [public/robots.txt](public/robots.txt) — added explicit `User-agent: X / Allow: /` entries for GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, anthropic-ai, Claude-Web, PerplexityBot, Perplexity-User, CCBot, Google-Extended, Applebot-Extended, Amazonbot, Meta-ExternalAgent, Bytespider.
+- Why: the existing `User-agent: *` already covered these by default, but explicit entries (a) signal intent to crawler operators (some scrape harder for explicit `Allow` than implicit), (b) defend against any CDN/WAF UA-block layer that overrides `*`, and (c) make AI-search/AI-training acceptance visible — relevant for GEO (Generative Engine Optimization) and citation rates in ChatGPT, Perplexity, Claude, Gemini.
+
 ### Fix: Daily-publish cron moved off the top of the hour to avoid GitHub silent drops
 
 - [.github/workflows/publish-daily-blog.yml:6](.github/workflows/publish-daily-blog.yml#L6) — changed schedule from `'0 9 * * *'` to `'17 9 * * *'` (09:17 UTC instead of 09:00 UTC).
