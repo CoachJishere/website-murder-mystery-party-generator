@@ -2,6 +2,13 @@
 
 ## 2026-05-11
 
+### Content: Full regeneration of 36 published KO + ZH-CN rot cells
+
+- Regenerated in place all 20 `ko` and 16 `zh-cn` published cells that failed the rot-signal gate. Each cell was rewritten by a dedicated Claude Code conversation using the self-contained prompt at `temp-files/regen-prompts/<NNN>__<slug>__<lang>.md` (see tooling entry below). One DB write per cell (PATCH `blog_posts.content`); slug, title, meta_description, and structure preserved.
+- Post-regeneration audit (`node scripts/audit-rot-signals.mjs --status=published`): **0 failures across 220 published rows (110 ko + 110 zh-cn).** Median pass length rose from 8959 → 10272 chars for ko and 6520 → 6630 for zh-cn — regenerated cells are richer than the pre-existing healthy baseline, not just gate-passing.
+- Mid-round-1 fix: the prompt template's link/anchor rule was initially wrong (said "URL stays exact"), causing the first two cells to ship with English TOC anchors against translated H2s and unprefixed `/blog/X` cross-cell links. Caught after the first cell, generator patched ([scripts/generate-regen-prompts.mjs](scripts/generate-regen-prompts.mjs)) with per-language convention (`/blog/X` → `/<lang>/blog/X`, anchors translate to match localized H2s in kebab-case), and the two affected cells were re-regenerated. All subsequent cells got the corrected guidance from prompt generation onward.
+- Live-site impact: 100% gate-passing in ko + zh-cn for already-published content. The remaining ~400 rotted drafts in the queue continue to be held back by the daily-publish workflow's gate; their regeneration is a separate pass driven by `generate-regen-prompts.mjs ... --status=draft`.
+
 ### Tooling: Queue-wide rot audit + per-cell regeneration prompt generator
 
 - New: [scripts/audit-rot-signals.mjs](scripts/audit-rot-signals.mjs) — paginates all `ko` + `zh-cn` rows in `blog_posts`, runs each through `checkLanguage()` from the rot-signal gate, and emits a summary table + a `temp-files/rot-audit-<ISO>.csv` of every failing cell (slug, lang, status, length, reasons). Read-only.
