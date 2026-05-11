@@ -2,8 +2,12 @@ name: Publish Daily Blog Post
 
 on:
   schedule:
-    # Runs at 9:00 AM UTC every day (5 AM ET / 2 AM PT)
-    - cron: '0 9 * * *'
+    # 09:17 UTC, not 09:00 — GitHub Actions queues scheduled workflows in
+    # a global queue, and top-of-hour crons (especially 00, 06, 09, 12,
+    # 18 UTC) routinely run 60-120 min late or get silently dropped
+    # entirely during peak load (e.g. 2026-05-11). Offset minutes are
+    # the standard mitigation.
+    - cron: '17 9 * * *'
   workflow_dispatch: # Allow manual trigger
 
 permissions:

@@ -55,6 +55,7 @@ Blog Database - Master.csv
 !scripts/submit-sitemap-gsc.mjs
 !scripts/apply-p5-tocs.mjs
 !scripts/check-rot-signals.mjs
+!scripts/generate-email-wordmark.mjs
 *.sql
 *-REPORT*.md
 *-STATUS*.md

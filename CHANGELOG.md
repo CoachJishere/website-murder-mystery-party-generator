@@ -2,6 +2,12 @@
 
 ## 2026-05-11
 
+### Fix: Daily-publish cron moved off the top of the hour to avoid GitHub silent drops
+
+- [.github/workflows/publish-daily-blog.yml:6](.github/workflows/publish-daily-blog.yml#L6) — changed schedule from `'0 9 * * *'` to `'17 9 * * *'` (09:17 UTC instead of 09:00 UTC).
+- Why: GitHub Actions queues scheduled workflows in a global queue and explicitly documents that top-of-hour crons can be delayed or dropped during peak load. Historical pattern: runs fired 58–120 min late on most days, and the **2026-05-11 09:00 UTC slot was silently dropped entirely** (no entry in the Actions API, workflow still `active`, YAML valid — just queue-dropped). Offset-minute crons are the standard mitigation.
+- Local-clock impact: trivial (09:17 UTC ≈ 11:17 CET ≈ 05:17 ET). No downstream consumer cares about the exact minute.
+
 ### Improvement: Email wordmark — Bowlby One brand mark in all 6 transactional emails
 
 - Replaced the system-font `<h1>MYSTERY MAKER</h1>` in every transactional email with a hosted PNG of the wordmark rendered in **Bowlby One** (the live-site display face). System sans-serif fallback looked generic against the brand red header; the PNG now ships the actual wordmark to any client that loads images. Plain-text `alt="Mystery Maker"` covers image-blocked clients.
