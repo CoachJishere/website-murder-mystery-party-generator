@@ -46,6 +46,9 @@ Blog Database - Master.csv
 !scripts/apply-crosslinks.mjs
 !scripts/generate-llms-txt.mjs
 !scripts/_supabase-node.mjs
+!scripts/_brand-sanitizer.mjs
+!scripts/clean-blog-map.mjs
+!scripts/audit-h2-quality.mjs
 !scripts/verify-anchors.mjs
 !scripts/prerender-blog.mjs
 !scripts/submit-indexnow.mjs

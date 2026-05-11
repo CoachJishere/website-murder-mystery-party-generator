@@ -16,6 +16,7 @@
  */
 
 import { createClient } from './_supabase-node.mjs';
+import { sanitizeBrandLeakRot, bumpLastUpdated } from './_brand-sanitizer.mjs';
 import ExcelJS from 'exceljs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -57,19 +58,8 @@ function estimateReadingTime(content) {
   return Math.max(1, Math.ceil(words / 200));
 }
 
-// Brand-leak rot sanitizer. Mirrors the bulk-cleanup regexes from
-// 2026-05-10 — keep in sync with CHANGELOG entries if patterns change.
-// Applied to title, content, and meta_description on every insert/update.
-const BRAND_LEAK_PATH_B = /MysteryMaker[ ]?[a-zA-ZÀ-ÿ가-힣ぁ-んァ-ヶー一-龥]{1,5}[ ]?MysteryMaker/g;
-function sanitizeBrandLeakRot(text) {
-  if (!text) return text;
-  let s = String(text);
-  s = s.replace(/(^|[^/@:.])mysterymaker\.party/gi, '$1MysteryMaker');
-  s = s.replace(/(ミステリーメーカー|神秘制造者|미스터리메이커)\.party/g, 'MysteryMaker');
-  s = s.replace(/MysteryMaker[ ]*\(MysteryMaker\)/g, 'MysteryMaker');
-  s = s.replace(BRAND_LEAK_PATH_B, 'MysteryMaker').replace(BRAND_LEAK_PATH_B, 'MysteryMaker');
-  return s;
-}
+// Brand-leak sanitizer + Last-updated auto-bump live in
+// ./_brand-sanitizer.mjs (shared with scripts/clean-blog-map.mjs).
 
 async function main() {
   const xlsxPath = join(__dirname, '..', 'blog_map.xlsx');
@@ -106,7 +96,7 @@ async function main() {
 
     for (const [titleCol, contentCol, metaCol, kwCol, lang] of LANGS) {
       const title = sanitizeBrandLeakRot(row.getCell(titleCol).value || '');
-      const content = sanitizeBrandLeakRot(row.getCell(contentCol).value || '');
+      const content = bumpLastUpdated(sanitizeBrandLeakRot(row.getCell(contentCol).value || ''), lang);
       const meta = sanitizeBrandLeakRot(row.getCell(metaCol).value || '');
       const keywords = row.getCell(kwCol).value || '';
 
