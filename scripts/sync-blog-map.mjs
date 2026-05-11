@@ -57,6 +57,20 @@ function estimateReadingTime(content) {
   return Math.max(1, Math.ceil(words / 200));
 }
 
+// Brand-leak rot sanitizer. Mirrors the bulk-cleanup regexes from
+// 2026-05-10 — keep in sync with CHANGELOG entries if patterns change.
+// Applied to title, content, and meta_description on every insert/update.
+const BRAND_LEAK_PATH_B = /MysteryMaker[ ]?[a-zA-ZÀ-ÿ가-힣ぁ-んァ-ヶー一-龥]{1,5}[ ]?MysteryMaker/g;
+function sanitizeBrandLeakRot(text) {
+  if (!text) return text;
+  let s = String(text);
+  s = s.replace(/(^|[^/@:.])mysterymaker\.party/gi, '$1MysteryMaker');
+  s = s.replace(/(ミステリーメーカー|神秘制造者|미스터리메이커)\.party/g, 'MysteryMaker');
+  s = s.replace(/MysteryMaker[ ]*\(MysteryMaker\)/g, 'MysteryMaker');
+  s = s.replace(BRAND_LEAK_PATH_B, 'MysteryMaker').replace(BRAND_LEAK_PATH_B, 'MysteryMaker');
+  return s;
+}
+
 async function main() {
   const xlsxPath = join(__dirname, '..', 'blog_map.xlsx');
   console.log(`Reading ${xlsxPath}...`);
@@ -91,9 +105,9 @@ async function main() {
     const isPublished = supabasePublished.has(slug);
 
     for (const [titleCol, contentCol, metaCol, kwCol, lang] of LANGS) {
-      const title = row.getCell(titleCol).value || '';
-      const content = row.getCell(contentCol).value || '';
-      const meta = row.getCell(metaCol).value || '';
+      const title = sanitizeBrandLeakRot(row.getCell(titleCol).value || '');
+      const content = sanitizeBrandLeakRot(row.getCell(contentCol).value || '');
+      const meta = sanitizeBrandLeakRot(row.getCell(metaCol).value || '');
       const keywords = row.getCell(kwCol).value || '';
 
       // Skip rows with no content for this language
