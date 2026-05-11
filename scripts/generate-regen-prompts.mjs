@@ -27,11 +27,15 @@ const ROOT = resolve(__dirname, '..');
 
 const csvPath = process.argv[2];
 if (!csvPath) {
-  console.error('usage: generate-regen-prompts.mjs <csv-path> [--status=<filter>]');
+  console.error('usage: generate-regen-prompts.mjs <csv-path> [--status=<filter>] [--batch-size=<N>]');
+  console.error('  --batch-size=1 (default): one cell per prompt file');
+  console.error('  --batch-size=10: ten cells per prompt file, single-language batches');
   process.exit(1);
 }
 const statusArg = process.argv.find(a => a.startsWith('--status='));
 const statusFilter = statusArg ? statusArg.split('=')[1] : 'published';
+const batchArg = process.argv.find(a => a.startsWith('--batch-size='));
+const batchSize = batchArg ? Math.max(1, parseInt(batchArg.split('=')[1], 10)) : 1;
 
 const TODAY = new Date().toISOString().slice(0, 10);
 
@@ -152,6 +156,123 @@ An upstream MT pipeline produced rotted ko + zh-cn output across the blog queue.
 `;
 }
 
+function buildBatchPrompt({ lang, cells }) {
+  const floor = LENGTH_FLOORS[lang];
+  const target = LANG_TARGET[lang];
+  const langName = LANG_NAME[lang];
+  const styleRules = lang === 'ko' ? KO_STYLE_RULES : ZH_STYLE_RULES;
+  const langLabel = `\`${lang}\``;
+
+  const cellList = cells.map((c, i) => (
+    `${i + 1}. **\`${c.slug}\`** — current ${c.length} chars; rot: ${c.reasons}`
+  )).join('\n');
+
+  return `You are working in /Users/jonathanmiller/CascadeProjects/website-murder-mystery-party-generator-main, a Vite + TypeScript + Supabase blog generator. Today is ${TODAY}.
+
+**Task**: regenerate **${cells.length} ${langName} (${langLabel})** translations of blog posts so each passes the project's rot-signal gate at \`scripts/check-rot-signals.mjs\`. This is regeneration-in-place per cell: keep slug/title/meta_description/structure stable; only \`content\` changes. **One PATCH per cell** — do not batch the writes.
+
+## Cells to regenerate (in order)
+
+${cellList}
+
+Length floor: **${floor} chars** (must clear). Length target: **${target.low}–${target.high} chars** per cell (median of healthy ${lang} passes is ${target.median}).
+
+## Background
+
+An upstream MT pipeline produced rotted ko + zh-cn output across the blog queue. Five rot signals are encoded in \`scripts/check-rot-signals.mjs\`: length floor, brand-as-H2 (\`mysterymaker.party\` literal in a heading), URL-as-H2, untranslated English run in heading, plus ko-specific calques (sentence-final declarative H2 endings + explicit pronouns in H2s). These ${cells.length} cells are part of a regeneration pass; the daily-publish workflow holds back any cell that fails the gate.
+
+## Loop pattern (do this for each cell in order)
+
+Process cells **one at a time, sequentially**. Do not start cell N+1 until cell N is shipped and gate-verified. Do not batch fetches, drafts, or writes across cells — each cell gets its own atomic fetch → draft → smoke-test → PATCH → re-verify cycle.
+
+**Critical: each cell is a fresh blank slate.** No carryover of phrasing, sentence structure, or paragraph shape from the previous cell's translation. The style guidance below applies universally; the specific words do not. After finishing each cell, mentally reset before reading the next EN source — read it as if it's the first translation of the day. Pattern fatigue in a long batch is the failure mode this prompt is designed to guard against.
+
+### Per-cell steps
+
+1. **Load credentials.** The repo \`.env\` has \`VITE_SUPABASE_URL\` and \`SUPABASE_SERVICE_ROLE_KEY\`. Use those as your \`SUPABASE_URL\` / \`SUPABASE_SERVICE_KEY\`. (Read once at batch start; reuse.)
+
+2. **Fetch the EN source** for this cell:
+   \`\`\`
+   GET \${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.<SLUG>&language=eq.en&select=content,title,meta_description
+   \`\`\`
+   This is canonical scope for THIS cell. Read it fresh regardless of the previous cell.
+
+3. **Fetch the current rotted ${lang} content** for negative-example context only (do NOT translate from it):
+   \`\`\`
+   GET \${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.<SLUG>&language=eq.${lang}&select=content
+   \`\`\`
+
+4. **Draft fresh ${langName} content** for this cell that:
+   - Preserves the H1 and every H2 from the EN source, in order. Heading text translates; markdown structure stays.
+   - Covers the full EN scope. Hit ${target.low}–${target.high} chars; do not truncate sections.
+   - Avoids rot patterns: no \`mysterymaker.party\` in any H2, no domain-like patterns in headings, no 5+ consecutive English words in headings (brand mentions OK).
+
+   **Link and anchor conventions** (site-wide convention differs from EN source):
+
+   * **Cross-cell links**: EN writes \`[text](/blog/<en-slug>)\`. Your translation writes \`[text](/${lang}/blog/<en-slug>)\`. Slug stays English/kebab-case. Bracketed link text translates.
+   * **Same-page TOC anchors**: EN uses kebab-case English. Translate the anchor to match your translated heading, kebab-case in the target language. E.g., H2 \`## 무엇이 잘못되는지\` → TOC link \`[…](#무엇이-잘못되는지)\`.
+   * **External links** (\`https://...\`): URL stays exact, bracketed text translates.
+   * **Image markdown** \`![alt](src)\`: alt translates, src stays exact.
+   * Anchor-to-heading consistency: every \`#xxx\` link must point to an H2 whose translated text slugifies to \`xxx\`. Mismatches produce dead TOC clicks.
+
+   ${styleRules}
+
+5. **Smoke-test BEFORE writing to DB**:
+   \`\`\`js
+   import { checkLanguage } from './scripts/check-rot-signals.mjs';
+   const draft = \`... your ${lang} content for THIS cell ...\`;
+   const result = checkLanguage('${lang}', draft);
+   console.log(result);
+   // Must show pass: true. If not, revise THIS cell until it does.
+   \`\`\`
+
+6. **UPSERT to Supabase** (one PATCH per cell, never batched):
+   \`\`\`
+   PATCH \${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.<SLUG>&language=eq.${lang}
+   Headers: apikey, Authorization: Bearer <key>, Content-Type: application/json, Prefer: return=minimal
+   Body: JSON.stringify({ content: draft })
+   \`\`\`
+   Expect HTTP 204. Any other status → stop and report which cell failed.
+
+7. **Re-verify from the live row**:
+   \`\`\`
+   node scripts/check-rot-signals.mjs <SLUG>
+   \`\`\`
+   Confirm \`${lang}.pass = true\` and \`${lang}.length >= ${floor}\`.
+
+8. **Log an incremental per-cell line** (one line printed before moving on):
+   \`\`\`
+   [N/${cells.length}] <slug>  old=<X>  new=<Y>  gate=PASS  H2s: <first H2> | <second H2> | <third H2>
+   \`\`\`
+
+9. **Reset mentally**, then move to the next cell.
+
+## Per-cell failure handling
+
+If any single cell fails the gate after 3 revisions, SKIP that cell (do not PATCH it), log the reason, and continue to the next cell. Successful cells stay shipped — the batch does not abort.
+
+## Final report (after all ${cells.length} cells)
+
+A table:
+\`\`\`
+| #  | slug | old | new | gate | notes |
+| 1  | ...  | X   | Y   | PASS | -     |
+| 2  | ...  | ... | ... | SKIP | reason |
+\`\`\`
+
+Plus a count: cells regenerated, cells skipped, total elapsed.
+
+## Discipline
+
+- ONE PATCH per cell. ${cells.length} cells = up to ${cells.length} PATCHes total. Never batch the DB writes.
+- No new local files, no git commits, no other slug/lang/table changes beyond the ${cells.length} target cells.
+- Do NOT use Python, regex, or bulk find/replace for translation. Each translation is thoughtful and per-cell.
+- Do NOT modify \`scripts/check-rot-signals.mjs\` or any workflow YAML.
+- Treat each EN source as canonical scope for ITS cell only — no cross-cell content reuse.
+- If you notice the same phrasing twice across cells (e.g. identical opening sentence structure), STOP and reset your voice.
+`;
+}
+
 // Parse CSV with quoted fields containing commas.
 function parseCsv(text) {
   const lines = text.split('\n').filter(l => l.length);
@@ -194,29 +315,75 @@ mkdirSync(outDir, { recursive: true });
 // off highest-impact cells first if they batch in waves.
 rows.sort((a, b) => Number(a.length) - Number(b.length));
 
-const indexLines = [
-  `# Regeneration prompts — ${statusFilter} rot cells`,
-  '',
-  `Generated ${new Date().toISOString()} from \`${csvPath.replace(ROOT + '/', '')}\`.`,
-  '',
-  `Total cells: **${rows.length}**.`,
-  '',
-  'Sorted by length ascending (worst rot first). Each row is one fresh Claude Code conversation.',
-  '',
-  '| # | lang | length | slug | prompt |',
-  '|---|------|--------|------|--------|',
-];
+if (batchSize === 1) {
+  // Per-cell prompts (one file per cell, one conversation per cell).
+  const indexLines = [
+    `# Regeneration prompts — ${statusFilter} rot cells`,
+    '',
+    `Generated ${new Date().toISOString()} from \`${csvPath.replace(ROOT + '/', '')}\`.`,
+    '',
+    `Total cells: **${rows.length}**.`,
+    '',
+    'Sorted by length ascending (worst rot first). Each row is one fresh Claude Code conversation.',
+    '',
+    '| # | lang | length | slug | prompt |',
+    '|---|------|--------|------|--------|',
+  ];
 
-rows.forEach((r, i) => {
-  const fileName = `${String(i + 1).padStart(3, '0')}__${r.slug}__${r.lang}.md`;
-  const filePath = resolve(outDir, fileName);
-  writeFileSync(filePath, buildPrompt({
-    slug: r.slug, lang: r.lang, length: r.length, reasons: r.reasons,
-  }));
-  indexLines.push(
-    `| ${i + 1} | ${r.lang} | ${r.length} | \`${r.slug}\` | [${fileName}](./${fileName}) |`
-  );
-});
+  rows.forEach((r, i) => {
+    const fileName = `${String(i + 1).padStart(3, '0')}__${r.slug}__${r.lang}.md`;
+    writeFileSync(resolve(outDir, fileName), buildPrompt({
+      slug: r.slug, lang: r.lang, length: r.length, reasons: r.reasons,
+    }));
+    indexLines.push(
+      `| ${i + 1} | ${r.lang} | ${r.length} | \`${r.slug}\` | [${fileName}](./${fileName}) |`
+    );
+  });
 
-writeFileSync(resolve(outDir, 'INDEX.md'), indexLines.join('\n') + '\n');
-console.log(`Wrote ${rows.length} prompts + INDEX.md to ${outDir.replace(ROOT + '/', '')}/`);
+  writeFileSync(resolve(outDir, 'INDEX.md'), indexLines.join('\n') + '\n');
+  console.log(`Wrote ${rows.length} per-cell prompts + INDEX.md to ${outDir.replace(ROOT + '/', '')}/`);
+} else {
+  // Batched prompts — group by language (different style rules), then chunk
+  // by batch size. Each file processes batchSize cells sequentially in one
+  // Claude Code conversation. Trade-off: way fewer paste actions, but adds
+  // pattern-fatigue risk that the loop instructions try to mitigate.
+  const byLang = { ko: [], 'zh-cn': [] };
+  for (const r of rows) {
+    if (byLang[r.lang]) byLang[r.lang].push(r);
+  }
+
+  const indexLines = [
+    `# Regeneration prompts — ${statusFilter} rot cells (batched, ${batchSize}/file)`,
+    '',
+    `Generated ${new Date().toISOString()} from \`${csvPath.replace(ROOT + '/', '')}\`.`,
+    '',
+    `Total cells: **${rows.length}** across ${Object.values(byLang).filter(a => a.length).length} languages.`,
+    `Batch size: **${batchSize}** cells per Claude Code conversation.`,
+    '',
+    'Each batch is single-language (KO and ZH-CN have different style rules; mixing dilutes both).',
+    'Within a language, cells are sorted by length ascending (worst rot first).',
+    '',
+    '| batch | lang | cells | length range | prompt |',
+    '|-------|------|-------|--------------|--------|',
+  ];
+
+  let batchNum = 0;
+  for (const lang of ['zh-cn', 'ko']) {
+    const cells = byLang[lang];
+    if (!cells || cells.length === 0) continue;
+    for (let i = 0; i < cells.length; i += batchSize) {
+      batchNum++;
+      const chunk = cells.slice(i, i + batchSize);
+      const minLen = chunk[0].length;
+      const maxLen = chunk[chunk.length - 1].length;
+      const fileName = `batch-${String(batchNum).padStart(3, '0')}__${lang}__${chunk.length}cells.md`;
+      writeFileSync(resolve(outDir, fileName), buildBatchPrompt({ lang, cells: chunk }));
+      indexLines.push(
+        `| ${batchNum} | ${lang} | ${chunk.length} | ${minLen}–${maxLen} | [${fileName}](./${fileName}) |`
+      );
+    }
+  }
+
+  writeFileSync(resolve(outDir, 'INDEX.md'), indexLines.join('\n') + '\n');
+  console.log(`Wrote ${batchNum} batched prompts (${batchSize} cells/batch) + INDEX.md to ${outDir.replace(ROOT + '/', '')}/`);
+}
