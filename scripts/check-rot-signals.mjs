@@ -18,47 +18,22 @@
  *     "zh-cn": { "present": bool, "pass": bool, "length": n, "reasons": [...] }
  *   }
  *
+ * Library use:
+ *   import { checkLanguage, LENGTH_FLOORS } from './check-rot-signals.mjs';
+ *
  * Exit codes: 0 always on a clean run (the workflow reads the JSON and
  * decides). Non-zero only on env/network errors.
  */
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const slug = process.argv[2];
-
-if (!slug) {
-  console.error('usage: check-rot-signals.mjs <slug>');
-  process.exit(1);
-}
-if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-  console.error('missing SUPABASE_URL or SUPABASE_SERVICE_KEY');
-  process.exit(1);
-}
+import { pathToFileURL } from 'node:url';
 
 // Length floors — well below any healthy translation, well above the rotted samples.
 // EU langs run ~15,800 chars; ja-clean is ~6,800 (CJK density); zh-cn rotted samples
 // were ~4,579. Floors are deliberately conservative — false positives (healthy draft
 // held back) are recoverable; false negatives (rot shipped live) are the bug we are fixing.
-const LENGTH_FLOORS = { ko: 7000, 'zh-cn': 5500 };
+export const LENGTH_FLOORS = { ko: 7000, 'zh-cn': 5500 };
 
-const url = `${SUPABASE_URL}/rest/v1/blog_posts`
-  + `?slug=eq.${slug}`
-  + `&language=in.(ko,zh-cn)`
-  + `&select=language,content,status`;
-
-const res = await fetch(url, {
-  headers: {
-    apikey: SUPABASE_SERVICE_KEY,
-    Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
-  },
-});
-if (!res.ok) {
-  console.error(`supabase fetch failed: HTTP ${res.status} ${res.statusText}`);
-  process.exit(1);
-}
-const rows = await res.json();
-
-function checkLanguage(lang, content) {
+export function checkLanguage(lang, content) {
   const reasons = [];
 
   // 1. Length floor.
@@ -127,14 +102,47 @@ function checkLanguage(lang, content) {
   };
 }
 
-const out = {};
-for (const lang of ['ko', 'zh-cn']) {
-  const row = rows.find(r => r.language === lang);
-  if (!row) {
-    out[lang] = { present: false, pass: false, length: 0, reasons: ['no draft row'] };
-    continue;
-  }
-  out[lang] = checkLanguage(lang, row.content || '');
-}
+// CLI entrypoint — only runs when invoked directly, not when imported.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+  const slug = process.argv[2];
 
-console.log(JSON.stringify(out));
+  if (!slug) {
+    console.error('usage: check-rot-signals.mjs <slug>');
+    process.exit(1);
+  }
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    console.error('missing SUPABASE_URL or SUPABASE_SERVICE_KEY');
+    process.exit(1);
+  }
+
+  const url = `${SUPABASE_URL}/rest/v1/blog_posts`
+    + `?slug=eq.${slug}`
+    + `&language=in.(ko,zh-cn)`
+    + `&select=language,content,status`;
+
+  const res = await fetch(url, {
+    headers: {
+      apikey: SUPABASE_SERVICE_KEY,
+      Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+    },
+  });
+  if (!res.ok) {
+    console.error(`supabase fetch failed: HTTP ${res.status} ${res.statusText}`);
+    process.exit(1);
+  }
+  const rows = await res.json();
+
+  const out = {};
+  for (const lang of ['ko', 'zh-cn']) {
+    const row = rows.find(r => r.language === lang);
+    if (!row) {
+      out[lang] = { present: false, pass: false, length: 0, reasons: ['no draft row'] };
+      continue;
+    }
+    out[lang] = checkLanguage(lang, row.content || '');
+  }
+
+  console.log(JSON.stringify(out));
+}

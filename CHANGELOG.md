@@ -2,6 +2,13 @@
 
 ## 2026-05-11
 
+### Tooling: Queue-wide rot audit + per-cell regeneration prompt generator
+
+- New: [scripts/audit-rot-signals.mjs](scripts/audit-rot-signals.mjs) — paginates all `ko` + `zh-cn` rows in `blog_posts`, runs each through `checkLanguage()` from the rot-signal gate, and emits a summary table + a `temp-files/rot-audit-<ISO>.csv` of every failing cell (slug, lang, status, length, reasons). Read-only.
+- New: [scripts/generate-regen-prompts.mjs](scripts/generate-regen-prompts.mjs) — reads the audit CSV and emits one ready-to-paste regeneration brief per failing cell to `temp-files/regen-prompts/<NNN>__<slug>__<lang>.md`, plus an `INDEX.md` sorted worst-rot-first. Each brief is self-contained for a fresh Claude Code conversation: full task spec, language-specific style rules (KO calque smells, ZH-CN length targets), per-language link + anchor conventions (`/blog/X` → `/<lang>/blog/X`, anchors translate to match localized H2s), smoke-test instructions, DB upsert pattern, re-verification.
+- Refactored [scripts/check-rot-signals.mjs](scripts/check-rot-signals.mjs) to export `checkLanguage()` and `LENGTH_FLOORS` so both audit + prompt-generator share the same heuristics as the production gate. CLI behaviour preserved (the daily-publish workflow still invokes it identically).
+- First audit run (2026-05-11) found 171 failing `ko` rows (40.6%) and 268 failing `zh-cn` rows (63.7%) across 421 rows each. ZH-CN failures are 99% length-truncation; KO failures split between length floor (~66%) and calque H2s (~44%). Of the failures, 36 are already-published cells (20 ko + 16 zh-cn) that need in-place regeneration; the rest are drafts the daily-publish gate already holds back.
+
 ### Fix: Daily-publish llms.txt push survives concurrent commits on main
 
 - [.github/workflows/publish-daily-blog.yml:157-166](.github/workflows/publish-daily-blog.yml#L157-L166) — wrapped the `git push` of the regenerated `llms.txt` in a 3-attempt rebase-and-retry loop. Today's manual run failed at this step with a non-fast-forward reject because a parallel commit landed on main during the workflow run, orphaning the regenerated llms.txt locally.
