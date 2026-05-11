@@ -185,7 +185,7 @@ jobs:
       - name: Submit sitemap to Google Search Console
         if: steps.publish.outputs.slug != ''
         env:
-          GSC_SITE_URL: https://mysterymaker.party
+          GSC_SITE_URL: https://www.mysterymaker.party/
           GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
         # Pings GSC to recrawl sitemap.xml after each daily publish.
         # Required because (a) Google does not consume IndexNow and

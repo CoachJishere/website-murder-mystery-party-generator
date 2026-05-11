@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-05-11
+
+### Fix: GSC sitemap submission — match actual property URL (www + trailing slash)
+
+- `.github/workflows/publish-daily-blog.yml`: `GSC_SITE_URL` changed from `https://mysterymaker.party` to `https://www.mysterymaker.party/` to exactly match the GSC URL-prefix property. The Search Console API rejects any siteUrl that doesn't string-match the registered property, so the prior value would have failed with "Site does not exist" once `GSC_SERVICE_ACCOUNT_JSON` was set.
+- Companion manual setup (not in repo): GCP service account created under existing project, Search Console API enabled, service account added as Owner on the `https://www.mysterymaker.party/` GSC property, JSON key stored as `GSC_SERVICE_ACCOUNT_JSON` repo secret. With this commit, the daily GSC submit step is no longer a silent no-op.
+
 ## 2026-05-10
 
 ### Feature: Localize all 6 transactional emails across 13 languages
