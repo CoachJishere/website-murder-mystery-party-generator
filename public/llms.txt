@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 112 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 113 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -145,6 +145,7 @@ This index organizes 112 published guides by topic cluster. All guides are avail
 - [Murder Mystery Lighting: What Actually Works](https://www.mysterymaker.party/blog/how-to-fix-lighting-and-atmosphere-issues-that-could-dim-your-murder-mystery-party): Fix lighting failures that wreck murder mystery parties. Practical solutions for reading visibility, atmosphere, and reliable equipment.
 - [How to Handle Food at a Murder Mystery](https://www.mysterymaker.party/blog/how-to-fix-menu-planning-disasters-for-murder-mystery-parties-feeding-success): Design murder mystery menus that feed everyone well. Handle dietary restrictions, themed food, and prep timing realistically.
 - [Murder Mysteries Across Generations](https://www.mysterymaker.party/blog/how-to-fix-multi-generational-group-challenges-in-your-murder-mystery-party): Run murder mysteries for mixed ages. Character design, pacing, and activity strategies that engage grandparents through kids.
+- [How to Fix Obvious Murder Mystery Solutions](https://www.mysterymaker.party/blog/how-to-fix-obvious-murder-mystery-solutions-create-surprising-twists-that-captivate): Stop guests from solving your mystery in 30 minutes. Build unpredictable twists with red herrings, complex motives and layered clues.
 - [How to Fix Overly Complex Murder Mysteries](https://www.mysterymaker.party/blog/how-to-fix-overly-complex-murder-mysteries): Your mystery's too tangled. Strip it back to clear character motives, obvious clue chains, and guided paths that keep guests engaged instead of confused.
 - [How to Fix Poor Murder Mystery Pacing](https://www.mysterymaker.party/blog/how-to-fix-poor-mystery-pacing-issues-master-the-art-of-murder-mystery-timing): Pacing separates a slog from an unforgettable mystery night. How to time your party so energy builds, guests stay engaged, and the reveal lands hard.
 - [How to Fix Unrealistic Murder Mystery Plots](https://www.mysterymaker.party/blog/how-to-fix-unrealistic-murder-mystery-plots-create-believable-storylines-that-captivate): Craft realistic murder mystery plots with logical motives, believable crime methods, and authentic character relationships that keep guests engaged.
