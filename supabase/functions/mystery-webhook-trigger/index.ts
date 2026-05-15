@@ -226,7 +226,7 @@ async function extractCharactersWithClaude(
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-haiku-4-5-20251001",
         max_tokens: 2000,
         temperature: 0,
         system: "You are a strict JSON extraction tool. Output ONLY a valid JSON array of objects with 'name' and 'description' fields. Extract the playable character names and descriptions. Never continue the story. Never output anything except the JSON array.",
@@ -461,7 +461,7 @@ serve(async (req) => {
       // Put critical fields FIRST (before ...messageFields which can be 600+ fields)
       extractedCharacters: extractedCharacters ? JSON.stringify(extractedCharacters) : "[]",
       extractionMethod,
-      model: "claude-sonnet-4-20250514",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 4000,
       userId,
       userEmail,

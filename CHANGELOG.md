@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-05-15
+
+### Fix: Resolve Supabase security advisor errors + harden function search_paths
+
+- Recreated `public.pinterest_post_queue` view with `WITH (security_invoker = on)` so it runs with the querying role's permissions instead of the view owner's. Make.com Search Rows uses service_role (which bypasses RLS regardless), so behavior is unchanged.
+- Enabled RLS (no policies) on `public.blog_posts_staging`, `public.crm_contacts`, and `public.job_applications`. All three are back-office tables only touched by Make.com via service_role; anon/authenticated had no business reason to read them and now can't.
+- Pinned `search_path = public, pg_temp` on 24 functions flagged by lint 0011 (`translate_to_es`, `get_host_package`, `append_blog_content`, `update_blog_content`, `upsert_staging`, `notify_feedback_webhook`, `refresh_blog_dates`, `trim_meta_description`, `send_guest_feedback_emails`, `get_character_details`, `get_assignment_for_feedback`, `process_followup_emails`, `validate_package_characters`, `notify_guest_feedback_webhook`, `sweep_incomplete_packages`, `promote_complete_packages`, `log_child_generation_attempt`, `get_empty_characters`, `set_gestalt_terms_updated_at`, `get_packet_metadata_by_token`, `heal_completed_packages`, `_maintain_needs_review_at`, `set_pinterest_pins_updated_at`, `create_pinterest_pin_for_published_post`). Prevents search-path-based privilege escalation; no behavioral change since none of these functions reference unqualified objects from other schemas.
+- Dropped wide-open `public insert/update/delete gestalt_terms` RLS policies. The table is 6-row reference data with no app-code writers; anyone could previously vandalize it via REST. Public SELECT kept; service_role (admin/Make.com) still bypasses RLS for legitimate edits.
+
+### Fix: Migrate mystery-webhook-trigger off retiring Sonnet 4
+
+- [supabase/functions/mystery-webhook-trigger/index.ts:229](supabase/functions/mystery-webhook-trigger/index.ts#L229) — character-extraction Claude API call switched from `claude-sonnet-4-20250514` to `claude-haiku-4-5-20251001`. Anthropic is retiring Sonnet 4, so the direct API call would have started failing once support ends.
+- [supabase/functions/mystery-webhook-trigger/index.ts:464](supabase/functions/mystery-webhook-trigger/index.ts#L464) — `model` field in the Make.com webhook payload aligned to the same Haiku 4.5 ID for consistency with the recent Make.com Parent/Child scenario switch (see 2026-04 entries).
+
 ## 2026-05-11
 
 ### Content: Full regeneration of 36 published KO + ZH-CN rot cells
