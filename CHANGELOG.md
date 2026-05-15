@@ -2,6 +2,11 @@
 
 ## 2026-05-15
 
+### Fix: Patch 8 Dependabot alerts in protobufjs
+
+- Added an npm/pnpm `overrides` entry pinning `protobufjs` to `^7.5.8` (patched in the same 7.x line that `@opentelemetry/otlp-transformer@0.208.0` declares). All 8 alerts (4 high + 4 moderate covering RCE, prototype pollution, DoS, overlong UTF-8 decoding) sat on a transitive chain `posthog-js → @opentelemetry/exporter-logs-otlp-http → @opentelemetry/otlp-transformer → protobufjs@7.5.5`. `npm audit` now reports 0 vulnerabilities.
+- Stayed within the same major version rather than overriding to 8.x (which would have crossed otlp-transformer's `^7.3.0` constraint and risked runtime breakage in PostHog's OTLP export path).
+
 ### Fix: Resolve Supabase security advisor errors + harden function search_paths
 
 - Recreated `public.pinterest_post_queue` view with `WITH (security_invoker = on)` so it runs with the querying role's permissions instead of the view owner's. Make.com Search Rows uses service_role (which bypasses RLS regardless), so behavior is unchanged.
