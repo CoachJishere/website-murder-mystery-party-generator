@@ -335,8 +335,11 @@ function injectIntoTemplate(post, headTags, articleHtml) {
 }
 
 async function fetchAllPosts() {
+  // Page size kept small because the `content` markdown column is large (multi-KB
+  // per row × 1.4k+ rows). A 500-row fetch trips PostgREST's 8s statement_timeout
+  // on the public role; 100 stays well under it.
   const all = [];
-  const pageSize = 500;
+  const pageSize = 100;
   for (let from = 0; ; from += pageSize) {
     const { data, error } = await supabase
       .from('blog_posts')

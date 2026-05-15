@@ -2,6 +2,10 @@
 
 ## 2026-05-15
 
+### Fix: Unblock prerender step after Supabase statement timeout
+
+- [scripts/prerender-blog.mjs:339](scripts/prerender-blog.mjs#L339) — dropped the `fetchAllPosts` page size from 500 to 100. The query pulls the full markdown `content` column for every published post; at 1480 rows the 500-row page tripped PostgREST's 8s statement_timeout under the public role and CI build failed with Postgres code `57014` ("canceling statement due to statement timeout"). 100-row pages stay well under the limit and the full pull still completes in a single-digit number of round trips.
+
 ### Fix: Patch 8 Dependabot alerts in protobufjs
 
 - Added an npm/pnpm `overrides` entry pinning `protobufjs` to `^7.5.8` (patched in the same 7.x line that `@opentelemetry/otlp-transformer@0.208.0` declares). All 8 alerts (4 high + 4 moderate covering RCE, prototype pollution, DoS, overlong UTF-8 decoding) sat on a transitive chain `posthog-js → @opentelemetry/exporter-logs-otlp-http → @opentelemetry/otlp-transformer → protobufjs@7.5.5`. `npm audit` now reports 0 vulnerabilities.
