@@ -2,6 +2,17 @@
 
 ## 2026-05-19
 
+### Improvement: `mystery-webhook-trigger` auto-syncs `player_count` from extracted character count, removing the 400-on-drift trap
+
+- [supabase/functions/mystery-webhook-trigger/index.ts:456](supabase/functions/mystery-webhook-trigger/index.ts#L456) — replaced the strict "extracted count must equal `player_count`" validation (which returned a hard 400) with an auto-sync: when extraction finds N characters and the DB says something else, the DB is updated to match the extraction and generation proceeds. Deployed as version 113.
+- Why: `conversations.player_count` is captured once from the user's opening chat message and never refreshes. Customers routinely revise character count during the chat (Fotini went 15→20→19→17). The old strict-validation block converted this drift into a user-facing failure — extraction was correct, the form value was just stale. The approved-concept message is the authoritative source; trust it.
+- Best-effort DB write: if the `UPDATE conversations` fails (network blip, RLS, whatever), the request continues with the synced local value. `playerCount` and `conversation.player_count` are both updated so the downstream webhook payload (`title`, `playerCount`) reflects the new count.
+- The cross-validate block above (regex-found-suspiciously-few → try Claude fallback) is untouched — still useful for catching primary-regex undercounts.
+
+### Planning: Concept confirmation UI before generation
+
+- New doc: [docs/plan_concept_confirmation_ui.md](docs/plan_concept_confirmation_ui.md) — design sketch for the architectural fix to the Madysn-vs-Fotini tension. Adds an explicit "confirm this is the mystery I'm paying for" step that synthesizes a single comprehensive concept doc via Claude before payment. Not started; ~3-4 dev days for MVP.
+
 ### Improvement: `mystery-webhook-trigger` now widens to full conversation when the approved snapshot is too thin to be trusted
 
 - [supabase/functions/mystery-webhook-trigger/index.ts:395](supabase/functions/mystery-webhook-trigger/index.ts#L395) — added a sanity check around the "send the approved concept message" path. If `approved_concept_message_id` points at a message under 3KB while the full conversation is over 30KB AND >10× larger than the snapshot, we now switch to sending the full conversation as `conversationContent`. Deployed as version 112.

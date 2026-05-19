@@ -439,7 +439,7 @@ serve(async (req) => {
 
     // Cross-validate extracted count against player_count — if regex found
     // significantly fewer characters than expected, try Claude fallback
-    const playerCount = conversation.player_count || 0;
+    let playerCount = conversation.player_count || 0;
     if (extractedCharacters && playerCount > 0) {
       const minExpected = playerCount - 2; // Allow for inspector + flexibility
       if (extractedCharacters.length < minExpected && extractionMethod === 'regex') {
@@ -453,29 +453,28 @@ serve(async (req) => {
       }
     }
 
-    // Pre-flight: hard fail if extracted count doesn't exactly match player_count.
-    // Exact match required — the approved concept message and player_count must
-    // agree. Any mismatch (ghost characters, AI generating n+1, etc.) causes an
-    // expensive half-broken generation that requires manual recovery.
-    if (extractedCharacters && playerCount > 0) {
-      const diff = Math.abs(extractedCharacters.length - playerCount);
-      if (diff > 0) {
-        const errMsg = `Character extraction mismatch: extracted ${extractedCharacters.length} characters but mystery is configured for ${playerCount} players. Aborting webhook to prevent broken generation.`;
-        console.error(`[Validation] ${errMsg}`);
-        return new Response(
-          JSON.stringify({
-            success: false,
-            error: errMsg,
-            extractedCount: extractedCharacters.length,
-            expectedCount: playerCount,
-            extractionMethod,
-          }),
-          {
-            status: 400,
-            headers: { ...corsHeaders, "Content-Type": "application/json" }
-          }
-        );
+    // Auto-sync `player_count` from the extracted character count. The form-captured
+    // value is taken from the user's opening chat message and never refreshes, but
+    // users routinely iterate on character count during chat (Fotini "Multiverse"
+    // May 19 2026 drifted 15 → 20 → 19 → 17, while the form stayed at 15). The
+    // approved concept message is the authoritative source of truth.
+    //
+    // This replaces the previous strict-mismatch validation that returned 400 —
+    // form-value drift was being misclassified as an extraction error and turning
+    // into broken generations for paying customers. Best-effort DB sync; the local
+    // value drives this request regardless of whether the DB write succeeds.
+    if (extractedCharacters && extractedCharacters.length > 0 && extractedCharacters.length !== playerCount) {
+      const extractedCount = extractedCharacters.length;
+      console.warn(`[PlayerCount] Drift detected: form=${playerCount}, extracted=${extractedCount}. Syncing player_count → ${extractedCount}.`);
+      const { error: syncErr } = await supabase
+        .from("conversations")
+        .update({ player_count: extractedCount })
+        .eq("id", conversationId);
+      if (syncErr) {
+        console.warn(`[PlayerCount] DB sync failed (proceeding with local value): ${syncErr.message}`);
       }
+      conversation.player_count = extractedCount;
+      playerCount = extractedCount;
     }
 
     // Build individual message fields for Make.com
