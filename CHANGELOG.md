@@ -2,6 +2,12 @@
 
 ## 2026-05-19
 
+### Improvement: `mystery-webhook-trigger` deletes existing characters before regenerating, preventing orphan-duplicate cruft
+
+- [supabase/functions/mystery-webhook-trigger/index.ts:344](supabase/functions/mystery-webhook-trigger/index.ts#L344) — added a pre-generation cleanup step that deletes all `mystery_characters` rows for the package before Make.com starts. Deployed as version 114.
+- Why: Make.com upserts characters by exact name, so when the AI's naming convention changes between generations (e.g. dropping "Mario / Mariana" gender-variants for plain "Mario"), characters whose names no longer match the new convention become orphan duplicates. Fotini's "Multiverse" regeneration this afternoon left 26 characters in the table instead of 17 (9 old `/`-style rows lingered next to 9 new single-name rows). Cleaning unconditionally on every run guarantees the character set always matches the current generation.
+- Safety: no-op for first-time generations (no rows to delete). Failed/aborted regenerations briefly leave the package with zero characters — the `MysteryView` tab logic already handles that via the "We're Finalizing" fallback when `characters.length === 0`.
+
 ### Improvement: `mystery-webhook-trigger` auto-syncs `player_count` from extracted character count, removing the 400-on-drift trap
 
 - [supabase/functions/mystery-webhook-trigger/index.ts:456](supabase/functions/mystery-webhook-trigger/index.ts#L456) — replaced the strict "extracted count must equal `player_count`" validation (which returned a hard 400) with an auto-sync: when extraction finds N characters and the DB says something else, the DB is updated to match the extraction and generation proceeds. Deployed as version 113.

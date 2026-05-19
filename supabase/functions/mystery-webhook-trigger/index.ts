@@ -341,9 +341,45 @@ serve(async (req) => {
       }
     }
 
+    // Pre-generation cleanup: delete any existing `mystery_characters` rows for this
+    // package before Make.com begins. Make.com upserts characters by exact name, so
+    // when the AI's naming convention changes between generations (e.g. moving from
+    // "Mario / Mariana" gender-variant names to just "Mario"), characters whose
+    // names no longer match the new convention are orphaned — they linger in the
+    // table alongside the freshly-inserted single-name versions.
+    //
+    // Fotini's "Multiverse" regeneration (May 19 2026): 9 old "/"-style names from
+    // the prior generation stuck around as duplicates next to the 9 new single-name
+    // rows, leaving the package with 26 characters instead of 17. Cleaning here on
+    // every run guarantees the character set always matches the current generation.
+    //
+    // Safety: this is a no-op for first-time generations (no rows to delete). It
+    // means a failed/aborted regeneration briefly leaves the package with zero
+    // characters — but the UI already handles that case via the "We're Finalizing"
+    // fallback when characters.length === 0 (see MysteryView.tsx tab-display logic).
+    {
+      const { data: existingPackage } = await supabase
+        .from("mystery_packages")
+        .select("id")
+        .eq("conversation_id", conversationId)
+        .maybeSingle();
+
+      if (existingPackage?.id) {
+        const { count, error: cleanupErr } = await supabase
+          .from("mystery_characters")
+          .delete({ count: "exact" })
+          .eq("package_id", existingPackage.id);
+        if (cleanupErr) {
+          console.warn(`[Cleanup] Failed to delete existing characters: ${cleanupErr.message}`);
+        } else if (count && count > 0) {
+          console.log(`[Cleanup] Deleted ${count} existing character rows (package_id=${existingPackage.id}) before regeneration`);
+        }
+      }
+    }
+
     // Extract user_id from the conversation
     const userId = conversation.user_id;
-    
+
     if (!userId) {
       console.warn("Warning: No user_id found for conversation");
     }
