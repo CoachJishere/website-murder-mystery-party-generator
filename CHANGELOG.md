@@ -1,5 +1,47 @@
 # Changelog
 
+## 2026-05-19
+
+### Fix: Eliminate silent 500s in `mystery-webhook-trigger` from null-deref on non-standard character-list headers
+
+- [supabase/functions/mystery-webhook-trigger/index.ts:106](supabase/functions/mystery-webhook-trigger/index.ts#L106) — wrapped the primary-extraction block in an `if (headerMatch)` guard. Previously, when `approved_concept_message_id` pointed at a message whose content `sectionHeaderRegex` couldn't match (or whose header used a phrasing not in `CHARACTER_LIST_HEADERS`), `headerMatch[0].trim()` threw `TypeError: Cannot read properties of null` and the function returned a generic 500. With the guard, control falls through to secondary extraction. Deployed as version 111.
+- [supabase/functions/mystery-webhook-trigger/index.ts:33](supabase/functions/mystery-webhook-trigger/index.ts#L33) — added `"Complete Character List"`, `"COMPLETE CHARACTER LIST"`, `"Full Character List"` to the locale-aware `CHARACTER_LIST_HEADERS` array. The AI uses these phrasings when reformatting at the user's request.
+- [supabase/functions/mystery-webhook-trigger/index.ts:63](supabase/functions/mystery-webhook-trigger/index.ts#L63) — changed the section-header anchor from `\s*$` to `[:\s]*$`. The auto-snapshot regex (line 324) uses a prefix match, but the extractor required a full-line match — so a header like `## COMPLETE CHARACTER LIST (17 SUSPECTS):` (trailing colon) passed the snapshot filter and then failed the extractor, causing a silent crash. Tolerating a trailing colon aligns the two.
+- [supabase/functions/mystery-webhook-trigger/index.ts:324](supabase/functions/mystery-webhook-trigger/index.ts#L324) — auto-snapshot regex now recognizes `Complete Character List`, `COMPLETE CHARACTER LIST`, `Full Character List` alongside the existing variants.
+- Customer recovery: Fotini (`fofolaza@gmail.com`, conversation `879de5e2-…`). `approved_concept_message_id` had been auto-snapshotted to a mid-analysis continuation message (`96b65ce7-…`, no character-list header at all) on the first generation attempt; every retry crashed in the same place. Reassigned to `b2de0b51-…` (the clean reformatted roster of 17), corrected stale fields on the conversation row (`player_count` 15→17, `has_accomplice` true→false, garbage title from the title-extraction bug below → `"Murder in the Multiverse: A Rift in Reality"`), reset the package's `generation_status` to `resumable`. Generation completed successfully on retry.
+
+### Fix: Stop title auto-extraction from overwriting real titles with stray bold labels
+
+- [src/utils/titleExtraction.ts:85](src/utils/titleExtraction.ts#L85) — the third-pass `looksLikeTitle` heuristic was too lenient: it accepted any 2–10-word bold phrase containing one of `murder/mystery/death/...`. So an AI help response like `**AFTER you generate the mystery package:**` matched and silently replaced the conversation's real title. Added two guards: reject phrases ending with `:` (those are labels), and reject phrases starting with instructional prefixes (`After `, `Before `, `When `, `Let me `, `I can `, etc.).
+- [src/pages/MysteryChat.tsx:84](src/pages/MysteryChat.tsx#L84) — second layer of defense: only auto-update `conversations.title` when no real title exists yet (empty / starts with `"Untitled"` / starts with `"New Mystery"`). Once a proper title is set on the first AI concept message, later AI messages (recaps, help text, character-list reformats) can't overwrite it.
+
+## 2026-05-18
+
+### Improvement: Defense-in-depth sanitization in `parse-claude-json` for image-prompt fields
+
+- [supabase/functions/parse-claude-json/index.ts:117](supabase/functions/parse-claude-json/index.ts#L117) — after successful JSON parse, if the result is an object with top-level `round2` / `round3` / `round4` string fields, strip `"` and `\` from those values (`"` → `'`, `\` → removed). Deployed as version 4.
+- Why: 2026-05-17's primary fix was at the Claude prompt level (instructing the model to use single quotes only) — reliable but not infallible. This sanitization makes a Claude slip survivable: even if the model emits a literal `"`, the downstream Make.com Imagen HTTP module won't break on `Expected ',' or '}'` in its JSON body. Two layers of protection.
+- Safety verified: child scenarios call this same endpoint but never produce top-level `round2/3/4` keys (they use `description`, `background`, `relationships`, `round2_innocent`, etc.), so legitimate quoted dialogue in character scripts is unaffected. Confirmed via grep of all child blueprints.
+
+### Cleanup: Strip dead IML escape chain from Parent35 Imagen modules
+
+- Local-only edit to `temp-files/MM Live - Parent35.blueprint.json`: the 12 Imagen modules' `jsonStringBodyContent` simplified from the multi-step `replace(...; "/\"/g"; "\\\"")` chain to a direct `{{VAR}}` reference. The escape chain was always a no-op (Make treats `"/.../g"` quoted strings as literal text, not regex) — kept it as misleading dead code in 2026-05-17's emergency fix. With the prompt-level fix + edge-function sanitization both in place, the cleaner body is correct *and* readable.
+- Not deployed today — will land whenever the parent scenario is next refreshed. Production behavior unchanged (the in-place edits applied 2026-05-17 already neutralized the original bug).
+
+## 2026-05-17
+
+### Fix: Restore anon EXECUTE on `get_empty_characters` (Make.com RPC regression)
+
+- `GRANT EXECUTE ON FUNCTION public.get_empty_characters(uuid) TO anon, authenticated`. Regression from the 2026-05-15 security hardening pass which assumed this was admin-only and revoked anon access. Make.com's parent scenario calls it via `/rest/v1/rpc/` with the anon key at step 223 ("Check empty chars") to verify all character scripts are present before proceeding downstream. The revoke caused mid-generation failure with `permission denied for function get_empty_characters`, deactivating the scenario after two retries and leaving customer packages partially complete.
+- Acceptable to re-grant: function is SECURITY DEFINER, read-only, scoped to a single `package_id` arg, returns only `character_name`/`id` (low sensitivity, requires guessing a UUID). The other two revoked admin functions (`promote_complete_packages`, `refresh_blog_dates`) audited as not called by Make's parent or child blueprints — they stay revoked.
+
+### Fix: Stop Imagen 4 JSON failures by removing double quotes from AI-generated prompts
+
+- Updated all 4 "Image Prompts" modules in the Make.com parent scenario (5002, 5006, 5010, 5014) to instruct Claude to use single quotes only and to **never** emit the `"` character. The prior instruction in module 5002 said *"quote it explicitly"* — Claude faithfully produced `"CHEMICAL SUPPLY REQUISITION"` with literal double quotes, which broke Imagen 4's request body construction with `Expected ',' or '}' after property value in JSON at position 546`.
+- The HTTP module's IML escape chain (`replace(...; "/\"/g"; "\\\"")`) had been silently broken since day one: Make.com treats `"/.../g"` quoted strings as literal text, not regex, so no replacement actually fires. Confirmed via the isolated `MM Test - Evidence Images` v3/v5/v6/v7 test scenarios — the chain is dead code. Left in place (harmless), but the real defense is now the prompt-level constraint.
+- New Gemini API key issued and applied to all 12 Imagen modules across the 4 routes.
+- Customer recovery: `Fatal Specimen: Murder In The Forensic Lab` (conversation `6dd6ec94-…`, package `a45a4d58-…`) was the surfacing failure. Re-fired post-fix; generation completed except for the optional `host_guide` column. `HostGuideTemplate.tsx` uses `game_overview` (present, 1564 chars) as primary source, with `host_guide` as optional supplement, so the Host Guide tab renders correctly. Marked complete in Supabase.
+
 ## 2026-05-15
 
 ### Fix: Unblock prerender step after Supabase statement timeout

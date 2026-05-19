@@ -89,6 +89,18 @@ const looksLikeTitle = (text: string): boolean => {
   if (words.length < 2 || words.length > 10) return false;
 
   const lower = text.toLowerCase();
+
+  // Reject obvious non-titles: bold labels/instructions that happen to contain "mystery"
+  // (e.g. "**AFTER you generate the mystery package:**" leaked in as a title before this guard).
+  if (text.trim().endsWith(':')) return false;
+  const instructionPrefixes = [
+    'after ', 'before ', 'when ', 'while ', 'once ', 'how ', 'why ',
+    'here ', 'now ', 'next ', 'first ', 'finally ',
+    'i can ', 'i will ', 'i\'ll ', 'i\'ve ', 'you can ', 'you will ',
+    'let me ', 'let\'s ', 'note: ', 'tip: ',
+  ];
+  if (instructionPrefixes.some(p => lower.startsWith(p))) return false;
+
   const titleKeywords = ['murder', 'mystery', 'death', 'deadly', 'blood', 'killer', 'crime'];
   const startsWithThe = lower.startsWith('the ') || lower.startsWith('a ');
 

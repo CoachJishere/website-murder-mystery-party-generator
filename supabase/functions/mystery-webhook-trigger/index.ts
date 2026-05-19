@@ -30,6 +30,7 @@ const webhookUrl = Deno.env.get("WEBHOOK_URL") || "";
 // All locale translations of "Character List" section header + common variants
 const CHARACTER_LIST_HEADERS = [
   "Character List", "Characters", "Cast of Characters",
+  "Complete Character List", "COMPLETE CHARACTER LIST", "Full Character List",
   "Lista de Personajes", "Personajes",
   "Liste des personnages", "Personnages",
   "Charakterliste", "Charaktere",
@@ -59,7 +60,7 @@ function extractCharactersFromMessages(messages: any[], approvedMessageId?: stri
     h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   ).join('|');
   const sectionHeaderRegex = new RegExp(
-    `^#{2,3}\\s+(?:${headerAlternatives})(?:\\s*\\(\\d+\\s+.+?\\))?\\s*$`, 'im'
+    `^#{2,3}\\s+(?:${headerAlternatives})(?:\\s*\\(\\d+\\s+.+?\\))?[:\\s]*$`, 'im'
   );
 
   // Pattern for numbered character lines (multiple formats):
@@ -102,32 +103,38 @@ function extractCharactersFromMessages(messages: any[], approvedMessageId?: stri
     const content = latestMessageWithList.content || '';
     const headerMatch = content.match(sectionHeaderRegex);
 
-    console.log(`[CharExtract] Using header from latest list: "${headerMatch[0].trim()}"`);
-    const afterHeader = content.substring(headerMatch.index! + headerMatch[0].length);
-    const lines = afterHeader.split('\n');
-    let foundCharsInSection = false;
+    if (headerMatch) {
+      console.log(`[CharExtract] Using header from latest list: "${headerMatch[0].trim()}"`);
+      const afterHeader = content.substring(headerMatch.index! + headerMatch[0].length);
+      const lines = afterHeader.split('\n');
+      let foundCharsInSection = false;
 
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
 
-      const charMatch = trimmed.match(characterLineRegex);
-      if (charMatch) {
-        // Replace inner double quotes with single quotes to prevent JSON parsing
-        // errors in downstream Make.com scenarios that use string interpolation
-        const name = (charMatch[1] || charMatch[2]).trim().replace(/"/g, "'");
-        const description = charMatch[3].trim().replace(/"/g, "'");
-        charMap.set(name.toLowerCase(), { name, description });
-        foundCharsInSection = true;
-      } else if (foundCharsInSection) {
-        // Allow non-matching lines (subheadings, dividers, category labels)
-        // between character entries — only stop at a new ## section header
-        // that isn't another character list header
-        if (/^#{2,3}\s+/.test(trimmed) && !sectionHeaderRegex.test(trimmed)) {
-          break;
+        const charMatch = trimmed.match(characterLineRegex);
+        if (charMatch) {
+          // Replace inner double quotes with single quotes to prevent JSON parsing
+          // errors in downstream Make.com scenarios that use string interpolation
+          const name = (charMatch[1] || charMatch[2]).trim().replace(/"/g, "'");
+          const description = charMatch[3].trim().replace(/"/g, "'");
+          charMap.set(name.toLowerCase(), { name, description });
+          foundCharsInSection = true;
+        } else if (foundCharsInSection) {
+          // Allow non-matching lines (subheadings, dividers, category labels)
+          // between character entries — only stop at a new ## section header
+          // that isn't another character list header
+          if (/^#{2,3}\s+/.test(trimmed) && !sectionHeaderRegex.test(trimmed)) {
+            break;
+          }
+          // Otherwise skip and keep looking for more numbered characters
         }
-        // Otherwise skip and keep looking for more numbered characters
       }
+    } else {
+      // The approved/found message doesn't match sectionHeaderRegex — header variant
+      // not yet in CHARACTER_LIST_HEADERS. Secondary extraction will handle it.
+      console.warn(`[CharExtract] Message found but sectionHeaderRegex didn't match (non-standard header). Falling through to secondary extraction.`);
     }
   }
 
@@ -314,7 +321,7 @@ serve(async (req) => {
     // becomes the single source of truth — both for our local extraction and
     // for the parent webhook's prompt (which receives this as approvedConceptMessageId).
     if (!conversation.approved_concept_message_id && conversation.messages) {
-      const characterListRegex = /^#{2,3}\s+(?:Character List|Characters|Cast of Characters)/im;
+      const characterListRegex = /^#{2,3}\s+(?:Character List|Characters|Cast of Characters|Complete Character List|COMPLETE CHARACTER LIST|Full Character List)/im;
       const aiMessagesWithCharList = (conversation.messages as any[])
         .filter((m: any) => (m.role === 'assistant' || m.is_ai) && characterListRegex.test(m.content || ''))
         .sort((a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());

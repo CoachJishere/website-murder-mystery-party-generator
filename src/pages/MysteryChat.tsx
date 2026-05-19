@@ -81,14 +81,27 @@ const MysteryChatPage = () => {
                 is_ai: message.is_ai
             });
 
-            // If this is an AI message, try to extract a title and update the conversation
+            // If this is an AI message, try to extract a title and update the conversation.
+            // Only update when there's no real title yet — once a proper title is set,
+            // later AI messages (help text, recaps, etc.) shouldn't overwrite it.
             if (message.is_ai) {
                 const extractedTitle = extractTitleFromMessages([message]);
                 if (extractedTitle) {
-                    await supabase
+                    const { data: existing } = await supabase
                         .from("conversations")
-                        .update({ title: extractedTitle })
-                        .eq("id", id);
+                        .select("title")
+                        .eq("id", id)
+                        .single();
+                    const currentTitle = (existing?.title || "").trim();
+                    const isPlaceholder = !currentTitle ||
+                        currentTitle.toLowerCase().startsWith("untitled") ||
+                        currentTitle.toLowerCase().startsWith("new mystery");
+                    if (isPlaceholder) {
+                        await supabase
+                            .from("conversations")
+                            .update({ title: extractedTitle })
+                            .eq("id", id);
+                    }
                 }
             }
 
