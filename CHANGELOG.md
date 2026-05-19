@@ -2,6 +2,16 @@
 
 ## 2026-05-19
 
+### Improvement: `mystery-webhook-trigger` now widens to full conversation when the approved snapshot is too thin to be trusted
+
+- [supabase/functions/mystery-webhook-trigger/index.ts:395](supabase/functions/mystery-webhook-trigger/index.ts#L395) — added a sanity check around the "send the approved concept message" path. If `approved_concept_message_id` points at a message under 3KB while the full conversation is over 30KB AND >10× larger than the snapshot, we now switch to sending the full conversation as `conversationContent`. Deployed as version 112.
+- Why: Fotini's "Multiverse" mystery generated successfully on the first retry (after the 500 fixes) but the **plot didn't match** what she'd built over 304 messages. Root cause: `approved_concept_message_id` had been auto-snapshotted to a 1.8KB clean character-roster message; the full 312KB chat held every plot decision (killer = archaeologist, Void Essence poison, dimensional keystones, riddle system, etc.). Make.com got the right characters and an invented plot. The Madysn "Big Top" rationale for sending a single message still holds when the snapshot is comprehensive — this guard only fires when the ratio strongly suggests iterative plot work happened around/after the snapshot.
+- Customer recovery: hand-synthesized a comprehensive concept message (~13KB covering premise, killer + motive + method, all 17 suspects, round structure, key mechanics) and inserted it as a new assistant message in Fotini's conversation; re-pointed `approved_concept_message_id` at it; reset generation to resumable. She can retry from the UI and the parent will receive the locked-in plot.
+
+### Improvement: Structured error logging in `mystery-webhook-trigger` outer catch
+
+- [supabase/functions/mystery-webhook-trigger/index.ts:606](supabase/functions/mystery-webhook-trigger/index.ts#L606) — replaced the generic `'An error occurred processing your request'` 500 response with the actual error message + name, and log `message` + `stack` server-side. The earlier opaque catch cost ~30 min of triage on this morning's Fotini outage; the underlying TypeError was invisible.
+
 ### Fix: Eliminate silent 500s in `mystery-webhook-trigger` from null-deref on non-standard character-list headers
 
 - [supabase/functions/mystery-webhook-trigger/index.ts:106](supabase/functions/mystery-webhook-trigger/index.ts#L106) — wrapped the primary-extraction block in an `if (headerMatch)` guard. Previously, when `approved_concept_message_id` pointed at a message whose content `sectionHeaderRegex` couldn't match (or whose header used a phrasing not in `CHARACTER_LIST_HEADERS`), `headerMatch[0].trim()` threw `TypeError: Cannot read properties of null` and the function returned a generic 500. With the guard, control falls through to secondary extraction. Deployed as version 111.

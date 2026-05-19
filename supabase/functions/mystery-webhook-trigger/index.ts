@@ -381,18 +381,40 @@ serve(async (req) => {
       const approvedMsg = approvedId
         ? (conversation.messages as any[]).find((m: any) => m.id === approvedId)
         : null;
-      if (approvedMsg) {
+
+      // Sanity check: if the approved snapshot is suspiciously thin compared to the rest
+      // of the conversation, the user likely iterated extensively after the snapshot
+      // landed (or the snapshot is a character-roster-only message). Sending only the
+      // thin snapshot starves the parent's planning prompts of plot detail.
+      //
+      // Fotini's "Multiverse" mystery (May 19 2026): approved snapshot was a 1.8KB clean
+      // character roster; the full 304-message chat (312KB) held every plot decision —
+      // killer, motive, void essence poison, dimensional keystones, riddle system. Make.com
+      // got the right characters and an invented plot. Fix: detect that mismatch here and
+      // fall back to the full conversation.
+      const fullConvoLength = (conversation.messages as any[])
+        .reduce((sum: number, m: any) => sum + (m.content?.length || 0), 0);
+      const snapshotTooThin = approvedMsg
+        && approvedMsg.content.length < 3000
+        && fullConvoLength > 30000
+        && fullConvoLength > approvedMsg.content.length * 10;
+
+      if (approvedMsg && !snapshotTooThin) {
         // Single-source-of-truth path: just the locked-in concept message.
         conversationContent = `AI: ${approvedMsg.content}`;
         console.log(`[ConversationContent] Trimmed to approved concept message only (id=${approvedId}, ${approvedMsg.content.length} chars)`);
       } else {
-        // Fallback: full conversation
+        // Fallback: full conversation (either no snapshot, or snapshot is too thin to be trusted)
         conversationContent = (conversation.messages as any[])
           .map((msg: any) => {
             const role = msg.role === "assistant" ? "AI" : "User";
             return `${role}: ${msg.content}`;
           }).join("\n\n---\n\n");
-        console.log(`[ConversationContent] Sending full conversation (${conversationContent.length} chars, no approved snapshot found)`);
+        if (snapshotTooThin) {
+          console.warn(`[ConversationContent] Approved snapshot is thin (${approvedMsg.content.length} chars) vs full conversation (${fullConvoLength} chars) — using full conversation to preserve iterative plot detail`);
+        } else {
+          console.log(`[ConversationContent] Sending full conversation (${conversationContent.length} chars, no approved snapshot found)`);
+        }
       }
     }
 
@@ -582,19 +604,31 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error("Error processing webhook:", error);
-    
+    // Surface the actual error message + stack to the function logs so future
+    // bugs are debuggable. The May 19 2026 Fotini outage cost ~30 min of triage
+    // because the previous generic "An error occurred processing your request"
+    // hid a TypeError null-deref. Return the message to the caller too — the
+    // frontend already strips it from user-facing UI, so this is staff-debug
+    // info, not user-leaked data.
+    const errMessage = error instanceof Error ? error.message : String(error);
+    const errStack = error instanceof Error ? error.stack : undefined;
+    console.error("[mystery-webhook-trigger] Unhandled exception:", {
+      message: errMessage,
+      stack: errStack,
+    });
+
     return new Response(
       JSON.stringify({
         success: false,
-        error: 'An error occurred processing your request'
+        error: errMessage,
+        errorType: error instanceof Error ? error.name : "Unknown",
       }),
-      { 
-        status: 500, 
-        headers: { 
-          ...corsHeaders, 
-          "Content-Type": "application/json" 
-        } 
+      {
+        status: 500,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
       }
     );
   }
