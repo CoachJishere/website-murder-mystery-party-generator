@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 117 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 118 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -152,6 +152,7 @@ This index organizes 117 published guides by topic cluster. All guides are avail
 - [How to Fix Poor Murder Mystery Pacing](https://www.mysterymaker.party/blog/how-to-fix-poor-mystery-pacing-issues-master-the-art-of-murder-mystery-timing): Pacing separates a slog from an unforgettable mystery night. How to time your party so energy builds, guests stay engaged, and the reveal lands hard.
 - [Handling Costume and Prop Failures at Your Murder Mystery](https://www.mysterymaker.party/blog/how-to-fix-prop-and-costume-malfunctions-that-can-derail-your-murder-mystery): Quick solutions for costume tears, broken props, and wardrobe emergencies that can pull guests out of your mystery.
 - [Tech Problems at Mystery Parties: Fix Guide](https://www.mysterymaker.party/blog/how-to-fix-technology-problems-at-parties-essential-backup-plans-for-smooth-mystery-events): Handle audio failures, lighting problems, and tech emergencies without losing the mystery atmosphere.
+- [How to Balance Character Roles in a Mystery](https://www.mysterymaker.party/blog/how-to-fix-unbalanced-character-roles-creating-fair-and-engaging-mystery-characters-for-everyone): Design character roles where everyone has unique information and meaningful ways to participate in solving the mystery.
 - [How to Fix Unrealistic Murder Mystery Plots](https://www.mysterymaker.party/blog/how-to-fix-unrealistic-murder-mystery-plots-create-believable-storylines-that-captivate): Craft realistic murder mystery plots with logical motives, believable crime methods, and authentic character relationships that keep guests engaged.
 - [How to Fix Unsatisfying Mystery Endings](https://www.mysterymaker.party/blog/how-to-fix-unsatisfying-mystery-endings-create-reveals-that-actually-satisfy): Stop designing mystery endings that leave guests confused. Build conclusions where every clue connects and guests feel like actual detectives.
 
