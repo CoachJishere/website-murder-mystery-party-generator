@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-05-20
+
+### Fix: Purchase notification email now shows the AI-generated mystery title instead of the raw user-typed theme
+
+- [src/pages/MysteryPurchase.tsx](src/pages/MysteryPurchase.tsx) — before redirecting to Stripe, now syncs the extracted title (e.g. "The Audit Anomaly") back to `conversations.title` in the DB. Only overwrites if the stored title is still in the raw auto-generated "Theme - N Players" format.
+- Why: The conversation title is set at creation time from the user's raw chat input, giving long ugly strings like "Misappropriation of company funds to pay for a BBL - 5 Players". The AI names the mystery in its first response, and `MysteryPurchase.tsx` already extracts that name for display — but never saved it to the DB. The Stripe webhook fires ~seconds after redirect and reads the stale raw title to build the notification email subject line.
+
 ## 2026-05-19
 
 ### Improvement: `mystery-webhook-trigger` deletes existing characters before regenerating, preventing orphan-duplicate cruft

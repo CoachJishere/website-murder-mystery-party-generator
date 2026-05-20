@@ -410,6 +410,16 @@ const MysteryPurchase = () => {
         stripeUrl += `&prefilled_promo_code=${encodeURIComponent(discountInfo.promoCode)}`;
       }
 
+      // Persist the AI-generated title to DB so the purchase notification email is readable.
+      // Only overwrites if the stored title is still in the raw "Theme - N Players" format.
+      if (mystery?.title) {
+        await supabase
+          .from('conversations')
+          .update({ title: mystery.title })
+          .eq('id', id)
+          .like('title', '% Players');
+      }
+
       // Store conversation ID as fallback
       localStorage.setItem('pendingConversationId', id);
 
