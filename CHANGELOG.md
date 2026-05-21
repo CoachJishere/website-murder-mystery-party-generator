@@ -16,6 +16,11 @@
 - [ADR-0001](docs/adr/0001-record-architecture-decisions.md) establishes the practice itself, including the "if the tradeoffs would survive a code rewrite, it's an ADR" bar.
 - Why: CHANGELOG captures *what* changed; ADRs capture *why* and what was rejected. Recent decisions (queue vs. trigger for monitoring, per-user Stripe promo codes, single-email guest feedback) had no durable home for their reasoning.
 
+### Process: Backfilled two more ADRs (Tier 3)
+
+- [ADR-0011: Pinterest pipeline as a DB-status machine across three runners](docs/adr/0011-pinterest-pipeline-orchestration.md) — why creative authoring, image gen, and posting live in three different environments; `pinterest_pins` table as the contract between them; failure isolation and manual override via SQL.
+- [ADR-0012: Brand-leak sanitization at the xlsx → Supabase boundary](docs/adr/0012-xlsx-boundary-sanitization.md) — why cleanup lives at the single sync chokepoint rather than at the source or at each downstream consumer; the four regex blocks (A–D) mirror the 2026-05-10/11 SQL cleanup; last-updated date bumper turns manual freshness updates into a continuous signal.
+
 ### Process: Backfilled three more ADRs (Tier 2)
 
 - [ADR-0008: Snapshot-only context for mystery generation](docs/adr/0008-snapshot-only-context-for-generation.md) — why we send only the approved concept message rather than full conversation; the Madysn-vs-Fotini tension between pivot users and iterative-plot users; concrete revisit options. Status: Accepted, contested.
