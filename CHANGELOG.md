@@ -16,6 +16,15 @@
 - [ADR-0001](docs/adr/0001-record-architecture-decisions.md) establishes the practice itself, including the "if the tradeoffs would survive a code rewrite, it's an ADR" bar.
 - Why: CHANGELOG captures *what* changed; ADRs capture *why* and what was rejected. Recent decisions (queue vs. trigger for monitoring, per-user Stripe promo codes, single-email guest feedback) had no durable home for their reasoning.
 
+### Process: Backfilled five ADRs for prior architectural decisions
+
+- [ADR-0003: Generation monitoring via Postgres trigger + pg_cron sweep](docs/adr/0003-generation-monitoring.md) — why detection lives in DB triggers and not a queue or worker; mid-run RPC verification for Make.com; the 15-minute frontend timeout safety net.
+- [ADR-0004: Per-user single-use Stripe promo codes for the welcome discount](docs/adr/0004-welcome-discount-per-user-promo-codes.md) — why each user gets their own code rather than a shared coupon; server-enforced expiry; reminder cron shape.
+- [ADR-0005: Unify Make.com child scenarios into one](docs/adr/0005-unified-child-scenario.md) — why the two style-specific children were collapsed; loud failure preferred over silent half-outage; the "one scenario to keep on" operational rule.
+- [ADR-0006: Guest feedback policy — one email at T+14d, hosts go to Trustpilot separately](docs/adr/0006-guest-feedback-policy.md) — why no email sequences to guests; send-anchored timing in the absence of a party date; real-time Trustpilot prompt on positive guest feedback.
+- [ADR-0007: Email localization via per-function inlined locale tables](docs/adr/0007-email-localization-inlined-locale-tables.md) — why each function inlines its own `Record<Locale, ...>`; the cold-start failure mode that ruled out centralized runtime fetch; `profiles.language` as cron-time source of truth.
+- Each ADR is dated today but flags the original decision month in its Status header, so the historical timing isn't lost.
+
 ### Content: KO + ZH-CN draft queue fully regenerated — rot backlog at zero
 
 - Completed regeneration of all 403 rotted `ko` + `zh-cn` drafts that the rot-signal gate had been holding back. Cells were processed via 42 batched prompts (`scripts/generate-regen-prompts.mjs --batch-size=10`), each batch a single Claude Code conversation handling 10 cells sequentially with per-cell smoke-test, PATCH, and re-verify.
