@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-05-21
+
+### Content: KO + ZH-CN draft queue fully regenerated — rot backlog at zero
+
+- Completed regeneration of all 403 rotted `ko` + `zh-cn` drafts that the rot-signal gate had been holding back. Cells were processed via 42 batched prompts (`scripts/generate-regen-prompts.mjs --batch-size=10`), each batch a single Claude Code conversation handling 10 cells sequentially with per-cell smoke-test, PATCH, and re-verify.
+- Post-regeneration audit (`node scripts/audit-rot-signals.mjs --status=draft`): **0 failures across 607 draft rows** (306 ko + 301 zh-cn). Median pass length 7867 ko / 5643 zh-cn — above floors, lighter than the regenerated published cells (which had more careful per-cell attention).
+- Published queue cross-check (`--status=published`): still **0 failures across 235 rows** (115 ko + 120 zh-cn), medians unchanged within noise. No regression from draft-side work bleeding into already-shipped content.
+- Total rot cleared since the gate was introduced 2026-05-10: **439 cells** (36 published 2026-05-11 + 403 drafts across 2026-05-11 → 2026-05-21).
+- Forward state: rot-gate in the daily-publish workflow is now effectively a no-op for healthy queue state. It continues to silently catch any future MT regressions, so this state is self-sustaining without further manual intervention.
+
+### Improvement: `mystery-webhook-trigger` now bundles per-character chat excerpts for child scenarios
+
+- [supabase/functions/mystery-webhook-trigger/index.ts](supabase/functions/mystery-webhook-trigger/index.ts) — for each extracted character, the function now scans the full conversation for messages mentioning that character by name (case-insensitive word-boundary on each substantive name part) and bundles those messages into a new `characterExcerpts` payload field. Capped at 30KB per character (~7.5K tokens), prefers most-recent messages.
+- Why: child scenarios currently receive only the character's one-line description from the parent, so character-specific design detail (e.g. Fotini's 10-secret bribe/riddle system for Klint, spread across many messages) is lost by the time the child generates the character sheet. Bundling per-character excerpts gives each child the user's actual design intent for that character.
+- Pairs with Option 2 (Make.com parent → child config change to forward `conversationContent` as full backup context). Name matching alone misses implicit references like "the witch's apprentice"; full conversation in the child prompt catches those.
+- Payload: new `characterExcerpts` field, JSON-stringified map of `{ characterName: ["User: ...", "AI: ...", ...] }`. Parent Make.com scenario passes the relevant entry to each child trigger.
+
 ## 2026-05-20
 
 ### Fix: Purchase notification email now shows the AI-generated mystery title instead of the raw user-typed theme
