@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -24,11 +24,13 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useTranslation } from 'react-i18next';
 import { trackEvent } from '@/lib/analytics';
+import { supabase } from "@/integrations/supabase/client";
 
 const Support = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState("faqs");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const honeypotRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
   
   const formSchema = z.object({
@@ -52,9 +54,8 @@ const Support = () => {
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
-    
+
     try {
-      // Track form submission
       trackEvent('contact_form_submit', {
         form_name: 'support_contact',
         form_data: {
@@ -63,23 +64,32 @@ const Support = () => {
           email_domain: data.email.split('@')[1] || ''
         }
       });
-      
-      // In a real implementation, this would send an email or create a database entry
-      console.log("Form submitted:", data);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
+      const { data: result, error } = await supabase.functions.invoke('submit-contact-form', {
+        body: {
+          name: data.name,
+          email: data.email,
+          subject: data.subject,
+          message: data.message,
+          language: i18n.language || 'en',
+          website: honeypotRef.current?.value || '',
+        },
+      });
+
+      if (error || !result?.ok) {
+        const errCode = result?.error || error?.message || 'unknown';
+        throw new Error(errCode);
+      }
+
       toast.success(t('supportPage.contact.form.success'));
       form.reset();
-      
-      // Track successful form submission
+      if (honeypotRef.current) honeypotRef.current.value = '';
+
       trackEvent('contact_form_success', { form_name: 'support_contact' });
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error(t('supportPage.contact.form.error'));
-      
-      // Track form submission error
+
       trackEvent('contact_form_error', {
         form_name: 'support_contact',
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -243,6 +253,18 @@ const Support = () => {
                   
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                      {/* Honeypot — hidden from humans, bots fill it. See ADR-0002. */}
+                      <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}>
+                        <label htmlFor="contact-website">Website</label>
+                        <input
+                          ref={honeypotRef}
+                          id="contact-website"
+                          name="website"
+                          type="text"
+                          tabIndex={-1}
+                          autoComplete="off"
+                        />
+                      </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormField
                           control={form.control}

@@ -2,6 +2,20 @@
 
 ## 2026-05-21
 
+### Fix: Contact form on `/support` (and `/contact`) now actually delivers messages
+
+- Previously [src/pages/Support.tsx:53-89](src/pages/Support.tsx#L53-L89) was a stub: `onSubmit` tracked a GA event, `console.log`-ed the form data, waited 1 second, and showed a success toast. No email, no DB row. A customer's multiple attempts to contact support were silently lost.
+- Replaced with a real pipeline: form → new `submit-contact-form` edge function (validation + honeypot + 5-per-hour IP rate limit + server-side JWT user_id capture) → new `contact_messages` table (durable storage with admin RLS) → `on_contact_message_insert` trigger → new `notify-contact-message` edge function → support@ notification + localized auto-reply to the submitter (13 languages, reusing the per-function inlined locale-table pattern from the May 2026 email-localization work).
+- Honeypot added as hidden `website` field (visually offscreen, `tabIndex={-1}`). No CAPTCHA — escalation criteria documented in ADR-0002.
+- Architecture, rejected alternatives, and revisit triggers captured in [docs/adr/0002-contact-form-architecture.md](docs/adr/0002-contact-form-architecture.md).
+- End-to-end smoke test passed: submission via curl returned 200, row landed with correct fields, marked resolved in DB.
+
+### Process: Adopted lightweight ADR practice for capturing architectural decisions
+
+- New [docs/adr/](docs/adr/) directory with Michael-Nygard-format ADRs (Context, Decision, Consequences, Status).
+- [ADR-0001](docs/adr/0001-record-architecture-decisions.md) establishes the practice itself, including the "if the tradeoffs would survive a code rewrite, it's an ADR" bar.
+- Why: CHANGELOG captures *what* changed; ADRs capture *why* and what was rejected. Recent decisions (queue vs. trigger for monitoring, per-user Stripe promo codes, single-email guest feedback) had no durable home for their reasoning.
+
 ### Content: KO + ZH-CN draft queue fully regenerated — rot backlog at zero
 
 - Completed regeneration of all 403 rotted `ko` + `zh-cn` drafts that the rot-signal gate had been holding back. Cells were processed via 42 batched prompts (`scripts/generate-regen-prompts.mjs --batch-size=10`), each batch a single Claude Code conversation handling 10 cells sequentially with per-cell smoke-test, PATCH, and re-verify.
