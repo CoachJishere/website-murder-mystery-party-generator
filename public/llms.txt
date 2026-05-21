@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 119 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 120 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -156,6 +156,7 @@ This index organizes 119 published guides by topic cluster. All guides are avail
 - [When a Guest Won't Engage at Your Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-fix-uncooperative-guest-behavior-at-murder-mystery-parties): Handle uncooperative guests without embarrassment. Practical techniques for redirecting difficult behavior while keeping the mystery on track.
 - [How to Fix Unrealistic Murder Mystery Plots](https://www.mysterymaker.party/blog/how-to-fix-unrealistic-murder-mystery-plots-create-believable-storylines-that-captivate): Craft realistic murder mystery plots with logical motives, believable crime methods, and authentic character relationships that keep guests engaged.
 - [How to Fix Unsatisfying Mystery Endings](https://www.mysterymaker.party/blog/how-to-fix-unsatisfying-mystery-endings-create-reveals-that-actually-satisfy): Stop designing mystery endings that leave guests confused. Build conclusions where every clue connects and guests feel like actual detectives.
+- [Venue Decoration Disasters: How to Fix Them](https://www.mysterymaker.party/blog/how-to-fix-venue-decoration-disasters-change-spaces-successfully-without-breaking-budgets): How to create mystery atmosphere when decorations fail, budgets shrink, or venue rules block your plans. Practical workarounds that actually work.
 
 ## Kits, Tools & Comparisons
 
