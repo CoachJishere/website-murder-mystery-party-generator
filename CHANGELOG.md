@@ -16,6 +16,12 @@
 - [ADR-0001](docs/adr/0001-record-architecture-decisions.md) establishes the practice itself, including the "if the tradeoffs would survive a code rewrite, it's an ADR" bar.
 - Why: CHANGELOG captures *what* changed; ADRs capture *why* and what was rejected. Recent decisions (queue vs. trigger for monitoring, per-user Stripe promo codes, single-email guest feedback) had no durable home for their reasoning.
 
+### Process: Backfilled three more ADRs (Tier 2)
+
+- [ADR-0008: Snapshot-only context for mystery generation](docs/adr/0008-snapshot-only-context-for-generation.md) — why we send only the approved concept message rather than full conversation; the Madysn-vs-Fotini tension between pivot users and iterative-plot users; concrete revisit options. Status: Accepted, contested.
+- [ADR-0009: Auto-sync `player_count` from extracted characters](docs/adr/0009-auto-sync-player-count.md) — why the form value is treated as upstream artifact rather than ground truth; why mismatches no longer return 400; the asymmetric-trust premise.
+- [ADR-0010: Per-slug rot-signal gate in the daily-publish workflow](docs/adr/0010-rot-signal-gate-daily-publish.md) — the five rot signals encoded in `scripts/check-rot-signals.mjs`; asymmetric tolerance (false positives recoverable, false negatives not); why we kept the gate even after backlog clearance.
+
 ### Process: Backfilled five ADRs for prior architectural decisions
 
 - [ADR-0003: Generation monitoring via Postgres trigger + pg_cron sweep](docs/adr/0003-generation-monitoring.md) — why detection lives in DB triggers and not a queue or worker; mid-run RPC verification for Make.com; the 15-minute frontend timeout safety net.
