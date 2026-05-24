@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 122 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 123 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -10,6 +10,7 @@ This index organizes 122 published guides by topic cluster. All guides are avail
 ## How to Host a Murder Mystery (by Theme)
 
 - [How to Host a Cyberpunk Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-host-a-cyberpunk-murder-mystery-party-hacking-into-digital-crime): Jack into the future with high-tech cyberpunk murder mystery parties featuring hackers, corporations, and digital crimes.
+- [How to Host a Dragon Lair Murder Mystery](https://www.mysterymaker.party/blog/how-to-host-a-dragon-lair-murder-mystery-epic-fantasy-adventures-with-knights-wizards-and-mythical-creatures): Enter the fantasy realm with epic dragon lair murder mystery parties featuring knights, wizards, and mythical creatures.
 - [How to Host a Fairy Tale Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-host-a-fairy-tale-murder-mystery-party-once-upon-a-crime): Fairy tale murder mystery party — turn storybook characters into suspects with dark secrets and adult-level investigation. Happily ever after's not guaranteed.
 - [How to Host a Hollywood Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-host-a-hollywood-murder-mystery-party): Create Hollywood murder mystery parties that fit your actual friends, not generic celebrity roles.
 - [How to Host a Medieval Castle Murder Mystery](https://www.mysterymaker.party/blog/how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue): Set up a medieval castle murder mystery for your group — feudal characters, castle investigation spaces, and period atmosphere with no history degree required.
