@@ -57,6 +57,9 @@ Blog Database - Master.csv
 !scripts/check-rot-signals.mjs
 !scripts/audit-rot-signals.mjs
 !scripts/generate-regen-prompts.mjs
+!scripts/check-title-rot.mjs
+!scripts/audit-title-rot.mjs
+!scripts/generate-title-regen-prompts.mjs
 !scripts/generate-email-wordmark.mjs
 *.sql
 *-REPORT*.md

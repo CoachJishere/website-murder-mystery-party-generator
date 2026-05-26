@@ -1,5 +1,54 @@
 # Changelog
 
+## 2026-05-26
+
+### Improvement: title + meta rot cleared in ko + zh-cn (842 rows, 0 failures)
+
+- Audited `title` and `meta_description` columns for all 421 ko + 421 zh-cn blog rows — the first time these columns were checked. The content column was cleaned in May 2026; these had never been touched.
+- Built `scripts/check-title-rot.mjs` (gate library: `checkTitle` + `checkMeta`, plus CLI spot-check mode), `scripts/audit-title-rot.mjs` (paginated sweep + CSV emitter), and `scripts/generate-title-regen-prompts.mjs` (batched per-(slug, lang) regen prompts, title+meta regenerated together in one PATCH per cell).
+- Audit found 808 failing (slug, lang) cells: ko 387/421 (92% at least one column failing), zh-cn 421/421 (100%). Dominant failure modes: ZH-CN metas truncated to ~35–50 chars (gate floor 80), ZH-CN titles ~10–14 chars (floor 20); KO metas and titles similarly short; plus ~6 KO titles ending in declarative `-니다`.
+- Fanned out 82 batch prompts (10 cells each, single-language batches) in fresh Claude Code conversations. Each cell: fetch EN source → draft fresh title+meta → smoke-test gate → PATCH both columns → re-verify.
+- Final audit: **0 failures across all 842 rows** (ko 0/421, zh-cn 0/421).
+
+## 2026-05-24
+
+### Improvement: zh-cn title + meta regeneration — batch 016 (10 cells)
+
+- Regenerated `title` and `meta_description` for 10 Simplified Chinese rows that were failing the title-rot gate at `scripts/check-title-rot.mjs` (length < 20 / ratio < 0.4 for title; length < 80 / ratio < 0.4 for meta).
+- Slugs: `arabian-nights-theme`, `art-heist-theme`, `asylum-horror`, `at-a-hotel`, `at-a-winery`, `backdrop-photo-booth-ideas`, `cleanup-guide`, `clue-board-game-theme`, `clue-ideas`, `decorations-ideas`.
+- Each cell: fetched EN source → drafted fresh ZH-CN title (30–33 chars) + meta (119–135 chars) → smoke-tested against gate → PATCHed in one row update → re-verified via `node scripts/check-title-rot.mjs <slug>`. All 10 cells PASS.
+- Dominant rot pattern: truncated metas (~35–54 chars vs required ≥ 80) and short titles (~10–20 chars vs required ≥ 20 + ratio ≥ 0.4). Replacements reach healthy SEO bands.
+
+## 2026-05-22
+
+### Improvement: Crash-safety — early upsert of `detective_script` + `evidence_cards` in all 4 mystery-style routes (Parent39)
+
+- Before: each route generated Detective/Investigator Script (5000/5004/5008/5012) and Evidence Cards (5001/5005/5009/5013) early, but persisted them only at the late upsert (185 / 100 / 2435 / 2471) — which fires AFTER Image Prompts → 3× Imagen 4 image-generation calls → Store Evidence Images. Any failure in that 5-module image chain (rate limits, Imagen API blip, storage error) silently lost the Claude-generated text.
+- After: [temp-files/MM Live - Parent39.blueprint.json](temp-files/MM Live - Parent39.blueprint.json) adds a new `supabase:upsertARecord` module (id 15300/15301/15302/15303 per route) immediately after each route's Evidence Cards Claude call. Persists `detective_script` + `evidence_cards` with `generation_status` progress=70 "Saved detective script & evidence cards; generating images...". Existing late upserts stay put and remain authoritative for `evidence_card_images` and final completion status — idempotent overwrite of the text fields.
+- No risk surface change: the new upsert is purely additive; if Imagen calls succeed (the common path), the late upsert re-writes the same fields with identical content.
+- Same pattern as the existing early upsert 178 (saves master_context the moment it's ready, before the 32-child iterator). Inspired by Stacy "Moonlight Social Club" debug session — her failure was earlier in the flow, but the question "should we persist sooner" applied cleanly to this gap too.
+
+### Fix: Per-character context now actually reaches child Make.com scenarios (v116 + Parent38)
+
+- The original v115 + Parent36 implementation introduced new `characterExcerpts` + `conversationContent` fields and shipped to production, but the very first paying customer (Stacy "Moonlight Social Club", 32 players) hit `400 Bad Request — Bad control character in string literal in JSON at position 446` on every child trigger. Joined chat content carries literal LF / `"` / `\`, and Make.com's "raw JSON body" mode does NOT auto-escape computed expressions (`{{join(...)}}`, `{{get(...; key)}}`) — only short single-field references like `{{179.description}}` survive intact.
+- First fix attempt (Parent37): wrapped the IML expression in a chained `replace()` to escape `\` → `\\`, `"` → `\"`, LF → `\n`. The newline + backslash escapes worked, but the quote-escape `replace(value; "\""; "\\\"")` did not behave as expected — Make.com IML's string-literal handling of `\"` produced an unescaped `"` inside the value and the body broke again with a different error (`Expected ',' or '}' after property value at position 569`).
+- Resolution shipped in [supabase/functions/mystery-webhook-trigger/index.ts:578-608](supabase/functions/mystery-webhook-trigger/index.ts#L578-L608) (deployed as v116): added a `jsonEscape()` helper in the edge function and two new payload fields — `characterExcerptsEscaped` (per-character pre-escaped joined string) and `conversationContentEscaped` (full chat pre-escaped). The original raw fields are preserved for callers that still need them (e.g. the Master Doc Claude prompt where literal LF is desired).
+- Parent38 blueprint at [temp-files/MM Live - Parent38.blueprint.json](temp-files/MM Live - Parent38.blueprint.json) drops the IML escape chain entirely. ParseJSON module 15200 now reads `{{63.characterExcerptsEscaped}}`; each child HTTP trigger body uses simple `{{get(15200; <iterator>.<name>)}}` and `{{63.conversationContentEscaped}}` substitutions. No more IML escape semantics to reason about — escaping happens once, server-side.
+- Verified end-to-end on Stacy's regen: 32/32 characters generated against Parent38, no HTTP 400s in the Make.com execution log.
+
+### Improvement: Audited the other 10 languages for MT rot; generated regeneration prompts
+
+- The rot-signal gate at [scripts/check-rot-signals.mjs](scripts/check-rot-signals.mjs) only covered `ko` + `zh-cn`. Same upstream MT pipeline produced all 13 languages, so the other 10 (`es`, `fr`, `de`, `it`, `pt`, `nl`, `da`, `sv`, `fi`, `ja`) were never quantitatively audited.
+- New [scripts/audit-multilang-rot.mjs](scripts/audit-multilang-rot.mjs) runs four language-agnostic heuristics (length floor vs EN, brand-as-H2, URL-as-H2, English-stopword cluster in H2) plus a non-Latin-script-only "English-only H2" check. First-pass attempt used "5+ consecutive Latin words" as a calque signal; that hit 90%+ false positives on Romance/Germanic langs because those languages use the Latin alphabet for their native vocabulary. Replaced with an English-only-stopword regex using Unicode-aware boundaries (JS `\b` is ASCII-only and was matching `\bher\b` inside `heróis`).
+- Audit (CSV at [temp-files/multilang-rot-audit-2026-05-21T21-29-53.csv](temp-files/multilang-rot-audit-2026-05-21T21-29-53.csv)) found:
+  - `ja`: 23.0% fail rate — same MT rot pattern as `ko`/`zh-cn` (untranslated `## FAQ` headings, length truncation).
+  - `de` 9.7%, `es` 9.3% — mostly length truncation, not calque.
+  - `fr`/`it`/`nl`/`pt`/`fi` at 3–6% — small but real.
+  - `sv` 1.7%, `da` 0.7% — basically clean.
+- New [scripts/generate-multilang-regen-prompts.mjs](scripts/generate-multilang-regen-prompts.mjs) emits per-language batched prompt files (10 cells/batch, worst-rot-first) at [temp-files/regen-prompts/](temp-files/regen-prompts/). Each prompt inlines the smoke-test heuristic JS since the gate doesn't yet cover these languages. 262 cells across 31 batches; ja gets heavier anti-rot style rules matching the `ko`/`zh-cn` regen pattern, Romance/Germanic langs get lighter style guidance since rot is dominantly truncation.
+- Old `ko`/`zh-cn` batch files removed from `temp-files/regen-prompts/` (those passes are complete; directory now holds only the new multilang batches).
+- Gate extension and workflow YAML changes deliberately deferred — regenerate cells first, extend the gate after the new languages are clean, to avoid blocking the daily publish on cells we're already planning to fix.
+
 ## 2026-05-21
 
 ### Fix: Contact form on `/support` (and `/contact`) now actually delivers messages
