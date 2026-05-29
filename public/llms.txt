@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 126 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 127 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -17,6 +17,7 @@ This index organizes 126 published guides by topic cluster. All guides are avail
 - [How to Host a Hollywood Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-host-a-hollywood-murder-mystery-party): Create Hollywood murder mystery parties that fit your actual friends, not generic celebrity roles.
 - [How to Host a Mad Scientist Murder Mystery](https://www.mysterymaker.party/blog/how-to-host-a-mad-scientist-murder-mystery-laboratory-adventures-with-scientific-discoveries-gone-wrong): Experiment with danger in laboratory murder mystery parties featuring crazy inventors and scientific discoveries gone wrong.
 - [How to Host a Medieval Castle Murder Mystery](https://www.mysterymaker.party/blog/how-to-host-a-medieval-castle-murder-mystery-rule-your-realm-with-royal-intrigue): Set up a medieval castle murder mystery for your group — feudal characters, castle investigation spaces, and period atmosphere with no history degree required.
+- [How to Host a Post-Apocalyptic Murder Mystery](https://www.mysterymaker.party/blog/how-to-host-a-post-apocalyptic-murder-mystery-survive-the-wasteland-while-solving-murders): Survive the wasteland while solving murders in post-apocalyptic mystery parties featuring survivors and scarce resources.
 - [How to Host a Prohibition Era Murder Mystery](https://www.mysterymaker.party/blog/how-to-host-a-prohibition-era-murder-mystery-bootleg-your-way-to-excitement): Bootleg your way to excitement with authentic prohibition murder mystery parties featuring speakeasies and smugglers.
 - [How to Host a Space Station Murder Mystery](https://www.mysterymaker.party/blog/how-to-host-a-space-station-murder-mystery): Build a custom space station murder mystery where your friends become the stars of their own sci-fi thriller, not generic astronauts.
 - [How to Host a Steampunk Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-host-a-steampunk-murder-mystery-party-gear-up-for-victorian-sci-fi-crime): Mix Victorian elegance with steam-powered tech in a murder mystery where brass gears, inventor rivalries, and mechanical evidence drive the case.
