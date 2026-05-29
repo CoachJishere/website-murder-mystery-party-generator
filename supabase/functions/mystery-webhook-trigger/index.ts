@@ -513,6 +513,100 @@ serve(async (req) => {
       playerCount = extractedCount;
     }
 
+    // Per-character chat excerpts: for each extracted character, bundle the chat
+    // messages that mention them by name. The parent scenario passes a character's
+    // excerpts to its child scenario so the child has the user's specific design
+    // intent for that character — not just the one-line role description.
+    //
+    // Why: Fotini's "Multiverse" (May 19 2026) — she designed a 10-secret
+    // bribe/riddle system for Klint across many messages. The child generating
+    // Klint's sheet only received his one-line description from the parent, so
+    // the riddle system was invented from scratch (and lost most of the design).
+    //
+    // Matching: case-insensitive word-boundary on each substantive name part
+    // (first name, last name, nickname >= 3 chars). Misses implicit references
+    // like "the witch's apprentice" — that's why Option 2 (full conversationContent
+    // forwarded to child scenarios in Make.com) is the backup safety net.
+    //
+    // Size cap: 30KB per character (~7.5K tokens) — Haiku 4.5 has plenty of room
+    // for that plus the standard child prompt; prefer most-recent messages since
+    // they hold the most refined design decisions.
+    const characterExcerpts: Record<string, string[]> = {};
+    if (extractedCharacters && conversation.messages) {
+      const MAX_EXCERPT_BYTES_PER_CHAR = 30000;
+      for (const char of extractedCharacters) {
+        const nameAliases = char.name
+          .split(/[\s'’"]+/)
+          .map((s: string) => s.replace(/[^\p{L}\p{N}]/gu, ''))
+          .filter((s: string) => s.length >= 3);
+
+        if (nameAliases.length === 0) {
+          characterExcerpts[char.name] = [];
+          continue;
+        }
+
+        const aliasPattern = new RegExp(
+          `\\b(?:${nameAliases.map((a: string) => a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`,
+          'i'
+        );
+
+        const matches: { content: string; role: string }[] = [];
+        for (const msg of conversation.messages as any[]) {
+          const content = msg.content || '';
+          if (aliasPattern.test(content)) {
+            matches.push({
+              content,
+              role: msg.role === 'assistant' || msg.is_ai ? 'AI' : 'User',
+            });
+          }
+        }
+
+        const excerpts: string[] = [];
+        let totalBytes = 0;
+        for (let i = matches.length - 1; i >= 0; i--) {
+          const formatted = `${matches[i].role}: ${matches[i].content}`;
+          if (totalBytes + formatted.length > MAX_EXCERPT_BYTES_PER_CHAR) break;
+          excerpts.unshift(formatted);
+          totalBytes += formatted.length;
+        }
+
+        characterExcerpts[char.name] = excerpts;
+        console.log(`[Excerpts] ${char.name}: ${excerpts.length} messages (${totalBytes} chars) from ${matches.length} total matches`);
+      }
+    }
+
+    // JSON-escape strings BEFORE handing to Make.com. Make.com's raw HTTP body
+    // type doesn't auto-escape computed expressions (or substring()/get()
+    // results) when substituting into a JSON template — only direct field
+    // references with short content survive intact. Multi-line chat carries
+    // literal LF, ", and \ that break the body JSON.
+    //
+    // Stacy "Moonlight Social Club" (Parent v36 first run): "Bad control
+    // character at position 446" — unescaped LF in joined excerpts.
+    // Stacy retry (Parent v37 with IML escape chain): "Expected ',' or '}'
+    // at position 569" — IML's "\"" quote-escape didn't behave as expected,
+    // leaving an unescaped " inside the value that closed the JSON string.
+    //
+    // Fix: pre-escape here and ship via NEW fields so the body template can
+    // just substitute `{{...Escaped}}` without IML wrapping. The original
+    // `characterExcerpts` and `conversationContent` fields are preserved for
+    // any caller that still uses the raw form (e.g. the Master Doc Claude
+    // prompt which substitutes conversationContent into prose, where literal
+    // LF is desired).
+    function jsonEscape(s: string): string {
+      return s
+        .replace(/\\/g, "\\\\")
+        .replace(/"/g, "\\\"")
+        .replace(/\n/g, "\\n")
+        .replace(/\r/g, "\\r")
+        .replace(/\t/g, "\\t");
+    }
+    const characterExcerptsEscaped: Record<string, string> = {};
+    for (const [name, msgs] of Object.entries(characterExcerpts)) {
+      characterExcerptsEscaped[name] = jsonEscape(msgs.join("\n---\n"));
+    }
+    const conversationContentEscaped = jsonEscape(conversationContent);
+
     // Build individual message fields for Make.com
     const messageFields: any = {};
     conversation.messages.forEach((msg: any, index: number) => {
@@ -524,6 +618,9 @@ serve(async (req) => {
     const webhookPayload = {
       // Put critical fields FIRST (before ...messageFields which can be 600+ fields)
       extractedCharacters: extractedCharacters ? JSON.stringify(extractedCharacters) : "[]",
+      characterExcerpts: JSON.stringify(characterExcerpts),
+      characterExcerptsEscaped: JSON.stringify(characterExcerptsEscaped),
+      conversationContentEscaped,
       extractionMethod,
       model: "claude-haiku-4-5-20251001",
       max_tokens: 4000,

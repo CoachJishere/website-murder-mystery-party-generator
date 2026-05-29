@@ -23,8 +23,20 @@
  * Prompt caching reuses the per-language system prompt across batches.
  */
 import Anthropic from '@anthropic-ai/sdk';
-import { writeFileSync } from 'fs';
+import { writeFileSync, existsSync, readFileSync } from 'fs';
 import { createClient } from './_supabase-node.mjs';
+
+// Lightweight .env loader — keeps the script runnable on a fresh checkout
+// without adding `dotenv` as a dep. Existing process.env wins.
+if (existsSync('.env')) {
+  for (const line of readFileSync('.env', 'utf8').split('\n')) {
+    const m = line.match(/^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*)\s*$/);
+    if (!m) continue;
+    const [, k, raw] = m;
+    if (process.env[k]) continue;
+    process.env[k] = raw.replace(/^['"]|['"]$/g, '');
+  }
+}
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, a, i, arr) => {
@@ -33,8 +45,10 @@ const args = Object.fromEntries(
   }, [])
 );
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+// Accept either the bare names or the VITE-prefixed / ROLE-suffixed ones
+// the rest of the project uses, whichever the user has set.
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const MODEL = args.model || 'claude-opus-4-7';
 const BATCH_SIZE = 25;

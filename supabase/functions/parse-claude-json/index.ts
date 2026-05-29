@@ -114,9 +114,28 @@ serve(async (req) => {
       }), { status: 422, headers: responseHeaders });
     }
 
+    // Defense-in-depth: if the parsed object looks like image-prompt output
+    // (top-level `round2` / `round3` / `round4` string fields), strip the two
+    // JSON-breaking chars from those values. Downstream, Make.com's Imagen HTTP
+    // modules embed `{{...round2}}` directly into a `jsonStringBodyContent`
+    // template; any literal `"` or `\` in the value breaks the resulting JSON
+    // body. The parent scenario's prompt already instructs Claude to avoid
+    // double quotes, but this sanitization makes a Claude slip survivable.
+    // Verified safe against child scenarios — none produce top-level
+    // round2/3/4 keys (they use `description`, `background`, `relationships`,
+    // `round2_innocent`, etc. — all unaffected by this check).
+    const data = result.data;
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      for (const key of ['round2', 'round3', 'round4']) {
+        if (typeof data[key] === 'string') {
+          data[key] = data[key].replace(/"/g, "'").replace(/\\/g, '');
+        }
+      }
+    }
+
     // On success we return the parsed object as the top-level body so Make.com's
     // HTTP module exposes each key directly (e.g. {{moduleId.rumors}}).
-    return new Response(JSON.stringify(result.data), { headers: responseHeaders });
+    return new Response(JSON.stringify(data), { headers: responseHeaders });
 
   } catch (error) {
     return new Response(JSON.stringify({ error: (error as Error).message }), {
