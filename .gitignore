@@ -60,6 +60,7 @@ Blog Database - Master.csv
 !scripts/generate-regen-prompts.mjs
 !scripts/check-title-rot.mjs
 !scripts/audit-title-rot.mjs
+!scripts/audit-sitemap-urls.mjs
 !scripts/generate-title-regen-prompts.mjs
 !scripts/generate-email-wordmark.mjs
 !scripts/pinterest/**/*.mjs
