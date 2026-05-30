@@ -2,6 +2,21 @@
 
 ## 2026-05-30
 
+### Improvement: CTR rewrites — titles + meta descriptions on 6 page-1 zero-click blog posts + 1 keyword fix
+
+- GSC Pages export for the last 89 days surfaced 6 EN blog posts ranking on page 1 (positions 5-9) with 100+ impressions each and **zero clicks**. That's a title/snippet problem, not a ranking or quality problem. Per-cell rewrites via Supabase, EN-only.
+- Voice guidance: match Jonathan's existing tone — direct, second-person, slightly skeptical of generic options, calls out the bad approach, "actually" as a softener.
+- **`how-to-fix-confusing-murder-mystery-clues`** (248 imp, pos 7.17): kept title, rewrote meta to lead with the diagnostic ("tuned to the wrong group" framing).
+- **`how-long-should-murder-mystery-party-last`** (216 imp, pos 8.25): kept title, rewrote meta to lead with the actual answer ("Most run 2-4 hours") before a featured snippet can steal the click.
+- **`5-royal-palace-murder-mystery-themes-...`** (172 imp, pos 7.01): added the "5" to the title (slug starts with it, title didn't), rewrote meta with concrete theme list (succession crises, royal scandals, crown conspiracies).
+- **`murder-mystery-party-for-corporate-events`** (138 imp, pos 8.97): retitled "Corporate Murder Mystery That Actually Works" (was the query verbatim, no hook); meta already in voice — kept.
+- **`how-to-fix-group-dynamics-problems`** (123 imp, pos 6.38): retitled to match "how to fix" query pattern (was "When Group Dynamics Fall Apart…"), rewrote meta with concrete failure modes ("loud guests dominating, quiet ones disengaging").
+- **`detective-murder-mystery-themes-...`** (109 imp, pos 7.93): added "5 … & Setups" to bone-thin title; meta now names the 5 archetypes from the content (PI, amateur sleuth, consulting, accidental, obsessive).
+- **`best-murder-mystery-party-games-review`** (1,682 imp, pos 24.08): one-word keyword fix — added "Party" to the title ("Best Murder Mystery Party Games: 2026 Reviews"). Page 3 ranking is a content/links problem; title match-the-query was a free improvement.
+- Expected impact when prerender + deploy lands (next daily-publish run): CTR on the 6 page-1 posts should lift from 0% to ~2-4%, surfacing ~20-40 clicks/month immediately. The keyword fix on `best-mmp-games-review` is the longer-term lottery ticket — if Google decides it now better matches "best murder mystery party games" queries, position could climb meaningfully.
+- Non-EN translations not touched. Pending Finding 5 of [`00_INBOX/seo-traffic-analysis-2026-05-30-mystery-maker.md`](../../../Obsidian%20Vault/00_INBOX/seo-traffic-analysis-2026-05-30-mystery-maker.md) — re-evaluate 2026-07-01 whether non-EN polish work is paying off before investing more.
+- Strategic decision surfaced but not auto-applied: `office-teams` (736 imp, pos 53) cannibalizing `corporate-events` (138 imp, pos 9). 301 redirect would consolidate. Awaiting Jonathan's call.
+
 ### Fix: Sitemap pollution — trailing-slash 301s and three genuinely-404 static routes
 
 - GSC follow-up audit (looking at why ~73% of discovered pages aren't indexed) found two structural sitemap problems suppressing crawl trust. Built `scripts/audit-sitemap-urls.mjs` — fetches the live sitemap and HEAD-checks every `<loc>`, aggregates by status bucket + language, writes CSV. Read-only.
