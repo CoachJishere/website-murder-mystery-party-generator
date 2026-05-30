@@ -10,6 +10,17 @@
 - Prerendered HTML (the source of truth for hreflang/canonical signals) was already clean — full audit of all 1646 published URLs found zero hreflang, canonical, x-default, or `<html lang>` issues. `scripts/prerender-blog.mjs` already orders by `id` (the bug never reached prerender).
 - New `scripts/audit-hreflang.mjs` — fetches live HTML, parses `<link rel="alternate">` + `<link rel="canonical">`, reconciles against DB inventory, normalises `zh-Hans` ↔ `zh-cn`, flags uppercase `zh-CN` leaks, missing/extra siblings, canonical drift, and html-lang mismatch. CSV in `temp-files/hreflang-audit-<ISO>.csv`.
 
+## 2026-05-29
+
+### Improvement: Rot-signal gate extended to all 12 non-EN languages
+
+- `scripts/check-rot-signals.mjs` previously only gated `ko` + `zh-cn`. After a May 2026 queue-wide audit confirmed rot in the other 10 languages (ja 23%, de 9.7%, es 9.3%, others 1–5%), all failing cells were regenerated, then the gate was extended to cover every non-EN language.
+- New `LENGTH_FLOOR_MULT` export: relative length floors vs EN for the 10 non-CJK languages (65% for Romance/Germanic, 30% for ja). `LENGTH_FLOORS` (absolute floors for ko/zh-cn) unchanged — backward compatible with `audit-rot-signals.mjs` which imports `checkLanguage`.
+- `checkLanguage(lang, content, enLength = 0)` — new optional third argument. CJK langs use fixed floor as before; non-CJK langs compute a relative floor when `enLength` is provided, skip the check if it isn't (avoids false positives on slugs where EN is unusually short).
+- Two new heuristics active for the 10 non-CJK langs: English-stopword cluster in H2 (2+ unambiguous English function words, 1 for ja); English-only H2 (ja only — any heading with zero non-Latin characters).
+- CLI now fetches EN + all 12 non-EN cells in one request and emits a 12-key JSON object. The `jq to_entries[]` loop in the workflow step summary handles the wider output without changes.
+- `publish-daily-blog.yml` step 3: `LANGS` now starts as `"en"` (was `"en,es,fr,de,it,da,fi,nl,sv,pt,ja"`); gate loop expanded from `ko zh-cn` to `ko zh-cn es fr de it pt nl da sv fi ja`. All 12 languages now hold-or-pass per cell, same as ko/zh-cn have since the original gate.
+
 ## 2026-05-26
 
 ### Improvement: title + meta rot cleared in ko + zh-cn (842 rows, 0 failures)

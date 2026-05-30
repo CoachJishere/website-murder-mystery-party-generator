@@ -65,28 +65,26 @@ jobs:
             echo "cross_link_map.json not found, skipping cross-links"
           fi
 
-          # 3. Run the rot-signal gate to decide whether ko + zh-cn are safe
-          #    to include in this slug's publish flip. The other 11 locales
-          #    are always included.
+          # 3. Run the rot-signal gate across all 12 non-EN languages.
           #
-          # Why: the upstream MT pipeline produced systematically rotted
-          # ko + zh-cn (calque H2 headers, brand-as-H2 like
-          # "## mysterymaker.party와 ...", literal English-syntax ordering,
-          # zh-cn cells averaging ~4.5k chars vs ~15.8k for European langs).
-          # The previous fix blanket-excluded both languages; this gate
-          # promotes a passing cell on a per-slug basis once it's healthy
-          # (e.g. after regeneration), and continues to hold back rotted
-          # ones — even cells that look fine at length but flunk a calque
-          # check.
+          # Why: the upstream MT pipeline produced systematically rotted output
+          # across the full translation queue — originally diagnosed on ko +
+          # zh-cn (May 2026), then confirmed on the other 10 langs at varying
+          # rates (ja 23%, de 9.7%, es 9.3%, others 1–5%) by a queue-wide
+          # audit. All failing cells were regenerated before this gate was
+          # extended. The gate now prevents any future rotted draft from
+          # shipping in any language — a per-slug pass/hold decision rather
+          # than a blanket language exclusion.
           #
-          # Cross-links above DO still run for ko + zh-cn (content edit
-          # only, no status change), so held-back drafts stay current.
+          # Cross-links (step 2) still run for all languages regardless of
+          # gate result — content edits only, no status change, so held-back
+          # drafts stay current with the cross-link map.
           GATE_JSON=$(node scripts/check-rot-signals.mjs "$SLUG")
           echo "Rot-signal gate result:"
           echo "$GATE_JSON" | jq .
 
-          LANGS="en,es,fr,de,it,da,fi,nl,sv,pt,ja"
-          for LANG in ko zh-cn; do
+          LANGS="en"
+          for LANG in ko zh-cn es fr de it pt nl da sv fi ja; do
             PASS=$(echo "$GATE_JSON" | jq -r --arg k "$LANG" '.[$k].pass')
             REASONS=$(echo "$GATE_JSON" | jq -r --arg k "$LANG" '.[$k].reasons | join("; ")')
             if [ "$PASS" = "true" ]; then
