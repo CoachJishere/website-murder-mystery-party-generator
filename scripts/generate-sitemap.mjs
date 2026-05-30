@@ -16,8 +16,17 @@ const supabase = createClient(
 const SITE = 'https://www.mysterymaker.party';
 
 async function fetchAllPublishedPosts() {
-  // Supabase REST defaults to a 1000-row cap. We have ~1,339 published rows
+  // Supabase REST defaults to a 1000-row cap. We have ~1,646 published rows
   // across all languages, so paginate via `.range()` to get them all.
+  //
+  // Pagination must use a STABLE order. The daily-publish pipeline batches
+  // dozens of unrelated articles per post_date (~58/day), so ordering only
+  // by post_date leaves PostgREST free to return tied rows in arbitrary
+  // order across page boundaries — the same row can land in both pages,
+  // producing duplicate <loc> entries (audit on 2026-05-30 found 91 dupes
+  // concentrated in sv + zh-cn, the langs whose rows happened to straddle
+  // the 1000-row boundary). Adding `id` as a secondary key makes the order
+  // total and pagination deterministic.
   const PAGE_SIZE = 1000;
   let all = [];
   for (let from = 0; ; from += PAGE_SIZE) {
@@ -26,6 +35,7 @@ async function fetchAllPublishedPosts() {
       .select('slug, language, updated_at, post_date')
       .eq('status', 'published')
       .order('post_date', { ascending: false })
+      .order('id', { ascending: true })
       .range(from, from + PAGE_SIZE - 1);
 
     if (error) throw error;

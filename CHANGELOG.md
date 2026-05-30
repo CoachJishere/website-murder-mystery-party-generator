@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-05-30
+
+### Fix: Sitemap pagination stability — 91 duplicate `<loc>` entries removed
+
+- `scripts/generate-sitemap.mjs` paginated `blog_posts` with `.order('post_date', { ascending: false })` + `.range(from, from+999)`. The daily-publish pipeline batches ~58 articles per `post_date`, so tied rows straddling the 1000-row page boundary were returned in both pages, producing duplicate `<loc>` entries in the live sitemap.
+- Audit on 2026-05-30 measured 1646 total `<loc>` vs 1555 unique = **91 duplicates**, concentrated entirely in `sv` (46) and `zh-cn` (45) — the two languages whose rows happened to land at the page boundary in the most recent publish batch. DB itself has zero duplicate (lang, slug) pairs, so this was purely a pagination artefact.
+- Fix: added `.order('id', { ascending: true })` as a secondary key. Pagination is now deterministic; reproduction with both orderings confirms `post_date.desc` alone returns 91 dupes, `post_date.desc,id.asc` returns 0.
+- Prerendered HTML (the source of truth for hreflang/canonical signals) was already clean — full audit of all 1646 published URLs found zero hreflang, canonical, x-default, or `<html lang>` issues. `scripts/prerender-blog.mjs` already orders by `id` (the bug never reached prerender).
+- New `scripts/audit-hreflang.mjs` — fetches live HTML, parses `<link rel="alternate">` + `<link rel="canonical">`, reconciles against DB inventory, normalises `zh-Hans` ↔ `zh-cn`, flags uppercase `zh-CN` leaks, missing/extra siblings, canonical drift, and html-lang mismatch. CSV in `temp-files/hreflang-audit-<ISO>.csv`.
+
 ## 2026-05-26
 
 ### Improvement: title + meta rot cleared in ko + zh-cn (842 rows, 0 failures)

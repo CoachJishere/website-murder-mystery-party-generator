@@ -56,6 +56,7 @@ Blog Database - Master.csv
 !scripts/apply-p5-tocs.mjs
 !scripts/check-rot-signals.mjs
 !scripts/audit-rot-signals.mjs
+!scripts/audit-hreflang.mjs
 !scripts/generate-regen-prompts.mjs
 !scripts/check-title-rot.mjs
 !scripts/audit-title-rot.mjs
