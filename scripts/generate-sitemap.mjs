@@ -75,13 +75,17 @@ async function generateSitemap() {
   const articleCount = Object.keys(bySlug).length;
   console.log(`${articleCount} unique articles across ${posts.length} language variants`);
 
-  // Static pages
+  // Static pages. Trailing slashes match GitHub Pages' canonical directory-
+  // style URLs — without them GH Pages 301-redirects `/blog` -> `/blog/`,
+  // and every <loc> in the sitemap becomes a redirect source. GSC's
+  // "Page with redirect" bucket was 1,090 entries on 2026-05-30 due to this.
+  // Root stays `/` (served at the apex, no slash to add).
   const staticPages = [
     { loc: '/', priority: '1.0', freq: 'weekly' },
-    { loc: '/showcase', priority: '0.8', freq: 'weekly' },
-    { loc: '/blog', priority: '0.8', freq: 'daily' },
-    { loc: '/support', priority: '0.5', freq: 'monthly' },
-    { loc: '/privacy', priority: '0.3', freq: 'yearly' },
+    { loc: '/showcase/', priority: '0.8', freq: 'weekly' },
+    { loc: '/blog/', priority: '0.8', freq: 'daily' },
+    { loc: '/support/', priority: '0.5', freq: 'monthly' },
+    { loc: '/privacy/', priority: '0.3', freq: 'yearly' },
   ];
 
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -99,9 +103,12 @@ async function generateSitemap() {
   for (const [slug, variants] of Object.entries(bySlug)) {
     for (const variant of variants) {
       const lang = variant.language;
+      // Trailing slash matches what GH Pages actually serves with 200.
+      // Without it every blog URL in the sitemap is a 301 redirect (see
+      // staticPages comment above for context).
       const loc = lang === 'en'
-        ? `${SITE}/blog/${variant.slug}`
-        : `${SITE}/${lang}/blog/${variant.slug}`;
+        ? `${SITE}/blog/${variant.slug}/`
+        : `${SITE}/${lang}/blog/${variant.slug}/`;
 
       xml += `  <url>\n    <loc>${loc}</loc>\n`;
       xml += `    <lastmod>${variant.updated_at || variant.post_date}</lastmod>\n`;
@@ -115,8 +122,8 @@ async function generateSitemap() {
       for (const alt of variants) {
         const altLang = alt.language.toLowerCase() === 'zh-cn' ? 'zh-Hans' : alt.language;
         const altLoc = alt.language === 'en'
-          ? `${SITE}/blog/${alt.slug}`
-          : `${SITE}/${alt.language}/blog/${alt.slug}`;
+          ? `${SITE}/blog/${alt.slug}/`
+          : `${SITE}/${alt.language}/blog/${alt.slug}/`;
         xml += `    <xhtml:link rel="alternate" hreflang="${altLang}" href="${altLoc}" />\n`;
       }
 
@@ -124,7 +131,7 @@ async function generateSitemap() {
       // it exists (catches users for whom no other language hreflang matches).
       const enVariant = variants.find(v => v.language === 'en');
       if (enVariant) {
-        xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}/blog/${enVariant.slug}" />\n`;
+        xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}/blog/${enVariant.slug}/" />\n`;
       }
 
       xml += `  </url>\n`;
@@ -149,6 +156,17 @@ async function generateSitemap() {
   mkdirSync(blogDir, { recursive: true });
   writeFileSync(resolve(blogDir, 'index.html'), indexHtml, 'utf-8');
   routeCount++;
+
+  // Create static-route fallback HTMLs for SPA pages that the sitemap lists
+  // but that previously 404'd on GH Pages (no index.html, no SPA fallback).
+  // Each gets a copy of the build's index.html — the SPA router takes over
+  // client-side. These match real <Route> entries in src/App.tsx.
+  for (const staticRoute of ['showcase', 'support', 'privacy']) {
+    const dir = resolve(distDir, staticRoute);
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(resolve(dir, 'index.html'), indexHtml, 'utf-8');
+    routeCount++;
+  }
 
   // Create route files for each blog post
   for (const post of posts) {

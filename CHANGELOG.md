@@ -2,6 +2,14 @@
 
 ## 2026-05-30
 
+### Fix: Sitemap pollution — trailing-slash 301s and three genuinely-404 static routes
+
+- GSC follow-up audit (looking at why ~73% of discovered pages aren't indexed) found two structural sitemap problems suppressing crawl trust. Built `scripts/audit-sitemap-urls.mjs` — fetches the live sitemap and HEAD-checks every `<loc>`, aggregates by status bucket + language, writes CSV. Read-only.
+- Audit result on 1,651 URLs: **98.8% returned 301** (1,631 redirects), 3 returned 404 (`/showcase`, `/support`, `/privacy`), 1 returned 200, plus 15 transient network errors and 1 transient 503. The 301s align with GSC's "Page with redirect = 1,090" bucket.
+- Root cause #1 (trailing slash): the site is served by GitHub Pages, which canonicalizes `/blog/X` → `/blog/X/` for any directory-style route that has `index.html`. The sitemap emitted no-slash URLs, so every blog entry was a redirect source. Updated all `<loc>` and `<xhtml:link href>` emissions in `scripts/generate-sitemap.mjs` to include the trailing slash. Verified locally: 0 of 1,664 generated URLs lack a trailing slash.
+- Root cause #2 (genuine 404s): the sitemap lists `/showcase`, `/support`, `/privacy` (real SPA routes in `src/App.tsx`) but the script previously only generated static-route `index.html` files for blog posts. GitHub Pages has no SPA fallback, so these 404'd. Added a static-route generation block for the three pages — each gets a copy of `dist/index.html` so the router can take over client-side, matching the existing pattern for blog routes.
+- Expected GSC impact over 2-4 weeks as Google re-crawls: ~1,090 "Page with redirect" → indexed; ~3 "Not found" → indexed; underlying crawl-trust signal restored. The 856 "Crawled/Discovered - not indexed" pages are a separate content-quality problem not addressed here.
+
 ### Fix: 363 dead cross-blog links repaired; cross-link map drift gated
 
 - Audit of all 1,646 published cells (13 languages) via the new `scripts/audit-crosslinks.mjs` checked three dimensions per row: wrong-language URL prefixes, in-page anchors that don't resolve to a real H2, and cross-blog links pointing to slugs that no longer exist in DB.
