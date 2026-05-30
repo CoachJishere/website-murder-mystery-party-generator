@@ -1,0 +1,51 @@
+name: Pinterest image generation (daily)
+
+# Runs once a day, picks up any pinterest_pins rows with status='approved',
+# calls Imagen 4 to generate the image, composites the pin via Sharp,
+# uploads pin + raw + blog hero to Supabase storage, flips status to 'generated',
+# and populates blog_posts.featured_image_url for the corresponding post.
+#
+# Pairs with:
+#   - Edge Function fill-pinterest-creative (fills creative on draft rows → flips to 'approved')
+#   - Make.com scenario (posts generated rows to Pinterest twice daily)
+#
+# Trigger: cron (daily 06:00 UTC = 07:00 CET / 08:00 CEST). Also workflow_dispatch.
+# Daily Imagen quota: 70 requests / paid tier 1; --limit 65 keeps a small buffer.
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Max rows to process this run (default 65, Imagen quota is 70/day)'
+        required: false
+        default: '65'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run image generation
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          IMAGEN_API_KEY: ${{ secrets.IMAGEN_API_KEY }}
+        run: |
+          LIMIT="${{ github.event.inputs.limit || '65' }}"
+          node scripts/pinterest/run-generation.mjs --limit "$LIMIT"

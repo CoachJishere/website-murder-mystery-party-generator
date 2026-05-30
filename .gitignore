@@ -62,7 +62,9 @@ Blog Database - Master.csv
 !scripts/audit-title-rot.mjs
 !scripts/generate-title-regen-prompts.mjs
 !scripts/generate-email-wordmark.mjs
+!scripts/pinterest/**/*.mjs
 *.sql
+!supabase/migrations/*.sql
 *-REPORT*.md
 *-STATUS*.md
 *-SUMMARY*.md

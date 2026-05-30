@@ -2,6 +2,24 @@
 
 ## 2026-05-30
 
+### Fix: 363 dead cross-blog links repaired; cross-link map drift gated
+
+- Audit of all 1,646 published cells (13 languages) via the new `scripts/audit-crosslinks.mjs` checked three dimensions per row: wrong-language URL prefixes, in-page anchors that don't resolve to a real H2, and cross-blog links pointing to slugs that no longer exist in DB.
+- **Brief 5's primary hypothesis was wrong.** The May 2026 rot-regeneration was supposed to leave the 11 pre-fix languages with wrong `/blog/X` prefixes (instead of `/{lang}/blog/X`). Audit found **0** wrong prefixes across all 1,646 cells — the convention was already correct. No prefix-fix script was needed.
+- **Actual rot: 363 dead cross-blog links** across 202 cells pointing to 31 distinct slugs that don't exist. Cause: EN slug renames at various points (better SEO titles, deduplication) without updating `cross_link_map.json`. The map kept inserting the old slug into newly translated content via `apply-crosslinks.mjs`, and existing content kept the old slug forever.
+- New `scripts/fix-dead-targets.mjs` (dry-run default, `--apply` writes) processes the 23 dead targets with exactly one unambiguous candidate substitute (longest-common-prefix sibling) and rewrites every reference across all live `blog_posts.content` cell-by-cell, plus the same renames in `cross_link_map.json` (`links_to`, `target_slug`, and embedded `replacement` URLs in both `insertions` and `lang_insertions`). Test apply on the smallest-blast-radius source slug (7 cells, 14 replacements) verified clean in browser, then full apply landed all remaining 195 cells (350 replacements total) + 455 map updates + 6 dangling `links_to` cleaned up under `murder-mystery-party-for-adults-guide`. Zero failures.
+- **Post-fix audit:** 0 wrong prefixes, 0 dangling map refs, 0 map orphans, dead targets reduced from 363 to 13 (the 8 ambiguous "no candidate" entries that need human judgment, surfaced for review).
+- New `scripts/surface-crosslink-review.mjs` generates a per-cell markdown review doc for the **107 dead anchor refs across 40 non-EN cells** (in-page `#anchor` references that don't resolve — caused by link text being slugged independently from the H2 it points to during translation) plus the 8 ambiguous dead targets. Each dead anchor is shown with the 3 closest matching H2 slugs from the same page; most fixes are 1-2 word differences (e.g. `#hvorfor-steampunk-faktisk-virker-til-mysterier...` → `#hvorfor-steampunk-faktisk-virker-for-mysterier...`). Awaits human selection per item; no auto-fix per Brief 5 discipline.
+- See [ADR-0014](docs/adr/0014-crosslink-map-drift-detection-and-rename-protocol.md) for the rename protocol going forward.
+
+### Improvement: JSON-LD hero image fallback + FAQ extractor relaxation + new audit script
+
+- **Hero image fallback for translations.** `featured_image_url` is only populated on the EN row of each slug (Pinterest pipeline is EN-only), so all ~1,500 non-EN pages were emitting the generic `homepage-share-image.png` as both their JSON-LD `image` and OG image. `scripts/prerender-blog.mjs` now builds a `slug → en featured_image_url` map once at the start of `main()` and resolves each non-EN post to its EN sibling's hero before falling back to the homepage placeholder. Next prerender will give every translation the correct per-cell hero in OG cards and structured data.
+- **FAQ Pattern 3 relaxed to recover period-terminated and inline-answer FAQ shapes.** Some posts use `**What if I can't afford backup equipment.**` (period instead of `?`) and some run the answer inline on the same line as the bolded question. The regex now accepts `[?？.]` as a question terminator and `\s+` (any whitespace) as the Q→A separator instead of requiring a newline. Same change mirrored in `src/pages/BlogPost.tsx` for client-side parity. Strict win — only adds FAQPage schema where the content shape genuinely is Q&A.
+- **New `scripts/audit-jsonld.mjs`.** Fetches the live sitemap, picks N random blog URLs (default 30), parses every `<script type="application/ld+json">`, verifies BlogPosting + BreadcrumbList presence, all 8 BlogPosting required fields, and FAQPage presence on pages whose HTML contains an FAQ H2. Writes `audit-jsonld-failures.csv` on any failure and exits 1 — wirable into CI.
+- Audit baseline: 13/15 random URLs passed before the FAQ-extractor fix; the 2 failures were the period/inline FAQ shape now handled.
+- See [ADR-0013](docs/adr/0013-json-ld-image-fallback-and-faq-extractor-relaxation.md).
+
 ### Fix: Sitemap pagination stability — 91 duplicate `<loc>` entries removed
 
 - `scripts/generate-sitemap.mjs` paginated `blog_posts` with `.order('post_date', { ascending: false })` + `.range(from, from+999)`. The daily-publish pipeline batches ~58 articles per `post_date`, so tied rows straddling the 1000-row page boundary were returned in both pages, producing duplicate `<loc>` entries in the live sitemap.
