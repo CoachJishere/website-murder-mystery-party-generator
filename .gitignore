@@ -63,6 +63,9 @@ Blog Database - Master.csv
 !scripts/audit-sitemap-urls.mjs
 !scripts/generate-title-regen-prompts.mjs
 !scripts/generate-email-wordmark.mjs
+!scripts/audit-crosslinks.mjs
+!scripts/fix-dead-targets.mjs
+!scripts/surface-crosslink-review.mjs
 !scripts/pinterest/**/*.mjs
 *.sql
 !supabase/migrations/*.sql
