@@ -84,7 +84,7 @@
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.9",
     "vite-plugin-ssr": "0.4.85",
-    "ws": "8.20.0",
+    "ws": "8.21.0",
     "zod": "^3.24.3"
   },
   "devDependencies": {

@@ -368,8 +368,11 @@ export default function BlogPost() {
     // This is the most common machine-translation output across non-EN locales —
     // the translator preserved the bold-question convention but dropped the
     // English Q:/A: letter prefixes. ~437 cells across the blog use this format.
+    // Terminator accepts [?？.] because some EN posts end FAQ questions with a
+    // period instead of "?". Separator is `\s+` (not `\s*\n+\s*`) because some
+    // posts run the answer inline on the same line as the bold question.
     if (qaItems.length === 0) {
-      const qaPairsBoldPlain = faqSection.matchAll(/\*\*([^*\n]+[?？])\*\*\s*\n+\s*([\s\S]*?)(?=\n\s*\*\*[^*\n]+[?？]\*\*|\n## |$)/g);
+      const qaPairsBoldPlain = faqSection.matchAll(/\*\*([^*\n]+[?？.])\*\*\s+([\s\S]*?)(?=\n\s*\*\*[^*\n]+[?？.]\*\*|\n## |$)/g);
       for (const match of qaPairsBoldPlain) {
         const question = match[1].trim();
         const answer = match[2].trim()
@@ -603,22 +606,22 @@ export default function BlogPost() {
           {post?.meta_description && (
             <meta name="description" content={post.meta_description} />
           )}
-          <link rel="canonical" href={`https://www.mysterymaker.party${lang ? `/${lang}` : ''}/blog/${slug}`} />
+          <link rel="canonical" href={`https://www.mysterymaker.party${lang ? `/${lang}` : ''}/blog/${slug}/`} />
           {langVariants.map(v => (
             <link
               key={v.language}
               rel="alternate"
               hrefLang={v.language === 'zh-cn' ? 'zh-Hans' : v.language}
               href={v.language === 'en'
-                ? `https://www.mysterymaker.party/blog/${v.slug}`
-                : `https://www.mysterymaker.party/${v.language}/blog/${v.slug}`}
+                ? `https://www.mysterymaker.party/blog/${v.slug}/`
+                : `https://www.mysterymaker.party/${v.language}/blog/${v.slug}/`}
             />
           ))}
           {langVariants.some(v => v.language === 'en') && (
             <link
               rel="alternate"
               hrefLang="x-default"
-              href={`https://www.mysterymaker.party/blog/${slug}`}
+              href={`https://www.mysterymaker.party/blog/${slug}/`}
             />
           )}
           <meta property="og:title" content={post?.title || 'Blog Post'} />

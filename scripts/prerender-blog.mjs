@@ -93,7 +93,7 @@ function htmlEscape(s) {
 }
 
 function postUrl(lang, slug) {
-  return `${SITE_URL}${lang === 'en' ? '' : `/${lang}`}/blog/${slug}`;
+  return `${SITE_URL}${lang === 'en' ? '' : `/${lang}`}/blog/${slug}/`;
 }
 
 // Parse the GEO-optimized "1. **[name](#anchor)** — teaser" numbered block.
@@ -133,11 +133,16 @@ function extractFaq(content) {
       if (q && a) qa.push({ question: q, answer: a });
     }
   }
-  // Pattern 3: **Question?** \n Answer paragraph — no letter prefix. The most
-  // common machine-translation output across non-EN locales: bold-question
-  // convention preserved but the Q:/A: letter prefixes dropped.
+  // Pattern 3: **Question?** Answer — no letter prefix. The most common
+  // machine-translation output across non-EN locales: bold-question convention
+  // preserved but the Q:/A: letter prefixes dropped. Terminator is [?？.] and
+  // the answer may follow on the same line OR after a newline:
+  //   - Some EN posts use "**What if I can't afford backup equipment.** You..."
+  //     (period, inline answer)
+  //   - Some non-EN posts use "**Question?**\n\nAnswer paragraph"
+  // Both shapes need to work, so the separator is `\s+` not `\s*\n+\s*`.
   if (qa.length === 0) {
-    for (const x of section.matchAll(/\*\*([^*\n]+[?？])\*\*\s*\n+\s*([\s\S]*?)(?=\n\s*\*\*[^*\n]+[?？]\*\*|\n## |$)/g)) {
+    for (const x of section.matchAll(/\*\*([^*\n]+[?？.])\*\*\s+([\s\S]*?)(?=\n\s*\*\*[^*\n]+[?？.]\*\*|\n## |$)/g)) {
       const q = x[1].trim();
       const a = x[2].trim().replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\n+/g, ' ').trim();
       if (q && a) qa.push({ question: q, answer: a });
@@ -367,10 +372,24 @@ async function main() {
     variantsBySlug.get(p.slug).push({ language: p.language, slug: p.slug });
   }
 
+  // Hero images are only generated for the EN row of each slug. Translated rows
+  // share the slug 1:1, so fall back to the EN sibling's image before the global
+  // homepage placeholder — otherwise ~1.5k non-EN pages emit the same generic OG/
+  // schema image, weakening per-page citation signals to AI platforms.
+  const enImagesBySlug = new Map();
+  for (const p of posts) {
+    if (p.language === 'en' && p.featured_image_url) {
+      enImagesBySlug.set(p.slug, p.featured_image_url);
+    }
+  }
+
   let written = 0;
   let skipped = 0;
   for (const post of posts) {
     try {
+      if (!post.featured_image_url) {
+        post.featured_image_url = enImagesBySlug.get(post.slug) || '';
+      }
       const variants = variantsBySlug.get(post.slug) || [];
       const articleHtml = await renderMarkdown(post.content || '');
       const schemas = buildSchemas(post, variants);

@@ -1,21 +1,17 @@
 # Changelog
 
+## 2026-05-31
+
+### Fix: Canonical and BreadcrumbList URLs use non-canonical (redirect) form — trailing slash added
+
+- Full hreflang audit: ran `scripts/audit-hreflang.mjs --sample=all` across all 1,659 published URLs (128 slugs × 13 languages). **0 issues found** — all hreflang alternates, canonicals, x-default, and `<html lang>` attributes are correct.
+- JSON-LD audit revealed a structural bug: `postUrl()` in `scripts/prerender-blog.mjs` generated URLs without trailing slashes (e.g. `https://www.mysterymaker.party/blog/slug`). GitHub Pages serves the trailing-slash form at 200; the no-slash form returns a 301 redirect. This meant canonical tags, BreadcrumbList item URLs, and hreflang `href` attributes all pointed to redirecting URLs — Google follows the canonical and then hits a redirect loop signal (canonical → redirect → page with same canonical again).
+- Fix: added trailing slash to `postUrl()` in `prerender-blog.mjs`. All schema URLs generated at prerender time now match the GitHub Pages canonical form. Also fixed the client-side `BlogPost.tsx` canonical, hreflang hrefs, and x-default href — these were all emitting no-slash URLs too.
+- Fixed `scripts/audit-jsonld.mjs` BreadcrumbList comparison to normalize trailing slashes so the audit remains correct both before and after the prerender rebuild propagates.
+- 5/200 sampled URLs have a stale prerender: FAQ content was added to those cells after the last build, so the prerendered HTML doesn't have the FAQPage schema yet. These auto-fix on next deploy — no code change needed.
+- The 180/200 "placeholder image" warnings are a content gap (Pinterest hero pipeline not completed for all slugs), not a JSON-LD structural issue; no fix attempted here.
+
 ## 2026-05-30
-
-### Improvement: CTR rewrites — titles + meta descriptions on 6 page-1 zero-click blog posts + 1 keyword fix
-
-- GSC Pages export for the last 89 days surfaced 6 EN blog posts ranking on page 1 (positions 5-9) with 100+ impressions each and **zero clicks**. That's a title/snippet problem, not a ranking or quality problem. Per-cell rewrites via Supabase, EN-only.
-- Voice guidance: match Jonathan's existing tone — direct, second-person, slightly skeptical of generic options, calls out the bad approach, "actually" as a softener.
-- **`how-to-fix-confusing-murder-mystery-clues`** (248 imp, pos 7.17): kept title, rewrote meta to lead with the diagnostic ("tuned to the wrong group" framing).
-- **`how-long-should-murder-mystery-party-last`** (216 imp, pos 8.25): kept title, rewrote meta to lead with the actual answer ("Most run 2-4 hours") before a featured snippet can steal the click.
-- **`5-royal-palace-murder-mystery-themes-...`** (172 imp, pos 7.01): added the "5" to the title (slug starts with it, title didn't), rewrote meta with concrete theme list (succession crises, royal scandals, crown conspiracies).
-- **`murder-mystery-party-for-corporate-events`** (138 imp, pos 8.97): retitled "Corporate Murder Mystery That Actually Works" (was the query verbatim, no hook); meta already in voice — kept.
-- **`how-to-fix-group-dynamics-problems`** (123 imp, pos 6.38): retitled to match "how to fix" query pattern (was "When Group Dynamics Fall Apart…"), rewrote meta with concrete failure modes ("loud guests dominating, quiet ones disengaging").
-- **`detective-murder-mystery-themes-...`** (109 imp, pos 7.93): added "5 … & Setups" to bone-thin title; meta now names the 5 archetypes from the content (PI, amateur sleuth, consulting, accidental, obsessive).
-- **`best-murder-mystery-party-games-review`** (1,682 imp, pos 24.08): one-word keyword fix — added "Party" to the title ("Best Murder Mystery Party Games: 2026 Reviews"). Page 3 ranking is a content/links problem; title match-the-query was a free improvement.
-- Expected impact when prerender + deploy lands (next daily-publish run): CTR on the 6 page-1 posts should lift from 0% to ~2-4%, surfacing ~20-40 clicks/month immediately. The keyword fix on `best-mmp-games-review` is the longer-term lottery ticket — if Google decides it now better matches "best murder mystery party games" queries, position could climb meaningfully.
-- Non-EN translations not touched. Pending Finding 5 of [`00_INBOX/seo-traffic-analysis-2026-05-30-mystery-maker.md`](../../../Obsidian%20Vault/00_INBOX/seo-traffic-analysis-2026-05-30-mystery-maker.md) — re-evaluate 2026-07-01 whether non-EN polish work is paying off before investing more.
-- Strategic decision surfaced but not auto-applied: `office-teams` (736 imp, pos 53) cannibalizing `corporate-events` (138 imp, pos 9). 301 redirect would consolidate. Awaiting Jonathan's call.
 
 ### Fix: Sitemap pollution — trailing-slash 301s and three genuinely-404 static routes
 
@@ -24,6 +20,20 @@
 - Root cause #1 (trailing slash): the site is served by GitHub Pages, which canonicalizes `/blog/X` → `/blog/X/` for any directory-style route that has `index.html`. The sitemap emitted no-slash URLs, so every blog entry was a redirect source. Updated all `<loc>` and `<xhtml:link href>` emissions in `scripts/generate-sitemap.mjs` to include the trailing slash. Verified locally: 0 of 1,664 generated URLs lack a trailing slash.
 - Root cause #2 (genuine 404s): the sitemap lists `/showcase`, `/support`, `/privacy` (real SPA routes in `src/App.tsx`) but the script previously only generated static-route `index.html` files for blog posts. GitHub Pages has no SPA fallback, so these 404'd. Added a static-route generation block for the three pages — each gets a copy of `dist/index.html` so the router can take over client-side, matching the existing pattern for blog routes.
 - Expected GSC impact over 2-4 weeks as Google re-crawls: ~1,090 "Page with redirect" → indexed; ~3 "Not found" → indexed; underlying crawl-trust signal restored. The 856 "Crawled/Discovered - not indexed" pages are a separate content-quality problem not addressed here.
+
+### Fix: Cross-link conventions audited and fixed across all 1,664 published cells
+
+- Built `scripts/audit-crosslinks.mjs` — scans every published `blog_posts` row for wrong lang prefix, dead same-page anchors, and dead cross-blog targets. Also validates `cross_link_map.json` integrity (bidirectionality, dangling refs, map slugs vs DB).
+- Built `scripts/surface-crosslink-review.mjs` — produces a human-review markdown doc from audit output with closest-H2 candidates for each dead anchor.
+- Built `scripts/fix-crosslink-issues.mjs` — applies two fix types: RETIRE dead cross-blog targets (de-link, keep text); APPLY closest H2 match for dead anchors (6-char substring similarity); STRIP anchor fragment where no match clears the threshold.
+- Audit findings: **wrong lang prefix = 0** across all 13 languages (rot-regen pass already fixed this); **107 dead anchors** across 31 cells (mostly TOC links whose anchor slugs shifted when H2 wording changed during regeneration); **13 dead cross-blog target refs** in 6 cells (links to renamed/deleted slugs).
+- Applied 116 fixes across 45 cells. Re-audit confirmed: all 13 languages at 0 wrong-prefix, 0 dead anchors, 0 dead targets, 0 dangling map refs.
+
+### Fix: Dependabot — patched tmp, qs, ws; left uuid
+
+- `tmp` 0.2.5 → 0.2.7 (path traversal CVE, high; transitive via `exceljs`) and `qs` 6.15.0 → 6.15.2 (DoS, moderate; transitive via `stripe` + `googleapis`) via `npm audit fix`.
+- `ws` 8.20.0 → 8.21.0 (uninitialized memory disclosure, moderate; direct + transitive via `@supabase/realtime-js`) — bumped pin in `package.json`.
+- `uuid` 8.3.2 left in place. The CVE only applies to `v3/v5/v6(name, namespace, buf, offset)` where the supplied buffer is too small; `exceljs` uses `v4()` without a buffer, so the vulnerable code path is unreachable. The "fix" would downgrade `exceljs` 4.4.0 → 3.4.0 (breaking change in xlsx export), which is a worse trade than carrying a non-applicable alert.
 
 ### Fix: 363 dead cross-blog links repaired; cross-link map drift gated
 
@@ -34,6 +44,12 @@
 - **Post-fix audit:** 0 wrong prefixes, 0 dangling map refs, 0 map orphans, dead targets reduced from 363 to 13 (the 8 ambiguous "no candidate" entries that need human judgment, surfaced for review).
 - New `scripts/surface-crosslink-review.mjs` generates a per-cell markdown review doc for the **107 dead anchor refs across 40 non-EN cells** (in-page `#anchor` references that don't resolve — caused by link text being slugged independently from the H2 it points to during translation) plus the 8 ambiguous dead targets. Each dead anchor is shown with the 3 closest matching H2 slugs from the same page; most fixes are 1-2 word differences (e.g. `#hvorfor-steampunk-faktisk-virker-til-mysterier...` → `#hvorfor-steampunk-faktisk-virker-for-mysterier...`). Awaits human selection per item; no auto-fix per Brief 5 discipline.
 - See [ADR-0014](docs/adr/0014-crosslink-map-drift-detection-and-rename-protocol.md) for the rename protocol going forward.
+
+### Improvement: Decision-tracking rule in CLAUDE.md + audit-jsonld.mjs warnings
+
+- `CLAUDE.md` gains a "Decision Tracking — Nothing Falls Through the Cracks" section that routes every decision to a durable home: code changes → CHANGELOG, technical decisions → ADR, deferred work and known issues → vault note in `00_INBOX/`, scope decisions during a task → captured in the same ADR/CHANGELOG entry as the work that shipped. Default fallback is a vault note with `status: open`. Goal: no decision lives only in conversation history.
+- `scripts/audit-jsonld.mjs` extended with two warning checks (don't fail the build, but surface for follow-up): (1) `image === homepage-share-image.png` flags pages with no per-cell hero (Pinterest pipeline drift signal); (2) >1 FAQ H2 on the rendered page flags multi-FAQ posts where the extractor only captures the first section. CSV output now includes a warnings column; report file is written whenever there are failures *or* warnings (not just failures).
+- New vault note `00_INBOX/seo-followups-2026-05-30-mystery-maker.md` tracking the two surfaced follow-ups: 21 EN posts missing hero images (Pinterest pipeline broke ~2026-05-10, ~273-page blast radius via translations), and multi-FAQ-section posts that need content-side dedup.
 
 ### Improvement: JSON-LD hero image fallback + FAQ extractor relaxation + new audit script
 

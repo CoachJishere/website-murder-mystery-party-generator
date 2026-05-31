@@ -31,6 +31,21 @@ When making a technical decision — new dependency, pattern change, API design,
   ```
   Status mapping: Accepted → `resolved`, Proposed/Deferred → `open`, Superseded → `superseded`. Add a `## Links` section at the bottom pointing to `[[01_Projects/Mystery-Maker]]`.
 
+## Decision Tracking — Nothing Falls Through the Cracks
+
+Every decision made during work — not just architectural ones — needs a durable home so we can reconstruct the trail. If you're making a call and can't say where it'll be findable in three months, write it down before continuing.
+
+The routing:
+- **Code change shipping behaviour** → `CHANGELOG.md` entry (see Changelog section above)
+- **Architectural / pattern / dependency / API decision** → ADR in `docs/adr/` (see ADR section above)
+- **Deferred work, known-but-unresolved issues, signals worth tracking** (e.g. "Pinterest pipeline broke around date X, 21 slugs need backfill") → vault note in `/Users/jonathanmiller/Obsidian Vault/00_INBOX/<topic>-YYYY-MM-DD-mystery-maker.md` with `status: open` frontmatter
+- **Scope decisions during a task** ("we'll fix X but defer Y because Z") → captured in the same ADR/CHANGELOG entry that ships the X-fix. Don't let the "why we didn't do Y" reasoning live only in chat history
+- **Operational follow-ups blocked on a date or external signal** → `/schedule` or a vault note with the date
+
+If a decision doesn't fit any of these, default to a vault note in `00_INBOX/` with `status: open`. Better an over-captured note that gets pruned later than a decision that exists only in conversation context.
+
+When closing a task, scan the conversation for decisions made and confirm each one landed in one of the above. If something didn't, capture it before moving on.
+
 ## Vault Integration
 
 Obsidian vault for this project: `/Users/jonathanmiller/Obsidian Vault/01_Projects/Mystery-Maker/`
