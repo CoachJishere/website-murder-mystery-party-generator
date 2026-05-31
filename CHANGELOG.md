@@ -2,6 +2,17 @@
 
 ## 2026-05-31
 
+### Fix: Pinterest image-gen runner — defensive error handling + stuck-row recovery
+
+- **Bug**: today's daily `pinterest-image-gen.yml` workflow crashed on the first of 21 approved rows. An underlying error (Imagen, Sharp, or composition — root cause not pinpointable from the log) came back with `err.message` undefined; the catch handler at [scripts/pinterest/run-generation.mjs:105](scripts/pinterest/run-generation.mjs#L105) called `err.message.slice(0, 1000)` and threw a TypeError. That propagated up through main's `for` loop, hit main's top-level catch (which also did `err.message` without guarding), exited the process with code 1. The Abandoned Theme Park row was left stuck in `status='generating'` with no recovery path.
+- **Fix** ([run-generation.mjs](scripts/pinterest/run-generation.mjs)):
+  - catch handler in `processRow` tolerates err being `undefined` / string / Error-without-message: `err?.message || err.toString() || 'Unknown error'`
+  - error-recording UPDATE wrapped in nested try/catch so a Supabase hiccup can't propagate; on inner failure, last resort is resetting the row from `generating` back to `approved`
+  - `main()` runs a stuck-row recovery at startup: any `status='generating'` row older than 30 minutes gets reset to `approved`. Bridges any crash that escapes the per-row handler — a single bad row can't kill the daily batch anymore, and a stuck row self-heals on the next run
+  - `main()` top-level catch also defensively coerces err.message
+- **Recovery**: reset Abandoned Theme Park back to `approved` via SQL so it retries on next run.
+- **Context that matters**: since the May 10 wrap, the pipeline shipped 43 pins to Pinterest (~2/day exactly as designed) and the auto-seed → Edge Function → image-gen flow processed ~21 new pins from blog publishes without intervention. This was a single defensive-coding gap in error handling, not a structural issue with the architecture.
+
 ### Verification: Cross-link audit clean — 0 dead anchors, 0 dead targets, 0 wrong prefixes across 1,672 cells
 
 - Day-2 verification of the 2026-05-30 cross-link fix pass. Audit now reports zero issues on every dimension across all 13 languages: dead-anchor count went from 107 → 0, ambiguous dead-targets went from 13 → 0, wrong-prefix count was always 0. Map integrity: 0 orphans, 0 dangling refs.
