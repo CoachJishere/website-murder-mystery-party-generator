@@ -102,11 +102,26 @@ async function processRow(supabase, row, { dryRun }) {
 
     console.log(`  ✓ ${pinUrl}`);
   } catch (err) {
-    console.error(`  ✗ ${err.message}`);
-    await supabase
-      .from('pinterest_pins')
-      .update({ status: 'failed', generation_error: err.message.slice(0, 1000) })
-      .eq('id', row.id);
+    // Defensive: err may be undefined, a string, or an Error without a message.
+    const msg = (err && (err.message || err.toString())) || 'Unknown error (err was falsy)';
+    console.error(`  ✗ ${msg}`);
+    try {
+      await supabase
+        .from('pinterest_pins')
+        .update({ status: 'failed', generation_error: msg.slice(0, 1000) })
+        .eq('id', row.id);
+    } catch (updateErr) {
+      // If even the error-recording update fails, fall back to resetting the row
+      // so it isn't stuck in 'generating' forever. Swallow this — don't crash the batch.
+      console.error(`  ✗ Could not record failure for ${row.id}:`, (updateErr && updateErr.message) || updateErr);
+      try {
+        await supabase
+          .from('pinterest_pins')
+          .update({ status: 'approved' })
+          .eq('id', row.id)
+          .eq('status', 'generating');
+      } catch { /* give up */ }
+    }
   }
 }
 
@@ -118,6 +133,20 @@ async function main() {
   const supabase = createClient(supabaseUrl, serviceKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+
+  // Recover any rows stuck in 'generating' from a prior crashed run (older than 30 min).
+  // Resets them to 'approved' so this run picks them up.
+  {
+    const cutoff = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+    const { data: stuck, error: stuckErr } = await supabase
+      .from('pinterest_pins')
+      .update({ status: 'approved' })
+      .eq('status', 'generating')
+      .lt('updated_at', cutoff)
+      .select('id');
+    if (stuckErr) console.warn(`Stuck-row recovery query failed: ${stuckErr.message}`);
+    else if (stuck && stuck.length) console.log(`Recovered ${stuck.length} stuck 'generating' row(s) from prior run.`);
+  }
 
   const { data: rows, error } = await supabase
     .from('pinterest_pins')
@@ -138,6 +167,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error('FATAL:', err.message);
+  console.error('FATAL:', (err && (err.message || err.toString())) || 'Unknown error');
   process.exit(1);
 });
