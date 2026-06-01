@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-06-01
+
+### Improvement: Wrap `auth.uid()` / `auth.role()` in `(select …)` across 32 RLS policies — Disk IO budget remediation
+
+- **Trigger**: Supabase Disk IO Budget depletion warning. Performance advisor flagged 32 `auth_rls_initplan` WARNs across 13 tables (`blog_posts`, `character_assignments`, `contact_messages`, `conversations`, `guest_feedback`, `intake_profiles`, `messages`, `mystery_characters`, `mystery_feedback`, `mystery_packages`, `profiles`, `speed_round_responses`, `speed_round_sessions`). Each policy was calling `auth.uid()` / `auth.role()` un-wrapped, forcing Postgres to re-evaluate per row instead of once per query.
+- **Fix**: [supabase/migrations/20260601_rls_initplan_wrap_auth_calls.sql](supabase/migrations/20260601_rls_initplan_wrap_auth_calls.sql) drops and recreates all 32 affected policies with auth calls wrapped in `(select …)`. Predicates, roles, and WITH CHECK clauses preserved exactly — purely a planner optimization, no behavioral change.
+- **Verification**: re-ran `get_advisors` → `auth_rls_initplan` count went from 32 → 0. Spot-check on `pg_policies` confirms all 32 policies render with the `(SELECT auth.uid())` form.
+- **Out of scope for this pass** (tracked in [ADR-0015](docs/adr/0015-rls-wrap-auth-calls-for-initplan.md)): 48 `multiple_permissive_policies` warnings (need per-table consolidation review), 28 unused indexes (need per-index "why does this exist" check), 5 unindexed FKs, and a pre-existing `profiles.user_id` vs `profiles.id` policy column inconsistency (likely silently broken DELETE/INSERT — separate investigation).
+- **Why this matters for the project**: the affected tables are hit by every authenticated page load (`MysteryView`, dashboard) plus scheduled jobs (publish, prerender, Pinterest runner, monitoring sweep, cross-link audit, generation timeout sweep). The per-row auth function call was multiplying disk reads on every cron tick.
+
 ## 2026-05-31
 
 ### Fix: Pinterest image-gen runner — defensive error handling + stuck-row recovery
