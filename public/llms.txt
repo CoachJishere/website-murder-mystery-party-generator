@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 131 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 132 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -26,6 +26,7 @@ This index organizes 131 published guides by topic cluster. All guides are avail
 - [How to Host a Steampunk Airship Murder Mystery](https://www.mysterymaker.party/blog/how-to-host-a-unique-steampunk-airship-murder-mystery-party-that-defies-gravity): Soar through clouds with Victorian-era airship murder mystery parties featuring sky pirates and aerial adventures.
 - [How to Host a Victorian Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-host-a-victorian-murder-mystery-party): A Victorian murder mystery tailored to your actual friends — custom characters, gothic atmosphere, period clues, and zero generic-script feel.
 - [How to Host a Witch Coven Murder Mystery](https://www.mysterymaker.party/blog/how-to-host-a-witch-coven-murder-mystery-magical-adventures-with-supernatural-suspects): Cast spells while catching killers in magical witch coven murder mystery parties featuring potions and supernatural powers.
+- [How to Host a Wizard Academy Murder Mystery](https://www.mysterymaker.party/blog/how-to-host-a-wizard-academy-murder-mystery-thats-pure-magic): Cast spells while catching criminals at magical wizard academy murder mystery parties featuring students and sorcery.
 - [How to Host a Zombie Apocalypse Murder Mystery](https://www.mysterymaker.party/blog/how-to-host-a-zombie-apocalypse-murder-mystery-that-will-have-your-guests-fighting-for-survival): Build a zombie apocalypse murder mystery — guests solve a killing while managing survival. Works because the undead threat keeps the pacing tight.
 
 ## Theme Ideas & Inspiration
