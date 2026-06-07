@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 135 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 136 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -82,6 +82,7 @@ This index organizes 135 published guides by topic cluster. All guides are avail
 
 - [1920s Speakeasy Murder Mystery Party Guide](https://www.mysterymaker.party/blog/1920s-speakeasy-murder-mystery-party-guide): Plan the ultimate 1920s murder mystery with prohibition-era themes, jazz-age characters, and authentic speakeasy atmosphere.
 - [Ancient Egypt Murder Mystery Party Guide](https://www.mysterymaker.party/blog/ancient-egypt-murder-mystery-party-guide): Host an ancient Egypt murder mystery party with custom characters, hieroglyphic clues, and a pharaonic crime built around your specific group of friends.
+- [Luxury Train Murder Mystery Party Planning](https://www.mysterymaker.party/blog/luxury-train-murder-mystery-party-planning-first-class-tickets-to-danger-and-romance): Travel first-class to danger with luxury train murder mystery parties featuring elegant dining cars and railway romance.
 - [Archaeological Dig Murder Mystery Themes](https://www.mysterymaker.party/blog/unique-archaeological-dig-murder-mystery-unearth-ancient-secrets-and-modern-murders): Archaeological dig murder mysteries where ancient artifacts become motives, scholarly rivalries turn deadly, and excavation sites double as crime scenes.
 
 ## Themes by Setting
