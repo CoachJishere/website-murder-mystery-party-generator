@@ -458,6 +458,7 @@ const EDITABLE_PACKAGE_FIELDS = [
 
 // Allowlist of editable fields on mystery_characters
 const EDITABLE_CHARACTER_FIELDS = [
+  'character_name',
   'description',
   'background',
   'relationships',

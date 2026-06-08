@@ -40,6 +40,7 @@ function stripH4Section(markdown: string, pattern: RegExp): string {
 // Display label for each editable character field. Field data is plain text with no
 // embedded section heading, so we supply one via EditableSection's fallbackLabel prop.
 const CHARACTER_FIELD_LABELS: Record<string, string> = {
+  character_name: 'Character Name',
   description: 'Description',
   background: 'Background',
   relationships: 'Relationships',
@@ -870,8 +871,11 @@ const MysteryPackageTabView = React.memo(({
                     return `${proseSection}\n\n**Point Form:**\n\n${p}`;
                   };
 
-                  // Define character fields to render as editable sections
+                  // Define character fields to render as editable sections.
+                  // character_name leads so hosts can rename a character (e.g. pick one
+                  // side of a dual-gender template name like "Clarabelle/Clarence Cow").
                   const characterFields: Array<{ key: string; content: string | undefined }> = [
+                    { key: 'character_name', content: character.character_name },
                     { key: 'description', content: character.description },
                     { key: 'background', content: character.background },
                     { key: 'relationships', content: typeof character.relationships === 'string' ? character.relationships : undefined },

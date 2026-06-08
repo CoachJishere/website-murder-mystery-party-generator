@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-08
+
+### Fix: Make character names editable in the package view
+
+- **Customer impact**: a paid host (Ella, package "The Last Howl Of Bigby Wolf") reported "I'm trying to make slight name edits in my story and even if I edit it and click save, it's not saving anything" — reproducing across Safari + Chrome, laptop + phone. Investigation traced it to the character **name** having no edit control at all: every generated mystery ships dual-gender template names (e.g. `Clarabelle/Clarence Cow`, `Merlin/Merlina`) that hosts naturally want to pick one side of, but the name was rendered as a static heading ([MysteryPackageTabView.tsx:929](src/components/MysteryPackageTabView.tsx#L929)) and `character_name` was not in the editable-field allowlist. Edits made elsewhere (e.g. inside description text) saved fine but the name heading never changed — reading as "nothing saved."
+- **Diagnosis confirmed against data**: Ella's account/linkage is fully intact (she owns the conversation, RLS permits her writes; some of her field edits did persist), so this was not the silent zero-row RLS failure first suspected. All 8 of her characters carry slash-format names — matching "slight name edits" exactly.
+- **Fix**: added `character_name` to `EDITABLE_CHARACTER_FIELDS` ([mysteryPackageService.ts](src/services/mysteryPackageService.ts)) and surfaced it as the first editable section in each character accordion with a "Character Name" label ([MysteryPackageTabView.tsx](src/components/MysteryPackageTabView.tsx)). Saving uses the existing `updateCharacterField` path; the optimistic state update already maps `character_name`, so the red heading re-renders to the new name immediately. Typecheck passes.
+- **Deferred (separate change, needs a small design decision)**: round-script fields render via `composeFormat(detailed, pointForm)` but edits save only to the base column. In the default `full` view mode display and save are aligned (no bug), but in `pointForm`/`both` view modes an edit saves successfully yet the screen keeps showing the unchanged point-form text — another "looks unsaved" path. Fixing it correctly means deciding how a merged display maps back to two columns (cleanest is rendering prose and point-form as separate editable sections), which is a UX/architectural call worth proposing before coding rather than bundling here. Tracked in `00_INBOX/pointform-edit-mismatch-2026-06-08-mystery-maker.md`.
+
 ## 2026-06-04
 
 ### Fix: Recover missing evidence-card images for "The Last Howl Of Bigby Wolf" + root-cause the Make image-timeout abort
