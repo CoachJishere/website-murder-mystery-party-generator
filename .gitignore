@@ -93,3 +93,38 @@ temp-files/*.sql
 temp-files/*.csv
 temp-files/*.gsheet
 temp-files/**/*.json
+temp-files/**/*.jsonl
+temp-files/**/*.md
+
+# Blog content-pipeline working artifacts (generated offline; the content
+# lives in the DB, these dirs are not referenced by the app)
+translations/
+draft_rewrites/
+
+# Root-level one-off content scripts & data dumps from blog/translation sessions
+/apply_fixes.py
+/insert_mystery.py
+/trim_descriptions.py
+/process_de_crosslinks*.py
+/audit_data.json
+/audit-jsonld-failures.csv
+/fixes_to_apply*.json
+/meta_fixes_needed.txt
+/translation_slugs.json
+/new_blog_topics_pipeline.xlsx
+/blog_map.xlsx.bak*
+
+# Session prompt / triage scratch docs
+/RESEARCH_PACK_PROMPTS_CONSOLIDATED.md
+/RESEARCH_PACK_PROMPTS_NEW.md
+/RESEARCH_PROMPTS_PACK_25_28.md
+/VOICE_REWRITE_PROMPTS.md
+/CLEANUP_PROMPT.md
+/CONTENT_GENERATION_PROMPTS.md
+/BLOG_TRIAGE_RESULTS.md
+/DRAFT_TRIAGE_RESULTS.md
+/CELL_BY_CELL_AUDIT_TRACKER.md
+/PHASE_D_VALIDATION_PROMPTS.md
+
+# Claude Code local/personal state (not shared)
+.claude/
