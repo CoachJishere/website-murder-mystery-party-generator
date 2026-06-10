@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 138 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 139 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -138,6 +138,7 @@ This index organizes 138 published guides by topic cluster. All guides are avail
 - [Librarian Murder Mystery Themes](https://www.mysterymaker.party/blog/librarian-murder-mystery-themes-literary-secrets-archive-investigation): Murder mystery themes with librarian characters: rare books, research archives and literary knowledge drive the investigation.
 - [Magician Murder Mystery Themes](https://www.mysterymaker.party/blog/magician-murder-mystery-themes-illusion-deception-stage-secrets): Murder mystery themes with magician characters: illusions, misdirection and sleight of hand drive the investigation.
 - [Medical Examiner Murder Mystery Themes](https://www.mysterymaker.party/blog/medical-examiner-murder-mystery-themes-forensic-investigations): Murder mystery themes with medical examiner characters — autopsy-driven investigations where the evidence wins and witnesses can't talk their way out.
+- [Millionaire Murder Mystery Themes](https://www.mysterymaker.party/blog/millionaire-murder-mystery-themes-wealth-power-deadly-ambition): Murder mystery themes with millionaire characters: fortune, power struggles and inheritance battles fuel the investigation.
 - [Socialite Murder Mystery Themes](https://www.mysterymaker.party/blog/socialite-murder-mystery-themes-high-society-scandals-elite-intrigue): Design murder mysteries where socialites work through wealth, status, and reputation scandals. Elite mystery themes with high society drama and social intrigue.
 - [Building Villains That Make Murder Mysteries Actually Matter](https://www.mysterymaker.party/blog/villain-murder-mystery-themes-masterminds-killers-antagonists): Build murder mystery villains your guests actually care about — antagonists with real motivations, believable psychology, and reveals that hit hard.
 
