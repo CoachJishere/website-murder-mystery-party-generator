@@ -6,7 +6,7 @@
 //     --overlay "How to Host a 1920s Speakeasy Murder Mystery" \
 //     --out scripts/pinterest/out/speakeasy.png
 //
-// Reuse a previously generated raw image (avoids re-charging Imagen):
+// Reuse a previously generated raw image (avoids re-charging Replicate):
 //   node scripts/pinterest/generate-pin.mjs \
 //     --image scripts/pinterest/out/speakeasy.raw.png \
 //     --overlay "How to Host..."
@@ -18,7 +18,7 @@ import 'dotenv/config';
 import {
   HEADLINE_FONTS,
   buildOverlaySvg,
-  callImagen4,
+  callFlux11Pro,
   composePin,
   extractImageFromFinishedPin,
 } from './lib/compose.mjs';
@@ -36,7 +36,7 @@ function parseArgs() {
     }
   }
   if (!args.overlay) throw new Error('Missing --overlay');
-  if (!args.prompt && !args.image) throw new Error('Need --prompt (call Imagen) or --image <path> (reuse PNG)');
+  if (!args.prompt && !args.image) throw new Error('Need --prompt (call Flux 1.1 Pro) or --image <path> (reuse PNG)');
   args.font = args.font || 'oswald';
   if (!HEADLINE_FONTS[args.font]) throw new Error(`Unknown --font ${args.font}; choose: ${Object.keys(HEADLINE_FONTS).join(', ')}`);
   args.pill = args.pill === 'true';
@@ -53,9 +53,9 @@ async function main() {
     console.log(`→ Reusing image from ${image}`);
     imageBuf = await extractImageFromFinishedPin(await readFile(resolve(image)));
   } else {
-    console.log('→ Calling Imagen 4...');
+    console.log('→ Calling Flux 1.1 Pro...');
     console.log('  prompt:', prompt.slice(0, 100) + (prompt.length > 100 ? '...' : ''));
-    imageBuf = await callImagen4(prompt);
+    imageBuf = await callFlux11Pro(prompt);
     console.log(`  got ${imageBuf.length} bytes`);
     const cachePath = outPath.replace(/\.png$/, '.raw.png');
     await mkdir(dirname(cachePath), { recursive: true });

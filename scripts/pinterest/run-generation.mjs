@@ -2,7 +2,7 @@
 //
 // Flow:
 //   1. Read pinterest_pins rows where status='approved' (limit configurable)
-//   2. For each: lock to status='generating', call Imagen 4, composite pin,
+//   2. For each: lock to status='generating', call Flux 1.1 Pro, composite pin,
 //      upload pin + raw image to storage, set status='generated'
 //   3. On error: status='failed', generation_error=...
 //
@@ -11,7 +11,7 @@
 
 import 'dotenv/config';
 import { createClient } from '../_supabase-node.mjs';
-import { buildOverlaySvg, callImagen4, composePin, cropToBlogHero } from './lib/compose.mjs';
+import { buildOverlaySvg, callFlux11Pro, composePin, cropToBlogHero } from './lib/compose.mjs';
 
 const BUCKET = 'pinterest-pins';
 const DEFAULT_LIMIT = 5;
@@ -60,8 +60,8 @@ async function processRow(supabase, row, { dryRun }) {
   }
 
   try {
-    console.log('  → Imagen 4...');
-    const rawImage = await callImagen4(row.image_prompt);
+    console.log('  → Flux 1.1 Pro...');
+    const rawImage = await callFlux11Pro(row.image_prompt);
 
     console.log('  → Composing overlay + blog hero crop...');
     const overlaySvg = await buildOverlaySvg(row.overlay_text, { font: 'oswald', pill: false });

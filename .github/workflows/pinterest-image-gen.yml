@@ -1,7 +1,7 @@
 name: Pinterest image generation (daily)
 
 # Runs once a day, picks up any pinterest_pins rows with status='approved',
-# calls Imagen 4 to generate the image, composites the pin via Sharp,
+# calls Replicate (Flux 1.1 Pro) to generate the image, composites the pin via Sharp,
 # uploads pin + raw + blog hero to Supabase storage, flips status to 'generated',
 # and populates blog_posts.featured_image_url for the corresponding post.
 #
@@ -10,7 +10,7 @@ name: Pinterest image generation (daily)
 #   - Make.com scenario (posts generated rows to Pinterest twice daily)
 #
 # Trigger: cron (daily 06:00 UTC = 07:00 CET / 08:00 CEST). Also workflow_dispatch.
-# Daily Imagen quota: 70 requests / paid tier 1; --limit 65 keeps a small buffer.
+# Replicate has no per-day quota like Imagen did; --limit 100 is a generous batch cap.
 
 on:
   schedule:
@@ -18,9 +18,9 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: 'Max rows to process this run (default 65, Imagen quota is 70/day)'
+        description: 'Max rows to process this run (default 100)'
         required: false
-        default: '65'
+        default: '100'
         type: string
 
 permissions:
@@ -29,7 +29,7 @@ permissions:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -45,7 +45,7 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-          IMAGEN_API_KEY: ${{ secrets.IMAGEN_API_KEY }}
+          REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
         run: |
-          LIMIT="${{ github.event.inputs.limit || '65' }}"
+          LIMIT="${{ github.event.inputs.limit || '100' }}"
           node scripts/pinterest/run-generation.mjs --limit "$LIMIT"

@@ -126,32 +126,62 @@ export async function buildOverlaySvg(overlayText, { font = 'oswald', pill = fal
 </svg>`;
 }
 
-export async function callImagen4(prompt) {
-  const key = process.env.IMAGEN_API_KEY;
-  if (!key) throw new Error('IMAGEN_API_KEY not set in env');
+// Generate a 1:1 image via Replicate's Flux 1.1 Pro model.
+// Replaced callImagen4 in 2026-06; Imagen output was unreliably CGI-looking despite
+// photorealism cues in the prompt. Flux 1.1 Pro produces noticeably more photographic
+// output at the same per-image cost (~$0.04). Same caller contract: takes prompt,
+// returns PNG buffer.
+export async function callFlux11Pro(prompt) {
+  const token = process.env.REPLICATE_API_TOKEN;
+  if (!token) throw new Error('REPLICATE_API_TOKEN not set in env');
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${key}`;
+  const url = 'https://api.replicate.com/v1/models/black-forest-labs/flux-1.1-pro/predictions';
   const body = {
-    instances: [{ prompt }],
-    parameters: { sampleCount: 1, aspectRatio: '1:1' },
+    input: {
+      prompt,
+      aspect_ratio: '1:1',
+      output_format: 'png',
+      safety_tolerance: 2,
+      prompt_upsampling: false,
+    },
   };
 
+  // `Prefer: wait=60` keeps the request synchronous up to 60s. flux-1.1-pro usually
+  // completes in 5-15s so we get a final prediction back without polling.
   const res = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Prefer: 'wait=60',
+    },
     body: JSON.stringify(body),
   });
 
   if (!res.ok) {
     const txt = await res.text();
-    throw new Error(`Imagen 4 API error ${res.status}: ${txt}`);
+    throw new Error(`Replicate API ${res.status}: ${txt.slice(0, 500)}`);
   }
 
   const json = await res.json();
-  const pred = json.predictions?.[0];
-  const b64 = pred?.bytesBase64Encoded || pred?.image?.imageBytes;
-  if (!b64) throw new Error(`No image bytes in response: ${JSON.stringify(json).slice(0, 500)}`);
-  return Buffer.from(b64, 'base64');
+  if (json.status === 'failed') {
+    throw new Error(`Flux prediction failed: ${json.error || 'unknown error'}`);
+  }
+  if (json.status !== 'succeeded' || !json.output) {
+    throw new Error(`Flux returned non-succeeded status (${json.status}); output: ${JSON.stringify(json.output).slice(0, 200)}`);
+  }
+
+  // flux-1.1-pro output is a single URL string; some Replicate models return an array.
+  const outputUrl = Array.isArray(json.output) ? json.output[0] : json.output;
+  if (typeof outputUrl !== 'string') {
+    throw new Error(`Unexpected Flux output shape: ${JSON.stringify(json.output).slice(0, 200)}`);
+  }
+
+  const imgRes = await fetch(outputUrl);
+  if (!imgRes.ok) {
+    throw new Error(`Failed to fetch generated image from ${outputUrl}: ${imgRes.status} ${imgRes.statusText}`);
+  }
+  return Buffer.from(await imgRes.arrayBuffer());
 }
 
 // Composite a finished 1000x1500 pin from Imagen output + overlay SVG. Returns PNG buffer.
