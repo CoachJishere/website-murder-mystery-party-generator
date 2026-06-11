@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-06-11
+
+### Feature: Pinterest pipeline image model swapped — Imagen 4 → Replicate Flux 1.1 Pro
+
+- **Problem**: Imagen 4 output kept skewing CGI/illustration-looking despite the photorealism cues added 2026-05-15 ("A photorealistic photograph of...", "shot on 35mm film", "no CGI, no 3D render, no illustration"). User confirmed multiple recent pins still read as fake-3D. Pinterest performance signals reward photographic over illustrated for atmospheric party content.
+- **Swap** ([compose.mjs](scripts/pinterest/lib/compose.mjs)): `callImagen4` → `callFlux11Pro`. Replicate's models/predictions endpoint with `Prefer: wait=60` keeps the call synchronous (5-15s typical) — no polling. Fetches the output image URL after to return raw PNG bytes, matching the previous caller contract exactly. Rest of the pipeline (`composePin`, `cropToBlogHero`, storage upload, status flips) is model-agnostic and untouched.
+- **Workflow update** ([pinterest-image-gen.yml](.github/workflows/pinterest-image-gen.yml)): `REPLICATE_API_TOKEN` repo secret replaces `IMAGEN_API_KEY`. Dropped the 70/day Imagen quota dance — Replicate's rate limits are way higher; bumped default `--limit` to 100 and workflow timeout to 60min.
+- **Cost**: same as Imagen (~$0.04/image, Flux 1.1 Pro at the same price tier).
+- **Validation**: smoke-tested locally on the speakeasy prompt — output is qualitatively different. Real depth of field, brass railing with proper specular highlights, smoke with physical volume, velvet stools with visible fiber texture. Reads as an actual photograph, not a render.
+- **Backlog migration**: ran the 21 already-approved rows through Flux as the first production batch ($0.84 total). Blog hero images auto-pushed to `blog_posts.featured_image_url`.
+- **Existing 60+ Imagen pins already posted to Pinterest stay as-is** — Pinterest algorithm weights account engagement history, churning 43+ posted pins to delete-and-recreate would reset that signal. New content drifts the feed quality up over the next few weeks instead.
+- **Going forward**: every new blog publish auto-generates with Flux (Edge Function fills creative → daily 06:00 UTC workflow runs Flux → Make.com posts twice daily).
+
 ## 2026-06-08
 
 ### Fix: Recover two more evidence-image gaps + durable detector for the silent failure mode
