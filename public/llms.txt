@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 140 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 141 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -71,6 +71,7 @@ This index organizes 140 published guides by topic cluster. All guides are avail
 - [Fashion Week Murder Mystery Party Planning](https://www.mysterymaker.party/blog/fashion-week-murder-mystery-party-planning-strut-into-danger-and-style): Strut into danger with high-fashion murder mystery parties featuring designers, models, and runway rivalries.
 - [Forensic Expert Murder Mystery Themes](https://www.mysterymaker.party/blog/forensic-expert-murder-mystery-themes-crime-scene-analysis-scientific-investigation): Murder mystery themes with forensic expert characters — evidence analysis, crime-scene processing, and investigations that follow the science.
 - [Hacker Murder Mystery Themes](https://www.mysterymaker.party/blog/hacker-murder-mystery-themes-cybercrime-digital-secrets-tech-intrigue): Murder mystery themes with hacker characters — cybercrime, digital espionage, and investigations where the trail runs through encrypted servers.
+- [Murder Mystery Parties for Small Spaces](https://www.mysterymaker.party/blog/murder-mystery-parties-small-spaces-compact-venues): Generate murder mysteries perfect for small apartments, conference rooms, and compact venues with single-room investigations and intimate formats.
 - [How to Host a Film Noir Murder Mystery Party](https://www.mysterymaker.party/blog/unique-film-noir-murder-mystery-plots-enter-the-shadows-of-urban-crime): Run a film noir murder mystery party that captures the cinematic atmosphere — detective cases, smoky tension, and how to dodge the noir clichés that kill it.
 - [Unique Pirate Murder Mystery Plot Ideas](https://www.mysterymaker.party/blog/unique-pirate-murder-mystery-plot-ideas): Build pirate murder mystery plots that actually work — treasure disputes, mutiny conspiracies, and crew conflicts tailored to your specific group.
 - [School Reunion Murder Mystery Themes](https://www.mysterymaker.party/blog/unique-school-reunion-murder-mystery-plots-that-uncover-buried-secrets): School reunion murder mysteries transform nostalgic gatherings into investigations where old friends become suspects and buried secrets turn deadly.
