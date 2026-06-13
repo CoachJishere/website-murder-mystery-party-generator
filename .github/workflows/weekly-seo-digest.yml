@@ -28,7 +28,10 @@ jobs:
 
       - name: Fetch weekly snapshot (GSC + GA4 + AI referrals)
         env:
-          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          # Dedicated analytics reader (project mystery-maker-analytics) — has GA4
+          # Viewer + GSC Full on the www property + the Analytics Data API enabled.
+          # NOT the shared GSC_SERVICE_ACCOUNT_JSON (different project, lacks both).
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.SEO_DIGEST_SA_JSON }}
           GA4_PROPERTY_ID: '504442584'
           GSC_SITE_URL: 'https://www.mysterymaker.party/'
         run: node scripts/fetchSeoWeeklySnapshot.mjs
