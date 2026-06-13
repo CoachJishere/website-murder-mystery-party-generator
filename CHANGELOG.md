@@ -10,7 +10,8 @@
 - **GEO/AEO measurement**: instead of trying to detect AI-answer presence, the digest tracks **real AI-referral traffic** (chatgpt.com, perplexity.ai, etc.) from GA4 — already captured by `fetchAIReferrals.mjs`. First live snapshot showed AI traffic engaging at ~82% vs ~44% sitewide.
 - **Reused infra**: `GSC_SERVICE_ACCOUNT_JSON`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` secrets (already in CI), Resend (`noreply@mysterymaker.party`). **Net-new secret: `ANTHROPIC_API_KEY`** must be added to GitHub.
 - **Prereq fixed during setup**: granted the `claude-analytics-reader@…` service account **Full** access to the GSC `https://www.mysterymaker.party/` URL-prefix property (it had GA4 access but not GSC).
-- **Validated**: full chain run locally against live data — snapshot, digest (4 action prompts, spam query correctly excluded), HTML written. Email send + workflow pending deploy.
+- **Deployed & verified (2026-06-13)**: `send-seo-digest` edge function live (verify_jwt on + service-key check); workflow ran end-to-end in CI with real data (GSC 29 clicks, GA4 263 sessions, AI 1) and emailed successfully. Monday ~08:23 UTC schedule active.
+- **CI secret gotcha**: the shared `GSC_SERVICE_ACCOUNT_JSON` secret is a *different* GCP project (991910505533) that lacks GSC permission on the www property and has the GA4 Data API disabled — first CI run errored all three sections. Fixed by adding a **dedicated `SEO_DIGEST_SA_JSON` secret** holding the working `claude-analytics-reader@mystery-maker-analytics` key (GA4 Viewer + GSC Full + API enabled). The digest workflow uses that one, not the shared secret.
 
 ## 2026-06-11
 
