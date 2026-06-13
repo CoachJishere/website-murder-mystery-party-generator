@@ -1,70 +1,70 @@
 <div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:680px;margin:auto;color:#222;"><p style="color:#666;font-size:13px;">SEO/GEO digest — week ending 2026-06-13 · mysterymaker.party</p><h2>Scoreboard</h2>
-
-<table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;font-family:sans-serif;font-size:14px;">
-  <thead>
-    <tr style="background:#f4f1ea;">
-      <th align="left">Metric</th>
-      <th align="right">This week</th>
-      <th align="right">Last week</th>
-      <th align="right">Δ</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>Organic clicks</td><td align="right">—</td><td align="right">—</td><td align="right">n/a</td></tr>
-    <tr><td>Impressions</td><td align="right">—</td><td align="right">—</td><td align="right">n/a</td></tr>
-    <tr><td>Avg position</td><td align="right">—</td><td align="right">—</td><td align="right">n/a</td></tr>
-    <tr><td>GA4 sessions</td><td align="right">—</td><td align="right">—</td><td align="right">n/a</td></tr>
-    <tr><td>AI-referral sessions</td><td align="right">—</td><td align="right">—</td><td align="right">n/a</td></tr>
-  </tbody>
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-size:14px;">
+  <tr style="background:#f4f1ea;">
+    <th align="left">Metric</th>
+    <th align="right">This week</th>
+    <th align="right">Last week</th>
+    <th align="right">Δ</th>
+  </tr>
+  <tr><td>Organic clicks (GSC)</td><td align="right">29</td><td align="right">32</td><td align="right">-9.4%</td></tr>
+  <tr><td>Impressions (GSC)</td><td align="right">513</td><td align="right">696</td><td align="right">-26.3%</td></tr>
+  <tr><td>Avg position (GSC)</td><td align="right">17.2</td><td align="right">16.4</td><td align="right">+0.8 (worse)</td></tr>
+  <tr><td>GA4 sessions</td><td align="right">263</td><td align="right">224</td><td align="right">+17.4%</td></tr>
+  <tr><td>AI-referral sessions</td><td align="right">1</td><td align="right">—</td><td align="right">0.4% of total</td></tr>
 </table>
-
-<p><strong>What moved and why it matters:</strong> Nothing can be reported this week — all three data sources (Google Search Console, GA4 traffic, and AI-referral) failed to return data, so there are no numbers to analyze. This is a pipeline/permissions issue, not a traffic drop. Fixing access is the only thing that matters until the snapshot returns real data.</p>
+<p><strong>What moved:</strong> GSC impressions and clicks softened week-over-week, but GA4 sessions are up +17.4% (users +33.5%) — traffic is healthy but increasingly arriving via Direct/Social rather than search, and AI-referral is effectively zero, so there's room to capture the demand showing up in impressions.</p>
 
 <h2>Insights</h2>
-
 <ul>
-  <li><strong>GSC returned zero data — permissions error.</strong> The service account "does not have sufficient permission" for <code>https://www.mysterymaker.party/</code>. Without this, we have no query, click, impression, or position data this week.</li>
-  <li><strong>GA4 traffic returned zero data — API disabled.</strong> The Google Analytics Data API has never been enabled (or is disabled) on project <code>991910505533</code>. No session data is available.</li>
-  <li><strong>AI-referral (GEO/AEO) returned zero data — same disabled API.</strong> Because AI-referral sessions are sourced from GA4, the same disabled API blocks our single most important growth signal (sessions from chatgpt.com, perplexity.ai, etc.).</li>
-  <li><strong>No actionable SEO/content insights are possible this week.</strong> Per the hard rule against inventing numbers, I cannot surface query opportunities, rising themes, or page wins until at least one data source is restored.</li>
+  <li><strong>"custom murder mystery party" (32 impr, pos 15.3) and "custom murder mystery game" (29 impr, pos 17.8) get 0 clicks.</strong> These are high-intent buyer queries with real impressions but no ranking page strong enough to win the click — biggest near-term win.</li>
+  <li><strong>"office murder mystery party" is newly surfacing (16 impr, up from 0) but ranks ~82.</strong> The corporate-events blog post sits at position 57.7 for related terms — there's a clear corporate/office cluster forming with no page properly targeting it.</li>
+  <li><strong>"miglior intrattenimento murder mystery per eventi aziendali" (15 impr, pos 3.3, 0 clicks)</strong> — an Italian corporate query already ranking page-1 but not converting clicks. A title/meta tune on the IT page is a cheap win.</li>
+  <li><strong>Homepage is the workhorse:</strong> 80 clicks / 517 impr at pos 6.7. Generator-intent queries ("murder mystery generator" 26.3% CTR, "murder mystery maker" 45.5%) convert well — these are working and worth protecting.</li>
+  <li><strong>The "best murder mystery party games review" blog gets 466 impressions but only 6 clicks (1.3% CTR) at pos 13.</strong> Huge impression volume, terrible CTR — a title/meta rewrite could unlock meaningful traffic.</li>
+  <li><strong>Spam/off-topic noise:</strong> a long Chinese prompt-injection string ("户外音乐节…") and Korean/Swedish junk queries are appearing — ignored, not opportunities.</li>
 </ul>
 
 <h2>Action prompts</h2>
 
-<p>This week's actions are infrastructure fixes, not content. They are required before any growth analysis can resume. Ordered easy-win first.</p>
+<p><strong>1. Quick win — capture "custom murder mystery party/game" intent</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">You are editing mysterymaker.party, an AI tool that generates printable murder mystery party kits. Two high-intent buyer queries are getting impressions but ZERO clicks: "custom murder mystery party" (32 impressions, position 15.3) and "custom murder mystery game" (29 impressions, position 17.8).
 
-<p><strong>1. Quick win — enable the GA4 Data API (unblocks 2 of 3 sources)</strong></p>
-<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">The weekly analytics pipeline for mysterymaker.party failed because the Google Analytics Data API is not enabled on Google Cloud project 991910505533. This single fix unblocks BOTH the GA4 traffic report and the AI-referral (GEO) report.
+Task: Create or optimize a dedicated landing page targeting these queries. The page should sit at https://www.mysterymaker.party/ (the generator/create flow is the money page) or a new /custom-murder-mystery/ page that funnels into the generator.
 
-Please give me step-by-step instructions to:
-1. Visit https://console.developers.google.com/apis/api/analyticsdata.googleapis.com/overview?project=991910505533 and enable the Google Analytics Data API.
-2. Confirm the service account used by the reporting pipeline is added as a user with at least "Viewer" role on the correct GA4 property (not just the project).
-3. Verify the GA4 property ID configured in the pipeline matches the live mysterymaker.party property.
-4. Wait for propagation (a few minutes) and run a minimal test query to confirm data returns.
+Deliver:
+1. An H1 and SEO title tag (≤60 chars) that uses "custom murder mystery party" naturally and emphasizes the AI generates a fully customizable kit.
+2. A meta description (≤155 chars) with a clear CTA to generate a kit, mentioning printable + custom for any guest count/theme.
+3. 150 words of intro copy that targets both "custom murder mystery party" and "custom murder mystery game", linking to the generator.
+4. An internal link plan: which existing pages (homepage, theme pages) should link to this with what anchor text.
 
-Goal: GA4 sessions and AI-referral sessions both populate in next week's snapshot instead of returning the "API has not been used" error.</pre>
+Goal: move from position 15-17 with 0 clicks to page-1 CTR on these buyer queries, driving generator starts.</pre>
 
-<p><strong>2. Quick win — grant GSC permission to the reporting service account</strong></p>
-<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">The weekly SEO pipeline for mysterymaker.party failed with this Google Search Console error: "User does not have sufficient permission for site 'https://www.mysterymaker.party/'."
+<p><strong>2. Quick win — rewrite title/meta on the high-impression review blog</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">You are editing the blog post at https://www.mysterymaker.party/blog/best-murder-mystery-party-games-review/ on mysterymaker.party (AI-generated printable murder mystery kits). This page gets 466 impressions but only 6 clicks (1.3% CTR) at average position 13 — strong demand, weak click-through.
 
-Please give me step-by-step instructions to fix this:
-1. Identify the service account / email that the reporting pipeline authenticates as.
-2. In Google Search Console (https://search.google.com/search-console), open Settings > Users and permissions for the property https://www.mysterymaker.party/.
-3. Add that service account with "Full" or at minimum "Restricted" user access.
-4. Confirm the property is verified as a Domain property vs URL-prefix property, and that the pipeline is querying the matching property type/URL exactly (note the www and trailing slash).
-5. Run a minimal test query (last 7 days, clicks + impressions) to confirm data returns.
+Task: Rewrite the SEO title tag and meta description to dramatically improve CTR.
+- Title ≤60 chars: lead with the value (e.g. "best murder mystery party games" + year/curiosity hook).
+- Meta description ≤155 chars: promise a comparison/ranking, mention printable + instant-generate option, end with a soft CTA.
+- Suggest one internal link from this post into the generator/create flow with natural anchor text, since the post is top-of-funnel.
 
-Goal: Organic clicks, impressions, average position, and top queries populate in next week's snapshot.</pre>
+Do not change the article body facts. Goal: lift CTR from 1.3% toward 3-5% to convert existing impressions into clicks.</pre>
 
-<p><strong>3. Follow-up — add a pipeline health check so silent failures surface immediately</strong></p>
-<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">For the mysterymaker.party weekly analytics pipeline, all three data sources (Google Search Console, GA4 traffic, GA4 AI-referral) returned errors and produced an empty report. We want to catch this before the report is generated, not after.
+<p><strong>3. Build the corporate/office cluster</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">You are creating content for mysterymaker.party (AI-generated printable murder mystery party kits). A corporate/office query cluster is emerging: "office murder mystery party" (16 impressions, newly appearing, ranking ~position 82) and "corporate murder mystery" (position 15). The existing post https://www.mysterymaker.party/blog/murder-mystery-party-for-corporate-events/ ranks weakly at position 57.7 for 27 impressions.
 
-Please propose a lightweight pre-flight health check that:
-1. Runs a tiny test query against each source (GSC, GA4 sessions, GA4 referral channel) before the main report job.
-2. If any source returns a permission or disabled-API error, sends a single alert (email or Slack) naming the failing source and the exact error message.
-3. Still generates the report for any sources that DID succeed, clearly flagging which sections are missing.
-4. Logs the last-successful timestamp per source so we can see how long a source has been broken.
+Task:
+1. Audit and expand the existing corporate-events post to explicitly target "office murder mystery party" and "corporate murder mystery party" — add H2 sections for team-building, office/workplace settings, scalable guest counts, and remote/hybrid options.
+2. Provide a new SEO title (≤60 chars) and meta description (≤155 chars) targeting these terms.
+3. Write 250 words of new section copy for "office murder mystery party" with a CTA to generate a custom corporate kit.
+4. Add internal links from the homepage and any team-building/group content to this post.
 
-Goal: never again ship a fully empty weekly report; failures get flagged the moment they happen.</pre>
+Goal: move "office murder mystery party" from ~position 82 onto page 1-2 and convert corporate buyers into generations.</pre>
 
-<p><em>Note: No SEO/content opportunities are reported this week because no usable data was returned. Expect normal Insights and content Action prompts to resume once at least one source is restored.</em></p></div>
+<p><strong>4. Italian corporate page — meta tune to win clicks already on page 1</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">You are optimizing the Italian (it) corporate murder mystery content on mysterymaker.party. The query "miglior intrattenimento murder mystery per eventi aziendali" ranks at position 3.3 with 15 impressions but 0 clicks — page-1 visibility wasted on a weak snippet.
+
+Task: Rewrite the Italian SEO title tag (≤60 chars) and meta description (≤155 chars) for the relevant IT page (the localized version of the corporate-events / eventi aziendali content) to make the snippet compelling for this query. Use natural Italian, lead with the benefit ("miglior intrattenimento … per eventi aziendali"), and include a CTA to generate a custom kit (genera un kit personalizzato).
+
+Goal: convert an existing position-3 ranking from 0% CTR into clicks from Italian corporate buyers.</pre>
+
+<p><em>Note: spam/prompt-injection queries (the Chinese "户外音乐节…" string at 36 impressions, plus Korean/Swedish junk) are intentionally excluded — they are not real opportunities.</em></p></div>
