@@ -41,6 +41,9 @@ Blog Database - Master.csv
 # Translation artifacts (generated scripts, reports, data)
 # These are one-time-use files from blog translation sessions
 *.mjs
+!scripts/fetchSeoWeeklySnapshot.mjs
+!scripts/generateSeoDigest.mjs
+!scripts/sendSeoDigest.mjs
 !scripts/sync-blog-map.mjs
 !scripts/backfill-crosslinks.mjs
 !scripts/apply-crosslinks.mjs
@@ -85,6 +88,7 @@ temp-files/*.json
 !temp-files/gsc-metrics.json
 !temp-files/make-scenarios.json
 temp-files/*.md
+temp-files/seo-digest.html
 temp-files/*.mjs
 temp-files/*.txt
 temp-files/*.py

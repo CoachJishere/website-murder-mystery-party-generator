@@ -1,0 +1,54 @@
+name: Weekly SEO/GEO Digest
+
+on:
+  schedule:
+    # Mondays ~08:23 CET (06:23 UTC). Offset minutes (not :00) because GitHub
+    # queues top-of-hour crons globally and routinely runs them 60-120 min late
+    # or drops them under peak load — same mitigation as publish-daily-blog.
+    - cron: '23 6 * * 1'
+  workflow_dispatch: # manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install googleapis
+
+      - name: Fetch weekly snapshot (GSC + GA4 + AI referrals)
+        env:
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          GA4_PROPERTY_ID: '504442584'
+          GSC_SITE_URL: 'https://www.mysterymaker.party/'
+        run: node scripts/fetchSeoWeeklySnapshot.mjs
+
+      - name: Generate digest (Claude)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/generateSeoDigest.mjs
+
+      - name: Email digest
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SEO_DIGEST_RECIPIENT: 'millerdjonathan@proton.me'
+        run: node scripts/sendSeoDigest.mjs
+
+      - name: Commit digest to history
+        run: |
+          git config user.name "Analytics Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/seo-digests/
+          git commit -m "chore(seo): weekly digest $(date -u +%Y-%m-%d)" || echo "No changes"
+          git push || echo "Nothing to push"
