@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 142 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 143 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -123,6 +123,7 @@ This index organizes 142 published guides by topic cluster. All guides are avail
 - [How Long Should a Murder Mystery Party Last?](https://www.mysterymaker.party/blog/how-long-should-murder-mystery-party-last): Most run 2-4 hours. The right length depends on group size, format, and how much room you want clues to breathe — not just how long people will sit.
 - [How to Write a Murder Mystery: From Plot to Playable Game](https://www.mysterymaker.party/blog/how-to-write-a-murder-mystery): Learn how to write a murder mystery game or story. Step-by-step guide covering plot, characters, clues, and testing.
 - [Murder Mystery Party Character Ideas](https://www.mysterymaker.party/blog/murder-mystery-party-character-ideas): Discover murder mystery character archetypes, design balanced roles, and learn casting strategies. Create memorable characters with MysteryMaker.
+- [Murder Mystery Party Clue Ideas: From Paper to Digital](https://www.mysterymaker.party/blog/murder-mystery-party-clue-ideas): Explore murder mystery clue types, difficulty levels, and creative design techniques. Learn how MysteryMaker creates compelling clues for any party.
 
 ## Logistics (Food, Costumes, Decor, Invitations)
 
