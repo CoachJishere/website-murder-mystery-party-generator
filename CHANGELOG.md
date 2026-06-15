@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-15
+
+### Improvement: Routine security dependency bumps (esbuild, react-router)
+
+- **Trigger**: Dependabot alerts #76 (esbuild Deno-module RCE via `NPM_CONFIG_REGISTRY`, High), #74 (react-router open redirect via `//` protocol-relative URL, Moderate), and an esbuild Windows dev-server file-read (Low).
+- **Assessment — none active in our deployment**: (1) The esbuild Deno RCE only affects esbuild's *Deno* install path; we install via npm where the native binary comes from `@esbuild/*` optionalDeps verified against lockfile `integrity` hashes — the Deno code path never runs. Dev-only dep; also requires an already-compromised build env. (2) The react-router open redirect affects **server-side/framework-mode `redirect()`**; we're a pure client-side SPA (`BrowserRouter`, no SSR, no `redirect()` loaders, no user-controlled `Navigate`) — surface not present. (3) Windows dev-server read is dev-only + Windows-only; we build on macOS/CI. None reach the deployed Vercel/Netlify site.
+- **Action**: bumped within semver — `react-router`/`react-router-dom` 6.30.3→6.30.4, `esbuild` 0.25.11→0.25.12 and 0.27.3→0.27.7 (under Vite). Build verified clean (1854 pages prerendered, 0 failed).
+- **Deferred — no non-breaking fix exists**: the esbuild advisory range is `0.17.0 - 0.28.0`, i.e. *every* released version; `npm audit fix --force` would downgrade Vite 7 + lovable-tagger (breaking) to pull an old esbuild — worse than a non-exploitable dev-only advisory. A separate `uuid <11.1.1` moderate (via `exceljs`) is likewise only fixable by a breaking `exceljs` downgrade. Left both for when patched upstreams ship; Dependabot will reopen.
+
 ## 2026-06-13
 
 ### Feature: Weekly emailed SEO/GEO digest with copy-paste action prompts
