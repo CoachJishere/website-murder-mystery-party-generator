@@ -2,6 +2,14 @@
 
 ## 2026-06-15
 
+### Improvement: Prompt caching for Anthropic calls — chat shipped, Make child generation scoped
+
+- **Trigger**: Anthropic's prompt-caching docs (cache reads = 10% of base input, 5-min TTL refreshed free on hit, 1h TTL at 2× write). Audited every direct Anthropic call; **none used `cache_control`**.
+- **Chat (`mystery-ai`) — shipped** ([ADR-0019](docs/adr/0019-prompt-caching-anthropic-calls.md)): added one top-level `cache_control: { type: 'ephemeral' }` (automatic caching) to the Sonnet 4.5 request in [mystery-ai/index.ts](supabase/functions/mystery-ai/index.ts). Caches system prompt + growing history so follow-up turns read the prefix from cache. Volume is low (~350–630 user msgs/mo, avg 6.2 turns) so the **dollar win is small (~$5/mo)** — the real benefit is faster time-to-first-token for refine-heavy sessions (p90 = 11 turns). Hits only while `systemPrompt` is byte-identical turn-to-turn; branch changes cost one miss. Verify via `usage.cache_read_input_tokens > 0` on turn ≥2.
+- **Make child generation — the bigger prize, proposed not shipped**: the heavy generation runs inside Make, not our code. `mystery_packages.master_context` averages **~20k tokens** and is re-sent into **all 8 Haiku 4.5 calls per character** (~88 calls/generation, ~11 generations/mo). Caching that prefix (1h TTL) cuts its cost ~88% (≈$1.76→$0.21/generation) and—more importantly—slashes per-call latency, which should reduce the timeout-driven generation failures the Apr-2026 monitoring/retry system exists to catch.
+- **Blocker to test first**: the native `anthropic-claude:createAMessage` Make module doesn't expose `cache_control`. Its `messages` content is already a typed-block array, so the field *may* pass through if added to the block JSON — needs a one-generation read-rate test. Fallback: switch those 8 calls to the raw HTTP module (already used 11× in the scenario; `jsonEscape` raw-body pattern already exists).
+- **Deferred**: `regenerate-parent-content`, `generate-pointform-summaries` (one-shot, low frequency); Make **parent** scenario is a plausible secondary target once the child is proven.
+
 ### Improvement: Routine security dependency bumps (esbuild, react-router)
 
 - **Trigger**: Dependabot alerts #76 (esbuild Deno-module RCE via `NPM_CONFIG_REGISTRY`, High), #74 (react-router open redirect via `//` protocol-relative URL, Moderate), and an esbuild Windows dev-server file-read (Low).

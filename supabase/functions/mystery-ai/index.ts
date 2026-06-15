@@ -566,6 +566,13 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
         max_tokens: 2000,
+        // Automatic prompt caching: caches the system prompt + growing
+        // conversation history so each follow-up turn reads the prefix from
+        // cache (~90% cheaper, faster TTFT) instead of reprocessing it. The
+        // breakpoint auto-advances as the conversation grows. Hits only while
+        // systemPrompt is byte-identical turn-to-turn (i.e. the stable
+        // refinement phase); branch changes to systemPrompt cost one miss.
+        cache_control: { type: 'ephemeral' },
         system: systemPrompt,
         messages: anthropicMessages,
         temperature: 0.7
