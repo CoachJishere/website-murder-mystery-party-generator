@@ -84,6 +84,7 @@ async function generateSitemap() {
     { loc: '/', priority: '1.0', freq: 'weekly' },
     { loc: '/showcase/', priority: '0.8', freq: 'weekly' },
     { loc: '/blog/', priority: '0.8', freq: 'daily' },
+    { loc: '/custom-murder-mystery-party/', priority: '0.8', freq: 'monthly' },
     { loc: '/support/', priority: '0.5', freq: 'monthly' },
     { loc: '/privacy/', priority: '0.3', freq: 'yearly' },
   ];
@@ -161,7 +162,7 @@ async function generateSitemap() {
   // but that previously 404'd on GH Pages (no index.html, no SPA fallback).
   // Each gets a copy of the build's index.html — the SPA router takes over
   // client-side. These match real <Route> entries in src/App.tsx.
-  for (const staticRoute of ['showcase', 'support', 'privacy']) {
+  for (const staticRoute of ['showcase', 'support', 'privacy', 'custom-murder-mystery-party']) {
     const dir = resolve(distDir, staticRoute);
     mkdirSync(dir, { recursive: true });
     writeFileSync(resolve(dir, 'index.html'), indexHtml, 'utf-8');

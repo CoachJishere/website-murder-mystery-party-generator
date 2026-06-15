@@ -493,6 +493,12 @@ function SupportCTA() {
         <Link to="/support" className="btn-on-red no-underline inline-flex">
           {t("support.button")}
         </Link>
+        <p className="mt-6 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
+          <Link to="/custom-murder-mystery-party" className="underline" style={{ color: CREAM }}>
+            Build a custom murder mystery party
+          </Link>{" "}
+          tailored to your theme and guest list.
+        </p>
       </motion.div>
     </section>
   );

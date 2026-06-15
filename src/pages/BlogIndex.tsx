@@ -138,6 +138,13 @@ export default function BlogIndex() {
             </Button>
             <h1 className="text-3xl md:text-4xl font-bold text-[#C81400] mb-2">{t('blog.title')}</h1>
             <p className="text-muted-foreground">{t('blog.subtitle')}</p>
+            <p className="text-muted-foreground mt-3">
+              Want a game built around your own group?{' '}
+              <Link to="/custom-murder-mystery-party" className="text-[#C81400] hover:underline font-medium">
+                Create a custom murder mystery party
+              </Link>
+              .
+            </p>
           </div>
 
           {loading ? (

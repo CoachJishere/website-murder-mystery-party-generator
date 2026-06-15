@@ -47,6 +47,11 @@ const Footer = () => {
                   {t('footer.links.blog')}
                 </Link>
               </li>
+              <li>
+                <Link to="/custom-murder-mystery-party" className="footer-link">
+                  {t('footer.links.customMystery', { defaultValue: 'Custom Murder Mystery' })}
+                </Link>
+              </li>
             </ul>
           </div>
 

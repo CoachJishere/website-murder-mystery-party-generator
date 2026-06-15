@@ -2,6 +2,15 @@
 
 ## 2026-06-15
 
+### Feature: `/custom-murder-mystery-party` SEO landing page targeting "custom" intent
+
+- **Trigger**: two high-intent queries get impressions but **0 clicks** — "custom murder mystery party" (31 impressions, avg position 17) and "custom murder mystery game" (28 impressions, position 20.5). No dedicated page existed for "custom" intent, so the homepage was ranking weakly on page 2 with no query-matched title/H1.
+- **New page** ([src/pages/CustomMurderMysteryParty.tsx](src/pages/CustomMurderMysteryParty.tsx)): standalone landing page at `/custom-murder-mystery-party`. Title tag carries the exact primary phrase + "Game" + benefit ("Custom Murder Mystery Party & Game — Built for Your Guests"); H1 is the exact primary query; one H2 ("Design a Custom Murder Mystery Game for Any Group") covers the secondary query. ~380 words of body copy on themes / guest count / custom characters / printable kit, two prominent CTAs to `/mystery/create` (matches the Hero + BlogPost create flow), and four feature cards.
+- **SEO plumbing**: used `Helmet` directly (like About/BlogPost) rather than the `Head` component so the title isn't forced to carry the long brand suffix and the exact query phrasing is preserved. Added **FAQPage JSON-LD** answering "Can I make a custom murder mystery?" and "How many guests can play?" — the visible FAQ and the schema are generated from one shared `FAQ` array so they can't drift. Canonical uses the trailing-slash form GH Pages serves with 200.
+- **Route + sitemap**: registered the public route in [src/App.tsx](src/App.tsx); added `/custom-murder-mystery-party/` to the sitemap's `staticPages` (priority 0.8) and to the static-route HTML fallback list in [scripts/generate-sitemap.mjs](scripts/generate-sitemap.mjs) so GH Pages returns 200 (not a 301/404) for the directory URL.
+- **Internal links**: linked from the homepage (contextual link in the SupportCTA section of [src/pages/Index.tsx](src/pages/Index.tsx)), the blog hub (under the subtitle in [src/pages/BlogIndex.tsx](src/pages/BlogIndex.tsx)), and the sitewide [Footer](src/components/Footer.tsx) Quick Links (added with an i18n `defaultValue` fallback to avoid a 13-locale bulk edit — non-EN footers show the English label until keys are translated).
+- **Not done (deferred)**: no localized `/:lang/custom-murder-mystery-party` variants yet (EN-only, matching where the impressions are); footer link label not yet added to the 12 non-EN locale files.
+
 ### Improvement: Prompt caching for Anthropic calls — chat shipped, Make child generation scoped
 
 - **Trigger**: Anthropic's prompt-caching docs (cache reads = 10% of base input, 5-min TTL refreshed free on hit, 1h TTL at 2× write). Audited every direct Anthropic call; **none used `cache_control`**.

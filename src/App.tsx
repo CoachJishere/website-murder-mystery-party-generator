@@ -29,6 +29,7 @@ import Showcase from "./pages/Showcase";
 import Privacy from "./pages/Privacy";
 import Support from "./pages/Support";
 import About from "./pages/About";
+import CustomMurderMysteryParty from "./pages/CustomMurderMysteryParty";
 import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
 import CharacterAccess from "./pages/CharacterAccess";
@@ -121,6 +122,7 @@ const AppRoutes = () => {
         <Route path="/showcase" element={<Showcase />} />
         <Route path="/contact" element={<Navigate to="/support" replace />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/custom-murder-mystery-party" element={<CustomMurderMysteryParty />} />
         <Route path="/support" element={<Support />} />
         <Route path="/dark-preview" element={<DarkHomePreview />} />
         <Route path="/font-preview" element={<FontPreview />} />
