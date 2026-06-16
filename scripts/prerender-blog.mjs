@@ -192,23 +192,41 @@ function buildSchemas(post, langVariants) {
     });
   }
 
-  // HowTo (only if slug or title is how-to-shaped)
-  const isHowTo = /^how-to/i.test(post.slug) || /^how[\s-]to/i.test(post.title) || /^(Sådan|Kuinka|So |Wie du|Comment|Cómo|Como|Come |Hoe |Hur man|Hvordan)/i.test(post.title) || /方法/.test(post.title);
+  // HowTo — slug/title how-to-shaped, OR content has a `## Step N` / `## How To`
+  // section WITHOUT a numbered-anchor TOC block. The content clause mirrors
+  // src/pages/BlogPost.tsx, but is gated on "no anchor TOC" so posts that already
+  // emit ItemList from their TOC keep doing so (narrow blast radius); only the
+  // `## Step N:`-style guides (no TOC) newly emit HowTo to match the client.
+  const anchorToc = parseNumberedAnchorBlock(post.content);
+  const hasAnchorToc = anchorToc && anchorToc.length >= 3;
+  const isHowTo = /^how-to/i.test(post.slug) || /^how[\s-]to/i.test(post.title) || /^(Sådan|Kuinka|So |Wie du|Comment|Cómo|Como|Come |Hoe |Hur man|Hvordan)/i.test(post.title) || /方法/.test(post.title) || (/## (?:step\s*\d|how to)/i.test(post.content) && !hasAnchorToc);
   if (isHowTo) {
-    const items = parseNumberedAnchorBlock(post.content);
-    if (items && items.length >= 3) {
+    // Pattern 0 (preferred): numbered linked-anchor TOC block → steps with anchors.
+    const linked = anchorToc;
+    let steps = [];
+    if (linked && linked.length >= 3) {
+      steps = linked.map((it, i) => ({
+        '@type': 'HowToStep',
+        position: i + 1,
+        name: it.name,
+        text: it.teaser.substring(0, 500),
+        url: `${url}#${it.anchor}`,
+      }));
+    } else {
+      // Pattern 1: `## Step N: Title` headings → steps without anchors.
+      for (const sm of post.content.matchAll(/##\s*(?:Step\s*\d+[:.]\s*)(.+?)\n([\s\S]*?)(?=\n## |$)/gi)) {
+        const name = sm[1].trim();
+        const text = sm[2].trim().replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\n+/g, ' ').substring(0, 500);
+        if (name && text) steps.push({ '@type': 'HowToStep', position: steps.length + 1, name, text });
+      }
+    }
+    if (steps.length >= 2) {
       schemas.push({
         '@context': 'https://schema.org',
         '@type': 'HowTo',
         name: post.title,
         description: post.meta_description,
-        step: items.map((it, i) => ({
-          '@type': 'HowToStep',
-          position: i + 1,
-          name: it.name,
-          text: it.teaser.substring(0, 500),
-          url: `${url}#${it.anchor}`,
-        })),
+        step: steps,
       });
     }
   }
