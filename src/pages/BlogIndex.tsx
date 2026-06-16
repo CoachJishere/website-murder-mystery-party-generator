@@ -143,6 +143,10 @@ export default function BlogIndex() {
               <Link to="/custom-murder-mystery-party" className="text-[#C81400] hover:underline font-medium">
                 Create a custom murder mystery party
               </Link>
+              , or planning for work? See our guide to{' '}
+              <Link to="/blog/murder-mystery-party-for-corporate-events/" className="text-[#C81400] hover:underline font-medium">
+                corporate &amp; office murder mystery parties
+              </Link>
               .
             </p>
           </div>

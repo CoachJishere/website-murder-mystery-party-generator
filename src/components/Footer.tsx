@@ -52,6 +52,11 @@ const Footer = () => {
                   {t('footer.links.customMystery', { defaultValue: 'Custom Murder Mystery' })}
                 </Link>
               </li>
+              <li>
+                <Link to="/blog/murder-mystery-party-for-corporate-events/" className="footer-link">
+                  {t('footer.links.corporateEvents', { defaultValue: 'Corporate & Office Events' })}
+                </Link>
+              </li>
             </ul>
           </div>
 
