@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 144 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 145 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -103,7 +103,7 @@ This index organizes 144 published guides by topic cluster. All guides are avail
 
 - [Creating the Perfect Wedding Planner Character](https://www.mysterymaker.party/blog/creating-the-perfect-wedding-planner-character-perfect-ceremonies-and-imperfect-murders): Plan perfect ceremonies and imperfect murders with detail-oriented wedding planner characters who know event secrets.
 - [Murder Mystery Party for Birthday Celebrations](https://www.mysterymaker.party/blog/murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable): A practical guide to hosting a birthday murder mystery that makes the guest of honor feel like the star while everyone gets invested in solving the case.
-- [Corporate Murder Mystery That Actually Works](https://www.mysterymaker.party/blog/murder-mystery-party-for-corporate-events): Create a corporate murder mystery that actually works for your team. Skip the generic scripts and build something around how your people actually communicate.
+- [Corporate & Office Murder Mystery Party: Team-Building Ideas + Setup Guide](https://www.mysterymaker.party/blog/murder-mystery-party-for-corporate-events): Plan an office murder mystery party your team will actually remember. A practical guide to corporate murder mystery team building: group sizes, remote and hybri
 - [How to Plan a Murder Mystery Date Night for Couples](https://www.mysterymaker.party/blog/murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery): So murder mysteries for date night aren't just puzzle games — they're ways to build collaboration and connection. Here's how to design them so they work.
 - [Murder Mystery Party for Dinner Parties](https://www.mysterymaker.party/blog/murder-mystery-party-for-dinner-parties-elevate-your-evening-with-culinary-intrigue): How to actually run a murder mystery that works with your dinner, not against it. We'll show you how.
 - [Murder Mystery Parties for Game Night Groups](https://www.mysterymaker.party/blog/murder-mystery-party-for-game-night-groups-transform-your-regular-game-night): Murder mystery parties combine strategic thinking, puzzles, and social deduction for game night groups. Tailor the mystery to your group's gaming style.
@@ -130,6 +130,7 @@ This index organizes 144 published guides by topic cluster. All guides are avail
 - [Free Murder Mystery Games & Printables: What Works](https://www.mysterymaker.party/blog/free-murder-mystery-games-printable): Honest guide to free murder mystery printables, templates, and games. Where they work, limitations, and when to upgrade.
 - [How to Host a Rockstar Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-host-a-rockstar-murder-mystery-party-music-industry-mysteries-with-backstage-drama): Rock and roll all night while solving murders in music industry mystery parties featuring bands and backstage drama.
 - [Murder Mystery Party Decorations: Atmosphere on Any Budget](https://www.mysterymaker.party/blog/murder-mystery-party-decorations-ideas): Budget-friendly murder mystery party decorations by theme. Atmosphere creation, DIY vs. store-bought, and high-impact decoration priorities.
+- [Murder Mystery Party Food Ideas & Menus](https://www.mysterymaker.party/blog/murder-mystery-party-food-ideas-menu): Murder mystery party food ideas & menus by theme. Timing food with game rounds, budget-friendly options, themed potluck ideas.
 
 ## Character & Role Guides
 
@@ -184,6 +185,6 @@ This index organizes 144 published guides by topic cluster. All guides are avail
 
 ## Kits, Tools & Comparisons
 
-- [Best Murder Mystery Party Games: 2026 Reviews](https://www.mysterymaker.party/blog/best-murder-mystery-party-games-review): Honest reviews of top murder mystery game kits by group size. Commercial vs. custom options, what actually works for different parties.
+- [Best Murder Mystery Party Games 2026: Printable vs Boxed](https://www.mysterymaker.party/blog/best-murder-mystery-party-games-review): Compare the best murder mystery party games of 2026 — boxed sets vs instant printable kits, ranked by group size. See which one fits your party.
 - [Food Critic Murder Mystery Themes](https://www.mysterymaker.party/blog/food-critic-murder-mystery-themes-culinary-reviews-restaurant-revenge): Murder mystery themes with food critic characters — savage reviews, kitchen feuds, and the kind of grudges that turn restaurants into crime scenes.
 
