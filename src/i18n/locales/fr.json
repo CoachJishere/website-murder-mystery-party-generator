@@ -97,6 +97,51 @@
       "sentientPlantColony": "Créez un mystère de meurtre dans une communauté de plantes intelligentes et mobiles avec une hiérarchie sociale complexe."
     }
   },
+  "customParty": {
+    "seo": {
+      "title": "Murder Mystery pour Entreprise : Team Building Ludique",
+      "description": "Animation murder mystery sur mesure pour événements d’entreprise et soirées au bureau. Kit imprimable, prêt en quelques minutes. Créez le vôtre !"
+    },
+    "hero": {
+      "h1": "Murder Mystery pour Événements d’Entreprise",
+      "intro": "Un murder mystery écrit sur mesure pour votre équipe, votre entreprise et votre occasion — pas un kit préfabriqué. Générez le jeu complet et imprimable en quelques minutes.",
+      "cta": "Créez votre murder mystery"
+    },
+    "body": {
+      "lead": "La plupart des produits murder mystery vous livrent une boîte fermée : un thème figé, un nombre de personnages imposé et un scénario déjà joué par des milliers d’autres. Mystery Maker fonctionne à l’inverse. Décrivez l’événement d’entreprise que vous voulez vraiment organiser et le générateur écrit une enquête entièrement nouvelle, taillée pour vous — intrigue, suspects, mobiles, indices et le script de chaque personnage compris.",
+      "designHeading": "Créez un murder mystery pour le team building et les événements d’entreprise",
+      "themePara": "La personnalisation commence par le thème. Une soirée au bureau, un dîner de gala d’entreprise, un séminaire, un team building hors les murs ou un scénario bâti autour d’une blague interne à l’équipe — si vous pouvez le décrire, l’histoire s’y adapte. Aucun catalogue dans lequel piocher : votre jeu est unique.",
+      "guestPara": "Vient ensuite le nombre de participants. Vous indiquez au générateur combien de personnes jouent et la distribution s’ajuste — une partie resserrée pour 4 à 6 collègues, une fête animée pour 8 à 12, ou un événement d’entreprise complet pour 20 personnes ou plus. Chaque participant tient un vrai rôle dans l’enquête, jamais un simple figurant, et les invités supplémentaires peuvent rejoindre la partie comme enquêteurs si le groupe s’agrandit.",
+      "characterPara": "Chaque personnage est conçu sur mesure : un passé, des mobiles personnels, des secrets à garder et des scripts tour par tour qui s’imbriquent avec ceux des autres, pour que le mystère tienne vraiment debout. Les accusations, les alibis et les révélations sont écrits pour votre équipe, pas recyclés depuis un modèle.",
+      "kitPara": "Une fois prêt, vous recevez un kit imprimable complet — un guide pour l’animateur qui vous accompagne tout au long de la soirée, les livrets individuels des personnages, des indices et preuves physiques ainsi que des invitations assorties. Imprimez le tout ou partagez-le en version numérique. Du premier message au jeu terminé, il ne faut que quelques minutes, pas des semaines de préparation."
+    },
+    "features": {
+      "theme": {
+        "title": "N’importe quel thème pour votre entreprise",
+        "body": "Soirée au bureau, dîner de gala, séminaire, team building — décrivez-le et l’histoire est écrite sur mesure. Aucune intrigue générique toute faite."
+      },
+      "guests": {
+        "title": "Taillé pour votre équipe",
+        "body": "Fixez le nombre de joueurs et la distribution s’adapte, des dîners de 4 personnes aux événements de 20 collègues ou plus. Chacun a un vrai rôle."
+      },
+      "characters": {
+        "title": "Des personnages personnalisés",
+        "body": "Chaque collègue reçoit un personnage sur mesure, avec mobiles, secrets et scripts par tour qui s’emboîtent dans l’enquête."
+      },
+      "kit": {
+        "title": "Kit imprimable immédiat",
+        "body": "Guide de l’animateur, livrets des personnages, indices et invitations prêts en quelques minutes — à imprimer ou à partager en numérique, sans préparation."
+      }
+    },
+    "midCta": "Commencez à créer votre mystère",
+    "faq": {
+      "heading": "Questions fréquentes sur le murder mystery en entreprise",
+      "q1": "Est-ce adapté aux événements d’entreprise et au team building ?",
+      "a1": "Oui. Mystery Maker crée un murder mystery entièrement sur mesure pour le contexte professionnel que vous décrivez — une soirée au bureau, un dîner de gala, un séminaire ou un team building hors les murs. Vous indiquez au générateur ce que vous voulez et il écrit l’intrigue, les suspects, les indices et le script de chaque personnage. Rien n’est tiré d’un catalogue figé, si bien que deux événements ne jouent jamais la même partie.",
+      "q2": "Combien de participants peuvent jouer ?",
+      "a2": "N’importe quel nombre. Vous fixez le nombre de participants et le générateur ajuste la distribution — des parties intimistes pour 4 à 6 personnes, des dîners pour 8 à 12, ou de grands événements d’entreprise pour 20 personnes ou plus. Chaque participant dispose de son propre personnage, avec mobiles, secrets et scripts tour par tour, et vous pouvez accueillir des invités supplémentaires comme enquêteurs si l’équipe s’agrandit."
+    }
+  },
   "home": {
     "stats": {
       "mysteriesCreated": "Mystères créés",

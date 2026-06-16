@@ -84,10 +84,23 @@ async function generateSitemap() {
     { loc: '/', priority: '1.0', freq: 'weekly' },
     { loc: '/showcase/', priority: '0.8', freq: 'weekly' },
     { loc: '/blog/', priority: '0.8', freq: 'daily' },
-    { loc: '/custom-murder-mystery-party/', priority: '0.8', freq: 'monthly' },
     { loc: '/support/', priority: '0.5', freq: 'monthly' },
     { loc: '/privacy/', priority: '0.3', freq: 'yearly' },
   ];
+
+  // Localized static landing pages: one <url> per language with reciprocal
+  // hreflang alternates (mirrors the blog-post block below). The corporate
+  // murder-mystery page is fully translated into all 13 languages; en lives at
+  // the un-prefixed path, others at /<lang>/<path>/. zh-cn is emitted as the
+  // 'zh-Hans' hreflang code (Google's canonical form), matching the blog logic.
+  // NOTE: the page component (src/pages/CustomMurderMysteryParty.tsx) emits the
+  // same hreflang set in-page; keep the two LANGS lists in sync.
+  const LOCALIZED_LANGS = ['en', 'es', 'fr', 'de', 'it', 'pt', 'nl', 'da', 'sv', 'fi', 'ko', 'ja', 'zh-cn'];
+  const localizedStaticPages = [
+    { path: 'custom-murder-mystery-party', priority: '0.8', freq: 'monthly' },
+  ];
+  const hreflangOf = (l) => (l === 'zh-cn' ? 'zh-Hans' : l);
+  const localizedLoc = (l, path) => (l === 'en' ? `${SITE}/${path}/` : `${SITE}/${l}/${path}/`);
 
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n';
@@ -98,6 +111,20 @@ async function generateSitemap() {
     xml += `  <url>\n    <loc>${SITE}${page.loc}</loc>\n`;
     xml += `    <changefreq>${page.freq}</changefreq>\n`;
     xml += `    <priority>${page.priority}</priority>\n  </url>\n`;
+  }
+
+  // Localized static pages with hreflang alternates (en + 12 translations).
+  for (const page of localizedStaticPages) {
+    for (const lang of LOCALIZED_LANGS) {
+      xml += `  <url>\n    <loc>${localizedLoc(lang, page.path)}</loc>\n`;
+      xml += `    <changefreq>${page.freq}</changefreq>\n`;
+      xml += `    <priority>${page.priority}</priority>\n`;
+      for (const alt of LOCALIZED_LANGS) {
+        xml += `    <xhtml:link rel="alternate" hreflang="${hreflangOf(alt)}" href="${localizedLoc(alt, page.path)}" />\n`;
+      }
+      xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${localizedLoc('en', page.path)}" />\n`;
+      xml += `  </url>\n`;
+    }
   }
 
   // Blog posts with hreflang alternates
@@ -144,7 +171,7 @@ async function generateSitemap() {
   const outputPath = resolve(__dirname, '..', 'dist', 'sitemap.xml');
   writeFileSync(outputPath, xml, 'utf-8');
   console.log(`Sitemap written to ${outputPath}`);
-  console.log(`Total URLs: ${staticPages.length + posts.length}`);
+  console.log(`Total URLs: ${staticPages.length + localizedStaticPages.length * LOCALIZED_LANGS.length + posts.length}`);
 
   // Generate static HTML route files so GitHub Pages returns 200 for blog URLs.
   // Each file is a copy of index.html — the SPA router handles rendering.
@@ -167,6 +194,18 @@ async function generateSitemap() {
     mkdirSync(dir, { recursive: true });
     writeFileSync(resolve(dir, 'index.html'), indexHtml, 'utf-8');
     routeCount++;
+  }
+
+  // Language-prefixed copies of the localized static pages (en is handled above
+  // at the un-prefixed path). Without these, /<lang>/custom-murder-mystery-party/
+  // 404s on GH Pages before the SPA router can take over.
+  for (const page of localizedStaticPages) {
+    for (const lang of LOCALIZED_LANGS.filter((l) => l !== 'en')) {
+      const dir = resolve(distDir, lang, page.path);
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(resolve(dir, 'index.html'), indexHtml, 'utf-8');
+      routeCount++;
+    }
   }
 
   // Create route files for each blog post

@@ -123,6 +123,7 @@ const AppRoutes = () => {
         <Route path="/contact" element={<Navigate to="/support" replace />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/custom-murder-mystery-party" element={<CustomMurderMysteryParty />} />
+        <Route path="/:lang/custom-murder-mystery-party" element={<CustomMurderMysteryParty />} />
         <Route path="/support" element={<Support />} />
         <Route path="/dark-preview" element={<DarkHomePreview />} />
         <Route path="/font-preview" element={<FontPreview />} />

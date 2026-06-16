@@ -98,6 +98,51 @@
       "sentientPlantColony": "Crie um mistério em uma sociedade de plantas inteligentes e móveis."
     }
   },
+  "customParty": {
+    "seo": {
+      "title": "Murder Mystery para Eventos Corporativos e Team Building",
+      "description": "Entretenimento murder mystery à medida para eventos corporativos e festas de escritório. Kit imprimível e pronto a usar. Crie já o seu jogo de equipa!"
+    },
+    "hero": {
+      "h1": "Murder Mystery para Eventos Corporativos",
+      "intro": "Um murder mystery escrito à medida para a sua equipa, a sua empresa e a sua ocasião — não um kit pré-fabricado. Gere o jogo completo e imprimível em poucos minutos.",
+      "cta": "Crie o seu murder mystery"
+    },
+    "body": {
+      "lead": "A maioria dos produtos de murder mystery entrega-lhe uma caixa fechada: um tema fixo, um número fixo de personagens e um guião já jogado por milhares de outros. O Mystery Maker funciona ao contrário. Descreve o evento corporativo que realmente quer organizar e o gerador escreve um mistério totalmente novo à medida — enredo, suspeitos, motivos, pistas e o guião de cada personagem incluídos.",
+      "designHeading": "Crie um murder mystery para team building e eventos corporativos",
+      "themePara": "A personalização começa pelo tema. Uma festa no escritório, um jantar de gala da empresa, uma convenção, um team building fora das instalações ou algo construído à volta de uma piada interna da equipa — se conseguir descrevê-lo, a história adapta-se. Não há catálogo por onde escolher, por isso o seu jogo é único.",
+      "guestPara": "A seguir vem o número de participantes. Diz ao gerador quantas pessoas vão jogar e o elenco ajusta-se — um jogo restrito para 4 a 6 colegas, uma festa animada para 8 a 12 ou um evento corporativo completo para 20 ou mais. Cada participante tem um papel autêntico no mistério, e não uma simples figuração, e os convidados extra podem juntar-se como detetives se o grupo crescer.",
+      "characterPara": "Cada personagem é criada à medida: um historial, motivos privados, segredos a guardar e guiões ronda a ronda que encaixam com os dos restantes, para que o mistério se aguente de verdade. As acusações, os álibis e as reviravoltas são escritos para a sua equipa, não adaptados de um modelo.",
+      "kitPara": "Quando estiver pronto, recebe um kit imprimível completo — um guia para o anfitrião que o acompanha ao longo da noite, os cadernos individuais de cada personagem, pistas e provas físicas e os convites a condizer. Imprima tudo ou partilhe em digital. Do primeiro pedido ao jogo terminado bastam minutos, e não semanas de organização."
+    },
+    "features": {
+      "theme": {
+        "title": "Qualquer tema para a sua empresa",
+        "body": "Festa no escritório, jantar de gala, convenção, retiro corporativo — descreva-o e a história é escrita à medida. Sem enredos genéricos pré-fabricados."
+      },
+      "guests": {
+        "title": "À medida da sua equipa",
+        "body": "Defina o número de jogadores e o elenco ajusta-se, de jantares para 4 pessoas a eventos com mais de 20 colegas. Todos têm um papel a sério."
+      },
+      "characters": {
+        "title": "Personagens personalizadas",
+        "body": "Cada colega recebe uma personagem à medida, com motivos, segredos e guiões para cada ronda que encaixam no mistério."
+      },
+      "kit": {
+        "title": "Kit imprimível imediato",
+        "body": "Guia do anfitrião, cadernos das personagens, pistas e convites prontos em poucos minutos — para imprimir ou partilhar em digital, sem preparação."
+      }
+    },
+    "midCta": "Comece a criar o seu mistério",
+    "faq": {
+      "heading": "Perguntas frequentes sobre murder mystery corporativo",
+      "q1": "É adequado para eventos corporativos e team building?",
+      "a1": "Sim. O Mystery Maker cria um murder mystery totalmente à medida para o contexto corporativo que descrever — uma festa no escritório, um jantar de gala, uma convenção ou um team building fora das instalações. Indica ao gerador o que pretende e ele escreve o enredo, os suspeitos, as pistas e o guião de cada personagem. Nada é retirado de um catálogo fixo, por isso não há dois eventos iguais.",
+      "q2": "Quantos participantes podem jogar?",
+      "a2": "Qualquer número. Define o número de participantes e o gerador ajusta o elenco — jogos íntimos para 4 a 6 pessoas, jantares para 8 a 12 ou grandes eventos corporativos para 20 ou mais. Cada participante tem a sua própria personagem, com motivos, segredos e guiões ronda a ronda, e pode acrescentar convidados como detetives se a equipa crescer."
+    }
+  },
   "home": {
     "stats": {
       "mysteriesCreated": "Mistérios criados",

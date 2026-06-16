@@ -97,6 +97,51 @@
       "sentientPlantColony": "Luo murhamysteeri älykkäiden, liikkuvien kasvien yhteisössä, jolla on monimutkainen sosiaalinen hierarkia."
     }
   },
+  "customParty": {
+    "seo": {
+      "title": "Murhamysteeri yritystapahtumiin: hauska tiimipäivä",
+      "description": "Räätälöity murhamysteeri-viihde yritystapahtumiin ja toimiston juhliin. Tulostettava paketti heti valmiina. Luo oma tiimipelisi nyt!"
+    },
+    "hero": {
+      "h1": "Murhamysteeri yritystapahtumiin",
+      "intro": "Murhamysteeri, joka on kirjoitettu juuri sinun tiimillesi, yrityksellesi ja tilaisuudellesi — ei valmiiksi pakattu paketti. Luo koko tulostettava peli muutamassa minuutissa.",
+      "cta": "Luo oma murhamysteerisi"
+    },
+    "body": {
+      "lead": "Useimmat murhamysteerituotteet antavat sinulle suljetun laatikon: kiinteän teeman, kiinteän määrän hahmoja ja käsikirjoituksen, jota tuhannet muut ovat jo pelanneet. Mystery Maker toimii päinvastoin. Kuvaile yritystapahtuma, jonka todella haluat järjestää, ja generaattori kirjoittaa täysin uuden mysteerin sinun tarpeisiisi — juoni, epäillyt, motiivit, vihjeet ja jokaisen hahmon käsikirjoitus mukana.",
+      "designHeading": "Luo murhamysteeri tiimipäivään ja yritystapahtumiin",
+      "themePara": "Räätälöinti alkaa teemasta. Toimiston juhlat, juhlava yritysillallinen, konferenssi, tiimipäivä luonnon helmassa tai vaikka tiimin sisäpiirin vitsin ympärille rakennettu juoni — jos osaat kuvailla sen, tarina mukautuu. Valittavana ei ole mitään valmista luetteloa, joten pelisi on aina ainutlaatuinen.",
+      "guestPara": "Seuraavaksi tulee osallistujamäärä. Kerrot generaattorille, kuinka monta pelaajaa on mukana, ja hahmokaarti skaalautuu sopivaksi — tiivis peli 4–6 kollegalle, vauhdikas juhla 8–12 hengelle tai täysimittainen yritystapahtuma 20:lle tai useammalle. Jokainen osallistuja saa aidon roolin mysteerissä, ei pelkkää sivuosaa, ja ylimääräiset vieraat voivat liittyä mukaan etsivinä, jos ryhmä kasvaa.",
+      "characterPara": "Jokainen hahmo rakennetaan yksilöllisesti: taustatarina, salaiset motiivit, varjeltavat salaisuudet ja kierros kierrokselta etenevät käsikirjoitukset, jotka nivoutuvat toisiinsa niin, että mysteeri todella pitää kasassa. Syytökset, alibit ja paljastukset on kirjoitettu juuri sinun tiimillesi, ei sovitettu valmiista mallista.",
+      "kitPara": "Kun peli on valmis, saat täydellisen tulostettavan paketin — isännän oppaan, joka opastaa illan läpi, yksittäiset hahmovihkoset, fyysiset vihjeet ja todisteet sekä yhteensopivat kutsut. Tulosta kaikki tai jaa digitaalisesti. Ensimmäisestä syötteestä valmiiseen peliin kuluu minuutteja, ei viikkojen suunnittelua."
+    },
+    "features": {
+      "theme": {
+        "title": "Mikä tahansa teema yrityksellesi",
+        "body": "Toimiston juhlat, juhlaillallinen, konferenssi, tiimipäivä — kuvaile se ja tarina kirjoitetaan mittatilauksena. Ei geneerisiä valmiita juonia."
+      },
+      "guests": {
+        "title": "Tehty juuri sinun tiimillesi",
+        "body": "Aseta pelaajien määrä, ja hahmokaarti mukautuu, illallisista neljälle aina yli 20 kollegan tapahtumiin. Kaikilla on aito rooli."
+      },
+      "characters": {
+        "title": "Räätälöidyt hahmot",
+        "body": "Jokainen kollega saa oman hahmon motiiveineen, salaisuuksineen ja kierroskohtaisine käsikirjoituksineen, jotka nivoutuvat mysteeriin."
+      },
+      "kit": {
+        "title": "Heti tulostettava paketti",
+        "body": "Isännän opas, hahmovihkoset, vihjeet ja kutsut valmistuvat minuuteissa — valmiina tulostettaviksi tai jaettaviksi digitaalisesti, ilman valmisteluja."
+      }
+    },
+    "midCta": "Aloita mysteerisi rakentaminen",
+    "faq": {
+      "heading": "Usein kysytyt kysymykset yrityksen murhamysteeristä",
+      "q1": "Sopiiko tämä yritystapahtumiin ja tiimipäiviin?",
+      "a1": "Kyllä. Mystery Maker luo täysin räätälöidyn murhamysteerin kuvailemaasi yrityskontekstiin — toimiston juhliin, juhlaillalliseen, konferenssiin tai tiimipäivään luonnon helmassa. Kerrot generaattorille, mitä haluat, ja se kirjoittaa juonen, epäillyt, vihjeet ja jokaisen hahmon käsikirjoituksen. Mitään ei poimita valmiista luettelosta, joten kaksi tapahtumaa ei koskaan pelaa samaa peliä.",
+      "q2": "Kuinka monta osallistujaa voi pelata?",
+      "a2": "Mikä tahansa määrä. Asetat osallistujamäärän, ja generaattori skaalaa hahmokaartin sopivaksi — tiiviit pelit 4–6 hengelle, illalliset 8–12:lle tai suuret yritystapahtumat 20:lle tai useammalle. Jokainen osallistuja saa oman hahmonsa motiiveineen, salaisuuksineen ja kierroskohtaisine käsikirjoituksineen, ja voit ottaa lisävieraita mukaan etsivinä, jos tiimi kasvaa pelin rakentamisen jälkeen."
+    }
+  },
   "home": {
     "stats": {
       "mysteriesCreated": "Luotuja mysteerejä",

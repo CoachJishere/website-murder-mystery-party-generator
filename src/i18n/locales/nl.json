@@ -97,6 +97,51 @@
       "sentientPlantColony": "Creëer een moordmysterie in een samenleving van intelligente, mobiele planten met een complexe sociale hiërarchie."
     }
   },
+  "customParty": {
+    "seo": {
+      "title": "Murder Mystery voor Bedrijfsevenementen: Leuke Teambuilding",
+      "description": "Murder mystery-entertainment op maat voor bedrijfsevenementen en kantoorfeesten. Printbare kit, meteen klaar. Maak nu jouw teamspel!"
+    },
+    "hero": {
+      "h1": "Murder Mystery voor Bedrijfsevenementen",
+      "intro": "Een murder mystery die helemaal op maat wordt geschreven rond jouw team, jouw bedrijf en jouw gelegenheid — geen kant-en-klaar pakket. Genereer het complete, printbare spel in enkele minuten.",
+      "cta": "Maak jouw murder mystery"
+    },
+    "body": {
+      "lead": "De meeste murder mystery-producten geven je een vaste doos: een vast thema, een vast aantal personages en een script dat al door duizenden anderen is gespeeld. Mystery Maker werkt precies andersom. Jij beschrijft het bedrijfsevenement dat je echt wilt organiseren, en de generator schrijft een gloednieuw mysterie dat erbij past — plot, verdachten, motieven, aanwijzingen en het script voor elk personage inbegrepen.",
+      "designHeading": "Maak een murder mystery voor teambuilding en bedrijfsevenementen",
+      "themePara": "Het maatwerk begint bij het thema. Een kantoorfeest, een chic bedrijfsgala, een congres, een teambuilding-uitje of iets dat is opgebouwd rond een interne grap van het team — als je het kunt beschrijven, past het verhaal zich aan. Er is geen catalogus om uit te kiezen, dus jouw spel is uniek.",
+      "guestPara": "Daarna komt het aantal deelnemers. Je vertelt de generator met hoeveel mensen jullie spelen en de cast schaalt mee — een compact spel voor 4 tot 6 collega's, een levendig feest voor 8 tot 12, of een volledig bedrijfsevenement voor 20 of meer. Elke deelnemer krijgt een echte rol in het mysterie in plaats van een figurantenrol, en extra gasten kunnen als rechercheur meedoen als de groep groeit.",
+      "characterPara": "Elk personage wordt op maat gebouwd: een achtergrondverhaal, persoonlijke motieven, geheimen om te bewaken en scripts per ronde die in elkaar grijpen met die van alle anderen, zodat het mysterie echt klopt. De beschuldigingen, alibi's en onthullingen worden voor jouw team geschreven, niet uit een sjabloon gehaald.",
+      "kitPara": "Als het klaar is, ontvang je een complete printbare kit — een hostgids die je door de avond loodst, individuele personageboekjes, fysieke aanwijzingen en bewijsstukken, en bijpassende uitnodigingen. Print alles uit of deel het digitaal. Van de eerste prompt tot het afgewerkte spel duurt het minuten, geen weken van voorbereiding."
+    },
+    "features": {
+      "theme": {
+        "title": "Elk thema voor jouw bedrijf",
+        "body": "Kantoorfeest, bedrijfsgala, congres, teambuilding-uitje — beschrijf het en het verhaal wordt op maat geschreven. Geen generieke, kant-en-klare plots."
+      },
+      "guests": {
+        "title": "Op maat van jouw team",
+        "body": "Stel het aantal spelers in en de cast schaalt mee, van diners voor 4 tot evenementen met 20+ collega's. Iedereen krijgt een echte rol."
+      },
+      "characters": {
+        "title": "Personages op maat",
+        "body": "Elke collega krijgt een persoonlijk personage met motieven, geheimen en scripts per ronde die precies in het grotere mysterie passen."
+      },
+      "kit": {
+        "title": "Direct printbare kit",
+        "body": "Hostgids, personageboekjes, aanwijzingen en uitnodigingen klaar in enkele minuten — om te printen of digitaal te delen, zonder voorbereiding."
+      }
+    },
+    "midCta": "Begin met het maken van jouw mysterie",
+    "faq": {
+      "heading": "Veelgestelde vragen over murder mystery voor bedrijven",
+      "q1": "Is het geschikt voor bedrijfsevenementen en teambuilding?",
+      "a1": "Ja. Mystery Maker maakt een volledig op maat gemaakte murder mystery rond de zakelijke context die je beschrijft — een kantoorfeest, een bedrijfsgala, een congres of een teambuilding-uitje. Jij geeft de generator door wat je wilt en hij schrijft het plot, de verdachten, de aanwijzingen en het script voor elk personage. Niets komt uit een vaste catalogus, dus geen enkel evenement is hetzelfde.",
+      "q2": "Hoeveel deelnemers kunnen meespelen?",
+      "a2": "Elk aantal. Je stelt het aantal deelnemers in en de generator past de cast aan — intieme spellen voor 4 tot 6 personen, diners voor 8 tot 12, of grote bedrijfsevenementen voor 20 of meer. Elke deelnemer krijgt een eigen personage met motieven, geheimen en scripts per ronde, en je kunt extra gasten als rechercheur toevoegen als het team groeit."
+    }
+  },
   "home": {
     "stats": {
       "mysteriesCreated": "Mysteries gemaakt",

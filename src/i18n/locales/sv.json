@@ -97,6 +97,51 @@
       "sentientPlantColony": "Create a murder mystery in a society of intelligent, mobile plants with a complex social hierarchy."
     }
   },
+  "customParty": {
+    "seo": {
+      "title": "Murder Mystery för Företagsevent: Rolig Teambuilding",
+      "description": "Underhållande murder mystery för företagsevent och kontorsfester. Utskrivbart kit, redo direkt. Skapa ditt teamspel på minuter!"
+    },
+    "hero": {
+      "h1": "Murder Mystery för Företagsevent",
+      "intro": "En murder mystery skriven från grunden för ditt team, ditt företag och ert tillfälle — inget förpaketerat kit. Skapa hela det utskrivbara spelet på några minuter.",
+      "cta": "Skapa din murder mystery"
+    },
+    "body": {
+      "lead": "De flesta murder mystery-produkter ger dig en stängd låda: ett fast tema, ett fast antal karaktärer och ett manus som redan spelats av tusentals andra. Mystery Maker fungerar tvärtom. Du beskriver företagseventet du verkligen vill ordna, och generatorn skriver en helt ny mordgåta som passar — intrig, misstänkta, motiv, ledtrådar och manus för varje karaktär ingår.",
+      "designHeading": "Skapa en murder mystery för teambuilding och företagsevent",
+      "themePara": "Anpassningen börjar med temat. En kontorsfest, en galamiddag för företaget, en konferens, en teambuilding utanför kontoret eller något byggt kring ett internskämt i teamet — om du kan beskriva det formar sig berättelsen efter det. Det finns ingen katalog att välja ur, så ert spel blir helt unikt.",
+      "guestPara": "Sedan kommer antalet deltagare. Du talar om för generatorn hur många som spelar och rollistan anpassar sig — ett tight spel för 4 till 6 kollegor, en livlig fest för 8 till 12 eller ett fullskaligt företagsevent för 20 eller fler. Varje deltagare får en äkta roll i mysteriet i stället för en statistroll, och fler gäster kan delta som detektiver om gruppen växer.",
+      "characterPara": "Varje karaktär byggs på beställning: en bakgrund, privata motiv, hemligheter att vakta och manus runda för runda som griper in i alla andras så att mysteriet verkligen håller ihop. Anklagelser, alibin och avslöjanden skrivs för ert team, inte återanvända från en mall.",
+      "kitPara": "När det är klart får du ett komplett utskrivbart kit — en värdguide som leder dig genom kvällen, individuella karaktärshäften, fysiska ledtrådar och bevis samt matchande inbjudningar. Skriv ut allt eller dela det digitalt. Från första prompt till färdigt spel tar det några minuter, inte veckor av planering."
+    },
+    "features": {
+      "theme": {
+        "title": "Vilket tema som helst för ert företag",
+        "body": "Kontorsfest, galamiddag, konferens, företagsretreat — beskriv det så skrivs berättelsen efter det. Inga generiska, färdigpaketerade intriger."
+      },
+      "guests": {
+        "title": "Anpassad efter ert team",
+        "body": "Ställ in antalet spelare och rollistan anpassar sig, från middagar för 4 personer till event med 20+ kollegor. Alla får en riktig roll."
+      },
+      "characters": {
+        "title": "Skräddarsydda karaktärer",
+        "body": "Varje kollega får en anpassad karaktär med motiv, hemligheter och manus för varje runda som griper in i mysteriet."
+      },
+      "kit": {
+        "title": "Utskrivbart kit direkt",
+        "body": "Värdguide, karaktärshäften, ledtrådar och inbjudningar klara på några minuter — att skriva ut eller dela digitalt, utan förberedelser."
+      }
+    },
+    "midCta": "Börja skapa ditt mysterium",
+    "faq": {
+      "heading": "Vanliga frågor om murder mystery för företag",
+      "q1": "Passar det för företagsevent och teambuilding?",
+      "a1": "Ja. Mystery Maker skapar en helt skräddarsydd murder mystery för det företagssammanhang du beskriver — en kontorsfest, en galamiddag, en konferens eller en teambuilding utanför kontoret. Du talar om för generatorn vad du vill ha, så skriver den intrigen, de misstänkta, ledtrådarna och manus för varje karaktär. Inget hämtas från en fast katalog, så inget event blir likt ett annat.",
+      "q2": "Hur många deltagare kan spela?",
+      "a2": "Hur många som helst. Du ställer in antalet deltagare och generatorn anpassar rollistan — intima spel för 4 till 6 personer, middagar för 8 till 12 eller stora företagsevent för 20 eller fler. Varje deltagare får sin egen karaktär med motiv, hemligheter och manus runda för runda, och du kan lägga till gäster som detektiver om teamet växer."
+    }
+  },
   "home": {
     "stats": {
       "mysteriesCreated": "Skapade mysterier",
