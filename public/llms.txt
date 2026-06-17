@@ -2,10 +2,14 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 145 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 146 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
+
+## Pillar Guides
+
+- [Murder Mystery Party for Adults: Hosting Guide](https://www.mysterymaker.party/blog/murder-mystery-party-for-adults-guide): Host memorable adult murder mystery parties. Learn themes, maturity levels, alcohol integration, complexity tiers, and what actually works.
 
 ## How to Host a Murder Mystery (by Theme)
 
