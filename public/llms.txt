@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 146 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 147 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -106,6 +106,7 @@ This index organizes 146 published guides by topic cluster. All guides are avail
 ## By Audience (Adults, Kids, Couples, Corporate)
 
 - [Creating the Perfect Wedding Planner Character](https://www.mysterymaker.party/blog/creating-the-perfect-wedding-planner-character-perfect-ceremonies-and-imperfect-murders): Plan perfect ceremonies and imperfect murders with detail-oriented wedding planner characters who know event secrets.
+- [Murder Mystery Party for Anniversaries](https://www.mysterymaker.party/blog/murder-mystery-party-for-anniversary-celebrations-romantic-mysteries-for-milestone-moments): Celebrate love with romantic anniversary murder mystery parties customized for couples and milestone moments.
 - [Murder Mystery Party for Birthday Celebrations](https://www.mysterymaker.party/blog/murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable): A practical guide to hosting a birthday murder mystery that makes the guest of honor feel like the star while everyone gets invested in solving the case.
 - [Corporate & Office Murder Mystery Party: Team-Building Ideas + Setup Guide](https://www.mysterymaker.party/blog/murder-mystery-party-for-corporate-events): Plan an office murder mystery party your team will actually remember. A practical guide to corporate murder mystery team building: group sizes, remote and hybri
 - [How to Plan a Murder Mystery Date Night for Couples](https://www.mysterymaker.party/blog/murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery): So murder mysteries for date night aren't just puzzle games — they're ways to build collaboration and connection. Here's how to design them so they work.
