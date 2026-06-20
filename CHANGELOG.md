@@ -10,6 +10,13 @@
 - **Image-prompt Claude module** already targets "FLUX 1.1 Pro" and forbids double quotes (parallel-effort prep); only its `<role>` line still says "Imagen 4" — cosmetic, conservative guidance, left as-is.
 - **Staged rollout (next):** import Parent42 as a new scenario, run one real package end-to-end, confirm images + row, then swap live. Parent40 retained for instant revert. See [ADR-0017](docs/adr/0017-evidence-images-edge-function-replicate-flux.md).
 
+### Improvement: Prompt caching — Make-side test result (native module strips `cache_control`)
+
+- **Tested** the Make child caching path ([ADR-0019](docs/adr/0019-prompt-caching-anthropic-calls.md)) with a behavior-preserving split blueprint (`temp-files/MM Test - Child Cache (PromptCaching).blueprint.json`) against a throwaway package (copy of a real 22.8k-token `master_context`).
+- **Result**: generation ran clean (split content didn't break the module), but **caching did not engage** — first call usage `cache_creation_input_tokens=0` (and read=0), proving Make's native `anthropic-claude:createAMessage` module **silently drops `cache_control`** on content blocks.
+- **Decision — deferred**: the only way to cache on the Make side is replacing those calls with raw `http:ActionSendData` POSTs (forwarding `cache_control` ourselves). At **~$6–11/mo** current volume (corrected down from an initial ~$17 estimate — the router runs one of two branches per character, so it's 3 or 5 model calls, not all 8) that doesn't justify the raw-body fragility; the latency/timeout benefit might, but is unquantified. Revisit on volume growth or recurring timeout failures.
+- **Chat caching unaffected** — verified working (200 + cache write→read), safe to deploy.
+
 ## 2026-06-16
 
 ### Fix: Eval audit of the 12 corporate/office translations — reconciled 4 xlsx columns that had silently re-drifted from Supabase
@@ -171,7 +178,7 @@
 
 - **Trigger**: Anthropic's prompt-caching docs (cache reads = 10% of base input, 5-min TTL refreshed free on hit, 1h TTL at 2× write). Audited every direct Anthropic call; **none used `cache_control`**.
 - **Chat (`mystery-ai`) — shipped** ([ADR-0019](docs/adr/0019-prompt-caching-anthropic-calls.md)): added one top-level `cache_control: { type: 'ephemeral' }` (automatic caching) to the Sonnet 4.5 request in [mystery-ai/index.ts](supabase/functions/mystery-ai/index.ts). Caches system prompt + growing history so follow-up turns read the prefix from cache. Volume is low (~350–630 user msgs/mo, avg 6.2 turns) so the **dollar win is small (~$5/mo)** — the real benefit is faster time-to-first-token for refine-heavy sessions (p90 = 11 turns). Hits only while `systemPrompt` is byte-identical turn-to-turn; branch changes cost one miss. Verify via `usage.cache_read_input_tokens > 0` on turn ≥2.
-- **Make child generation — the bigger prize, proposed not shipped**: the heavy generation runs inside Make, not our code. `mystery_packages.master_context` averages **~20k tokens** and is re-sent into **all 8 Haiku 4.5 calls per character** (~88 calls/generation, ~11 generations/mo). Caching that prefix (1h TTL) cuts its cost ~88% (≈$1.76→$0.21/generation) and—more importantly—slashes per-call latency, which should reduce the timeout-driven generation failures the Apr-2026 monitoring/retry system exists to catch.
+- **Make child generation — the bigger prize, proposed not shipped**: the heavy generation runs inside Make, not our code. `mystery_packages.master_context` averages **~20k tokens** and is re-sent into **every Haiku 4.5 call** — the router runs one of two branches per character (3 detective / 5 character-based), so ~33–56 calls/generation, ~11 generations/mo. Caching that prefix (1h TTL) cuts its cost ~87% (≈$1.12→$0.15/generation, character-based) and—more importantly—slashes per-call latency, which should reduce the timeout-driven generation failures the Apr-2026 monitoring/retry system exists to catch.
 - **Blocker to test first**: the native `anthropic-claude:createAMessage` Make module doesn't expose `cache_control`. Its `messages` content is already a typed-block array, so the field *may* pass through if added to the block JSON — needs a one-generation read-rate test. Fallback: switch those 8 calls to the raw HTTP module (already used 11× in the scenario; `jsonEscape` raw-body pattern already exists).
 - **Deferred**: `regenerate-parent-content`, `generate-pointform-summaries` (one-shot, low frequency); Make **parent** scenario is a plausible secondary target once the child is proven.
 
