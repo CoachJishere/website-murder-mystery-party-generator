@@ -115,20 +115,29 @@ serve(async (req) => {
     }
 
     // Defense-in-depth: if the parsed object looks like image-prompt output
-    // (top-level `round2` / `round3` / `round4` string fields), strip the two
-    // JSON-breaking chars from those values. Downstream, Make.com's Imagen HTTP
-    // modules embed `{{...round2}}` directly into a `jsonStringBodyContent`
-    // template; any literal `"` or `\` in the value breaks the resulting JSON
-    // body. The parent scenario's prompt already instructs Claude to avoid
-    // double quotes, but this sanitization makes a Claude slip survivable.
-    // Verified safe against child scenarios — none produce top-level
-    // round2/3/4 keys (they use `description`, `background`, `relationships`,
-    // `round2_innocent`, etc. — all unaffected by this check).
+    // (top-level `round2` / `round3` / `round4` string fields), make those
+    // values safe to embed directly in a JSON body via Make.com's plain
+    // `{{...round2}}` substitution. The evidence-image generation now calls the
+    // `generate-evidence-images` edge function with a raw JSON body that uses
+    // plain substitution (ADR-0017) — the old Imagen HTTP modules' IML escape
+    // chain (which neutralized `"`, `\`, and newlines) is gone. So we strip the
+    // JSON-breaking characters here at the single server-side source instead:
+    //   - `"`  → `'`   (double quotes terminate the JSON string)
+    //   - `\`  → removed (stray backslash = invalid escape)
+    //   - C0 control chars (newlines, tabs, CR, …) → single space
+    // The parent prompt already instructs Claude to avoid double quotes and
+    // newlines; this makes a slip survivable. Verified safe against child
+    // scenarios — none produce top-level round2/3/4 keys (they use
+    // `description`, `background`, `relationships`, `round2_innocent`, etc.).
     const data = result.data;
     if (data && typeof data === 'object' && !Array.isArray(data)) {
       for (const key of ['round2', 'round3', 'round4']) {
         if (typeof data[key] === 'string') {
-          data[key] = data[key].replace(/"/g, "'").replace(/\\/g, '');
+          data[key] = data[key]
+            .replace(/"/g, "'")
+            .replace(/\\/g, '')
+            .replace(/[\u0000-\u001f]+/g, ' ')
+            .trim();
         }
       }
     }

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-06-20
+
+### Feature: Wire the Make parent to `generate-evidence-images` (Flux) + harden `parse-claude-json` for plain substitution
+
+- **Parent blueprint built** (`temp-files/MM Live - Parent42 (Flux Evidence Images).blueprint.json`): cut from Parent40 (preserved untouched as the revert point). Per route, **removed the 3 Imagen `http:MakeRequest` modules** and **repurposed the existing `store-evidence-images` Supabase module in place** — same module id, same connection — to call `generate-evidence-images` with `{ "package_id": "{{46.id}}", "prompts": { round2/3/4 } }`, where the prompts come from each route's "Parse Image Prompts" module (route0→`5003`, route1→`5007`, route2→`5011`, route3→`5015`). **Keeping the store module's id is the key trick**: the downstream upsert reference `{{<id>.data.evidence_card_images}}` (modules 185/100/2435/2471) resolves unchanged, since `generate-evidence-images` returns the same `evidence_card_images` field. Net **176 → 164 modules**. Validated programmatically: 12 Imagen removed, 4 generate-evidence-images calls, 0 `store-evidence-images` refs, 4 downstream `evidence_card_images` refs preserved, JSON well-formed.
+- **Net resilience gain:** Parent40's Imagen modules had **no Resume handlers** (the June-8 error-tolerant work lived in a separate "Parent41b" file, not the live parent), so any single round's timeout aborted the whole route. `generate-evidence-images` uses `Promise.allSettled` and returns `200` on partial success, so one round failing can no longer abort the route.
+- **`parse-claude-json` hardened** ([supabase/functions/parse-claude-json/index.ts](supabase/functions/parse-claude-json/index.ts)): the round2/3/4 defense-in-depth sanitization now also collapses **C0 control chars (newlines/tabs/CR) → single space**, on top of the existing `"`→`'` and `\`-strip. The old Imagen IML escape chain neutralized newlines inline; with the new plain `{{field}}` substitution that protection moves **server-side to the single source**. Deployed via Supabase CLI; verified on the live function (`"meet me"` + newline → `'meet me' `, hyphen in `close-up` preserved). This is why plain substitution is safe in production.
+- **Image-prompt Claude module** already targets "FLUX 1.1 Pro" and forbids double quotes (parallel-effort prep); only its `<role>` line still says "Imagen 4" — cosmetic, conservative guidance, left as-is.
+- **Staged rollout (next):** import Parent42 as a new scenario, run one real package end-to-end, confirm images + row, then swap live. Parent40 retained for instant revert. See [ADR-0017](docs/adr/0017-evidence-images-edge-function-replicate-flux.md).
+
 ## 2026-06-16
 
 ### Fix: Eval audit of the 12 corporate/office translations — reconciled 4 xlsx columns that had silently re-drifted from Supabase
