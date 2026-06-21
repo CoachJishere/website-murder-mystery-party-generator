@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 149 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 150 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -111,6 +111,7 @@ This index organizes 149 published guides by topic cluster. All guides are avail
 - [Murder Mystery Party for Bachelor Parties](https://www.mysterymaker.party/blog/murder-mystery-party-for-bachelor-parties-send-off-the-groom-with-memorable-mystery): Send off the groom with memorable bachelor murder mystery parties featuring brotherhood and masculine themes.
 - [Murder Mystery Party for Birthday Celebrations](https://www.mysterymaker.party/blog/murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable): A practical guide to hosting a birthday murder mystery that makes the guest of honor feel like the star while everyone gets invested in solving the case.
 - [Corporate & Office Murder Mystery Party: Team-Building Ideas + Setup Guide](https://www.mysterymaker.party/blog/murder-mystery-party-for-corporate-events): Plan an office murder mystery party your team will actually remember. A practical guide to corporate murder mystery team building: group sizes, remote and hybri
+- [Murder Mystery Party for Couples: The Ultimate Date Night In](https://www.mysterymaker.party/blog/murder-mystery-party-for-couples): Couples murder mystery games and date night ideas. Interactive two-player mysteries, romantic themes, and home-based experiences.
 - [How to Plan a Murder Mystery Date Night for Couples](https://www.mysterymaker.party/blog/murder-mystery-party-for-date-night-ideas-where-romance-meets-mystery): So murder mysteries for date night aren't just puzzle games — they're ways to build collaboration and connection. Here's how to design them so they work.
 - [Murder Mystery Party for Dinner Parties](https://www.mysterymaker.party/blog/murder-mystery-party-for-dinner-parties-elevate-your-evening-with-culinary-intrigue): How to actually run a murder mystery that works with your dinner, not against it. We'll show you how.
 - [Murder Mystery Parties for Game Night Groups](https://www.mysterymaker.party/blog/murder-mystery-party-for-game-night-groups-transform-your-regular-game-night): Murder mystery parties combine strategic thinking, puzzles, and social deduction for game night groups. Tailor the mystery to your group's gaming style.
