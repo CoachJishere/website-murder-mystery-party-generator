@@ -119,11 +119,11 @@ export default function BlogIndex() {
       <Header />
       <main className="flex-grow py-12 px-4">
         <Helmet>
-          <title>Blog - Murder Mystery Party Generator</title>
-          <meta name="description" content="Read our latest articles and tips for hosting the perfect murder mystery party." />
+          <title>Murder Mystery Party Ideas, Themes & Host Guides</title>
+          <meta name="description" content="Free guides to hosting a murder mystery party — 40+ themes, character ideas, timing and decoration tips, plus printable kit comparisons. Plan a night they'll remember." />
           <link rel="canonical" href={`https://www.mysterymaker.party${lang ? `/${lang}` : ''}/blog`} />
-          <meta property="og:title" content="Blog - Murder Mystery Party Generator" />
-          <meta property="og:description" content="Discover tips, tricks, and stories about hosting unforgettable murder mystery parties." />
+          <meta property="og:title" content="Murder Mystery Party Ideas, Themes & Host Guides" />
+          <meta property="og:description" content="Free guides to hosting a murder mystery party — 40+ themes, character ideas, timing tips, and printable kit comparisons." />
           <meta property="og:type" content="website" />
           <meta property="og:locale" content={currentLanguage} />
         </Helmet>

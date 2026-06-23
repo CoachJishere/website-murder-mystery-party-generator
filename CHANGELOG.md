@@ -1,6 +1,20 @@
 # Changelog
 
-## 2026-06-20
+## 2026-06-23
+
+### Improvement: SEO quick-win pass — blog index CTR rewrite + GSC audit
+
+- **Ran `scripts/findQuickWins.mjs`** (30-day GSC) to prioritize by real impressions rather than guesswork. Headline finding: `/blog/best-murder-mystery-party-games-review/` is the dominant asset at ~1,689 impressions/30d, position 13, 0.89% CTR — already title/meta-rewritten on 2026-06-22.
+- **Blog index CTR fix** ([src/pages/BlogIndex.tsx](src/pages/BlogIndex.tsx)): `/blog/` ranks position ~9.1 with 164 impressions but **0 clicks** — caused by a generic title ("Blog - Murder Mystery Party Generator") and throwaway meta. Rewrote `<title>` → "Murder Mystery Party Ideas, Themes & Host Guides" (keyword-led, 48 chars) and the meta/og to surface 40+ themes, character/timing/decoration guides, and printable-kit comparisons. Takes effect on next deploy.
+- **Trailing-slash duplicate — verified NOT a bug**: GSC shows the flagship ranking under both `/review` (821 impr, pos 21) and `/review/` (1,689 impr, pos 13). Confirmed via live `curl` that the no-slash form already 301s to the slash form, and `BlogPost.tsx` sets a self-referencing canonical to the slash URL. The no-slash entry is stale index data that will consolidate on its own; no redirect/ADR change made. (Noted minor inconsistency: `BlogIndex` canonical omits the trailing slash while `BlogPost` includes it — cosmetic, left as-is.)
+- **Deliberately deferred**: per-post CTR rewrites on the page-1 zero-click cluster (film-noir, wild-west, haunted-library, masquerade, game-night, how-long). Their titles are already decent and keyword-matched; combined impressions (~300) make the upside small and the regression risk to working copy real. Revisit only with a clear hook per post, not a bulk pass.
+
+### Improvement: CTR rewrite of `/blog/best-murder-mystery-party-games-review/` title + meta
+
+- **Problem**: page draws 767 impressions/week at avg position 13.1 but only 0.7% CTR (5 clicks). Ranks for "murder mystery games", "best murder mystery box", and comparison queries.
+- **Root issue**: old title "Best Murder Mystery Party Games 2026: Printable vs Boxed" (56 chars) renders with the auto-appended ` | Mystery Maker` suffix to ~73 chars, so the differentiating tail ("Printable vs Boxed") truncated in the SERP — the title showed no concrete reason to click.
+- **Change** (`blog_posts`, `slug=best-murder-mystery-party-games-review`, `language='en'` only): new title "Best Murder Mystery Box vs Printable Kit (2026)" (47 chars) front-loads the "murder mystery box" query it already ranks for; new meta leads with the `$50–80 vs $25` price contrast + "See which wins your night" CTA. Two rejected variants (a "9 … Compared" listicle and a group-size/personalization angle) parked in chat — Variant B chosen for direct query match at position 13.
+- **Scope**: English row only; the 12 translated rows were intentionally left unchanged (GSC/CTR signal is for the English page). Title/meta are served from Supabase via `BlogPost.tsx` Helmet, so the change is live without a redeploy.
 
 ### Feature: Wire the Make parent to `generate-evidence-images` (Flux) + harden `parse-claude-json` for plain substitution
 
