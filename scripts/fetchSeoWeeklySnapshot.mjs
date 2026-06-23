@@ -19,6 +19,7 @@ import { google } from 'googleapis';
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { createClient } from './_supabase-node.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -256,6 +257,75 @@ async function fetchAI(snapshot) {
   };
 }
 
+// ---- Site health (publish queue + dead internal links) ------------------------
+// Surfaces in the digest so two regressions are visible weekly: (1) dead internal
+// links climbing back above 0, and (2) the publish queue stalling or publishing
+// low-value pages. Reads cross_link_map.json for the link-graph priority order
+// (see ADR-0021). Requires SUPABASE_URL + SUPABASE_SERVICE_KEY.
+async function fetchSiteHealth(snapshot) {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) throw new Error('SUPABASE_URL / SUPABASE_SERVICE_KEY not set');
+  const supabase = createClient(url, key);
+
+  const { count: publishedEn } = await supabase
+    .from('blog_posts').select('slug', { count: 'exact', head: true })
+    .eq('language', 'en').eq('status', 'published');
+  const { count: draftsEn } = await supabase
+    .from('blog_posts').select('slug', { count: 'exact', head: true })
+    .eq('language', 'en').eq('status', 'draft');
+
+  // Dead internal links: /blog/<slug> links in published content whose target
+  // is not itself a published EN post.
+  const { data: pub } = await supabase
+    .from('blog_posts').select('slug, content')
+    .eq('language', 'en').eq('status', 'published');
+  const publishedSet = new Set((pub || []).map((p) => p.slug));
+  const linkRe = /\]\(\/blog\/([a-z0-9-]+)/g;
+  const deadTargets = {};
+  let deadInstances = 0;
+  for (const p of pub || []) {
+    let m;
+    while ((m = linkRe.exec(p.content || '')) !== null) {
+      const target = m[1].toLowerCase();
+      if (!publishedSet.has(target)) {
+        deadInstances++;
+        deadTargets[target] = (deadTargets[target] || 0) + 1;
+      }
+    }
+  }
+  const deadLinkTargets = Object.entries(deadTargets)
+    .sort((a, b) => b[1] - a[1]).slice(0, 5)
+    .map(([slug, n]) => ({ slug, linkedFrom: n }));
+
+  // Next-up drafts by intended in-degree in the cross-link map (ADR-0021).
+  let nextUpByImportance = [];
+  const mapPath = join(__dirname, '../cross_link_map.json');
+  if (existsSync(mapPath)) {
+    const map = JSON.parse(readFileSync(mapPath, 'utf-8'));
+    const inDeg = {};
+    for (const src of Object.keys(map)) {
+      for (const t of (map[src]?.links_to || [])) inDeg[t] = (inDeg[t] || 0) + 1;
+    }
+    const { data: draftRows } = await supabase
+      .from('blog_posts').select('slug, created_at')
+      .eq('language', 'en').eq('status', 'draft');
+    nextUpByImportance = (draftRows || [])
+      .map((d) => ({ slug: d.slug, importance: inDeg[d.slug] || 0, created_at: d.created_at }))
+      .sort((a, b) => b.importance - a.importance || new Date(a.created_at) - new Date(b.created_at))
+      .slice(0, 5)
+      .map(({ slug, importance }) => ({ slug, importance }));
+  }
+
+  snapshot.siteHealth = {
+    publishedEn: publishedEn ?? null,
+    draftsEn: draftsEn ?? null,
+    deadInternalLinks: deadInstances,
+    deadLinkTargets,
+    nextUpByImportance,
+  };
+}
+
 // ---- main ---------------------------------------------------------------------
 async function main() {
   const snapshot = {
@@ -265,7 +335,7 @@ async function main() {
     errors: [],
   };
 
-  for (const [label, fn] of [['GSC', fetchGSC], ['GA4', fetchGA4], ['AI', fetchAI]]) {
+  for (const [label, fn] of [['GSC', fetchGSC], ['GA4', fetchGA4], ['AI', fetchAI], ['SiteHealth', fetchSiteHealth]]) {
     try {
       console.log(`Fetching ${label}…`);
       await fn(snapshot);
@@ -287,6 +357,10 @@ async function main() {
   }
   if (snapshot.ga4) console.log(`GA4: ${snapshot.ga4.current.sessions} sessions (${snapshot.ga4.deltas.sessionsPct >= 0 ? '+' : ''}${snapshot.ga4.deltas.sessionsPct}%)`);
   if (snapshot.ai) console.log(`AI:  ${snapshot.ai.aiSessions} sessions (${snapshot.ai.sharePct}% of traffic)`);
+  if (snapshot.siteHealth) {
+    const h = snapshot.siteHealth;
+    console.log(`Health: ${h.publishedEn} live / ${h.draftsEn} drafts, ${h.deadInternalLinks} dead internal links`);
+  }
   if (snapshot.errors.length) console.log(`⚠️  ${snapshot.errors.length} section error(s)`);
 }
 

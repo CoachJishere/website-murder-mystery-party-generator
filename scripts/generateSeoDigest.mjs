@@ -59,6 +59,16 @@ OUTPUT: valid HTML for an email body (no <html>/<head>, just the body markup). U
 3. <h2>Action prompts</h2> — for each insight worth acting on, a numbered block with a copy-paste prompt
    inside a <pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">…</pre>.
    Order easy-wins first. Title each with the effort/impact (e.g. "1. Quick win — rewrite title for X").
+4. <h2>Site health</h2> — ONLY if the snapshot has a "siteHealth" block. Three short lines:
+   (a) Dead internal links: report siteHealth.deadInternalLinks. This should be 0. If it is 0, say so plainly
+       (e.g. "Dead internal links: 0 ✓"). If it is >0, this is a REGRESSION — show the count in bold red
+       (<strong style="color:#b00;">), list the top deadLinkTargets (slug × linkedFrom), and add a matching
+       action prompt to publish those drafts or remove the links.
+   (b) Publish queue: "siteHealth.publishedEn live, siteHealth.draftsEn drafts remaining" — note if drafts are
+       draining week-over-week (you won't have last week's number; just state the current standing).
+   (c) Next up by link-graph importance: list siteHealth.nextUpByImportance (slug + importance) — the posts the
+       daily cron will publish next (highest-value first, per ADR-0021).
+   If siteHealth is absent or errored, omit this section entirely.
 Keep it skimmable. No preamble before the first <h2>. No closing sign-off.
 `.trim();
 

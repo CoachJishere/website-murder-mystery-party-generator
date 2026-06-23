@@ -24,9 +24,9 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install googleapis
+        run: npm install googleapis @supabase/supabase-js ws
 
-      - name: Fetch weekly snapshot (GSC + GA4 + AI referrals)
+      - name: Fetch weekly snapshot (GSC + GA4 + AI referrals + site health)
         env:
           # Dedicated analytics reader (project mystery-maker-analytics) — has GA4
           # Viewer + GSC Full on the www property + the Analytics Data API enabled.
@@ -34,6 +34,11 @@ jobs:
           GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.SEO_DIGEST_SA_JSON }}
           GA4_PROPERTY_ID: '504442584'
           GSC_SITE_URL: 'https://www.mysterymaker.party/'
+          # Supabase reader for the site-health block (publish queue + dead-link
+          # count). Section is independently try/catch'd, so a missing secret
+          # degrades to a noted error rather than failing the digest. See ADR-0021.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node scripts/fetchSeoWeeklySnapshot.mjs
 
       - name: Generate digest (Claude)

@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: npm install @supabase/supabase-js ws github-slugger
 
-      - name: Publish oldest draft blog post (all languages)
+      - name: Publish next draft by link-graph importance (all languages)
         id: publish
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -31,14 +31,21 @@ jobs:
         run: |
           set -e
 
-          # 1. Find the oldest draft EN post (by created_at)
-          RESPONSE=$(curl -s \
-            "${SUPABASE_URL}/rest/v1/blog_posts?language=eq.en&status=eq.draft&order=created_at.asc&limit=1&select=slug,title" \
-            -H "apikey: ${SUPABASE_SERVICE_KEY}" \
-            -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}")
+          # 1. Pick the next draft by LINK-GRAPH IMPORTANCE — the intended
+          #    in-degree in cross_link_map.json (how many posts are designed to
+          #    link to it), tie-broken by created_at. Replaces the old
+          #    created_at-only order, which left high-value hub pages (e.g.
+          #    murder-mystery-party-ideas, an intended target of 196 posts)
+          #    unpublished for months and let 166 dead internal links
+          #    accumulate. The script falls back to created_at order if
+          #    cross_link_map.json is missing. See ADR-0021.
+          SLUG=$(node scripts/pick-next-draft.mjs)
 
-          SLUG=$(echo "$RESPONSE" | jq -r '.[0].slug // empty')
-          TITLE=$(echo "$RESPONSE" | jq -r '.[0].title // empty')
+          # Title is only used for logging below.
+          TITLE=$(curl -s \
+            "${SUPABASE_URL}/rest/v1/blog_posts?language=eq.en&slug=eq.${SLUG}&select=title" \
+            -H "apikey: ${SUPABASE_SERVICE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" | jq -r '.[0].title // empty')
 
           if [ -z "$SLUG" ]; then
             echo "No draft posts remaining. All posts have been published!"
