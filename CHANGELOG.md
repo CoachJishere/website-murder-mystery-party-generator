@@ -9,6 +9,14 @@
 - **Trailing-slash duplicate — verified NOT a bug**: GSC shows the flagship ranking under both `/review` (821 impr, pos 21) and `/review/` (1,689 impr, pos 13). Confirmed via live `curl` that the no-slash form already 301s to the slash form, and `BlogPost.tsx` sets a self-referencing canonical to the slash URL. The no-slash entry is stale index data that will consolidate on its own; no redirect/ADR change made. (Noted minor inconsistency: `BlogIndex` canonical omits the trailing slash while `BlogPost` includes it — cosmetic, left as-is.)
 - **Deliberately deferred**: per-post CTR rewrites on the page-1 zero-click cluster (film-noir, wild-west, haunted-library, masquerade, game-night, how-long). Their titles are already decent and keyword-matched; combined impressions (~300) make the upside small and the regression risk to working copy real. Revisit only with a clear hook per post, not a bulk pass.
 
+### Feature: Site-wide dead-internal-link cleanup — published 51 stuck drafts, removed 6 orphan links
+
+- **Audit**: extended the flagship dead-link discovery to all 152 live EN posts. Found **166 dead internal-link instances** across **57 distinct targets** — **51 were finished drafts** from the same stuck April-3 batch, only **6 had no underlying post**. Worst single case: `murder-mystery-party-ideas` (27.6k-char finished draft) was linked from **69 live posts** → 69 live 404s on one hub.
+- **Published all 51 already-linked finished drafts** (with user go-ahead) — `status=published`, original `post_date` preserved so they slot into the archive rather than flooding the index with same-day entries. Live EN posts 152 → 203. Because these were already link targets of ranking pages, this resolves 404s Google was already hitting — net SEO positive, plus a much denser internal link graph.
+- **Removed the 6 orphan links** (targets with no post) — all six lived in `murder-mystery-party-for-adults-guide` as auto-crosslinks that had wrapped random sentence fragments; unwrapped them back to plain prose.
+- **Result: dead internal links 166 → 0** (verified by re-running the audit).
+- **Root-cause signal logged** to vault `00_INBOX/publish-queue-prioritization-2026-06-23-mystery-maker.md`: the daily-publish drip isn't prioritized by SEO value, so high-value hub/commercial drafts (and pages that are link targets of live posts) can sit unpublished for months. ~217 EN drafts remain; worth deciding whether to keep dripping or prioritize by link-graph importance.
+
 ### Feature: Flagship page-1 push — content tuning + publish the stuck commercial cluster
 
 - **Goal**: push `best-murder-mystery-party-games-review` (the dominant asset, ~1,689 impr/mo) from position ~13 onto page 1. Pulled 90-day **page-filtered query data** from GSC: the biggest single query is "murder mystery games" (81 impr, pos 15.8, 0 clicks); the broader games/box cluster (~250 impr) all sits page 2, while "kits" queries already rank page 1 (pos 7–11).
