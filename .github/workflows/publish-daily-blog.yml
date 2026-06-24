@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # needed to dispatch deploy.yml at the end (see final step)
 
 jobs:
   publish-post:
@@ -217,3 +218,20 @@ jobs:
         # block the publish — IndexNow handles Bing, this is Google bonus.
         continue-on-error: true
         run: node scripts/submit-sitemap-gsc.mjs
+
+      - name: Trigger Pages deploy (prerender the newly-published post)
+        if: steps.publish.outputs.slug != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # CRITICAL: this workflow only writes to the DB and commits llms.txt
+        # with the default GITHUB_TOKEN. Pushes made with GITHUB_TOKEN do NOT
+        # trigger other workflows, so deploy.yml never ran after a daily
+        # publish — the new post stayed unprerendered: HTTP 404 + generic meta
+        # for crawlers (SPA-rendered for humans, but invisible to Google) until
+        # the next *human* push happened to redeploy. Since the blog is the
+        # acquisition engine, that silently broke indexing of every daily post.
+        #
+        # workflow_dispatch IS exempt from the GITHUB_TOKEN no-trigger rule, so
+        # dispatch deploy.yml explicitly here. deploy.yml has a `pages`
+        # concurrency group, so this serializes safely with any human push.
+        run: gh workflow run deploy.yml --ref main

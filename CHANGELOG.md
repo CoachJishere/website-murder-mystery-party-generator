@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-24
+
+### Fix: Daily-published posts never deployed (404 to Google) + Pages deploy collisions
+
+- **Root cause (significant)**: `publish-daily-blog.yml` writes the new post to the DB and commits `llms.txt` using the default `GITHUB_TOKEN`. GitHub does **not** trigger workflows from `GITHUB_TOKEN` pushes, so `deploy.yml` never ran after a daily publish. Because the site is a prerendered SPA, the new slug stayed unprerendered: **HTTP 404 + generic meta to crawlers** (humans got the client-rendered page via the 404.html SPA fallback, masking the problem). Every daily post was effectively invisible to Google until the next *human* push happened to redeploy. Confirmed today: `murder-mystery-brunch-party-guide` (published by the 06-24 cron) returned 404; no `deploy.yml` run existed for the bot's `llms.txt` commit.
+- **Fix**: added a final step to `publish-daily-blog.yml` that dispatches `deploy.yml` via `gh workflow run` (workflow_dispatch *is* exempt from the GITHUB_TOKEN no-trigger rule), gated on a post actually publishing. Added `actions: write` permission for the dispatch.
+- **Also fixed — deploy collisions**: `deploy.yml` had no `concurrency` group, so two pushes landing close together (a multi-commit session, or the daily `llms.txt` commit overlapping a human push) started concurrent Pages deploys and the second failed with `Deployment request failed … due to in progress deployment` (HTTP 400). Added the standard `concurrency: { group: pages, cancel-in-progress: false }` to serialize deploys. This also makes the new dispatch step safe against overlap.
+- **Net effect**: daily posts now prerender and reach Google the same day they publish. This pushing commit also redeploys, prerendering today's stranded brunch post.
+
 ## 2026-06-23
 
 ### Improvement: SEO quick-win pass — blog index CTR rewrite + GSC audit

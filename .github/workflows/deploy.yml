@@ -5,6 +5,16 @@ on:
   push:
     branches: [ main ]
 
+# Serialize Pages deployments. Without this, two pushes landing close together
+# (a multi-commit session, or the daily-publish llms.txt commit overlapping
+# another push) start concurrent deploys and the second fails with
+# "Deployment request failed ... due to in progress deployment" (HTTP 400).
+# Skip intermediate queued runs but never cancel an in-progress production
+# deploy — let it finish, then run the latest. (GitHub's standard Pages config.)
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
