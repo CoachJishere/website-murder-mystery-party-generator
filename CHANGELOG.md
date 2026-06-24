@@ -2,6 +2,14 @@
 
 ## 2026-06-24
 
+### Chore: Resolve the deferred breaking-change security advisories — 0 vulnerabilities
+
+- **Follow-up to the deferral logged earlier today.** Re-derived state from ground truth (`npm audit`, Dependabot alerts, installed versions) rather than trusting the prior note. Resolved all three remaining clusters without the `npm audit fix --force` exceljs downgrade. `npm audit`: **3 → 0 vulnerabilities**.
+- **`@opentelemetry/core` (moderate, transitive)**: bumped **`posthog-js` 1.371.3 → ^1.393.3**. posthog-js v1.392.0 dropped its bundled OpenTelemetry console-log pipeline entirely, removing the vulnerable transitive tree (27 packages pruned). Read the changelog 1.372→1.393: the only breaking changes are console-log attribute renames (v1.392.0), `disable_capture_url_hashes` (v1.393.0, opt-in via `defaults`), and rageclick `content_ignorelist` matching (v1.382.0) — none touch our `init`/`capture`/`__loaded` usage in [src/lib/posthog.ts](src/lib/posthog.ts). `init()`/`capture()`/persistence APIs unchanged.
+- **`uuid` <11.1.1 (moderate, transitive via `exceljs`)**: did **not** force exceljs to 3.4.0 (a downgrade + breaking, risky given `blog_map.xlsx` round-trip fragility). Instead added an npm `overrides` entry pinning **`uuid` → ^11.1.1 under `exceljs`** (mirrored in `pnpm.overrides` as `exceljs>uuid`). exceljs stays at **4.4.0** (no downgrade). exceljs only uses `uuid.v4()` (in conditional-formatting `x14Id` generation), whose API is unchanged v8→v11. Verified a write→read round-trip — including the `uuidv4()` cf-ext code path and unicode cells — succeeds.
+- **`esbuild` (low, dev-server-only, transitive via `vite`)**: added an `overrides` pin **`esbuild` → ^0.28.1** (patched; vite's nested copy was 0.27.7, in the vulnerable 0.27.3–0.28.0 range). Verified both `npm run build:dev` (production bundle, 3408 modules) and the `vite dev` server (HTTP 200) work with the forced esbuild.
+- **Verification after each step**: `npm run build:dev` compiled clean and `npm audit` showed monotonic progress (3 → 2 → 1 → 0) with no regressions. No blanket `--force` was run.
+
 ### Chore: Repo hygiene — Node 22 in CI + non-breaking dependency security fixes
 
 - **Node 20 → 22** in the four workflows that pin it (`update-db`, `pinterest-image-gen`, `weekly-seo-digest`, `sync-blog-map`). Node 20 is in maintenance/EOL; 22 is current LTS. Safe — the `_supabase-node.mjs` `ws` shim notes it's only needed for Node <22, and nothing in our scripts requires 20.
