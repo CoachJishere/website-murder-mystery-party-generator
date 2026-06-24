@@ -2,6 +2,12 @@
 
 ## 2026-06-24
 
+### Chore: Repo hygiene — Node 22 in CI + non-breaking dependency security fixes
+
+- **Node 20 → 22** in the four workflows that pin it (`update-db`, `pinterest-image-gen`, `weekly-seo-digest`, `sync-blog-map`). Node 20 is in maintenance/EOL; 22 is current LTS. Safe — the `_supabase-node.mjs` `ws` shim notes it's only needed for Node <22, and nothing in our scripts requires 20.
+- **`npm audit fix` (non-forced)**: cleared all 3 high-severity advisories (`protobufjs`, `vite` — a patch within v7, `form-data`) plus several moderates; 17 → 12 vulnerabilities. Lockfile-only change (no `package.json` edits — all transitive). Verified `npm run build:dev` compiles clean (3408 modules).
+- **Deliberately deferred (need `--force` = breaking, separate session)**: `uuid` via **`exceljs`** (forcing exceljs to a breaking version — risky given the known `blog_map.xlsx` round-trip fragility) and `posthog-js` (bump outside the stated range). Both require isolated testing; remaining 12 advisories are moderate/low.
+
 ### Fix: Daily-published posts never deployed (404 to Google) + Pages deploy collisions
 
 - **Root cause (significant)**: `publish-daily-blog.yml` writes the new post to the DB and commits `llms.txt` using the default `GITHUB_TOKEN`. GitHub does **not** trigger workflows from `GITHUB_TOKEN` pushes, so `deploy.yml` never ran after a daily publish. Because the site is a prerendered SPA, the new slug stayed unprerendered: **HTTP 404 + generic meta to crawlers** (humans got the client-rendered page via the 404.html SPA fallback, masking the problem). Every daily post was effectively invisible to Google until the next *human* push happened to redeploy. Confirmed today: `murder-mystery-brunch-party-guide` (published by the 06-24 cron) returned 404; no `deploy.yml` run existed for the bot's `llms.txt` commit.
