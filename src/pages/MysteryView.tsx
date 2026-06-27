@@ -725,13 +725,33 @@ const MysteryView = () => {
       // Clear any previous timer
       if (generationTimerRef.current) clearTimeout(generationTimerRef.current);
 
-      generationTimerRef.current = setTimeout(() => {
+      generationTimerRef.current = setTimeout(async () => {
         // Only trigger if still generating when timer fires
-        if (generating) {
-          console.log("⏰ Generation timeout reached (15 min)");
-          setGenerationTimedOut(true);
-          notifyGenerationIssue(id);
+        if (!generating) return;
+
+        // Re-confirm against the DB before declaring a timeout. The client can
+        // miss the realtime UPDATE that flips status to completed (backgrounded
+        // tab, dropped websocket, network blip), leaving stale 'in_progress'
+        // state. In that case the package is actually done — load it instead of
+        // showing the "team notified" card and emailing support for a healthy
+        // package. Mirrors the on-load completed path above.
+        try {
+          const freshStatus = await getPackageGenerationStatus(id);
+          if (freshStatus.status === 'completed' || freshStatus.status === 'needs_review') {
+            console.log("✅ Timeout fired but package is complete — loading instead of alerting");
+            setGenerationStatus(freshStatus);
+            setLastUpdate(new Date());
+            await fetchStructuredPackageData();
+            setGenerating(false);
+            return;
+          }
+        } catch (err) {
+          console.error("Timeout status re-check failed, falling back to timeout alert:", err);
         }
+
+        console.log("⏰ Generation timeout reached (15 min)");
+        setGenerationTimedOut(true);
+        notifyGenerationIssue(id);
       }, GENERATION_TIMEOUT_MS);
     }
 

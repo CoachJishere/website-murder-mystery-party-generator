@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-06-27
+
+### Fix: Stop "team notified" alert firing on already-completed packages
+
+- **Symptom**: customers whose generation finished successfully server-side were still shown the "Taking Longer Than Expected / our technical team has been automatically notified" card, and `notify-generation-issue` emailed support — for a package that was actually complete. Seen on conversation `fb28d9ef-ac02-4923-a8c9-8b2768b92e21` (generation completed in ~9 min; alert fired at 15 min).
+- **Root cause**: the 15-minute generation timeout in [src/pages/MysteryView.tsx](src/pages/MysteryView.tsx) armed while `generationStatus.status === 'in_progress'` and, when it fired, declared a timeout off **stale client state** — it checked the local `generating` flag but never re-confirmed against the DB. If the client missed the realtime UPDATE that flips status to `completed` (backgrounded tab, dropped websocket, network blip), the timer never cleared and alerted on a healthy package.
+- **Fix**: the timer callback now re-fetches `getPackageGenerationStatus(id)` before alerting. If the fresh status is `completed`/`needs_review`, it loads the package and clears the generating state instead of showing the timeout card or notifying support. Mirrors the on-load completed path, which already re-checks fresh status (so it never had this gap). Falls back to the normal timeout alert if the re-check itself fails.
+
 ## 2026-06-24
 
 ### Chore: Resolve the deferred breaking-change security advisories — 0 vulnerabilities
