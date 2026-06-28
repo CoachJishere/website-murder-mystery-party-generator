@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 212 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 213 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -83,6 +83,7 @@ This index organizes 212 published guides by topic cluster. All guides are avail
 - [Murder Mystery Parties for Small Spaces](https://www.mysterymaker.party/blog/murder-mystery-parties-small-spaces-compact-venues): Generate murder mysteries perfect for small apartments, conference rooms, and compact venues with single-room investigations and intimate formats.
 - [Arabian Nights Murder Mystery Party: 1001 Nights of Intrigue](https://www.mysterymaker.party/blog/murder-mystery-party-arabian-nights-theme): Arabian Nights murder mystery parties feature palace intrigue, mysterious bazaars, treasure, and exotic suspense. Host a 1001 Nights-inspired whodunit.
 - [Art Heist Murder Mystery Party](https://www.mysterymaker.party/blog/murder-mystery-party-art-heist-theme): Art heist murder mystery parties blend Ocean's-style intrigue with museum intrigue. Explore stolen masterpieces, high-stakes theft, and investigation mechanics.
+- [Brazilian Carnival Murder Mystery Party](https://www.mysterymaker.party/blog/murder-mystery-party-carnival-theme-brazil): Brazilian Carnival murder mystery party theme features vibrant masks, samba rhythm, colorful costumes, and festive intrigue. Host a masked whodunit.
 - [Murder Mystery Party for Day of the Dead](https://www.mysterymaker.party/blog/murder-mystery-party-for-day-of-the-dead): Honor ancestors with Day of the Dead murder mystery parties featuring Mexican traditions and colorful cultural celebration.
 - [Murder Mystery Party for Easter Celebrations](https://www.mysterymaker.party/blog/murder-mystery-party-for-easter-celebrations-hunt-for-more-than-eggs): Hunt for more than eggs with Easter murder mystery parties featuring spring themes and family-friendly fun.
 - [Murder Mystery Party for Graduation Celebrations](https://www.mysterymaker.party/blog/murder-mystery-party-for-graduation-celebrations-academic-achievement-mysteries-with-educational-excellence): Graduate to murder with academic achievement murder mystery parties celebrating educational milestones and future success.
