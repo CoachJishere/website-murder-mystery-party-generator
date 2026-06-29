@@ -2,6 +2,13 @@
 
 ## 2026-06-29
 
+### Fix: Eliminate 9 dead internal links by publishing their 8 draft targets
+
+- **Why**: An internal-link audit found **9 dead internal links** — links in published EN posts pointing at `/blog/<slug>` targets still in `draft`. Because crosslinks are injected at publish time (ADR-0021), a published source post that links to a not-yet-published target is a live 404 until that target ships.
+- **Scope**: The 9 dead links span **8 distinct draft targets**. The request named 5 (covering only 6 of the 9 links); the audit surfaced 3 more (`murder-mystery-party-haunted-asylum-theme`, `murder-mystery-party-for-mardi-gras-…`, `murder-mystery-party-carnival-dark-circus`). All 8 are complete, gate-passing drafts, so the fix publishes all 8 and strips **zero** links — publishing preserves the designed internal-link equity instead of masking a symptom.
+- **Mechanism** [.github/workflows/publish-specific-slugs.yml](.github/workflows/publish-specific-slugs.yml): new manual `workflow_dispatch` that publishes an explicit slug list through the **same gated pipeline** as the daily publisher — per slug: apply cross-links (13 langs) → rot-signal gate (EN always ships, non-EN held if rotted) → PATCH `status`/`published_at` → Priority-5 TOC; then per batch: regenerate `llms.txt`, IndexNow, GSC sitemap ping, and dispatch `deploy.yml` to **prerender** (a raw status flip would leave crawler-facing 404s). Reuses existing scripts; leaves the proven `publish-daily-blog.yml` path untouched. See [ADR-0025](docs/adr/0025-one-off-specific-slug-publish-for-dead-link-backfill.md).
+- **Note**: `murder-mystery-picnic-party-guide` (in-degree 10) and `murder-mystery-party-clue-board-game-theme` (in-degree 9) were verified complete & publishable; the daily importance queue would not have reached them next (picnic ranks #3 behind two other in-degree-10 drafts), which is why an explicit-slug run was needed.
+
 ### Improvement: SEO relevance + internal authority for `/custom-murder-mystery-party/` (money page)
 
 - **Why**: GSC shows this generator-entry page stuck at ~position 36 for the high-intent buyer query "custom murder mystery party" — 37 impressions/week, **0 clicks**. On-page audit found the title, H1, and meta already front-load the exact phrase, so the bottleneck is **internal authority + SERP CTR**, not on-page relevance.
