@@ -29966,6 +29966,11 @@
         "target_slug": "free-vs-paid-murder-mystery-games-comparison",
         "match_text": "If you want to test whether you like a publisher before buying a full kit, look for free samples",
         "replacement": "If you want to test whether you like a publisher before buying a full kit, look for free samples—and read our [free vs paid murder mystery games comparison](/blog/free-vs-paid-murder-mystery-games-comparison) for a deeper breakdown of what you get at each price point"
+      },
+      {
+        "target_page": "/custom-murder-mystery-party/",
+        "match_text": "For custom personalization with real guest names across 13 languages, you can",
+        "replacement": "For a fully [custom murder mystery party](/custom-murder-mystery-party/) with real guest names across 13 languages, you can"
       }
     ],
     "lang_insertions": {
@@ -34347,6 +34352,11 @@
         "target_slug": "murder-mystery-party-food-ideas-menu",
         "match_text": "So let me map out what actually exists, what the limitations are, and when it makes sense to stay free versus when you should invest",
         "replacement": "So let me map out what actually exists, what the limitations are, and when it makes sense to stay free versus when you should invest—and don't forget that great [murder mystery party food ideas](/blog/murder-mystery-party-food-ideas-menu) can make even a budget game feel premium"
+      },
+      {
+        "target_page": "/custom-murder-mystery-party/",
+        "match_text": "or anyone wanting personalized characters",
+        "replacement": "or anyone wanting a fully [custom murder mystery party](/custom-murder-mystery-party/) built around their own theme and guest list"
       }
     ],
     "lang_insertions": {
@@ -71697,6 +71707,11 @@
       {
         "match_text": "A 10-page character backstory means nothing if the host",
         "replacement": "[A 10-page character backstory means nothing if the host](/blog/how-to-write-murder-mystery-characters)"
+      },
+      {
+        "target_page": "/custom-murder-mystery-party/",
+        "match_text": "does the solution hold up if guests cross-check it?",
+        "replacement": "does the solution hold up if guests cross-check it? The fastest way to hit all four is to [generate a custom murder mystery party](/custom-murder-mystery-party/) with a purpose-built tool."
       }
     ],
     "lang_insertions": {
@@ -75178,6 +75193,11 @@
       {
         "match_text": "best human-authored kits from companies",
         "replacement": "[best human-authored kits from companies](/blog/best-murder-mystery-kits-buying-guide)"
+      },
+      {
+        "target_page": "/custom-murder-mystery-party/",
+        "match_text": "produces same-day-usable kits with character booklets, clue cards, and host scripts in 13 languages",
+        "replacement": "produces same-day-usable kits with character booklets, clue cards, and host scripts in 13 languages, letting you create a [custom murder mystery party for any theme](/custom-murder-mystery-party/)"
       }
     ],
     "lang_insertions": {
