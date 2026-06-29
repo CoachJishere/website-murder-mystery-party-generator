@@ -31,7 +31,7 @@ const OG_LOCALE_MAP: Record<string, string> = {
 const Head = ({
   title,
   description,
-  canonical = "https://www.mysterymaker.party",
+  canonical = "https://www.mysterymaker.party/",
   image = "https://github.com/CoachJ87/murder-mystery-party-generator/blob/main/public/images/custom_themes.png?raw=true",
 }: HeadProps) => {
   const { t, i18n } = useTranslation();

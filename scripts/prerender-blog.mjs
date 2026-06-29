@@ -338,8 +338,16 @@ function injectIntoTemplate(post, headTags, articleHtml) {
   html = html.replace(/<meta\s+property="og:description"[^>]*>/, '');
   html = html.replace(/<meta\s+property="og:image"[^>]*>/, '');
   html = html.replace(/<meta\s+property="og:type"[^>]*>/, '');
+  html = html.replace(/<meta\s+property="og:url"[^>]*>/, '');
   html = html.replace(/<meta\s+name="twitter:card"[^>]*>/, '');
   html = html.replace(/<meta\s+name="twitter:image"[^>]*>/, '');
+  html = html.replace(/<meta\s+name="twitter:title"[^>]*>/, '');
+  html = html.replace(/<meta\s+name="twitter:description"[^>]*>/, '');
+  // Strip the homepage canonical + JSON-LD so the per-post canonical/schema win
+  // uncontested. buildHead() re-injects post-specific versions below. (The
+  // homepage og:site_name is universally correct, so it's intentionally kept.)
+  html = html.replace(/<link\s+rel="canonical"[^>]*>/, '');
+  html = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
 
   // Inject per-post head tags right before </head>
   html = html.replace(/<\/head>/, `    ${headTags}\n  </head>`);
