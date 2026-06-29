@@ -1,0 +1,194 @@
+name: Publish Specific Slugs (one-off backfill)
+
+# Manual, explicit-slug-list counterpart to publish-daily-blog.yml.
+#
+# Why this exists: publish-daily-blog.yml publishes exactly ONE draft per run,
+# chosen by link-graph importance (pick-next-draft.mjs, ADR-0021). That is the
+# right steady-state cadence, but it cannot expedite a specific set of slugs —
+# and when published source posts link to still-draft targets, those links are
+# live 404s until the target ships. This workflow publishes a named list of
+# slugs through the IDENTICAL gated pipeline (status → cross-links → rot-gate →
+# IndexNow → GSC → prerender deploy), so a dead-link backfill doesn't have to
+# wait days for the daily queue to reach each target. See ADR-0025.
+#
+# Ordering note: unlike the daily workflow (single slug → cross-link → publish),
+# this publishes the WHOLE batch first, THEN applies cross-links. That way links
+# between slugs in the same batch resolve, while the cross-link target guard
+# (ADR-0025) still defers any link to a target outside the batch that is not yet
+# live — so the run nets zero NEW dead links.
+#
+# It does NOT reorder or interfere with the daily queue: once a slug is
+# published here it simply drops out of the remaining-drafts set.
+
+on:
+  workflow_dispatch:
+    inputs:
+      slugs:
+        description: 'Space- or comma-separated slug list to publish (all 13 langs each, rot-gated).'
+        required: true
+        default: >-
+          murder-mystery-picnic-party-guide
+          murder-mystery-party-clue-board-game-theme
+          murder-mystery-party-for-mothers-day-brunch-honor-mom-with-elegant-intrigue
+          murder-mystery-camping-trip-guide
+          murder-mystery-party-drinks-cocktail-recipes
+          murder-mystery-party-haunted-asylum-theme
+          murder-mystery-party-for-mardi-gras-carnival-crime-and-new-orleans-intrigue
+          murder-mystery-party-carnival-dark-circus
+
+permissions:
+  contents: write
+  actions: write   # needed to dispatch deploy.yml at the end
+
+jobs:
+  publish-slugs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install @supabase/supabase-js ws github-slugger
+
+      - name: Publish batch (rot-gate + status), then cross-link + TOC
+        id: publish
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          set -e
+
+          # Normalise commas to spaces so either separator works.
+          SLUGS=$(echo "${{ github.event.inputs.slugs }}" | tr ',' ' ')
+          PUBLISHED_SLUGS=""
+
+          # ---- PASS 1: rot-gate + publish status for the whole batch ----
+          for SLUG in $SLUGS; do
+            [ -z "$SLUG" ] && continue
+            echo "::group::Gate + publish $SLUG"
+
+            # Skip a slug with no EN draft row (already published, or a typo) so
+            # one bad list entry can't fail the whole batch.
+            DRAFT_COUNT=$(curl -s \
+              "${SUPABASE_URL}/rest/v1/blog_posts?language=eq.en&slug=eq.${SLUG}&status=eq.draft&select=slug" \
+              -H "apikey: ${SUPABASE_SERVICE_KEY}" \
+              -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" | jq 'length')
+            if [ "$DRAFT_COUNT" = "0" ]; then
+              echo "  No EN draft for '$SLUG' — skipping (already published or unknown slug)."
+              echo "::endgroup::"
+              continue
+            fi
+
+            # Rot-signal gate across the 12 non-EN languages. EN always ships.
+            GATE_JSON=$(node scripts/check-rot-signals.mjs "$SLUG")
+            LANGS="en"
+            for LANG in ko zh-cn es fr de it pt nl da sv fi ja; do
+              PASS=$(echo "$GATE_JSON" | jq -r --arg k "$LANG" '.[$k].pass')
+              REASONS=$(echo "$GATE_JSON" | jq -r --arg k "$LANG" '.[$k].reasons | join("; ")')
+              if [ "$PASS" = "true" ]; then
+                LANGS="$LANGS,$LANG"
+              else
+                echo "  $LANG: HOLD — $REASONS"
+              fi
+            done
+
+            # Per-slug rot-gate verdict in the run summary.
+            {
+              echo "### $SLUG"
+              echo "| lang | present | pass | length | reasons |"
+              echo "|------|---------|------|--------|---------|"
+              echo "$GATE_JSON" | jq -r 'to_entries[] | "| \(.key) | \(.value.present) | \(.value.pass) | \(.value.length) | \(.value.reasons | join("; ")) |"'
+              echo ""
+              echo "**Published languages:** \`$LANGS\`"
+              echo ""
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            # PATCH only the languages that passed the gate (+ EN).
+            RESULT=$(curl -s -o /dev/null -w "%{http_code}" \
+              "${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.${SLUG}&status=eq.draft&language=in.(${LANGS})" \
+              -X PATCH \
+              -H "apikey: ${SUPABASE_SERVICE_KEY}" \
+              -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
+              -H "Content-Type: application/json" \
+              -H "Prefer: return=minimal" \
+              -d "{\"status\": \"published\", \"published_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}")
+            if [ "$RESULT" != "204" ]; then
+              echo "  Failed to publish '$SLUG'. HTTP status: $RESULT"
+              exit 1
+            fi
+            echo "  Published '$SLUG' (langs: $LANGS)"
+            PUBLISHED_SLUGS="$PUBLISHED_SLUGS $SLUG"
+            echo "::endgroup::"
+          done
+
+          # ---- PASS 2: cross-links + Priority-5 TOC, now that the whole batch
+          #      is live. The target guard (ADR-0025) defers any link to a
+          #      target still in draft, so no new dead links are created. ----
+          for SLUG in $PUBLISHED_SLUGS; do
+            echo "::group::Cross-links + TOC $SLUG"
+            for LANG in en es fr de it da fi nl sv pt ko ja zh-cn; do
+              node scripts/apply-crosslinks.mjs "$SLUG" "$LANG" \
+                || echo "  WARNING: cross-link application failed for $LANG (continuing)"
+            done
+            node scripts/apply-p5-tocs.mjs --slug="$SLUG" \
+              || echo "  WARNING: p5-toc step failed for $SLUG (continuing)"
+            echo "::endgroup::"
+          done
+
+          PUBLISHED_SLUGS=$(echo "$PUBLISHED_SLUGS" | xargs)  # trim
+          echo "Published slugs: $PUBLISHED_SLUGS"
+          echo "slugs=$PUBLISHED_SLUGS" >> "$GITHUB_OUTPUT"
+
+      - name: Regenerate llms.txt
+        if: steps.publish.outputs.slugs != ''
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node scripts/generate-llms-txt.mjs
+
+      - name: Commit updated llms.txt
+        if: steps.publish.outputs.slugs != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet public/llms.txt; then
+            echo "No changes to llms.txt"
+          else
+            git add public/llms.txt
+            git commit -m "chore: regenerate llms.txt after specific-slug backfill"
+            for attempt in 1 2 3; do
+              if git push; then break; fi
+              echo "push rejected (attempt $attempt) — rebasing and retrying"
+              git pull --rebase origin "$(git rev-parse --abbrev-ref HEAD)"
+            done
+          fi
+
+      - name: Submit just-published URLs to IndexNow (Bing)
+        if: steps.publish.outputs.slugs != ''
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        # One slug at a time = exactly 13 URLs per call, staying under Bing's
+        # IndexNow abuse heuristics (same rationale as the daily workflow).
+        run: |
+          for SLUG in ${{ steps.publish.outputs.slugs }}; do
+            node scripts/submit-indexnow.mjs --slug="$SLUG" || echo "IndexNow failed for $SLUG (continuing)"
+          done
+
+      - name: Submit sitemap to Google Search Console
+        if: steps.publish.outputs.slugs != ''
+        env:
+          GSC_SITE_URL: https://www.mysterymaker.party/
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+        continue-on-error: true
+        run: node scripts/submit-sitemap-gsc.mjs
+
+      - name: Trigger Pages deploy (prerender the newly-published posts)
+        if: steps.publish.outputs.slugs != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Same critical reason as the daily workflow: DB-only publishes leave
+        # posts unprerendered (HTTP 404 + generic meta for crawlers) until a
+        # deploy runs. workflow_dispatch is exempt from the GITHUB_TOKEN
+        # no-trigger rule, so dispatch deploy.yml explicitly.
+        run: gh workflow run deploy.yml --ref main
