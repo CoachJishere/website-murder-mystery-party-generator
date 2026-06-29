@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 214 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 222 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -83,13 +83,17 @@ This index organizes 214 published guides by topic cluster. All guides are avail
 - [Murder Mystery Parties for Small Spaces](https://www.mysterymaker.party/blog/murder-mystery-parties-small-spaces-compact-venues): Generate murder mysteries perfect for small apartments, conference rooms, and compact venues with single-room investigations and intimate formats.
 - [Arabian Nights Murder Mystery Party: 1001 Nights of Intrigue](https://www.mysterymaker.party/blog/murder-mystery-party-arabian-nights-theme): Arabian Nights murder mystery parties feature palace intrigue, mysterious bazaars, treasure, and exotic suspense. Host a 1001 Nights-inspired whodunit.
 - [Art Heist Murder Mystery Party](https://www.mysterymaker.party/blog/murder-mystery-party-art-heist-theme): Art heist murder mystery parties blend Ocean's-style intrigue with museum intrigue. Explore stolen masterpieces, high-stakes theft, and investigation mechanics.
+- [Dark Carnival Murder Mystery Party](https://www.mysterymaker.party/blog/murder-mystery-party-carnival-dark-circus): Create a dark carnival murder mystery party with creepy performers, sideshow atmosphere, gothic circus setting, and carnival intrigue.
 - [Brazilian Carnival Murder Mystery Party](https://www.mysterymaker.party/blog/murder-mystery-party-carnival-theme-brazil): Brazilian Carnival murder mystery party theme features vibrant masks, samba rhythm, colorful costumes, and festive intrigue. Host a masked whodunit.
+- [Why Clue-Themed Murder Mysteries Still Work as Party Format](https://www.mysterymaker.party/blog/murder-mystery-party-clue-board-game-theme): Clue board game murder mystery parties bring nostalgia and playability. Room-based formats, classic weapons and how to modernize the theme.
 - [Murder Mystery Party for Day of the Dead](https://www.mysterymaker.party/blog/murder-mystery-party-for-day-of-the-dead): Honor ancestors with Day of the Dead murder mystery parties featuring Mexican traditions and colorful cultural celebration.
 - [Murder Mystery Party for Easter Celebrations](https://www.mysterymaker.party/blog/murder-mystery-party-for-easter-celebrations-hunt-for-more-than-eggs): Hunt for more than eggs with Easter murder mystery parties featuring spring themes and family-friendly fun.
 - [Murder Mystery Party for Graduation Celebrations](https://www.mysterymaker.party/blog/murder-mystery-party-for-graduation-celebrations-academic-achievement-mysteries-with-educational-excellence): Graduate to murder with academic achievement murder mystery parties celebrating educational milestones and future success.
+- [Murder Mystery Party for Mardi Gras](https://www.mysterymaker.party/blog/murder-mystery-party-for-mardi-gras-carnival-crime-and-new-orleans-intrigue): Celebrate with chaos in Mardi Gras murder mystery parties featuring carnival atmosphere and New Orleans flair.
 - [Murder Mystery Party for Milestone Birthdays](https://www.mysterymaker.party/blog/murder-mystery-party-for-milestone-birthdays-celebrating-with-custom-crime): Celebrate big birthdays with custom murder mystery parties designed for 30th, 40th, 50th, and beyond milestones.
 - [Murder Mystery Party for Oktoberfest](https://www.mysterymaker.party/blog/murder-mystery-party-for-oktoberfest-raise-your-steins-to-murder-and-mystery): Raise steins to murder with Oktoberfest murder mystery parties featuring German themes, beer, and bavarian celebration.
 - [Murder Mystery Party for Retirement Celebrations](https://www.mysterymaker.party/blog/murder-mystery-party-for-retirement-celebrations-honoring-career-achievements-with-professional-drama): Honor career achievements with memorable retirement murder mystery parties featuring workplace themes and professional pride.
+- [Hosting a Murder Mystery in a Haunted Asylum Setting](https://www.mysterymaker.party/blog/murder-mystery-party-haunted-asylum-theme): Haunted asylum murder mystery party ideas. Psychological horror, patient records, doctor dynamics, immersive mystery themes.
 - [5 Prohibition Speakeasy Murder Mystery Themes](https://www.mysterymaker.party/blog/murder-mystery-party-speakeasy-jazz-bar): Go underground with authentic prohibition speakeasy murder mysteries featuring bootleggers, cops, and illegal operations.
 - [Nightclub Murder Mystery Party Planning: Dance Into Danger](https://www.mysterymaker.party/blog/nightclub-murder-mystery-party-planning-dance-into-danger): Dance into danger with pulsing nightclub murder mystery parties featuring DJs, dancers, and after-dark drama.
 - [Personalized Murder Mystery Party Using AI](https://www.mysterymaker.party/blog/personalized-murder-mystery-party-using-ai): How to create a personalized murder mystery party using AI with real guest names, inside jokes and custom themes. Why personalization transforms it.
@@ -167,7 +171,11 @@ This index organizes 214 published guides by topic cluster. All guides are avail
 ## By Format (Dinner, Cocktail, Virtual, Outdoor)
 
 - [Murder Mystery Brunch Party Guide](https://www.mysterymaker.party/blog/murder-mystery-brunch-party-guide): Host a morning murder mystery brunch. Learn timing, menu integration, lighter mystery tone, and strategies for women's social events and weekend hosting.
+- [Murder Mystery Camping Trip: The Immersive Overnight Format](https://www.mysterymaker.party/blog/murder-mystery-camping-trip-guide): Create an unforgettable murder mystery camping trip. Learn campfire mysteries, multi-night formats, flashlight hunts, spooky atmosphere, and outdoor logistics.
 - [Murder Mystery Cocktail Party Guide](https://www.mysterymaker.party/blog/murder-mystery-cocktail-party-guide): Host a murder mystery cocktail party with mingling-based mechanics, signature themed drinks, and practical bar setup ideas. Full adult format planning guide.
+- [Murder Mystery Party Drinks & Cocktails](https://www.mysterymaker.party/blog/murder-mystery-party-drinks-cocktail-recipes): Murder mystery party cocktail and mocktail recipes. Themed drinks like Poisoned Pomegranate Martini, drink station setup tips, and pacing ideas.
+- [Murder Mystery Party for Mother's Day Brunch](https://www.mysterymaker.party/blog/murder-mystery-party-for-mothers-day-brunch-honor-mom-with-elegant-intrigue): Honor mothers with elegant brunch murder mystery parties combining family appreciation with sophisticated fun.
+- [Murder Mystery Picnic Party: How to Host One Outdoors](https://www.mysterymaker.party/blog/murder-mystery-picnic-party-guide): How to host a murder mystery party outside. Outdoor picnic format, weather planning, evidence that won't blow away, portable mysteries for parks.
 
 ## Rules & Planning
 
