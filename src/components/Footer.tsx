@@ -53,6 +53,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/office-murder-mystery-party" className="footer-link">
+                  {t('footer.links.officeMystery', { defaultValue: 'Office Murder Mystery' })}
+                </Link>
+              </li>
+              <li>
                 <Link to="/blog/murder-mystery-party-for-corporate-events/" className="footer-link">
                   {t('footer.links.corporateEvents', { defaultValue: 'Corporate & Office Events' })}
                 </Link>

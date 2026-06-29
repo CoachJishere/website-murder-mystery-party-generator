@@ -86,6 +86,9 @@ async function generateSitemap() {
     { loc: '/blog/', priority: '0.8', freq: 'daily' },
     { loc: '/support/', priority: '0.5', freq: 'monthly' },
     { loc: '/privacy/', priority: '0.3', freq: 'yearly' },
+    // English-only landing page (not yet translated). When officeParty.* copy is
+    // translated, move this into localizedStaticPages for per-language hreflang.
+    { loc: '/office-murder-mystery-party/', priority: '0.8', freq: 'monthly' },
   ];
 
   // Localized static landing pages: one <url> per language with reciprocal
@@ -189,7 +192,7 @@ async function generateSitemap() {
   // but that previously 404'd on GH Pages (no index.html, no SPA fallback).
   // Each gets a copy of the build's index.html — the SPA router takes over
   // client-side. These match real <Route> entries in src/App.tsx.
-  for (const staticRoute of ['showcase', 'support', 'privacy', 'custom-murder-mystery-party']) {
+  for (const staticRoute of ['showcase', 'support', 'privacy', 'custom-murder-mystery-party', 'office-murder-mystery-party']) {
     const dir = resolve(distDir, staticRoute);
     mkdirSync(dir, { recursive: true });
     writeFileSync(resolve(dir, 'index.html'), indexHtml, 'utf-8');

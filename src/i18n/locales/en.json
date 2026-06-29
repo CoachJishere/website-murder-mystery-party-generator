@@ -98,14 +98,95 @@
       "sentientPlantColony": "Create a mystery in a society of intelligent, mobile plants."
     }
   },
+  "officeParty": {
+    "seo": {
+      "title": "Office Murder Mystery Party — Team Building for Any Group",
+      "description": "Run a murder mystery party at the office — a team-building game that fits a lunch hour or after-work and scales to any group size. Build yours in minutes."
+    },
+    "hero": {
+      "h1": "Office Murder Mystery Party",
+      "intro": "Yes, you can absolutely run a murder mystery at the office — and it's one of the few team-building activities people don't quietly dread. It turns an ordinary afternoon into a shared whodunit your team actually wants to solve: no actors to hire, no off-site to book, no awkward icebreakers. Describe your group and Mystery Maker writes the entire game — plot, suspects, clues, and a printable kit — in minutes.",
+      "cta": "Build Your Office Mystery"
+    },
+    "body": {
+      "lead": "A murder mystery works at the office because the teamwork isn't a metaphor — it's the actual game. Nobody can crack the case alone, so colleagues who barely overlap end up swapping theories, comparing clues, and genuinely listening to each other. You get the bonding of a real team event without the trust falls or the forced fun, and because the whole kit is generated for you and ready to print, the only prep is pressing print.",
+      "benefitsHeading": "Why a murder mystery is real team building",
+      "benefitsLead": "Most team-building exercises are something people sit through. A murder mystery is different because solving it demands exactly the skills you want your team to build — and they practise them without ever feeling drilled.",
+      "formatsHeading": "Lunch-hour or after-work — pick your format",
+      "formatsLead": "An office murder mystery flexes to the time you actually have. The two formats below cover almost every workplace, and you choose the length when you build the game.",
+      "lunchTitle": "The lunch-hour mystery (45–60 minutes)",
+      "lunchBody": "Order in, gather around a conference table, and run a tighter case that resolves before the hour is up. It's the lowest-commitment way to break up the week — nobody has to stay late, and it slots into a normal workday. Ideal for a single team or a recurring monthly ritual.",
+      "afterWorkTitle": "The after-work event (90 minutes to 2 hours)",
+      "afterWorkBody": "With more time you can run a fuller story with deeper character arcs, a couple of plot twists, and room to mingle in character over drinks and food. This is the format for a holiday party, a quarterly social, or a celebration where you want the night itself to be the main event.",
+      "remoteNote": "Both formats work over video for remote and hybrid teams — assign characters by email, run the rounds on a call, and share clues on screen.",
+      "guestsHeading": "From a five-person team to the whole department",
+      "guestsPara1": "You set the headcount and the cast scales to fit. A small team of five to eight gets an intimate case where every person holds a clue the others need. Fifteen to twenty-five is the sweet spot for a cross-departmental event — big enough to mix people who don't normally work together, small enough that one facilitator keeps it moving and nobody is left just watching.",
+      "guestsPara2": "Larger than that? Don't run one giant game. Split into parallel groups solving the same case and compare theories at the end — it becomes a friendly competition between teams. For a whole department or an all-hands of fifty-plus, run several parallel rooms, physical or virtual, from the same kit. Whatever the number, every guest gets a genuine role rather than a walk-on part."
+    },
+    "benefits": {
+      "communication": {
+        "title": "Communication across silos",
+        "body": "A good case forces the finance person to explain a clue to the marketer, and the marketer to actually listen. People practise translating their expertise into language other departments understand — a skill that transfers straight back to real projects."
+      },
+      "perspective": {
+        "title": "Seeing how colleagues think",
+        "body": "When two people attack the same puzzle from opposite angles, everyone watching learns how the other half reasons. That mutual understanding is what makes cross-functional work less painful the following week."
+      },
+      "leadership": {
+        "title": "Low-stakes leadership",
+        "body": "Someone always steps up to organise the group, and it's often not the person with the senior title. A mystery gives quieter team members a structured way to lead and contribute with nothing real on the line."
+      },
+      "engagement": {
+        "title": "Genuine engagement, not forced fun",
+        "body": "True crime and whodunits are mainstream entertainment now, so most teams arrive with real curiosity instead of reluctance. You're not dragging anyone through an exercise — they want to know who did it."
+      }
+    },
+    "features": {
+      "team": {
+        "title": "Built for teams",
+        "body": "The game only works through collaboration, so communication and problem-solving happen naturally — no trust falls required."
+      },
+      "formats": {
+        "title": "Fits your calendar",
+        "body": "Run a 45-minute lunch case or a two-hour evening event. You set the length when you build it."
+      },
+      "size": {
+        "title": "Any group size",
+        "body": "From a five-person team to a fifty-plus department split into parallel rooms — the cast scales to your headcount."
+      },
+      "remote": {
+        "title": "In-person or remote",
+        "body": "Play around a conference table or over video for hybrid and fully remote teams. Same kit, either way."
+      }
+    },
+    "midCta": "Start Building Your Office Mystery",
+    "related": {
+      "lead": "Want it built around your exact team and theme? Start a",
+      "customLink": "custom murder mystery party",
+      "mid": ", or read our deeper guide to",
+      "blogLink": "corporate & office murder mystery team building",
+      "end": "."
+    },
+    "faq": {
+      "heading": "Office Murder Mystery FAQ",
+      "q1": "Can we run a murder mystery party at the office?",
+      "a1": "Yes. An office murder mystery is designed to run in a normal workplace — a conference room, a break area, or over video for remote teams. There are no actors to hire and no special venue required: Mystery Maker generates the full game and a printable kit, so you just pick a time, assign characters, and play. Choose a short lunch-hour case or a longer after-work event depending on the time you have.",
+      "q2": "How long does an office murder mystery take?",
+      "a2": "Anywhere from about 45 minutes to two hours, and you decide when you build the game. A lunch-hour format wraps up inside an hour and fits a normal workday; an after-work or holiday-party format runs 90 minutes to two hours with a richer story and time to socialise in character.",
+      "q3": "How many people do we need for an office murder mystery?",
+      "a3": "As few as five and as many as you like. Small teams of five to eight get an intimate case where everyone is essential; fifteen to twenty-five is ideal for a cross-departmental event. For larger groups, split into parallel teams solving the same case, or run multiple rooms for a whole department — the cast scales automatically to your headcount.",
+      "q4": "Can remote or hybrid teams play?",
+      "a4": "Yes. Every office mystery works over video. Assign each person their character by email ahead of time, run the rounds on a video call, and share clues and evidence on screen. Hybrid teams can mix in-room and remote players in the same game, so distributed teams get the same shared experience."
+    }
+  },
   "customParty": {
     "seo": {
-      "title": "Custom Murder Mystery Party & Game — Built for Your Guests",
-      "description": "Build a fully customizable murder mystery party game for any guest count. Custom themes, characters, and an instantly printable kit. Start in minutes."
+      "title": "Custom Murder Mystery Party Kit — Any Theme in Minutes",
+      "description": "Build a custom murder mystery party kit for any theme and guest count. Get characters, scripts, clues & a printable host guide — start in minutes."
     },
     "hero": {
       "h1": "Custom Murder Mystery Party",
-      "intro": "A murder mystery written from scratch around your theme, your guests, and your occasion — not a pre-packaged kit. Generate the full printable game in minutes.",
+      "intro": "A custom murder mystery party written from scratch around your theme, your guests, and your occasion — not a pre-packaged kit. Generate the full printable game in minutes.",
       "cta": "Create Your Custom Mystery"
     },
     "body": {
@@ -135,6 +216,11 @@
       }
     },
     "midCta": "Start Building Your Mystery",
+    "officeLink": {
+      "lead": "Planning something for work? See how it works as an",
+      "link": "office murder mystery party",
+      "end": "for team building."
+    },
     "faq": {
       "heading": "Custom Murder Mystery FAQ",
       "q1": "Can I make a custom murder mystery?",
@@ -153,9 +239,9 @@
     "verifiedTrustpilotReview": "Verified Trustpilot Review",
     "watchDemo": "Watch a Demo",
     "seo": {
-      "title": "Create Custom Murder Mystery Parties",
-      "description": "Generate unique murder mystery party scenarios with our AI-powered tool. Customize themes, characters, and plots for unforgettable events.",
-      "brand": "Murder Mystery Party Generator"
+      "title": "Printable Murder Mystery Kits in Minutes",
+      "description": "Mystery Maker builds printable murder mystery party kits for any theme in minutes. Pick a theme, get characters, clues & host guide. Start free.",
+      "brand": "Mystery Maker"
     },
     "parallaxTestimonials": {
       "sophia": {

@@ -1,5 +1,54 @@
 # Changelog
 
+## 2026-06-29
+
+### Improvement: SEO relevance + internal authority for `/custom-murder-mystery-party/` (money page)
+
+- **Why**: GSC shows this generator-entry page stuck at ~position 36 for the high-intent buyer query "custom murder mystery party" — 37 impressions/week, **0 clicks**. On-page audit found the title, H1, and meta already front-load the exact phrase, so the bottleneck is **internal authority + SERP CTR**, not on-page relevance.
+- **Internal links (the lever)**: added the first blog→landing-page crosslinks (previously `cross_link_map.json` only linked blog→blog). Four high-traffic posts now link to `/custom-murder-mystery-party/` with keyword-rich, diversified anchors (2 exact-match + 2 enriched):
+  - `free-murder-mystery-games-printable` → "custom murder mystery party"
+  - `ai-murder-mystery-generator-complete-guide` → "generate a custom murder mystery party"
+  - `best-murder-mystery-party-games-review` → "custom murder mystery party"
+  - `best-murder-mystery-generators-online-review` → "custom murder mystery party for any theme"
+  - Applied to both [cross_link_map.json](cross_link_map.json) (durable source of truth, re-applied by `backfill-crosslinks.mjs`) **and** live Supabase `blog_posts.content` (immediate effect). Safe because `sync-blog-map`/`backfill` are manual-only (`workflow_dispatch`); the daily cron only publishes new drafts. See [ADR-0023](docs/adr/0023-blog-to-landing-page-crosslinks.md).
+- **Meta description** [src/i18n/locales/en.json](src/i18n/locales/en.json): rewritten to lead with the exact phrase verbatim ("Build a custom murder mystery party kit…") to win SERP bolding and lift CTR — the direct fix for the 0-click problem.
+  - **Title**: `Custom Murder Mystery Party Kit — Any Theme in Minutes` (was "…& Game — Built for Your Guests") — leads with the uninterrupted exact phrase + a theme/speed buyer hook.
+  - **H1**: left unchanged (`Custom Murder Mystery Party` is already a perfect exact match); the hero intro now weaves in the phrase once for body relevance.
+- **English-only**: the target query is English; non-EN locales target their own localized queries and are untouched. Non-EN crosslinks (`lang_insertions`) deferred — see ADR-0023.
+
+### Feature: New office / team-building murder mystery landing page (`/office-murder-mystery-party/`)
+
+- **Why**: GSC shows "office murder mystery party" rising from zero to ~20 impressions/week at avg position ~35 with no dedicated page — only the generic custom page and the corporate blog post rank, weakly. Built a buyer-focused landing page to own this high-intent corporate segment (also targeting "corporate murder mystery" and "team building murder mystery").
+- **New page** [src/pages/OfficeMurderMysteryParty.tsx](src/pages/OfficeMurderMysteryParty.tsx): H1 + intro answering "can we run a murder mystery at the office?", team-building benefits, lunch-hour vs after-work formats, guest-count flexibility, feature cards, a generator CTA, and a 4-Q&A FAQ mirrored 1:1 into FAQPage JSON-LD. ~1,045 visible words. Built on the ADR-0020 landing-page pattern (i18n copy, `<Helmet>`, FAQPage schema).
+  - **Title**: `Office Murder Mystery Party — Team Building for Any Group`
+  - **Meta**: `Run a murder mystery party at the office — a team-building game that fits a lunch hour or after-work and scales to any group size. Build yours in minutes.`
+- **English-only at launch** (deviates from ADR-0020's all-13-languages): copy lives only in `officeParty.*` in [src/i18n/locales/en.json](src/i18n/locales/en.json); other locales fall back to English. `LANGS = ["en"]`, canonical always → EN, single English sitemap entry. The `/:lang/` route is registered so localization later is additive, not a rewrite. **Why English-only**: the target query is a brand-new English term with no foreign-language signal, so 13-language translation is speculative and 13 hreflang alternates over English bodies would mislead Google. See [ADR-0022](docs/adr/0022-office-murder-mystery-landing-page.md).
+- **Routes** [src/App.tsx](src/App.tsx): `/office-murder-mystery-party` + `/:lang/office-murder-mystery-party`.
+- **Sitemap + indexability** [scripts/generate-sitemap.mjs](scripts/generate-sitemap.mjs): English `staticPages` entry (priority 0.8) + added to the static-route fallback loop so GitHub Pages returns 200.
+- **Internal links** into the new page from [src/pages/CustomMurderMysteryParty.tsx](src/pages/CustomMurderMysteryParty.tsx), the blog hub [src/pages/BlogIndex.tsx](src/pages/BlogIndex.tsx), and [src/components/Footer.tsx](src/components/Footer.tsx). The page links back out to the custom-build page and the corporate blog guide (money-page ↔ supporting-content hub).
+- **Deferred**: localization into the other 12 locales (translate `officeParty.*`, grow `LANGS`, move sitemap entry into `localizedStaticPages`) — revisit once the English page proves the segment in GSC.
+
+### SEO: Rewrite homepage title/meta to lift CTR on branded "Mystery Maker" queries
+
+- **Why**: GSC shows "mystery maker", "murder mystery maker" and "mysterymaker" ranking top-5 on the homepage (~position 5, 28 impr/wk) but converting at only ~3.6% CTR. The old title/meta led with "Create Custom Murder Mystery Parties" and the brand suffix was "Murder Mystery Party Generator" — the actual brand users are searching ("Mystery Maker", matching the `mysterymaker.party` domain) appeared nowhere in the SERP snippet.
+- **Change** (English only — the branded queries are English), in [src/i18n/locales/en.json](src/i18n/locales/en.json) `home.seo`:
+  - `brand`: "Murder Mystery Party Generator" → **"Mystery Maker"**. This is the suffix appended by [src/components/Head.tsx](src/components/Head.tsx) as `{title} | {brand}`, so it now reads on the homepage and the other 4 pages using `Head` (Privacy, NotFound, 2 dev previews). Blog/About/Custom pages set their own titles and are unaffected.
+  - `title`: → **"Printable Murder Mystery Kits in Minutes"** → renders `Printable Murder Mystery Kits in Minutes | Mystery Maker` (56 chars). Covers all three branded queries plus a benefit hook (printable kits, minutes).
+  - `description`: → **"Mystery Maker builds printable murder mystery party kits for any theme in minutes. Pick a theme, get characters, clues & host guide. Start free."** (144 chars).
+- **Deferred**: non-English locales still carry the old `home.seo.brand`/title/description and the old "Murder Mystery Party Generator" brand suffix — left as-is since the CTR signal is English. Revisit if branded queries appear in other markets.
+
+### SEO: Rewrite title/meta on the "best murder mystery party games" review post to lift CTR
+
+- **Why**: `/blog/best-murder-mystery-party-games-review/` earns ~1,076 GSC impressions/wk at avg position 10.9 but only ~0.5% CTR — the biggest under-converting page. The old snippet ("Best Murder Mystery Games 2026: Boxed vs Printable" / "Boxed sets, printable kits, or subscription boxes? …") led with a boxed-vs-printable framing, didn't carry the exact "party games" query phrase or a clear review/number hook, and had no free-generator CTA.
+- **Change** (live Supabase `blog_posts` row, `slug='best-murder-mystery-party-games-review'`, `language='en'`):
+  - `title`: → **"9 Best Murder Mystery Party Games (2026 Hands-On Review)"** (56 chars). Renders as `… | Mystery Maker` via [src/pages/BlogPost.tsx](src/pages/BlogPost.tsx) Helmet (brand suffix truncates in SERP, keyword-first preserved). Number aligns to the article's actual 9-game ranking — original draft copy said "7"; corrected to ground truth.
+  - `meta_description`: → **"We played and ranked the 9 best murder mystery party games for every group size and budget. See the winners — then build your own free in minutes."** (146 chars). Leads with benefit/number, signals hands-on ranking, closes with a free-generator CTA.
+  - Goal: lift CTR from ~0.5% toward 3–5% on existing impressions.
+- **Applied to the live DB first**: the xlsx (the documented sync source) was found **stale** for this row — it still held pre-Jun-23 draft copy ("Honest Reviews of Top Kits…", ~22k-char body) and marked the post `draft`, while the entire live row (title, meta, **and the 25,816-char body**) had been edited directly on 2026-06-23 and is `published`. Editing the live row is the lower-risk, reversible path (single row; old values captured here).
+- **`blog_map.xlsx` reconciled to match production (done this session)**: a future `scripts/sync-blog-map.mjs` run (`.github/workflows/sync-blog-map.yml`) pushes xlsx → DB and would otherwise clobber the directly-edited live content, so row 84 was rewritten to mirror the live DB for **all 13 languages** (title/content/meta/keywords) + status→`published`. Done via a one-shot script that pulled the live rows using the service key in `.env` and wrote the 36MB workbook with **tmp-write → read-back-verify (full cell equality + all-422 col-1 slug structural check) → atomic-rename**, per the workbook's known round-trip-corruption fragility; verified afterward by an independent re-open. The next sync is now a no-op for this slug instead of a revert. (Note: `isPublished` in the sync derives from Supabase's published set, not xlsx col 3, so de-publish was never the live risk — content clobber was.)
+- **⚠️ Still open (broader)**: the same xlsx↔DB drift likely affects other slugs (the non-EN rows here were last edited 2026-05-11, also bypassing xlsx). A full xlsx↔Supabase parity audit is deferred — tracked in a vault note.
+- **Old values** (for reversibility): title `Best Murder Mystery Games 2026: Boxed vs Printable`; meta `Boxed sets, printable kits, or subscription boxes? We ranked 9 murder mystery games by price, prep, and group size (4–100+ guests). See which wins your night.`
+
 ## 2026-06-27
 
 ### Fix: Stop "team notified" alert firing on already-completed packages

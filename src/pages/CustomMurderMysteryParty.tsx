@@ -161,6 +161,15 @@ export default function CustomMurderMysteryParty() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
+
+            {/* Internal link to the office/team-building landing page */}
+            <p className="text-muted-foreground mt-6">
+              {t("customParty.officeLink.lead")}{" "}
+              <Link to="/office-murder-mystery-party" className="text-[#C81400] hover:underline font-medium">
+                {t("customParty.officeLink.link")}
+              </Link>{" "}
+              {t("customParty.officeLink.end")}
+            </p>
           </div>
         </section>
 
