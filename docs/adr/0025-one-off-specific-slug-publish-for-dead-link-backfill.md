@@ -42,6 +42,20 @@ audit surfaced: `murder-mystery-party-haunted-asylum-theme`,
 **Strip zero links** — every target is a complete draft, so publishing both
 fixes the dead link and preserves the designed internal-link equity.
 
+**Also add a cross-link target guard** (`scripts/_crosslink-target-guard.mjs`,
+used by both `apply-crosslinks.mjs` and `backfill-crosslinks.mjs`): a
+cross-link is only inserted once its target page is actually **published**.
+This was required for correctness — the 8 batch posts contain 9 cross-links to
+*other* still-draft targets, so a naive publish would have fixed 9 incoming
+dead links while creating 9 new outgoing ones (net zero). The guard suppresses
+those until the targets go live. To let intra-batch links resolve, the one-off
+workflow publishes the whole batch first, then applies cross-links.
+
+The guard is a **systemic** fix, not specific to this backfill: it permanently
+stops the daily publisher (and any backfill run) from ever emitting an internal
+link to a draft page. This is the root cause of the dead-link churn ADR-0021
+was built to drain.
+
 ## Rationale
 
 - **Publish over strip.** Stripping a link discards finished content *and*
@@ -86,14 +100,24 @@ fixes the dead link and preserves the designed internal-link equity.
   need (e.g. seasonal posts, future dead-link backfills).
 - Non-EN languages that fail the rot gate at run time are held back (EN still
   ships), so the dead links — which are EN-site — are resolved regardless.
+- **Deferred links (the guard's trade-off):** the 9 cross-links from the batch
+  to still-draft targets are *not* inserted now. They are recovered the next
+  time `backfill-crosslinks.mjs` runs after those targets publish (the guard
+  makes backfill safe to run anytime — it only ever inserts links to live
+  pages). Recommend running `backfill-crosslinks.mjs` periodically (e.g.
+  monthly, or after the daily queue drains) to progressively fill deferred
+  links. A missing internal link is a small, recoverable equity cost; a 404 in
+  the acquisition engine is not — so deferring is the correct default.
 
 ## Key files
 
 - `.github/workflows/publish-specific-slugs.yml` — the new one-off workflow
 - `.github/workflows/publish-daily-blog.yml` — steady-state daily publisher (unchanged)
-- `scripts/pick-next-draft.mjs`, `scripts/apply-crosslinks.mjs`,
-  `scripts/check-rot-signals.mjs`, `scripts/apply-p5-tocs.mjs`,
-  `scripts/submit-indexnow.mjs`, `scripts/generate-llms-txt.mjs` — reused pipeline steps
+- `scripts/_crosslink-target-guard.mjs` — **new** shared guard (parse target, fetch published set, skip draft targets)
+- `scripts/apply-crosslinks.mjs`, `scripts/backfill-crosslinks.mjs` — **modified** to use the guard
+- `scripts/pick-next-draft.mjs`, `scripts/check-rot-signals.mjs`,
+  `scripts/apply-p5-tocs.mjs`, `scripts/submit-indexnow.mjs`,
+  `scripts/generate-llms-txt.mjs` — reused pipeline steps
 - `cross_link_map.json` — link-insertion source / in-degree source
 
 ## Discussion

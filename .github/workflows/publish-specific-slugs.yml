@@ -7,9 +7,15 @@ name: Publish Specific Slugs (one-off backfill)
 # right steady-state cadence, but it cannot expedite a specific set of slugs —
 # and when published source posts link to still-draft targets, those links are
 # live 404s until the target ships. This workflow publishes a named list of
-# slugs through the IDENTICAL gated pipeline (cross-links → rot-gate → status →
+# slugs through the IDENTICAL gated pipeline (status → cross-links → rot-gate →
 # IndexNow → GSC → prerender deploy), so a dead-link backfill doesn't have to
 # wait days for the daily queue to reach each target. See ADR-0025.
+#
+# Ordering note: unlike the daily workflow (single slug → cross-link → publish),
+# this publishes the WHOLE batch first, THEN applies cross-links. That way links
+# between slugs in the same batch resolve, while the cross-link target guard
+# (ADR-0025) still defers any link to a target outside the batch that is not yet
+# live — so the run nets zero NEW dead links.
 #
 # It does NOT reorder or interfere with the daily queue: once a slug is
 # published here it simply drops out of the remaining-drafts set.
@@ -44,7 +50,7 @@ jobs:
       - name: Install dependencies
         run: npm install @supabase/supabase-js ws github-slugger
 
-      - name: Publish each requested slug (cross-links + rot-gate + status)
+      - name: Publish batch (rot-gate + status), then cross-link + TOC
         id: publish
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -56,12 +62,13 @@ jobs:
           SLUGS=$(echo "${{ github.event.inputs.slugs }}" | tr ',' ' ')
           PUBLISHED_SLUGS=""
 
+          # ---- PASS 1: rot-gate + publish status for the whole batch ----
           for SLUG in $SLUGS; do
             [ -z "$SLUG" ] && continue
-            echo "::group::Publishing $SLUG"
+            echo "::group::Gate + publish $SLUG"
 
-            # Guard: skip a slug that has no EN draft row (already published,
-            # or a typo) so a bad list entry can't fail the whole batch.
+            # Skip a slug with no EN draft row (already published, or a typo) so
+            # one bad list entry can't fail the whole batch.
             DRAFT_COUNT=$(curl -s \
               "${SUPABASE_URL}/rest/v1/blog_posts?language=eq.en&slug=eq.${SLUG}&status=eq.draft&select=slug" \
               -H "apikey: ${SUPABASE_SERVICE_KEY}" \
@@ -72,14 +79,7 @@ jobs:
               continue
             fi
 
-            # 1. Apply cross-links for all 13 languages (inserts this slug's OWN
-            #    outbound links; content-only, no status change).
-            for LANG in en es fr de it da fi nl sv pt ko ja zh-cn; do
-              node scripts/apply-crosslinks.mjs "$SLUG" "$LANG" \
-                || echo "  WARNING: cross-link application failed for $LANG (continuing)"
-            done
-
-            # 2. Rot-signal gate across the 12 non-EN languages. EN always ships.
+            # Rot-signal gate across the 12 non-EN languages. EN always ships.
             GATE_JSON=$(node scripts/check-rot-signals.mjs "$SLUG")
             LANGS="en"
             for LANG in ko zh-cn es fr de it pt nl da sv fi ja; do
@@ -103,7 +103,7 @@ jobs:
               echo ""
             } >> "$GITHUB_STEP_SUMMARY"
 
-            # 3. PATCH only the languages that passed the gate (+ EN).
+            # PATCH only the languages that passed the gate (+ EN).
             RESULT=$(curl -s -o /dev/null -w "%{http_code}" \
               "${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.${SLUG}&status=eq.draft&language=in.(${LANGS})" \
               -X PATCH \
@@ -117,11 +117,21 @@ jobs:
               exit 1
             fi
             echo "  Published '$SLUG' (langs: $LANGS)"
-
-            # 4. Priority-5 TOC for the just-published slug (idempotent, all langs).
-            node scripts/apply-p5-tocs.mjs --slug="$SLUG" || echo "  WARNING: p5-toc step failed for $SLUG (continuing)"
-
             PUBLISHED_SLUGS="$PUBLISHED_SLUGS $SLUG"
+            echo "::endgroup::"
+          done
+
+          # ---- PASS 2: cross-links + Priority-5 TOC, now that the whole batch
+          #      is live. The target guard (ADR-0025) defers any link to a
+          #      target still in draft, so no new dead links are created. ----
+          for SLUG in $PUBLISHED_SLUGS; do
+            echo "::group::Cross-links + TOC $SLUG"
+            for LANG in en es fr de it da fi nl sv pt ko ja zh-cn; do
+              node scripts/apply-crosslinks.mjs "$SLUG" "$LANG" \
+                || echo "  WARNING: cross-link application failed for $LANG (continuing)"
+            done
+            node scripts/apply-p5-tocs.mjs --slug="$SLUG" \
+              || echo "  WARNING: p5-toc step failed for $SLUG (continuing)"
             echo "::endgroup::"
           done
 

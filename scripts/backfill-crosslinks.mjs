@@ -9,6 +9,7 @@
 
 import { createClient } from './_supabase-node.mjs';
 import { readFileSync } from 'fs';
+import { fetchPublishedTargets, targetIsPublished } from './_crosslink-target-guard.mjs';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -30,7 +31,7 @@ function getInsertions(slug, language) {
   return entry.lang_insertions?.[language];
 }
 
-async function backfillLanguage(language) {
+async function backfillLanguage(language, publishedTargets) {
   const { data: posts, error } = await supabase
     .from('blog_posts')
     .select('id, slug, content')
@@ -60,6 +61,12 @@ async function backfillLanguage(language) {
 
       if (content.includes(ins.replacement)) {
         linksAlready++;
+        continue;
+      }
+
+      // Never insert a link to a still-draft target (it would be a 404).
+      // See ADR-0025.
+      if (!targetIsPublished(ins.replacement, publishedTargets)) {
         continue;
       }
 
@@ -95,8 +102,12 @@ async function main() {
 
   let grandTotal = { updated: 0, skipped: 0, alreadyLinked: 0, posts: 0 };
 
+  // Fetch the published-target set once; the guard uses it to defer any link
+  // whose target page isn't live yet (no dead links). See ADR-0025.
+  const publishedTargets = await fetchPublishedTargets(supabase);
+
   for (const lang of LANGUAGES) {
-    const result = await backfillLanguage(lang);
+    const result = await backfillLanguage(lang, publishedTargets);
     console.log(`${lang.toUpperCase().padEnd(6)}: ${result.total} posts — ${result.updated} updated, ${result.alreadyLinked} already linked, ${result.skipped} skipped`);
     grandTotal.updated += result.updated;
     grandTotal.skipped += result.skipped;

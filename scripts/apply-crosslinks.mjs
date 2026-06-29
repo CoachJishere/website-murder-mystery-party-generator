@@ -9,6 +9,7 @@
 
 import { createClient } from './_supabase-node.mjs';
 import { readFileSync } from 'fs';
+import { fetchPublishedTargets, targetIsPublished } from './_crosslink-target-guard.mjs';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -55,9 +56,15 @@ if (error || !rows || rows.length === 0) {
   process.exit(1);
 }
 
+// Only insert links to pages that are actually live — never emit a link to a
+// still-draft target (that is a 404). Deferred links are recovered by a later
+// backfill-crosslinks run once the target publishes. See ADR-0025.
+const publishedTargets = await fetchPublishedTargets(supabase);
+
 let content = rows[0].content;
 let applied = 0;
 let skipped = 0;
+let deferred = 0;
 
 for (const ins of insertions) {
   if (!ins.match_text || !ins.replacement) continue;
@@ -65,6 +72,12 @@ for (const ins of insertions) {
   // Skip if already linked
   if (content.includes(ins.replacement)) {
     skipped++;
+    continue;
+  }
+
+  // Skip if the target page isn't published yet (would be a dead link)
+  if (!targetIsPublished(ins.replacement, publishedTargets)) {
+    deferred++;
     continue;
   }
 
@@ -88,4 +101,4 @@ if (applied > 0) {
   }
 }
 
-console.log(`  ${language}: ${applied} links applied${skipped > 0 ? `, ${skipped} already present` : ''}`);
+console.log(`  ${language}: ${applied} links applied${skipped > 0 ? `, ${skipped} already present` : ''}${deferred > 0 ? `, ${deferred} deferred (target not yet published)` : ''}`);
