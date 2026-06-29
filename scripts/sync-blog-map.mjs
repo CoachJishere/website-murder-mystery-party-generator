@@ -127,36 +127,50 @@ async function main() {
   console.log(`  Draft rows to insert: ${draftRows.length} (${draftRows.length / 13} slugs)`);
 
   // ── Step 2: Update published posts with audited translations ──
-  console.log('\n✏️  Updating published posts with audited translations...');
+  // GUARD (ADR-0026): by DEFAULT we do NOT overwrite already-published posts.
+  // The live DB is the source of truth for published content — title/meta/body
+  // are routinely edited directly in Supabase for SEO and enriched with blog→
+  // landing crosslinks (ADR-0023) that don't exist in this workbook. Blindly
+  // pushing xlsx over them silently reverts that work. xlsx's job is to SEED NEW
+  // DRAFTS (Steps 3–4), not to be canonical for live posts.
+  // To deliberately force-push xlsx onto published posts (an intentional,
+  // reviewed reseed), run with SYNC_OVERWRITE_PUBLISHED=true.
+  const OVERWRITE_PUBLISHED = process.env.SYNC_OVERWRITE_PUBLISHED === 'true';
   let updateCount = 0;
   let updateErrors = 0;
 
-  // Process in batches of 1 row at a time (content is too large for bulk upsert)
-  for (const record of publishedRows) {
-    const { error } = await supabase
-      .from('blog_posts')
-      .update({
-        title: record.title,
-        content: record.content,
-        meta_description: record.meta_description,
-        meta_keywords: record.meta_keywords,
-        reading_time: record.reading_time,
-        updated_at: record.updated_at,
-      })
-      .eq('slug', record.slug)
-      .eq('language', record.language);
+  if (!OVERWRITE_PUBLISHED) {
+    console.log(`\n⏭️  Skipping ${publishedRows.length} published rows — live DB is source of truth (ADR-0026).`);
+    console.log('    To force-push xlsx onto published posts, re-run with SYNC_OVERWRITE_PUBLISHED=true.');
+  } else {
+    console.log(`\n✏️  SYNC_OVERWRITE_PUBLISHED=true — overwriting ${publishedRows.length} published rows with xlsx content...`);
+    // Process in batches of 1 row at a time (content is too large for bulk upsert)
+    for (const record of publishedRows) {
+      const { error } = await supabase
+        .from('blog_posts')
+        .update({
+          title: record.title,
+          content: record.content,
+          meta_description: record.meta_description,
+          meta_keywords: record.meta_keywords,
+          reading_time: record.reading_time,
+          updated_at: record.updated_at,
+        })
+        .eq('slug', record.slug)
+        .eq('language', record.language);
 
-    if (error) {
-      console.error(`  ❌ Error updating ${record.slug}/${record.language}: ${error.message}`);
-      updateErrors++;
-    } else {
-      updateCount++;
-      if (updateCount % 100 === 0) {
-        console.log(`  Updated ${updateCount}/${publishedRows.length}...`);
+      if (error) {
+        console.error(`  ❌ Error updating ${record.slug}/${record.language}: ${error.message}`);
+        updateErrors++;
+      } else {
+        updateCount++;
+        if (updateCount % 100 === 0) {
+          console.log(`  Updated ${updateCount}/${publishedRows.length}...`);
+        }
       }
     }
+    console.log(`  ✅ Updated ${updateCount} published rows (${updateErrors} errors)`);
   }
-  console.log(`  ✅ Updated ${updateCount} published rows (${updateErrors} errors)`);
 
   // ── Step 3: Delete all existing draft rows ──
   console.log('\n🗑️  Deleting all existing draft rows...');
