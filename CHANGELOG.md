@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-06-30
+
+### Improvement: Automate deferred cross-link recovery via a monthly backfill on the daily workflow
+
+- **Why**: The ADR-0025 cross-link target guard *defers* any link whose target page isn't published yet (no dead links, but the intended internal link is temporarily missing). As targets go live over time, those deferred links need to be (re)applied to recover the internal-link equity.
+- **What** [.github/workflows/publish-daily-blog.yml](.github/workflows/publish-daily-blog.yml): added a step that runs `scripts/backfill-crosslinks.mjs` **only on the 1st of the month (UTC)**, piggybacking on the daily publish workflow. `backfill-crosslinks` is idempotent and guard-protected — it only inserts links to already-published targets, so it can never create a dead link. Its content edits are picked up by the Pages deploy dispatched at the end of the same run.
+- **Why piggyback instead of a standalone monthly cron**: run-history audit showed GitHub's scheduled queue is unreliable for *infrequent* crons (the quarterly refresh's only scheduled run failed; top-of-hour crons land hours late), whereas the daily workflow fires dependably every day. Gating on the 1st gives a reliable ~monthly cadence without trusting a rare cron. Timing is irrelevant for a backfill. Implements the periodic-backfill recommendation in [ADR-0025](docs/adr/0025-one-off-specific-slug-publish-for-dead-link-backfill.md).
+
 ## 2026-06-29
 
 ### Fix: Make `sync-blog-map` non-destructive to published posts (ADR-0026)
