@@ -72,6 +72,51 @@ OUTPUT: valid HTML for an email body (no <html>/<head>, just the body markup). U
 Keep it skimmable. No preamble before the first <h2>. No closing sign-off.
 `.trim();
 
+// --- Date-gated reminders -------------------------------------------------------
+// Self-expiring nudges injected at the top of the digest during a date window, for
+// "come back and measure the effect of change X once it's had time to land" — the
+// kind of follow-up that otherwise gets forgotten (scheduled routines here don't
+// reliably surface to the user, but this weekly email does). Each carries a
+// paste-ready prompt that re-derives from ground truth. Delete an entry once acted
+// on, or let it lapse after `end` (inclusive). Dates are 'YYYY-MM-DD' (UTC).
+const REMINDERS = [
+  {
+    // Shipped 2026-06-30: homepage title/meta rewrite for branded-query CTR (ADR-0024).
+    // Starts ~2 weeks later so GSC has enough after-data; covers the Jul 13/20/27 + Aug 3 sends.
+    start: '2026-07-13',
+    end: '2026-08-03',
+    title: 'Measure homepage branded-query CTR (the Jun 30 title/meta rewrite)',
+    body:
+      'On 2026-06-30 the homepage title/meta were rewritten to lead with "Custom" and surface the ' +
+      '"Mystery Maker" brand — targeting the branded queries <strong>mystery maker</strong>, ' +
+      '<strong>murder mystery maker</strong>, and <strong>mysterymaker</strong>, which ranked ~position 5 ' +
+      'but converted at only ~3.6% CTR. Enough time has now passed to measure the effect — paste the prompt ' +
+      'below into a fresh chat.',
+    prompt: `Measure whether the 2026-06-30 homepage title/meta rewrite lifted CTR on branded queries.
+Re-derive everything from Google Search Console — do not trust this note's numbers.
+
+1. Page: https://www.mysterymaker.party/   Queries: "mystery maker", "murder mystery maker", "mysterymaker".
+2. For each query, compare the ~3 weeks BEFORE 2026-06-30 vs the weeks AFTER: CTR, clicks, impressions, avg position.
+3. Baseline before the change was ~3.6% CTR at ~position 5 (~28 impressions/week on "mystery maker").
+4. Report: did CTR rise, and by how much? Flag any position change so a ranking shift isn't mistaken for a CTR win.
+5. If CTR is still under ~6% at top-5, propose the next title/meta variant to test (current copy is documented in docs/adr/0024-static-homepage-seo-source-of-truth.md).`,
+  },
+];
+
+function renderReminders(today) {
+  return REMINDERS
+    .filter((r) => today >= r.start && today <= r.end)
+    .map(
+      (r) =>
+        '<div style="border:1px solid #d9b310;background:#fffbe6;border-radius:6px;padding:12px 14px;margin:0 0 18px;">' +
+        `<p style="margin:0 0 6px;font-weight:600;color:#7a5c00;">📌 Reminder — ${r.title}</p>` +
+        `<p style="margin:0 0 10px;font-size:14px;color:#444;">${r.body}</p>` +
+        `<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;font-size:13px;margin:0;">${r.prompt}</pre>` +
+        '</div>'
+    )
+    .join('');
+}
+
 async function main() {
   if (!API_KEY) {
     console.error('Missing ANTHROPIC_API_KEY');
@@ -123,6 +168,7 @@ async function main() {
   const wrapped =
     `<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:680px;margin:auto;color:#222;">` +
     `<p style="color:#666;font-size:13px;">SEO/GEO digest — week ending ${today} · mysterymaker.party</p>` +
+    renderReminders(today) +
     html +
     `</div>`;
 

@@ -2,6 +2,12 @@
 
 ## 2026-06-30
 
+### Improvement: Date-gated reminders in the weekly SEO digest (measure the Jun 30 CTR change in mid-July)
+
+- **Why**: the homepage title/meta change needs ~2 weeks of post-deploy data before its CTR effect on the branded queries can be judged, and scheduled/cron reminders here don't reliably surface to the user — but the weekly SEO digest email does. So follow-ups get embedded where they'll actually be seen.
+- **Change** [scripts/generateSeoDigest.mjs](scripts/generateSeoDigest.mjs): added a `REMINDERS` array + `renderReminders(today)` that injects a self-expiring, date-gated note at the top of the digest. Each entry has a `start`/`end` window and a paste-ready prompt that **re-derives from GSC ground truth** (not from the note's own numbers). First entry fires on the Jul 13 / 20 / 27 + Aug 3 Monday sends, then lapses automatically — prompting a fresh-chat CTR measurement of the Jun 30 rewrite (baseline ~3.6% CTR at position ~5). Deterministic injection (not left to the LLM digest body).
+- **Mechanism note**: reminder shows iff `start ≤ today ≤ end` (string-compared `YYYY-MM-DD`); delete the entry once acted on or let it expire. Verified the window fires only on the intended sends.
+
 ### SEO: Lead homepage title/meta with "Custom" not "Printable"
 
 - **Why**: "Printable" had become the first word of the homepage title purely as a side effect of moving the brand into the `| Mystery Maker` suffix — but printable is table stakes (every competitor kit is printable). Per the north star the real differentiator is personalization ("it writes the mystery around the people attending"; emotional hook "it used real names"). For branded-query searchers the snippet should confirm the *custom* angle, not a commodity feature.
