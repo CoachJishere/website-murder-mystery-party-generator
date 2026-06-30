@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 226 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 227 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -164,6 +164,7 @@ This index organizes 226 published guides by topic cluster. All guides are avail
 
 - [How to Host a Murder Mystery Party for 10 People](https://www.mysterymaker.party/blog/murder-mystery-party-for-10-players): Ten players bridges small dinner party and medium event territory. Here's how to manage a larger character cast and keep everyone engaged in the mystery.
 - [How to Host a Murder Mystery Party for 12 People](https://www.mysterymaker.party/blog/murder-mystery-party-for-12-players): Twelve guests means birthday parties, holiday gatherings and team mechanics. How to run a murder mystery for 12 that doesn't devolve into chaos.
+- [How to Host a Murder Mystery Party for 15 People](https://www.mysterymaker.party/blog/murder-mystery-party-for-15-players): Fifteen guests means team investigations, role-doubling and conversation management. How to host a murder mystery for 15 that stays engaging.
 - [How to Host a Murder Mystery Party for 4 People](https://www.mysterymaker.party/blog/murder-mystery-party-for-4-players): Four people is the perfect size for an intimate murder mystery dinner party. Here's how to make every character count and keep all four players engaged.
 - [Murder Mystery Party for Large Groups (15-30+)](https://www.mysterymaker.party/blog/murder-mystery-party-for-large-groups): Scale murder mysteries from 15 to 30+ players with team-based formats, suspect rotations, and proven logistics for large groups.
 - [Murder Mystery Party Ideas for 4-8 Friends](https://www.mysterymaker.party/blog/murder-mystery-party-for-small-groups-ideas): Run a murder mystery for small groups where everyone matters — custom characters replace filler roles, and the mystery only works with your specific people.
