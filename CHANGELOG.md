@@ -6,7 +6,8 @@
 
 - **Why**: the social share image (`/images/homepage-share-image.png`, referenced by `og:image`/`twitter:image`) was a Jun 2025 screenshot of the *old* homepage — stale, and screenshots frame poorly as social cards. Surfaced during the FB share-debugger check of the title/meta work.
 - **Change**: replaced it with a branded 1200×630 card — brand red (#C81400) gradient, Bowlby One "MYSTERY MAKER" wordmark, Inter copy — leading with the personalization value prop ("Murder mystery parties, personalized for your guests") to match the new title/meta direction. The `og:image`/`twitter:image` URLs are unchanged (same path), so no tag edits.
-- **Tooling**: new reusable generator [scripts/generate-og-image.mjs](scripts/generate-og-image.mjs) (Playwright render + sharp optimise; copy/colours edited at the top of the file) so the card regenerates deterministically instead of going stale. Resolves the og:image follow-up logged earlier today. After deploy, run FB/Twitter "Scrape Again" to refresh their caches.
+- **Tooling**: new reusable generator [scripts/generate-og-image.mjs](scripts/generate-og-image.mjs) (Playwright render + sharp optimise; copy/colours edited at the top of the file) so the card regenerates deterministically instead of going stale. Resolves the og:image follow-up logged earlier today.
+- **Cache-bust**: the new image deployed at the *same* path, but Facebook caches the image bytes by URL — a re-scrape refreshed the tags while still serving the old cached card. Added `?v=20260630` to the `og:image`/`twitter:image` URLs in [index.html](index.html) so scrapers treat it as a new asset. After deploy, "Scrape Again" once more (the debugger should now fetch the red card). The file itself is unchanged, so the query param is the only lever needed.
 
 ### Improvement: Date-gated reminders in the weekly SEO digest (measure the Jun 30 CTR change in mid-July)
 
