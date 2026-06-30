@@ -2,6 +2,12 @@
 
 ## 2026-06-30
 
+### Improvement: Regenerated the homepage og:image as an on-brand designed card
+
+- **Why**: the social share image (`/images/homepage-share-image.png`, referenced by `og:image`/`twitter:image`) was a Jun 2025 screenshot of the *old* homepage — stale, and screenshots frame poorly as social cards. Surfaced during the FB share-debugger check of the title/meta work.
+- **Change**: replaced it with a branded 1200×630 card — brand red (#C81400) gradient, Bowlby One "MYSTERY MAKER" wordmark, Inter copy — leading with the personalization value prop ("Murder mystery parties, personalized for your guests") to match the new title/meta direction. The `og:image`/`twitter:image` URLs are unchanged (same path), so no tag edits.
+- **Tooling**: new reusable generator [scripts/generate-og-image.mjs](scripts/generate-og-image.mjs) (Playwright render + sharp optimise; copy/colours edited at the top of the file) so the card regenerates deterministically instead of going stale. Resolves the og:image follow-up logged earlier today. After deploy, run FB/Twitter "Scrape Again" to refresh their caches.
+
 ### Improvement: Date-gated reminders in the weekly SEO digest (measure the Jun 30 CTR change in mid-July)
 
 - **Why**: the homepage title/meta change needs ~2 weeks of post-deploy data before its CTR effect on the branded queries can be judged, and scheduled/cron reminders here don't reliably surface to the user — but the weekly SEO digest email does. So follow-ups get embedded where they'll actually be seen.
