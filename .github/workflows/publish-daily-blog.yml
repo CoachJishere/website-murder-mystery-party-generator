@@ -187,6 +187,31 @@ jobs:
           SINCE=$(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v-1H +%Y-%m-%dT%H:%M:%SZ)
           node scripts/apply-p5-tocs.mjs --since="$SINCE"
 
+      - name: Monthly cross-link backfill (1st of month)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        # Fills in cross-links that were DEFERRED because their target wasn't
+        # published yet — the ADR-0025 target guard skips links to draft pages,
+        # so as targets go live their inbound links need to be (re)applied.
+        # backfill-crosslinks is idempotent and guard-protected: it only inserts
+        # links to already-published targets, so it can never create a dead link.
+        #
+        # Why piggyback on the daily run instead of a standalone monthly cron:
+        # GitHub's scheduled-workflow queue drops/​delays infrequent crons (the
+        # quarterly refresh's only run failed; top-of-hour crons land hours
+        # late). The daily workflow fires reliably every day, so gating on the
+        # 1st gives a dependable ~monthly cadence. Timing doesn't matter for a
+        # backfill. The content edits it makes are picked up by the Pages deploy
+        # dispatched at the end of this same run.
+        run: |
+          if [ "$(date -u +%d)" = "01" ]; then
+            echo "1st of month (UTC) — running cross-link backfill across all languages"
+            node scripts/backfill-crosslinks.mjs
+          else
+            echo "Not the 1st (day $(date -u +%d) UTC) — skipping monthly backfill"
+          fi
+
       - name: Submit just-published URLs to IndexNow (Bing)
         if: steps.publish.outputs.slug != ''
         env:
