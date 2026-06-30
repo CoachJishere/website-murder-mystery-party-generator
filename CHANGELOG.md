@@ -2,6 +2,14 @@
 
 ## 2026-06-30
 
+### SEO: Lead homepage title/meta with "Custom" not "Printable"
+
+- **Why**: "Printable" had become the first word of the homepage title purely as a side effect of moving the brand into the `| Mystery Maker` suffix — but printable is table stakes (every competitor kit is printable). Per the north star the real differentiator is personalization ("it writes the mystery around the people attending"; emotional hook "it used real names"). For branded-query searchers the snippet should confirm the *custom* angle, not a commodity feature.
+- **Change** (both sources of truth — [index.html](index.html) static head + [src/i18n/locales/en.json](src/i18n/locales/en.json) `home.seo`): title → `Custom Murder Mystery Party Kits in Minutes | Mystery Maker` (59 chars); description → "Mystery Maker builds a custom murder mystery party around your real guests — any theme, printable kit, ready to host in minutes. Start free." (140 chars). "Printable" kept as a supporting feature. Refines ADR-0024.
+- **Follow-up (open)**: the homepage `og:image` (`/images/homepage-share-image.png`) is a stale screenshot of the *old* homepage — regenerate to match the current design so social shares look right. Separate image-asset task, not a meta-tag fix.
+
+## 2026-06-30
+
 ### Improvement: Automate deferred cross-link recovery via a monthly backfill on the daily workflow
 
 - **Why**: The ADR-0025 cross-link target guard *defers* any link whose target page isn't published yet (no dead links, but the intended internal link is temporarily missing). As targets go live over time, those deferred links need to be (re)applied to recover the internal-link equity.
