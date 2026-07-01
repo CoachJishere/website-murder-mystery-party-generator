@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 227 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 228 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -199,6 +199,7 @@ This index organizes 227 published guides by topic cluster. All guides are avail
 
 - [Free Murder Mystery Games & Printables: What Works](https://www.mysterymaker.party/blog/free-murder-mystery-games-printable): Honest guide to free murder mystery printables, templates, and games. Where they work, limitations, and when to upgrade.
 - [How to Host a Rockstar Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-host-a-rockstar-murder-mystery-party-music-industry-mysteries-with-backstage-drama): Rock and roll all night while solving murders in music industry mystery parties featuring bands and backstage drama.
+- [Murder Mystery Party Cleanup Guide](https://www.mysterymaker.party/blog/murder-mystery-party-cleanup-guide): Cleanup strategies for murder mystery parties. Pre-party prep, prop organization, reusable vs disposable, and post-event timelines for stress-free hosting.
 - [Murder Mystery Party Decorations: Atmosphere on Any Budget](https://www.mysterymaker.party/blog/murder-mystery-party-decorations-ideas): Budget-friendly murder mystery party decorations by theme. Atmosphere creation, DIY vs. store-bought, and high-impact decoration priorities.
 - [Murder Mystery Party Food Ideas & Menus](https://www.mysterymaker.party/blog/murder-mystery-party-food-ideas-menu): Murder mystery party food ideas & menus by theme. Timing food with game rounds, budget-friendly options, themed potluck ideas.
 - [Murder Mystery Party Host Costume Guide](https://www.mysterymaker.party/blog/murder-mystery-party-host-costume-guide): Host costume guide for murder mystery parties. When to stand out, when to blend in, and what actually works.
