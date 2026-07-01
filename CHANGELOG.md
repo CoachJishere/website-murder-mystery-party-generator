@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-07-01
+
+### Fix: Quarterly blog date refresh — timeout + silently-broken ja/ko markers
+
+- **Why (the failure)**: the `Quarterly Blog Date Refresh` Action failed on Jul 1 with HTTP 500 / Postgres `57014` (statement timeout). The RPC `refresh_blog_dates` runs 13 sequential per-language `UPDATE`s; each is now ~2.3s (de-TOAST + regex-scan ~420 rows, rewrite ~377), so the full run is ~30s. It runs as `service_role` (no `statement_timeout` override) and inherited a shorter REST-path limit. It squeaked under in past quarters; `blog_posts` growing to ~5,470 rows / 119MB pushed it over.
+- **Fix (timeout)**: added `SET statement_timeout TO '120s'` to the function so it gets its own budget (applies only during execution; ~30s under a 120s ceiling). Migration [20260701_fix_refresh_blog_dates_timeout_and_ja_ko_regex.sql](supabase/migrations/20260701_fix_refresh_blog_dates_timeout_and_ja_ko_regex.sql).
+- **Fix (localization bugs found while verifying)**: two marker regexes had essentially never matched real content and were stale every quarter — (1) **ja** used an ASCII `:` but posts use a **fullwidth colon** `：` (`**最終更新：…**`), so only 1 of ~190 matched; (2) **ko** matched `최종 업데이트` but the dominant label is `마지막 업데이트`, so only ~25 of ~364 matched. Both rewritten with capture groups that preserve each post's existing label/colon/spacing and swap **only** the date.
+- **Data**: re-ran the July refresh (4,142 posts across 11 languages), then backfilled the previously-stale rows — **189 ja + 364 ko** — to July 2026. Verified **0 stale marker rows remain** in any language.
+- **Watch items** (vault `00_INBOX/`): ~30s runtime will keep climbing with the corpus (revisit batching before ~90s); audit the other 11 languages' markers for similar drift and add a per-language `updated_count` sanity assertion so a future silent mismatch fails loudly. See [ADR-0027](docs/adr/0027-refresh-blog-dates-timeout-and-ja-ko-marker-fix.md).
+
 ## 2026-06-30
 
 ### Improvement: Regenerated the homepage og:image as an on-brand designed card

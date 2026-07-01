@@ -45,6 +45,41 @@ jobs:
           echo "Results by language:"
           echo "$RESULT" | jq -r '.[] | "\(.lang): \(.updated_count) posts refreshed"'
 
+          # --- Per-language sanity assertion ---------------------------------
+          # The RPC can return HTTP 200 while silently updating almost nothing
+          # for a locale if that language's marker regex drifts from the actual
+          # content (this happened for ja and ko — a fullwidth-colon and a
+          # wrong-word mismatch — which updated 1 and 25 posts while every other
+          # language updated ~340-390; see ADR-0027). A green run with a broken
+          # locale is the failure mode to catch, so assert every expected
+          # language refreshed a plausible number of posts and fail loudly if not.
+          #
+          # Floor is 100: comfortably below every healthy locale (min is ja at
+          # ~189, which legitimately has fewer standard "last updated" markers)
+          # and well above the silent-failure counts (1, 25). A language dropping
+          # below 100 means most of its marker lines stopped matching — worth a
+          # human look, which is exactly what failing the job forces.
+          EXPECTED_LANGS="en es fr de it pt nl da sv fi ko ja zh-cn"
+          MIN_PER_LANG=100
+          FAIL=0
+          echo ""
+          echo "Per-language sanity check (floor: $MIN_PER_LANG):"
+          for lang in $EXPECTED_LANGS; do
+            COUNT=$(echo "$RESULT" | jq -r --arg l "$lang" '[.[] | select(.lang==$l) | .updated_count] | add // 0')
+            if [ "$COUNT" -lt "$MIN_PER_LANG" ]; then
+              echo "::error::Language '$lang' refreshed only $COUNT posts (expected >= $MIN_PER_LANG) — likely a marker/regex drift for this locale (see ADR-0027)."
+              FAIL=1
+            else
+              echo "  OK: $lang = $COUNT"
+            fi
+          done
+          if [ "$FAIL" -ne 0 ]; then
+            echo ""
+            echo "Per-language sanity check FAILED: the RPC returned success but at least one locale updated far too few posts. Inspect its marker regex in refresh_blog_dates."
+            exit 1
+          fi
+          # -------------------------------------------------------------------
+
           TOTAL=$(echo "$RESULT" | jq '[.[].updated_count] | add')
           echo ""
           echo "=== Total: $TOTAL posts refreshed to $MONTH_EN $YEAR ==="
