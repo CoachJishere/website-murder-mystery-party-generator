@@ -2,6 +2,16 @@
 
 ## 2026-07-02
 
+### Fix: Pinterest image-gen was silently broken for 6 weeks — 2 infrastructure bugs
+
+- **Symptom**: Make.com Pinterest posting scenario errored on "missing url + board_id" for Module 2. Investigation surfaced 121 pins stuck in `status='failed'` since the 2026-06-11 Flux swap, with the queue effectively empty (only 1 lingering `generated` row with NULL scheduled_date). Make.com's fallback behavior on empty queue = fire Module 2 with undefined mapper values → validation error.
+- **Root cause 1 — `REPLICATE_API_TOKEN` was never added to GitHub repo secrets** even though the workflow was updated to reference it on 2026-06-11. All 90 daily image-gen runs since then failed with `REPLICATE_API_TOKEN not set in env` and marked the rows `failed`. User confirmed adding it during this session; workflow now sees the token.
+- **Root cause 2 — font files were never committed** ([scripts/pinterest/.gitignore](scripts/pinterest/.gitignore) had `fonts/` in it from day 1). Oswald-Bold.woff / Inter-Variable.ttf / Anton-Regular.ttf / BowlbyOne-Regular.ttf existed on the dev machine but GitHub Actions' checkout was font-less. 27 rows failed with `ENOENT: no such file` from opentype.js's readFile in the overlay-building step. The May 10 initial commit missed this because the local smoke test + backlog run had the fonts present, so CI-only breakage never surfaced until now.
+- **Fix** (`613df43`): drop `fonts/` from `scripts/pinterest/.gitignore`, commit the four font files (1.5MB combined, all OFL/Apache-licensed third-party assets, no reason to keep them out). Reset all 122 failed rows to `status='approved'` so the next workflow run picks them up.
+- **Catch-up cost**: 122 × $0.04 Flux ≈ $4.88 one-time. Split across 2 days at default `--limit=100`, or bump limit to 200 to process in one run.
+- **Steady-state going forward** (once backlog clears): ~1 new blog post/day × ($0.04 Flux + $0.005 Claude Haiku) ≈ **$0.045/day** = ~$1.35/month. Rounding error.
+- **Lesson**: end-to-end smoke tests should run in the CI environment, not the dev environment. Locally-passing != production-passing when the divergence is in the git-tracked file set or the runtime env. Both bugs would have been caught by a single manual workflow-dispatch run right after the Flux swap.
+
 ### Fix: AI-recommended mystery title never captured — titles with punctuation silently dropped
 
 - **Why (the failure)**: a customer's purchased mystery showed the title `1980s British country manor be money media mogul - 10 Players` — the raw free-text theme they typed at creation (typo and all), not the title the AI proposed in chat (`Blood, Blackmail & Bollinger: A Media Mogul Murder`). Root cause: the H1-title extractor in [src/utils/titleExtraction.ts](src/utils/titleExtraction.ts) whitelisted characters with `[A-Za-z0-9\s:'\-']`, which **excludes commas, ampersands, `?`, `.`, `!`, parens**. Any AI title containing those (very common — "Blood, Blackmail & Bollinger") failed the regex entirely, returned `null`, and the raw `Theme - N Players` title was left in place. Confirmed by direct regex test.
