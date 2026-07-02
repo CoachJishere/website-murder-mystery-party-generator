@@ -93,9 +93,15 @@ const MysteryChatPage = () => {
                         .eq("id", id)
                         .single();
                     const currentTitle = (existing?.title || "").trim();
+                    // The initial title is always "<theme> - N Players" (set in MysteryCreation),
+                    // so treat that raw format as a placeholder too — otherwise the AI's real
+                    // title never overwrites it here. Extracted titles never end in " Players",
+                    // so a real title, once set, won't get clobbered by later AI messages.
+                    const isRawThemeTitle = / - \d+ players?$/i.test(currentTitle);
                     const isPlaceholder = !currentTitle ||
                         currentTitle.toLowerCase().startsWith("untitled") ||
-                        currentTitle.toLowerCase().startsWith("new mystery");
+                        currentTitle.toLowerCase().startsWith("new mystery") ||
+                        isRawThemeTitle;
                     if (isPlaceholder) {
                         await supabase
                             .from("conversations")

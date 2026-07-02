@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-07-02
+
+### Fix: AI-recommended mystery title never captured — titles with punctuation silently dropped
+
+- **Why (the failure)**: a customer's purchased mystery showed the title `1980s British country manor be money media mogul - 10 Players` — the raw free-text theme they typed at creation (typo and all), not the title the AI proposed in chat (`Blood, Blackmail & Bollinger: A Media Mogul Murder`). Root cause: the H1-title extractor in [src/utils/titleExtraction.ts](src/utils/titleExtraction.ts) whitelisted characters with `[A-Za-z0-9\s:'\-']`, which **excludes commas, ampersands, `?`, `.`, `!`, parens**. Any AI title containing those (very common — "Blood, Blackmail & Bollinger") failed the regex entirely, returned `null`, and the raw `Theme - N Players` title was left in place. Confirmed by direct regex test.
+- **Fix (regex)** [titleExtraction.ts](src/utils/titleExtraction.ts): replaced the brittle character-class whitelist with a full-line capture `^#\s+(.+?)\s*$` (multiline), then strip markdown bold and surrounding quotes. The existing `isLikelySectionHeader` guard still rejects `# Questions`, `# Character List`, etc.; `## Premise` still doesn't match because `\s+` requires a space right after the single `#`. Verified against 8 cases incl. commas, ampersands, `?`, quoted titles, and section headers.
+- **Fix (dead capture path)** [src/pages/MysteryChat.tsx](src/pages/MysteryChat.tsx): the mid-chat title update only fired when the current title was blank/`untitled`/`new mystery`, but the initial title is *always* `<theme> - N Players` (set in [MysteryCreation.tsx](src/pages/MysteryCreation.tsx)), so this path was dead for every new conversation — leaving the pre-purchase update in [MysteryPurchase.tsx](src/pages/MysteryPurchase.tsx) (which itself depended on the broken regex) as the only fallback. Now also treats the raw `… - N Players` format as a placeholder, so the AI title lands in the DB during the chat. Extracted titles never end in `Players`, so a real title, once set, isn't clobbered by later AI messages.
+- **Data (backfill)**: fixed the reported record, then swept all paid conversations still holding a raw `Theme - N Players` title (20 total). Re-extracted the AI title from each one's approved concept message (latest assistant message containing a Character List; first H1 = title) and backfilled **16** conversations + their `mystery_packages` rows (e.g. `MURDER ON THE WAVERLEY - 1962`, `ROCK & ROLL REQUIEM…`, `🍷 MISTÉRIO: O ÚLTIMO BRINDE DE HUGO MARTINS`). The remaining **4** (`1950s`, `2516 Cyberpunk Dystopian`, `Future Cyber Punk`, `1920s Expedition`) never generated an AI concept, so there is no title to recover — left as-is.
+- **Scope note**: fixed forward (regex + capture path) and backfilled existing rows, but did **not** change the Make.com callback path in [api/generation-complete.js](api/generation-complete.js) — it stores whatever `data.title` Make.com returns, which is out of scope for this repo-side fix. See [ADR-0028](docs/adr/0028-ai-title-capture-and-punctuation-fix.md).
+
 ## 2026-07-01
 
 ### Fix: Quarterly blog date refresh — timeout + silently-broken ja/ko markers

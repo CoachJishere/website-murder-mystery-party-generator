@@ -11,8 +11,12 @@ export const extractTitleFromMessages = (messages: any[]) => {
     );
   });
 
-  // Primary pattern: # TITLE or # "TITLE" (most reliable - this is how Claude formats titles)
-  const headerTitlePattern = /^#\s+(?:\*\*)?[""]?([A-Z][A-Za-z0-9\s:'\-']+?)[""]?(?:\*\*)?$/m;
+  // Primary pattern: # TITLE (most reliable - this is how Claude formats titles).
+  // Capture the whole H1 line rather than whitelisting characters — titles routinely
+  // contain commas, ampersands, question marks etc. ("Blood, Blackmail & Bollinger"),
+  // which a restrictive character class silently rejected, dropping the title entirely.
+  // `## Premise` etc. don't match because `\s+` requires a space right after the single `#`.
+  const headerTitlePattern = /^#\s+(.+?)\s*$/m;
 
   // Secondary patterns (fallbacks)
   const titleLabelPattern = /title:\s*["']?([^"'\n]+)["']?/i;
@@ -25,9 +29,13 @@ export const extractTitleFromMessages = (messages: any[]) => {
 
       const headerMatch = content.match(headerTitlePattern);
       if (headerMatch && headerMatch[1] && headerMatch[1].trim()) {
-        const title = headerMatch[1].trim();
+        // Strip markdown bold and any surrounding quotes the capture may include.
+        const title = headerMatch[1]
+          .replace(/\*\*/g, '')
+          .replace(/^["'""'']+|["'""'']+$/g, '')
+          .trim();
         // Validate it looks like a title (not a section header like "Questions" or "Character 1")
-        if (!isLikelySectionHeader(title)) {
+        if (title && /[A-Za-z]/.test(title) && !isLikelySectionHeader(title)) {
           return formatTitle(title);
         }
       }
