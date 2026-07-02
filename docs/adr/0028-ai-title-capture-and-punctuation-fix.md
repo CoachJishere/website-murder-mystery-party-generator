@@ -56,6 +56,11 @@ title.
    updating both `conversations.title` and `mystery_packages.title`. **16** of 20
    recovered; the other **4** never generated a concept, so there is no title to
    recover.
+4. **Guard the Make.com callback** (added 2026-07-02). The post-generation callback
+   in `api/generation-complete.js` set `mystery_packages.title = data.title` (as sent
+   by Make). It now prefers a good Make title but falls back to the corrected
+   `conversations.title` when Make's value looks raw (`… - N Players`, `Mystery`,
+   `untitled`, `new mystery`), so generation can no longer re-dirty a title.
 
 ## Rationale
 
@@ -80,9 +85,11 @@ title.
   unusual-but-valid title breaks it again. Full-line capture + negative filter is
   more robust and simpler.
 - **Extract the title server-side / in the Make.com callback** and stop trusting the
-  client. Deferred: the Make.com scenario is outside this repo; the callback stores
-  `data.title` as sent. Worth revisiting if titles drift again from the Make side —
-  logged as a watch item rather than fixed here.
+  client. The Make.com scenario itself is outside this repo, but the callback
+  endpoint is not — so rather than rely on Make sending the right value, the callback
+  now defends against a raw `data.title` by falling back to the corrected
+  `conversations.title` (Decision #4). Rewriting the Make scenario's own title
+  mapping remains optional.
 - **Backfill by title-casing / normalizing** foreign and all-caps titles. Rejected
   for the backfill: stored the AI's title verbatim (the display layer already
   re-extracts and formats via `formatTitle`), avoiding lossy transforms on
@@ -96,9 +103,11 @@ title.
   DB during the chat and again before checkout.
 - 16 historical paid records now show their real titles in the dashboard, package
   view, and any email/column consumer.
-- The Make.com callback path is unchanged; if Make ever returns a raw/garbled
-  `title`, it can still overwrite `mystery_packages.title` post-generation. This is
-  the remaining known gap (see watch item).
+- The Make.com callback now guards against a raw/garbled `title`: it falls back to
+  the corrected `conversations.title`, so generation can no longer overwrite
+  `mystery_packages.title` with a raw theme. The only residual risk is if *both*
+  Make's title and the DB title are raw (e.g. a concept-less generation), in which
+  case there is no good title to use anyway.
 - 4 paid records retain `Theme - N Players` titles because no concept was ever
   generated; these are data artifacts of incomplete generations, not display bugs.
 
@@ -119,4 +128,4 @@ fix already guarantees `conversations.title` is correct at purchase time.
 - [src/pages/MysteryChat.tsx](../../src/pages/MysteryChat.tsx) — mid-chat capture guard (placeholder fix)
 - [src/pages/MysteryCreation.tsx](../../src/pages/MysteryCreation.tsx) — seeds the raw `Theme - N Players` title
 - [src/pages/MysteryPurchase.tsx](../../src/pages/MysteryPurchase.tsx) — pre-checkout capture (now backed by the fixed regex)
-- [api/generation-complete.js](../../api/generation-complete.js) — Make.com callback that sets `mystery_packages.title` (out of scope, watch item)
+- [api/generation-complete.js](../../api/generation-complete.js) — Make.com callback; now falls back to `conversations.title` when Make's `data.title` looks raw (Decision #4)

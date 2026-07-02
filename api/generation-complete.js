@@ -75,9 +75,10 @@ export default async function handler(req) {
     }
 
     // Cross-validate against player_count from conversations table
+    // (also pull title so we can fall back to it if Make.com sends a raw one)
     const { data: convRecord } = await supabase
       .from('conversations')
-      .select('player_count')
+      .select('player_count, title')
       .eq('id', conversationId)
       .maybeSingle();
     const playerCount = convRecord?.player_count || 0;
@@ -97,9 +98,23 @@ export default async function handler(req) {
       ? { status: 'completed', progress: 100, currentStep: 'Package generation completed successfully' }
       : { status: 'in_progress', progress: Math.round((incomingCharacterCount / expectedCharacterCount) * 90), currentStep: `Generated ${incomingCharacterCount} of ${expectedCharacterCount} characters` };
 
+    // Resolve the package title. Make.com sometimes returns the raw customer theme
+    // ("<theme> - N Players") or a bare "Mystery" placeholder instead of the AI's
+    // concept title. The client now captures the real AI title into
+    // conversations.title, so prefer a good Make.com title but fall back to the DB
+    // title when Make's looks raw. (See ADR-0028.)
+    const isRawTitle = (t) => {
+      if (!t || !String(t).trim()) return true;
+      const s = String(t).trim();
+      return / - \d+ players?$/i.test(s) || /^(untitled|new mystery)/i.test(s) || /^mystery$/i.test(s);
+    };
+    const resolvedTitle = !isRawTitle(data?.title)
+      ? data.title
+      : (!isRawTitle(convRecord?.title) ? convRecord.title : (data?.title || convRecord?.title || null));
+
     // Update the mystery package with status based on character completeness
     const updateData = {
-      title: data?.title || null,
+      title: resolvedTitle,
       game_overview: data?.gameOverview || null,
       host_guide: data?.hostGuide || null,
       materials: data?.materials || null,
