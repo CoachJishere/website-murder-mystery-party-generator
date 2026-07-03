@@ -910,22 +910,23 @@
     },
     "guestManager": {
       "title": "Jaa hahmot vieraiden kanssa",
-      "subtitle": "Määritä vieras jokaiselle hahmolle ja lähetä sähköpostitse",
+      "subtitle": "Määritä jokaiselle hahmolle vieras ja lähetä se sitten sähköpostitse tai kopioi linkki jaettavaksi itse (WhatsApp jne.)",
       "table": {
         "character": "Hahmo",
         "guestName": "Vieraan nimi",
-        "email": "Sähköposti",
+        "email": "Sähköposti (valinnainen)",
         "action": "Toiminto"
       },
       "placeholders": {
         "guestName": "Vieraan nimi",
-        "email": "vieras@esimerkki.com"
+        "email": "vieras@esimerkki.com (valinnainen)"
       },
       "buttons": {
         "edit": "Muokkaa",
         "send": "Lähetä",
         "sendAll": "Lähetä kaikki",
-        "close": "Sulje"
+        "close": "Sulje",
+        "copyLink": "Kopioi linkki"
       },
       "status": {
         "sent": "Lähetetty"
@@ -938,7 +939,11 @@
         "updateFailed": "Määrityksen päivittäminen epäonnistui",
         "noValidAssignments": "Ei kelvollisia lähetettäviä määrityksiä",
         "allSent": "{{count}} hahmomääritystä lähetetty!",
-        "sendSomeFailed": "Joidenkin määritysten lähetys epäonnistui"
+        "sendSomeFailed": "Joidenkin määritysten lähetys epäonnistui",
+        "linkCopied": "Linkki henkilölle {{name}} kopioitu — liitä se minne haluat!",
+        "copyManual": "Automaattinen kopiointi ei onnistunut. Tässä on linkki:",
+        "copyFailed": "Jakolinkin luominen epäonnistui",
+        "nameRequired": "Lisää ensin vieraan nimi"
       },
       "hostKit": {
         "title": "Isännöintimateriaalit",

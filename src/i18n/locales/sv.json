@@ -910,22 +910,23 @@
     },
     "guestManager": {
       "title": "Share Characters with Guests",
-      "subtitle": "Assign each character to a guest and send via email",
+      "subtitle": "Tilldela varje karaktär till en gäst och skicka den sedan via e-post eller kopiera en länk att dela själv (WhatsApp osv.)",
       "table": {
         "character": "Character",
         "guestName": "Guest Name",
-        "email": "Email",
+        "email": "E-post (valfritt)",
         "action": "Action"
       },
       "placeholders": {
         "guestName": "Guest's name",
-        "email": "guest@example.com"
+        "email": "gäst@exempel.com (valfritt)"
       },
       "buttons": {
         "edit": "Edit",
         "send": "Send",
         "sendAll": "Send All",
-        "close": "Close"
+        "close": "Close",
+        "copyLink": "Kopiera länk"
       },
       "status": {
         "sent": "Sent"
@@ -938,7 +939,11 @@
         "updateFailed": "Failed to update assignment",
         "noValidAssignments": "No valid assignments to send",
         "allSent": "Sent {{count}} character assignments!",
-        "sendSomeFailed": "Failed to send some assignments"
+        "sendSomeFailed": "Failed to send some assignments",
+        "linkCopied": "Länk till {{name}} kopierad — klistra in den var du vill!",
+        "copyManual": "Det gick inte att kopiera automatiskt. Här är länken:",
+        "copyFailed": "Det gick inte att skapa delningslänken",
+        "nameRequired": "Lägg till ett gästnamn först"
       },
       "hostKit": {
         "title": "Värdmaterial",

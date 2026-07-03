@@ -910,22 +910,23 @@
     },
     "guestManager": {
       "title": "Deel Personages met Gasten",
-      "subtitle": "Wijs elk personage toe aan een gast en verstuur via e-mail",
+      "subtitle": "Wijs elk personage toe aan een gast en verstuur het per e-mail of kopieer een link om het zelf te delen (WhatsApp, enz.)",
       "table": {
         "character": "Personage",
         "guestName": "Gastnaam",
-        "email": "E-mail",
+        "email": "E-mail (optioneel)",
         "action": "Actie"
       },
       "placeholders": {
         "guestName": "Naam van de gast",
-        "email": "gast@voorbeeld.com"
+        "email": "gast@voorbeeld.com (optioneel)"
       },
       "buttons": {
         "edit": "Bewerken",
         "send": "Versturen",
         "sendAll": "Alles Versturen",
-        "close": "Sluiten"
+        "close": "Sluiten",
+        "copyLink": "Link kopiëren"
       },
       "status": {
         "sent": "Verzonden"
@@ -938,7 +939,11 @@
         "updateFailed": "Bijwerken van toewijzing mislukt",
         "noValidAssignments": "Geen geldige toewijzingen om te verzenden",
         "allSent": "{{count}} personagetoewijzingen verzonden!",
-        "sendSomeFailed": "Verzenden van sommige toewijzingen mislukt"
+        "sendSomeFailed": "Verzenden van sommige toewijzingen mislukt",
+        "linkCopied": "Link voor {{name}} gekopieerd — plak hem waar je maar wilt!",
+        "copyManual": "Automatisch kopiëren lukte niet. Hier is de link:",
+        "copyFailed": "Kan de deellink niet aanmaken",
+        "nameRequired": "Voeg eerst een gastnaam toe"
       },
       "hostKit": {
         "title": "Hostmateriaal",

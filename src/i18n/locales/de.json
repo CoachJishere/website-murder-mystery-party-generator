@@ -910,22 +910,23 @@
     },
     "guestManager": {
       "title": "Charaktere mit Gästen teilen",
-      "subtitle": "Weisen Sie jedem Charakter einen Gast zu und senden Sie ihn per E-Mail",
+      "subtitle": "Weisen Sie jedem Charakter einen Gast zu und senden Sie ihn dann per E-Mail oder kopieren Sie einen Link, um ihn selbst zu teilen (WhatsApp usw.)",
       "table": {
         "character": "Charakter",
         "guestName": "Gastname",
-        "email": "E-Mail",
+        "email": "E-Mail (optional)",
         "action": "Aktion"
       },
       "placeholders": {
         "guestName": "Gastname",
-        "email": "gast@beispiel.com"
+        "email": "gast@beispiel.com (optional)"
       },
       "buttons": {
         "edit": "Bearbeiten",
         "send": "Senden",
         "sendAll": "Alle senden",
-        "close": "Schließen"
+        "close": "Schließen",
+        "copyLink": "Link kopieren"
       },
       "status": {
         "sent": "Gesendet"
@@ -938,7 +939,11 @@
         "updateFailed": "Fehler beim Aktualisieren der Zuweisung",
         "noValidAssignments": "Keine gültigen Zuweisungen zum Senden vorhanden",
         "allSent": "{{count}} Charakterzuweisungen gesendet!",
-        "sendSomeFailed": "Fehler beim Senden einiger Zuweisungen"
+        "sendSomeFailed": "Fehler beim Senden einiger Zuweisungen",
+        "linkCopied": "Link für {{name}} kopiert – fügen Sie ihn ein, wo Sie möchten!",
+        "copyManual": "Automatisches Kopieren nicht möglich. Hier ist der Link:",
+        "copyFailed": "Freigabelink konnte nicht erstellt werden",
+        "nameRequired": "Geben Sie zuerst einen Gastnamen ein"
       },
       "hostKit": {
         "title": "Gastgebermaterialien",

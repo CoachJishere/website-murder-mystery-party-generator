@@ -911,22 +911,23 @@
     },
     "guestManager": {
       "title": "Partager les personnages avec les invités",
-      "subtitle": "Attribuez un invité à chaque personnage et envoyez-les par e-mail",
+      "subtitle": "Attribuez un invité à chaque personnage, puis envoyez-le par e-mail ou copiez un lien pour le partager vous-même (WhatsApp, etc.)",
       "table": {
         "character": "Personnage",
         "guestName": "Nom de l'invité",
-        "email": "E-mail",
+        "email": "E-mail (facultatif)",
         "action": "Action"
       },
       "placeholders": {
         "guestName": "Nom de l'invité",
-        "email": "invité@exemple.com"
+        "email": "invité@exemple.com (facultatif)"
       },
       "buttons": {
         "edit": "Modifier",
         "send": "Envoyer",
         "sendAll": "Envoyer tout",
-        "close": "Fermer"
+        "close": "Fermer",
+        "copyLink": "Copier le lien"
       },
       "status": {
         "sent": "Envoyé"
@@ -939,7 +940,11 @@
         "updateFailed": "Échec de la mise à jour de l'assignation",
         "noValidAssignments": "Aucune assignation valide à envoyer",
         "allSent": "{{count}} assignations de personnages envoyées !",
-        "sendSomeFailed": "Échec de l'envoi de certaines assignations"
+        "sendSomeFailed": "Échec de l'envoi de certaines assignations",
+        "linkCopied": "Lien pour {{name}} copié — collez-le où vous voulez !",
+        "copyManual": "Impossible de copier automatiquement. Voici le lien :",
+        "copyFailed": "Échec de la création du lien de partage",
+        "nameRequired": "Ajoutez d'abord le nom de l'invité"
       },
       "hostKit": {
         "title": "Matériel de l'hôte",

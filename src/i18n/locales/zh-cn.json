@@ -944,22 +944,23 @@
     },
     "guestManager": {
       "title": "与客人分享角色",
-      "subtitle": "将每个角色分配给一位客人并通过电子邮件发送",
+      "subtitle": "将每个角色分配给一位客人，然后通过电子邮件发送，或复制链接自行分享（WhatsApp 等）",
       "table": {
         "character": "角色",
         "guestName": "客人姓名",
-        "email": "电子邮件",
+        "email": "电子邮件（可选）",
         "action": "操作"
       },
       "placeholders": {
         "guestName": "客人姓名",
-        "email": "guest@example.com"
+        "email": "guest@example.com（可选）"
       },
       "buttons": {
         "edit": "编辑",
         "send": "发送",
         "sendAll": "发送全部",
-        "close": "关闭"
+        "close": "关闭",
+        "copyLink": "复制链接"
       },
       "status": {
         "sent": "已发送"
@@ -972,7 +973,11 @@
         "updateFailed": "更新分配失败",
         "noValidAssignments": "没有可发送的有效分配",
         "allSent": "{{count}}个角色分配已发送！",
-        "sendSomeFailed": "发送部分分配失败"
+        "sendSomeFailed": "发送部分分配失败",
+        "linkCopied": "已复制 {{name}} 的链接 — 粘贴到任意位置即可！",
+        "copyManual": "无法自动复制。链接如下:",
+        "copyFailed": "无法创建分享链接",
+        "nameRequired": "请先填写客人姓名"
       },
       "hostKit": {
         "title": "主持人材料",

@@ -910,22 +910,23 @@
     },
     "guestManager": {
       "title": "ゲストとキャラクターを共有",
-      "subtitle": "各キャラクターをゲストに割り当て、メールで送信",
+      "subtitle": "各キャラクターをゲストに割り当て、メールで送信するか、リンクをコピーして自分で共有しましょう（WhatsAppなど）",
       "table": {
         "character": "キャラクター",
         "guestName": "ゲスト名",
-        "email": "メール",
+        "email": "メール（任意）",
         "action": "アクション"
       },
       "placeholders": {
         "guestName": "ゲストの名前",
-        "email": "guest@example.com"
+        "email": "guest@example.com（任意）"
       },
       "buttons": {
         "edit": "編集",
         "send": "送信",
         "sendAll": "すべて送信",
-        "close": "閉じる"
+        "close": "閉じる",
+        "copyLink": "リンクをコピー"
       },
       "status": {
         "sent": "送信済み"
@@ -938,7 +939,11 @@
         "updateFailed": "割り当ての更新に失敗しました",
         "noValidAssignments": "送信する有効な割り当てがありません",
         "allSent": "{{count}}件のキャラクター割り当てを送信しました！",
-        "sendSomeFailed": "一部の割り当ての送信に失敗しました"
+        "sendSomeFailed": "一部の割り当ての送信に失敗しました",
+        "linkCopied": "{{name}}のリンクをコピーしました — 好きな場所に貼り付けてください！",
+        "copyManual": "自動でコピーできませんでした。リンクはこちらです:",
+        "copyFailed": "共有リンクを作成できませんでした",
+        "nameRequired": "先にゲスト名を入力してください"
       },
       "hostKit": {
         "title": "ホスト資料",

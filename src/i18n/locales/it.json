@@ -910,22 +910,23 @@
     },
     "guestManager": {
       "title": "Condividi i personaggi con gli ospiti",
-      "subtitle": "Assegna un ospite a ogni personaggio e inviali via email",
+      "subtitle": "Assegna un ospite a ogni personaggio, poi invialo via email o copia un link per condividerlo tu stesso (WhatsApp, ecc.)",
       "table": {
         "character": "Personaggio",
         "guestName": "Nome Ospite",
-        "email": "Email",
+        "email": "Email (facoltativa)",
         "action": "Azione"
       },
       "placeholders": {
         "guestName": "Nome dell'ospite",
-        "email": "ospite@esempio.com"
+        "email": "ospite@esempio.com (facoltativa)"
       },
       "buttons": {
         "edit": "Modifica",
         "send": "Invia",
         "sendAll": "Invia tutto",
-        "close": "Chiudi"
+        "close": "Chiudi",
+        "copyLink": "Copia link"
       },
       "status": {
         "sent": "Inviato"
@@ -938,7 +939,11 @@
         "updateFailed": "Impossibile aggiornare assegnazione",
         "noValidAssignments": "Nessuna assegnazione valida da inviare",
         "allSent": "{{count}} assegnazioni personaggi inviate!",
-        "sendSomeFailed": "Invio di alcune assegnazioni non riuscito"
+        "sendSomeFailed": "Invio di alcune assegnazioni non riuscito",
+        "linkCopied": "Link per {{name}} copiato — incollalo dove vuoi!",
+        "copyManual": "Impossibile copiare automaticamente. Ecco il link:",
+        "copyFailed": "Impossibile creare il link di condivisione",
+        "nameRequired": "Aggiungi prima il nome dell'ospite"
       },
       "hostKit": {
         "title": "Materiali dell'Organizzatore",

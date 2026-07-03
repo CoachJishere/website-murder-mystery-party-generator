@@ -910,22 +910,23 @@
     },
     "guestManager": {
       "title": "Compartir Personajes con los Invitados",
-      "subtitle": "Asigna cada personaje a un invitado y envíalo por correo electrónico",
+      "subtitle": "Asigna cada personaje a un invitado y luego envíalo por correo electrónico o copia un enlace para compartirlo tú mismo (WhatsApp, etc.)",
       "table": {
         "character": "Personaje",
         "guestName": "Nombre del Invitado",
-        "email": "Correo Electrónico",
+        "email": "Correo Electrónico (opcional)",
         "action": "Acción"
       },
       "placeholders": {
         "guestName": "Nombre del invitado",
-        "email": "invitado@ejemplo.com"
+        "email": "invitado@ejemplo.com (opcional)"
       },
       "buttons": {
         "edit": "Editar",
         "send": "Enviar",
         "sendAll": "Enviar Todos",
-        "close": "Cerrar"
+        "close": "Cerrar",
+        "copyLink": "Copiar enlace"
       },
       "status": {
         "sent": "Enviado"
@@ -938,7 +939,11 @@
         "updateFailed": "Error al actualizar la asignación",
         "noValidAssignments": "No hay asignaciones válidas para enviar",
         "allSent": "¡{{count}} asignaciones de personajes enviadas!",
-        "sendSomeFailed": "Error al enviar algunas asignaciones"
+        "sendSomeFailed": "Error al enviar algunas asignaciones",
+        "linkCopied": "¡Enlace para {{name}} copiado! Pégalo donde quieras.",
+        "copyManual": "No se pudo copiar automáticamente. Aquí tienes el enlace:",
+        "copyFailed": "No se pudo crear el enlace para compartir",
+        "nameRequired": "Añade primero el nombre del invitado"
       },
       "hostKit": {
         "title": "Materiales del Anfitrión",

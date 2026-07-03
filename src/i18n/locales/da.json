@@ -910,22 +910,23 @@
     },
     "guestManager": {
       "title": "Share Characters with Guests",
-      "subtitle": "Assign each character to a guest and send via email",
+      "subtitle": "Tildel hver karakter til en gæst, og send den derefter via e-mail eller kopiér et link, du selv kan dele (WhatsApp osv.)",
       "table": {
         "character": "Character",
         "guestName": "Guest Name",
-        "email": "Email",
+        "email": "E-mail (valgfrit)",
         "action": "Action"
       },
       "placeholders": {
         "guestName": "Guest's name",
-        "email": "guest@example.com"
+        "email": "gæst@eksempel.com (valgfrit)"
       },
       "buttons": {
         "edit": "Edit",
         "send": "Send",
         "sendAll": "Send All",
-        "close": "Close"
+        "close": "Close",
+        "copyLink": "Kopiér link"
       },
       "status": {
         "sent": "Sent"
@@ -938,7 +939,11 @@
         "updateFailed": "Failed to update assignment",
         "noValidAssignments": "No valid assignments to send",
         "allSent": "Sent {{count}} character assignments!",
-        "sendSomeFailed": "Failed to send some assignments"
+        "sendSomeFailed": "Failed to send some assignments",
+        "linkCopied": "Link til {{name}} kopieret — indsæt det, hvor du vil!",
+        "copyManual": "Kunne ikke kopiere automatisk. Her er linket:",
+        "copyFailed": "Kunne ikke oprette delelinket",
+        "nameRequired": "Tilføj først et gæstenavn"
       },
       "hostKit": {
         "title": "Værtsmaterialer",
