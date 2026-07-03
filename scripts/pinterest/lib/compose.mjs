@@ -141,7 +141,11 @@ export async function callFlux11Pro(prompt) {
       prompt,
       aspect_ratio: '1:1',
       output_format: 'png',
-      safety_tolerance: 2,
+      // safety_tolerance: 1 (strictest) → 6 (most permissive). Default 2 rejects prompts
+      // with "murder mystery" as a theme phrase — Flux conflates the thematic word with
+      // actual violence content. Our prompts are always atmospheric interior scenes with
+      // no people/violence/gore, so 5 is a safe ceiling that still blocks explicit content.
+      safety_tolerance: 5,
       prompt_upsampling: false,
     },
   };
