@@ -2,6 +2,19 @@
 
 ## 2026-07-03
 
+### Fix: Blog markdown tables rendered as raw pipe text — added remark-gfm to both render pipelines
+
+- **Root cause**: pipe tables are a GitHub-flavored-markdown extension, not core markdown. Neither the React renderer ([src/pages/BlogPost.tsx](src/pages/BlogPost.tsx) `ReactMarkdown`) nor the static prerender pipeline ([scripts/prerender-blog.mjs](scripts/prerender-blog.mjs) unified processor) loaded `remark-gfm`, so every `| … |` table collapsed into a single paragraph of literal pipes (visible on the "Best Murder Mystery Party Games 2026" at-a-glance comparison table).
+- **Fix**: `remark-gfm@^4` added as a dependency and wired into both pipelines (they must stay mirrored — same reason rehype-slug is in both). BlogPost.tsx also gained `table`/`th`/`td` component overrides: bordered cells, muted header row, `overflow-x-auto` wrapper for mobile.
+- **Audit across all live content**: rendered all 2,300 published `blog_posts` rows through the new pipeline. 13 posts contain pipe tables — all of them the `best-murder-mystery-party-games-review` post in its 13 language variants — and all parse cleanly with GFM; zero malformed tables need content edits. One code fix repairs everything; no DB content was touched.
+- **Scope note**: GFM also enables strikethrough/autolinks/task-lists in blog markdown — acceptable, standard behaviour.
+
+### Fix: Regenerated hero image for best-murder-mystery-party-games-review — boxes misspelled "Murder Mistery"
+
+- The Flux-generated hero showed game boxes printed "MURDER MISTERY" (plus "GURLER MISTERY"/"EVSENEC" gibberish). Regenerated via Replicate `flux-1.1-pro` (same model/pattern as the Pinterest pipeline, custom 1216×640 → sharp-cropped to 1200×630) with a prompt constraining readable text to a single box lid spelling "MURDER MYSTERY" exactly; verified correct on first generation.
+- Uploaded to a stable storage key `pinterest-pins/blog-hero/best-murder-mystery-party-games-review-2026.png` (old UUID-named image left in place) and updated `blog_posts.featured_image_url` on the `en` row — the 12 other language rows inherit the en image via the prerender fallback.
+- Live hero updates immediately (React reads the DB); the baked `og:image` in prerendered HTML picks up on the next build/deploy.
+
 ### Fix: Pinterest pipeline — Make.com filter + Flux safety tolerance bump
 
 - **Root of the recurring Make.com error**: when `pinterest_post_queue` is empty (any lull between blog publishes, or during catch-up gaps), Make.com's Search Rows returned no bundles but Module 2 (Create Pin) still fired with undefined `url` + `board_id`. Blueprint was missing a filter guard between the two modules.

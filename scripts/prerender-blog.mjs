@@ -33,6 +33,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
@@ -69,10 +70,12 @@ if (!existsSync(TEMPLATE_PATH)) {
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const template = readFileSync(TEMPLATE_PATH, 'utf8');
 
-// Markdown → HTML pipeline. Mirrors the React-side ReactMarkdown config (rehype-slug
-// + rehype-raw) so anchor IDs match what the rendered React component produces.
+// Markdown → HTML pipeline. Mirrors the React-side ReactMarkdown config (remark-gfm
+// + rehype-slug + rehype-raw) so anchor IDs match what the rendered React component
+// produces and GFM tables render as real <table> elements in both.
 const markdownProcessor = unified()
   .use(remarkParse)
+  .use(remarkGfm)
   .use(remarkRehype, { allowDangerousHtml: true })
   .use(rehypeRaw)
   .use(rehypeSlug)

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import { ArrowRight, Clock, Users, BookOpen, ChevronRight, Copy, Check } from 'lucide-react';
 import Header from '@/components/Header';
@@ -728,6 +729,7 @@ export default function BlogPost() {
 
           <div className="prose prose-lg max-w-none mb-12">
             <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeSlug]}
               components={{
                 h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-[#C81400] mt-8 mb-4 scroll-mt-20" {...props} />,
@@ -736,6 +738,13 @@ export default function BlogPost() {
                 li: ({node, ...props}) => <li className="text-foreground" {...props} />,
                 strong: ({node, ...props}) => <strong className="font-semibold text-[#C81400]" {...props} />,
                 p: ({node, ...props}) => <p className="mb-4 text-foreground leading-relaxed" {...props} />,
+                table: ({node, ...props}) => (
+                  <div className="overflow-x-auto mb-4">
+                    <table className="w-full border-collapse text-sm" {...props} />
+                  </div>
+                ),
+                th: ({node, ...props}) => <th className="border border-border bg-muted px-3 py-2 text-left font-semibold" {...props} />,
+                td: ({node, ...props}) => <td className="border border-border px-3 py-2 align-top" {...props} />,
               }}
             >
               {post.content}
