@@ -263,6 +263,8 @@ function buildSchemas(post, langVariants) {
   if (post.slug === 'best-murder-mystery-party-games-review') {
     const products = [
       { name: 'MysteryMaker', url: `${SITE_URL}/` },
+      { name: 'MysteryShaper', url: 'https://mysteryshaper.com/' },
+      { name: 'Murder Mystery Game AI', url: 'https://murdermysterygameai.com/' },
       { name: 'Night of Mystery', url: 'https://www.nightofmystery.com/' },
       { name: 'Broadway Murder Mysteries', url: 'https://www.broadwaymurdermysteries.com/' },
       { name: 'Playing With Murder', url: 'https://www.playingwithmurder.com/' },
