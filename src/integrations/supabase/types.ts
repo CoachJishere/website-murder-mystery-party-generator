@@ -20,6 +20,7 @@ export type Database = {
           is_sent: boolean
           mystery_id: string
           sent_at: string | null
+          short_code: string
           updated_at: string
         }
         Insert: {
@@ -32,6 +33,7 @@ export type Database = {
           is_sent?: boolean
           mystery_id: string
           sent_at?: string | null
+          short_code?: string
           updated_at?: string
         }
         Update: {
@@ -44,6 +46,7 @@ export type Database = {
           is_sent?: boolean
           mystery_id?: string
           sent_at?: string | null
+          short_code?: string
           updated_at?: string
         }
         Relationships: [

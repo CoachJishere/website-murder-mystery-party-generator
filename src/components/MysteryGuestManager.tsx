@@ -19,6 +19,7 @@ interface CharacterAssignment {
   is_sent: boolean;
   sent_at?: string;
   access_token?: string;
+  short_code?: string;
 }
 
 interface MysteryGuestManagerProps {
@@ -152,7 +153,8 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
           guest_email: existing.guest_email,
           is_sent: existing.is_sent,
           sent_at: existing.sent_at,
-          access_token: existing.access_token
+          access_token: existing.access_token,
+          short_code: existing.short_code
         } : {
           character_id: character.id,
           guest_name: '',
@@ -192,7 +194,9 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
     return !!assignment.guest_name.trim() && !assignment.is_sent;
   };
 
-  const buildShareUrl = (token: string) => `${window.location.origin}/c/${token}`;
+  // Short-code links (ADR-0031): mysterymaker.party/c/<8-char code>, far shorter
+  // than the raw UUID. CharacterAccess resolves the code back to the token.
+  const buildShareUrl = (code: string) => `${window.location.origin}/c/${code}`;
 
   // Insert or update the assignment row and mark it sent. Returns the saved row
   // (which carries the DB-generated access_token). Shared by the email and copy-link paths.
@@ -214,10 +218,10 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
     return result.data;
   };
 
-  const applyPersisted = (characterId: string, row: { id: string; sent_at: string; access_token: string }) => {
+  const applyPersisted = (characterId: string, row: { id: string; sent_at: string; access_token: string; short_code: string }) => {
     setAssignments(prev => prev.map(a =>
       a.character_id === characterId
-        ? { ...a, id: row.id, is_sent: true, sent_at: row.sent_at, access_token: row.access_token }
+        ? { ...a, id: row.id, is_sent: true, sent_at: row.sent_at, access_token: row.access_token, short_code: row.short_code }
         : a
     ));
   };
@@ -299,15 +303,15 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
 
     setLoading(true);
     try {
-      let token = assignment.access_token;
-      // Create the row (or re-lock a not-yet-sent one) to guarantee a token exists.
-      if (!assignment.id || !assignment.is_sent || !token) {
+      let code = assignment.short_code;
+      // Create the row (or re-lock a not-yet-sent one) to guarantee a code exists.
+      if (!assignment.id || !assignment.is_sent || !code) {
         const row = await persistAssignment(assignment);
         applyPersisted(assignment.character_id, row);
-        token = row.access_token;
+        code = row.short_code;
       }
 
-      const url = buildShareUrl(token);
+      const url = buildShareUrl(code);
       const copied = await copyToClipboard(url);
       if (copied) {
         toast.success(t('character.guestManager.toasts.linkCopied', { name: assignment.guest_name.trim() }));

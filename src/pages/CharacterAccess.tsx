@@ -83,9 +83,25 @@ const CharacterAccess: React.FC = () => {
     try {
       setLoading(true);
 
+      // The URL param is either the raw access_token UUID (email / canonical links)
+      // or an 8-char short_code (copied /c/<code> links, ADR-0031). Resolve short
+      // codes to the underlying UUID before hitting the token-keyed RPCs.
+      const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      let accessToken = token;
+      if (!UUID_RE.test(token)) {
+        const { data: resolved, error: resolveError } = await supabase
+          .rpc('get_token_by_short_code', { code: token });
+        if (resolveError || !resolved) {
+          console.error('Short-code resolve error:', resolveError);
+          setError(t('characterAccess.errors.assignmentNotFound'));
+          return;
+        }
+        accessToken = resolved as string;
+      }
+
       // First, get the character assignment via secure RPC
       const { data: assignmentData, error: assignmentError } = await supabase
-        .rpc('get_character_by_token', { access_token_param: token })
+        .rpc('get_character_by_token', { access_token_param: accessToken })
         .single();
 
       if (assignmentError) {
@@ -96,7 +112,7 @@ const CharacterAccess: React.FC = () => {
 
       // Then, get the character details via secure RPC (validates token ownership)
       const { data: characterData, error: characterError } = await supabase
-        .rpc('get_character_details', { char_id: assignmentData.character_id, access_token_param: token })
+        .rpc('get_character_details', { char_id: assignmentData.character_id, access_token_param: accessToken })
         .single();
 
       if (characterError) {
@@ -113,7 +129,7 @@ const CharacterAccess: React.FC = () => {
 
       // Fetch the host's display preference (full / pointForm / both) for this packet
       const { data: meta } = await supabase
-        .rpc('get_packet_metadata_by_token', { access_token_param: token })
+        .rpc('get_packet_metadata_by_token', { access_token_param: accessToken })
         .single();
       const t = (meta as any)?.script_type;
       if (t === 'full' || t === 'pointForm' || t === 'both') {

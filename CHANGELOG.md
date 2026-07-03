@@ -2,6 +2,14 @@
 
 ## 2026-07-03
 
+### Feature: Short-code guest links — `mysterymaker.party/c/<8-char>` (ADR-0031)
+
+- **Why**: the copy-link URLs from the feature below were ~77 chars (a raw UUID); hosts wanted something compact to paste into WhatsApp. Now ~30 chars.
+- **8-char base62 short code** added to `character_assignments` (`short_code`, NOT NULL UNIQUE, DB-generated via new unbiased `gen_short_code()` function; all 150 existing rows backfilled with unique codes). Migration: [20260703_character_assignment_short_codes.sql](supabase/migrations/20260703_character_assignment_short_codes.sql).
+- **Resolver alias, not a rewrite**: new public RPC `get_token_by_short_code(code) → uuid` (SECURITY DEFINER, granted to anon); the three existing token-keyed RPCs are untouched. [CharacterAccess.tsx](src/pages/CharacterAccess.tsx) resolves a short code to its UUID at load, and still accepts a raw UUID directly — so email links and the `/c/<uuid>` links from earlier today keep working, nothing breaks.
+- **Security trade-off (deliberate, host chose 8 chars)**: the code is a bearer credential guarding spoiler content, so length matters. 62^8 ≈ 2.2×10^14 keyspace → at ~10⁴ assignments a random guess is ~1 in 2×10^10, effectively unguessable. Rate-limiting deferred (keyspace makes brute-force impractical). Verified the resolver works from the anon role end-to-end (valid code → UUID, bogus → null).
+- **Copy link** now produces `/c/<short_code>` instead of `/c/<uuid>`.
+
 ### Feature: Copy-link guest sharing (email now optional) + short `/c/:token` URL
 
 - **Why**: hosts wanted to share each guest's character link themselves (WhatsApp/Signal/iMessage) rather than only having us email it — while keeping the "who did I send to" ledger they rely on. See ADR-0030.
