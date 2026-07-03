@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { X, Mail, Edit, Check, Send } from "lucide-react";
+import { X, Mail, Edit, Check, Send, Link2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MysteryCharacter } from "@/interfaces/mystery";
@@ -18,6 +18,7 @@ interface CharacterAssignment {
   guest_email: string;
   is_sent: boolean;
   sent_at?: string;
+  access_token?: string;
 }
 
 interface MysteryGuestManagerProps {
@@ -150,7 +151,8 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
           guest_name: existing.guest_name,
           guest_email: existing.guest_email,
           is_sent: existing.is_sent,
-          sent_at: existing.sent_at
+          sent_at: existing.sent_at,
+          access_token: existing.access_token
         } : {
           character_id: character.id,
           guest_name: '',
@@ -178,11 +180,72 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
     return email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
   };
 
+  // Email path requires a valid email. Copy-link path only needs a name (email optional).
   const canSend = (assignment: CharacterAssignment) => {
-    return assignment.guest_name.trim() && 
-           assignment.guest_email.trim() && 
+    return assignment.guest_name.trim() &&
+           assignment.guest_email.trim() &&
            isValidEmail(assignment.guest_email) &&
            !assignment.is_sent;
+  };
+
+  const canShare = (assignment: CharacterAssignment) => {
+    return !!assignment.guest_name.trim() && !assignment.is_sent;
+  };
+
+  const buildShareUrl = (token: string) => `${window.location.origin}/c/${token}`;
+
+  // Insert or update the assignment row and mark it sent. Returns the saved row
+  // (which carries the DB-generated access_token). Shared by the email and copy-link paths.
+  const persistAssignment = async (assignment: CharacterAssignment) => {
+    const assignmentData = {
+      mystery_id: mysteryId,
+      character_id: assignment.character_id,
+      guest_name: assignment.guest_name.trim(),
+      guest_email: assignment.guest_email.trim(), // NOT NULL column; '' when copy-link only
+      is_sent: true,
+      sent_at: new Date().toISOString()
+    };
+
+    const result = assignment.id
+      ? await supabase.from('character_assignments').update(assignmentData).eq('id', assignment.id).select().single()
+      : await supabase.from('character_assignments').insert(assignmentData).select().single();
+
+    if (result.error) throw result.error;
+    return result.data;
+  };
+
+  const applyPersisted = (characterId: string, row: { id: string; sent_at: string; access_token: string }) => {
+    setAssignments(prev => prev.map(a =>
+      a.character_id === characterId
+        ? { ...a, id: row.id, is_sent: true, sent_at: row.sent_at, access_token: row.access_token }
+        : a
+    ));
+  };
+
+  // Clipboard write with a legacy fallback (Safari can block writeText after an await).
+  const copyToClipboard = async (text: string): Promise<boolean> => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (e) {
+      // fall through to legacy path
+    }
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) {
+      return false;
+    }
   };
 
   const sendCharacterAssignment = async (assignment: CharacterAssignment) => {
@@ -193,56 +256,22 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
       const character = characters.find(c => c.id === assignment.character_id);
       if (!character) throw new Error('Character not found');
 
-      // Save or update assignment in database
-      const assignmentData = {
-        mystery_id: mysteryId,
-        character_id: assignment.character_id,
-        guest_name: assignment.guest_name.trim(),
-        guest_email: assignment.guest_email.trim(),
-        is_sent: true,
-        sent_at: new Date().toISOString()
-      };
+      const row = await persistAssignment(assignment);
+      applyPersisted(assignment.character_id, row);
 
-      let result;
-      if (assignment.id) {
-        // Update existing
-        result = await supabase
-          .from('character_assignments')
-          .update(assignmentData)
-          .eq('id', assignment.id)
-          .select()
-          .single();
-      } else {
-        // Insert new
-        result = await supabase
-          .from('character_assignments')
-          .insert(assignmentData)
-          .select()
-          .single();
-      }
-
-      if (result.error) throw result.error;
-
-      // Update local state
-      setAssignments(prev => prev.map(a => 
-        a.character_id === assignment.character_id 
-          ? { ...a, id: result.data.id, is_sent: true, sent_at: result.data.sent_at }
-          : a
-      ));
-      
       // Call the Edge Function to send the email
-      const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-character-email', {
+      const { error: emailError } = await supabase.functions.invoke('send-character-email', {
         body: {
           guest_email: assignment.guest_email.trim(),
           guest_name: assignment.guest_name.trim(),
           character_name: character.character_name,
           character_details: character.description?.substring(0, 200) + '...' || 'Mystery character details...',
-          access_token: result.data.access_token || 'temp-token',
+          access_token: row.access_token || 'temp-token',
           mystery_title: mysteryTitle,
           language: i18n.language,
         }
       });
-    
+
       if (emailError) {
         throw new Error(`Failed to send email: ${emailError.message}`);
       }
@@ -254,6 +283,42 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
     } catch (error) {
       console.error('Error sending assignment:', error);
       toast.error(t('character.guestManager.toasts.sendFailed'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Copy this guest's personal access link to the clipboard so the host can share it
+  // themselves (WhatsApp, etc.). Mints the row/token if needed and locks the name in,
+  // exactly like the email path (copying counts as sending — see ADR-0030).
+  const copyShareLink = async (assignment: CharacterAssignment) => {
+    if (!assignment.guest_name.trim()) {
+      toast.error(t('character.guestManager.toasts.nameRequired'));
+      return;
+    }
+
+    setLoading(true);
+    try {
+      let token = assignment.access_token;
+      // Create the row (or re-lock a not-yet-sent one) to guarantee a token exists.
+      if (!assignment.id || !assignment.is_sent || !token) {
+        const row = await persistAssignment(assignment);
+        applyPersisted(assignment.character_id, row);
+        token = row.access_token;
+      }
+
+      const url = buildShareUrl(token);
+      const copied = await copyToClipboard(url);
+      if (copied) {
+        toast.success(t('character.guestManager.toasts.linkCopied', { name: assignment.guest_name.trim() }));
+      } else {
+        toast.message(t('character.guestManager.toasts.copyManual'), { description: url, duration: 12000 });
+      }
+
+      trackCharacterAssignment(mysteryId, characters.length);
+    } catch (error) {
+      console.error('Error copying share link:', error);
+      toast.error(t('character.guestManager.toasts.copyFailed'));
     } finally {
       setLoading(false);
     }
@@ -431,9 +496,18 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
                     </TableCell>
 
                     <TableCell>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         {isLocked ? (
                           <>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => copyShareLink(assignment)}
+                              disabled={loading}
+                            >
+                              <Link2 className="h-4 w-4 mr-1" />
+                              {t('character.guestManager.buttons.copyLink')}
+                            </Button>
                             <Button
                               variant="secondary"
                               size="sm"
@@ -449,15 +523,26 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
                             </div>
                           </>
                         ) : (
-                          <Button
-                            variant="default"
-                            size="sm"
-                            onClick={() => sendCharacterAssignment(assignment)}
-                            disabled={!canSendThis || loading}
-                          >
-                            <Mail className="h-4 w-4 mr-1" />
-                            {t('character.guestManager.buttons.send')}
-                          </Button>
+                          <>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => copyShareLink(assignment)}
+                              disabled={!canShare(assignment) || loading}
+                            >
+                              <Link2 className="h-4 w-4 mr-1" />
+                              {t('character.guestManager.buttons.copyLink')}
+                            </Button>
+                            <Button
+                              variant="default"
+                              size="sm"
+                              onClick={() => sendCharacterAssignment(assignment)}
+                              disabled={!canSendThis || loading}
+                            >
+                              <Mail className="h-4 w-4 mr-1" />
+                              {t('character.guestManager.buttons.send')}
+                            </Button>
+                          </>
                         )}
                       </div>
                     </TableCell>

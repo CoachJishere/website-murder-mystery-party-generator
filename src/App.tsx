@@ -31,6 +31,8 @@ import Support from "./pages/Support";
 import About from "./pages/About";
 import CustomMurderMysteryParty from "./pages/CustomMurderMysteryParty";
 import OfficeMurderMysteryParty from "./pages/OfficeMurderMysteryParty";
+import ColdCaseFiles from "./pages/ColdCaseFiles";
+import ColdCaseDelivery from "./pages/ColdCaseDelivery";
 import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
 import CharacterAccess from "./pages/CharacterAccess";
@@ -127,6 +129,9 @@ const AppRoutes = () => {
         <Route path="/:lang/custom-murder-mystery-party" element={<CustomMurderMysteryParty />} />
         <Route path="/office-murder-mystery-party" element={<OfficeMurderMysteryParty />} />
         <Route path="/:lang/office-murder-mystery-party" element={<OfficeMurderMysteryParty />} />
+        {/* Cold Case Files — solo product (ADR-0029): own landing + guest token delivery */}
+        <Route path="/cold-case-files" element={<ColdCaseFiles />} />
+        <Route path="/cold-case/:token" element={<ColdCaseDelivery />} />
         <Route path="/support" element={<Support />} />
         <Route path="/dark-preview" element={<DarkHomePreview />} />
         <Route path="/font-preview" element={<FontPreview />} />
@@ -138,6 +143,8 @@ const AppRoutes = () => {
         
         {/* Character access route (public) */}
         <Route path="/character/:token" element={<CharacterAccess />} />
+        {/* Short alias for shareable copy-links (ADR-0030); same page, shorter URL */}
+        <Route path="/c/:token" element={<CharacterAccess />} />
         {/* Host access route (public) */}
         <Route path="/host/:token" element={<HostAccess />} />
         {/* Feedback route (public, accessed from follow-up emails) */}

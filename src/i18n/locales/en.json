@@ -1006,20 +1006,21 @@
     },
     "guestManager": {
       "title": "Share Characters with Guests",
-      "subtitle": "Assign each character to a guest and send via email",
+      "subtitle": "Assign each character to a guest, then email it or copy a link to share yourself (WhatsApp, etc.)",
       "table": {
         "character": "Character",
         "guestName": "Guest Name",
-        "email": "Email",
+        "email": "Email (optional)",
         "action": "Action"
       },
       "placeholders": {
         "guestName": "Guest's name",
-        "email": "guest@example.com"
+        "email": "guest@example.com (optional)"
       },
       "buttons": {
         "edit": "Edit",
         "send": "Send",
+        "copyLink": "Copy link",
         "sendAll": "Send All",
         "close": "Close"
       },
@@ -1029,6 +1030,10 @@
       "assignedCount": "{{count}} characters assigned",
       "toasts": {
         "characterSent": "Character sent to {{name}}!",
+        "linkCopied": "Link for {{name}} copied — paste it wherever you like!",
+        "copyManual": "Couldn't copy automatically. Here's the link:",
+        "copyFailed": "Failed to create the share link",
+        "nameRequired": "Add a guest name first",
         "sendFailed": "Failed to send character assignment",
         "loadFailed": "Failed to load existing assignments",
         "updateFailed": "Failed to update assignment",

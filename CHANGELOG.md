@@ -2,7 +2,14 @@
 
 ## 2026-07-03
 
-### Improvement: Roundup post strengthened — AI-generator category + Night of Mystery vs Masters of Mystery section (13 languages)
+### Feature: Copy-link guest sharing (email now optional) + short `/c/:token` URL
+
+- **Why**: hosts wanted to share each guest's character link themselves (WhatsApp/Signal/iMessage) rather than only having us email it — while keeping the "who did I send to" ledger they rely on. See ADR-0030.
+- **New per-guest "Copy link" button** in the Share Characters with Guests dialog ([MysteryGuestManager.tsx](src/components/MysteryGuestManager.tsx)). It mints the `character_assignments` row/token if needed, copies the guest's access URL to the clipboard, and marks the row **Sent** — so copying locks the guest name in exactly like the email path (copying counts as sending). Also available on already-sent rows to re-grab the link.
+- **Email is now optional.** `guest_name` is still required (it is the ledger key); the email field only gates the email-send path. Because `character_assignments.guest_email` is `NOT NULL`, the copy-link path stores an empty string.
+- **Shorter shareable URL**: added a `/c/:token` route alias ([App.tsx](src/App.tsx)) that renders the same `CharacterAccess` page; copied links use `/c/` instead of `/character/`. The email keeps using the canonical `/character/:token`, so no existing links break. True short codes (e.g. `/c/Xk9f2p`) were deferred — the token is a UUID and shortening it properly needs a new column + lookup RPC (recorded in ADR-0030).
+- **Clipboard safety**: `navigator.clipboard.writeText` with a legacy `textarea`+`execCommand` fallback, and a toast that surfaces the raw URL if both fail (Safari can block clipboard writes after the row-insert await).
+- **i18n**: new strings added to `en.json`; the other 12 languages fall back to English until translated (follow-up). — AI-generator category + Night of Mystery vs Masters of Mystery section (13 languages)
 
 - **Why (GSC 90-day data)**: `best-murder-mystery-party-games-review` targets the "best murder mystery kit/box/games" cluster (~500+ impressions) but sat at positions 22–40 with near-zero clicks; "night of mystery vs masters of mystery" impressed at position 7.9 with no on-page content. Competitor-brand alternatives pages were evaluated and rejected (no query volume) — decision was to strengthen the one post that already ranks (research note: `00_INBOX/comparison-pages-research-2026-07-03-mystery-maker.md`).
 - **New "AI-Generated Custom Mysteries" category section** (inserted before "Where MysteryMaker Fits"): MysteryShaper (€24.90 catalog / €29.90 custom, PDF + audio narration, 4–14+ players — prices verified live on mysteryshaper.com 2026-07-03), murdermysterygameai.com (4–32 guests; site blocks fetchers, so no price claimed), and MysteryMaker's honest positioning (multi-turn conversation vs one-shot form, real guest names, 13 languages, $24.99). No other roundup covers this category — Night of Mystery's rankings page omits it entirely.
@@ -10,7 +17,7 @@
 - **Comparison table**: two new rows (MysteryShaper, Murder Mystery Game AI) after the MysteryMaker row; the ja variant got rows matching its different 7-column condensed table. EN title/meta updated "9 Best" → "11 Best" (non-EN titles carry no count).
 - **All 13 language rows updated with properly translated sections** (not English paste-ins), via exact-string anchor insertion — no regex over prose. Applied to Supabase first (live DB is source of truth for published posts per ADR-0026), then mirrored into `blog_map.xlsx` row 84 (tmp file + read-back verify + atomic rename per the workbook-fragility protocol; neighbor-row integrity probe passed).
 - **ItemList schema** in [scripts/prerender-blog.mjs](scripts/prerender-blog.mjs) extended with the two new brands (8 → 10 products).
-- **Scope note**: pre-existing 1–4 char drift between DB and xlsx on 8 language cells (predates this change, direction DB-ahead) left as-is — ADR-0026 makes the DB canonical and the sync's published-post guard means the drift is inert.
+- **Scope note (corrected 2026-07-03 audit)**: DB↔xlsx differ only in the auto-bumped "Last updated" month — DB is ahead (July 2026), xlsx trails (May 2026, except EN June) — across **all 13** language cells (an earlier note said "1–4 char drift on 8 cells"; that undercounted and mislabelled it). The new content blocks are byte-identical in both stores. Inert and left as-is: ADR-0026 makes the DB canonical and the sync's published-post guard never propagates xlsx→DB for this slug.
 
 - [docs/mysterymaker_north_star.md](docs/mysterymaker_north_star.md) was misbriefing AI sessions with April 2026 facts. Corrected against ground truth: hosting is GitHub Pages via `deploy.yml` (doc said Netlify; `netlify.toml`/`vercel.json` in the repo are stale artifacts), blog is 230 live posts × 13 languages (doc said ~80), Pinterest moved from "on the horizon" to active (automated pipeline, 2/day), Cold Case Files section updated from "not yet built" to launch-phase with runbook pointer, and a market-signal note added: MysteryShaper now sells the exact pre-made/custom split (€24.90/€29.90) the doc lists as a future opportunity.
 - **GSC comparison-content gate (decision input, 90-day data)**: competitor-brand queries are negligible (9 queries, single-digit impressions) → no "[brand] alternatives" pages warranted. The opportunity is the generic "best murder mystery kit/box/games" cluster (~500+ impressions, positions 22–40, near-zero clicks) where the existing roundup underperforms — plus "night of mystery vs masters of mystery" already impressing at position 7.9. Follow-up scoped as a roundup-strengthening task (vault note: `00_INBOX/comparison-pages-research-2026-07-03-mystery-maker.md`).
@@ -38,6 +45,34 @@
   - **2 Flux NSFW rejections** on prompts containing "murder mystery" as a theme phrase — Flux's default `safety_tolerance=2` (strict) conflates the thematic word "murder" with actual violent content
 - **Fix** (`7cec563`, `scripts/pinterest/lib/compose.mjs`): `safety_tolerance` bumped 2 → 5 (scale is 1-6). Our prompts are always atmospheric interior scenes with explicit "no people" instructions, so 5 gives headroom for thematic dark language while still blocking genuinely explicit content (gore, nudity, extreme violence — never generated). All 3 failed rows reset to `approved` for tomorrow's cron.
 - **Final state**: 120 generated + queued for posting, 106 already posted, 3 approved (retrying on next cron run), 0 failed. Backlog drains at 2/day via Make.com's 9am + 9pm CET fires — ~60 days runway. Fully hands-off from here.
+
+### Feature: Cold Case landing redesigned around customization; buyer briefs wired end-to-end (ADR-0029 amendment)
+
+Owner review reshaped the product and the page in one day:
+
+- **Customization is the core promise** ("otherwise we're like everyone else"): the buyer picks
+  era/place/details at checkout via two Payment Link custom fields (`setting_era`, `details` —
+  keys are load-bearing, runbook updated), webhook v59 stores them as `cold_case_orders.brief`,
+  the worker feeds them to generation. Proven live: "The Steinadler Funicular Death" (Swiss
+  alpine hotel, Winter 1938, chess + funicular — all honored, chessboards photographed at the
+  crime scene). Landing leads with it: "CREATE YOUR OWN COLD CASE / You pick the era and the
+  place. We hide the killer."
+- **Design pass to house style** after owner critique (was off-brand + wordy): red hero band,
+  Bowlby headings, numbered steps, FAQ accordion holding all long copy (~70% copy cut); all
+  imagery is REAL screenshots from generated cases, no asset repeated; party-product comparisons
+  removed entirely (different products; site chrome carries the only cross-links); mobile pass
+  (collage clipping, wide screenshot desktop-only).
+- **Scope note**: landing assets currently ship from the Steinadler demo case; regenerate at will
+  with any future case — filenames in public/images/cold-case/ are slot-generic.
+- **Motion + product-line navigation (research-backed, owner request)**: evidence-board parallax
+  on the hero collage (three scroll rates via framer-motion, same pattern as the homepage's
+  MysteryRoomHero) + scroll-reveals on strip/steps. Constraints from the literature (NN/g parallax
+  usability; JUX 2015 — users prefer parallax but it must stay decorative): text/CTA never move,
+  transform/opacity only, `useReducedMotion` disables everything. Header is now product-line
+  aware (Gap-style sibling pattern): cold-case routes show a "COLD CASE FILES" lockup descriptor
+  + "Murder Mystery Parties →" switch; party routes gain a "Cold Case Files →" nav item (desktop
+  + mobile menu). English-only v1; party lockup untouched (money pages, 13-lang descriptor
+  deferred).
 
 ### Feature: Cold Case Files — full purchase→generate→deliver stack (ADR-0029)
 
