@@ -1119,6 +1119,7 @@ const MysteryView = () => {
         hasEvidence={!!packageData?.evidenceCards}
         hasDetective={!!packageData?.detectiveScript}
         hasImages={!!packageData?.evidenceCardImages}
+        generationStartedAt={generationStatus?.startedAt}
         isMobile={isMobile}
       />
     );

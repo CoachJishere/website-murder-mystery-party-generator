@@ -2,6 +2,21 @@
 
 ## 2026-07-03
 
+### UX: Simulated progress creep during silent generation phases
+
+- **Why**: [GenerationProgress.tsx](src/components/GenerationProgress.tsx) derives the progress bar purely from real DB content (deliberate — `generation_status.progress` lies). But the Make parent scenario saves the "Story foundation" (`master_context`) and "Game overview" content in one shot ~2 min in, so a paying customer watched the bar sit at **0% for ~2 minutes** then jump to ~55%. Reads as broken/stuck.
+- **Fix**: while a phase is in flight, layer a time-based *simulated* creep on top of the real floor, **only within that phase's 25-point band** — it can never mark a phase complete or cross into the next band. Real content always wins (`max(realBonus, simBonus)`). Asymptotic ease (`22·(1−e^(−t/75))`, clamped 24) gives ≈13% at 1 min, ≈18% at 2 min. The number now visibly climbs from second one.
+- **Refresh-safe**: phase 1 anchors its creep to `mystery_packages.generation_started_at` (now surfaced via `GenerationStatus.startedAt` in [mysteryPackageService.ts](src/services/mysteryPackageService.ts)), so reloading mid-generation resumes near where it was instead of restarting at 0. Later phases anchor to phase-entry time.
+- **Mechanics**: the page has no polling (realtime events only fire when content lands), so the component self-drives a ~1.5s `setInterval` while incomplete to advance the creep; a monotonic guard ensures the displayed number never goes backwards. Applies uniformly to every silent stretch (foundation, wait-for-first-character, evidence/images) — no per-phase special-casing.
+- **Deferred**: the four phase labels in `GenerationProgress.tsx` are still hardcoded English, not i18n keys — pre-existing gap, left for a separate 13-language translation pass.
+
+### Security: RPC surface lockdown + anonymous-form abuse caps (ADR-0032)
+
+- **Why**: Supabase security advisors flagged 11 `SECURITY DEFINER` functions callable by anonymous API users, plus unlimited-size anonymous inserts on the three public form tables. Most of the exposed functions are the *deliberate* guest-access surface (token-gated RPCs, Make.com's `get_empty_characters` check), but three were genuinely wrong to expose.
+- **Locked down** (migration `security_hardening_rpc_lockdown_and_form_caps`): the two trigger functions (`notify_contact_message_webhook`, `cold_case_orders_touch_updated_at`) and `list_packages_missing_evidence_images` — the latter was leaking paid-customer titles + package IDs to anyone unauthenticated. Service-role/admin access unaffected; verified post-migration that the six guest/host RPCs, `get_empty_characters`, and `is_admin` remain anon-callable (each is load-bearing — see ADR-0032 for the keep/lock rationale per function).
+- **Spam guardrails**: `CHECK` constraints on `contact_messages`, `guest_feedback`, `mystery_feedback` capping text-field lengths (message ≤ 5000, testimonial ≤ 3000, etc.) and ranging numeric fields (star 1–5, NPS 0–10). Largest real value in prod was 331 chars — invisible to legitimate users, blocks megabyte junk payloads.
+- **Deferred**: flipping Supabase's grant-EXECUTE-by-default for future functions (would silently break the token-RPC pattern new features rely on); CAPTCHA/edge-function fronting for the forms (no observed abuse; over-engineering today). Operator action still needed: enable leaked-password protection in the dashboard (Authentication → Sign In / Up → Passwords) — not settable via SQL.
+
 ### Fix: Unbreak CI build — commit missing Cold Case page files
 
 - **Why**: commit `eaa0daa` landed the `ColdCaseFiles` / `ColdCaseDelivery` imports and routes in [App.tsx](src/App.tsx) but left the actual page files untracked, so CI checked out a tree where `./pages/ColdCaseFiles` couldn't resolve → `vite build` failed (`Could not resolve "./pages/ColdCaseFiles"`).

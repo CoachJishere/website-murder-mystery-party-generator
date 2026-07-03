@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CheckCircle2, Loader2, Circle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -7,6 +7,12 @@ import { cn } from "@/lib/utils";
 // what's actually in the DB (master_context, game_overview, characters, evidence, etc.) —
 // NOT from generation_status.progress, because the parent flow sometimes flips to
 // completed prematurely while later modules are still finishing.
+//
+// On top of that real floor, each active phase gets a time-based *simulated* creep so the
+// number visibly ticks up during silent stretches (notably the ~2 min "Story foundation"
+// phase, which the parent scenario saves in one shot — otherwise the bar sits at 0% then
+// jumps to ~55%). The simulation only moves WITHIN the active phase's 25-point band; it can
+// never mark a phase complete or cross into the next band. Real content always wins.
 
 type PhaseState = "done" | "active" | "pending";
 
@@ -27,7 +33,25 @@ interface GenerationProgressProps {
   hasEvidence: boolean;
   hasDetective: boolean;
   hasImages: boolean;
+  // ISO timestamp when generation started — anchors the phase-1 simulation so a page
+  // refresh mid-phase resumes near where it was instead of restarting the creep at 0.
+  generationStartedAt?: string | null;
   isMobile?: boolean;
+}
+
+// Each phase spans 25 percentage points. The simulated creep eases asymptotically toward
+// this cap (never the full 25), so it keeps moving but never claims the phase is done.
+const PHASE_BAND = 25;
+const SIM_CAP = 22; // asymptote of the eased bonus
+const SIM_MAX = 24; // hard clamp, stays below the band boundary
+const SIM_TAU = 75; // seconds — time constant of the ease
+
+// Eased simulated bonus within a phase band, given seconds elapsed in the phase.
+// ~7 pts at 30s, ~13 at 60s, ~18 at 120s, ~22 at 300s; never reaches 25.
+function simulatedBonus(elapsedSeconds: number): number {
+  if (elapsedSeconds <= 0) return 0;
+  const eased = SIM_CAP * (1 - Math.exp(-elapsedSeconds / SIM_TAU));
+  return Math.min(SIM_MAX, eased);
 }
 
 // Compute phase states + overall progress from real content signals.
@@ -75,20 +99,18 @@ function computeState(p: GenerationProgressProps) {
     state: activeIdx === -1 ? "done" : i < activeIdx ? "done" : i === activeIdx ? "active" : "pending",
   }));
 
-  // Overall progress: each completed phase = 25%. For the active phase 3, also factor
-  // in the in-flight character count to make it visibly tick up as children land.
-  let progress: number;
-  if (activeIdx === -1) {
-    progress = 100;
-  } else {
-    progress = activeIdx * 25;
-    // Bonus for in-progress phase 3 (character generation)
-    if (activeIdx === 2 && p.charactersExpected > 0) {
-      progress += Math.min(25, Math.round((p.charactersDone / p.charactersExpected) * 25));
-    }
+  // Real content-derived progress: each completed phase = 25%. For the active character
+  // phase, factor in the in-flight character count so it ticks up as children land.
+  // This is the FLOOR — the simulated creep (applied by the component) only adds on top,
+  // never above the active phase's band.
+  const activeKey = activeIdx === -1 ? null : phases[activeIdx].key;
+  let realBonus = 0; // real progress inside the active band (0..25)
+  if (activeIdx === 2 && p.charactersExpected > 0) {
+    realBonus = Math.min(PHASE_BAND, Math.round((p.charactersDone / p.charactersExpected) * PHASE_BAND));
   }
+  const floor = activeIdx === -1 ? 100 : activeIdx * PHASE_BAND + realBonus;
 
-  return { phases: phasesWithState, progress };
+  return { phases: phasesWithState, progress: floor, activeIdx, activeKey, realBonus };
 }
 
 const PhaseIcon: React.FC<{ state: PhaseState }> = ({ state }) => {
@@ -98,8 +120,48 @@ const PhaseIcon: React.FC<{ state: PhaseState }> = ({ state }) => {
 };
 
 const GenerationProgress: React.FC<GenerationProgressProps> = (props) => {
-  const { phases, progress } = computeState(props);
+  const { phases, progress: floor, activeIdx, activeKey, realBonus } = computeState(props);
   const isMobile = props.isMobile;
+
+  // Self-driving tick: re-render every ~1.5s while generation is incomplete so the
+  // simulated creep advances. The page has no polling — realtime events only fire when
+  // content lands — so without this the number would freeze between phases.
+  const [, forceTick] = useState(0);
+  const incomplete = activeIdx !== -1;
+  useEffect(() => {
+    if (!incomplete) return;
+    const id = window.setInterval(() => forceTick((n) => n + 1), 1500);
+    return () => window.clearInterval(id);
+  }, [incomplete]);
+
+  // Anchor the current phase's start time. When the active phase changes we reset the
+  // anchor to now, so each band's creep restarts from 0. The first phase ("setup") is
+  // anchored to generationStartedAt when available, so a refresh mid-phase resumes the
+  // creep instead of restarting it.
+  const anchorRef = useRef<{ key: string | null; t: number }>({ key: null, t: Date.now() });
+  if (anchorRef.current.key !== activeKey) {
+    let start = Date.now();
+    if (activeKey === "setup" && props.generationStartedAt) {
+      const parsed = new Date(props.generationStartedAt).getTime();
+      if (!Number.isNaN(parsed)) start = parsed;
+    }
+    anchorRef.current = { key: activeKey, t: start };
+  }
+
+  // Layer the simulated creep on top of the real floor, but only within the active band.
+  let progress = floor;
+  if (incomplete) {
+    const elapsedSeconds = (Date.now() - anchorRef.current.t) / 1000;
+    const simBonus = simulatedBonus(elapsedSeconds);
+    // Never let simulation undercut real progress inside the active band; take the max.
+    const bandBonus = Math.min(SIM_MAX, Math.max(realBonus, simBonus));
+    progress = activeIdx * PHASE_BAND + bandBonus;
+  }
+
+  // Monotonic guard: the displayed number never goes backwards across re-renders.
+  const lastShownRef = useRef(0);
+  const shown = Math.max(lastShownRef.current, Math.round(progress));
+  lastShownRef.current = shown;
 
   return (
     <Card className={cn("mb-6", isMobile && "mx-2")}>
@@ -115,12 +177,12 @@ const GenerationProgress: React.FC<GenerationProgressProps> = (props) => {
 
         <div className="space-y-2">
           <div className="flex justify-between items-center text-sm">
-            <span className="font-medium">{progress}% complete</span>
+            <span className="font-medium">{shown}% complete</span>
           </div>
           <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
             <div
               className="bg-primary h-full transition-all duration-700 ease-out"
-              style={{ width: `${Math.max(2, progress)}%` }}
+              style={{ width: `${Math.max(2, shown)}%` }}
             />
           </div>
         </div>

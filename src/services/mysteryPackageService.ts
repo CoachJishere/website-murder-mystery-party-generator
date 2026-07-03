@@ -26,6 +26,9 @@ export interface GenerationStatus {
   status: 'not_started' | 'in_progress' | 'completed' | 'failed';
   progress: number;
   currentStep: string;
+  // ISO timestamp when generation started; used by the progress UI to anchor its
+  // time-based simulated creep so a page refresh mid-generation resumes accurately.
+  startedAt?: string | null;
   resumable?: boolean;
   sections?: {
     hostGuide?: boolean;
@@ -398,6 +401,7 @@ export async function getPackageGenerationStatus(mysteryId: string): Promise<Gen
           status: 'in_progress' as const,
           progress: 50,
           currentStep: 'Package generation in progress...',
+          startedAt: data.generation_started_at,
           sections: {}
         };
         console.log("🔄 [STATUS CHECK] Inferring in_progress status from start date:", inProgressStatus);
@@ -423,6 +427,7 @@ export async function getPackageGenerationStatus(mysteryId: string): Promise<Gen
       status: status.status || 'not_started',
       progress: status.progress || 0,
       currentStep: status.currentStep || 'Unknown step',
+      startedAt: data.generation_started_at,
       resumable: status.resumable,
       sections: status.sections || {}
     };
