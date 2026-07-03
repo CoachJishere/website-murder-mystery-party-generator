@@ -1,5 +1,5 @@
 # mysterymaker.party — North Star Document
-*Context document for AI collaborators. Last updated: April 2026.*
+*Context document for AI collaborators. Last updated: July 2026.*
 
 ---
 
@@ -54,10 +54,10 @@ Secondary buyers: corporate/HR purchasers (confirmed but minority). These tend t
 - Accomplice mode — fully functional
 - Post-party feedback + NPS system feeding real testimonials back to the homepage
 - 13 languages with full translation parity across all UI and generated content
-- Multi-language blog (400 posts written, ~80+ live, one published daily)
+- Multi-language blog (400 posts written, 230 live × 13 languages = 2,300+ published pages, one published daily)
 
 **Future opportunity:**
-- Pre-made mysteries at a lower price point (inspired by mysteryshaper.com model) — would complement the custom generator, not replace it
+- Pre-made mysteries at a lower price point (inspired by mysteryshaper.com model) — would complement the custom generator, not replace it. *(Signal, July 2026: MysteryShaper now sells exactly this split — €24.90 catalog / €29.90 custom — and runs comparison marketing against boxed kits. The model is validated; the window is open.)*
 
 ---
 
@@ -83,7 +83,7 @@ The implication: growth comes entirely from new customer acquisition, not expans
 
 ## Growth Strategy (Current Focus)
 
-**Blog / SEO / GEO content** — one channel, not separate tracks. 400 posts written, ~80+ live, one published daily. All posts are fully SEO and GEO optimized: statistics with citations, expert quotes, comparison tables — structured for both Google ranking and AI platform citation (ChatGPT, Perplexity, Google AI Overviews). This is the primary acquisition engine. Content production is complete; the work now is distribution and indexing.
+**Blog / SEO / GEO content** — one channel, not separate tracks. 400 posts written, 230 live (×13 languages), one published daily. All posts are fully SEO and GEO optimized: statistics with citations, expert quotes, comparison tables — structured for both Google ranking and AI platform citation (ChatGPT, Perplexity, Google AI Overviews). This is the primary acquisition engine. Content production is complete; the work now is distribution and indexing.
 
 **Social proof** — Trustpilot review campaign (active). Drip cadence ~3–4 reviews/week from real customers via WhatsApp outreach. Target: 20+ reviews establishing credibility.
 
@@ -93,8 +93,10 @@ The implication: growth comes entirely from new customer acquisition, not expans
 - Subscription model (ruled out)
 - Newsletter (low signup likelihood for single-purchase product)
 
+**Active (since June 2026):**
+- Pinterest — fully automated pipeline: Flux-generated pin images via GitHub Actions + Make.com posting 2/day; 100+ pins posted, ~60-day queue runway
+
 **On the horizon:**
-- Pinterest (evergreen, visual, "set and forget")
 - Quora answers (long-tail SEO, community trust)
 - Product Hunt launch (backlinks and domain authority, not direct conversion)
 - Amazon KDP hosting guide book (distribution/SEO asset)
@@ -117,7 +119,7 @@ The implication: growth comes entirely from new customer acquisition, not expans
 | Payments | Stripe |
 | Analytics | GA4 + Microsoft Clarity |
 | i18n | react-i18next (13 languages) |
-| Hosting | Netlify |
+| Hosting | GitHub Pages (deploy via GitHub Actions `deploy.yml` on push to main) |
 
 Replication risk is real but manageable. The stack is commodity; the value is in prompt engineering quality, personalization architecture, output playability, and 13-language coverage. Doubling down on output quality is the right hedge.
 
@@ -125,7 +127,12 @@ Replication risk is real but manageable. The stack is commodity; the value is in
 
 ## Future Product Lines
 
-**Cold Case Files** (not yet built)
+**Cold Case Files** (built July 2026 — in launch phase)
+
+Full purchase→generate→deliver stack shipped (ADR-0029): Stripe webhook branch, order
+queue in Supabase, generation worker, tokenized delivery page, ready-email in 13
+languages. Remaining go-live steps (Stripe Payment Link + worker deploy) tracked in
+`docs/cold-case-launch-runbook.md`.
 
 A natural adjacent product targeting the same audience but a different use case. Where the murder mystery party is a group roleplay experience hosted by one person, cold case files are investigative puzzle experiences — designed for solo play, couples, or small groups working together to solve a fictional crime using documents, evidence, and clues.
 

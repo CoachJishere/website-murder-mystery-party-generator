@@ -2,6 +2,11 @@
 
 ## 2026-07-03
 
+### Improvement: North star doc refreshed to July 2026 reality
+
+- [docs/mysterymaker_north_star.md](docs/mysterymaker_north_star.md) was misbriefing AI sessions with April 2026 facts. Corrected against ground truth: hosting is GitHub Pages via `deploy.yml` (doc said Netlify; `netlify.toml`/`vercel.json` in the repo are stale artifacts), blog is 230 live posts × 13 languages (doc said ~80), Pinterest moved from "on the horizon" to active (automated pipeline, 2/day), Cold Case Files section updated from "not yet built" to launch-phase with runbook pointer, and a market-signal note added: MysteryShaper now sells the exact pre-made/custom split (€24.90/€29.90) the doc lists as a future opportunity.
+- **GSC comparison-content gate (decision input, 90-day data)**: competitor-brand queries are negligible (9 queries, single-digit impressions) → no "[brand] alternatives" pages warranted. The opportunity is the generic "best murder mystery kit/box/games" cluster (~500+ impressions, positions 22–40, near-zero clicks) where the existing roundup underperforms — plus "night of mystery vs masters of mystery" already impressing at position 7.9. Follow-up scoped as a roundup-strengthening task (vault note: `00_INBOX/comparison-pages-research-2026-07-03-mystery-maker.md`).
+
 ### Fix: Blog markdown tables rendered as raw pipe text — added remark-gfm to both render pipelines
 
 - **Root cause**: pipe tables are a GitHub-flavored-markdown extension, not core markdown. Neither the React renderer ([src/pages/BlogPost.tsx](src/pages/BlogPost.tsx) `ReactMarkdown`) nor the static prerender pipeline ([scripts/prerender-blog.mjs](scripts/prerender-blog.mjs) unified processor) loaded `remark-gfm`, so every `| … |` table collapsed into a single paragraph of literal pipes (visible on the "Best Murder Mystery Party Games 2026" at-a-glance comparison table).
