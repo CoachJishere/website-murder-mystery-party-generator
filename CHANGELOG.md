@@ -1,5 +1,59 @@
 # Changelog
 
+## 2026-07-03
+
+### Fix: Pinterest pipeline — Make.com filter + Flux safety tolerance bump
+
+- **Root of the recurring Make.com error**: when `pinterest_post_queue` is empty (any lull between blog publishes, or during catch-up gaps), Make.com's Search Rows returned no bundles but Module 2 (Create Pin) still fired with undefined `url` + `board_id`. Blueprint was missing a filter guard between the two modules.
+- **Filter added** ([temp-files/Integration Pinterest.blueprint.json](temp-files/Integration%20Pinterest.blueprint.json)): Module 2 now requires both `{{1.pin_image_url}}` and `{{1.pinterest_board_id}}` to exist via `text:exist` conditions. On empty queue or malformed rows, Module 2 is skipped cleanly — no `BundleValidationError`. Requires re-import into Make.com to take effect.
+- **Manual workflow_dispatch verification passed**: user triggered `pinterest-image-gen.yml` with `limit=200` after the 2026-07-02 recovery fixes. 119 of 122 approved rows generated successfully in one run. Both prior blockers (missing `REPLICATE_API_TOKEN` secret + gitignored font files) confirmed fixed in CI. Cost as expected: ~$4.76 for 119 successful images.
+- **3 residual failures surfaced 2 new issues**:
+  - **1 transient Supabase storage 5xx** (upload returned HTML instead of JSON, likely PostgREST hiccup) — retried, self-healed
+  - **2 Flux NSFW rejections** on prompts containing "murder mystery" as a theme phrase — Flux's default `safety_tolerance=2` (strict) conflates the thematic word "murder" with actual violent content
+- **Fix** (`7cec563`, `scripts/pinterest/lib/compose.mjs`): `safety_tolerance` bumped 2 → 5 (scale is 1-6). Our prompts are always atmospheric interior scenes with explicit "no people" instructions, so 5 gives headroom for thematic dark language while still blocking genuinely explicit content (gore, nudity, extreme violence — never generated). All 3 failed rows reset to `approved` for tomorrow's cron.
+- **Final state**: 120 generated + queued for posting, 106 already posted, 3 approved (retrying on next cron run), 0 failed. Backlog drains at 2/day via Make.com's 9am + 9pm CET fires — ~60 days runway. Fully hands-off from here.
+
+### Feature: Cold Case Files — full purchase→generate→deliver stack (ADR-0029)
+
+The solo product's storefront plumbing, built end-to-end in one pass after the engine's Phase 0
+(full imagery) was proven in the sibling repo (`cold-case-files` @ `c93031c`, ADR-031 there).
+Everything is live except the two owner touchpoints (Stripe Payment Link + Fly worker deploy) —
+see [docs/cold-case-launch-runbook.md](docs/cold-case-launch-runbook.md) for the go-live steps
+and the end-to-end test.
+
+- **DB (Supabase)**: `cold_case_orders` (queue: paid→generating→ready|failed, `retry_count`,
+  unguessable 48-hex `delivery_token`, unique `stripe_session_id` for webhook-replay idempotency)
+  + race-safe `claim_next_cold_case_order()` (FOR UPDATE SKIP LOCKED) + `cold_case_identities`
+  (sold-case identities so the engine's STEP-0 freshness survives worker restarts — "one-of-one"
+  is the product promise) + private `cold-case-files` storage bucket. Deny-all RLS; buyers reach
+  their order only through the tokenized edge function.
+- **stripe-webhook v58**: guarded cold-case branch keyed on Payment Link metadata
+  `product=cold_case` (dead code until the link exists; party flow untouched). Captures
+  `buyer_language` from the checkout locale (guests have no `profiles.language`), sends the
+  buyer an async-honest confirmation ("we'll email you — usually within the hour", never
+  "download now"), GA4 purchase with distinct `item_id=cold_case_files`, owner alert.
+- **cold-case-status** (new edge fn): public tokenized status endpoint — crafting (with honest
+  queue position), ready (10-min signed URL, re-mintable per click), failed. Per-IP rate limited.
+- **send-cold-case-ready** (new edge fn): the READY email in all 13 site languages via
+  `buyer_language`; service-role-gated so the anon key can't trigger customer email.
+- **Frontend**: `/cold-case-files` landing (solo read-and-solve framing per ADR-0029 — explicitly
+  not a party; subtle cross-link to the party product; CTA reads `VITE_COLD_CASE_PAYMENT_LINK`
+  and renders "Opening soon" until it's set) + `/cold-case/:token` delivery page (30s poll, no
+  fake progress bar, fresh signed URL minted at click time). English-only v1, same precedent as
+  OfficeMurderMysteryParty.
+- **Worker** (in the engine repo, `worker/`): the container that can't be Make.com/serverless —
+  node + headless chromium + cwebp. Poll → claim → materialize freshness stubs from
+  `cold_case_identities` → `pipeline.js --generate` (60-min kill switch) → upload → record
+  identity → mark ready → trigger READY email. Failure contract: retry once automatically
+  (~$2.5), then fail-closed + Telegram alert + a customer "taking a little longer" email —
+  never silent limbo. Engine's probe-case/probe-stamps gained a `CHROME_PATH` env override for
+  Linux containers.
+- **Scope decisions** (why-we-didn't): confirmation email English-only v1 (READY email carries
+  the localization budget — it's the deliverable); no `/cold-case-thanks` page (Stripe's own
+  confirmation is fine, the buyer's real next step is the email); sitemap/SEO deferred to the
+  content push; engine-repo worker files left uncommitted until the Phase 0b session finishes
+  (one-writer-per-repo, the lesson from tonight's parallel-session collision).
+
 ## 2026-07-02
 
 ### Fix: Pinterest image-gen was silently broken for 6 weeks — 2 infrastructure bugs
