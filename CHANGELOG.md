@@ -2,6 +2,11 @@
 
 ## 2026-07-03
 
+### Fix: Unbreak CI build — commit missing Cold Case page files
+
+- **Why**: commit `eaa0daa` landed the `ColdCaseFiles` / `ColdCaseDelivery` imports and routes in [App.tsx](src/App.tsx) but left the actual page files untracked, so CI checked out a tree where `./pages/ColdCaseFiles` couldn't resolve → `vite build` failed (`Could not resolve "./pages/ColdCaseFiles"`).
+- **Fix**: committed [ColdCaseFiles.tsx](src/pages/ColdCaseFiles.tsx) and [ColdCaseDelivery.tsx](src/pages/ColdCaseDelivery.tsx). Both only depend on already-tracked components; `npm run build` passes clean. Remaining Cold Case work (edge functions, images, ADR-0029) is intentionally left for a separate feature commit.
+
 ### Feature: Short-code guest links — `mysterymaker.party/c/<8-char>` (ADR-0031)
 
 - **Why**: the copy-link URLs from the feature below were ~77 chars (a raw UUID); hosts wanted something compact to paste into WhatsApp. Now ~30 chars.
