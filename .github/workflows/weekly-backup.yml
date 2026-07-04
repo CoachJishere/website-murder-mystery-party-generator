@@ -1,0 +1,87 @@
+# Weekly encrypted off-platform backup (2026-07-04).
+# Why: Supabase's own backups don't protect against account-level failure
+# (billing lapse, accidental project deletion). This exports the customer-
+# critical tables weekly and stores them as an ENCRYPTED GitHub artifact
+# (90-day retention). The repo is PUBLIC, so encryption is mandatory —
+# artifacts on public repos are downloadable by anyone.
+#
+# Setup (one-time): add a repo secret BACKUP_PASSPHRASE (Settings → Secrets
+# and variables → Actions) with a long random passphrase, and store the same
+# passphrase in your password manager. Without the passphrase the backups
+# are unreadable — by design.
+#
+# Restore: download the artifact, then:
+#   openssl enc -d -aes-256-cbc -pbkdf2 -in backup.tar.gz.enc -pass pass:<PASSPHRASE> | tar xz
+# Each table is a .jsonl file (one row per line) any developer can re-import.
+#
+# Excluded: blog_posts (119 MB, regenerable from blog_map.xlsx + publish
+# workflows), pinterest_pins (regenerable), staging/diagnostic tables.
+
+name: Weekly encrypted backup
+
+on:
+  schedule:
+    - cron: "43 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+    steps:
+      - name: Check passphrase configured
+        run: |
+          if [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::warning::BACKUP_PASSPHRASE secret is not set — skipping backup. Add it under Settings → Secrets and variables → Actions (and keep a copy in your password manager)."
+            echo "SKIP=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Export tables
+        if: env.SKIP != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p backup
+          TABLES="conversations messages mystery_packages mystery_characters character_assignments profiles cold_case_orders cold_case_identities guest_feedback mystery_feedback contact_messages followup_emails"
+          SUMMARY="| Table | Rows |\n|---|---|\n"
+          for t in $TABLES; do
+            : > "backup/${t}.jsonl"
+            offset=0
+            while :; do
+              page=$(curl -sf --max-time 120 \
+                -H "apikey: ${SUPABASE_SERVICE_KEY}" \
+                -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
+                -H "Range-Unit: items" -H "Range: ${offset}-$((offset+999))" \
+                "${SUPABASE_URL}/rest/v1/${t}?select=*&order=id")
+              count=$(echo "$page" | jq 'length')
+              [ "$count" -eq 0 ] && break
+              echo "$page" | jq -c '.[]' >> "backup/${t}.jsonl"
+              offset=$((offset+1000))
+              [ "$count" -lt 1000 ] && break
+            done
+            rows=$(wc -l < "backup/${t}.jsonl" | tr -d ' ')
+            echo "${t}: ${rows} rows"
+            SUMMARY="${SUMMARY}| ${t} | ${rows} |\n"
+          done
+          printf '%b' "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Encrypt
+        if: env.SKIP != 'true'
+        run: |
+          set -euo pipefail
+          tar czf - -C backup . | openssl enc -aes-256-cbc -pbkdf2 -pass env:BACKUP_PASSPHRASE -out "backup-$(date -u +%Y-%m-%d).tar.gz.enc"
+          rm -rf backup
+          ls -la ./*.enc
+
+      - name: Upload artifact
+        if: env.SKIP != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: encrypted-db-backup-${{ github.run_id }}
+          path: "*.enc"
+          retention-days: 90

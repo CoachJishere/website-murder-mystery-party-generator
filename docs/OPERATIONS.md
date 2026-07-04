@@ -321,6 +321,44 @@ rather than pasting keys.**
 
 ---
 
+## 7b. Backups & disaster recovery
+
+Your customer data lives in the Supabase database. Three layers protect it:
+
+**Layer 1 — Supabase's own backups (check these exist, once):**
+1. Supabase dashboard → **Database → Backups**. On a paid plan you should see daily
+   backups listed (7-day history). If that page is empty or you're on the free plan,
+   upgrading is the single most important protective step you can take.
+2. Restoring from these is a dashboard button next to each backup — it restores the
+   WHOLE database to that moment (anything newer is lost), so it's for disasters,
+   not for undoing one mistake.
+3. **Keep your billing card current.** A failed payment can pause the project — with
+   the site, generation, and Cold Case delivery all going dark at once. Supabase
+   emails warnings first; don't let them sit.
+
+**Layer 2 — weekly encrypted export to GitHub (independent of Supabase):**
+- The `Weekly encrypted backup` GitHub Action exports the 12 customer-critical tables
+  every Monday and stores them as an encrypted file on GitHub for 90 days
+  (repo → **Actions → Weekly encrypted backup** → click a run → download the artifact).
+- **One-time setup needed from you:** create a long random passphrase, save it in your
+  password manager, then add it as a repo secret named `BACKUP_PASSPHRASE`
+  (repo → Settings → Secrets and variables → Actions → New repository secret).
+  Until you do this, the workflow runs but skips politely with a warning.
+- **Why encrypted:** the repo is public — an unencrypted export would publish your
+  customers' emails and mysteries to the internet. Without the passphrase the backup
+  files are unreadable, *including by you* — so the password-manager copy matters.
+- Restoring: hand the downloaded file + passphrase to any developer with this command:
+  `openssl enc -d -aes-256-cbc -pbkdf2 -in <file> -pass pass:<PASSPHRASE> | tar xz`
+  — it unpacks one plain-text `.jsonl` file per table.
+
+**Layer 3 — what does NOT need backing up:**
+- Blog posts (119 MB) — regenerable from `blog_map.xlsx` + the publish workflows.
+- Evidence images / storage files — regenerable (see §3), and the recovery steps
+  are in this manual.
+- The website code — it's all in GitHub already.
+
+---
+
 ## 8. Glossary
 
 - **Supabase** — your backend-in-a-box: database, file storage, edge functions, scheduled

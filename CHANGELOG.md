@@ -2,6 +2,40 @@
 
 ## 2026-07-04
 
+### UX: Cold Case brief box — the homepage gesture, honest version (owner review round 2)
+
+- **Brief box hero** (replaces the buy button + Stripe custom fields): the buyer types their
+  case wish in a homepage-style input and goes straight to checkout — the brief rides as
+  session metadata via the new `create-cold-case-checkout` edge function (public,
+  rate-limited; "Opening soon" until `COLD_CASE_PRICE_ID` is set). Deliberately NOT a chat:
+  briefs are one sentence and generation is post-purchase — a conversation would fake
+  interactivity the engine doesn't have. **Owner's Stripe touchpoint is now two steps**
+  (product/price + one secret — no Payment Link, no custom fields; runbook §1 rewritten).
+- **Post-payment landing**: success_url → `/cold-case/thanks?sid=…` → `cold-case-status`
+  resolves the session id to the buyer's token (webhook race handled via "pending") → URL
+  swaps to their real status page.
+- **Copy surgery** (owner: eyebrow/meta/captions/FAQs): "CASE FILE · EYES ONLY" and the
+  "One-of-one · ~90 min" meta line removed; new subtitle ("Tell us where and when. We'll
+  hand you the file no one could close."); narrative captions ("The inquest called it an
+  accident. Look closer."); all 7 FAQ answers rewritten shorter, warmer, jargon-free.
+- **Header**: party pages get their own lockup descriptor ("MURDER MYSTERY PARTIES",
+  untranslated brand lockup) matching cold-case; the product switch stays a quiet LINK
+  (wayfinding — a button would compete with Sign Up).
+- **Fix**: global dark-input CSS was repainting the brief box; extended the existing
+  `:not(#ai-input-with-loading)` carve-out with `#cold-case-brief-input`.
+
+### Feature: Weekly encrypted off-platform backup + disaster-recovery documentation
+
+- **Why**: Supabase's own backups don't cover account-level failure (billing lapse → project pause, accidental deletion). The repo is **public**, so raw customer exports can't live in artifacts — encryption is mandatory.
+- **New workflow** [weekly-backup.yml](.github/workflows/weekly-backup.yml): every Monday exports the 12 customer-critical tables (~45 MB raw; blog_posts excluded as regenerable from blog_map.xlsx) via paginated PostgREST, encrypts with AES-256 (`openssl enc -pbkdf2`), and uploads a 90-day GitHub artifact. Export pagination + encryption round-trip verified locally against production. **Skips politely with a warning until Jonathan adds a `BACKUP_PASSPHRASE` repo secret** (and keeps the passphrase in his password manager — without it backups are unreadable by design).
+- **OPERATIONS.md §7b** added: the three protection layers, restore commands, the billing-card warning, and what deliberately isn't backed up.
+- **Also verified**: no secrets in the public repo (only the by-design-public anon key in scripts), `.env` properly gitignored.
+
+### Fix: June 16 image-failure root cause found — Imagen-era failure, pipeline since replaced (investigation closed)
+
+- **Via Make API execution history**: the Luau run (Jun 16 00:38 UTC, execution `34313dfb…`) executed on scenario 9106101 while it was still *"MM Live - Parent (full splits) v40 - Imagen timeout 120s"* and reported **success** with 45 ops (comparable runs: 51–91). The Jun 8 Resume-handler fix converts Imagen failures to silent skips — that night **all three** Imagen calls failed (likely quota/outage), so the run "succeeded" with zero images. The fix handled partial failure as designed but masked total failure.
+- **Already retired**: Jun 20 scenario modifications replaced the Imagen path with "MM Live - Parent (Flux Evidence Images) v42" (ADR-0017). All 5 packages generated since have all 3 images. Residual risk (total-failure masking on the Flux path) is exactly what the health-check Action now alerts on. No Make.com changes needed; the old Imagen scenario-redesign vault note is superseded.
+
 ### Fix: Recovered evidence-card images for "Death At The Lani Ohana Luau" (paid, 2026-06-16)
 
 - **Why**: found by the new health-check calibration — `evidence_card_images` was NULL on a completed paid package (the known Make.com batch-abort pattern, ADR-0016). Customer never blocked (package playable), but the illustrations were missing.
