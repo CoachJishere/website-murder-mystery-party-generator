@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
@@ -23,6 +23,32 @@ const Dashboard = () => {
   const [isLoadingMysteries, setIsLoadingMysteries] = useState(false);
   const [showAttribution, setShowAttribution] = useState(false);
   const { t } = useTranslation();
+
+  // Declared before the effect (and in its deps) — previously it lived after
+  // the effect, so the one-time auth listener captured the first-render
+  // closure and the effect couldn't list it as a dependency.
+  const fetchMysteries = useCallback(async (userId: string) => {
+    setIsLoadingMysteries(true);
+    try {
+      const { data, error } = await supabase
+        .from("conversations")
+        .select("*, messages!fk_messages_conversation_id(id, content, created_at, is_ai, role)")
+        .eq("user_id", userId)
+        .neq("display_status", "refunded")
+        .order("updated_at", { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      setMysteries(data || []);
+    } catch (error) {
+      console.error("Error fetching mysteries:", error);
+      toast.error(t("dashboard.errors.loadFailed"));
+    } finally {
+      setIsLoadingMysteries(false);
+    }
+  }, [t]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -116,30 +142,7 @@ const Dashboard = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate]);
-
-  const fetchMysteries = async (userId: string) => {
-    setIsLoadingMysteries(true);
-    try {
-      const { data, error } = await supabase
-        .from("conversations")
-        .select("*, messages!fk_messages_conversation_id(id, content, created_at, is_ai, role)")
-        .eq("user_id", userId)
-        .neq("display_status", "refunded")
-        .order("updated_at", { ascending: false });
-        
-      if (error) {
-        throw error;
-      }
-      
-      setMysteries(data || []);
-    } catch (error) {
-      console.error("Error fetching mysteries:", error);
-      toast.error(t("dashboard.errors.loadFailed"));
-    } finally {
-      setIsLoadingMysteries(false);
-    }
-  };
+  }, [navigate, fetchMysteries]);
 
   const handleCreateNewMystery = () => {
     navigate("/mystery/create");

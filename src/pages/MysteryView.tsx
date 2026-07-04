@@ -1261,10 +1261,10 @@ const MysteryView = () => {
               )}>
                 <CardHeader className={cn(isMobile && "p-4 pb-3")}>
                   <CardTitle className={cn(isMobile && "text-lg")}>
-                    Generate Your Mystery Package
+                    {t("mysteryView.generateCard.title")}
                   </CardTitle>
                   <CardDescription className={cn(isMobile && "text-sm")}>
-                    Your mystery is ready to be generated. Click the button below to create your custom murder mystery package.
+                    {t("mysteryView.generateCard.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className={cn(isMobile && "p-4 pt-0")}>
@@ -1282,17 +1282,17 @@ const MysteryView = () => {
                           "mr-2 animate-spin",
                           isMobile ? "h-3 w-3" : "h-4 w-4"
                         )} />
-                        Starting Generation...
+                        {t("mysteryView.generateCard.starting")}
                       </>
                     ) : (
-                      "Generate Mystery Package"
+                      t("mysteryView.generateCard.button")
                     )}
                   </Button>
                   <p className={cn(
                     "text-sm text-muted-foreground mt-3",
                     isMobile && "text-xs mt-2"
                   )}>
-                    Generation typically takes {getEstimatedTime(mystery?.player_count || 6)}. This page will auto-refresh to show progress.
+                    {t("mysteryView.generateCard.eta", { time: getEstimatedTime(mystery?.player_count || 6) })}
                   </p>
                 </CardContent>
               </Card>

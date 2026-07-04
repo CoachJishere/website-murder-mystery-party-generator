@@ -2,6 +2,18 @@
 
 ## 2026-07-04
 
+### Fix: Five confirmed bugs from the multi-agent customer-flow review
+
+A 6-dimension multi-agent bug hunt (each finding adversarially verified by 3 independent reviewers; 48 candidates → 14 confirmed) ran over the customer-facing flows. The five highest-value confirmed bugs are fixed; full findings list lives in the vault (`01_Projects/Mystery-Maker/bug-hunt-2026-07-04.md` — kept out of the public repo).
+
+- **Chat messages could vanish silently** ([MysteryChat.tsx page](src/pages/MysteryChat.tsx), [component](src/components/MysteryChat.tsx)): root cause was one layer deeper than the UI — supabase-js returns `{ error }` instead of throwing, and `handleSaveMessage` never checked it, so a failed insert was invisible; the message stayed on screen and disappeared on refresh. Now: insert errors throw, saves get one automatic retry, and a persistent failure shows a toast warning the customer to copy their text (new `chat.errors.saveFailed` key, all 13 languages).
+- **Double-click sent a guest's character twice** ([MysteryGuestManager.tsx](src/components/MysteryGuestManager.tsx)): `disabled={loading}` lags a re-render behind the first click. Added a synchronous `useRef` re-entry guard; verified compatible with the sequential `sendAllAssignments` loop.
+- **Dashboard stale closure** ([Dashboard.tsx](src/pages/Dashboard.tsx)): `fetchMysteries` was declared after the one-shot auth effect that used it, so it couldn't be a dependency. Now `useCallback`-wrapped, declared first, and in the effect deps.
+- **Discount countdown stale at expiry** ([useWelcomeDiscount.ts](src/hooks/useWelcomeDiscount.ts), [MysteryPurchase.tsx](src/pages/MysteryPurchase.tsx)): the ribbon ticked once per minute, so a customer could click "buy" with an expired code still showing time remaining — Stripe silently drops expired promo codes and charges full price. Now ticks every 15 s AND re-checks expiry at click time before attaching the promo code.
+- **Generation moment was English-only** ([MysteryView.tsx](src/pages/MysteryView.tsx), [GenerationProgress.tsx](src/components/GenerationProgress.tsx)): the generate-package card and the entire progress screen (heading, 4 phase labels + descriptions, "% complete") were hardcoded English — shown post-purchase, the worst place for it. All keyified.
+- **Locale backfill**: computed the true missing-key matrix vs en.json — 44 keys missing across the 12 non-English locales (~510 translations) — and filled all of them via per-locale-group agents (register matched to each file: de=Sie, ja=です/ます, ko=합니다, zh-cn=您, fi=sinä; interpolation placeholders verified verbatim; JSON edited only via parse→set→stringify, never regex). All 12 locales now at full non-officeParty parity with en; `tsc` zero errors; full build + prerender green.
+- **Deferred**: the 588 officeParty key-gaps (that page launched English-only by scope); the 9 remaining medium/low confirmed findings and 11 contested findings (documented in the vault note).
+
 ### UX: Cold Case brief box — the homepage gesture, honest version (owner review round 2)
 
 - **Brief box hero** (replaces the buy button + Stripe custom fields): the buyer types their
@@ -23,6 +35,21 @@
   (wayfinding — a button would compete with Sign Up).
 - **Fix**: global dark-input CSS was repainting the brief box; extended the existing
   `:not(#ai-input-with-loading)` carve-out with `#cold-case-brief-input`.
+- **Round 3 — full flow unification (owner)**: the brief box is now the party homepage's
+  ACTUAL chatbox pattern — `AIInputWithLoading` + the cycling typewriter placeholder (16
+  cold-case briefs typing and deleting, "showing the possibilities") + the small round
+  arrow button. Flow now mirrors the party product end-to-end: brief box → `SignInPrompt`
+  for guests / `/cold-case/create` (ProtectedRoute) for signed-in users → review form →
+  Stripe checkout with `customer_email` prefilled and `user_id` on the order (new column).
+  **Buyer model: guest → authenticated** (ADR-0029 amendment; delivery stays token-based).
+  "Opening soon" state removed — page ships only when wiring is live.
+- **Round 4 — full homepage structural parity (owner)**: the page now mirrors the party
+  homepage section-for-section — hero chatbox → Trustpilot strip (company-level rating,
+  same `TrustpilotBadge`) → the demo slot filled with something the party side can't do:
+  **a playable sample** (`public/try-a-cold-case.html` — the Steinadler case's --sample
+  build, free through Objective 1, view-source-safe, CTA back to the landing) fronted by
+  the case masthead with an "Open the sample case →" overlay → numbered steps → evidence
+  strip → FAQ → red CTA band.
 
 ### Feature: Weekly encrypted off-platform backup + disaster-recovery documentation
 

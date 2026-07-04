@@ -95,7 +95,8 @@
       "cyberpunkNightclub": "Creëer een moordmysterie in een neon-doordrenkte cyberpunk nachtclub.",
       "ghostShip": "Ontwerp een mysterie aan boord van een legendarisch schip dat eeuwen geleden verdween en mysterieus is teruggekeerd.",
       "sentientPlantColony": "Creëer een moordmysterie in een samenleving van intelligente, mobiele planten met een complexe sociale hiërarchie."
-    }
+    },
+    "typewriterPrefix": "Creëer een mysterie "
   },
   "customParty": {
     "seo": {
@@ -140,6 +141,11 @@
       "a1": "Ja. Mystery Maker maakt een volledig op maat gemaakte murder mystery rond de zakelijke context die je beschrijft — een kantoorfeest, een bedrijfsgala, een congres of een teambuilding-uitje. Jij geeft de generator door wat je wilt en hij schrijft het plot, de verdachten, de aanwijzingen en het script voor elk personage. Niets komt uit een vaste catalogus, dus geen enkel evenement is hetzelfde.",
       "q2": "Hoeveel deelnemers kunnen meespelen?",
       "a2": "Elk aantal. Je stelt het aantal deelnemers in en de generator past de cast aan — intieme spellen voor 4 tot 6 personen, diners voor 8 tot 12, of grote bedrijfsevenementen voor 20 of meer. Elke deelnemer krijgt een eigen personage met motieven, geheimen en scripts per ronde, en je kunt extra gasten als rechercheur toevoegen als het team groeit."
+    },
+    "officeLink": {
+      "lead": "Plan je iets voor het werk? Bekijk hoe het werkt als",
+      "link": "murder mystery op kantoor",
+      "end": "voor teambuilding."
     }
   },
   "home": {
@@ -240,7 +246,9 @@
       "support": "Support",
       "contact": "Contact",
       "privacy": "Privacybeleid",
-      "blog": "Blog"
+      "blog": "Blog",
+      "customMystery": "Murder Mystery op Maat",
+      "corporateEvents": "Bedrijfs- en Kantoorevenementen"
     },
     "copyright": "Mystery Maker, Inc. Alle rechten voorbehouden."
   },
@@ -395,7 +403,8 @@
           "editMystery": "Mysterie Bewerken",
           "edit": "Bewerken",
           "archive": "Archiveren",
-          "deleteTitle": "Verwijderen"
+          "deleteTitle": "Verwijderen",
+          "unarchive": "Uit archief halen"
         },
         "deleteDialog": {
           "title": "Mysterie Verwijderen",
@@ -663,6 +672,10 @@
         "gameDesignEngagement": {
           "question": "Hoe zorgt uw spelontwerp ervoor dat iedereen betrokken blijft?",
           "answer": "Onze mysteries zijn opgebouwd rond rijke karakterinteracties, gedeelde geschiedenissen en verweven geheimen. Elk personage is diep verbonden — niet alleen met het slachtoffer, maar ook met elkaar — wat natuurlijk drama creëert en ervoor zorgt dat alle spelers actief betrokken blijven gedurende de gehele ervaring."
+        },
+        "canIEdit": {
+          "question": "Kan ik mijn mysterie bewerken nadat het is gegenereerd?",
+          "answer": "Ja! Elk onderdeel van je mysterie is na het genereren volledig te bewerken. Je kunt personagescripts aanpassen, de hostgids bijwerken, bewijskaarten wijzigen en het detectivescript aanpassen — allemaal direct in de app. Je kunt je mysterie ook opslaan als PDF."
         }
       }
     },
@@ -701,7 +714,8 @@
     "generatingConcept": "Je mysterieconcept wordt gemaakt — dit kan tot 30 seconden duren...",
     "errors": {
       "responseFailed": "AI-reactie ophalen mislukt. Probeer het opnieuw.",
-      "aiUnavailable": "Mijn excuses, maar ik heb momenteel moeite met reageren. Probeer het over een moment opnieuw."
+      "aiUnavailable": "Mijn excuses, maar ik heb momenteel moeite met reageren. Probeer het over een moment opnieuw.",
+      "saveFailed": "Je bericht kon niet worden opgeslagen — het kan verdwijnen als je de pagina vernieuwt. Controleer je verbinding en kopieer belangrijke tekst voordat je deze pagina verlaat."
     }
   },
   "sendToGuests": {
@@ -814,7 +828,9 @@
       "archiveSuccess": "{{item}} succesvol gearchiveerd",
       "archiveFailed": "Archiveren van {{item}} mislukt",
       "updatedSuccess": "{{item}} succesvol bijgewerkt",
-      "updateFailed": "Bijwerken van {{item}} mislukt"
+      "updateFailed": "Bijwerken van {{item}} mislukt",
+      "unarchiveSuccess": "{{item}} succesvol teruggezet",
+      "unarchiveFailed": "Terugzetten van {{item}} mislukt"
     }
   },
   "character": {
@@ -1084,14 +1100,16 @@
       "characters": "Personages ({{count}})",
       "clues": "Bewijs",
       "inspector": "Detective Gids",
-      "relationships": "Relaties"
+      "relationships": "Relaties",
+      "inspectorIntrigue": "Onderzoekersgids"
     },
     "mobileTabs": {
       "host": "Host",
       "characters": "Personages ({{count}})",
       "clues": "Bewijs",
       "inspector": "Detective",
-      "relations": "Relaties"
+      "relations": "Relaties",
+      "inspectorIntrigue": "Onderzoeker"
     },
     "loading": {
       "generating": "Genereren...",
@@ -1112,6 +1130,19 @@
     },
     "matrix": {
       "title": "Personage Relatie Matrix"
+    },
+    "edit": {
+      "button": "Bewerken",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "saving": "Opslaan...",
+      "saved": "Wijzigingen opgeslagen",
+      "discardConfirm": "Niet-opgeslagen wijzigingen verwerpen?",
+      "error": "Opslaan mislukt. Probeer het opnieuw."
+    },
+    "export": {
+      "saveAsPdf": "Opslaan als PDF",
+      "printTip": "Opent het afdrukvenster van je browser — kies \"Opslaan als PDF\" om te downloaden"
     }
   },
   "chatbot": {
@@ -1211,7 +1242,14 @@
       "title": "We ronden je mysterie af",
       "description": "Je mysterie is gegenereerd, maar enkele personageinhoud heeft aandacht nodig."
     },
-    "loadingMystery": "Je mysterie wordt geladen..."
+    "loadingMystery": "Je mysterie wordt geladen...",
+    "generateCard": {
+      "title": "Genereer je mysteriepakket",
+      "description": "Je mysterie is klaar om gegenereerd te worden. Klik op de knop hieronder om je persoonlijke moordmysteriepakket te maken.",
+      "starting": "Generatie starten...",
+      "button": "Genereer mysteriepakket",
+      "eta": "Genereren duurt meestal {{time}}. Deze pagina vernieuwt automatisch om de voortgang te tonen."
+    }
   },
   "hostAccess": {
     "loading": "Hostmateriaal laden...",
@@ -1374,6 +1412,40 @@
     "footer": {
       "lovedPlaying": "Vond je het leuk om <strong>{{character}}</strong> te spelen?",
       "hostCta": "Organiseer je eigen op maat gemaakte mysterie op"
+    }
+  },
+  "welcomeDiscount": {
+    "ribbon": {
+      "message": "Welkom! Krijg {{percent}}% korting op je eerste mysterie — ${{discountedPrice}} in plaats van ${{originalPrice}}",
+      "expires": "Verloopt over {{time}}",
+      "ariaLabel": "Tijdelijke welkomstkorting"
+    },
+    "purchase": {
+      "expiresIn": "Welkomstaanbieding verloopt over {{time}}"
+    }
+  },
+  "generationProgress": {
+    "heading": "We bouwen aan je mysterie",
+    "subheading": "Deze pagina wordt automatisch bijgewerkt — laat hem gerust open of kom later terug.",
+    "percentComplete": "{{percent}}% voltooid",
+    "phases": {
+      "setup": {
+        "label": "Verhaalfundament gelegd",
+        "description": "Misdrijf, setting, inzet en het volledige rollenplan staan vast"
+      },
+      "world": {
+        "label": "Speloverzicht en themamaterialen",
+        "description": "Samenvatting van het mysterie en sfeerattributen passend bij het thema"
+      },
+      "characters": {
+        "label": "Personages maken",
+        "labelCounting": "Personages maken ({{done}} van {{expected}} klaar)",
+        "description": "De geheimen, motieven en rondescripts van elke gast"
+      },
+      "evidence": {
+        "label": "Bewijskaarten, detectivescript en afbeeldingen",
+        "description": "Aanwijzingen per ronde, vertellersdialoog en forensische afbeeldingen"
+      }
     }
   }
 }

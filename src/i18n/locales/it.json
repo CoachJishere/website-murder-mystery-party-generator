@@ -95,7 +95,8 @@
       "cyberpunkNightclub": "Crea un mistero con delitto in un locale notturno cyberpunk illuminato al neon.",
       "ghostShip": "Progetta un mistero su una nave leggendaria scomparsa secoli fa e misteriosamente riapparsa.",
       "sentientPlantColony": "Crea un mistero con delitto in una comunità di piante senzienti e mobili con una complessa gerarchia sociale."
-    }
+    },
+    "typewriterPrefix": "Crea un mistero "
   },
   "customParty": {
     "seo": {
@@ -140,6 +141,11 @@
       "a1": "Sì. Mystery Maker crea un murder mystery completamente su misura per il contesto aziendale che descrivi — un party in ufficio, una cena di gala, una convention o un team building fuori sede. Indichi al generatore cosa vuoi e lui scrive la trama, i sospettati, gli indizi e il copione di ogni personaggio. Niente è preso da un catalogo fisso, così nessun evento è uguale a un altro.",
       "q2": "Quanti partecipanti possono giocare?",
       "a2": "Qualsiasi numero. Imposti il numero di partecipanti e il generatore adatta il cast — partite intime per 4-6 persone, cene per 8-12 o grandi eventi aziendali per 20 o più. Ogni partecipante ha il proprio personaggio con moventi, segreti e copioni round per round, e puoi aggiungere ospiti come investigatori se il team cresce."
+    },
+    "officeLink": {
+      "lead": "Stai organizzando qualcosa per il lavoro? Scopri come funziona come una",
+      "link": "festa con delitto in ufficio",
+      "end": "per il team building."
     }
   },
   "home": {
@@ -240,7 +246,9 @@
       "support": "Supporto",
       "contact": "Contatto",
       "privacy": "Informativa sulla Privacy",
-      "blog": "Blog"
+      "blog": "Blog",
+      "customMystery": "Mistero con Delitto Personalizzato",
+      "corporateEvents": "Eventi Aziendali e in Ufficio"
     },
     "copyright": "Mystery Maker, Inc. Tutti i diritti riservati."
   },
@@ -395,7 +403,8 @@
           "editMystery": "Modifica Mistero",
           "edit": "Modifica",
           "archive": "Archivia",
-          "deleteTitle": "Elimina"
+          "deleteTitle": "Elimina",
+          "unarchive": "Annulla archiviazione"
         },
         "deleteDialog": {
           "title": "Elimina Mistero",
@@ -663,6 +672,10 @@
         "gameDesignEngagement": {
           "question": "Come fa il vostro design di gioco a garantire che tutti rimangano coinvolti?",
           "answer": "I nostri misteri sono costruiti attorno a ricche interazioni tra personaggi, storie condivise e segreti intrecciati. Ogni personaggio è profondamente connesso — non solo alla vittima, ma anche agli altri — creando dramma naturale e assicurando che tutti i giocatori rimangano attivamente coinvolti durante l'intera esperienza."
+        },
+        "canIEdit": {
+          "question": "Posso modificare il mio mistero dopo che è stato generato?",
+          "answer": "Sì! Ogni parte del tuo mistero è completamente modificabile dopo la generazione. Puoi ritoccare i copioni dei personaggi, adattare la guida per l'organizzatore, modificare le carte degli indizi e aggiornare il copione dell'investigatore — tutto direttamente nell'app. Puoi anche salvare il tuo mistero come PDF."
         }
       }
     },
@@ -701,7 +714,8 @@
     "generatingConcept": "Creazione del tuo concetto di mistero — potrebbe richiedere fino a 30 secondi...",
     "errors": {
       "responseFailed": "Impossibile recuperare la risposta AI. Riprova.",
-      "aiUnavailable": "Mi dispiace, al momento ho difficoltà a risponderti. Riprova tra un istante."
+      "aiUnavailable": "Mi dispiace, al momento ho difficoltà a risponderti. Riprova tra un istante.",
+      "saveFailed": "Il tuo messaggio non è stato salvato — potrebbe scomparire se aggiorni la pagina. Controlla la tua connessione e copia eventuali testi importanti prima di lasciare questa pagina."
     }
   },
   "sendToGuests": {
@@ -814,7 +828,9 @@
       "archiveSuccess": "{{item}} archiviato",
       "archiveFailed": "Archiviazione di {{item}} non riuscita",
       "updatedSuccess": "{{item}} aggiornato",
-      "updateFailed": "Aggiornamento di {{item}} non riuscito"
+      "updateFailed": "Aggiornamento di {{item}} non riuscito",
+      "unarchiveSuccess": "{{item}} ripristinato",
+      "unarchiveFailed": "Ripristino di {{item}} non riuscito"
     }
   },
   "character": {
@@ -1084,14 +1100,16 @@
       "characters": "Personaggi ({{count}})",
       "clues": "Indizi",
       "inspector": "Guida dell'Investigatore",
-      "relationships": "Relazioni"
+      "relationships": "Relazioni",
+      "inspectorIntrigue": "Guida dell'Investigatore"
     },
     "mobileTabs": {
       "host": "Organizzatore",
       "characters": "Personaggi ({{count}})",
       "clues": "Indizi",
       "inspector": "Investigatore",
-      "relations": "Relazioni"
+      "relations": "Relazioni",
+      "inspectorIntrigue": "Investigatore"
     },
     "loading": {
       "generating": "Generazione in corso...",
@@ -1112,6 +1130,19 @@
     },
     "matrix": {
       "title": "Matrice delle relazioni tra i personaggi"
+    },
+    "edit": {
+      "button": "Modifica",
+      "save": "Salva",
+      "cancel": "Annulla",
+      "saving": "Salvataggio...",
+      "saved": "Modifiche salvate",
+      "discardConfirm": "Scartare le modifiche non salvate?",
+      "error": "Salvataggio non riuscito. Riprova."
+    },
+    "export": {
+      "saveAsPdf": "Salva come PDF",
+      "printTip": "Apre la finestra di stampa del browser — scegli \"Salva come PDF\" per scaricare"
     }
   },
   "chatbot": {
@@ -1233,7 +1264,14 @@
       "title": "Stiamo finalizzando il tuo mistero",
       "description": "Il tuo mistero è stato generato ma alcuni contenuti dei personaggi richiedono attenzione."
     },
-    "loadingMystery": "Caricamento del tuo mistero..."
+    "loadingMystery": "Caricamento del tuo mistero...",
+    "generateCard": {
+      "title": "Genera il tuo Pacchetto Mistero",
+      "description": "Il tuo mistero è pronto per essere generato. Clicca sul pulsante qui sotto per creare il tuo pacchetto mistero con delitto personalizzato.",
+      "starting": "Avvio della generazione...",
+      "button": "Genera Pacchetto Mistero",
+      "eta": "La generazione richiede in genere {{time}}. Questa pagina si aggiornerà automaticamente per mostrare il progresso."
+    }
   },
   "attribution": {
     "title": "Come hai sentito parlare di noi?",
@@ -1374,6 +1412,40 @@
     "footer": {
       "lovedPlaying": "Ti è piaciuto interpretare <strong>{{character}}</strong>?",
       "hostCta": "Organizza il tuo mistero personalizzato su"
+    }
+  },
+  "welcomeDiscount": {
+    "ribbon": {
+      "message": "Benvenuto! Ottieni il {{percent}}% di sconto sul tuo primo mistero — ${{discountedPrice}} invece di ${{originalPrice}}",
+      "expires": "Scade tra {{time}}",
+      "ariaLabel": "Sconto di benvenuto a tempo limitato"
+    },
+    "purchase": {
+      "expiresIn": "L'offerta di benvenuto scade tra {{time}}"
+    }
+  },
+  "generationProgress": {
+    "heading": "Stiamo creando il tuo mistero",
+    "subheading": "Questa pagina si aggiorna automaticamente — puoi lasciarla aperta o tornare più tardi.",
+    "percentComplete": "{{percent}}% completato",
+    "phases": {
+      "setup": {
+        "label": "Base della storia definita",
+        "description": "Delitto, ambientazione, poste in gioco e piano completo del cast definiti"
+      },
+      "world": {
+        "label": "Panoramica del gioco e materiali a tema",
+        "description": "Riepilogo del mistero e oggetti di scena a tema per l'atmosfera"
+      },
+      "characters": {
+        "label": "Creazione dei personaggi",
+        "labelCounting": "Creazione dei personaggi ({{done}} di {{expected}} pronti)",
+        "description": "Segreti, moventi e copioni per round di ogni ospite"
+      },
+      "evidence": {
+        "label": "Carte degli indizi, copione dell'investigatore e immagini",
+        "description": "Indizi round per round, dialoghi del narratore e immagini forensi"
+      }
     }
   }
 }

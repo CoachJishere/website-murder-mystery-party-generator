@@ -95,7 +95,8 @@
       "cyberpunkNightclub": "在一个霓虹闪烁的赛博朋克夜总会中创建一个谋杀悬疑故事。",
       "ghostShip": "设计一个关于一艘几个世纪前失踪又神秘回归的传奇船只的谜团。",
       "sentientPlantColony": "在一个由有感知、可移动的植物组成的社会中创建一个谋杀悬疑故事，它们拥有复杂的社会等级。"
-    }
+    },
+    "typewriterPrefix": "创建一个谜团 "
   },
   "customParty": {
     "seo": {
@@ -140,6 +141,11 @@
       "a1": "适合。Mystery Maker 会根据你描述的企业场景，从零打造完全定制的谋杀之谜——办公室派对、公司晚宴、行业大会或户外团建拓展。你告诉生成器想要什么，它便撰写剧情、嫌疑人、线索和每个角色的剧本。一切都不取自固定的现成套件目录，因此没有两场活动会玩到相同的游戏。",
       "q2": "可以有多少人参加？",
       "a2": "人数不限。你设定参与人数，生成器便调整角色阵容——4 到 6 人的小型局、8 到 12 人的晚宴，或 20 人以上的大型企业活动。每位参与者都有自己的角色，配有动机、秘密和逐轮剧本；若团队在创建游戏后扩大，你还可以让额外来宾作为侦探加入。"
+    },
+    "officeLink": {
+      "lead": "在为公司活动做筹划？看看它如何作为",
+      "link": "办公室谋杀之谜派对",
+      "end": "助力团队建设。"
     }
   },
   "home": {
@@ -240,7 +246,9 @@
       "support": "支持",
       "contact": "联系我们",
       "privacy": "隐私政策",
-      "blog": "博客"
+      "blog": "博客",
+      "customMystery": "定制谋杀之谜",
+      "corporateEvents": "企业与办公室活动"
     },
     "copyright": "Mystery Maker, Inc. 保留所有权利。"
   },
@@ -395,7 +403,8 @@
           "editMystery": "编辑谜团",
           "edit": "编辑",
           "archive": "存档",
-          "deleteTitle": "删除"
+          "deleteTitle": "删除",
+          "unarchive": "取消存档"
         },
         "deleteDialog": {
           "title": "删除谜团",
@@ -663,6 +672,10 @@
         "gameDesignEngagement": {
           "question": "您的游戏设计如何确保每个人都保持参与？",
           "answer": "我们的谜题围绕丰富的角色互动、共同的历史和交织的秘密构建。每个角色都紧密相连——不仅与受害者相连，还与彼此相连——创造出自然的戏剧性，确保所有玩家在整个体验中始终积极参与。"
+        },
+        "canIEdit": {
+          "question": "谜团生成后还能编辑吗？",
+          "answer": "当然可以！生成后，谜团的每个部分都可以完全编辑。您可以调整角色剧本、修改主持指南、更改证据卡、更新侦探剧本 — 全部直接在应用内完成。您还可以将谜团保存为 PDF。"
         }
       }
     },
@@ -848,7 +861,9 @@
       "archiveSuccess": "{{item}}已存档",
       "archiveFailed": "存档{{item}}失败",
       "updatedSuccess": "{{item}}已更新",
-      "updateFailed": "更新{{item}}失败"
+      "updateFailed": "更新{{item}}失败",
+      "unarchiveSuccess": "{{item}}已恢复",
+      "unarchiveFailed": "恢复{{item}}失败"
     }
   },
   "character": {
@@ -1118,14 +1133,16 @@
       "characters": "角色 ({{count}})",
       "clues": "线索",
       "inspector": "侦探指南",
-      "relationships": "关系"
+      "relationships": "关系",
+      "inspectorIntrigue": "调查员指南"
     },
     "mobileTabs": {
       "host": "主持",
       "characters": "角色 ({{count}})",
       "clues": "线索",
       "inspector": "侦探",
-      "relations": "关系"
+      "relations": "关系",
+      "inspectorIntrigue": "调查员"
     },
     "loading": {
       "generating": "正在生成...",
@@ -1146,6 +1163,19 @@
     },
     "matrix": {
       "title": "角色关系矩阵"
+    },
+    "edit": {
+      "button": "编辑",
+      "save": "保存",
+      "cancel": "取消",
+      "saving": "保存中...",
+      "saved": "更改已保存",
+      "discardConfirm": "放弃未保存的更改？",
+      "error": "保存失败。请重试。"
+    },
+    "export": {
+      "saveAsPdf": "保存为 PDF",
+      "printTip": "将打开浏览器的打印对话框 — 选择\"保存为 PDF\"即可下载"
     }
   },
   "hostAccess": {
@@ -1185,7 +1215,8 @@
     "generatingConcept": "正在创建你的谜案概念 — 这可能需要最多30秒...",
     "errors": {
       "responseFailed": "获取AI回应失败。请重试。",
-      "aiUnavailable": "抱歉，我目前无法回应。请稍后再试。"
+      "aiUnavailable": "抱歉，我目前无法回应。请稍后再试。",
+      "saveFailed": "您的消息未能保存 — 刷新页面后可能会丢失。请检查网络连接，并在离开本页前复制好重要内容。"
     }
   },
   "mysteryView": {
@@ -1233,7 +1264,14 @@
       "title": "我们正在完成您的谜案",
       "description": "您的谜案已生成,但部分角色内容需要关注。"
     },
-    "loadingMystery": "正在加载您的谜案..."
+    "loadingMystery": "正在加载您的谜案...",
+    "generateCard": {
+      "title": "生成您的谜团套装",
+      "description": "您的谜团已准备好生成。点击下方按钮，创建您的定制谋杀之谜套装。",
+      "starting": "正在启动生成...",
+      "button": "生成谜团套装",
+      "eta": "生成通常需要 {{time}}。本页会自动刷新以显示进度。"
+    }
   },
   "attribution": {
     "title": "你是怎么知道我们的？",
@@ -1374,6 +1412,40 @@
     "footer": {
       "lovedPlaying": "喜欢扮演 <strong>{{character}}</strong> 吗?",
       "hostCta": "在以下地址主持您自己的定制谜案"
+    }
+  },
+  "welcomeDiscount": {
+    "ribbon": {
+      "message": "欢迎！首个谜团立享 {{percent}}% 折扣 — 原价 ${{originalPrice}}，现仅 ${{discountedPrice}}",
+      "expires": "{{time}}后到期",
+      "ariaLabel": "限时欢迎优惠"
+    },
+    "purchase": {
+      "expiresIn": "欢迎优惠将在 {{time}} 后到期"
+    }
+  },
+  "generationProgress": {
+    "heading": "我们正在构建您的谜团",
+    "subheading": "本页会自动更新 — 您可以保持页面打开，也可以稍后再回来。",
+    "percentComplete": "已完成 {{percent}}%",
+    "phases": {
+      "setup": {
+        "label": "故事基础已就绪",
+        "description": "罪案、背景、利害关系与完整角色阵容均已确定"
+      },
+      "world": {
+        "label": "游戏概览与主题素材",
+        "description": "谜案摘要与契合主题的氛围道具"
+      },
+      "characters": {
+        "label": "正在创建角色",
+        "labelCounting": "正在创建角色（{{done}}/{{expected}} 已就绪）",
+        "description": "每位来宾的秘密、动机与逐轮剧本"
+      },
+      "evidence": {
+        "label": "证据卡、侦探剧本与图片",
+        "description": "逐轮线索、旁白台词与鉴证图片"
+      }
     }
   }
 }

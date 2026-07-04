@@ -74,12 +74,16 @@ const MysteryChatPage = () => {
         if (!id) return;
         
         try {
-            await supabase.from("messages").insert({
+            // supabase-js does NOT throw on insert failure — it returns { error }.
+            // Without this check a failed save is invisible and the message
+            // silently disappears on refresh.
+            const { error: insertError } = await supabase.from("messages").insert({
                 conversation_id: id,
                 content: message.content,
                 role: message.is_ai ? "assistant" : "user",
                 is_ai: message.is_ai
             });
+            if (insertError) throw insertError;
 
             // If this is an AI message, try to extract a title and update the conversation.
             // Only update when there's no real title yet — once a proper title is set,

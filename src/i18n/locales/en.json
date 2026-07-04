@@ -795,7 +795,8 @@
     "generatingConcept": "Crafting your mystery concept — this can take up to 30 seconds...",
     "errors": {
       "responseFailed": "Failed to get AI response. Please try again.",
-      "aiUnavailable": "I apologize, but I'm having trouble responding right now. Please try again in a moment."
+      "aiUnavailable": "I apologize, but I'm having trouble responding right now. Please try again in a moment.",
+      "saveFailed": "Your message couldn't be saved — it may disappear if you refresh. Check your connection and copy any important text before leaving this page."
     }
   },
   "sendToGuests": {
@@ -1221,7 +1222,14 @@
       "title": "We're Finalizing Your Mystery",
       "description": "Your mystery was generated but some character content needs attention."
     },
-    "loadingMystery": "Loading your mystery..."
+    "loadingMystery": "Loading your mystery...",
+    "generateCard": {
+      "title": "Generate Your Mystery Package",
+      "description": "Your mystery is ready to be generated. Click the button below to create your custom murder mystery package.",
+      "starting": "Starting Generation...",
+      "button": "Generate Mystery Package",
+      "eta": "Generation typically takes {{time}}. This page will auto-refresh to show progress."
+    }
   },
   "mysteryPackage": {
     "shareWithGuests": "Share With Guests",
@@ -1495,6 +1503,30 @@
     "footer": {
       "lovedPlaying": "Loved playing as <strong>{{character}}</strong>?",
       "hostCta": "Host your own custom mystery at"
+    }
+  },
+  "generationProgress": {
+    "heading": "We're building your mystery",
+    "subheading": "This page updates automatically — feel free to leave it open or come back later.",
+    "percentComplete": "{{percent}}% complete",
+    "phases": {
+      "setup": {
+        "label": "Story foundation set",
+        "description": "Crime, setting, stakes, and full cast plan locked in"
+      },
+      "world": {
+        "label": "Game overview and themed materials",
+        "description": "Mystery summary and theme-specific atmosphere props"
+      },
+      "characters": {
+        "label": "Creating characters",
+        "labelCounting": "Creating characters ({{done}} of {{expected}} ready)",
+        "description": "Each guest's secrets, motives, and round scripts"
+      },
+      "evidence": {
+        "label": "Evidence cards, detective script, and images",
+        "description": "Round-by-round clues, narrator dialogue, and forensic images"
+      }
     }
   }
 }

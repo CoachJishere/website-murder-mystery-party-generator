@@ -95,7 +95,8 @@
       "cyberpunkNightclub": "Erstellen Sie ein Krimi-Mysterium in einem neongetränkten Cyberpunk-Nachtclub.",
       "ghostShip": "Entwerfen Sie ein Mysterium an Bord eines legendären Schiffes, das vor Jahrhunderten verschwand und auf mysteriöse Weise wieder aufgetaucht ist.",
       "sentientPlantColony": "Erstellen Sie ein Krimi-Mysterium in einer Gesellschaft intelligenter, mobiler Pflanzen mit einer komplexen sozialen Hierarchie."
-    }
+    },
+    "typewriterPrefix": "Erstellen Sie ein Mysterium "
   },
   "customParty": {
     "seo": {
@@ -140,6 +141,11 @@
       "a1": "Ja. Mystery Maker erstellt ein vollständig maßgeschneidertes Murder Mystery für den geschäftlichen Anlass, den du beschreibst — eine Büroparty, ein Gala-Dinner, eine Konferenz oder ein Teambuilding außer Haus. Du sagst dem Generator, was du willst, und er schreibt die Handlung, die Verdächtigen, die Hinweise und das Skript für jeden Charakter. Nichts stammt aus einem festen Katalog, sodass kein Event dem anderen gleicht.",
       "q2": "Wie viele Teilnehmer können mitspielen?",
       "a2": "Beliebig viele. Du legst die Teilnehmerzahl fest und der Generator passt die Besetzung an — intime Runden für 4 bis 6 Personen, Dinner für 8 bis 12 oder große Firmenevents für 20 oder mehr. Jeder Teilnehmer erhält einen eigenen Charakter mit Motiven, Geheimnissen und Skripten Runde für Runde, und du kannst Gäste als Ermittler hinzunehmen, wenn das Team wächst."
+    },
+    "officeLink": {
+      "lead": "Planen Sie etwas für die Arbeit? Erfahren Sie, wie es als",
+      "link": "Büro-Krimi-Party",
+      "end": "für Teambuilding funktioniert."
     }
   },
   "home": {
@@ -240,7 +246,9 @@
       "support": "Support",
       "contact": "Kontakt",
       "privacy": "Datenschutzrichtlinie",
-      "blog": "Blog"
+      "blog": "Blog",
+      "customMystery": "Individuelles Krimi-Mysterium",
+      "corporateEvents": "Firmen- & Büro-Events"
     },
     "copyright": "Mystery Maker, Inc. Alle Rechte vorbehalten."
   },
@@ -395,7 +403,8 @@
           "editMystery": "Mysterium bearbeiten",
           "edit": "Bearbeiten",
           "archive": "Archivieren",
-          "deleteTitle": "Löschen"
+          "deleteTitle": "Löschen",
+          "unarchive": "Entarchivieren"
         },
         "deleteDialog": {
           "title": "Mysterium löschen",
@@ -663,6 +672,10 @@
         "gameDesignEngagement": {
           "question": "Wie stellt Ihr Spieldesign sicher, dass alle engagiert bleiben?",
           "answer": "Unsere Mysterien basieren auf reichhaltigen Charakterinteraktionen, gemeinsamen Geschichten und miteinander verwobenen Geheimnissen. Jeder Charakter ist tief verbunden — nicht nur mit dem Opfer, sondern auch miteinander — was natürliches Drama erzeugt und sicherstellt, dass alle Spieler während des gesamten Erlebnisses aktiv beteiligt bleiben."
+        },
+        "canIEdit": {
+          "question": "Kann ich mein Mysterium nach der Generierung bearbeiten?",
+          "answer": "Ja! Jeder Teil Ihres Mysteriums ist nach der Generierung vollständig bearbeitbar. Sie können Charakter-Skripte anpassen, die Gastgeberanleitung überarbeiten, Beweiskarten ändern und das Detektiv-Skript aktualisieren — alles direkt in der App. Sie können Ihr Mysterium auch als PDF speichern."
         }
       }
     },
@@ -701,7 +714,8 @@
     "generatingConcept": "Dein Mystery-Konzept wird erstellt — das kann bis zu 30 Sekunden dauern...",
     "errors": {
       "responseFailed": "Fehler beim Abrufen der KI-Antwort. Bitte versuchen Sie es erneut.",
-      "aiUnavailable": "Es tut mir leid, aber ich habe derzeit Probleme zu antworten. Bitte versuchen Sie es in Kürze erneut."
+      "aiUnavailable": "Es tut mir leid, aber ich habe derzeit Probleme zu antworten. Bitte versuchen Sie es in Kürze erneut.",
+      "saveFailed": "Ihre Nachricht konnte nicht gespeichert werden — sie könnte beim Aktualisieren der Seite verloren gehen. Prüfen Sie Ihre Verbindung und kopieren Sie wichtigen Text, bevor Sie diese Seite verlassen."
     }
   },
   "sendToGuests": {
@@ -814,7 +828,9 @@
       "archiveSuccess": "{{item}} erfolgreich archiviert",
       "archiveFailed": "Fehler beim Archivieren von {{item}}",
       "updatedSuccess": "{{item}} erfolgreich aktualisiert",
-      "updateFailed": "Fehler beim Aktualisieren von {{item}}"
+      "updateFailed": "Fehler beim Aktualisieren von {{item}}",
+      "unarchiveSuccess": "{{item}} erfolgreich wiederhergestellt",
+      "unarchiveFailed": "Fehler beim Wiederherstellen von {{item}}"
     }
   },
   "character": {
@@ -1084,14 +1100,16 @@
       "characters": "Charaktere ({{count}})",
       "clues": "Beweise",
       "inspector": "Detektivanleitung",
-      "relationships": "Beziehungen"
+      "relationships": "Beziehungen",
+      "inspectorIntrigue": "Ermittleranleitung"
     },
     "mobileTabs": {
       "host": "Gastgeber",
       "characters": "Charaktere ({{count}})",
       "clues": "Beweise",
       "inspector": "Detektiv",
-      "relations": "Beziehungen"
+      "relations": "Beziehungen",
+      "inspectorIntrigue": "Ermittler"
     },
     "loading": {
       "generating": "Wird generiert...",
@@ -1112,6 +1130,19 @@
     },
     "matrix": {
       "title": "Charakterbeziehungsmatrix"
+    },
+    "edit": {
+      "button": "Bearbeiten",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "saving": "Wird gespeichert...",
+      "saved": "Änderungen gespeichert",
+      "discardConfirm": "Nicht gespeicherte Änderungen verwerfen?",
+      "error": "Speichern fehlgeschlagen. Bitte versuchen Sie es erneut."
+    },
+    "export": {
+      "saveAsPdf": "Als PDF speichern",
+      "printTip": "Öffnet den Druckdialog Ihres Browsers — wählen Sie \"Als PDF speichern\", um herunterzuladen"
     }
   },
   "chatbot": {
@@ -1211,7 +1242,14 @@
       "title": "Wir finalisieren deinen Krimi",
       "description": "Dein Krimi wurde generiert, aber einige Charakterinhalte benötigen Aufmerksamkeit."
     },
-    "loadingMystery": "Dein Krimi wird geladen..."
+    "loadingMystery": "Dein Krimi wird geladen...",
+    "generateCard": {
+      "title": "Generieren Sie Ihr Mysterienpaket",
+      "description": "Ihr Mysterium ist bereit zur Generierung. Klicken Sie auf die Schaltfläche unten, um Ihr individuelles Krimi-Mysterienpaket zu erstellen.",
+      "starting": "Generierung wird gestartet...",
+      "button": "Mysterienpaket generieren",
+      "eta": "Die Generierung dauert in der Regel {{time}}. Diese Seite aktualisiert sich automatisch, um den Fortschritt anzuzeigen."
+    }
   },
   "hostAccess": {
     "loading": "Gastgebermaterialien werden geladen...",
@@ -1374,6 +1412,40 @@
     "footer": {
       "lovedPlaying": "Hat es dir Spaß gemacht, <strong>{{character}}</strong> zu spielen?",
       "hostCta": "Veranstalte dein eigenes maßgeschneidertes Krimi-Dinner auf"
+    }
+  },
+  "welcomeDiscount": {
+    "ribbon": {
+      "message": "Willkommen! Sichern Sie sich {{percent}}% Rabatt auf Ihr erstes Mysterium — ${{discountedPrice}} statt ${{originalPrice}}",
+      "expires": "Läuft ab in {{time}}",
+      "ariaLabel": "Zeitlich begrenzter Willkommensrabatt"
+    },
+    "purchase": {
+      "expiresIn": "Das Willkommensangebot läuft in {{time}} ab"
+    }
+  },
+  "generationProgress": {
+    "heading": "Wir erstellen Ihr Mysterium",
+    "subheading": "Diese Seite aktualisiert sich automatisch — Sie können sie geöffnet lassen oder später zurückkommen.",
+    "percentComplete": "{{percent}}% abgeschlossen",
+    "phases": {
+      "setup": {
+        "label": "Story-Grundlage steht",
+        "description": "Verbrechen, Schauplatz, Konflikte und der komplette Figurenplan stehen fest"
+      },
+      "world": {
+        "label": "Spielübersicht und thematische Materialien",
+        "description": "Zusammenfassung des Mysteriums und themenspezifische Atmosphäre-Requisiten"
+      },
+      "characters": {
+        "label": "Charaktere werden erstellt",
+        "labelCounting": "Charaktere werden erstellt ({{done}} von {{expected}} fertig)",
+        "description": "Geheimnisse, Motive und Runden-Skripte für jeden Gast"
+      },
+      "evidence": {
+        "label": "Beweiskarten, Detektiv-Skript und Bilder",
+        "description": "Hinweise Runde für Runde, Erzähler-Dialoge und forensische Bilder"
+      }
     }
   }
 }

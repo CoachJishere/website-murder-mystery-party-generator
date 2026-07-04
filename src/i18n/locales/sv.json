@@ -95,7 +95,8 @@
       "cyberpunkNightclub": "Create a murder mystery in a neon-soaked cyberpunk nightclub.",
       "ghostShip": "Design a mystery aboard a legendary vessel that vanished centuries ago and has mysteriously reappeared.",
       "sentientPlantColony": "Create a murder mystery in a society of intelligent, mobile plants with a complex social hierarchy."
-    }
+    },
+    "typewriterPrefix": "Skapa ett mysterium "
   },
   "customParty": {
     "seo": {
@@ -140,6 +141,11 @@
       "a1": "Ja. Mystery Maker skapar en helt skräddarsydd murder mystery för det företagssammanhang du beskriver — en kontorsfest, en galamiddag, en konferens eller en teambuilding utanför kontoret. Du talar om för generatorn vad du vill ha, så skriver den intrigen, de misstänkta, ledtrådarna och manus för varje karaktär. Inget hämtas från en fast katalog, så inget event blir likt ett annat.",
       "q2": "Hur många deltagare kan spela?",
       "a2": "Hur många som helst. Du ställer in antalet deltagare och generatorn anpassar rollistan — intima spel för 4 till 6 personer, middagar för 8 till 12 eller stora företagsevent för 20 eller fler. Varje deltagare får sin egen karaktär med motiv, hemligheter och manus runda för runda, och du kan lägga till gäster som detektiver om teamet växer."
+    },
+    "officeLink": {
+      "lead": "Planerar du något för jobbet? Se hur det fungerar som",
+      "link": "murder mystery på kontoret",
+      "end": "för teambuilding."
     }
   },
   "home": {
@@ -240,7 +246,9 @@
       "support": "Support",
       "contact": "Contact",
       "privacy": "Privacy Policy",
-      "blog": "Blogg"
+      "blog": "Blogg",
+      "customMystery": "Skräddarsydd Murder Mystery",
+      "corporateEvents": "Företags- och Kontorsevent"
     },
     "copyright": "Mystery Maker, Inc. All rights reserved."
   },
@@ -395,7 +403,8 @@
           "editMystery": "Edit Mystery",
           "edit": "Edit",
           "archive": "Archive",
-          "deleteTitle": "Delete"
+          "deleteTitle": "Delete",
+          "unarchive": "Avarkivera"
         },
         "deleteDialog": {
           "title": "Delete Mystery",
@@ -663,6 +672,10 @@
         "gameDesignEngagement": {
           "question": "Hur säkerställer er speldesign att alla förblir engagerade?",
           "answer": "Våra mysterier är uppbyggda kring rika karaktärsinteraktioner, delade historier och sammanflätade hemligheter. Varje karaktär är djupt kopplad — inte bara till offret, utan till varandra — vilket skapar naturlig dramatik och säkerställer att alla spelare förblir aktivt engagerade genom hela upplevelsen."
+        },
+        "canIEdit": {
+          "question": "Kan jag redigera mitt mysterium efter att det har genererats?",
+          "answer": "Ja! Varje del av ditt mysterium går att redigera fullt ut efter genereringen. Du kan justera karaktärernas manus, anpassa värdguiden, ändra beviskorten och uppdatera detektivmanuset — allt direkt i appen. Du kan också spara ditt mysterium som PDF."
         }
       }
     },
@@ -701,7 +714,8 @@
     "generatingConcept": "Skapar ditt mysteriekoncept — detta kan ta upp till 30 sekunder...",
     "errors": {
       "responseFailed": "Failed to get AI response. Please try again.",
-      "aiUnavailable": "I apologize, but I'm having trouble responding right now. Please try again in a moment."
+      "aiUnavailable": "I apologize, but I'm having trouble responding right now. Please try again in a moment.",
+      "saveFailed": "Ditt meddelande kunde inte sparas — det kan försvinna om du laddar om sidan. Kontrollera din anslutning och kopiera viktig text innan du lämnar sidan."
     }
   },
   "sendToGuests": {
@@ -814,7 +828,9 @@
       "archiveSuccess": "{{item}} archived successfully",
       "archiveFailed": "Failed to archive {{item}}",
       "updatedSuccess": "{{item}} updated successfully",
-      "updateFailed": "Failed to update {{item}}"
+      "updateFailed": "Failed to update {{item}}",
+      "unarchiveSuccess": "{{item}} har återställts",
+      "unarchiveFailed": "Kunde inte återställa {{item}}"
     }
   },
   "character": {
@@ -1110,7 +1126,14 @@
       "title": "Vi slutför ditt mysterium",
       "description": "Ditt mysterium genererades men något karaktärsinnehåll behöver uppmärksamhet."
     },
-    "loadingMystery": "Laddar ditt mysterium..."
+    "loadingMystery": "Laddar ditt mysterium...",
+    "generateCard": {
+      "title": "Generera ditt mysteriepaket",
+      "description": "Ditt mysterium är redo att genereras. Klicka på knappen nedan för att skapa ditt skräddarsydda mysteriepaket.",
+      "starting": "Startar generering...",
+      "button": "Generera mysteriepaket",
+      "eta": "Genereringen tar vanligtvis {{time}}. Sidan uppdateras automatiskt och visar förloppet."
+    }
   },
   "mysteryPackage": {
     "shareWithGuests": "Share With Guests",
@@ -1119,14 +1142,16 @@
       "characters": "Characters ({{count}})",
       "clues": "Evidence",
       "inspector": "Detective Guide",
-      "relationships": "Relationships"
+      "relationships": "Relationships",
+      "inspectorIntrigue": "Utredarguide"
     },
     "mobileTabs": {
       "host": "Host",
       "characters": "Characters ({{count}})",
       "clues": "Evidence",
       "inspector": "Detective",
-      "relations": "Relations"
+      "relations": "Relations",
+      "inspectorIntrigue": "Utredare"
     },
     "loading": {
       "generating": "Generating...",
@@ -1147,6 +1172,19 @@
     },
     "matrix": {
       "title": "Character Relationship Matrix"
+    },
+    "edit": {
+      "button": "Redigera",
+      "save": "Spara",
+      "cancel": "Avbryt",
+      "saving": "Sparar...",
+      "saved": "Ändringar sparade",
+      "discardConfirm": "Kassera osparade ändringar?",
+      "error": "Kunde inte spara. Försök igen."
+    },
+    "export": {
+      "saveAsPdf": "Spara som PDF",
+      "printTip": "Öppnar webbläsarens utskriftsdialog — välj \"Spara som PDF\" för att ladda ner"
     }
   },
   "blog": {
@@ -1374,6 +1412,40 @@
     "footer": {
       "lovedPlaying": "Älskade du att spela <strong>{{character}}</strong>?",
       "hostCta": "Var värd för ditt eget skräddarsydda mysterium på"
+    }
+  },
+  "welcomeDiscount": {
+    "ribbon": {
+      "message": "Välkommen! Få {{percent}}% rabatt på ditt första mysterium — ${{discountedPrice}} istället för ${{originalPrice}}",
+      "expires": "Går ut om {{time}}",
+      "ariaLabel": "Tidsbegränsad välkomstrabatt"
+    },
+    "purchase": {
+      "expiresIn": "Välkomsterbjudandet går ut om {{time}}"
+    }
+  },
+  "generationProgress": {
+    "heading": "Vi bygger ditt mysterium",
+    "subheading": "Sidan uppdateras automatiskt — låt den gärna vara öppen eller kom tillbaka senare.",
+    "percentComplete": "{{percent}}% klart",
+    "phases": {
+      "setup": {
+        "label": "Berättelsens grund är lagd",
+        "description": "Brott, miljö, vad som står på spel och hela rollistan fastslagna"
+      },
+      "world": {
+        "label": "Spelöversikt och tematiskt material",
+        "description": "Mysteriesammanfattning och stämningsrekvisita anpassad efter temat"
+      },
+      "characters": {
+        "label": "Skapar karaktärer",
+        "labelCounting": "Skapar karaktärer ({{done}} av {{expected}} klara)",
+        "description": "Varje gästs hemligheter, motiv och rundmanus"
+      },
+      "evidence": {
+        "label": "Beviskort, detektivmanus och bilder",
+        "description": "Ledtrådar runda för runda, berättardialog och kriminaltekniska bilder"
+      }
     }
   }
 }

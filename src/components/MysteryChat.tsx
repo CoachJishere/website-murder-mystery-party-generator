@@ -321,8 +321,13 @@ export default function MysteryChat({
 
       try {
         await onSave(aiMessage);
-      } catch (error) {
-        console.error("Error saving AI message:", error);
+      } catch {
+        try {
+          await onSave(aiMessage);
+        } catch (error) {
+          console.error("Error saving AI message:", error);
+          toast.error(t("chat.errors.saveFailed"));
+        }
       }
     } catch (error) {
       console.error('Error calling AI service:', error);
@@ -350,8 +355,16 @@ export default function MysteryChat({
 
     try {
       await onSave(userMessage);
-    } catch (error) {
-      console.error("Error saving user message:", error);
+    } catch {
+      // One retry for transient network blips, then warn — the message is
+      // visible in the UI but NOT persisted; without a warning it silently
+      // vanishes on refresh.
+      try {
+        await onSave(userMessage);
+      } catch (error) {
+        console.error("Error saving user message:", error);
+        toast.error(t("chat.errors.saveFailed"));
+      }
     }
 
     setIsAiTyping(true);
@@ -380,8 +393,13 @@ export default function MysteryChat({
 
       try {
         await onSave(aiMessage);
-      } catch (error) {
-        console.error("Error saving AI message:", error);
+      } catch {
+        try {
+          await onSave(aiMessage);
+        } catch (error) {
+          console.error("Error saving AI message:", error);
+          toast.error(t("chat.errors.saveFailed"));
+        }
       }
     } catch (error) {
       console.error('Error calling AI service:', error);

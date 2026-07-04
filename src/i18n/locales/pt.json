@@ -141,6 +141,11 @@
       "a1": "Sim. O Mystery Maker cria um murder mystery totalmente à medida para o contexto corporativo que descrever — uma festa no escritório, um jantar de gala, uma convenção ou um team building fora das instalações. Indica ao gerador o que pretende e ele escreve o enredo, os suspeitos, as pistas e o guião de cada personagem. Nada é retirado de um catálogo fixo, por isso não há dois eventos iguais.",
       "q2": "Quantos participantes podem jogar?",
       "a2": "Qualquer número. Define o número de participantes e o gerador ajusta o elenco — jogos íntimos para 4 a 6 pessoas, jantares para 8 a 12 ou grandes eventos corporativos para 20 ou mais. Cada participante tem a sua própria personagem, com motivos, segredos e guiões ronda a ronda, e pode acrescentar convidados como detetives se a equipa crescer."
+    },
+    "officeLink": {
+      "lead": "Está a planear algo para o trabalho? Veja como funciona como",
+      "link": "murder mystery de escritório",
+      "end": "para team building."
     }
   },
   "home": {
@@ -241,7 +246,9 @@
       "support": "Suporte",
       "contact": "Contato",
       "privacy": "Política de Privacidade",
-      "blog": "Blog"
+      "blog": "Blog",
+      "customMystery": "Murder Mystery Personalizado",
+      "corporateEvents": "Eventos Corporativos e de Escritório"
     },
     "copyright": "Mystery Maker, Inc. Todos os direitos reservados."
   },
@@ -1126,14 +1133,16 @@
       "characters": "Personagens ({{count}})",
       "clues": "Evidências",
       "inspector": "Guia do Inspetor",
-      "relationships": "Relacionamentos"
+      "relationships": "Relacionamentos",
+      "inspectorIntrigue": "Guia do Investigador"
     },
     "mobileTabs": {
       "host": "Anfitrião",
       "characters": "Personagens ({{count}})",
       "clues": "Evidências",
       "inspector": "Inspetor",
-      "relations": "Relações"
+      "relations": "Relações",
+      "inspectorIntrigue": "Investigador"
     },
     "loading": {
       "generating": "Gerando...",
@@ -1206,7 +1215,8 @@
     "generatingConcept": "Criando o conceito do seu mistério — isso pode levar até 30 segundos...",
     "errors": {
       "responseFailed": "Falha ao obter resposta da IA. Por favor, tente novamente.",
-      "aiUnavailable": "Desculpe, estou tendo dificuldades para responder no momento. Por favor, tente novamente em instantes."
+      "aiUnavailable": "Desculpe, estou tendo dificuldades para responder no momento. Por favor, tente novamente em instantes.",
+      "saveFailed": "Não foi possível guardar a sua mensagem — ela pode desaparecer se atualizar a página. Verifique a sua ligação e copie qualquer texto importante antes de sair desta página."
     }
   },
   "mysteryView": {
@@ -1254,7 +1264,14 @@
       "title": "Estamos a finalizar o teu mistério",
       "description": "O teu mistério foi gerado mas algum conteúdo dos personagens precisa de atenção."
     },
-    "loadingMystery": "A carregar o teu mistério..."
+    "loadingMystery": "A carregar o teu mistério...",
+    "generateCard": {
+      "title": "Gerar o Teu Pacote de Mistério",
+      "description": "O teu mistério está pronto a ser gerado. Clica no botão abaixo para criar o teu pacote de mistério personalizado.",
+      "starting": "A iniciar a geração...",
+      "button": "Gerar Pacote de Mistério",
+      "eta": "A geração demora normalmente {{time}}. Esta página atualiza-se automaticamente para mostrar o progresso."
+    }
   },
   "attribution": {
     "title": "Como soubeste de nós?",
@@ -1395,6 +1412,40 @@
     "footer": {
       "lovedPlaying": "Adoraste interpretar <strong>{{character}}</strong>?",
       "hostCta": "Organiza o teu próprio mistério personalizado em"
+    }
+  },
+  "welcomeDiscount": {
+    "ribbon": {
+      "message": "Bem-vindo(a)! Tens {{percent}}% de desconto no teu primeiro mistério — ${{discountedPrice}} em vez de ${{originalPrice}}",
+      "expires": "Expira em {{time}}",
+      "ariaLabel": "Desconto de boas-vindas por tempo limitado"
+    },
+    "purchase": {
+      "expiresIn": "A oferta de boas-vindas expira em {{time}}"
+    }
+  },
+  "generationProgress": {
+    "heading": "Estamos a construir o teu mistério",
+    "subheading": "Esta página atualiza-se automaticamente — podes deixá-la aberta ou voltar mais tarde.",
+    "percentComplete": "{{percent}}% concluído",
+    "phases": {
+      "setup": {
+        "label": "Base da história definida",
+        "description": "Crime, cenário, o que está em jogo e o plano completo do elenco definidos"
+      },
+      "world": {
+        "label": "Visão geral do jogo e materiais temáticos",
+        "description": "Resumo do mistério e adereços de ambiente específicos do tema"
+      },
+      "characters": {
+        "label": "A criar personagens",
+        "labelCounting": "A criar personagens ({{done}} de {{expected}} prontas)",
+        "description": "Os segredos, motivos e guiões de ronda de cada convidado"
+      },
+      "evidence": {
+        "label": "Cartões de evidências, guião do detetive e imagens",
+        "description": "Pistas ronda a ronda, diálogo do narrador e imagens forenses"
+      }
     }
   }
 }

@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { CheckCircle2, Loader2, Circle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 
 // Phased progress display for in-flight mystery generation. Phase state is derived from
 // what's actually in the DB (master_context, game_overview, characters, evidence, etc.) —
@@ -55,7 +57,7 @@ function simulatedBonus(elapsedSeconds: number): number {
 }
 
 // Compute phase states + overall progress from real content signals.
-function computeState(p: GenerationProgressProps) {
+function computeState(p: GenerationProgressProps, t: TFunction) {
   const phase1Done = p.hasMasterContext;
   const phase2Done = phase1Done && p.hasGameOverview && p.hasMaterials;
   const phase3Done = phase2Done && p.charactersExpected > 0 && p.charactersDone >= p.charactersExpected;
@@ -72,25 +74,25 @@ function computeState(p: GenerationProgressProps) {
   const phases: Omit<Phase, "state">[] = [
     {
       key: "setup",
-      label: "Story foundation set",
-      description: "Crime, setting, stakes, and full cast plan locked in",
+      label: t("generationProgress.phases.setup.label"),
+      description: t("generationProgress.phases.setup.description"),
     },
     {
       key: "world",
-      label: "Game overview and themed materials",
-      description: "Mystery summary and theme-specific atmosphere props",
+      label: t("generationProgress.phases.world.label"),
+      description: t("generationProgress.phases.world.description"),
     },
     {
       key: "characters",
       label: p.charactersExpected > 0
-        ? `Creating characters (${p.charactersDone} of ${p.charactersExpected} ready)`
-        : "Creating characters",
-      description: "Each guest's secrets, motives, and round scripts",
+        ? t("generationProgress.phases.characters.labelCounting", { done: p.charactersDone, expected: p.charactersExpected })
+        : t("generationProgress.phases.characters.label"),
+      description: t("generationProgress.phases.characters.description"),
     },
     {
       key: "evidence",
-      label: "Evidence cards, detective script, and images",
-      description: "Round-by-round clues, narrator dialogue, and forensic images",
+      label: t("generationProgress.phases.evidence.label"),
+      description: t("generationProgress.phases.evidence.description"),
     },
   ];
 
@@ -120,7 +122,8 @@ const PhaseIcon: React.FC<{ state: PhaseState }> = ({ state }) => {
 };
 
 const GenerationProgress: React.FC<GenerationProgressProps> = (props) => {
-  const { phases, progress: floor, activeIdx, activeKey, realBonus } = computeState(props);
+  const { t } = useTranslation();
+  const { phases, progress: floor, activeIdx, activeKey, realBonus } = computeState(props, t);
   const isMobile = props.isMobile;
 
   // Self-driving tick: re-render every ~1.5s while generation is incomplete so the
@@ -168,16 +171,16 @@ const GenerationProgress: React.FC<GenerationProgressProps> = (props) => {
       <CardContent className={cn("pt-6 space-y-6", isMobile && "pt-4 space-y-4")}>
         <div>
           <h2 className={cn("font-bold mb-1", isMobile ? "text-xl" : "text-2xl")}>
-            We're building your mystery
+            {t("generationProgress.heading")}
           </h2>
           <p className={cn("text-muted-foreground", isMobile && "text-sm")}>
-            This page updates automatically — feel free to leave it open or come back later.
+            {t("generationProgress.subheading")}
           </p>
         </div>
 
         <div className="space-y-2">
           <div className="flex justify-between items-center text-sm">
-            <span className="font-medium">{shown}% complete</span>
+            <span className="font-medium">{t("generationProgress.percentComplete", { percent: shown })}</span>
           </div>
           <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
             <div

@@ -412,8 +412,12 @@ const MysteryPurchase = () => {
       // Build Stripe checkout URL
       let stripeUrl = `https://buy.stripe.com/dRm4gAgls6c47UccYV2Nq03?prefilled_email=${encodeURIComponent(user.email)}&client_reference_id=${id}&success_url=${encodeURIComponent(successUrl)}&cancel_url=${encodeURIComponent(cancelUrl)}`;
 
-      // Auto-apply welcome discount promo code if active
-      if (hasDiscount && discountInfo?.promoCode) {
+      // Auto-apply welcome discount promo code if active. Re-check expiry at
+      // click time: the countdown state only refreshes every 15s, and Stripe
+      // silently ignores expired promo codes (customer pays full price while
+      // our UI implied a discount).
+      if (hasDiscount && discountInfo?.promoCode &&
+          new Date(discountInfo.expiresAt).getTime() > Date.now()) {
         stripeUrl += `&prefilled_promo_code=${encodeURIComponent(discountInfo.promoCode)}`;
       }
 

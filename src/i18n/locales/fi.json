@@ -95,7 +95,8 @@
       "cyberpunkNightclub": "Luo murhamysteeri neonvalaistuun cyberpunk-yökerhoon.",
       "ghostShip": "Suunnittele mysteeri legendaarisella laivalla, joka katosi vuosisatoja aiemmin ja on salaperäisesti ilmestynyt uudelleen.",
       "sentientPlantColony": "Luo murhamysteeri älykkäiden, liikkuvien kasvien yhteisössä, jolla on monimutkainen sosiaalinen hierarkia."
-    }
+    },
+    "typewriterPrefix": "Luo mysteeri "
   },
   "customParty": {
     "seo": {
@@ -140,6 +141,11 @@
       "a1": "Kyllä. Mystery Maker luo täysin räätälöidyn murhamysteerin kuvailemaasi yrityskontekstiin — toimiston juhliin, juhlaillalliseen, konferenssiin tai tiimipäivään luonnon helmassa. Kerrot generaattorille, mitä haluat, ja se kirjoittaa juonen, epäillyt, vihjeet ja jokaisen hahmon käsikirjoituksen. Mitään ei poimita valmiista luettelosta, joten kaksi tapahtumaa ei koskaan pelaa samaa peliä.",
       "q2": "Kuinka monta osallistujaa voi pelata?",
       "a2": "Mikä tahansa määrä. Asetat osallistujamäärän, ja generaattori skaalaa hahmokaartin sopivaksi — tiiviit pelit 4–6 hengelle, illalliset 8–12:lle tai suuret yritystapahtumat 20:lle tai useammalle. Jokainen osallistuja saa oman hahmonsa motiiveineen, salaisuuksineen ja kierroskohtaisine käsikirjoituksineen, ja voit ottaa lisävieraita mukaan etsivinä, jos tiimi kasvaa pelin rakentamisen jälkeen."
+    },
+    "officeLink": {
+      "lead": "Suunnitteletko jotain työpaikalle? Katso, miten se toimii",
+      "link": "toimiston murhamysteerijuhlina",
+      "end": "tiimin rakentamiseen."
     }
   },
   "home": {
@@ -240,7 +246,9 @@
       "support": "Tuki",
       "contact": "Yhteystiedot",
       "privacy": "Tietosuojakäytäntö",
-      "blog": "Blogi"
+      "blog": "Blogi",
+      "customMystery": "Räätälöity murhamysteeri",
+      "corporateEvents": "Yritys- ja toimistotapahtumat"
     },
     "copyright": "Mystery Maker, Inc. Kaikki oikeudet pidätetään."
   },
@@ -395,7 +403,8 @@
           "editMystery": "Muokkaa mysteeriä",
           "edit": "Muokkaa",
           "archive": "Arkistoi",
-          "deleteTitle": "Poista"
+          "deleteTitle": "Poista",
+          "unarchive": "Palauta arkistosta"
         },
         "deleteDialog": {
           "title": "Poista mysteeri",
@@ -663,6 +672,10 @@
         "gameDesignEngagement": {
           "question": "Miten pelisi suunnittelu varmistaa, että kaikki pysyvät sitoutuneina?",
           "answer": "Mysteerimme on rakennettu rikkaiden hahmojen välisten vuorovaikutusten, jaettujen historioiden ja toisiinsa kietoutuneiden salaisuuksien ympärille. Jokainen hahmo on syvästi yhteydessä — ei vain uhriin, vaan myös toisiinsa — luoden luonnollista draamaa ja varmistaen, että kaikki pelaajat pysyvät aktiivisesti mukana koko kokemuksen ajan."
+        },
+        "canIEdit": {
+          "question": "Voinko muokata mysteeriäni sen luomisen jälkeen?",
+          "answer": "Kyllä! Mysteerisi jokainen osa on täysin muokattavissa luomisen jälkeen. Voit hienosäätää hahmojen käsikirjoituksia, muokata isännöintiopasta, muuttaa todistekortteja ja päivittää etsivän käsikirjoitusta — kaikki suoraan sovelluksessa. Voit myös tallentaa mysteerisi PDF-tiedostona."
         }
       }
     },
@@ -701,7 +714,8 @@
     "generatingConcept": "Luodaan mysteeri-konseptia — tämä voi kestää jopa 30 sekuntia...",
     "errors": {
       "responseFailed": "Tekoälyvastausta ei voitu noutaa. Yritä uudelleen.",
-      "aiUnavailable": "Olen pahoillani, mutta minulla on tällä hetkellä vaikeuksia vastata. Yritä uudelleen hetken kuluttua."
+      "aiUnavailable": "Olen pahoillani, mutta minulla on tällä hetkellä vaikeuksia vastata. Yritä uudelleen hetken kuluttua.",
+      "saveFailed": "Viestisi tallentaminen epäonnistui — se voi kadota, jos päivität sivun. Tarkista yhteytesi ja kopioi tärkeät tekstit talteen ennen kuin poistut tältä sivulta."
     }
   },
   "sendToGuests": {
@@ -814,7 +828,9 @@
       "archiveSuccess": "{{item}} arkistoitu",
       "archiveFailed": "{{item}} arkistointi epäonnistui",
       "updatedSuccess": "{{item}} päivitetty",
-      "updateFailed": "{{item}} päivittäminen epäonnistui"
+      "updateFailed": "{{item}} päivittäminen epäonnistui",
+      "unarchiveSuccess": "{{item}} palautettu",
+      "unarchiveFailed": "{{item}} palauttaminen epäonnistui"
     }
   },
   "character": {
@@ -1084,14 +1100,16 @@
       "characters": "Hahmot ({{count}})",
       "clues": "Vihjeet",
       "inspector": "Tarkastaja-opas",
-      "relationships": "Suhteet"
+      "relationships": "Suhteet",
+      "inspectorIntrigue": "Tutkijan opas"
     },
     "mobileTabs": {
       "host": "Isäntä",
       "characters": "Hahmot ({{count}})",
       "clues": "Vihjeet",
       "inspector": "Tarkastaja",
-      "relations": "Suhteet"
+      "relations": "Suhteet",
+      "inspectorIntrigue": "Tutkija"
     },
     "loading": {
       "generating": "Generoidaan...",
@@ -1112,6 +1130,19 @@
     },
     "matrix": {
       "title": "Hahmojen välinen suhdematriisi"
+    },
+    "edit": {
+      "button": "Muokkaa",
+      "save": "Tallenna",
+      "cancel": "Peruuta",
+      "saving": "Tallennetaan...",
+      "saved": "Muutokset tallennettu",
+      "discardConfirm": "Hylätäänkö tallentamattomat muutokset?",
+      "error": "Tallennus epäonnistui. Yritä uudelleen."
+    },
+    "export": {
+      "saveAsPdf": "Tallenna PDF-tiedostona",
+      "printTip": "Avaa selaimesi tulostusvalintaikkunan — valitse \"Tallenna PDF-tiedostona\" ladataksesi"
     }
   },
   "chatbot": {
@@ -1211,7 +1242,14 @@
       "title": "Viimeistelemme mysteeriäsi",
       "description": "Mysteerisi luotiin mutta osa hahmojen sisällöstä vaatii huomiota."
     },
-    "loadingMystery": "Ladataan mysteeriäsi..."
+    "loadingMystery": "Ladataan mysteeriäsi...",
+    "generateCard": {
+      "title": "Luo mysteeripakettisi",
+      "description": "Mysteerisi on valmis luotavaksi. Napsauta alla olevaa painiketta luodaksesi mukautetun murhamysteeripakettisi.",
+      "starting": "Aloitetaan luontia...",
+      "button": "Luo mysteeripaketti",
+      "eta": "Luonti kestää yleensä {{time}}. Tämä sivu päivittyy automaattisesti näyttämään edistymisen."
+    }
   },
   "hostAccess": {
     "loading": "Ladataan isännöintimateriaaleja...",
@@ -1374,6 +1412,40 @@
     "footer": {
       "lovedPlaying": "Pidettiitkö hahmosta <strong>{{character}}</strong>?",
       "hostCta": "Järjestä oma räätälöity mysteerisi sivustolla"
+    }
+  },
+  "welcomeDiscount": {
+    "ribbon": {
+      "message": "Tervetuloa! Saat {{percent}}% alennuksen ensimmäisestä mysteeristäsi — ${{discountedPrice}} hinnan ${{originalPrice}} sijaan",
+      "expires": "Vanhenee {{time}} kuluttua",
+      "ariaLabel": "Rajoitetun ajan tervetuliaisalennus"
+    },
+    "purchase": {
+      "expiresIn": "Tervetuliaistarjous vanhenee {{time}} kuluttua"
+    }
+  },
+  "generationProgress": {
+    "heading": "Rakennamme mysteeriäsi",
+    "subheading": "Tämä sivu päivittyy automaattisesti — voit jättää sen auki tai palata myöhemmin.",
+    "percentComplete": "{{percent}} % valmis",
+    "phases": {
+      "setup": {
+        "label": "Tarinan perusta valmis",
+        "description": "Rikos, tapahtumapaikka, panokset ja koko hahmokaarti lyöty lukkoon"
+      },
+      "world": {
+        "label": "Pelin yleiskatsaus ja teemamateriaalit",
+        "description": "Mysteerin tiivistelmä ja teemaan sopivat tunnelmarekvisiitat"
+      },
+      "characters": {
+        "label": "Luodaan hahmoja",
+        "labelCounting": "Luodaan hahmoja ({{done}}/{{expected}} valmiina)",
+        "description": "Jokaisen vieraan salaisuudet, motiivit ja kierrosten käsikirjoitukset"
+      },
+      "evidence": {
+        "label": "Todistekortit, etsivän käsikirjoitus ja kuvat",
+        "description": "Kierroskohtaiset vihjeet, kertojan vuorosanat ja rikostekniset kuvat"
+      }
     }
   }
 }

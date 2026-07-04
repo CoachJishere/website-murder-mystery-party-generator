@@ -59,7 +59,9 @@ export function useWelcomeDiscount() {
     fetchDiscount();
   }, [isAuthenticated, user?.id]);
 
-  // Update countdown every minute
+  // Update countdown every 15s — at 60s a customer could click "buy" up to a
+  // minute after actual expiry while the UI still showed time remaining, and
+  // Stripe silently drops the expired promo code (full price, no explanation).
   useEffect(() => {
     if (!discountInfo) return;
 
@@ -71,7 +73,7 @@ export function useWelcomeDiscount() {
         setDiscountInfo(null);
         setTimeRemaining(null);
       }
-    }, 60000);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, [discountInfo]);

@@ -95,7 +95,8 @@
       "cyberpunkNightclub": "Créez un mystère de meurtre dans une boîte de nuit cyberpunk éclairée au néon.",
       "ghostShip": "Concevez un mystère sur un navire légendaire qui a disparu des siècles auparavant et qui est mystérieusement réapparu.",
       "sentientPlantColony": "Créez un mystère de meurtre dans une communauté de plantes intelligentes et mobiles avec une hiérarchie sociale complexe."
-    }
+    },
+    "typewriterPrefix": "Créez un mystère "
   },
   "customParty": {
     "seo": {
@@ -140,6 +141,11 @@
       "a1": "Oui. Mystery Maker crée un murder mystery entièrement sur mesure pour le contexte professionnel que vous décrivez — une soirée au bureau, un dîner de gala, un séminaire ou un team building hors les murs. Vous indiquez au générateur ce que vous voulez et il écrit l’intrigue, les suspects, les indices et le script de chaque personnage. Rien n’est tiré d’un catalogue figé, si bien que deux événements ne jouent jamais la même partie.",
       "q2": "Combien de participants peuvent jouer ?",
       "a2": "N’importe quel nombre. Vous fixez le nombre de participants et le générateur ajuste la distribution — des parties intimistes pour 4 à 6 personnes, des dîners pour 8 à 12, ou de grands événements d’entreprise pour 20 personnes ou plus. Chaque participant dispose de son propre personnage, avec mobiles, secrets et scripts tour par tour, et vous pouvez accueillir des invités supplémentaires comme enquêteurs si l’équipe s’agrandit."
+    },
+    "officeLink": {
+      "lead": "Vous organisez quelque chose pour le travail ? Découvrez comment cela fonctionne comme une",
+      "link": "soirée mystère au bureau",
+      "end": "pour le team building."
     }
   },
   "home": {
@@ -240,7 +246,9 @@
       "support": "Support",
       "contact": "Contact",
       "privacy": "Politique de confidentialité",
-      "blog": "Blog"
+      "blog": "Blog",
+      "customMystery": "Mystère personnalisé",
+      "corporateEvents": "Événements d'entreprise et de bureau"
     },
     "copyright": "Mystery Maker, Inc. Tous droits réservés."
   },
@@ -396,7 +404,8 @@
           "editMystery": "Modifier le mystère",
           "edit": "Modifier",
           "archive": "Archiver",
-          "deleteTitle": "Supprimer"
+          "deleteTitle": "Supprimer",
+          "unarchive": "Désarchiver"
         },
         "deleteDialog": {
           "title": "Supprimer le mystère",
@@ -664,6 +673,10 @@
         "gameDesignEngagement": {
           "question": "Comment votre conception de jeu garantit-elle que tout le monde reste engagé?",
           "answer": "Nos mystères sont construits autour d'interactions riches entre personnages, d'histoires partagées et de secrets entrelacés. Chaque personnage est profondément connecté — non seulement à la victime, mais aussi les uns aux autres — créant un drame naturel et garantissant que tous les joueurs restent activement impliqués tout au long de l'expérience."
+        },
+        "canIEdit": {
+          "question": "Puis-je modifier mon mystère après sa génération ?",
+          "answer": "Oui ! Chaque partie de votre mystère est entièrement modifiable après la génération. Vous pouvez retoucher les scripts des personnages, ajuster le guide de l'hôte, modifier les cartes d'indices et mettre à jour le script du détective — le tout directement dans l'application. Vous pouvez aussi enregistrer votre mystère au format PDF."
         }
       }
     },
@@ -702,7 +715,8 @@
     "generatingConcept": "Création de votre concept de mystère — cela peut prendre jusqu'à 30 secondes...",
     "errors": {
       "responseFailed": "Impossible de récupérer la réponse de l'IA. Veuillez réessayer.",
-      "aiUnavailable": "Je suis désolé, j'ai actuellement du mal à vous répondre. Veuillez réessayer dans un instant."
+      "aiUnavailable": "Je suis désolé, j'ai actuellement du mal à vous répondre. Veuillez réessayer dans un instant.",
+      "saveFailed": "Votre message n'a pas pu être enregistré — il pourrait disparaître si vous actualisez la page. Vérifiez votre connexion et copiez tout texte important avant de quitter cette page."
     }
   },
   "sendToGuests": {
@@ -815,7 +829,9 @@
       "archiveSuccess": "{{item}} archivé",
       "archiveFailed": "Échec de l'archivage de {{item}}",
       "updatedSuccess": "{{item}} mis à jour",
-      "updateFailed": "Échec de la mise à jour de {{item}}"
+      "updateFailed": "Échec de la mise à jour de {{item}}",
+      "unarchiveSuccess": "{{item}} restauré",
+      "unarchiveFailed": "Échec de la restauration de {{item}}"
     }
   },
   "character": {
@@ -1107,14 +1123,16 @@
       "characters": "Personnages ({{count}})",
       "clues": "Indices",
       "inspector": "Guide de l'inspecteur",
-      "relationships": "Relations"
+      "relationships": "Relations",
+      "inspectorIntrigue": "Guide de l'enquêteur"
     },
     "mobileTabs": {
       "host": "Hôte",
       "characters": "Personnages ({{count}})",
       "clues": "Indices",
       "inspector": "Inspecteur",
-      "relations": "Relations"
+      "relations": "Relations",
+      "inspectorIntrigue": "Enquêteur"
     },
     "loading": {
       "generating": "Génération en cours...",
@@ -1135,6 +1153,19 @@
     },
     "matrix": {
       "title": "Matrice de relations entre les personnages"
+    },
+    "edit": {
+      "button": "Modifier",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "saving": "Enregistrement...",
+      "saved": "Modifications enregistrées",
+      "discardConfirm": "Abandonner les modifications non enregistrées ?",
+      "error": "Échec de l'enregistrement. Veuillez réessayer."
+    },
+    "export": {
+      "saveAsPdf": "Enregistrer au format PDF",
+      "printTip": "Ouvre la boîte de dialogue d'impression de votre navigateur — choisissez \"Enregistrer au format PDF\" pour télécharger"
     }
   },
   "chatbot": {
@@ -1234,7 +1265,14 @@
       "title": "Nous finalisons votre mystère",
       "description": "Votre mystère a été généré mais certains contenus de personnages nécessitent une attention."
     },
-    "loadingMystery": "Chargement de votre mystère..."
+    "loadingMystery": "Chargement de votre mystère...",
+    "generateCard": {
+      "title": "Générez votre package mystère",
+      "description": "Votre mystère est prêt à être généré. Cliquez sur le bouton ci-dessous pour créer votre package mystère personnalisé.",
+      "starting": "Démarrage de la génération...",
+      "button": "Générer le package mystère",
+      "eta": "La génération prend généralement {{time}}. Cette page s'actualisera automatiquement pour afficher la progression."
+    }
   },
   "attribution": {
     "title": "Comment avez-vous entendu parler de nous ?",
@@ -1375,6 +1413,40 @@
     "footer": {
       "lovedPlaying": "Vous avez aimé jouer <strong>{{character}}</strong> ?",
       "hostCta": "Organisez votre propre mystère personnalisé sur"
+    }
+  },
+  "welcomeDiscount": {
+    "ribbon": {
+      "message": "Bienvenue ! Profitez de {{percent}}% de réduction sur votre premier mystère — ${{discountedPrice}} au lieu de ${{originalPrice}}",
+      "expires": "Expire dans {{time}}",
+      "ariaLabel": "Réduction de bienvenue à durée limitée"
+    },
+    "purchase": {
+      "expiresIn": "L'offre de bienvenue expire dans {{time}}"
+    }
+  },
+  "generationProgress": {
+    "heading": "Nous préparons votre mystère",
+    "subheading": "Cette page se met à jour automatiquement — vous pouvez la laisser ouverte ou revenir plus tard.",
+    "percentComplete": "{{percent}}% terminé",
+    "phases": {
+      "setup": {
+        "label": "Fondations de l'histoire posées",
+        "description": "Crime, décor, enjeux et plan complet des personnages verrouillés"
+      },
+      "world": {
+        "label": "Aperçu du jeu et matériel thématique",
+        "description": "Résumé du mystère et accessoires d'ambiance propres au thème"
+      },
+      "characters": {
+        "label": "Création des personnages",
+        "labelCounting": "Création des personnages ({{done}} sur {{expected}} prêts)",
+        "description": "Les secrets, mobiles et scripts de chaque invité pour chaque tour"
+      },
+      "evidence": {
+        "label": "Cartes d'indices, script du détective et images",
+        "description": "Indices tour par tour, dialogues du narrateur et images médico-légales"
+      }
     }
   }
 }

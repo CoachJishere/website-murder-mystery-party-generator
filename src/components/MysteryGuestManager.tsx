@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -252,8 +252,17 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
     }
   };
 
+  // Synchronous re-entry guard: the button's disabled={loading} only takes
+  // effect after a re-render, so a fast double-click fires this handler twice
+  // and sends the guest's character (and email) twice. A ref blocks the second
+  // call in the same tick. Sequential callers (sendAllAssignments) are fine —
+  // each await completes (clearing the ref in finally) before the next starts.
+  const sendInFlightRef = useRef(false);
+
   const sendCharacterAssignment = async (assignment: CharacterAssignment) => {
     if (!canSend(assignment)) return;
+    if (sendInFlightRef.current) return;
+    sendInFlightRef.current = true;
 
     setLoading(true);
     try {
@@ -288,6 +297,7 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
       console.error('Error sending assignment:', error);
       toast.error(t('character.guestManager.toasts.sendFailed'));
     } finally {
+      sendInFlightRef.current = false;
       setLoading(false);
     }
   };

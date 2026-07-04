@@ -95,7 +95,8 @@
       "cyberpunkNightclub": "Create a murder mystery in a neon-soaked cyberpunk nightclub.",
       "ghostShip": "Design a mystery aboard a legendary vessel that vanished centuries ago and has mysteriously reappeared.",
       "sentientPlantColony": "Create a murder mystery in a society of intelligent, mobile plants with a complex social hierarchy."
-    }
+    },
+    "typewriterPrefix": "ミステリーを作成 "
   },
   "customParty": {
     "seo": {
@@ -140,6 +141,11 @@
       "a1": "はい。Mystery Maker は、あなたが説明した企業シーンに合わせて完全オーダーメイドのマーダーミステリーを作ります——オフィスパーティー、ガラディナー、カンファレンス、社外でのチームビルディング合宿など。やりたいことをジェネレーターに伝えるだけで、プロット、容疑者、手がかり、各キャラクターの台本まで書き上げます。決まったカタログから取り出すものは何もないので、同じイベントは二つとありません。",
       "q2": "何人まで参加できますか？",
       "a2": "人数に制限はありません。参加人数を設定すれば、ジェネレーターがキャストを調整します——4〜6人の少人数プレイ、8〜12人のディナー、20人以上の大規模な社内イベントまで対応。参加者一人ひとりが動機・秘密・ラウンドごとの台本を備えた自分だけのキャラクターを持ち、チームが増えた場合は追加のゲストを探偵役として加えることもできます。"
+    },
+    "officeLink": {
+      "lead": "職場のイベントをお考えですか？",
+      "link": "オフィス向けマーダーミステリーパーティー",
+      "end": "としてチームビルディングに活用する方法をご覧ください。"
     }
   },
   "home": {
@@ -240,7 +246,9 @@
       "support": "サポート",
       "contact": "お問い合わせ",
       "privacy": "プライバシーポリシー",
-      "blog": "ブログ"
+      "blog": "ブログ",
+      "customMystery": "カスタムマーダーミステリー",
+      "corporateEvents": "企業・オフィスイベント"
     },
     "copyright": "Mystery Maker, Inc. All rights reserved."
   },
@@ -395,7 +403,8 @@
           "editMystery": "ミステリーを編集",
           "edit": "編集",
           "archive": "アーカイブ",
-          "deleteTitle": "削除"
+          "deleteTitle": "削除",
+          "unarchive": "アーカイブ解除"
         },
         "deleteDialog": {
           "title": "ミステリーを削除",
@@ -663,6 +672,10 @@
         "gameDesignEngagement": {
           "question": "ゲームデザインはどのようにして全員が関与し続けることを保証しますか？",
           "answer": "私たちのミステリーは、豊かなキャラクターの相互作用、共有された歴史、そして絡み合った秘密を中心に構築されています。すべてのキャラクターは、被害者だけでなく互いに深くつながっており、自然なドラマを生み出し、すべてのプレイヤーが体験全体を通じて積極的に関与し続けることを保証します。"
+        },
+        "canIEdit": {
+          "question": "生成後にミステリーを編集できますか？",
+          "answer": "はい！生成後、ミステリーのすべての部分を自由に編集できます。キャラクターの台本の調整、ホストガイドの修正、証拠カードの変更、探偵の台本の更新まで — すべてアプリ内で直接行えます。ミステリーをPDFとして保存することもできます。"
         }
       }
     },
@@ -701,7 +714,8 @@
     "generatingConcept": "ミステリーコンセプトを作成中 — 最大30秒かかる場合があります...",
     "errors": {
       "responseFailed": "AI応答の取得に失敗しました。もう一度お試しください。",
-      "aiUnavailable": "申し訳ございませんが、現在応答できません。しばらくしてからもう一度お試しください。"
+      "aiUnavailable": "申し訳ございませんが、現在応答できません。しばらくしてからもう一度お試しください。",
+      "saveFailed": "メッセージを保存できませんでした — ページを更新すると消える可能性があります。接続を確認し、このページを離れる前に大切なテキストはコピーしておいてください。"
     }
   },
   "sendToGuests": {
@@ -814,7 +828,9 @@
       "archiveSuccess": "{{item}}が正常にアーカイブされました",
       "archiveFailed": "{{item}}のアーカイブに失敗しました",
       "updatedSuccess": "{{item}}が正常に更新されました",
-      "updateFailed": "{{item}}の更新に失敗しました"
+      "updateFailed": "{{item}}の更新に失敗しました",
+      "unarchiveSuccess": "{{item}}が正常に復元されました",
+      "unarchiveFailed": "{{item}}の復元に失敗しました"
     }
   },
   "character": {
@@ -1110,7 +1126,14 @@
       "title": "ミステリーを最終化しています",
       "description": "ミステリーは生成されましたが、一部のキャラクターコンテンツに注意が必要です。"
     },
-    "loadingMystery": "ミステリーを読み込んでいます..."
+    "loadingMystery": "ミステリーを読み込んでいます...",
+    "generateCard": {
+      "title": "ミステリーパッケージを生成",
+      "description": "ミステリーを生成する準備が整いました。下のボタンをクリックして、カスタムマーダーミステリーパッケージを作成してください。",
+      "starting": "生成を開始しています...",
+      "button": "ミステリーパッケージを生成",
+      "eta": "生成には通常 {{time}} ほどかかります。このページは自動的に更新され、進捗が表示されます。"
+    }
   },
   "mysteryPackage": {
     "shareWithGuests": "ゲストと共有",
@@ -1119,14 +1142,16 @@
       "characters": "キャラクター ({{count}})",
       "clues": "証拠",
       "inspector": "探偵ガイド",
-      "relationships": "関係"
+      "relationships": "関係",
+      "inspectorIntrigue": "捜査官ガイド"
     },
     "mobileTabs": {
       "host": "ホスト",
       "characters": "キャラクター ({{count}})",
       "clues": "証拠",
       "inspector": "探偵",
-      "relations": "関係"
+      "relations": "関係",
+      "inspectorIntrigue": "捜査官"
     },
     "loading": {
       "generating": "生成中...",
@@ -1147,6 +1172,19 @@
     },
     "matrix": {
       "title": "キャラクター関係マトリックス"
+    },
+    "edit": {
+      "button": "編集",
+      "save": "保存",
+      "cancel": "キャンセル",
+      "saving": "保存中...",
+      "saved": "変更を保存しました",
+      "discardConfirm": "保存されていない変更を破棄しますか？",
+      "error": "保存に失敗しました。もう一度お試しください。"
+    },
+    "export": {
+      "saveAsPdf": "PDFとして保存",
+      "printTip": "ブラウザの印刷ダイアログが開きます —「PDFとして保存」を選択してダウンロードしてください"
     }
   },
   "blog": {
@@ -1374,6 +1412,40 @@
     "footer": {
       "lovedPlaying": "<strong>{{character}}</strong> を演じるのが楽しかったですか?",
       "hostCta": "あなた自身のカスタムミステリーを主催:"
+    }
+  },
+  "welcomeDiscount": {
+    "ribbon": {
+      "message": "ようこそ！最初のミステリーが{{percent}}%オフ — ${{originalPrice}}のところ${{discountedPrice}}に",
+      "expires": "あと {{time}} で終了",
+      "ariaLabel": "期間限定ウェルカム割引"
+    },
+    "purchase": {
+      "expiresIn": "ウェルカム特典はあと {{time}} で終了します"
+    }
+  },
+  "generationProgress": {
+    "heading": "ミステリーを作成しています",
+    "subheading": "このページは自動的に更新されます — 開いたままにしても、後で戻ってきても大丈夫です。",
+    "percentComplete": "{{percent}}% 完了",
+    "phases": {
+      "setup": {
+        "label": "ストーリーの土台が完成",
+        "description": "事件、舞台設定、争点、全キャストの構成が確定"
+      },
+      "world": {
+        "label": "ゲーム概要とテーマ資料",
+        "description": "ミステリーのあらすじとテーマに合わせた雰囲気づくりの小道具"
+      },
+      "characters": {
+        "label": "キャラクターを作成中",
+        "labelCounting": "キャラクターを作成中（{{done}}/{{expected}} 完了）",
+        "description": "各ゲストの秘密、動機、ラウンドごとの台本"
+      },
+      "evidence": {
+        "label": "証拠カード、探偵の台本、画像",
+        "description": "ラウンドごとの手がかり、ナレーターのセリフ、鑑識画像"
+      }
     }
   }
 }
