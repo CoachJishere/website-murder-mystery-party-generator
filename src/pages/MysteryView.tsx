@@ -790,10 +790,22 @@ const MysteryView = () => {
         if (purchaseStatus === 'success') {
           toast.success("Purchase successful! You now have full access to this mystery package.");
 
-          // Mark as paid immediately so the tab view shows (with generate button inside)
+          // is_paid is set server-side by the Stripe webhook only (ADR-0033) —
+          // client writes to it are blocked at the DB. The webhook almost always
+          // lands before the redirect; poll briefly for the rare case it hasn't.
+          for (let attempt = 0; attempt < 5; attempt++) {
+            const { data: paidCheck } = await supabase
+              .from("conversations")
+              .select("is_paid")
+              .eq("id", id)
+              .maybeSingle();
+            if (paidCheck?.is_paid) break;
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+          }
+
           await supabase
             .from("conversations")
-            .update({ is_paid: true, display_status: "purchased" })
+            .update({ display_status: "purchased" })
             .eq("id", id);
         }
 

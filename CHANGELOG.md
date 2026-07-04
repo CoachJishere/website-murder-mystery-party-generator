@@ -1,6 +1,38 @@
 # Changelog
 
+## 2026-07-04
+
+### Fix: Recovered evidence-card images for "Death At The Lani Ohana Luau" (paid, 2026-06-16)
+
+- **Why**: found by the new health-check calibration — `evidence_card_images` was NULL on a completed paid package (the known Make.com batch-abort pattern, ADR-0016). Customer never blocked (package playable), but the illustrations were missing.
+- **Recovery**: three images generated via Imagen 4 in the house forensic style (journal / mortar-and-pestle with oleander / security-log desk), each visually verified — two re-rolled for garbled evidence-marker text — then uploaded via `store-evidence-images` (service role). Verified end-to-end: DB row holds 3 URLs, all public storage URLs return 200, `list_packages_missing_evidence_images()` is clear.
+- **⚠️ Signal worth watching**: this failure happened **eight days after** the 2026-06-08 Make.com Resume-handler fix, and all three rounds were missing — a single Imagen timeout can no longer abort the batch, so this is likely a *different* failure mode (route-level failure or `store-evidence-images` error). Logged in vault note `00_INBOX/luau-missing-evidence-images-2026-07-03-mystery-maker.md`; the health-check Action now alerts on any recurrence.
+
 ## 2026-07-03
+
+### Feature: Automated health monitoring via GitHub Actions
+
+- **Why**: Claude Code access ends soon; the site needs monitoring that runs (and alerts) without a developer. Scheduled Claude routines don't surface output to Jonathan (known limitation), so this uses GitHub Actions + GitHub issues, which email him on creation.
+- **New workflow** [health-check.yml](.github/workflows/health-check.yml): every 6 hours checks (1) homepage returns 200, (2) generations stuck `in_progress` > 2 h — with a 30-day `created_at` floor, since 10 orphaned 2025 rows (deleted conversations) would otherwise alert forever, (3) `needs_review` packages in the last 7 days, (4) paid packages missing evidence-card images via the ADR-0016 detector (service-role only since ADR-0032). Writes `monitoring/health-status.md` each run; on problems, opens or comments on a `health-alert` GitHub issue. Uses the existing `SUPABASE_URL`/`SUPABASE_SERVICE_KEY` repo secrets — no new setup. **Activates on next push.**
+- **Found during calibration**: 1 real open case — "Death At The Lani Ohana Luau" (paid, 2026-06-16) is missing all 3 evidence-card images; recovery per the ADR-0016/0017 manual flow. Tracked in vault note `00_INBOX/luau-missing-evidence-images-2026-07-03-mystery-maker.md`.
+
+### Improvement: Covering indexes for 6 unindexed foreign keys
+
+- **Why**: performance advisor flagged FKs without covering indexes (slows FK-cascade checks and joins). Migration `index_unindexed_foreign_keys` adds indexes on `character_assignments.character_id` (guest-access join path), `cold_case_identities.order_id`, `contact_messages.user_id`, `conversations.approved_concept_message_id`, `profiles.user_id`, `speed_round_responses.question_id`.
+- **Deferred from the same scan**: dropping the ~24 "unused" indexes (usage stats can miss rare-but-important paths, e.g. cron-driven queries — not worth the risk for the disk saved) and merging the duplicate admin+owner SELECT policies (`multiple_permissive_policies` — correct fix is one merged `USING (owner OR (select is_admin()))` policy per table; deferred as RLS surgery with modest per-query payoff).
+
+### Documentation: Plain-English operations manual for solo (no-developer) operation
+
+- **Why**: Jonathan is about to lose routine access to an AI developer; the operational knowledge (generation triage, watchdog behavior, refund caveats, Cold Case delivery, monthly hygiene) lived in project memory, ADRs, and chat history — none of it readable by a non-technical operator under pressure.
+- **What**: added [docs/OPERATIONS.md](docs/OPERATIONS.md) — dashboard-click instructions plus copy-paste SQL/curl snippets covering: system map, Stripe payments/refunds (incl. the "refund does NOT revoke access" caveat + manual revoke SQL per ADR-0033), "mystery didn't generate" triage (checks BOTH round-script column formats per the Tiki Torch trap; watchdog/sweep/heal explained; resumable-retry reset SQL), Resend email triage with the function→email map, Cold Case orders (`cold_case_orders`, delivery tokens, re-send READY email via curl), monthly hygiene (advisors, Actions, disputes, renewals), emergency escape hatches (deactivate Payment Link, where logs live), and a glossary with a prominent service-role-key warning.
+
+### Security: Payment state is now server-side only + generation requires payment (ADR-0033)
+
+- **Why**: a payment-flow security review confirmed two revenue holes. (1) Any signed-in user could set `is_paid=true` on their own conversation from the browser console — the frontend itself did exactly this on the `?purchase=success` redirect, and the RLS policy has no column restrictions. (2) `mystery-webhook-trigger` accepted any conversation ID with **no payment check**, so a direct call generated a full package free (and generated content alone unlocks the tabs).
+- **DB floor** (migration `protect_payment_columns_on_conversations`): `BEFORE INSERT OR UPDATE` trigger on `conversations` silently reverts `is_paid`/`purchase_date` changes from `anon`/`authenticated` callers. The Stripe webhook (service role) remains the sole writer. Verified live by impersonating a real user: the attack update succeeds but the value stays `false`; privileged writes unaffected.
+- **Generation gate** ([mystery-webhook-trigger](supabase/functions/mystery-webhook-trigger/index.ts), deployed v118): returns `402` for unpaid conversations unless the caller presents the service-role key (recovery-tooling escape hatch). Verified live: anon-key call for an unpaid conversation → 402, no side effects; test row deleted.
+- **Frontend** ([MysteryView.tsx](src/pages/MysteryView.tsx), [MysteryPurchase.tsx](src/pages/MysteryPurchase.tsx)): post-purchase handler no longer writes `is_paid`; it polls briefly (5 × 1.5 s) for the webhook-set value. Build passes. **Local only — ships with next push**; until then the live site's client write is harmlessly stripped by the trigger.
+- **Deferred (accepted risks, see ADR-0033)**: payer↔conversation ownership cross-check in the Stripe webhook (abuse costs full price); refund/chargeback auto-revocation; stripe-webhook CORS tightening (signature-verified, server-to-server).
 
 ### UX: Simulated progress creep during silent generation phases
 

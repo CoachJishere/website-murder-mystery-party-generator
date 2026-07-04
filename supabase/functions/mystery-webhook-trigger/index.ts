@@ -309,6 +309,22 @@ serve(async (req) => {
 
     console.log(`Found conversation with ${conversation.messages?.length || 0} messages`);
 
+    // Payment gate (ADR-0033): generation is the expensive step (Make.com + AI),
+    // and generated content alone unlocks the package tabs in MysteryView — so an
+    // unauthenticated call with a conversation UUID was a free-package hole. The
+    // function has verify_jwt disabled, so the gate lives here: only paid
+    // conversations generate. Internal/recovery callers can bypass by sending the
+    // service-role key as the bearer token.
+    const authHeader = req.headers.get("Authorization") || "";
+    const isServiceCall = supabaseKey.length > 0 && authHeader === `Bearer ${supabaseKey}`;
+    if (!conversation.is_paid && !isServiceCall) {
+      console.warn(`[PaymentGate] Rejected generation for unpaid conversation ${conversationId}`);
+      return new Response(
+        JSON.stringify({ success: false, error: "Payment required before package generation" }),
+        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Snapshot the approved concept message at generation time. The original
     // chat-creation path (MysteryChatCreator) wrote this column, but the live
     // /mystery/chat path doesn't — so for every real customer the column was

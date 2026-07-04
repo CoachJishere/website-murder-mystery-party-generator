@@ -212,12 +212,19 @@ const MysteryPurchase = () => {
         
         if (purchaseStatus === 'success') {
           toast.success(t("purchase.toasts.success"));
-          
-          // Need to update the local state to reflect the purchase
-          await supabase
-            .from('conversations')
-            .update({ is_paid: true, purchase_date: new Date().toISOString() })
-            .eq('id', id);
+
+          // is_paid/purchase_date are set server-side by the Stripe webhook only
+          // (ADR-0033) — client writes to them are blocked at the DB. Poll briefly
+          // in case the webhook hasn't landed by the time the redirect completes.
+          for (let attempt = 0; attempt < 5; attempt++) {
+            const { data: paidCheck } = await supabase
+              .from('conversations')
+              .select('is_paid')
+              .eq('id', id)
+              .maybeSingle();
+            if (paidCheck?.is_paid) break;
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+          }
         }
         
         if (purchaseStatus === 'cancel') {
