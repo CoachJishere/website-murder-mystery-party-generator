@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-07-05
+
+### Improvement: Database backup now DAILY — Supabase free plan confirmed (no platform backups exist)
+
+- **Why**: enabling leaked-password protection failed with "available on Pro Plans and up" — revealing the project is on Supabase's **free plan**, which takes **no backups at all**. The GitHub encrypted export (added 2026-07-04) is therefore the *only* database backup, and weekly cadence meant a worst case of 7 days' lost orders.
+- **Changed** ([weekly-backup.yml](.github/workflows/weekly-backup.yml) — filename kept for run history): cron `43 4 * * 1` → `43 4 * * *` (daily), artifact retention 90 → 30 days, workflow renamed "Daily encrypted backup". First run with the new `BACKUP_PASSPHRASE` secret verified: 16 MB artifact, all 12 tables, sane row counts (846 conversations / 9,536 messages / 129 packages).
+- **OPERATIONS.md §7b rewritten** to reflect reality: daily GitHub export is Layer 1; upgrading to Pro (~$25/mo — platform daily backups, leaked-password protection, no free-tier pause risk) documented as a recommendation for when revenue justifies it, not an assumption.
+- **Dropped**: the leaked-password toggle task — Pro-only; most sign-ins use Google OAuth anyway.
+
+### UI: Cold Case landing — party-style sections, testimonials, FAQ rewrite, $24.99
+- How it works restyled to the party homepage's box language: black rounded-2xl cards with accent-colored number circles (3 steps).
+- Inside the file converted from a 3-up gallery to the party's alternating zigzag (image one side, text the other) with richer copy; kept the serif captions.
+- Added What others are saying — same three Trustpilot testimonials as the party homepage for now (owner will swap in cold-case reviews).
+- FAQ rewritten: leads with "What exactly am I paying for?" (replayable offline HTML, 25 docs, evidence photographs, all-cast portraits, unlimited plays, shareable after solving) and "How much?" ($24.99); pause/stop answer states honestly that the file keeps no memory (verified: no localStorage in the engine build) with the paper-notebook framing; play-with-others tuned to "best with 1-2, more can join" per owner.
+- Launch price set to $24.99 (runbook Touchpoint 1 updated; FAQ and Stripe price must stay in sync).
+
+### Improvement: Premise chat — docket card, side-by-side desktop layout, dark input
+- The premise card is now a case docket: five labeled rows (Case / Setting / Victim / Ruled / Reopens) the AI emits as plain-text lines; parsing is order- and markdown-tolerant. The joined lines become the engine brief.
+- Desktop shows the docket in a sticky right column beside the chat (owner: under the chat wasn't intuitive); mobile stacks. Verified live at 1440px and 390px.
+- Chat input got a dark variant — the component's white pill clashed on the noir page, and the global dark-textarea rule was painting a black box inside it (added #cold-case-brief-input carve-out + .cold-case-chat-input styles).
+- Difficulty knob deliberately rejected (see ADR-0029 07-05 amendment): verification, not generation, is the hard part; future path is a build-time hints toggle, never structural tiers.
+
+### Feature: Cold Case create step is now a premise chat (owner call, third round)
+- /cold-case/create replaced the static review form with an intake chat mirroring the party flow: the hero brief opens the conversation, the AI proposes a working title + premise (setting, era, victim, official ruling, reopening trigger — never the killer/solution), the buyer iterates, and the agreed premise unlocks checkout in a "Premise on file" card.
+- Rides the existing mystery-ai edge function with a custom system prompt — no new backend. PREMISE: block extracted client-side; markdown stripped; chat persists in sessionStorage; 12-turn cap.
+- create-cold-case-checkout now splits briefs up to 1000 chars across both Stripe metadata keys (setting_era + details) the webhook already reads — the 500-char cap was truncating chat premises mid-sentence. Deployed (v3).
+- Verified live in-browser: real round-trips honored the brief (Cornish lighthouse 1899), and iteration ("make the victim the keeper's wife") regenerated the premise correctly. ADR-0029 amendment captures the decision reversal.
+
 ## 2026-07-04
 
 ### Fix: Five confirmed bugs from the multi-agent customer-flow review
@@ -43,6 +71,14 @@ A 6-dimension multi-agent bug hunt (each finding adversarially verified by 3 ind
   Stripe checkout with `customer_email` prefilled and `user_id` on the order (new column).
   **Buyer model: guest → authenticated** (ADR-0029 amendment; delivery stays token-based).
   "Opening soon" state removed — page ships only when wiring is live.
+- **Round 5 — unified dashboard (research-backed)**: buyers' cold cases now appear in THE
+  dashboard (no second dashboard — Baymard: account visits are task-driven, tracking an open
+  order is the #1 task at 50%, and a few longer pages beat deep navigation). New
+  `ColdCaseList` section renders ONLY when the user owns ≥1 order (party-only users see an
+  unchanged dashboard): title (set by the worker from caseIdentity on completion — new
+  `case_title` column), status chip (queue/writing/ready/attention), and Download / View
+  status via the token page. Owner-scoped RLS read policy added with the `(select
+  auth.uid())` wrap convention.
 - **Round 4 — full homepage structural parity (owner)**: the page now mirrors the party
   homepage section-for-section — hero chatbox → Trustpilot strip (company-level rating,
   same `TrustpilotBadge`) → the demo slot filled with something the party side can't do:

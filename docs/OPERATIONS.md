@@ -323,23 +323,25 @@ rather than pasting keys.**
 
 ## 7b. Backups & disaster recovery
 
-Your customer data lives in the Supabase database. Three layers protect it:
+Your customer data lives in the Supabase database. **Important (confirmed 2026-07-05):
+the project is on Supabase's FREE plan, which makes NO backups of its own.** The
+GitHub backup below is the only copy of your customer data outside Supabase.
 
-**Layer 1 — Supabase's own backups (check these exist, once):**
-1. Supabase dashboard → **Database → Backups**. On a paid plan you should see daily
-   backups listed (7-day history). If that page is empty or you're on the free plan,
-   upgrading is the single most important protective step you can take.
-2. Restoring from these is a dashboard button next to each backup — it restores the
-   WHOLE database to that moment (anything newer is lost), so it's for disasters,
-   not for undoing one mistake.
-3. **Keep your billing card current.** A failed payment can pause the project — with
-   the site, generation, and Cold Case delivery all going dark at once. Supabase
-   emails warnings first; don't let them sit.
+**Layer 1 — daily encrypted export to GitHub (your primary backup):**
+- The `Daily encrypted backup` GitHub Action exports the 12 customer-critical tables
+  every day at ~04:43 UTC and stores them as an encrypted file on GitHub for 30 days
+  (repo → **Actions → Daily encrypted backup** → click a run → download the artifact).
+- Worst-case data loss if disaster strikes: about one day of new orders/mysteries.
 
-**Layer 2 — weekly encrypted export to GitHub (independent of Supabase):**
-- The `Weekly encrypted backup` GitHub Action exports the 12 customer-critical tables
-  every Monday and stores them as an encrypted file on GitHub for 90 days
-  (repo → **Actions → Weekly encrypted backup** → click a run → download the artifact).
+**Layer 1b — consider upgrading Supabase to Pro (~$25/month) when revenue justifies it:**
+- Pro adds Supabase's own daily backups (7-day history, one-click restore),
+  leaked-password protection on signups, and removes the free-tier project-pause
+  risk. The dashboard restore button restores the WHOLE database to that moment
+  (anything newer is lost) — for disasters, not for undoing one mistake.
+- Free-tier caveat: Supabase pauses free projects after ~1 week without traffic.
+  Your site gets daily traffic so this is unlikely, but if the site ever "goes dark"
+  after a long quiet period, check the Supabase dashboard for a paused project first
+  (Restore is a button).
 - **One-time setup needed from you:** create a long random passphrase, save it in your
   password manager, then add it as a repo secret named `BACKUP_PASSPHRASE`
   (repo → Settings → Secrets and variables → Actions → New repository secret).
@@ -351,7 +353,7 @@ Your customer data lives in the Supabase database. Three layers protect it:
   `openssl enc -d -aes-256-cbc -pbkdf2 -in <file> -pass pass:<PASSPHRASE> | tar xz`
   — it unpacks one plain-text `.jsonl` file per table.
 
-**Layer 3 — what does NOT need backing up:**
+**Layer 2 — what does NOT need backing up:**
 - Blog posts (119 MB) — regenerable from `blog_map.xlsx` + the publish workflows.
 - Evidence images / storage files — regenerable (see §3), and the recovery steps
   are in this manual.

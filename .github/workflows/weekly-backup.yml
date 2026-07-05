@@ -1,9 +1,11 @@
-# Weekly encrypted off-platform backup (2026-07-04).
-# Why: Supabase's own backups don't protect against account-level failure
-# (billing lapse, accidental project deletion). This exports the customer-
-# critical tables weekly and stores them as an ENCRYPTED GitHub artifact
-# (90-day retention). The repo is PUBLIC, so encryption is mandatory —
-# artifacts on public repos are downloadable by anyone.
+# Daily encrypted off-platform backup (2026-07-04; daily since 2026-07-05).
+# Why: the project is on the Supabase FREE plan (discovered 2026-07-05), which
+# has NO platform backups at all — this export is the ONLY database backup.
+# It exports the customer-critical tables daily and stores them as an
+# ENCRYPTED GitHub artifact (30-day retention). The repo is PUBLIC, so
+# encryption is mandatory — artifacts on public repos are downloadable by
+# anyone. If the project ever upgrades to Pro (daily platform backups), this
+# can drop back to weekly; keep it regardless for account-level failure cover.
 #
 # Setup (one-time): add a repo secret BACKUP_PASSPHRASE (Settings → Secrets
 # and variables → Actions) with a long random passphrase, and store the same
@@ -17,11 +19,11 @@
 # Excluded: blog_posts (119 MB, regenerable from blog_map.xlsx + publish
 # workflows), pinterest_pins (regenerable), staging/diagnostic tables.
 
-name: Weekly encrypted backup
+name: Daily encrypted backup
 
 on:
   schedule:
-    - cron: "43 4 * * 1"
+    - cron: "43 4 * * *"
   workflow_dispatch:
 
 permissions:
@@ -84,4 +86,4 @@ jobs:
         with:
           name: encrypted-db-backup-${{ github.run_id }}
           path: "*.enc"
-          retention-days: 90
+          retention-days: 30
