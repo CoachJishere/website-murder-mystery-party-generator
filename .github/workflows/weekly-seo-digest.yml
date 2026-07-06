@@ -63,7 +63,10 @@ jobs:
           # daily publish) can land on main during this ~90s run, making a blind push a
           # non-fast-forward that "|| echo" silently swallows — losing the digest history
           # (happened 2026-07-06). Retry the rebase+push a few times for good measure.
+          # --autostash: the run leaves other files dirty (npm install touches
+          # package-lock.json, the script writes temp-files/), which a plain rebase
+          # refuses. Autostash parks them around the rebase so history still lands.
           for i in 1 2 3; do
-            git pull --rebase origin main && git push && break
+            git pull --rebase --autostash origin main && git push && break
             echo "push attempt $i failed, retrying"; sleep 5
           done
