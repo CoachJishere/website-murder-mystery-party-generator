@@ -1,6 +1,51 @@
 # Changelog
 
-## 2026-07-05
+## 2026-07-06
+
+### Fix: SEO/GEO digest email truncated by stray `<title>` tags in action prompts
+- The 2026-07-06 weekly digest arrived cut off mid-sentence ("Write a …"). Root cause: the model wrote literal `<title>` tags inside the `<pre>` action-prompt blocks (meaning "the title tag"). A stray `<title>` in an email body makes clients like Proton treat everything after it as document metadata and silently drop the rest — so the whole email truncated at the first occurrence, not just that word.
+- Two-part fix in `scripts/generateSeoDigest.mjs`: (1) a HARD RULE in the system prompt forbidding literal HTML tags inside `<pre>` blocks (say "title tag" in prose); (2) a deterministic `escapePreTags()` safety net that escapes any stray `<`/`>` inside `<pre>` blocks before the digest is written — so even if the model slips, the tag renders as visible text instead of killing the email. Escapes only angle brackets (not `&`) to avoid double-encoding existing entities. Verified against the real 2026-07-06 output: 3 stray `<title>` → 0, no double-encoding.
+- The source digest was never actually incomplete (committed `docs/seo-digests/2026-07-06.html` closed cleanly) — only the emailed render was truncated.
+
+### Feature: Copy / Download the detective script from its tab
+- Added **Copy script** and **Download .txt** buttons above the detective-script tab (MysteryPackageTabView.tsx, inspector TabsContent). Copy → clipboard with a toast; Download → `<mystery-title>-detective-script.txt`. Serves the host's pre-record flow: the script's own guidelines point to Google AI Studio Speech / NotebookLM, which take a paste — so the missing piece was getting the text out of the tab, not an email.
+- Chose frontend buttons over a Make/email step: works for every host, on-demand, pure frontend (lower risk, easy to iterate), and doesn't bloat the "your mystery is ready" email for customers who aren't recording. Email-to-self can be added later if hosts ask.
+- New i18n keys `mysteryPackage.detectiveScript.{copy,download,copied,copyFailed}` added and translated across all 13 locales. Typecheck clean.
+
+### Fix: Detective/investigator script — gender-neutral naming (no random gender, no slash)
+- The Make parent scenario picked a random gender for the detective each generation (host got "Elena" while hosting as male). Added a NAMING RULE to all four script-generation modules — Detective Script (R0/R1) and Investigator Script (R2/R3) — instructing a single, gender-neutral name (rank/title + surname, e.g. "Chief Inspector Blackwood"; unisex first name if the theme needs one) and forbidding slash/dual names like "Hank/Helena".
+- Why gender-neutral over a slash: the detective is host-read OR fed into a text-to-speech tool to pre-record; a slash reads fine live but breaks TTS. A committed neutral name serves both delivery paths and never mismatches the host. Player-character slash names left untouched (intentional "pick your guest's gender" flexibility).
+- Saved as `temp-files/MM Live - Parent43 (Detective Naming Rule).blueprint.json` (patched from Parent42; JSON validated). This is now the working parent version — branch from Parent43 next.
+- Follow-up (now built): the missing in-app way to export the detective script for recording — see the Copy/Download feature entry above.
+
+### UX: Docket checkout polish + dashboard/workbench fixes (owner review round)
+- Docket card now closes the sale: gold-check value list (25 documents, photographs + all portraits, four objectives, offline file that never expires, shareable after solving), delivery line with the buyer's email, price row ($24.99, or struck-through → $19.99 with "Welcome discount — applied at checkout" via useWelcomeDiscount), then the lock-in button. Vestigial "Back to Cold Case Files" link removed (leftover from the pre-chat review form).
+- Dashboard create buttons color-coded like the type chips: red Create New Mystery, gold New cold case (outline variant was black-on-black).
+- Cold-case card dates now relative (formatDate) matching mystery cards; party type chip in brand red (neutral outline was invisible).
+- Logged-in /cold-case-files is one complete screen: red hero fills the viewport (party Index pattern), no black gap below.
+
+### UI: Dashboard type badges
+- Product type promoted from a small text line under the title to a header badge beside the status chip: parties get a neutral outline chip (13-locale label), cold cases a gold-outline "Cold case" chip; the trial card reads [Free trial][Cold case]. Duplicate type text removed from date lines.
+
+### Improvement: Dashboard v3 — one unified grid + discount wiring + workbench
+- Dashboard sections replaced by ONE grid: mysteries and cold cases interleaved by date, uppercase type label on every card (13-locale key), cold-case cards rebuilt on the mystery-card shell so sizes match, trial card closes the grid, two create buttons up top. Owner's data settled it: no customer has ever ordered twice — sections were bureaucracy around one item.
+- create-cold-case-checkout v4: welcome promo auto-applies inside the 7-day window ($24.99 → $19.99), fails open to full price + allow_promotion_codes. Deployed.
+- /cold-case-files logged-in state cut to the workbench (hero brief box + dashboard link), matching the party homepage pattern.
+
+### Feature: Gated trial in the dashboard + dashboard v2 + landing copy pass
+- Free sample is now a gated trial: guests hit the SignInPrompt, land on the dashboard with a gold "your free case is waiting" banner over the trial card (localStorage intent flag survives the OAuth bounce). Signup starts the existing 7-day welcome-discount countdown.
+- Dashboard v2: neutral "Dashboard" title, parties FIRST (kits are revisited planning artifacts; a generating cold case gets a transient status banner instead of top billing), per-section create buttons, cold-case cards restyled to match mystery cards, direct download from the card (fresh signed URL per click).
+- Trial card labelled "(trial)" with a Free-trial badge; landing trial copy rewritten (playable up to Objective 1, not the complete file).
+- Landing: hero sub-text removed; "Inside the file" features rewritten as real value props (replayable/shareable file leads; portraits demoted), captions dropped, polaroid shown whole (object-contain), no repeated assets.
+- Fixed the "South Africa case with missing portraits": the dashboard download was serving a stale pre-Steinadler demo-proof.html from storage; replaced with the current Steinadler build (13/13 portraits, save-state). No regeneration needed.
+- Deferred to next build: welcome-discount wiring in create-cold-case-checkout ($19.99 within 7 days), logged-in workbench state for /cold-case-files.
+
+### UI: Cold Case landing round 2 + dashboard localization
+- How it works now uses the party homepage's exact treatment: wide cards (42vw) traveling sideways under a GSAP scroll pin on desktop, numbered timeline on mobile, static grid under prefers-reduced-motion.
+- "One self-contained file — documents, photographs, objectives…" promoted from a buried footnote to its own mini headline band between features and testimonials (owner note).
+- Dashboard section renamed "Your Mysteries" → "Your Murder Mystery Parties" in all 13 locales (byte-precise edits; da/sv keep English like the rest of those files) — removes ambiguity now that cold cases share the dashboard.
+- Steinadler demo order attached to the owner's account (miller_jm@hotmail.com) so the dashboard cold-case section is visible live.
+- public/try-a-cold-case.html refreshed with the engine's new build: silent save-state (engine ADR-032) + trial-end screen that shows the real Objective-1 unlock copy before the create-your-own pivot.
 
 ### Improvement: Database backup now DAILY — Supabase free plan confirmed (no platform backups exist)
 

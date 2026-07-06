@@ -51,6 +51,9 @@ HARD RULES:
 - The action prompts are the product. Each must be complete and self-contained — include the exact
   target URL/query, the specific change, and the goal — so it can be pasted into a fresh Claude chat
   and executed with no extra context.
+- NEVER write a literal HTML tag inside a <pre> action-prompt block (e.g. do not write <title> or
+  <meta>). Say "title tag" / "meta description" in prose instead. A stray <title> in an email body
+  makes clients treat the rest as document metadata and silently truncate everything after it.
 
 OUTPUT: valid HTML for an email body (no <html>/<head>, just the body markup). Use this structure:
 1. <h2>Scoreboard</h2> — a compact <table> of this week vs last week (organic clicks, impressions,
@@ -102,6 +105,18 @@ Re-derive everything from Google Search Console — do not trust this note's num
 5. If CTR is still under ~6% at top-5, propose the next title/meta variant to test (current copy is documented in docs/adr/0024-static-homepage-seo-source-of-truth.md).`,
   },
 ];
+
+// Safety net: neutralise any literal HTML tags the model leaves inside <pre>
+// action-prompt blocks. A stray <title>/<meta> in an email body makes many
+// clients (Proton included) treat the rest as document metadata and truncate
+// everything after it — this bit the 2026-07-06 send. Escaping only < and >
+// (not &) fixes literal tags without double-encoding existing &lt;/&amp; entities.
+function escapePreTags(html) {
+  return html.replace(/<pre([^>]*)>([\s\S]*?)<\/pre>/g, (_m, attrs, inner) => {
+    const safe = inner.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return `<pre${attrs}>${safe}</pre>`;
+  });
+}
 
 function renderReminders(today) {
   return REMINDERS
@@ -169,7 +184,7 @@ async function main() {
     `<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:680px;margin:auto;color:#222;">` +
     `<p style="color:#666;font-size:13px;">SEO/GEO digest — week ending ${today} · mysterymaker.party</p>` +
     renderReminders(today) +
-    html +
+    escapePreTags(html) +
     `</div>`;
 
   writeFileSync(EMAIL_OUT, wrapped);
