@@ -2,6 +2,10 @@
 
 ## 2026-07-06
 
+### Improvement: Internal crosslink from IT corporate-events blog → /it/ landing page to resolve query cannibalization
+- GSC (28d) revealed **three of our own /it/ URLs** competing for "miglior intrattenimento murder mystery per eventi aziendali" at **0 clicks total**: the blog post (pos 2.4, 26 impr), the `/it/custom-murder-mystery-party/` landing page (pos 2.3, 26 impr), and a second office-teams blog post (pos 4.3, 9 impr). Sharpening the blog's title/meta toward the same commercial phrase would have *deepened* the cannibalization, so instead added one in-body contextual link from the blog → the landing page with corporate anchor text ("murder mystery su misura per eventi aziendali"). This signals the landing page as canonical for the commercial intent and funnels blog readers to it.
+- Applied directly to the live Supabase `blog_posts` row (it, published — canonical per ADR-0026); the 36MB `blog_map.xlsx` was deliberately untouched. Idempotent guarded UPDATE (`replace()` on a unique substring, `WHERE content NOT LIKE` the landing slug) so it's concurrency-safe against parallel convos on this checkout. Blog title/meta left unchanged — the /it/ landing page owns the commercial query (its title/meta rewrite shipped in `27c4125`).
+
 ### Improvement: English custom-mystery title/meta + how-to section to push two rising queries onto page 1
 - `/custom-murder-mystery-party/` ranks position 11.7 for "custom murder mystery game" (38 impressions, 1 click, up from 21) and 15.8 for "custom murder mystery party" (37 impressions, 0 clicks) — both rising week-over-week and stuck on the edge of page 2. The old title ("Custom Murder Mystery Party Kit — Any Theme in Minutes") covered only "party" intent and never signalled the AI/instant angle that differentiates us.
 - Rewrote `customParty.seo.title`/`description` in `en.json`: title now "Custom Murder Mystery Party & Game — AI Kit in Minutes" (54 chars) — leads with the exact shared phrase, `Party & Game` captures both queries in one head, `AI` + `Minutes` signal instant, `Kit` implies printable. Meta leads with the "Create…" action + "Start free" CTA (154 chars).
