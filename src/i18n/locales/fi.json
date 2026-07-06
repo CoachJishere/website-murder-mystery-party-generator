@@ -1094,6 +1094,12 @@
     "fullyEditableNote": "Älä huoli — voit muokata kaikkia hahmokäsikirjoituksia, isäntäoppaan sisältöä ja todistekortteja sen jälkeen kun mysteerisi on luotu."
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "Kopioi käsikirjoitus",
+      "download": "Lataa .txt",
+      "copied": "Käsikirjoitus kopioitu leikepöydälle",
+      "copyFailed": "Kopiointi epäonnistui – valitse teksti manuaalisesti"
+    },
     "shareWithGuests": "Jaa vieraiden kanssa",
     "tabs": {
       "hostGuide": "Isännöintiopas",

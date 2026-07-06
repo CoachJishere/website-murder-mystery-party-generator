@@ -1094,6 +1094,12 @@
     "fullyEditableNote": "Keine Sorge — du kannst nach der Generierung deines Krimis alle Charakterskripte, Inhalte des Hostleitfadens und Beweiskarten bearbeiten."
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "Skript kopieren",
+      "download": ".txt herunterladen",
+      "copied": "Skript in die Zwischenablage kopiert",
+      "copyFailed": "Kopieren fehlgeschlagen – bitte Text manuell markieren"
+    },
     "shareWithGuests": "Mit Gästen teilen",
     "tabs": {
       "hostGuide": "Gastgeberanleitung",

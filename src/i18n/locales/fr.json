@@ -1117,6 +1117,12 @@
     "fullyEditableNote": "Pas d'inquiétude — vous pourrez modifier tous les scripts de personnages, le contenu du guide d'animation et les cartes d'indices après la génération de votre mystère."
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "Copier le script",
+      "download": "Télécharger .txt",
+      "copied": "Script copié dans le presse-papiers",
+      "copyFailed": "Impossible de copier — essayez de sélectionner le texte manuellement"
+    },
     "shareWithGuests": "Partager avec les invités",
     "tabs": {
       "hostGuide": "Guide de l'hôte",

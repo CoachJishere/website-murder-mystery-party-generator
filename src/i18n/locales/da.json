@@ -1136,6 +1136,12 @@
     }
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "Kopiér manuskript",
+      "download": "Download .txt",
+      "copied": "Manuskript kopieret til udklipsholder",
+      "copyFailed": "Kunne ikke kopiere — prøv at markere teksten manuelt"
+    },
     "shareWithGuests": "Share With Guests",
     "tabs": {
       "hostGuide": "Host Guide",

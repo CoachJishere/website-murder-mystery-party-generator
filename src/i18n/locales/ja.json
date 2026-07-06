@@ -1136,6 +1136,12 @@
     }
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "台本をコピー",
+      "download": ".txt をダウンロード",
+      "copied": "台本をクリップボードにコピーしました",
+      "copyFailed": "コピーできませんでした — テキストを手動で選択してください"
+    },
     "shareWithGuests": "ゲストと共有",
     "tabs": {
       "hostGuide": "ホストガイド",

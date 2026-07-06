@@ -1136,6 +1136,12 @@
     }
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "Kopiera manus",
+      "download": "Ladda ner .txt",
+      "copied": "Manus kopierat till urklipp",
+      "copyFailed": "Kunde inte kopiera – markera texten manuellt"
+    },
     "shareWithGuests": "Share With Guests",
     "tabs": {
       "hostGuide": "Host Guide",

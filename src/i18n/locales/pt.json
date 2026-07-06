@@ -1127,6 +1127,12 @@
     "fullyEditableNote": "Não te preocupes — podes editar todos os guiões dos personagens, o conteúdo do guia do anfitrião e as cartas de provas depois de gerares o teu mistério."
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "Copiar roteiro",
+      "download": "Baixar .txt",
+      "copied": "Roteiro copiado para a área de transferência",
+      "copyFailed": "Não foi possível copiar — tente selecionar o texto manualmente"
+    },
     "shareWithGuests": "Compartilhar com Convidados",
     "tabs": {
       "hostGuide": "Guia do Anfitrião",

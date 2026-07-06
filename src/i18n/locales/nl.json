@@ -1094,6 +1094,12 @@
     "fullyEditableNote": "Geen zorgen — je kunt alle personageteksten, gastheergidsinhoud en bewijskaarten bewerken nadat je mysterie is gegenereerd."
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "Script kopiëren",
+      "download": ".txt downloaden",
+      "copied": "Script naar klembord gekopieerd",
+      "copyFailed": "Kopiëren mislukt — selecteer de tekst handmatig"
+    },
     "shareWithGuests": "Delen met Gasten",
     "tabs": {
       "hostGuide": "Host Gids",

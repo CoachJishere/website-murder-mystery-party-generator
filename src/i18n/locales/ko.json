@@ -1136,6 +1136,12 @@
     }
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "대본 복사",
+      "download": ".txt 다운로드",
+      "copied": "대본이 클립보드에 복사되었습니다",
+      "copyFailed": "복사하지 못했습니다 — 텍스트를 직접 선택해 보세요"
+    },
     "shareWithGuests": "게스트와 공유",
     "tabs": {
       "hostGuide": "호스트 가이드",

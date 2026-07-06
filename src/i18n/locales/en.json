@@ -1232,6 +1232,12 @@
     }
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "Copy script",
+      "download": "Download .txt",
+      "copied": "Script copied to clipboard",
+      "copyFailed": "Couldn't copy — try selecting the text manually"
+    },
     "shareWithGuests": "Share With Guests",
     "tabs": {
       "hostGuide": "Host Guide",

@@ -1127,6 +1127,12 @@
     "fullyEditableNote": "别担心 — 您可以在生成谜案后编辑所有角色剧本、主持人指南内容和证据卡。"
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "复制剧本",
+      "download": "下载 .txt",
+      "copied": "剧本已复制到剪贴板",
+      "copyFailed": "复制失败——请尝试手动选择文本"
+    },
     "shareWithGuests": "与客人分享",
     "tabs": {
       "hostGuide": "主持指南",

@@ -1094,6 +1094,12 @@
     "fullyEditableNote": "Non preoccuparti — potrai modificare tutti i copioni dei personaggi, i contenuti della guida del conduttore e le carte degli indizi dopo aver generato il tuo mistero."
   },
   "mysteryPackage": {
+    "detectiveScript": {
+      "copy": "Copia il copione",
+      "download": "Scarica .txt",
+      "copied": "Copione copiato negli appunti",
+      "copyFailed": "Impossibile copiare: prova a selezionare il testo manualmente"
+    },
     "shareWithGuests": "Condividi con gli Ospiti",
     "tabs": {
       "hostGuide": "Guida per l'Organizzatore",

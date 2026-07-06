@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
-import { Loader2, Wand2, Eye, Mail, MessageSquare, X, Download, Printer } from "lucide-react";
+import { Loader2, Wand2, Eye, Mail, MessageSquare, X, Download, Printer, Copy } from "lucide-react";
 import { MysteryCharacter } from "@/interfaces/mystery";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -582,6 +582,31 @@ const MysteryPackageTabView = React.memo(({
     return packageData?.detectiveScript || extractInspectorScript();
   }, [packageData?.detectiveScript, extractInspectorScript]);
 
+  const handleCopyDetectiveScript = useCallback(async () => {
+    if (!detectiveScript) return;
+    try {
+      await navigator.clipboard.writeText(detectiveScript);
+      toast.success(t('mysteryPackage.detectiveScript.copied'));
+    } catch {
+      toast.error(t('mysteryPackage.detectiveScript.copyFailed'));
+    }
+  }, [detectiveScript, t]);
+
+  const handleDownloadDetectiveScript = useCallback(() => {
+    if (!detectiveScript) return;
+    const safeTitle = (packageData?.title || mysteryTitle || 'mystery')
+      .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'mystery';
+    const blob = new Blob([detectiveScript], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${safeTitle}-detective-script.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [detectiveScript, packageData?.title, mysteryTitle]);
+
 
 
   const charactersList = useMemo(() => {
@@ -1120,13 +1145,38 @@ const MysteryPackageTabView = React.memo(({
             isMobile && "text-sm"
           )}>
             {detectiveScript ? (
-              <EditableMultiSection
-                content={detectiveScript}
-                onSave={(val) => onPackageFieldUpdate?.('detective_script', val) ?? Promise.resolve()}
-                canEdit={!!onPackageFieldUpdate}
-                sectionLabel="Detective Script"
-                isMobile={isMobile}
-              />
+              <>
+                <div className={cn(
+                  "flex flex-wrap items-center justify-end gap-2 mb-3",
+                  isMobile && "mb-2"
+                )}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCopyDetectiveScript}
+                    className="gap-2"
+                  >
+                    <Copy className="h-4 w-4" />
+                    {t('mysteryPackage.detectiveScript.copy')}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownloadDetectiveScript}
+                    className="gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    {t('mysteryPackage.detectiveScript.download')}
+                  </Button>
+                </div>
+                <EditableMultiSection
+                  content={detectiveScript}
+                  onSave={(val) => onPackageFieldUpdate?.('detective_script', val) ?? Promise.resolve()}
+                  canEdit={!!onPackageFieldUpdate}
+                  sectionLabel="Detective Script"
+                  isMobile={isMobile}
+                />
+              </>
             ) : isGenerating ? (
               <LoadingTabContent
                 message={t('mysteryPackage.loading.inspector')}
