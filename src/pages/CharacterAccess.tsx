@@ -61,6 +61,7 @@ const CharacterAccess: React.FC = () => {
   const { token } = useParams<{ token: string }>();
   const [assignment, setAssignment] = useState<CharacterAssignment | null>(null);
   const [scriptType, setScriptType] = useState<ScriptType>('full');
+  const [gameOverview, setGameOverview] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -135,6 +136,12 @@ const CharacterAccess: React.FC = () => {
       if (t === 'full' || t === 'pointForm' || t === 'both') {
         setScriptType(t);
       }
+      // Game overview from the host guide — leads the packet so every player
+      // starts with the same scene-setting before their personal details
+      const overview = (meta as any)?.game_overview;
+      if (typeof overview === 'string' && overview.trim()) {
+        setGameOverview(overview.trim());
+      }
     } catch (error: any) {
       console.error('Error loading character assignment:', error);
       setError(`${t('characterAccess.errors.loadFailed')}: ${error.message || t('auth.errors.unknownError')}`);
@@ -205,6 +212,14 @@ const CharacterAccess: React.FC = () => {
 
   const buildCharacterGuideContent = (character: any): string => {
     let content = `# ${character.character_name} - Your Character\n\n`;
+
+    // Shared game overview first — content usually carries its own
+    // `## Game Overview` heading; synthesize one if the host edited it away
+    if (gameOverview) {
+      content += gameOverview.startsWith('#')
+        ? `${gameOverview}\n\n`
+        : `## Game Overview\n\n${gameOverview}\n\n`;
+    }
 
     // Static character info — no pointform variants
     if (character.description) content += `${cleanMarkdownHeaders(character.description)}\n\n`;

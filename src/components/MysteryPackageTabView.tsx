@@ -967,6 +967,16 @@ const MysteryPackageTabView = React.memo(({
                           )}
                         >
                           <div className="space-y-4">
+                            {packageData?.gameOverview && (
+                              <EditableSection
+                                content={packageData.gameOverview}
+                                onSave={() => Promise.resolve()}
+                                canEdit={false}
+                                sectionLabel={`${character.character_name} - game_overview`}
+                                fallbackLabel="Game Overview"
+                                isMobile={isMobile}
+                              />
+                            )}
                             {characterFields
                               .filter(f => f.content && !isStub(f.content))
                               .map(field => (
