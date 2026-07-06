@@ -131,6 +131,21 @@ export default function CustomMurderMysteryParty() {
             <p className="text-foreground leading-relaxed">{t("customParty.body.guestPara")}</p>
             <p className="text-foreground leading-relaxed">{t("customParty.body.characterPara")}</p>
             <p className="text-foreground leading-relaxed">{t("customParty.body.kitPara")}</p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-[#C81400] mt-12 mb-4">
+              {t("customParty.body.howToHeading")}
+            </h2>
+            <ol className="list-decimal pl-6 space-y-3 text-foreground leading-relaxed">
+              <li>{t("customParty.body.howToStep1")}</li>
+              <li>{t("customParty.body.howToStep2")}</li>
+              <li>{t("customParty.body.howToStep3")}</li>
+            </ol>
+            <p className="text-foreground leading-relaxed mt-4">
+              <Link to="/mystery/create" className="text-[#C81400] hover:underline font-medium">
+                {t("customParty.body.howToCta")}
+              </Link>{" "}
+              {t("customParty.body.howToCtaEnd")}
+            </p>
           </div>
 
           {/* Feature cards */}

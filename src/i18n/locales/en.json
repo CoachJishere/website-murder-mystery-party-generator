@@ -181,12 +181,12 @@
   },
   "customParty": {
     "seo": {
-      "title": "Custom Murder Mystery Party Kit — Any Theme in Minutes",
-      "description": "Build a custom murder mystery party kit for any theme and guest count. Get characters, scripts, clues & a printable host guide — start in minutes."
+      "title": "Custom Murder Mystery Party & Game — AI Kit in Minutes",
+      "description": "Create a custom murder mystery party or game for any theme and group size. AI writes the plot, characters, clues & a printable kit in minutes. Start free."
     },
     "hero": {
       "h1": "Custom Murder Mystery Party",
-      "intro": "A custom murder mystery party written from scratch around your theme, your guests, and your occasion — not a pre-packaged kit. Generate the full printable game in minutes.",
+      "intro": "A custom murder mystery party — or custom murder mystery game — written from scratch around your theme, your guests, and your occasion. The AI generates the full printable kit in minutes, no prep required.",
       "cta": "Create Your Custom Mystery"
     },
     "body": {
@@ -195,7 +195,13 @@
       "themePara": "Customization starts with the theme. A 1920s speakeasy, a haunted Victorian manor, a luxury cruise, a corporate retreat gone wrong, or something built entirely around an inside joke — if you can describe it, the story bends to match. There is no catalogue to pick from, so your game is one of a kind.",
       "guestPara": "Next comes guest count. You tell the generator how many people are playing and the cast scales to fit — a tight game for 4 to 6 at a dinner table, a lively party for 8 to 12, or a full event for 20 or more. Every player gets a genuine role in the mystery rather than a walk-on part, and extra guests can join as detectives if your numbers grow.",
       "characterPara": "Each character is custom-built: a backstory, private motives, secrets to guard, and round-by-round scripts that interlock with everyone else's so the mystery actually holds together. The accusations, alibis, and reveals are written to your cast, not retrofitted from a template.",
-      "kitPara": "When it's ready, you get a complete printable kit — a host guide that walks you through running the night, individual character booklets, physical clues and evidence, and matching invitations. Print it all or share it digitally. From first prompt to finished game takes minutes, not weeks of planning."
+      "kitPara": "When it's ready, you get a complete printable kit — a host guide that walks you through running the night, individual character booklets, physical clues and evidence, and matching invitations. Print it all or share it digitally. From first prompt to finished game takes minutes, not weeks of planning.",
+      "howToHeading": "How to Create a Custom Murder Mystery Game or Party",
+      "howToStep1": "Describe your party — the theme, the occasion, and how many guests are playing. Anything from a 1920s speakeasy to an inside joke works.",
+      "howToStep2": "The AI writes a brand-new mystery to fit: the plot, the suspects, every motive and clue, and a personal script for each character.",
+      "howToStep3": "Download your printable kit — host guide, character booklets, clues, and invitations — and you're ready to play in minutes.",
+      "howToCta": "Create your custom murder mystery",
+      "howToCtaEnd": "and have the full printable kit generated in minutes."
     },
     "features": {
       "theme": {
