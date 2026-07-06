@@ -59,4 +59,11 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/seo-digests/
           git commit -m "chore(seo): weekly digest $(date -u +%Y-%m-%d)" || echo "No changes"
-          git push || echo "Nothing to push"
+          # Rebase before push: another automated job (browserslist, monitoring, the
+          # daily publish) can land on main during this ~90s run, making a blind push a
+          # non-fast-forward that "|| echo" silently swallows — losing the digest history
+          # (happened 2026-07-06). Retry the rebase+push a few times for good measure.
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && break
+            echo "push attempt $i failed, retrying"; sleep 5
+          done
