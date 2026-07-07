@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 233 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 234 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -83,6 +83,7 @@ This index organizes 233 published guides by topic cluster. All guides are avail
 - [Hacker Murder Mystery Themes](https://www.mysterymaker.party/blog/hacker-murder-mystery-themes-cybercrime-digital-secrets-tech-intrigue): Murder mystery themes with hacker characters — cybercrime, digital espionage, and investigations where the trail runs through encrypted servers.
 - [How to Host a Horror Murder Mystery Party](https://www.mysterymaker.party/blog/horror-murder-mystery-party-guide): Create a terrifying horror murder mystery party with jump scares, creepy atmosphere, layered sound design, and dark reveals. Adult-only Halloween guide.
 - [How AI Is Changing Murder Mystery Parties](https://www.mysterymaker.party/blog/how-ai-is-changing-murder-mystery-parties): How AI is transforming murder mystery parties through personalization and custom generation. Data-backed look at what's changing and what's next.
+- [Murder Mystery Games for Library Programs](https://www.mysterymaker.party/blog/murder-mystery-for-library-programs): Run a murder mystery program at your public library on a small budget. Community engagement planning guide with all-ages adaptations and practical setup steps.
 - [Murder Mystery Parties for Small Spaces](https://www.mysterymaker.party/blog/murder-mystery-parties-small-spaces-compact-venues): Generate murder mysteries perfect for small apartments, conference rooms, and compact venues with single-room investigations and intimate formats.
 - [Arabian Nights Murder Mystery Party: 1001 Nights of Intrigue](https://www.mysterymaker.party/blog/murder-mystery-party-arabian-nights-theme): Arabian Nights murder mystery parties feature palace intrigue, mysterious bazaars, treasure, and exotic suspense. Host a 1001 Nights-inspired whodunit.
 - [Art Heist Murder Mystery Party](https://www.mysterymaker.party/blog/murder-mystery-party-art-heist-theme): Art heist murder mystery parties blend Ocean's-style intrigue with museum intrigue. Explore stolen masterpieces, high-stakes theft, and investigation mechanics.
@@ -201,7 +202,7 @@ This index organizes 233 published guides by topic cluster. All guides are avail
 
 ## Logistics (Food, Costumes, Decor, Invitations)
 
-- [Free Murder Mystery Games & Printables: What Works](https://www.mysterymaker.party/blog/free-murder-mystery-games-printable): Honest guide to free murder mystery printables, templates, and games. Where they work, limitations, and when to upgrade.
+- [Free Murder Mystery Games & Printables: What Works](https://www.mysterymaker.party/blog/free-murder-mystery-games-printable): Honest guide to free printable murder mystery games: where free printables and templates actually work, their real limits, and when a paid or custom kit is wort
 - [How to Host a Rockstar Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-host-a-rockstar-murder-mystery-party-music-industry-mysteries-with-backstage-drama): Rock and roll all night while solving murders in music industry mystery parties featuring bands and backstage drama.
 - [Murder Mystery Party Cleanup Guide](https://www.mysterymaker.party/blog/murder-mystery-party-cleanup-guide): Cleanup strategies for murder mystery parties. Pre-party prep, prop organization, reusable vs disposable, and post-event timelines for stress-free hosting.
 - [Murder Mystery Party Decorations: Atmosphere on Any Budget](https://www.mysterymaker.party/blog/murder-mystery-party-decorations-ideas): Budget-friendly murder mystery party decorations by theme. Atmosphere creation, DIY vs. store-bought, and high-impact decoration priorities.
