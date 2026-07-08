@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 234 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 235 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -161,6 +161,7 @@ This index organizes 234 published guides by topic cluster. All guides are avail
 - [Murder Mystery Party for New Year's Eve](https://www.mysterymaker.party/blog/murder-mystery-party-for-new-years-eve-ring-in-the-new-year-with-midnight-mayhem-and-celebratory-intrigue): Ring in the new year with celebratory murder mystery parties featuring champagne, confetti, and midnight mayhem.
 - [Murder Mystery Party for Office Teams](https://www.mysterymaker.party/blog/murder-mystery-party-for-office-teams-build-bonds-through-collaborative-investigation): Build stronger workplace relationships with collaborative office murder mystery experiences that encourage teamwork.
 - [How to Host a Murder Mystery Party for Teenagers](https://www.mysterymaker.party/blog/murder-mystery-party-for-teenagers-guide): Throw a murder mystery party teens will actually care about. Real plots, characters they relate to, and investigation methods that actually work.
+- [Murder Mystery Team Building Activities](https://www.mysterymaker.party/blog/murder-mystery-team-building-activities): Murder mystery team building activities boost engagement, communication, and ROI. Complete guide with data, formats, and planning steps for any team size.
 - [Murder Mystery Themed Wedding Reception](https://www.mysterymaker.party/blog/murder-mystery-themed-wedding-reception): Murder mystery wedding reception entertainment that unfolds across dinner courses. A unique alternative to dancing where guests stay engaged.
 - [Planning a Murder Mystery for Couples: Love and Suspicion](https://www.mysterymaker.party/blog/romantic-murder-mystery-party-for-couples): Romantic murder mystery party for couples. Love and suspicion themes, date night games, Valentine's couple mysteries.
 
