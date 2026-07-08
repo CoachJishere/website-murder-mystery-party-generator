@@ -132,9 +132,12 @@ const CharacterAccess: React.FC = () => {
       const { data: meta } = await supabase
         .rpc('get_packet_metadata_by_token', { access_token_param: accessToken })
         .single();
-      const t = (meta as any)?.script_type;
-      if (t === 'full' || t === 'pointForm' || t === 'both') {
-        setScriptType(t);
+      // NB: do not name this `t` — it would shadow the useTranslation() `t`
+      // across this whole try block and put the error-branch t(...) calls above
+      // in the temporal dead zone (crash: "Cannot access 'P' before initialization").
+      const scriptPref = (meta as any)?.script_type;
+      if (scriptPref === 'full' || scriptPref === 'pointForm' || scriptPref === 'both') {
+        setScriptType(scriptPref);
       }
       // Game overview from the host guide — leads the packet so every player
       // starts with the same scene-setting before their personal details

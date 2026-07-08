@@ -105,6 +105,13 @@
 
 ## 2026-07-04
 
+### Fix: Guest short-code links — crash on bad link + confusable-character codes (ADR-0031 follow-up)
+
+- **Reported**: a guest's link `/c/fWpeLlQl` showed "Access denied — Failed to load character: Cannot access 'P' before initialization" while every other guest's link worked.
+- **Root cause 1 (crash)**: [CharacterAccess.tsx](src/pages/CharacterAccess.tsx) declared `const t = meta.script_type`, shadowing the `useTranslation()` `t` across the whole `try` block. That put every error-branch `t(...)` call (invalid link, RPC failure) in the temporal dead zone, so any load error threw `Cannot access 'P' before initialization` (minified `t`) instead of showing the real message. Renamed to `scriptPref`. Valid links never hit an error branch, which is why only broken links crashed.
+- **Root cause 2 (why the link was broken)**: the real code was `fWpeLIQl` (capital `I`), mis-read/mangled to `fWpeLlQl` (lowercase `l`) in transit — near-identical glyphs. ADR-0031's "codes are pasted so confusables are fine" assumption was wrong. `gen_short_code` now uses a 57-char alphabet with `0 O 1 I l` removed ([20260704_short_code_unambiguous_alphabet.sql](supabase/migrations/20260704_short_code_unambiguous_alphabet.sql)); new codes can't contain a confusable pair. Existing codes unchanged (links already sent; they age out). Keyspace 57^8 ≈ 1.1e14 — still unguessable.
+- **Net**: bad links now show a clean "not found" message, and future codes are unambiguous.
+
 ### Fix: Five confirmed bugs from the multi-agent customer-flow review
 
 A 6-dimension multi-agent bug hunt (each finding adversarially verified by 3 independent reviewers; 48 candidates → 14 confirmed) ran over the customer-facing flows. The five highest-value confirmed bugs are fixed; full findings list lives in the vault (`01_Projects/Mystery-Maker/bug-hunt-2026-07-04.md` — kept out of the public repo).

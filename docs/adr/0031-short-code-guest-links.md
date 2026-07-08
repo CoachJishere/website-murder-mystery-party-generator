@@ -52,8 +52,31 @@ at page load — the UUID stays the real credential.
 - **8 chars is the knee of the curve.** 6 chars (57 billion) would also be safe with
   rate-limiting but has a thinner margin; 11 chars buys headroom nobody needs at
   this scale. 8 is unguessable here and still short.
-- **Codes are pasted, not typed**, so full base62 (including easily-confused
-  `0/O`, `l/1`) is fine — no need to shrink the alphabet for legibility.
+- ~~**Codes are pasted, not typed**, so full base62 (including easily-confused
+  `0/O`, `l/1`) is fine — no need to shrink the alphabet for legibility.~~
+  **Reversed 2026-07-04 (see Update).**
+
+## Update — 2026-07-04: unambiguous alphabet
+
+The "pasted, not typed" assumption was wrong within a day of shipping. Guest
+**Adria**'s code was `fWpeLIQl` (capital `I` + lowercase `l`, which render almost
+identically in most sans-serif fonts); the link reached her as `fWpeLlQl` and
+404'd. Links *do* get mangled — read off a screen, retyped, OCR'd, or line-wrapped.
+
+Fix: `gen_short_code` now draws from a **57-char alphabet with `0 O 1 I l` removed**
+(migration `20260704_short_code_unambiguous_alphabet.sql`). New codes cannot contain
+a confusable pair. Keyspace 57^8 ≈ 1.1×10^14 — same order, still unguessable.
+**Existing codes are left as-is** (their links are already distributed); they age out
+as parties conclude. No confusable-normalizing resolver was added — it risks
+resolving a mangled code to the *wrong* character (spoilers), which is worse than a
+clean "not found."
+
+Separately, a **temporal-dead-zone crash** was fixed in `CharacterAccess.tsx`: a
+`const t = meta.script_type` shadowed the `useTranslation()` `t` across the whole
+`try` block, so every error-branch `t(...)` (invalid link, RPC failure) threw
+`Cannot access 'P' before initialization` instead of showing the real message.
+Renamed to `scriptPref`. This is why a bad link crashed rather than saying
+"not found."
 
 ## Alternatives Considered
 
