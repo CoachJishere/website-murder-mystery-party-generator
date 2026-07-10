@@ -1,12 +1,16 @@
 # Site health status
 
-_Last checked: 2026-07-09 20:07 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-07-10 04:18 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
-## ✅ All checks passing
+## ⚠️ Problems found
+
+- 🟠 Could not query stuck generations (Supabase API error)
+- 🟠 Could not query needs_review packages (Supabase API error)
+- 🟠 Could not run the missing-evidence-images detector (Supabase API error)
 
 | Check | Result |
 |---|---|
 | Website (www.mysterymaker.party) | HTTP 200 |
-| Generations stuck > 2h | 0 |
-| needs_review packages (7 days) | 0 |
-| Paid packages missing evidence images | 0 |
+| Generations stuck > 2h | ? |
+| needs_review packages (7 days) | ? |
+| Paid packages missing evidence images | ? |
