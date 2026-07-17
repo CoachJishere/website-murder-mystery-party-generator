@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 236 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 237 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -201,6 +201,7 @@ This index organizes 236 published guides by topic cluster. All guides are avail
 - [Murder Mystery Party Character Ideas](https://www.mysterymaker.party/blog/murder-mystery-party-character-ideas): Discover murder mystery character archetypes, design balanced roles, and learn casting strategies. Create memorable characters with MysteryMaker.
 - [Murder Mystery Party Clue Ideas: From Paper to Digital](https://www.mysterymaker.party/blog/murder-mystery-party-clue-ideas): Explore murder mystery clue types, difficulty levels, and creative design techniques. Learn how MysteryMaker creates compelling clues for any party.
 - [Murder Mystery Party Favors & Prizes Ideas](https://www.mysterymaker.party/blog/murder-mystery-party-favors-prizes-ideas): Murder mystery party favors and prizes by theme. Detective awards, DIY favor ideas, budget-friendly options, and when to give prizes during your game.
+- [What You Need for a Murder Mystery Party](https://www.mysterymaker.party/blog/what-do-you-need-for-a-murder-mystery-party): Checklist of everything you need for a murder mystery party. Essential supplies vs. nice-to-haves. Budget breakdown.
 
 ## Logistics (Food, Costumes, Decor, Invitations)
 
