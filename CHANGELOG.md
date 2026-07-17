@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-07-17
+
+### Fix: Site-wide guest "access denied" outage — Supabase free-plan egress cap exceeded (resolved by Pro upgrade)
+- **Symptom:** every shared guest character link returned "access denied"; host sharing, the daily encrypted backup, and the scheduled health check (Issue #3, first failing 2026-07-10) were all erroring with "Supabase API error". The frontend (GitHub Pages) was fully healthy the whole time — DNS, HTML, and all JS/CSS bundles returned 200.
+- **Root cause:** the Supabase data plane was returning **HTTP 402 — `exceed_egress_quota`**. The org was on the **free plan (5 GB/mo egress)** and had blown past it, so the project was restricted. Every anon RPC the guest/host pages call (`get_token_by_short_code`, `get_character_by_token`, `get_character_details`) 402'd, and `CharacterAccess.tsx` renders any such error as the "access denied" card. The management API still reported the project `ACTIVE_HEALTHY`, which masked the real cause.
+- **Fix:** upgraded the org to **Pro** (250 GB/mo egress, ~50×). Service restored immediately — verified the anon RPC path returned HTTP 200 right after, with no code change or redeploy. Guest links, health checks, and backups recover on their own.
+- **What consumed the egress:** the public `pinterest-pins` Storage bucket — 706 objects / 1.2 GB of multi-MB images, never pruned, re-crawled by Pinterest on the metered path; a bulk 367-pin / 660 MB upload landed on 2026-07-03. Object-level egress attribution isn't available via MCP (dashboard-only), so this is the strong-evidence cause, not a byte-level proof.
+- **Key constraint recorded for the future:** `scripts/pinterest/upload-blog-hero.mjs` also uploads blog hero images into the *same* bucket, and **235 `blog_posts.featured_image_url` rows point into it** — so naive age-based pruning would break 235 live blog hero images. Any pruning must be reference-aware; any migration must copy-first.
+- **Decision (ADR-0034):** deferred moving images off Supabase. On Pro, egress overage *bills* (~$0.09/GB) rather than *restricts the site*, so the outage risk is contained and migration is optional. Documented the Cloudflare R2 (zero-egress) migration path for if egress ever creeps toward 250 GB. **Open follow-up:** set a Supabase usage/billing alert (~150 GB) in the dashboard so a future runaway is caught before it costs money.
+
+## 2026-07-08
+
+### Improvement: Generator now calibrates monetary amounts to era + social standing (motive-worthy, not trivial or cartoonish)
+- Added an **AMOUNT CALIBRATION** rule to the `<critical_reminders>` of all four Master Doc Part 1 (Planning) modules — detective-murder, character-murder, detective-intrigue, character-intrigue. When a dollar figure isn't specified in the host's chat, Haiku now picks a sum proportionate to the era, setting, and characters' social standing and large enough to be a credible motive (scales up for a modern magnate's fraud, stays grounded for a 1920s fortune), and is told never to pick a trivial amount or inflate to cartoonish figures.
+- Why: a host noticed a 1920s magnate with $45k of illegal profits — well-judged for that era, but the model had no explicit instruction to calibrate, so amounts were inconsistent across settings (a modern mystery could still emit a laughably small motive). This is a small-model reliability nudge; only fires when the amount is *not* already stated in chat (stated amounts are still honored verbatim).
+- Applied in Make (host edited the four modules). Saved on disk as `temp-files/MM Live - Parent44 (Amount Calibration).blueprint.json` — patched from Parent43, JSON validated, diff is exactly the four calibration inserts and nothing else. **Parent44 is now the working parent version — branch from it next.** (temp-files blueprints are gitignored, local-only.)
+
 ## 2026-07-06
 
 ### Feature: Game overview now opens every character profile (guest packet + host Characters tab) — retroactive for all past purchases
