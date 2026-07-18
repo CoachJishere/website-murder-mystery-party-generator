@@ -5,7 +5,12 @@ export interface EvidenceCard {
   imageUrl: string;
 }
 
-const PRINT_STRIP = /^####\s+(Visual Description|Who It Implicates|What This Reveals|Implications|Discovered|Significance)\b/i;
+// Host-only / non-player sections to drop from the printed card. Older "blueprint"
+// evidence formats use ### (3-hash) headings for Implications / Visual Description,
+// while newer ones use #### (4-hash) for Significance — so match 2–4 hashes, not just 4.
+// (Without this, ### IMPLICATIONS and the AI-image prompt leak onto the player's card,
+// and several of those sections name the culprit outright.)
+const PRINT_STRIP = /^#{2,4}\s+(Visual Description|Who It Implicates|What This Reveals|Implications|Discovered|Significance)\b/i;
 
 function stripSectionsForPrint(lines: string[]): string[] {
   const out: string[] = [];
