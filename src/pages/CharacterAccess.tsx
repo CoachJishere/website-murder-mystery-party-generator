@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, Loader2, User } from "lucide-react";
+import { Download, Loader2, User, EyeOff } from "lucide-react";
 import "../styles/print.css";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from 'react-markdown';
@@ -62,6 +62,11 @@ const CharacterAccess: React.FC = () => {
   const [assignment, setAssignment] = useState<CharacterAssignment | null>(null);
   const [scriptType, setScriptType] = useState<ScriptType>('full');
   const [gameOverview, setGameOverview] = useState<string | null>(null);
+  // Predetermined ('detective') vs random-slip ('character'). We only surface a
+  // "you are the murderer" banner for predetermined mysteries — in random-slip
+  // games the culprit is drawn secretly at the table, so revealing the role here
+  // would spoil it. See HostGuideTemplate "Determining the Culprit".
+  const [mysteryStyle, setMysteryStyle] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -139,6 +144,7 @@ const CharacterAccess: React.FC = () => {
       if (scriptPref === 'full' || scriptPref === 'pointForm' || scriptPref === 'both') {
         setScriptType(scriptPref);
       }
+      setMysteryStyle((meta as any)?.mystery_style ?? null);
       // Game overview from the host guide — leads the packet so every player
       // starts with the same scene-setting before their personal details
       const overview = (meta as any)?.game_overview;
@@ -406,6 +412,22 @@ const CharacterAccess: React.FC = () => {
 
   const characterContent = buildCharacterGuideContent(assignment.mystery_characters);
 
+  // Loud, unmissable role callout — only for predetermined ('detective') mysteries.
+  // In random-slip ('character') games the culprit is drawn secretly at the table,
+  // so we must NOT reveal it here. Only the guilty parties get a banner.
+  const characterRole = (assignment.mystery_characters as any)?.character_role;
+  const showRoleBanner =
+    mysteryStyle === 'detective' &&
+    (characterRole === 'murderer' || characterRole === 'accomplice');
+  const roleBannerTitle =
+    characterRole === 'murderer'
+      ? t('characterAccess.roleBanner.murdererTitle')
+      : t('characterAccess.roleBanner.accompliceTitle');
+  const roleBannerBody =
+    characterRole === 'murderer'
+      ? t('characterAccess.roleBanner.murdererBody')
+      : t('characterAccess.roleBanner.accompliceBody');
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -427,6 +449,23 @@ const CharacterAccess: React.FC = () => {
             {t('mysteryPackage.export.saveAsPdf')}
           </Button>
         </div>
+
+        {showRoleBanner && (
+          <div
+            role="alert"
+            className="mb-6 rounded-lg border-2 border-red-600 bg-red-600/10 p-5 text-center"
+          >
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <EyeOff className="h-6 w-6 text-red-600" />
+              <h2 className="text-xl font-bold uppercase tracking-wide text-red-600">
+                {roleBannerTitle}
+              </h2>
+            </div>
+            <p className="leading-relaxed text-foreground">
+              {roleBannerBody}
+            </p>
+          </div>
+        )}
 
         <Card>
           <CardContent className="p-6">

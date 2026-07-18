@@ -460,7 +460,7 @@
       "getStarted": "Get started by creating your first mystery"
     },
     "mysteries": {
-      "title": "Your Mysteries",
+      "title": "Your Murder Mystery Parties",
       "searchPlaceholder": "Search mysteries...",
       "deleteSuccess": "Mystery moved to archive",
       "deleteFailed": "Failed to archive mystery",
@@ -498,7 +498,8 @@
           "description": "Are you sure you want to delete this mystery? This action cannot be undone."
         },
         "generationInProgress": "Generation in progress...",
-        "editedDate": "Edited {{date}}"
+        "editedDate": "Edited {{date}}",
+          "typeLabel": "Murder mystery party"
       },
       "status": {
         "completed": "Completed",
@@ -1512,6 +1513,12 @@
       "loadFailed": "Failed to load character"
     },
     "subtitle": "View your complete character guide and game instructions below.",
+    "roleBanner": {
+      "murdererTitle": "You are the MURDERER.",
+      "murdererBody": "This is your secret. Act innocent, deflect suspicion, and don't let anyone catch you. Your goal is to survive to the end without being unmasked — you'll read your confession during the final reveal.",
+      "accompliceTitle": "You are the ACCOMPLICE.",
+      "accompliceBody": "You know who the murderer is and you're helping them get away with it. Keep this secret. Cover your tracks, muddy the trail, and protect the killer without exposing yourself."
+    },
     "footer": {
       "lovedPlaying": "Loved playing as <strong>{{character}}</strong>?",
       "hostCta": "Host your own custom mystery at"

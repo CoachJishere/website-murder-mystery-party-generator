@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-18
+
+### UX: Unmissable "You are the MURDERER / ACCOMPLICE" banner on the guest character page
+- **Problem:** for predetermined-culprit mysteries, the one fact that changes how a guest plays the whole night — that *they* are the killer — was only visible buried three paragraphs into the prose "## YOUR SECRET" section (and in the per-round branch labels). A skimming first-time player could easily miss it and play their character as innocent.
+- **Fix:** [CharacterAccess.tsx](src/pages/CharacterAccess.tsx) now renders a bold red role callout at the top of the guest sheet (above the character card) for guests whose `character_role` is `murderer` or `accomplice`, with clear instructions to keep the secret and play innocent.
+- **Scoping decision (why it's gated, not universal):** the banner shows **only for predetermined (`mystery_style === 'detective'`) mysteries**. In random-slip (`'character'`) games the culprit is drawn secretly at the table after Round 1, so revealing the role on the page would spoil it — even though `character_role` is populated in the DB for those too. `mystery_style` was already returned by the existing `get_packet_metadata_by_token` RPC and `character_role` by `get_character_details`, so this is a **pure frontend change** — no RPC/schema change, and it applies retroactively to all 38 completed predetermined mysteries with zero regeneration or LLM spend. Random-slip games (49 completed) correctly stay hidden. Null/older `mystery_style` fails safe (no banner).
+- **Deferred:** banner copy added to `en.json` only (`characterAccess.roleBanner.*`); the other 12 locales fall back to English (`fallbackLng.default: ['en']`) until translated. Translation is the follow-up, not a blocker.
+
 ## 2026-07-17
 
 ### Fix: Site-wide guest "access denied" outage — Supabase free-plan egress cap exceeded (resolved by Pro upgrade)
