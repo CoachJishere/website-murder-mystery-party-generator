@@ -1415,6 +1415,12 @@
       "loadFailed": "Hahmon lataaminen epäonnistui"
     },
     "subtitle": "Katso täydellinen hahmo-oppaasi ja peliohjeet alta.",
+    "roleBanner": {
+      "murdererTitle": "Sinä olet MURHAAJA.",
+      "murdererBody": "Tämä on salaisuutesi. Esitä viatonta, harhauta epäilyt äläkä anna kenenkään paljastaa itseäsi. Tavoitteesi on selviytyä loppuun asti paljastumatta – luet tunnustuksesi lopullisen paljastuksen aikana.",
+      "accompliceTitle": "Sinä olet RIKOSKUMPPANI.",
+      "accompliceBody": "Tiedät, kuka murhaaja on, ja autat häntä pääsemään pälkähästä. Pidä tämä salaisuutena. Peitä jälkesi, hämmennä muita ja suojele murhaajaa paljastamatta itseäsi."
+    },
     "footer": {
       "lovedPlaying": "Pidettiitkö hahmosta <strong>{{character}}</strong>?",
       "hostCta": "Järjestä oma räätälöity mysteerisi sivustolla"

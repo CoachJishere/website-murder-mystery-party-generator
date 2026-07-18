@@ -1415,6 +1415,12 @@
       "loadFailed": "Kunde inte ladda karaktär"
     },
     "subtitle": "Se din kompletta karaktärsguide och spelinstruktioner nedan.",
+    "roleBanner": {
+      "murdererTitle": "Du är MÖRDAREN.",
+      "murdererBody": "Det här är din hemlighet. Spela oskyldig, avled misstankar och låt ingen avslöja dig. Ditt mål är att överleva till slutet utan att bli avslöjad – du läser upp din bekännelse under det slutliga avslöjandet.",
+      "accompliceTitle": "Du är MEDBROTTSLINGEN.",
+      "accompliceBody": "Du vet vem mördaren är och du hjälper hen att komma undan med det. Håll det hemligt. Sopa igen dina spår, förvilla de andra och skydda mördaren utan att avslöja dig själv."
+    },
     "footer": {
       "lovedPlaying": "Älskade du att spela <strong>{{character}}</strong>?",
       "hostCta": "Var värd för ditt eget skräddarsydda mysterium på"

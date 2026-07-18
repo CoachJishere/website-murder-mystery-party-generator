@@ -1415,6 +1415,12 @@
       "loadFailed": "无法加载角色"
     },
     "subtitle": "在下方查看您的完整角色指南和游戏说明。",
+    "roleBanner": {
+      "murdererTitle": "你就是凶手。",
+      "murdererBody": "这是你的秘密。装作无辜，转移怀疑，别让任何人抓住你。你的目标是坚持到最后而不被揭穿——在最终揭晓时，你将读出你的忏悔。",
+      "accompliceTitle": "你是同谋。",
+      "accompliceBody": "你知道凶手是谁，并且正在帮他逃脱罪责。保守这个秘密。掩盖你的踪迹，扰乱线索，在不暴露自己的前提下保护凶手。"
+    },
     "footer": {
       "lovedPlaying": "喜欢扮演 <strong>{{character}}</strong> 吗?",
       "hostCta": "在以下地址主持您自己的定制谜案"

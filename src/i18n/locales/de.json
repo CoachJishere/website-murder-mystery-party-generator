@@ -1415,6 +1415,12 @@
       "loadFailed": "Charakter konnte nicht geladen werden"
     },
     "subtitle": "Sieh dir unten deinen vollständigen Charakterleitfaden und die Spielanweisungen an.",
+    "roleBanner": {
+      "murdererTitle": "Du bist DER MÖRDER.",
+      "murdererBody": "Das ist dein Geheimnis. Spiel den Unschuldigen, lenke den Verdacht ab und lass dich von niemandem ertappen. Dein Ziel ist es, bis zum Schluss zu überleben, ohne entlarvt zu werden – bei der finalen Auflösung liest du dein Geständnis vor.",
+      "accompliceTitle": "Du bist DER KOMPLIZE.",
+      "accompliceBody": "Du weißt, wer der Mörder ist, und hilfst ihm, ungeschoren davonzukommen. Bewahre dieses Geheimnis. Verwisch deine Spuren, leg falsche Fährten und schütze den Mörder, ohne dich selbst zu verraten."
+    },
     "footer": {
       "lovedPlaying": "Hat es dir Spaß gemacht, <strong>{{character}}</strong> zu spielen?",
       "hostCta": "Veranstalte dein eigenes maßgeschneidertes Krimi-Dinner auf"

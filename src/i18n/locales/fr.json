@@ -1416,6 +1416,12 @@
       "loadFailed": "Échec du chargement du personnage"
     },
     "subtitle": "Consultez votre guide de personnage complet et les instructions du jeu ci-dessous.",
+    "roleBanner": {
+      "murdererTitle": "Vous êtes LE MEURTRIER.",
+      "murdererBody": "C'est votre secret. Jouez l'innocent, détournez les soupçons et ne laissez personne vous démasquer. Votre objectif est de survivre jusqu'à la fin sans être démasqué — vous lirez votre confession lors de la révélation finale.",
+      "accompliceTitle": "Vous êtes LE COMPLICE.",
+      "accompliceBody": "Vous savez qui est le meurtrier et vous l'aidez à s'en tirer. Gardez ce secret. Brouillez les pistes, effacez vos traces et protégez le tueur sans vous trahir."
+    },
     "footer": {
       "lovedPlaying": "Vous avez aimé jouer <strong>{{character}}</strong> ?",
       "hostCta": "Organisez votre propre mystère personnalisé sur"

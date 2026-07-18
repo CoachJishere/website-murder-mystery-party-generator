@@ -1415,6 +1415,12 @@
       "loadFailed": "Kunne ikke indlæse karakter"
     },
     "subtitle": "Se din komplette karakterguide og spilanvisninger nedenfor.",
+    "roleBanner": {
+      "murdererTitle": "Du er MORDEREN.",
+      "murdererBody": "Dette er din hemmelighed. Spil uskyldig, afled mistanken, og lad ingen afsløre dig. Dit mål er at overleve til det sidste uden at blive afsløret – du læser din tilståelse op under den endelige afsløring.",
+      "accompliceTitle": "Du er MEDSKYLDIG.",
+      "accompliceBody": "Du ved, hvem morderen er, og du hjælper vedkommende med at slippe af sted med det. Hold på hemmeligheden. Skjul dine spor, slør sporet, og beskyt morderen uden at afsløre dig selv."
+    },
     "footer": {
       "lovedPlaying": "Elskede du at spille <strong>{{character}}</strong>?",
       "hostCta": "Vær vært for dit eget skræddersyede mysterium på"

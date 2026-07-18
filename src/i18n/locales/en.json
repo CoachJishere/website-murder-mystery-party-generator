@@ -460,7 +460,7 @@
       "getStarted": "Get started by creating your first mystery"
     },
     "mysteries": {
-      "title": "Your Murder Mystery Parties",
+      "title": "Your Mysteries",
       "searchPlaceholder": "Search mysteries...",
       "deleteSuccess": "Mystery moved to archive",
       "deleteFailed": "Failed to archive mystery",
@@ -498,8 +498,7 @@
           "description": "Are you sure you want to delete this mystery? This action cannot be undone."
         },
         "generationInProgress": "Generation in progress...",
-        "editedDate": "Edited {{date}}",
-          "typeLabel": "Murder mystery party"
+        "editedDate": "Edited {{date}}"
       },
       "status": {
         "completed": "Completed",

@@ -1415,6 +1415,12 @@
       "loadFailed": "No se pudo cargar el personaje"
     },
     "subtitle": "Consulta tu guía completa del personaje y las instrucciones del juego abajo.",
+    "roleBanner": {
+      "murdererTitle": "Eres el ASESINO.",
+      "murdererBody": "Este es tu secreto. Hazte el inocente, desvía las sospechas y no dejes que nadie te descubra. Tu objetivo es sobrevivir hasta el final sin ser desenmascarado: leerás tu confesión durante la revelación final.",
+      "accompliceTitle": "Eres el CÓMPLICE.",
+      "accompliceBody": "Sabes quién es el asesino y le estás ayudando a salir impune. Guarda este secreto. Borra tus huellas, enturbia la pista y protege al asesino sin delatarte."
+    },
     "footer": {
       "lovedPlaying": "¿Te encantó interpretar a <strong>{{character}}</strong>?",
       "hostCta": "Organiza tu propio misterio personalizado en"

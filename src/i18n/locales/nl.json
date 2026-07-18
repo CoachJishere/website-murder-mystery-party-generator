@@ -1415,6 +1415,12 @@
       "loadFailed": "Personage kon niet worden geladen"
     },
     "subtitle": "Bekijk hieronder je volledige personagegids en spelinstructies.",
+    "roleBanner": {
+      "murdererTitle": "Jij bent DE MOORDENAAR.",
+      "murdererBody": "Dit is jouw geheim. Speel de onschuldige, leid de verdenking af en laat je door niemand betrappen. Je doel is om tot het einde te overleven zonder ontmaskerd te worden — bij de laatste onthulling lees je je bekentenis voor.",
+      "accompliceTitle": "Jij bent DE MEDEPLICHTIGE.",
+      "accompliceBody": "Je weet wie de moordenaar is en je helpt diegene ermee weg te komen. Houd dit geheim. Wis je sporen, leg valse aanwijzingen en bescherm de moordenaar zonder jezelf te verraden."
+    },
     "footer": {
       "lovedPlaying": "Vond je het leuk om <strong>{{character}}</strong> te spelen?",
       "hostCta": "Organiseer je eigen op maat gemaakte mysterie op"
