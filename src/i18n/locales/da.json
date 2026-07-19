@@ -1039,13 +1039,13 @@
       "backToDesign": "Back to Mystery Design"
     },
     "notes": {
-      "title": "Important Notes",
+      "title": "Vigtige bemærkninger",
       "items": [
-        "This is a one-time purchase for this specific mystery package",
+        "Dette er et engangskøb for netop denne mysteriepakke",
         "Din rollebesætnings størrelse fastlægges, når mysteriet genereres — hver karakter kan redigeres fuldt ud bagefter, men at tilføje eller fjerne mistænkte-karakterer kræver en ny generering. Har du flere gæster end karakterer? De kan deltage som med-efterforskere på detektivens hold (se værtsguiden).",
-        "You'll have permanent access to download all materials",
-        "Content is for personal use only, not for commercial redistribution",
-        "Need help? Contact our support at {{email}}"
+        "Du får permanent adgang til at downloade alle materialer",
+        "Indholdet er kun til personlig brug, ikke til kommerciel videredistribution",
+        "Brug for hjælp? Kontakt vores support på {{email}}"
       ]
     },
     "preview": {

@@ -1039,13 +1039,13 @@
       "backToDesign": "Back to Mystery Design"
     },
     "notes": {
-      "title": "Important Notes",
+      "title": "Viktig information",
       "items": [
-        "This is a one-time purchase for this specific mystery package",
+        "Detta är ett engångsköp för just detta mysteriepaket",
         "Rollbesättningens storlek fastställs när mysteriet genereras — varje karaktär går att redigera fullt ut efteråt, men att lägga till eller ta bort misstänkta karaktärer kräver en ny generering. Har du fler gäster än karaktärer? De kan delta som medutredare i detektivens team (se värdguiden).",
-        "You'll have permanent access to download all materials",
-        "Content is for personal use only, not for commercial redistribution",
-        "Need help? Contact our support at {{email}}"
+        "Du får permanent åtkomst till att ladda ner allt material",
+        "Innehållet är endast för personligt bruk, inte för kommersiell vidaredistribution",
+        "Behöver du hjälp? Kontakta vår support på {{email}}"
       ]
     },
     "preview": {
