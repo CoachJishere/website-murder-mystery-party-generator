@@ -26,10 +26,17 @@ Any evidence that functions as a record or testimony (logbook, ledger, letter, j
 
 > Prompt line: *"Any documentary evidence (logbook, ledger, letter, journal) must name who created or maintained it (e.g. 'the butler's entrance logbook'). Do not leave a record's authorship unexplained. Provenance must not reveal or uniquely pinpoint the culprit."*
 
-## G4 — Accomplice-script coherence — ONLY IF `hasAccomplice = true`
+## G4 — Accomplice coherence — ONLY IF `hasAccomplice = true` (TWO layers)
 The accomplice's throughline must be internally consistent: they **shield the murderer** (deflect, provide cover, misdirect) and must **not** also be scripted to accuse or incriminate the murderer. Any suspicion the accomplice raises is aimed at **other** suspects, never the person they are protecting.
 
-> Prompt line: *"If this character is the accomplice: their consistent goal is to protect the murderer. They deflect suspicion away from the murderer and toward other suspects. Never script the accomplice to accuse, incriminate, or 'turn on' the murderer in any round."*
+Like timing, the accomplice is **designed at the master level** for predetermined (detective) styles, so it's enforced in two layers:
+
+**Layer 1 — master constraints (Parent v46, the 2 predetermined masters' `ACCOMPLICE DETAILS` sections — murder + intrigue).** The `accompliceDetails` throughline (specificRole, inGameBehavior) must protect the culprit and deflect toward other suspects, never at the culprit. (Random-slip / character-based masters have **no** `ACCOMPLICE DETAILS` — the accomplice is drawn at the table, so it's child-only there.)
+
+**Layer 2 — per-character (Child v16).** The accomplice character's actual round scripts must protect, never accuse, the culprit.
+
+> Master prompt line: *"The accomplice's throughline must stay internally consistent across every field and round: they PROTECT the culprit, deflecting suspicion toward OTHER suspects. Never accuse, incriminate, or turn on the culprit."*
+> Child prompt line: *"If this character is the accomplice: their consistent goal is to protect the murderer. They deflect suspicion away from the murderer and toward other suspects. Never script the accomplice to accuse, incriminate, or 'turn on' the murderer in any round."*
 
 ## G5 — Blackmail / secret logic
 A secret used as blackmail leverage must remain **genuinely hidden**. Exposure consequences are **prospective**, not already-realised. A backstory must not say a scandal was "discovered / became public / nearly ended your career" **and** that someone is currently blackmailing them over that same fact. Either it is still secret (blackmailable) or it is public (not blackmailable) — pick one.
