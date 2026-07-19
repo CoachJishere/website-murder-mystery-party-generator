@@ -112,7 +112,7 @@
       "lead": "De fleste murder mystery-produkter giver jer en lukket kasse: et fast tema, et fast antal roller og et manuskript, som tusindvis af andre allerede har spillet. Mystery Maker fungerer omvendt. I beskriver det firmaevent, I rent faktisk vil holde, og generatoren skriver et helt nyt mysterium på mål — plot, mistænkte, motiver, spor og manuskript til hver enkelt rolle inkluderet.",
       "designHeading": "Skab et murder mystery til teambuilding og firmaevents",
       "themePara": "Skræddersyningen starter med temaet. En kontorfest, en festlig firmamiddag, en konference, en teambuilding ude af huset eller noget bygget op om en intern joke i teamet — kan I beskrive det, tilpasser historien sig. Der er intet katalog at vælge fra, så jeres spil er helt unikt.",
-      "guestPara": "Dernæst kommer antallet af deltagere. I fortæller generatoren, hvor mange der spiller, og rollelisten tilpasser sig — et tæt spil for 4 til 6 kolleger, en livlig fest for 8 til 12 eller et fuldt firmaevent for 20 eller flere. Hver deltager får en ægte rolle i mysteriet frem for en statistrolle, og ekstra gæster kan deltage som efterforskere, hvis gruppen vokser.",
+      "guestPara": "Dernæst kommer antallet af deltagere. I fortæller generatoren, hvor mange der spiller, og rollelisten tilpasser sig — et tæt spil for 4 til 6 kolleger, en livlig fest for 8 til 12 eller et fuldt firmaevent for 20 eller flere. Hver deltager får en ægte rolle i mysteriet frem for en statistrolle, og ekstra gæster kan deltage som med-efterforskere, hvis gruppen vokser.",
       "characterPara": "Hver rolle er skræddersyet: en baggrundshistorie, private motiver, hemmeligheder at vogte og runde-for-runde-manuskripter, der griber ind i hinanden, så mysteriet rent faktisk hænger sammen. Anklager, alibier og afsløringer er skrevet til jeres team, ikke genbrugt fra en skabelon.",
       "kitPara": "Når det er klart, får I et komplet printbart kit — en værtsguide, der fører jer gennem aftenen, individuelle rollehæfter, fysiske spor og beviser samt matchende invitationer. Print det hele, eller del det digitalt. Fra første prompt til færdigt spil tager det minutter, ikke ugers planlægning."
     },
@@ -140,7 +140,7 @@
       "q1": "Er det egnet til firmaevents og teambuilding?",
       "a1": "Ja. Mystery Maker laver et helt skræddersyet murder mystery til den firmasammenhæng, I beskriver — en kontorfest, en festlig firmamiddag, en konference eller en teambuilding ude af huset. I fortæller generatoren, hvad I vil have, og den skriver plottet, de mistænkte, sporene og manuskriptet til hver rolle. Intet hentes fra et fast katalog, så ingen events bliver ens.",
       "q2": "Hvor mange deltagere kan være med?",
-      "a2": "Et hvilket som helst antal. I sætter antallet af deltagere, og generatoren tilpasser rollelisten — intime spil for 4 til 6 personer, middage for 8 til 12 eller store firmaevents for 20 eller flere. Hver deltager får sin egen rolle med motiver, hemmeligheder og runde-for-runde-manuskript, og I kan tilføje gæster som efterforskere, hvis teamet vokser."
+      "a2": "Et hvilket som helst antal. I sætter antallet af deltagere, og generatoren tilpasser rollelisten — intime spil for 4 til 6 personer, middage for 8 til 12 eller store firmaevents for 20 eller flere. Hver deltager får sin egen rolle med motiver, hemmeligheder og runde-for-runde-manuskript, og I kan tilføje gæster som med-efterforskere, hvis teamet vokser."
     },
     "officeLink": {
       "lead": "Planlægger I noget til arbejdet? Se hvordan det fungerer som",

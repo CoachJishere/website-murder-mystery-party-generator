@@ -2,6 +2,18 @@
 
 ## 2026-07-19
 
+### Improvement: Align marketing copy on the "co-investigators" term
+Landing/FAQ copy said extra guests "join as detectives," which clashes with the product term standardized in [ADR-0038](docs/adr/0038-cast-size-fixed-at-generation-and-surplus-guest-handling.md) and risks implying guests get the detective role/script (which names the culprit). Changed "as detectives" → "as co-investigators" in the two marketing strings (`guestPara`, `a2`) across all 13 languages. Also finished translating the da/sv purchase-notes block, which was still partly English.
+
+### Fix: Data remediation of recent purchases — self-questions, an evidence spoiler, accomplice reveals, a blackmail plot hole
+Audited all 8 mysteries purchased in the last month and manually remediated pre-guardrail content issues (no regeneration, no LLM/API-key pipeline — direct data edits). Relates to [ADR-0035](docs/adr/0035-evidence-cards-must-not-name-the-culprit.md) (evidence spoilers) and [ADR-0037](docs/adr/0037-whispers-playtest-clarity-and-content-coherence.md) (content guardrails).
+
+- **Self-directed questions (systemic):** the generator frequently put a question in a character's "questions to ask" list aimed **at themselves** (e.g. "To Avery Blake:" inside Avery's own list). Fixed by re-targeting each to a different, on-theme cast member. Counts: Backstage Betrayal ~31, Death Al Dente 4, Whispers 2, Morte No Topo 2, Blood/Blackmail/Bollinger 1, Deadly Tides 1. Verified **0 remaining** across all 8 purchases; all rounds still have 3 questions.
+- **Evidence spoiler (Blood, Blackmail & Bollinger):** the Round-4 card was titled "Hugo's Appointment Book" and its player-facing DESCRIPTION named the culprit (Hugo) and incriminated him — an ADR-0035 violation the 2026-07-18 sweep missed (this package wasn't in the neutralized 8). Neutralised the title + description (kept the breadcrumb: an altered appointment-book time + drawing-room access); host-only SIGNIFICANCE left intact and is stripped on print.
+- **Accomplice reveals:** the detective reveal previously arrested only the murderer. Added an accomplice confession → dual-arrest beat to **Backstage Betrayal** (Jules Fontaine) and **Whispers From The Void** (Montgomery/Margot Fairfax).
+- **Blackmail plot hole (Whispers):** Montgomery's secret + background said the fabricated-source scandal "was discovered / nearly ended your career" (public) yet was still being blackmailed over — now "never publicly exposed," so the blackmail leverage is coherent.
+- **Verified clean:** evidence spoilers on Morte, Death Al Dente, Ashworth Manor, Backstage, Whispers (ADR-0035 neutralisation held); no other blackmail contradictions (Ashford Blackwell's Whispers secret is correct — prospective). Vineyard and Deadly Tides are random-slip (`character` style) so evidence can't name a culprit by design. Timing over-specificity left as-is (low severity; the crime window is a consistent shared reference and spoken dialogue is already approximate).
+
 ### UX: Make it clear the cast size is fixed at generation, and how to host surplus guests
 Prompted by a customer asking to "update the number of characters." The cast is authored into the plot, so it can't be added to or removed after generation — but an audit found we said this **nowhere**, and the FAQ ("every part is fully editable") actively implied the opposite. Full decision in [ADR-0038](docs/adr/0038-cast-size-fixed-at-generation-and-surplus-guest-handling.md).
 
