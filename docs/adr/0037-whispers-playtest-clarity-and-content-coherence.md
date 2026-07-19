@@ -1,0 +1,65 @@
+# 0037 — Playtest response: guide clarity, detective/accomplice reveal, and content-coherence guardrails
+
+## Status
+Accepted — 2026-07-19
+
+## Context
+*Whispers From The Void* (conversation `399cae93…`, package `ffea7320…`, a predetermined **detective**-style mystery with an accomplice) was played live with 10 people (9 suspects + a host-played detective). The host produced a detailed set of playtest observations. They fall into three kinds of problem, each with a different fix location — a distinction that drives this whole ADR:
+
+1. **Rendered-guide gaps** (fixable in repo React): players didn't know what to *do* between scripted beats; no per-round "now do X" instruction; no clear "proceed straight to Round 1" cue; no cast cheat-sheet, so people couldn't remember who was who; the host had no at-a-glance checklist or reassurance that improvisation is fine.
+2. **Detective-script structure** (repo recovery mirror + Make.com parent): the detective only arrests the **murderer** — the **accomplice is never revealed or arrested** (confirmed: the generated reveal ends "This case is closed" naming only Silas/Sylvia, with no Montgomery/Margot beat); transitions between rounds were abrupt with no "you're done talking, players go" cue; a "stand up" stage direction that doesn't suit a living-room setup; and the accusation/final-statement split confused pacing.
+3. **Per-character content coherence** (Make.com child prompt, the primary generation): hyper-precise timestamps ("8:50 PM", "8:45 to 8:55") that no real person would recall; a character's own "questions to ask" list containing a question aimed **at themselves** (Jasper's Round 2 list asks Jasper about Jasper); an accomplice whose scripts both **protect and accuse** the murderer; a blackmail secret whose backstory says the scandal was **already publicly discovered** (so there is nothing left to blackmail — Montgomery's secret); evidence (the logbook) with no stated author/provenance when a guest asked "who wrote this?"; and secrets with no explicit stakes, so a player who felt no shame ("owned" her blackmail) flattened the tension for everyone.
+
+**The generation split (established by ADR-0008 / the Make.com pipeline):** primary per-character generation lives in the **Make.com child scenario** (latest export `MM Live - Child (Unified)15-PerCharacterContext`); the host-facing detective script / evidence / overview live in the **Make.com parent scenario** (latest `MM Live - Parent45`) with a hand-maintained recovery mirror in `supabase/functions/regenerate-parent-content/index.ts`. The rendered guides live in the repo React (`HostGuideTemplate.tsx`, `MysteryPackageTabView.tsx`, `CharacterAccess.tsx`). Content-quality fixes therefore mean **editing the Make.com blueprint prompts** — we duplicate the latest blueprint and version-bump (Parent45 → **Parent46**, Child15 → **Child16**) so the host can import the new version — **and** applying the same rule to the repo recovery mirror so it can't silently reintroduce the old behaviour (same discipline as ADR-0035).
+
+## Decisions
+
+### Design decisions (host's call, 2026-07-19)
+- **D1 — Reveal is a *hybrid*.** Keep the case genuinely solvable (airtight alibis/evidence so an attentive table *can* pin the culprit), but the detective's reveal still delivers a clinching final piece of evidence and a "how they did it" walkthrough. Rewards deduction without robbing the dramatic payoff. (Rejected: pure cinematic withhold; pure gamified.)
+- **D2 — Accusations and final statements stay two rounds, with explicit framing.** The problem is not the split; it's that people defaulted to self-defence during accusations. Fix by having the detective **announce the two-round structure out loud**: "There are two rounds here — first, everyone accuses someone else and says why; *then*, after everyone has gone, each of you gets a chance to defend yourself." Accusation round is forced **outward** (accuse another, cite evidence — do **not** defend yourself yet); final round is the defence + emotional close. (Rejected: merging into one turn — overloads each beat.)
+- **D3 — Secret stakes are handled by script/framing, not a new mechanic.** No scoring/point changes. Each secret is generated with **explicit prospective consequences** ("if this gets out, you lose X / are ruined / face arrest"), and every player guide carries a static **"guard this at all costs"** directive. (Rejected: a real exposure penalty/point mechanic — adds rules the game doesn't have.)
+
+### Guardrail spec (applied to Child16, and mirrored where the parent/recovery path shares the concern)
+
+- **G1 — Timing realism (two layers).** Timing is load-bearing (the incriminating mechanism), so it's fixed at the **master level**, not just downstream. *Layer 1 (Parent v46 master-constraints, all 4 `TIMELINE FRAMEWORK` prompts):* design the alibi timeline so the host holds precise-enough times to adjudicate, but player-facing alibis/locations/the culprit's gap read approximate and event-relative from the outset. *Layer 2 (Child v16):* characters recall time approximately and relative to events ("just before nine, as the lamps were lit"); a precise clock time is allowed **only** when it is a deliberate anchor **and** the character has an in-fiction reason to remember it exactly. Decided during implementation (host's call): timing is a design-from-the-outset concern, not a minor formatting detail.
+- **G2 — No self-directed questions.** A character's "questions to ask" list must **never** include a question addressed to that same character. Every target must be a *different* cast member.
+- **G3 — Evidence provenance.** Any evidence item that functions as a record or testimony (logbook, ledger, letter, journal) must state **who created/kept it** (e.g. "the manor butler's entrance logbook") so "who wrote this?" always has an answer. Provenance may be neutral and must not itself spoil the culprit (per ADR-0035).
+- **G4 — Accomplice-script coherence** *(only when `hasAccomplice = true`)*. The accomplice's throughline must be internally consistent: they **shield the murderer** (deflect, alibi, misdirect) and must **not** also be scripted to accuse or incriminate the murderer. Any pressure the accomplice applies is aimed at *other* suspects (to spread suspicion), never at the person they're protecting.
+- **G5 — Blackmail/secret logic.** A secret used as blackmail leverage (by the victim or anyone) must remain **genuinely hidden**: exposure consequences are **prospective**, not already-realised. A backstory may not say the scandal was "discovered / became public / nearly ended your career" **and** that someone is currently blackmailing them over that same fact. Either it's still secret (blackmailable) or it's public (not blackmailable) — pick one.
+- **G6 — Secret stakes + guard directive** (implements D3). Every secret states concrete prospective consequences of exposure, and the guide instructs the player to protect it at all costs. This is generation (consequences) **plus** a static render-layer reminder (guard directive) so it survives regardless of generation quality.
+
+### Rendered-guide decisions (repo)
+- **R1 — Per-round intent lines.** Each round in the player guide gets a short, static "what to do now" line keyed to that round's fixed theme (R1 introductions, R2 motive, R3 method, R4 opportunity, accusations, final statements). Static text — not AI-generated — injected in both the owner tab view and the guest page.
+- **R2 — Transition cues.** After the opening statement: "proceed immediately to Round 1." Between rounds: a clear "the detective has finished; talk amongst yourselves / investigate" beat so players know the floor is theirs.
+- **R3 — Cast cheat-sheet.** A brief "who's who" roster (name + one-line description + relationship to the victim) so players can keep 9 characters straight.
+- **R4 — Host guide additions.** (a) A reassurance note that players will improvise and going off-script is fine; (b) a top-of-guide **detective/host cheat-sheet + checklist** with the full cast/situation and "catch them going off-narrative" prompts, since the host often plays the detective and was reading the detective guide; (c) a short note capturing that a whole-group "big circle" for accusations worked well.
+
+## Rationale
+- Mirrors the ADR-0035 pattern that already worked for this exact mystery: **content guardrail at the source (Make.com) + repo mirror + data-safe** rather than one-off regeneration. Cheapest durable fix.
+- Static render-layer text (R1–R4, G6 guard directive) is deterministic and free — it fixes "players didn't know what to do" without depending on generation quality or spending LLM tokens.
+- Gating accomplice logic on `hasAccomplice` (G4, detective reveal) keeps single-culprit mysteries correct — no dangling "and the accomplice…" beat when there is none.
+
+## Alternatives considered
+- **Regenerate *Whispers* wholesale.** Rejected (same as 0035): expensive, non-deterministic, churns good content. The live package is left as-is except where a targeted data edit is cheap; the durable fix is the prompt + render changes for *future* mysteries.
+- **AI-generate the per-round "what to do" lines.** Rejected: they're the same every game (round themes are fixed in detective-style); static text is simpler, free, and can't drift.
+- **A real secret-exposure mechanic.** Rejected per D3 — the game has no scoring surface; a script directive is the simpler lever the host chose.
+
+## Consequences
+- New Make.com versions to import: **Parent46** (detective reveal accomplice beat gated on `hasAccomplice`, 2-round accusation framing, transitions, "stand up" removed) and **Child16** (G1–G6). The `temp-files/*.blueprint.json` snapshots are updated for version tracking; **importing into Make.com is a manual host step.**
+- The repo recovery mirror (`regenerate-parent-content/index.ts`) is updated in lockstep for the detective-script items, or it will reintroduce the single-arrest reveal.
+- Render changes touch **both** the owner tab view and the guest page (`CharacterAccess.tsx`); player-facing text added in one must be added in the other. **The host guide drift is now eliminated:** `HostAccess.tsx` (share link) was refactored to render the shared `HostGuideTemplate` component instead of its own column-concatenation, so the host guide is now single-source-of-truth across dashboard and share link. This required extending `get_host_package` to return `mystery_type / mystery_style / has_accomplice / player_count` (joined from `conversations`).
+- **Timing is a two-layer fix (host's call during implementation):** the master-constraints prompts (Parent v46, all 4 `TIMELINE FRAMEWORK` sections) now design the alibi timeline host-precise / player-approximate from the outset, and Child v16 enforces approximate recall per character. Timing was judged load-bearing (the incriminating mechanism), not a minor formatting detail.
+- `docs/generation-guardrails.md` aggregates G1–G6 as the canonical rule list for any future Make.com prompt work (companion to `docs/evidence-card-generation-guardrail.md`).
+
+## Discussion
+The load-bearing judgment was **where each fix belongs**, because "the timing is too specific" and "add a cast list" feel similar but live in completely different systems — one is a Make.com prompt the host imports, the other is React we ship. Grounding every guardrail in the *actual generated text* (Jasper's self-question, Montgomery's public-yet-blackmailed scandal, the minute-precise Round 4) kept the rules concrete rather than abstract style notes. On the reveal (D1) we deliberately refused the binary: the hybrid keeps the deduction loop honest (the S.C. handwriting breadcrumb from ADR-0035 already gives an attentive table the chain) while preserving the detective's theatrical close. On accusations (D2) the host's own reframing — announce "two rounds, accuse first then defend" — was better than merging, because it fixes the *behaviour* (premature self-defence) without collapsing two distinct emotional beats.
+
+## Key files
+- `docs/generation-guardrails.md` — G1–G6 rule list for Make.com prompt work
+- `temp-files/MM Live - Child (Unified)16-*.blueprint.json` — per-character generation (G1–G6)
+- `temp-files/MM Live - Parent46-*.blueprint.json` — detective script (reveal/accomplice/transitions)
+- `supabase/functions/regenerate-parent-content/index.ts` — recovery mirror of the detective/evidence prompts (keep in lockstep)
+- `src/components/HostGuideTemplate.tsx` — host cheat-sheet, off-script note, big-circle tip (R4)
+- `src/components/MysteryPackageTabView.tsx` — per-round intent lines, transitions, cast sheet, guard directive (owner view)
+- `src/pages/CharacterAccess.tsx` — same render additions for the guest page
+- ADR-0035 — evidence-card culprit-name guardrail (sibling; same mystery)

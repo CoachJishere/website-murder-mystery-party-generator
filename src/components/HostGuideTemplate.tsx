@@ -53,7 +53,19 @@ const HostGuideTemplate: React.FC<HostGuideTemplateProps> = ({
 
   // The static template content as one large markdown block.
   // This is intentionally not in i18n yet — keep simple for v1, translate later.
-  const staticTemplate = `## Materials
+  const staticTemplate = `## Host Quick-Start Checklist
+
+Keep this open during the game — it's your at-a-glance control panel, especially if you're also playing the ${Investigator}.
+
+- [ ] Everyone has their character page open (sent digitally before the party)
+- [ ] You've read this guide and the ${Investigator} Guide, and skimmed every character's secret so you know who is hiding what
+- [ ] Evidence cards ready (printed or on a screen), one per round
+- [ ] ${isCharacterBased ? `Slips prepared for the ${culprit}${hasAccomplice ? "/accomplice" : ""} draw` : `You know who the ${culprit}${hasAccomplice ? " and accomplice are" : " is"} (see the ${Investigator} Guide)`}
+- [ ] Keep the cast list (top of each player's guide) and the Game Overview within reach — you'll use them to pull the story back on track
+
+**Round order at a glance:** Introductions → Round 2 (Motives) → Round 3 (Means) → Round 4 (Opportunity) → Accusations → Final Statements → The Reveal.
+
+## Materials
 
 **Universal items:**
 - Character guides — already sent to each guest digitally before the party
@@ -135,7 +147,25 @@ Each round follows the same pattern:
 3. **Players ask each other questions** using their character page's question/response options for that round
 4. **Keep pacing tight** — don't let one round drag. The host (regardless of whether they're playing the ${investigator} or a suspect) keeps time
 
-After Round 4, the **Accusations** phase: each player names who they think is the ${culprit} and gives a one-sentence reason. Then **Final Statements**, where each player makes one last plea or confession. Finally, the **Reveal** — the ${culprit} stands and reads their confession aloud.
+After Round 4 come **two distinct rounds** — say this out loud so players don't jump ahead:
+
+1. **Accusations** — going around the group, each player accuses *someone else* and gives a one-sentence reason from the evidence. This round points **outward**: ask players to hold their own defense for now.
+2. **Final Statements** — *after everyone has accused*, each player gets their turn to defend themselves and make one last plea or confession.
+
+A nice way to run the accusations: gather everyone into one **big circle** so the whole group weighs in together. It builds pressure and keeps the conversation coherent as suspicion shifts around the room.
+
+Finally, the **Reveal** — the ${Investigator} names the ${culprit}, who reads their confession aloud${hasAccomplice ? `. Then the ${Investigator} turns to the accomplice, who confesses too — and **both** are arrested` : ""}.
+
+## Keeping the Story on Track
+
+Players will improvise, add their own flair, and sometimes wander off-script — **this is normal and it's fine.** A little chaos is part of the fun, and you don't need to correct every departure. Only step in when the thread is genuinely lost.
+
+When it drifts, the ${Investigator} is your tool for pulling it back. Because the ${investigator} is suspicious of everyone, you can always cut in with a pointed question:
+- "Wait — a moment ago you said you were in the parlor. How does that square with what we just heard?"
+- "That's curious. Earlier you told us something different. Which is it?"
+- "Let's come back to the facts. [Name], where exactly were you when it happened?"
+
+Keep the Game Overview and each character's secret handy (you skimmed them in the checklist) so you can always re-anchor the group in what's actually true.
 
 ## Hosting Tips
 
@@ -144,6 +174,8 @@ After Round 4, the **Accusations** phase: each player names who they think is th
 - **Watch for quiet players.** Prompt them with a question if they haven't spoken in a round.
 - **Watch for dominant players.** Gently redirect: "Let's hear from someone we haven't heard from."
 - **The ${culprit} should NOT confess too early** — they should defend themselves until cornered. Encourage them to play it cool.
+- **Everyone protects their secret.** Each character has a secret with real consequences if it gets out. Remind players to guard it — a player who shrugs off their secret drains the tension for everyone. Defending your reputation is half the game.
+- **Let the group move.** Small clusters of conversation and one big circle for the accusations both work well — don't force everyone to stay in one seated formation the whole time.
 - **Improvise.** If a player asks something not in their script options, encourage in-character improvisation.
 - **Have fun with atmosphere.** Music and a themed snack go a long way; nothing else is required.
 `;

@@ -67,6 +67,9 @@ const CharacterAccess: React.FC = () => {
   // games the culprit is drawn secretly at the table, so revealing the role here
   // would spoil it. See HostGuideTemplate "Determining the Culprit".
   const [mysteryStyle, setMysteryStyle] = useState<string | null>(null);
+  // Cast roster (name + public description only) so players can keep track of
+  // who's who — ADR-0037 R3, via the token-scoped get_cast_by_token RPC.
+  const [cast, setCast] = useState<Array<{ character_name: string; description: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -151,6 +154,13 @@ const CharacterAccess: React.FC = () => {
       if (typeof overview === 'string' && overview.trim()) {
         setGameOverview(overview.trim());
       }
+
+      // Cast roster (who's who) — names + public descriptions only, token-scoped.
+      const { data: castData } = await supabase
+        .rpc('get_cast_by_token', { access_token_param: accessToken });
+      if (Array.isArray(castData)) {
+        setCast(castData as Array<{ character_name: string; description: string }>);
+      }
     } catch (error: any) {
       console.error('Error loading character assignment:', error);
       setError(`${t('characterAccess.errors.loadFailed')}: ${error.message || t('auth.errors.unknownError')}`);
@@ -230,13 +240,41 @@ const CharacterAccess: React.FC = () => {
         : `## Game Overview\n\n${gameOverview}\n\n`;
     }
 
+    // Cast roster — a quick "who's who" so players can keep everyone straight
+    // (ADR-0037 R3). One brief line each; the player's own character is marked.
+    if (cast.length > 1) {
+      const briefLine = (desc: string): string => {
+        const cleaned = (desc || '')
+          .replace(/^#+\s*CHARACTER DESCRIPTION\s*/i, '')
+          .replace(/[#*_>`]/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+        const m = cleaned.match(/^(.*?[.!?])(\s|$)/);
+        const firstSentence = m ? m[1] : cleaned;
+        return firstSentence.length > 160
+          ? `${firstSentence.slice(0, 157).trimEnd()}…`
+          : firstSentence;
+      };
+      const rows = cast.map((c) => {
+        const isSelf = c.character_name === character.character_name;
+        return `- **${c.character_name}${isSelf ? ' (you)' : ''}** — ${briefLine(c.description)}`;
+      }).join('\n');
+      content += `## The Cast — Who's Who\n\nA quick reference so you can keep everyone straight. Knowing who's who is not the same as knowing their secrets.\n\n${rows}\n\n`;
+    }
+
     // Static character info — no pointform variants
     if (character.description) content += `${cleanMarkdownHeaders(character.description)}\n\n`;
     if (character.background) content += `${cleanMarkdownHeaders(character.background)}\n\n`;
     if (character.relationships && typeof character.relationships === 'string') {
       content += `${cleanMarkdownHeaders(character.relationships)}\n\n`;
     }
-    if (character.secret) content += `${cleanMarkdownHeaders(character.secret)}\n\n`;
+    if (character.secret) {
+      content += `${cleanMarkdownHeaders(character.secret)}\n\n`;
+      // Static stakes reminder (ADR-0037 G6): players who shrug off their secret
+      // flatten the tension for everyone. Keep it generic — the generated secret
+      // now carries its own specific consequences.
+      content += `> **Guard this secret at all costs.** Your reputation — and perhaps your freedom — depends on keeping it hidden. Deny, deflect, and never give it up willingly. A secret handed over freely drains the tension for the whole table.\n\n`;
+    }
 
     // Round 1 setup — has pointform variants
     const introBlock = formatScriptField(
@@ -244,6 +282,8 @@ const CharacterAccess: React.FC = () => {
       'ROUND 1: YOUR INTRODUCTION',
     );
     if (introBlock) {
+      // Static "what to do now" line for Round 1 (ADR-0037 R1)
+      content += `> **Round 1 — Introductions.** When it's your turn, deliver your introduction below. Listen closely to everyone else's — the details you hear now will matter in later rounds.\n\n`;
       // Pull off the section heading, wrap the prose body in quotes, re-emit
       const m = introBlock.match(/^(##\s+[^\n]+\n+)([\s\S]*)$/);
       if (m && (scriptType === 'full' || (scriptType === 'both' && !introBlock.includes('**Point Form:**')))) {
@@ -270,8 +310,24 @@ const CharacterAccess: React.FC = () => {
     // Rounds 2-4 — prefer unified `round_script` (detective-style); fall back to per-role
     // columns (character-based) when the unified column is absent. Both paths respect
     // the host's script_type choice (pointForm/full/both) via formatScriptField.
+    // Static "what to do now" line per round, keyed to each round's fixed theme
+    // (ADR-0037 R1/R2). Rendered only when the round actually has content.
+    const roundIntro: Record<2 | 3 | 4, string> = {
+      2: "**Round 2 — Motives.** The question now is *why*. Use your questions below to probe why others might have wanted the victim gone — and be ready to answer for your own motive.",
+      3: "**Round 3 — The Method.** Focus shifts to *how* it was done. Press others on what they knew about the method, the means, and the scene of the crime.",
+      4: "**Round 4 — Opportunity.** Where was everyone? Use the evidence to pin down alibis — and be ready to account for your own whereabouts.",
+    };
+
     const renderRound = (roundNum: 2 | 3 | 4) => {
       const questions = character[`round${roundNum}_questions`];
+      const hasRoundContent = !!(
+        questions ||
+        character[`round${roundNum}_script`] ||
+        character[`round${roundNum}_innocent`] ||
+        character[`round${roundNum}_guilty`] ||
+        character[`round${roundNum}_accomplice`]
+      );
+      if (hasRoundContent) content += `> ${roundIntro[roundNum]}\n\n`;
       if (questions) content += `${cleanMarkdownHeaders(questions)}\n\n`;
 
       const unified = character[`round${roundNum}_script`];
@@ -328,6 +384,13 @@ const CharacterAccess: React.FC = () => {
     renderRound(4);
 
     // Final statement — prefer unified, fall back to per-role variants
+    const hasFinal = !!(
+      character.final_statement || character.final_innocent ||
+      character.final_guilty || character.final_accomplice
+    );
+    if (hasFinal) {
+      content += `> **Final Statements — your turn to defend.** After everyone has made their accusations, this is your last word. Defend yourself against what was said — or, if you're guilty, make your confession.\n\n`;
+    }
     if (character.final_statement) {
       const finalBlock = formatScriptField(
         character.final_statement, character.final_statement_pointform,
@@ -372,6 +435,7 @@ const CharacterAccess: React.FC = () => {
 
     // Accusations — has pointform variants (only populated for guilty/accomplice)
     if (character.accusations) {
+      content += `> **Accusations — point outward.** When the accusations round begins, accuse the person you most suspect and give one reason from the evidence. This round is for pointing the finger — save your own defense for the final statements that follow.\n\n`;
       const accBlock = formatScriptField(
         character.accusations, character.accusations_pointform,
         'ACCUSATIONS',

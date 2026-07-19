@@ -69,6 +69,39 @@ const CHARACTER_FIELD_LABELS: Record<string, string> = {
   final_accomplice: 'Final Statement — Accomplice',
 };
 
+// Static "what to do now" helper lines shown above each round (ADR-0037 R1/R2).
+// Non-editable — never saved to the DB. Keyed to the round's lead field; detective
+// (round_script) and character-based (innocent) styles are mutually exclusive so
+// only one variant per round renders.
+const ROUND_INTENT: Record<string, string> = {
+  introduction: "**Round 1 — Introductions.** When it's your turn, deliver your introduction below. Listen closely to everyone else's — the details you hear now will matter in later rounds.",
+  round2_script: "**Round 2 — Motives.** The question now is *why*. Use your questions below to probe why others might have wanted the victim gone — and be ready to answer for your own motive.",
+  round2_innocent: "**Round 2 — Motives.** The question now is *why*. Use your questions below to probe why others might have wanted the victim gone — and be ready to answer for your own motive.",
+  round3_script: "**Round 3 — The Method.** Focus shifts to *how* it was done. Press others on what they knew about the method, the means, and the scene of the crime.",
+  round3_innocent: "**Round 3 — The Method.** Focus shifts to *how* it was done. Press others on what they knew about the method, the means, and the scene of the crime.",
+  round4_script: "**Round 4 — Opportunity.** Where was everyone? Use the evidence to pin down alibis — and be ready to account for your own whereabouts.",
+  round4_innocent: "**Round 4 — Opportunity.** Where was everyone? Use the evidence to pin down alibis — and be ready to account for your own whereabouts.",
+  accusations: "**Accusations — point outward.** When the accusations round begins, accuse the person you most suspect and give one reason from the evidence. Save your own defense for the final statements that follow.",
+  final_statement: "**Final Statements — your turn to defend.** After everyone has accused, this is your last word. Defend yourself — or, if you're guilty, make your confession.",
+  final_innocent: "**Final Statements — your turn to defend.** After everyone has accused, this is your last word. Defend yourself — or, if you're guilty, make your confession.",
+};
+
+// Static stakes reminder shown under each character's secret (ADR-0037 G6).
+const GUARD_DIRECTIVE = "**Guard this secret at all costs.** Your reputation — and perhaps your freedom — depends on keeping it hidden. Deny, deflect, and never give it up willingly. A secret handed over freely drains the tension for the whole table.";
+
+// Extract a one-line "who is this" summary from a character description for the
+// cast cheat-sheet (ADR-0037 R3).
+function castBriefLine(desc?: string): string {
+  const cleaned = (desc || '')
+    .replace(/^#+\s*CHARACTER DESCRIPTION\s*/i, '')
+    .replace(/[#*_>`]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const m = cleaned.match(/^(.*?[.!?])(\s|$)/);
+  const s = m ? m[1] : cleaned;
+  return s.length > 160 ? `${s.slice(0, 157).trimEnd()}…` : s;
+}
+
 // accusations is stored as a JSON string with {round2, round3, round4} summaries.
 // Convert to readable markdown so it renders cleanly instead of leaking raw JSON.
 function formatAccusations(raw: string | undefined | null): string | undefined {
@@ -844,6 +877,11 @@ const MysteryPackageTabView = React.memo(({
                 "space-y-4",
                 isMobile && "space-y-3"
               )}>
+                {charactersList.length > 1 && (
+                  <div className={cn("prose max-w-none mb-2", isMobile && "prose-sm")}>
+                    <ReactMarkdown>{`## The Cast — Who's Who\n\nA quick reference so players can keep everyone straight.\n\n${charactersList.map((c: any) => `- **${c.character_name}** — ${castBriefLine(c.description)}`).join('\n')}`}</ReactMarkdown>
+                  </div>
+                )}
                 {charactersList.map((character, index) => {
                   // Detective-style uses round_script fields (with headers); character-based uses innocent/guilty fields
                   const hasDetectiveScripts = !!(character.round2_script || character.round3_script || character.round4_script);
@@ -980,17 +1018,28 @@ const MysteryPackageTabView = React.memo(({
                             {characterFields
                               .filter(f => f.content && !isStub(f.content))
                               .map(field => (
-                                <EditableSection
-                                  key={`${character.id}-${field.key}`}
-                                  content={field.content!}
-                                  onSave={(val) =>
-                                    onCharacterFieldUpdate?.(character.id, field.key, val) ?? Promise.resolve()
-                                  }
-                                  canEdit={!!onCharacterFieldUpdate}
-                                  sectionLabel={`${character.character_name} - ${field.key}`}
-                                  fallbackLabel={CHARACTER_FIELD_LABELS[field.key]}
-                                  isMobile={isMobile}
-                                />
+                                <React.Fragment key={`${character.id}-${field.key}`}>
+                                  {ROUND_INTENT[field.key] && (
+                                    <div className={cn("prose max-w-none guide-intent", isMobile && "prose-sm")}>
+                                      <ReactMarkdown>{`> ${ROUND_INTENT[field.key]}`}</ReactMarkdown>
+                                    </div>
+                                  )}
+                                  <EditableSection
+                                    content={field.content!}
+                                    onSave={(val) =>
+                                      onCharacterFieldUpdate?.(character.id, field.key, val) ?? Promise.resolve()
+                                    }
+                                    canEdit={!!onCharacterFieldUpdate}
+                                    sectionLabel={`${character.character_name} - ${field.key}`}
+                                    fallbackLabel={CHARACTER_FIELD_LABELS[field.key]}
+                                    isMobile={isMobile}
+                                  />
+                                  {field.key === 'secret' && (
+                                    <div className={cn("prose max-w-none guide-intent", isMobile && "prose-sm")}>
+                                      <ReactMarkdown>{`> ${GUARD_DIRECTIVE}`}</ReactMarkdown>
+                                    </div>
+                                  )}
+                                </React.Fragment>
                               ))}
                           </div>
                         </AccordionContent>

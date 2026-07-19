@@ -130,13 +130,17 @@ These scripts can be delivered in two ways:
 
 [2-3 short paragraphs of in-character first-person dialogue establishing the crime, the stakes, and that everyone present is a suspect. ~120-180 words.]
 
+*[Proceed immediately into Round 1 — there is no break here.]*
+
 ---
 
 ## ROUND 1: INTRODUCTIONS & RUMORS
 
-*[Read after the opening statement.]*
+*[Read immediately after the opening statement — flow straight in, no pause.]*
 
 [1 paragraph of in-character first-person dialogue prompting introductions and rumor-sharing. ~80-120 words.]
+
+*[The detective now steps back. Invite the guests to introduce themselves and trade rumors amongst one another, then reconvene for the next round.]*
 
 ---
 
@@ -146,6 +150,8 @@ These scripts can be delivered in two ways:
 
 [1-2 paragraphs of in-character first-person dialogue. Include a [Present Round 2 Evidence] cue mid-paragraph. ~120-180 words.]
 
+*[The detective steps back. Let the guests question one another about motives using their round prompts, then reconvene.]*
+
 ---
 
 ## ROUND 3: METHOD
@@ -153,6 +159,8 @@ These scripts can be delivered in two ways:
 *[Read after the Round 3 evidence card is revealed.]*
 
 [1-2 paragraphs. Include [Present Round 3 Evidence] cue. ~120-180 words.]
+
+*[The detective steps back. Let the guests press one another on the method, then reconvene.]*
 
 ---
 
@@ -162,25 +170,27 @@ These scripts can be delivered in two ways:
 
 [1-2 paragraphs. Include [Present Round 4 Evidence] cue. ~120-180 words.]
 
+*[The detective steps back. Let the guests pin down alibis and opportunity, then reconvene for the accusations.]*
+
 ---
 
-## ACCUSATIONS AND RESOLUTION
+## ACCUSATIONS
 
 *[Read after Round 4 discussion winds down.]*
 
-[1 paragraph of in-character dialogue prompting each player to name the murderer with one-sentence reasoning. ~80-120 words.]
+[1 paragraph of in-character dialogue. The detective explicitly announces there are TWO rounds now: FIRST, everyone accuses — going around the group, each player accuses SOMEONE ELSE and gives one-sentence reasoning from the evidence, and should NOT defend themselves yet; THEN, after everyone has accused, each player gets their chance to defend themselves. Make this two-part structure explicit so players point outward rather than pre-emptively defending. ~100-140 words.]
 
-*[Each player in turn names their suspect with one-sentence reasoning. Tally votes.]*
+*[Going around the group, each player in turn accuses another with one-sentence reasoning. Hold defenses for the next round. Tally the accusations.]*
 
 ---
 
 ## FINAL STATEMENTS
 
-*[Read before the reveal.]*
+*[Read after every player has made their accusation.]*
 
-[1 paragraph inviting each player to make a final statement. ~60-100 words.]
+[1 paragraph reminding players this is the second round: now, having heard who was accused, each player gets to defend themselves and make one last plea — or, if guilty, begin to crack. ~60-100 words.]
 
-*[Each player makes a final statement.]*
+*[Each player, in turn, defends themselves and makes their final statement.]*
 
 ---
 
@@ -188,11 +198,17 @@ These scripts can be delivered in two ways:
 
 *[After all final statements. Build the moment.]*
 
-[2-3 short paragraphs announcing whether the room got it right, naming the actual murderer, and inviting them to confess. Reference the key evidence threads. ~120-180 words.]
+[2-3 short paragraphs announcing whether the room got it right, naming the actual murderer, and inviting them to confess. Reference the key evidence threads and deliver a clinching piece of evidence that pins them — while keeping the deduction fair to an attentive table. ~120-180 words.]
 
-*[The murderer (player) reads their confession aloud. Then the detective closes the scene.]*
+*[The murderer (player) reads their confession aloud.]*
 
-CRITICAL: Output ONLY the markdown above with all bracketed sections filled in. NO JSON.
+[ACCOMPLICE BEAT — include this paragraph ONLY IF the master_context defines an accomplice. After the murderer's confession, the detective turns to the room — "But you did not act alone, did you?" — names the accomplice, and invites them to confess their part. ~60-100 words. If there is NO accomplice, omit this beat entirely.]
+
+*[If there is an accomplice: the accomplice (player) reads their confession aloud.]*
+
+[CLOSING: 1 short paragraph where the detective closes the scene. If there was an accomplice, the detective places BOTH the murderer and the accomplice under arrest and names both; otherwise, the murderer alone. ~60-100 words.]
+
+CRITICAL: Output ONLY the markdown above with all bracketed sections filled in. NO JSON. Include the accomplice beat ONLY when the master_context defines an accomplice. Never instruct players to stand up or physically reposition themselves — assume a seated group throughout.
 </output_instructions>`,
 
   evidence_cards: `<role>

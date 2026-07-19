@@ -8,6 +8,8 @@ import "../styles/print.css";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
 import { useTranslation } from "react-i18next";
+import HostGuideTemplate from "@/components/HostGuideTemplate";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface HostPackageData {
   title: string;
@@ -19,11 +21,18 @@ interface HostPackageData {
   hosting_tips: string;
   detective_script: string;
   evidence_cards: any;
+  // Mystery params (from conversations) — feed HostGuideTemplate so the shared
+  // host guide renders identically to the dashboard (ADR-0037, single source of truth).
+  mystery_type: string | null;
+  mystery_style: string | null;
+  has_accomplice: boolean | null;
+  player_count: number | null;
 }
 
 const HostAccess: React.FC = () => {
   const { t } = useTranslation();
   const { token } = useParams<{ token: string }>();
+  const isMobile = useIsMobile();
   const [packageData, setPackageData] = useState<HostPackageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,32 +73,6 @@ const HostAccess: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const buildHostGuideContent = (): string => {
-    if (!packageData) return "";
-    let content = "";
-
-    if (packageData.game_overview) {
-      content += `${packageData.game_overview}\n\n`;
-    }
-    if (packageData.host_guide) {
-      content += `${packageData.host_guide}\n\n`;
-    }
-    if (packageData.materials) {
-      content += `${packageData.materials}\n\n`;
-    }
-    if (packageData.preparation_instructions) {
-      content += `${packageData.preparation_instructions}\n\n`;
-    }
-    if (packageData.timeline) {
-      content += `${packageData.timeline}\n\n`;
-    }
-    if (packageData.hosting_tips) {
-      content += `${packageData.hosting_tips}\n\n`;
-    }
-
-    return content;
   };
 
   const buildDetectiveKitContent = (): string => {
@@ -213,9 +196,20 @@ const HostAccess: React.FC = () => {
             <Card>
               <CardContent className="p-6">
                 <div className="mystery-content">
-                  <ReactMarkdown components={markdownComponents}>
-                    {buildHostGuideContent()}
-                  </ReactMarkdown>
+                  {/* Same component the dashboard renders — keeps the host guide
+                      (checklist, off-script note, two-round framing, big-circle tip)
+                      identical across owner view and share link. Read-only: no
+                      onPackageFieldUpdate passed. */}
+                  <HostGuideTemplate
+                    mysteryType={packageData.mystery_type}
+                    mysteryStyle={packageData.mystery_style}
+                    hasAccomplice={packageData.has_accomplice}
+                    playerCount={packageData.player_count}
+                    gameOverview={packageData.game_overview}
+                    materials={packageData.materials}
+                    hostingTips={packageData.hosting_tips}
+                    isMobile={isMobile}
+                  />
                 </div>
               </CardContent>
             </Card>
