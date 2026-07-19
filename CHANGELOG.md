@@ -2,7 +2,13 @@
 
 ## 2026-07-19
 
-### UX: Playtest response — clearer player guides, host cheat-sheet, and accomplice-aware detective reveal
+### UX: Make it clear the cast size is fixed at generation, and how to host surplus guests
+Prompted by a customer asking to "update the number of characters." The cast is authored into the plot, so it can't be added to or removed after generation — but an audit found we said this **nowhere**, and the FAQ ("every part is fully editable") actively implied the opposite. Full decision in [ADR-0038](docs/adr/0038-cast-size-fixed-at-generation-and-surplus-guest-handling.md).
+
+- **Stated the constraint at every touchpoint:** purchase-page "Important Notes" ([en.json](src/i18n/locales/en.json) `purchase.notes.items`), the "Can I edit my mystery?" FAQ answer (now: editing changes content, not cast size), the Host Guide, and an inline note in the character-editing tab ([MysteryPackageTabView.tsx](src/components/MysteryPackageTabView.tsx)).
+- **New Host Guide section "Managing Last-Minute Guest Changes"** ([HostGuideTemplate.tsx](src/components/HostGuideTemplate.tsx)): more guests than characters → bring them in as **co-investigators** on the detective's team; fewer guests → drop only innocent suspects, never the culprit/accomplice.
+- **Spoiler guardrail baked into the copy:** co-investigators get investigation materials (clues/evidence) only — **never the detective script or host guide**, since those name the culprit. Same principle as ADR-0035 (evidence cards must not name the culprit). Chose "co-investigators" over "amateur/sleuth" — story-coherent and it justifies withholding the case file in-fiction.
+- **Follow-up:** English only for now; 12-language translation is a separate batch per the i18n workflow.
 Grounded in the live playtest of *Whispers From The Void* (10 players). Decisions and full spec in [ADR-0037](docs/adr/0037-whispers-playtest-clarity-and-content-coherence.md); Make.com guardrails in [docs/generation-guardrails.md](docs/generation-guardrails.md).
 
 - **Player guides now say what to do each round.** Added static "what to do now" intro lines keyed to each round's fixed theme (R1 introductions, R2 motives, R3 method, R4 opportunity, accusations, final statements), a "guard this secret at all costs" stakes reminder under every secret, and a **"Who's Who" cast cheat-sheet** so players can keep a large cast straight. Applied in both the owner tab view ([MysteryPackageTabView.tsx](src/components/MysteryPackageTabView.tsx), non-editable so it isn't saved back) and the guest page ([CharacterAccess.tsx](src/pages/CharacterAccess.tsx)).

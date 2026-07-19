@@ -675,7 +675,7 @@
         },
         "canIEdit": {
           "question": "Voinko muokata mysteeriäni sen luomisen jälkeen?",
-          "answer": "Kyllä! Mysteerisi jokainen osa on täysin muokattavissa luomisen jälkeen. Voit hienosäätää hahmojen käsikirjoituksia, muokata isännöintiopasta, muuttaa todistekortteja ja päivittää etsivän käsikirjoitusta — kaikki suoraan sovelluksessa. Voit myös tallentaa mysteerisi PDF-tiedostona."
+          "answer": "Kyllä! Jokainen hahmo ja osio on täysin muokattavissa luomisen jälkeen — hienosäädä hahmojen käsikirjoituksia, muokkaa isännöintiopasta, muuta todistekortteja ja päivitä etsivän käsikirjoitusta, kaikki suoraan sovelluksessa, ja tallenna se PDF-tiedostona. Yksi asia on hyvä tietää: muokkaaminen muuttaa sisältöä, ei hahmojen määrää. Epäiltyhahmojen määrä lukitaan, kun mysteerisi luodaan, joten epäiltyjen lisääminen tai poistaminen tarkoittaa mysteerin luomista uudelleen. Jos sinulla on yksinkertaisesti enemmän vieraita kuin hahmoja, he voivat liittyä apututkijoiksi etsivän tiimiin — muutoksia ei tarvita."
         }
       }
     },
@@ -1054,6 +1054,7 @@
       "title": "Tärkeitä huomioita",
       "items": [
         "Tämä on kertaluonteinen osto tälle tietylle mysteeripaketille",
+        "Hahmojen määrä lukitaan, kun mysteeri luodaan — jokaista hahmoa voi muokata täysin jälkikäteen, mutta epäiltyhahmojen lisääminen tai poistaminen vaatii uuden luomisen. Onko sinulla enemmän vieraita kuin hahmoja? He voivat liittyä apututkijoiksi etsivän tiimiin (katso isännöintiopas).",
         "Saat pysyvän käyttöoikeuden kaikkien materiaalien lataamiseen",
         "Sisältö on tarkoitettu vain henkilökohtaiseen käyttöön, ei kaupalliseen jakeluun",
         "Tarvitsetko apua? Ota yhteyttä tukeemme osoitteessa {{email}}"

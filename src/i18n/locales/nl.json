@@ -675,7 +675,7 @@
         },
         "canIEdit": {
           "question": "Kan ik mijn mysterie bewerken nadat het is gegenereerd?",
-          "answer": "Ja! Elk onderdeel van je mysterie is na het genereren volledig te bewerken. Je kunt personagescripts aanpassen, de hostgids bijwerken, bewijskaarten wijzigen en het detectivescript aanpassen — allemaal direct in de app. Je kunt je mysterie ook opslaan als PDF."
+          "answer": "Ja! Elk personage en elk onderdeel is na het genereren volledig te bewerken — pas personagescripts aan, werk de hostgids bij, wijzig bewijskaarten en pas het detectivescript aan, allemaal direct in de app, en sla het op als PDF. Eén ding om te weten: bewerken verandert de inhoud, niet de omvang van de cast. Het aantal verdachte personages wordt bepaald wanneer je mysterie wordt gegenereerd, dus het toevoegen of verwijderen van verdachten betekent het mysterie opnieuw genereren. Als je simpelweg meer gasten dan personages hebt, kunnen ze meedoen als mede-onderzoekers in het team van de detective — geen wijzigingen nodig."
         }
       }
     },
@@ -1054,6 +1054,7 @@
       "title": "Belangrijke Opmerkingen",
       "items": [
         "Dit is een eenmalige aankoop voor dit specifieke mysteriepakket",
+        "De omvang van je cast wordt bepaald wanneer het mysterie wordt gegenereerd — elk personage is daarna volledig te bewerken, maar het toevoegen of verwijderen van verdachte personages vereist opnieuw genereren. Meer gasten dan personages? Ze kunnen meedoen als mede-onderzoekers in het team van de detective (zie de hostgids).",
         "U heeft permanent toegang om alle materialen te downloaden",
         "Inhoud is alleen voor persoonlijk gebruik, niet voor commerciële herdistributie",
         "Hulp nodig? Neem contact op met onze support via {{email}}"

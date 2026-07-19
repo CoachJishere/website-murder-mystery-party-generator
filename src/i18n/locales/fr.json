@@ -676,7 +676,7 @@
         },
         "canIEdit": {
           "question": "Puis-je modifier mon mystère après sa génération ?",
-          "answer": "Oui ! Chaque partie de votre mystère est entièrement modifiable après la génération. Vous pouvez retoucher les scripts des personnages, ajuster le guide de l'hôte, modifier les cartes d'indices et mettre à jour le script du détective — le tout directement dans l'application. Vous pouvez aussi enregistrer votre mystère au format PDF."
+          "answer": "Oui ! Chaque personnage et chaque section est entièrement modifiable après la génération — retouchez les scripts des personnages, ajustez le guide de l'hôte, modifiez les cartes d'indices et mettez à jour le script du détective, le tout directement dans l'application, et enregistrez-le au format PDF. Une chose à savoir : la modification change le contenu, pas la taille de la distribution. Le nombre de personnages suspects est fixé lors de la génération de votre mystère, donc ajouter ou supprimer des suspects implique de régénérer le mystère. Si vous avez simplement plus d'invités que de personnages, ils peuvent participer comme co-enquêteurs dans l'équipe du détective — aucune modification nécessaire."
         }
       }
     },
@@ -1077,6 +1077,7 @@
       "title": "Notes importantes",
       "items": [
         "Il s'agit d'un achat unique pour ce package mystère spécifique",
+        "La taille de votre distribution est fixée lors de la génération du mystère — chaque personnage est entièrement modifiable ensuite, mais ajouter ou supprimer des personnages suspects nécessite une régénération. Vous avez plus d'invités que de personnages ? Ils peuvent participer comme co-enquêteurs dans l'équipe du détective (voir le guide de l'hôte).",
         "Vous bénéficierez d'un accès permanent aux téléchargements de tous les matériaux",
         "Le contenu est destiné à un usage personnel uniquement, pas à une distribution commerciale",
         "Besoin d'aide ? Contactez notre support à {{email}}"

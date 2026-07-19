@@ -882,6 +882,12 @@ const MysteryPackageTabView = React.memo(({
                     <ReactMarkdown>{`## The Cast — Who's Who\n\nA quick reference so players can keep everyone straight.\n\n${charactersList.map((c: any) => `- **${c.character_name}** — ${castBriefLine(c.description)}`).join('\n')}`}</ReactMarkdown>
                   </div>
                 )}
+                <div className={cn(
+                  "rounded-md border border-muted bg-muted/40 px-3 py-2 text-xs text-muted-foreground mb-2",
+                  isMobile && "text-[11px]"
+                )}>
+                  You can edit every character below, but the number of suspects is fixed for this mystery — adding or removing a character means regenerating. Have more guests than characters? They can join as <strong>co-investigators</strong> on the detective's team (see the Host Guide) — just don't share the detective script with them, as it names the culprit.
+                </div>
                 {charactersList.map((character, index) => {
                   // Detective-style uses round_script fields (with headers); character-based uses innocent/guilty fields
                   const hasDetectiveScripts = !!(character.round2_script || character.round3_script || character.round4_script);

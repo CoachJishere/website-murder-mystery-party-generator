@@ -675,7 +675,7 @@
         },
         "canIEdit": {
           "question": "Kan jag redigera mitt mysterium efter att det har genererats?",
-          "answer": "Ja! Varje del av ditt mysterium går att redigera fullt ut efter genereringen. Du kan justera karaktärernas manus, anpassa värdguiden, ändra beviskorten och uppdatera detektivmanuset — allt direkt i appen. Du kan också spara ditt mysterium som PDF."
+          "answer": "Ja! Varje karaktär och avsnitt går att redigera fullt ut efter genereringen — justera karaktärernas manus, anpassa värdguiden, ändra beviskorten och uppdatera detektivmanuset, allt direkt i appen, och spara det som PDF. En sak att känna till: redigering ändrar innehållet, inte rollbesättningens storlek. Antalet misstänkta karaktärer fastställs när ditt mysterium genereras, så att lägga till eller ta bort misstänkta innebär att mysteriet genereras på nytt. Om du helt enkelt har fler gäster än karaktärer kan de delta som medutredare i detektivens team — inga ändringar behövs."
         }
       }
     },
@@ -1042,6 +1042,7 @@
       "title": "Important Notes",
       "items": [
         "This is a one-time purchase for this specific mystery package",
+        "Rollbesättningens storlek fastställs när mysteriet genereras — varje karaktär går att redigera fullt ut efteråt, men att lägga till eller ta bort misstänkta karaktärer kräver en ny generering. Har du fler gäster än karaktärer? De kan delta som medutredare i detektivens team (se värdguiden).",
         "You'll have permanent access to download all materials",
         "Content is for personal use only, not for commercial redistribution",
         "Need help? Contact our support at {{email}}"

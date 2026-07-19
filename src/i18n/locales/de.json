@@ -675,7 +675,7 @@
         },
         "canIEdit": {
           "question": "Kann ich mein Mysterium nach der Generierung bearbeiten?",
-          "answer": "Ja! Jeder Teil Ihres Mysteriums ist nach der Generierung vollständig bearbeitbar. Sie können Charakter-Skripte anpassen, die Gastgeberanleitung überarbeiten, Beweiskarten ändern und das Detektiv-Skript aktualisieren — alles direkt in der App. Sie können Ihr Mysterium auch als PDF speichern."
+          "answer": "Ja! Jeder Charakter und jeder Abschnitt ist nach der Generierung vollständig bearbeitbar — passen Sie Charakter-Skripte an, überarbeiten Sie die Gastgeberanleitung, ändern Sie Beweiskarten und aktualisieren Sie das Detektiv-Skript, alles direkt in der App, und speichern Sie es als PDF. Eines sollten Sie wissen: Beim Bearbeiten ändert sich der Inhalt, nicht die Größe der Besetzung. Die Anzahl der Verdächtigen-Charaktere wird bei der Generierung Ihres Mysteriums festgelegt, sodass das Hinzufügen oder Entfernen von Verdächtigen eine erneute Generierung des Mysteriums bedeutet. Wenn Sie einfach mehr Gäste als Charaktere haben, können sie als Mit-Ermittler im Team des Detektivs mitmachen — keine Änderungen nötig."
         }
       }
     },
@@ -1054,6 +1054,7 @@
       "title": "Wichtige Hinweise",
       "items": [
         "Dies ist ein einmaliger Kauf für dieses spezifische Mysterienpaket",
+        "Die Größe Ihrer Besetzung wird bei der Generierung des Mysteriums festgelegt — jeder Charakter ist danach vollständig bearbeitbar, aber das Hinzufügen oder Entfernen von Verdächtigen-Charakteren erfordert eine erneute Generierung. Mehr Gäste als Charaktere? Sie können als Mit-Ermittler im Team des Detektivs mitmachen (siehe Gastgeberanleitung).",
         "Sie haben dauerhaften Zugang zum Herunterladen aller Materialien",
         "Der Inhalt ist nur für den persönlichen Gebrauch bestimmt, nicht für die kommerzielle Weitergabe",
         "Benötigen Sie Hilfe? Kontaktieren Sie unseren Support unter {{email}}"

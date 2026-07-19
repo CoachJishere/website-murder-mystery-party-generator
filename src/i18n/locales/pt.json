@@ -647,7 +647,7 @@
         },
         "canIEdit": {
           "question": "Posso editar meu mistério depois de gerado?",
-          "answer": "Sim! Cada parte do seu mistério é totalmente editável após a geração. Você pode ajustar os roteiros dos personagens, modificar o guia do anfitrião, alterar os cartões de evidências e atualizar o roteiro do detetive — tudo diretamente no aplicativo. Você também pode salvar seu mistério como PDF."
+          "answer": "Sim! Cada personagem e seção é totalmente editável após a geração — ajuste os roteiros dos personagens, modifique o guia do anfitrião, altere os cartões de evidências e atualize o roteiro do detetive, tudo diretamente no aplicativo, e salve como PDF. Uma coisa a saber: editar muda o conteúdo, não o tamanho do elenco. O número de personagens suspeitos é definido quando seu mistério é gerado, portanto adicionar ou remover suspeitos significa gerar o mistério novamente. Se você simplesmente tem mais convidados do que personagens, eles podem participar como co-investigadores na equipe do detetive — sem necessidade de alterações."
         },
         "gameDuration": {
           "question": "Quanto tempo dura um jogo típico?",
@@ -1087,6 +1087,7 @@
       "title": "Notas Importantes",
       "items": [
         "Esta é uma compra única para este pacote de mistério específico",
+        "O tamanho do seu elenco é definido quando o mistério é gerado — cada personagem é totalmente editável depois, mas adicionar ou remover personagens suspeitos exige uma nova geração. Tem mais convidados do que personagens? Eles podem participar como co-investigadores na equipe do detetive (consulte o guia do anfitrião).",
         "Você terá acesso permanente para baixar todos os materiais",
         "O conteúdo é apenas para uso pessoal, não para redistribuição comercial",
         "Precisa de ajuda? Entre em contato com nosso suporte via {{email}}"

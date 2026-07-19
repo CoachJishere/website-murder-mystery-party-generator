@@ -734,7 +734,7 @@
         },
         "canIEdit": {
           "question": "Can I edit my mystery after it's been generated?",
-          "answer": "Yes! Every part of your mystery is fully editable after generation. You can tweak character scripts, adjust the host guide, modify evidence cards, and update the detective script — all directly in the app. You can also save your mystery as a PDF."
+          "answer": "Yes! Every character and section is fully editable after generation — tweak character scripts, adjust the host guide, modify evidence cards, and update the detective script, all directly in the app, and save it as a PDF. One thing to know: editing changes the content, not the cast size. The number of suspect characters is set when your mystery is generated, so adding or removing suspects means regenerating the mystery. If you simply have more guests than characters, they can join as co-investigators on the detective's team — no changes needed."
         },
         "gameDuration": {
           "question": "How long does a typical game last?",
@@ -1129,6 +1129,7 @@
       "title": "Important Notes",
       "items": [
         "This is a one-time purchase for this specific mystery package",
+        "Your cast size is set when the mystery is generated — every character is fully editable afterward, but adding or removing suspect characters requires regenerating. Have more guests than characters? They can join as co-investigators on the detective's team (see the host guide).",
         "You'll have permanent access to download all materials",
         "Content is for personal use only, not for commercial redistribution",
         "Need help? Contact our support at {{email}}"

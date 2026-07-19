@@ -675,7 +675,7 @@
         },
         "canIEdit": {
           "question": "Kan jeg redigere mit mysterium, efter det er genereret?",
-          "answer": "Ja! Alle dele af dit mysterium kan redigeres fuldt ud efter genereringen. Du kan justere karakterernes manuskripter, tilpasse værtsguiden, ændre beviskortene og opdatere detektivmanuskriptet — alt sammen direkte i appen. Du kan også gemme dit mysterium som PDF."
+          "answer": "Ja! Hver karakter og hvert afsnit kan redigeres fuldt ud efter genereringen — juster karakternes manuskripter, tilpas værtsguiden, ændr beviskortene og opdater detektivmanuskriptet, alt sammen direkte i appen, og gem det som PDF. Én ting du skal vide: redigering ændrer indholdet, ikke rollebesætningens størrelse. Antallet af mistænkte-karakterer fastlægges, når dit mysterium genereres, så at tilføje eller fjerne mistænkte betyder en ny generering af mysteriet. Hvis du blot har flere gæster end karakterer, kan de deltage som med-efterforskere på detektivens hold — ingen ændringer nødvendige."
         }
       }
     },
@@ -1042,6 +1042,7 @@
       "title": "Important Notes",
       "items": [
         "This is a one-time purchase for this specific mystery package",
+        "Din rollebesætnings størrelse fastlægges, når mysteriet genereres — hver karakter kan redigeres fuldt ud bagefter, men at tilføje eller fjerne mistænkte-karakterer kræver en ny generering. Har du flere gæster end karakterer? De kan deltage som med-efterforskere på detektivens hold (se værtsguiden).",
         "You'll have permanent access to download all materials",
         "Content is for personal use only, not for commercial redistribution",
         "Need help? Contact our support at {{email}}"

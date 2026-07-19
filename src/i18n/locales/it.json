@@ -675,7 +675,7 @@
         },
         "canIEdit": {
           "question": "Posso modificare il mio mistero dopo che è stato generato?",
-          "answer": "Sì! Ogni parte del tuo mistero è completamente modificabile dopo la generazione. Puoi ritoccare i copioni dei personaggi, adattare la guida per l'organizzatore, modificare le carte degli indizi e aggiornare il copione dell'investigatore — tutto direttamente nell'app. Puoi anche salvare il tuo mistero come PDF."
+          "answer": "Sì! Ogni personaggio e sezione è completamente modificabile dopo la generazione — ritocca i copioni dei personaggi, adatta la guida per l'organizzatore, modifica le carte degli indizi e aggiorna il copione dell'investigatore, tutto direttamente nell'app, e salvalo come PDF. Una cosa da sapere: la modifica cambia il contenuto, non la dimensione del cast. Il numero di personaggi sospettati viene fissato quando il tuo mistero viene generato, quindi aggiungere o rimuovere sospettati significa rigenerare il mistero. Se semplicemente hai più ospiti che personaggi, possono partecipare come co-investigatori nella squadra dell'investigatore — nessuna modifica necessaria."
         }
       }
     },
@@ -1054,6 +1054,7 @@
       "title": "Note importanti",
       "items": [
         "Questo è un acquisto una tantum per questo specifico pacchetto mistero",
+        "La dimensione del cast viene fissata quando il mistero viene generato — ogni personaggio è completamente modificabile in seguito, ma aggiungere o rimuovere personaggi sospettati richiede una rigenerazione. Hai più ospiti che personaggi? Possono partecipare come co-investigatori nella squadra dell'investigatore (vedi la guida per l'organizzatore).",
         "Avrai accesso permanente ai download di tutti i materiali",
         "Il contenuto è solo per uso personale, non per distribuzione commerciale",
         "Hai bisogno di aiuto? Contatta il nostro supporto a {{email}}"

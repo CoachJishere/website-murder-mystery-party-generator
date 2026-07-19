@@ -675,7 +675,7 @@
         },
         "canIEdit": {
           "question": "¿Puedo editar mi misterio después de que se haya generado?",
-          "answer": "¡Sí! Cada parte de tu misterio es totalmente editable después de la generación. Puedes retocar los guiones de los personajes, ajustar la guía del anfitrión, modificar las tarjetas de evidencia y actualizar el guion del detective — todo directamente en la aplicación. También puedes guardar tu misterio como PDF."
+          "answer": "¡Sí! Cada personaje y sección es totalmente editable después de la generación — retoca los guiones de los personajes, ajusta la guía del anfitrión, modifica las tarjetas de evidencia y actualiza el guion del detective, todo directamente en la aplicación, y guárdalo como PDF. Una cosa que debes saber: editar cambia el contenido, no el tamaño del reparto. El número de personajes sospechosos se fija cuando se genera tu misterio, así que añadir o eliminar sospechosos significa volver a generar el misterio. Si simplemente tienes más invitados que personajes, pueden unirse como coinvestigadores en el equipo del detective — sin necesidad de cambios."
         }
       }
     },
@@ -1076,6 +1076,7 @@
       "title": "Notas Importantes",
       "items": [
         "Esta es una compra única para este paquete de misterio específico",
+        "El tamaño de tu reparto se fija cuando se genera el misterio — cada personaje es totalmente editable después, pero añadir o eliminar personajes sospechosos requiere volver a generarlo. ¿Tienes más invitados que personajes? Pueden unirse como coinvestigadores en el equipo del detective (consulta la guía del anfitrión).",
         "Tendrás acceso permanente para descargar todos los materiales",
         "El contenido es solo para uso personal, no para redistribución comercial",
         "¿Necesitas ayuda? Contacta con nuestro soporte en {{email}}"

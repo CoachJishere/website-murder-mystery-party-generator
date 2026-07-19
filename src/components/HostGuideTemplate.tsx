@@ -88,6 +88,20 @@ Keep this open during the game — it's your at-a-glance control panel, especial
 - Print evidence cards (optional) — you can also just show them on a phone or read aloud
 - Set the atmosphere if you want (themed music, dim lights, themed snacks) — none of this is required
 
+## Managing Last-Minute Guest Changes
+
+Your cast of suspects is fixed — it's woven into the plot, so you can't add or remove suspect characters. But real guest lists change, and the game is built to absorb that.
+
+**More guests than characters (someone extra wants to join):**
+- Bring them in as **co-investigators** on the ${Investigator}'s team — no character page needed. As many as you like.
+- They question the suspects each round, work the clues and evidence alongside everyone else, and make their case at the accusation stage.
+- **Important:** co-investigators do NOT get the ${Investigator} script or this host guide — those are your case file and they name the ${culprit}. Keep them to yourself. Your co-investigators solve it fair and square from the clues, exactly like the suspects do.
+
+**Fewer guests than characters (someone drops out):**
+- Never cut the ${culprit}${hasAccomplice ? " or the accomplice" : ""} — the plot depends on them being in play.
+- To drop a suspect, pick a purely innocent character. Either fold their key facts into another guest's briefing, or have the ${Investigator} mention them as "unavailable for questioning" so their clues still surface.
+- If several guests drop out, consider regenerating the mystery at the new headcount for the cleanest fit.
+
 ## ${Investigator} Setup Choice
 
 You have two ways to handle the ${investigator} narration:
