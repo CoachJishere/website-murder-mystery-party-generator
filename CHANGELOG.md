@@ -2,6 +2,9 @@
 
 ## 2026-07-20
 
+### Feature: Raise the player/character cap from 32 to 35
+A customer needed a 35-person single mystery (follow-on from [ADR-0038](docs/adr/0038-cast-size-fixed-at-generation-and-surplus-guest-handling.md)). The 32 limit was an undocumented soft cap — input validation only, no DB/pipeline hard-stop. Raised to 35 across all six enforcement points: form validation ([MysteryForm.tsx](src/components/MysteryForm.tsx)), two chat range checks ([MysteryChat.tsx](src/components/MysteryChat.tsx)), the AI validity gates + prompt copy ([mystery-ai](supabase/functions/mystery-ai/index.ts)), and the primary/secondary character-extraction bounds ([mystery-webhook-trigger](supabase/functions/mystery-webhook-trigger/index.ts)). Full rationale + caveats (generation reliability and hosting difficulty at 35) in [ADR-0039](docs/adr/0039-raise-player-cap-32-to-35.md). **Deploy note:** the two edge functions must be `supabase functions deploy`'d — CI does not auto-deploy them.
+
 ### Fix: Daily encrypted backup was failing on the `mystery_characters` export
 The daily backup (our *only* DB backup on the free plan) had started aborting every night with `exit 22`. Root cause: the export pages tables at 1000 rows per `select=*` request, and `mystery_characters` rows now carry the full round scripts (including branching innocent/guilty/accomplice variants) — a single 1000-row page is ~18 MB, which trips the PostgREST/gateway response ceiling → HTTP 5xx → `curl -sf` → exit 22, and `set -euo pipefail` kills the step. The table crossing that size threshold as it grew (now 1,114 rows) turned it from passing to failing every run, so no fresh backup was being produced.
 - Dropped `PAGE_SIZE` to 200 (avg page ~3.6 MB, comfortably under limits) in [weekly-backup.yml](.github/workflows/weekly-backup.yml).

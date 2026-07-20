@@ -268,13 +268,13 @@ Write the ENTIRE response in ${languageName}. This includes every heading, every
       );
       const standaloneNumberMatch = lastUserMessage.trim().match(/^(\d+)$/);
       const hasStandaloneResponse = aiAskedAboutPlayers && standaloneNumberMatch &&
-        parseInt(standaloneNumberMatch[1]) >= 4 && parseInt(standaloneNumberMatch[1]) <= 32;
+        parseInt(standaloneNumberMatch[1]) >= 4 && parseInt(standaloneNumberMatch[1]) <= 35;
 
       const hasPlayerCount = hasExplicitPlayerCount || hasStandaloneResponse;
 
       // Check for invalid player count (user responded to AI's question with out-of-range number)
       const hasInvalidPlayerCount = aiAskedAboutPlayers && standaloneNumberMatch &&
-        (parseInt(standaloneNumberMatch[1]) < 4 || parseInt(standaloneNumberMatch[1]) > 32);
+        (parseInt(standaloneNumberMatch[1]) < 4 || parseInt(standaloneNumberMatch[1]) > 35);
 
       // Extract player count number for use in prompts
       const playerCountMatch = conversationText.match(/\b([4-9]|[12][0-9]|3[0-2])\s*(players?|people|guests?|folks|friends?|명|人|joueurs?|Spieler|jugadores|giocatori|spelers|spillere|spelare|pelaajaa?|jogadores?)\b/i) ||
@@ -316,7 +316,7 @@ ${contentBoundaries}`;
       } else if (hasInvalidPlayerCount) {
         // === INVALID PLAYER COUNT ===
         const invalidNumber = standaloneNumberMatch![1];
-        systemPrompt = `The user provided ${invalidNumber} players. Politely let them know the range is 4 to 32 players and ask them to pick a number in that range.
+        systemPrompt = `The user provided ${invalidNumber} players. Politely let them know the range is 4 to 35 players and ask them to pick a number in that range.
 
 ${languageDirective}`;
 
@@ -333,7 +333,7 @@ ${languageDirective}
 
 ${isIntrigue ? 'IMPORTANT: This is an INTRIGUE mystery — no one dies. The central crime is a non-lethal event: a theft, scandal, sabotage, conspiracy, or betrayal. Never introduce a murder or a dead victim.' : ''}
 
-Your job is to react to their idea, ask how many players they need (between 4 and 32), and decide whether you need ONE clarifying question before you can design their mystery.
+Your job is to react to their idea, ask how many players they need (between 4 and 35), and decide whether you need ONE clarifying question before you can design their mystery.
 
 <clarifying_question_decision>
 Ask yourself: "Does this theme evoke a specific enough world that I can picture the setting, era, and vibe — or could it go 10 very different directions?"

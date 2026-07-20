@@ -138,12 +138,12 @@ function extractCharactersFromMessages(messages: any[], approvedMessageId?: stri
     }
   }
 
-  if (charMap.size >= 4 && charMap.size <= 32) {
+  if (charMap.size >= 4 && charMap.size <= 35) {
     const characters = Array.from(charMap.values());
     console.log(`[CharExtract] PRIMARY regex aggregated ${characters.length} characters across messages: ${characters.map(c => c.name).join(', ')}`);
     return characters;
   } else if (charMap.size > 0) {
-    console.log(`[CharExtract] Primary found ${charMap.size} characters (need 4-32), trying secondary...`);
+    console.log(`[CharExtract] Primary found ${charMap.size} characters (need 4-35), trying secondary...`);
   }
 
   console.log(`[CharExtract] Primary pattern insufficient, trying secondary (consecutive bold lines)...`);
@@ -195,7 +195,7 @@ function extractCharactersFromMessages(messages: any[], approvedMessageId?: stri
     }
   }
 
-  if (secondaryMap.size >= 4 && secondaryMap.size <= 32) {
+  if (secondaryMap.size >= 4 && secondaryMap.size <= 35) {
     const characters = Array.from(secondaryMap.values());
     console.log(`[CharExtract] SECONDARY regex aggregated ${characters.length} characters`);
     return characters;

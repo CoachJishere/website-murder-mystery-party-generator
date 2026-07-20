@@ -18,8 +18,8 @@ const formSchema = z.object({
   theme: z.string().optional(),
   playerCount: z.coerce.number().int().min(4, {
     message: "Minimum 4 players required"
-  }).max(32, {
-    message: "Maximum 32 players allowed"
+  }).max(35, {
+    message: "Maximum 35 players allowed"
   }),
   mysteryType: z.enum(["murder", "intrigue"]).default("murder"),
   mysteryStyle: z.enum(["character", "detective"]).default("detective"),

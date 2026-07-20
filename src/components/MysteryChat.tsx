@@ -153,7 +153,7 @@ export default function MysteryChat({
   // FIXED: Enhanced function to properly detect if we have player count info
   const hasPlayerCountInfo = () => {
     // Don't consider initialPlayerCount as "having info" unless it's explicitly set and not a default
-    if (initialPlayerCount && initialPlayerCount >= 4 && initialPlayerCount <= 32 && currentPlayerCount && currentPlayerCount >= 4 && currentPlayerCount <= 32) {
+    if (initialPlayerCount && initialPlayerCount >= 4 && initialPlayerCount <= 35 && currentPlayerCount && currentPlayerCount >= 4 && currentPlayerCount <= 35) {
       console.log("Has explicit valid player count from props:", initialPlayerCount);
       return true;
     }
@@ -165,7 +165,7 @@ export default function MysteryChat({
       const playerCountMatch = content.match(/(\d+)\s*(player|people|guest|character|participant)/i);
       if (playerCountMatch) {
         const count = parseInt(playerCountMatch[1]);
-        if (count >= 4 && count <= 32) {
+        if (count >= 4 && count <= 35) {
           console.log("Found valid player count in message:", content.substring(0, 100));
           return true;
         }
