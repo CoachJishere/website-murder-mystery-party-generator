@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-07-20
+
+### Fix: Daily encrypted backup was failing on the `mystery_characters` export
+The daily backup (our *only* DB backup on the free plan) had started aborting every night with `exit 22`. Root cause: the export pages tables at 1000 rows per `select=*` request, and `mystery_characters` rows now carry the full round scripts (including branching innocent/guilty/accomplice variants) — a single 1000-row page is ~18 MB, which trips the PostgREST/gateway response ceiling → HTTP 5xx → `curl -sf` → exit 22, and `set -euo pipefail` kills the step. The table crossing that size threshold as it grew (now 1,114 rows) turned it from passing to failing every run, so no fresh backup was being produced.
+- Dropped `PAGE_SIZE` to 200 (avg page ~3.6 MB, comfortably under limits) in [weekly-backup.yml](.github/workflows/weekly-backup.yml).
+- Fixed a latent second bug in the same loop: it broke on `count < 1000`, so a table whose row count is an exact multiple of the page size would request one page past the end and get **HTTP 416** → same fatal exit 22. Now 416 is treated as clean end-of-data.
+- The fetch now captures the HTTP status and prints `::error::<table> ... HTTP <code>` plus the response body on any real failure, instead of a bare `exit 22` with no context.
+- **Action needed:** re-run the workflow manually (Actions → "Daily encrypted backup" → Run workflow) to produce a current backup, rather than waiting for the 04:43 UTC schedule.
+
 ## 2026-07-19
 
 ### Improvement: Align marketing copy on the "co-investigators" term

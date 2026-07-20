@@ -50,26 +50,40 @@ jobs:
           set -euo pipefail
           mkdir -p backup
           TABLES="conversations messages mystery_packages mystery_characters character_assignments profiles cold_case_orders cold_case_identities guest_feedback mystery_feedback contact_messages followup_emails"
+          # Page size kept small on purpose: mystery_characters rows carry full
+          # round scripts (incl. branching variants), so a 1000-row select=*
+          # page is ~18 MB and trips the PostgREST/gateway response ceiling →
+          # HTTP 5xx → curl -f → exit 22. 200 keeps each page well under 4 MB.
+          PAGE_SIZE=200
           SUMMARY="| Table | Rows |\n|---|---|\n"
           for t in $TABLES; do
             : > "backup/${t}.jsonl"
             offset=0
             while :; do
-              page=$(curl -sf --max-time 120 \
+              http=$(curl -s --max-time 120 -o page.json -w '%{http_code}' \
                 -H "apikey: ${SUPABASE_SERVICE_KEY}" \
                 -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
-                -H "Range-Unit: items" -H "Range: ${offset}-$((offset+999))" \
+                -H "Range-Unit: items" -H "Range: ${offset}-$((offset+PAGE_SIZE-1))" \
                 "${SUPABASE_URL}/rest/v1/${t}?select=*&order=id")
-              count=$(echo "$page" | jq 'length')
+              # 416 = requested range is past the end (row count is an exact
+              # multiple of PAGE_SIZE). That means we're done, not an error.
+              [ "$http" = "416" ] && break
+              if [ "$http" != "200" ] && [ "$http" != "206" ]; then
+                echo "::error::${t} export failed at offset ${offset}: HTTP ${http}"
+                cat page.json
+                exit 1
+              fi
+              count=$(jq 'length' page.json)
               [ "$count" -eq 0 ] && break
-              echo "$page" | jq -c '.[]' >> "backup/${t}.jsonl"
-              offset=$((offset+1000))
-              [ "$count" -lt 1000 ] && break
+              jq -c '.[]' page.json >> "backup/${t}.jsonl"
+              offset=$((offset+PAGE_SIZE))
+              [ "$count" -lt "$PAGE_SIZE" ] && break
             done
             rows=$(wc -l < "backup/${t}.jsonl" | tr -d ' ')
             echo "${t}: ${rows} rows"
             SUMMARY="${SUMMARY}| ${t} | ${rows} |\n"
           done
+          rm -f page.json
           printf '%b' "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Encrypt
