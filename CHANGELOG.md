@@ -52,6 +52,14 @@ Content-quality issues from the playtest live in the Make.com generation prompts
 - **Two-layer audit (before upload):** re-checked which fixes are master-level design vs per-character output. **Timing** and **accomplice coherence** are genuinely master-designed (for predetermined styles) and are now enforced at both master (Parent v46) and child (Child v16) layers. **No self-directed questions, secret stakes, and the secret prose behind the blackmail-logic fix** are per-character output (Child v16) with no master involvement — correctly child-only. **Evidence provenance** and the **detective/host rules** are host-facing (Parent v46) — correctly placed. Timing is load-bearing (the incriminating mechanism), so it's designed from the outset as two layers — the host holds precise-enough times to adjudicate, but player-facing alibis/locations/the culprit's gap read approximate and event-relative.
 - Both edited programmatically with integrity verification (string/key counts unchanged, JSON re-validated); formatting matches originals. **Importing into Make.com is a manual step.**
 
+## 2026-07-20
+
+### Improvement: Evidence-card guardrail — clue timing & strength (the "funnel")
+- **From playtest:** even after the culprit's name was removed, keeping the culprit's **initials ("S.C.") in the round-2 (motive) evidence** of *Whispers* was a bit too obvious — a careful player could shortcut to the answer on the first evidence card, before rounds 3–4 narrowed anything. Went unnoticed live only because the host (playing detective) didn't linger on it.
+- **Root cause:** the original guardrail governed *whether* a card names the culprit, not *when* an identity clue may appear or *how strong* it may be. An initial that resolves 1:1 to one cast member is nearly a name; in the motive round it collapses the deduction funnel.
+- **Systemic fix (guardrail refinement):** [evidence-card-generation-guardrail.md](docs/evidence-card-generation-guardrail.md) + [ADR-0035](docs/adr/0035-evidence-cards-must-not-name-the-culprit.md) amended with the funnel rule: **Round 2 (motive) carries no identity-narrowing clues** (no initials/monograms/signatures/one-person handwriting; 4–6 suspects by motive only); identity breadcrumbs live only in Rounds 3–4, each one link in a chain; a 1:1 breadcrumb is Round-4-only. New Make.com blueprint `temp-files/MM Live - Parent46 (Evidence Spoiler + Clue-Timing).blueprint.json` folds this into the evidence template.
+- **Audit follow-up:** auditing all mysteries purchased in the last 6 weeks against the refined guidelines (see below / in progress).
+
 ## 2026-07-18
 
 ### Fix: Evidence cards were naming the culprit to players (spoiler) — systemic
