@@ -1,0 +1,84 @@
+<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:680px;margin:auto;color:#222;"><p style="color:#666;font-size:13px;">SEO/GEO digest — week ending 2026-07-20 · mysterymaker.party</p><div style="border:1px solid #d9b310;background:#fffbe6;border-radius:6px;padding:12px 14px;margin:0 0 18px;"><p style="margin:0 0 6px;font-weight:600;color:#7a5c00;">📌 Reminder — Measure homepage branded-query CTR (the Jun 30 title/meta rewrite)</p><p style="margin:0 0 10px;font-size:14px;color:#444;">On 2026-06-30 the homepage title/meta were rewritten to lead with "Custom" and surface the "Mystery Maker" brand — targeting the branded queries <strong>mystery maker</strong>, <strong>murder mystery maker</strong>, and <strong>mysterymaker</strong>, which ranked ~position 5 but converted at only ~3.6% CTR. Enough time has now passed to measure the effect — paste the prompt below into a fresh chat.</p><pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;font-size:13px;margin:0;">Measure whether the 2026-06-30 homepage title/meta rewrite lifted CTR on branded queries.
+Re-derive everything from Google Search Console — do not trust this note's numbers.
+
+1. Page: https://www.mysterymaker.party/   Queries: "mystery maker", "murder mystery maker", "mysterymaker".
+2. For each query, compare the ~3 weeks BEFORE 2026-06-30 vs the weeks AFTER: CTR, clicks, impressions, avg position.
+3. Baseline before the change was ~3.6% CTR at ~position 5 (~28 impressions/week on "mystery maker").
+4. Report: did CTR rise, and by how much? Flag any position change so a ranking shift isn't mistaken for a CTR win.
+5. If CTR is still under ~6% at top-5, propose the next title/meta variant to test (current copy is documented in docs/adr/0024-static-homepage-seo-source-of-truth.md).</pre></div><h2>Scoreboard</h2>
+<table cellpadding="6" cellspacing="0" border="1" style="border-collapse:collapse;font-family:sans-serif;font-size:14px;">
+  <tr style="background:#f4f1ea;">
+    <th align="left">Metric</th>
+    <th align="right">This week</th>
+    <th align="right">Last week</th>
+    <th align="right">Δ</th>
+  </tr>
+  <tr><td>Organic clicks</td><td align="right">49</td><td align="right">44</td><td align="right">+11.4%</td></tr>
+  <tr><td>Impressions</td><td align="right">1,138</td><td align="right">852</td><td align="right">+33.6%</td></tr>
+  <tr><td>Avg position</td><td align="right">15.1</td><td align="right">17.5</td><td align="right">+2.4 (better)</td></tr>
+  <tr><td>GA4 sessions</td><td align="right">408</td><td align="right">420</td><td align="right">−2.9%</td></tr>
+  <tr><td>AI-referral sessions</td><td align="right">10</td><td align="right">—</td><td align="right">2.5% of sessions</td></tr>
+</table>
+<p><strong>What moved:</strong> Impressions jumped +33.6% and average position improved 2.4 places — mostly from a fast-rising "murder game 2026" cluster that's earning visibility but very few clicks. Clicks rose modestly (+11.4%) while GA4 sessions dipped slightly, so the upside is latent: we're being seen far more than we're being clicked.</p>
+
+<h2>Insights</h2>
+<ul>
+  <li><strong>"murder game 2026" cluster is exploding on impressions but starving on clicks.</strong> "murder game 2026" = 215 impressions (+171% WoW) at position 12.4 with 0.9% CTR; "murder games 2026" = 117 impressions (+93%) at 8.4, 0 clicks. Combined ~350 impressions, ~2 clicks. This is the single biggest untapped demand pool this week.</li>
+  <li><strong>The review post is our impression giant but leaking clicks.</strong> /blog/best-murder-mystery-party-games-review/ pulled 1,430 impressions at just 1.3% CTR (position 10.8) — by far the most-seen page, converting almost none of it.</li>
+  <li><strong>Several buyer queries are one nudge from page 1.</strong> "custom murder mystery game" (pos 12.1, 38 impr), "custom murder mystery party" (pos 10.7, 36 impr, 0 clicks), "murder mystery printable free" (pos 7.9, 23 impr). All money-page-adjacent.</li>
+  <li><strong>Brand/tool queries are performing beautifully.</strong> "murder mystery maker" (pos 1, 62.5% CTR), "murder mystery generator" (pos 3.1, 25% CTR), "mystery maker" (new: 27 impr, pos 2.8, 5 clicks). The generator brand is landing — protect and expand it.</li>
+  <li><strong>"night of mystery reviews" (competitor query) is a new entrant.</strong> 21 impressions, pos 9, 1 click — a comparison-intent buyer looking at a rival. Worth a comparison angle.</li>
+  <li><strong>Non-en pages punch above weight on CTR.</strong> /fr/…/free-murder-mystery-games-printable/ = 16.3% CTR (pos 6.2); /ko/custom-murder-mystery-party/ = 27.3% CTR. Localized money pages convert impressions well — keep feeding them.</li>
+</ul>
+
+<h2>Action prompts</h2>
+
+<p><strong>1. Quick win — capture the "murder game 2026" cluster (~350 impressions, near page 1)</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Target site: mysterymaker.party — an AI tool that generates printable murder mystery party kits.
+
+The queries "murder game 2026" (215 impressions, position 12.4, 0.9% CTR) and "murder games 2026" (117 impressions, position 8.4, 0% CTR) are surging (+171% and +93% week-over-week) but we rank on page 2 with almost no clicks and no clearly matched page.
+
+Task: Draft a new blog post targeting "murder game 2026 / murder games 2026". Angle: "The Best Murder Mystery Games to Play in 2026" — a fresh, dated roundup that positions our AI generator as the top pick for custom/printable play. Include:
+- An H1 and title tag containing "Murder Mystery Games 2026"
+- A meta description under 155 chars with the 2026 hook and a clear benefit
+- A short intro answering "what are the best murder mystery games in 2026" in the first 40 words (for featured-snippet + AI-answer capture)
+- 6–8 game entries, with our generator (mysterymaker.party create flow) featured first
+- An internal link to the generator/create page and to /blog/best-murder-mystery-party-games-review/
+- FAQ schema (JSON-LD) with 3 questions including "What is the best murder mystery game for 2026?"
+
+Goal: move both queries onto page 1 and convert the ~350 weekly impressions into generator visits. Output the full post in markdown plus the title tag and meta description as plain text.</pre>
+
+<p><strong>2. Quick win — rewrite title/meta on the review post (1,430 impressions, 1.3% CTR)</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Target page: https://www.mysterymaker.party/blog/best-murder-mystery-party-games-review/
+
+This page gets 1,430 weekly impressions at position 10.8 but only 1.3% CTR — our biggest visibility leak. It also surfaces for "best murder mystery games" (20 impressions, 0% CTR, position 31.3) and "best murder mystery kits".
+
+Task: Write 3 candidate title tags (max 60 chars) and 3 meta descriptions (max 155 chars) for this page. Make them click-compelling for buyer intent: emphasize an honest comparison, current year (2026), and "which is best for your party size". Include the phrases "best murder mystery" and "party games" naturally. Do not use the literal angle-bracket tag names — return them as plain labelled text.
+
+Goal: lift CTR from 1.3% toward the 5%+ our other blog posts hit, converting a slice of 1,430 impressions into clicks. Return the recommended pick and the alternates.</pre>
+
+<p><strong>3. Easy win — nudge "custom murder mystery" money-page queries onto page 1</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Target page: https://www.mysterymaker.party/custom-murder-mystery-party/
+
+This page ranks position 19.9 and is our landing page for buyer queries sitting just off page 1: "custom murder mystery game" (position 12.1, 38 impressions) and "custom murder mystery party" (position 10.7, 36 impressions, 0 clicks).
+
+Task:
+1. Rewrite the title tag and meta description to lead with "Custom Murder Mystery Party" and include "custom murder mystery game" — return both as plain labelled text.
+2. Ensure the H1 and first paragraph explicitly answer "how do I make a custom murder mystery party/game" in the opening 40 words.
+3. Suggest 3 internal links to add to this page from higher-authority pages (the homepage, the free-printables blog post, and the review post) using anchor text "custom murder mystery party".
+
+Goal: move both queries from page 2 onto page 1 and increase generator conversions from this money page. Return the copy and the exact anchor-text/source-page pairs.</pre>
+
+<p><strong>4. Content — competitor comparison for "night of mystery reviews" (new, position 9)</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Target site: mysterymaker.party.
+
+New query this week: "night of mystery reviews" — 21 impressions, position 9, comparison/buyer intent (someone evaluating the rival "Night of Mystery").
+
+Task: Draft a fair, non-disparaging comparison blog post: "Night of Mystery vs a Custom AI Murder Mystery Kit — Which Is Right for Your Party?" Cover pricing, replayability, guest-count flexibility, and printability. Position mysterymaker.party's generator as the customizable/instant option. Include a title tag, meta description, an early 40-word summary answering the comparison question directly (for AI-answer capture), and an internal link to the generator/create flow. Add FAQ schema with "Is Night of Mystery worth it?" and "What's the best alternative to Night of Mystery?".
+
+Goal: rank for the competitor-review query and intercept buyers mid-comparison. Output full markdown plus title tag and meta description as plain text.</pre>
+
+<h2>Site health</h2>
+<p>Dead internal links: 0 ✓</p>
+<p>Publish queue: 239 live, 181 drafts remaining. (No prior-week baseline available — noting current standing only.)</p>
+<p>Next up by link-graph importance (cron will publish these first, per ADR-0021): best-murder-mystery-party-apps-tools (4), can-murder-mystery-parties-be-virtual (4), comedy-murder-mystery-party-guide (4), downton-abbey-murder-mystery-party-guide (4), how-to-create-murder-mystery-clues-step-by-step (4).</p></div>
