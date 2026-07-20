@@ -84,25 +84,30 @@ Keep it skimmable. No preamble before the first <h2>. No closing sign-off.
 // on, or let it lapse after `end` (inclusive). Dates are 'YYYY-MM-DD' (UTC).
 const REMINDERS = [
   {
-    // Shipped 2026-06-30: homepage title/meta rewrite for branded-query CTR (ADR-0024).
-    // Starts ~2 weeks later so GSC has enough after-data; covers the Jul 13/20/27 + Aug 3 sends.
-    start: '2026-07-13',
-    end: '2026-08-03',
-    title: 'Measure homepage branded-query CTR (the Jun 30 title/meta rewrite)',
+    // Second read of the 2026-06-30 homepage title/meta rewrite (ADR-0024).
+    // The FIRST measurement (2026-07-20, first ~3 weeks of after-data) was
+    // INCONCLUSIVE: branded CTR was nominally up (combined 12.0%→18.9%) but the
+    // two queries that jumped also gained ~1 position (mystery maker 3.6→2.4,
+    // mysterymaker 3.7→2.2), so the "CTR win" is confounded by a ranking gain,
+    // and click volumes were single-digit (no significance). This re-measure
+    // starts ~3-4 weeks after that read so more after-data has accumulated and
+    // the position confound has had time to settle; covers the Aug 10/17/24/31 sends.
+    start: '2026-08-10',
+    end: '2026-08-31',
+    title: 'Re-measure homepage branded CTR — 2nd read (first one was inconclusive)',
     body:
-      'On 2026-06-30 the homepage title/meta were rewritten to lead with "Custom" and surface the ' +
-      '"Mystery Maker" brand — targeting the branded queries <strong>mystery maker</strong>, ' +
-      '<strong>murder mystery maker</strong>, and <strong>mysterymaker</strong>, which ranked ~position 5 ' +
-      'but converted at only ~3.6% CTR. Enough time has now passed to measure the effect — paste the prompt ' +
-      'below into a fresh chat.',
-    prompt: `Measure whether the 2026-06-30 homepage title/meta rewrite lifted CTR on branded queries.
-Re-derive everything from Google Search Console — do not trust this note's numbers.
+      'The <strong>2026-06-30</strong> homepage title/meta rewrite (ADR-0024) targeted the branded queries ' +
+      '<strong>mystery maker</strong>, <strong>murder mystery maker</strong>, and <strong>mysterymaker</strong>. ' +
+      'The first read on 2026-07-20 showed branded CTR nominally up (combined 12.0% → 18.9%) but those queries ' +
+      '<em>also</em> gained ~1 ranking position and volumes were tiny — so it could not be called a CTR win vs a ' +
+      'ranking win. Enough time has now passed for a cleaner read — paste the prompt below into a fresh chat.',
+    prompt: `Re-measure whether the 2026-06-30 homepage title/meta rewrite lifted CTR on branded queries. This is the SECOND read — the first (2026-07-20) was inconclusive because CTR rose but ranking rose ~1 position at the same time and volumes were single-digit. Re-derive everything fresh from Google Search Console — do not trust these numbers.
 
-1. Page: https://www.mysterymaker.party/   Queries: "mystery maker", "murder mystery maker", "mysterymaker".
-2. For each query, compare the ~3 weeks BEFORE 2026-06-30 vs the weeks AFTER: CTR, clicks, impressions, avg position.
-3. Baseline before the change was ~3.6% CTR at ~position 5 (~28 impressions/week on "mystery maker").
-4. Report: did CTR rise, and by how much? Flag any position change so a ranking shift isn't mistaken for a CTR win.
-5. If CTR is still under ~6% at top-5, propose the next title/meta variant to test (current copy is documented in docs/adr/0024-static-homepage-seo-source-of-truth.md).`,
+1. Page: https://www.mysterymaker.party/   Queries: "mystery maker", "murder mystery maker", "mysterymaker". You can re-run scripts/ctrRewriteAnalysis.mjs (free, read-only GSC) and widen the after-window to today.
+2. For each query, compare the ~3 weeks BEFORE 2026-06-30 vs ALL after-data through today: CTR, clicks, impressions, avg position.
+3. Ground-truth baseline (re-derived 2026-07-20, verify it still holds): "mystery maker" pre-change ran 2.9% CTR at position 3.6 (~35 impr/week), NOT the 3.6%/pos-5 the old note claimed.
+4. The key question: is the CTR gain real, or just the ~1-position ranking gain? Hold position roughly constant (or note it explicitly) so a ranking shift isn't mistaken for a CTR win. Say whether volumes are now big enough to be meaningful.
+5. If branded CTR is still weak for the position (e.g. "mystery maker" under ~15% while sitting top-3), test the brand-first title variant proposed on 2026-07-20: "Mystery Maker — Printable Murder Mystery Party Kits in Minutes" (current copy in docs/adr/0024-static-homepage-seo-source-of-truth.md).`,
   },
 ];
 
