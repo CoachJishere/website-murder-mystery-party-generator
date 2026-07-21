@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 240 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 242 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -280,15 +280,20 @@ This index organizes 240 published guides by topic cluster. All guides are avail
 - [The Gap Between Board Games and Actual Murder Mysteries](https://www.mysterymaker.party/blog/best-murder-mystery-board-games-review): Explore the best murder mystery board games from Clue to Chronicles of Crime. Learn which games work for parties and when to host a full mystery event.
 - [Best Murder Mystery Generators Online: Honest Review](https://www.mysterymaker.party/blog/best-murder-mystery-generators-online-review): Honest review of online murder mystery generators including MysteryMaker, ChatGPT, and other AI tools. Compares quality, price, ease of use, and output.
 - [Best Murder Mystery Kits: A Buyer's Guide](https://www.mysterymaker.party/blog/best-murder-mystery-kits-buying-guide): Complete buyer's guide to murder mystery kits. Compares Night of Mystery, Shot in the Dark, Masters of Mystery, and more by price, quality, and group size.
-- [11 Best Murder Mystery Party Games (2026 Hands-On Review)](https://www.mysterymaker.party/blog/best-murder-mystery-party-games-review): We played and ranked the 11 best murder mystery party games for every group size and budget. See the winners — then build your own free in minutes.
+- [11 Best Murder Mystery Party Games (2026): Ranked by Size](https://www.mysterymaker.party/blog/best-murder-mystery-party-games-review): We tested the 11 best murder mystery party games for 2026 — an honest, no-fluff comparison to help you pick the right kit for your party size and budget.
 - [Food Critic Murder Mystery Themes](https://www.mysterymaker.party/blog/food-critic-murder-mystery-themes-culinary-reviews-restaurant-revenge): Murder mystery themes with food critic characters — savage reviews, kitchen feuds, and the kind of grudges that turn restaurants into crime scenes.
 - [Free vs Paid Murder Mystery Games: What Actually Matters](https://www.mysterymaker.party/blog/free-vs-paid-murder-mystery-games-comparison): Murder mystery games range from free printables to $55+ kits. Here's what changes with price and when each option makes sense for your party.
 
 ## Related Party Ideas
 
+- [Can Murder Mystery Parties Be Virtual?](https://www.mysterymaker.party/blog/can-murder-mystery-parties-be-virtual): Can murder mystery parties be virtual? Yes. 53% of immersive mystery market is online. Works via Zoom, Discord, breakout rooms.
 - [How to Host an Escape Room Party at Home](https://www.mysterymaker.party/blog/escape-room-party-at-home-guide): Learn how to create an escape room party at home with puzzles, locks, and themed scenarios your guests will talk about for months. Full DIY guide inside.
 - [Murder Mystery Party With Escape Room Elements](https://www.mysterymaker.party/blog/murder-mystery-party-with-escape-room-elements): Combine murder mystery and escape room elements for hybrid experiences. Puzzles, clue integration, immersive gameplay for mystery parties.
 - [Murder Mystery Meets Improv: Hosting Guide](https://www.mysterymaker.party/blog/murder-mystery-party-with-improv-elements): Blend improv theater with murder mystery games using yes-and mechanics, unscripted moments, and structured spontaneity for unforgettable party nights.
 - [Ultimate Escape Room Murder Mystery Party Guide](https://www.mysterymaker.party/blog/the-ultimate-escape-room-murder-mystery-party-guide-puzzles-clues-and-confined-space-thrills): Break out of boredom with escape room murder mystery parties combining puzzles, clues, and confined space thrills.
 - [How to Host a Virtual Murder Mystery Party](https://www.mysterymaker.party/blog/virtual-murder-mystery-party-online): Run virtual murder mystery parties on Zoom, Teams, or Discord. Learn platform options, what works, hybrid formats, and host tips.
+
+## Other Guides
+
+- [Best Murder Mystery Games 2026: Top Picks to Play This Year](https://www.mysterymaker.party/blog/best-murder-mystery-games-2026): The best murder mystery games to play in 2026, ranked. Skip generic kits—generate a custom, printable mystery for your exact guest list in minutes.
 
