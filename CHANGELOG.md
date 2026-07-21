@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-07-21
+
+### Feature: Both landing angles now localized in every language — custom on /custom-…, corporate on /office-… (ADR-0040)
+Split the two landing-page angles cleanly by URL across all 13 languages, resolving the angle-by-language divergence from [ADR-0020](docs/adr/0020-localized-static-landing-pages.md) and finishing the localization [ADR-0022](docs/adr/0022-office-murder-mystery-landing-page.md) left as a follow-up. Decision + redirect analysis in [ADR-0040](docs/adr/0040-both-landing-angles-per-language.md).
+- **`/office-murder-mystery-party` localized to all 13.** Translated `officeParty.*` (corporate/team-building angle, 49 keys) into the 12 non-EN locales, reusing each market's already-proven corporate terminology (IT "eventi aziendali", DE "Firmenevents", ES "eventos de empresa", etc.). Flipped `LANGS` in [OfficeMurderMysteryParty.tsx](src/pages/OfficeMurderMysteryParty.tsx) from `["en"]` to all 13, added the `OG_LOCALE_MAP`, and made canonical/`html lang`/`og:locale` resolve from the URL language (was hardcoded `en`). Moved the page from the EN-only `staticPages` into `localizedStaticPages` in [generate-sitemap.mjs](scripts/generate-sitemap.mjs) so it gets the per-language hreflang cluster + `/<lang>/office-…` route files (mirrors the custom page). `/:lang/office-…` route was already registered in App.tsx.
+- **`/custom-murder-mystery-party` 12 locales flipped to the custom angle.** Replaced the corporate copy those locales carried with translated custom-angle copy (34 keys) and **added the 6 how-to keys** (`howToHeading`, `howToStep1/2/3`, `howToCta`, `howToCtaEnd`) that were EN-only — closing the mixed-language drift bug where those pages rendered the English how-to block via i18next fallback.
+- **hreflang clusters are now content-equivalent per language.** Each URL's 13-language cluster is a genuine translation set of one angle; the previous mismatched cluster (EN custom + 12 corporate on the custom URL) is resolved.
+- **No 301 redirects — deliberately.** This is a content relocation at stable URLs, not a URL migration: no `/custom-…` or `/office-…` URL is removed, so nothing 404s. A 301 from custom→office would have broken the new custom pages. The Italian corporate ranking (~pos 3.3, ADR-0020 baseline) transfers to `/it/office-…` by relevance + the now-localized reciprocal internal links; resubmit the sitemap on deploy and monitor GSC through the re-ranking window. (Confirmed with Jonathan 2026-07-21.)
+- **Translated manually** to the existing 13-language UI/blog bar — no paid/metered translation API. Every locale's `customParty`/`officeParty` key tree was diffed against `en.json` (0 missing, 0 extra) before staging, so no English fallback anywhere. `tsc --noEmit` clean; sitemap script parses.
+- **Shared-checkout note:** a parallel "dashboard rename" workstream had uncommitted `dashboard.mysteries.*` changes in all 12 locale files; only the `customParty`/`officeParty` hunks were staged, leaving that work untouched.
+
 ## 2026-07-20
 
 ### Improvement: On-page SEO tune for /custom-murder-mystery-party/ to push two buyer queries off page 2

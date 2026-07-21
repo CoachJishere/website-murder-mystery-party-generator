@@ -100,52 +100,139 @@
   },
   "customParty": {
     "seo": {
-      "title": "Murhamysteeri yritystapahtumiin: hauska tiimipäivä",
-      "description": "Räätälöity murhamysteeri-viihde yritystapahtumiin ja toimiston juhliin. Tulostettava paketti heti valmiina. Luo oma tiimipelisi nyt!"
+      "title": "Räätälöity Murhamysteeri — Ilmainen AI-Paketti Minuuteissa",
+      "description": "Luo räätälöity murhamysteerijuhla tai -peli mihin tahansa teemaan ja ryhmäkokoon. Tekoäly kirjoittaa juonen, hahmot, johtolangat ja tulostettavan paketin minuuteissa."
     },
     "hero": {
-      "h1": "Murhamysteeri yritystapahtumiin",
-      "intro": "Murhamysteeri, joka on kirjoitettu juuri sinun tiimillesi, yrityksellesi ja tilaisuudellesi — ei valmiiksi pakattu paketti. Luo koko tulostettava peli muutamassa minuutissa.",
-      "cta": "Luo oma murhamysteerisi"
+      "h1": "Luo Räätälöity Murhamysteeri",
+      "intro": "Kun haluat luoda räätälöidyn murhamysteerijuhlan tai -pelin, kuvaile teemasi, vieraidesi määrä ja tilaisuus — tekoäly kirjoittaa koko tarinan ja tulostaa pakettisi minuuteissa. Jokainen juoni, epäilty, johtolanka ja hahmokäsikirjoitus luodaan tyhjästä ryhmääsi sopivaksi, ilman valmistelua.",
+      "cta": "Luo räätälöity mysteerisi"
     },
     "body": {
-      "lead": "Useimmat murhamysteerituotteet antavat sinulle suljetun laatikon: kiinteän teeman, kiinteän määrän hahmoja ja käsikirjoituksen, jota tuhannet muut ovat jo pelanneet. Mystery Maker toimii päinvastoin. Kuvaile yritystapahtuma, jonka todella haluat järjestää, ja generaattori kirjoittaa täysin uuden mysteerin sinun tarpeisiisi — juoni, epäillyt, motiivit, vihjeet ja jokaisen hahmon käsikirjoitus mukana.",
-      "designHeading": "Luo murhamysteeri tiimipäivään ja yritystapahtumiin",
-      "themePara": "Räätälöinti alkaa teemasta. Toimiston juhlat, juhlava yritysillallinen, konferenssi, tiimipäivä luonnon helmassa tai vaikka tiimin sisäpiirin vitsin ympärille rakennettu juoni — jos osaat kuvailla sen, tarina mukautuu. Valittavana ei ole mitään valmista luetteloa, joten pelisi on aina ainutlaatuinen.",
-      "guestPara": "Seuraavaksi tulee osallistujamäärä. Kerrot generaattorille, kuinka monta pelaajaa on mukana, ja hahmokaarti skaalautuu sopivaksi — tiivis peli 4–6 kollegalle, vauhdikas juhla 8–12 hengelle tai täysimittainen yritystapahtuma 20:lle tai useammalle. Jokainen osallistuja saa aidon roolin mysteerissä, ei pelkkää sivuosaa, ja ylimääräiset vieraat voivat liittyä mukaan apututkijoina, jos ryhmä kasvaa.",
-      "characterPara": "Jokainen hahmo rakennetaan yksilöllisesti: taustatarina, salaiset motiivit, varjeltavat salaisuudet ja kierros kierrokselta etenevät käsikirjoitukset, jotka nivoutuvat toisiinsa niin, että mysteeri todella pitää kasassa. Syytökset, alibit ja paljastukset on kirjoitettu juuri sinun tiimillesi, ei sovitettu valmiista mallista.",
-      "kitPara": "Kun peli on valmis, saat täydellisen tulostettavan paketin — isännän oppaan, joka opastaa illan läpi, yksittäiset hahmovihkoset, fyysiset vihjeet ja todisteet sekä yhteensopivat kutsut. Tulosta kaikki tai jaa digitaalisesti. Ensimmäisestä syötteestä valmiiseen peliin kuluu minuutteja, ei viikkojen suunnittelua."
+      "lead": "Useimmat murhamysteerituotteet antavat sinulle valmiin laatikon: kiinteän teeman, kiinteän hahmomäärän ja käsikirjoituksen, jota tuhannet muut isännät ovat jo pelanneet. Mystery Maker toimii päinvastoin. Kuvaile juhlat, jotka todella haluat järjestää, ja generaattori kirjoittaa täysin uuden mysteerin niihin sopivaksi — juoni, epäillyt, motiivit, johtolangat ja jokaisen hahmon käsikirjoitus mukana.",
+      "designHeading": "Suunnittele räätälöity murhamysteeripeli mille tahansa ryhmälle",
+      "themePara": "Räätälöinti alkaa teemasta. 1920-luvun salakapakka, kummitteleva viktoriaaninen kartano, luksusristeily, pieleen menevä yritysretriitti tai jotain sisäpiirin vitsin ympärille rakennettua — jos osaat kuvailla sen, tarina mukautuu. Valittavana ei ole luetteloa, joten pelisi on ainutlaatuinen.",
+      "guestPara": "Seuraavaksi tulee vieraiden määrä. Kerrot generaattorille, kuinka moni pelaa, ja hahmokaarti mukautuu — tiivis peli 4–6 hengelle pöydän ääressä, vilkkaat juhlat 8–12 hengelle tai kokonainen tapahtuma 20 hengelle tai useammalle. Jokainen pelaaja saa aidon roolin mysteerissä sivuroolin sijaan, ja lisävieraat voivat liittyä mukaan avustaviksi tutkijoiksi, jos ryhmäsi kasvaa.",
+      "characterPara": "Jokainen hahmo on räätälöity: taustatarina, yksityisiä motiiveja, salaisuuksia varjeltavaksi ja kierros kierrokselta etenevät käsikirjoitukset, jotka nivoutuvat yhteen kaikkien muiden kanssa niin, että mysteeri todella pysyy kasassa. Syytökset, alibit ja paljastukset on kirjoitettu hahmokaartillesi, ei sovitettu mallipohjasta.",
+      "kitPara": "Kun se on valmis, saat täydellisen tulostettavan paketin — isännän oppaan, joka opastaa sinut illan läpi, yksittäiset hahmovihkot, fyysiset johtolangat ja todisteet sekä yhteensopivat kutsut. Tulosta kaikki tai jaa se digitaalisesti. Ensimmäisestä kehotteesta valmiiseen peliin menee minuutteja, ei viikkojen suunnittelua.",
+      "howToHeading": "Näin luot räätälöidyn murhamysteeripelin tai -juhlan",
+      "howToStep1": "Kuvaile juhlasi — teema, tilaisuus ja kuinka moni vieras pelaa. Kaikki käy, 1920-luvun salakapakasta sisäpiirin vitsiin.",
+      "howToStep2": "Tekoäly kirjoittaa täysin uuden, sopivan mysteerin: juonen, epäillyt, jokaisen motiivin ja johtolangan sekä henkilökohtaisen käsikirjoituksen jokaiselle hahmolle.",
+      "howToStep3": "Lataa tulostettava pakettisi — isännän opas, hahmovihkot, johtolangat ja kutsut — ja olet valmis pelaamaan minuuteissa.",
+      "howToCta": "Luo räätälöity murhamysteerisi",
+      "howToCtaEnd": "ja anna koko tulostettavan paketin generoitua minuuteissa."
     },
     "features": {
       "theme": {
-        "title": "Mikä tahansa teema yrityksellesi",
-        "body": "Toimiston juhlat, juhlaillallinen, konferenssi, tiimipäivä — kuvaile se ja tarina kirjoitetaan mittatilauksena. Ei geneerisiä valmiita juonia."
+        "title": "Mikä tahansa kuviteltavissa oleva teema",
+        "body": "1920-luvun salakapakka, kummitustalo, avaruusasema, kuninkaalliset häät — kuvaile se ja tarina kirjoitetaan sopivaksi. Ei geneerisiä valmiita juonia."
       },
       "guests": {
-        "title": "Tehty juuri sinun tiimillesi",
-        "body": "Aseta pelaajien määrä, ja hahmokaarti mukautuu, illallisista neljälle aina yli 20 kollegan tapahtumiin. Kaikilla on aito rooli."
+        "title": "Tehty vieraidesi määrälle",
+        "body": "Aseta pelaajien määrä ja hahmokaarti mukautuu, 4 hengen illallisista yli 20 hengen tapahtumiin. Jokainen saa aidon roolin."
       },
       "characters": {
         "title": "Räätälöidyt hahmot",
-        "body": "Jokainen kollega saa oman hahmon motiiveineen, salaisuuksineen ja kierroskohtaisine käsikirjoituksineen, jotka nivoutuvat mysteeriin."
+        "body": "Jokainen vieras saa räätälöidyn hahmon, jolla on motiiveja, salaisuuksia ja jokaisen kierroksen käsikirjoitukset, jotka nivoutuvat suurempaan mysteeriin."
       },
       "kit": {
         "title": "Heti tulostettava paketti",
-        "body": "Isännän opas, hahmovihkoset, vihjeet ja kutsut valmistuvat minuuteissa — valmiina tulostettaviksi tai jaettaviksi digitaalisesti, ilman valmisteluja."
+        "body": "Isännän opas, hahmovihkot, johtolangat ja kutsut generoituna minuuteissa — valmiina tulostettavaksi tai jaettavaksi digitaalisesti, ilman valmistelua."
       }
     },
     "midCta": "Aloita mysteerisi rakentaminen",
-    "faq": {
-      "heading": "Usein kysytyt kysymykset yrityksen murhamysteeristä",
-      "q1": "Sopiiko tämä yritystapahtumiin ja tiimipäiviin?",
-      "a1": "Kyllä. Mystery Maker luo täysin räätälöidyn murhamysteerin kuvailemaasi yrityskontekstiin — toimiston juhliin, juhlaillalliseen, konferenssiin tai tiimipäivään luonnon helmassa. Kerrot generaattorille, mitä haluat, ja se kirjoittaa juonen, epäillyt, vihjeet ja jokaisen hahmon käsikirjoituksen. Mitään ei poimita valmiista luettelosta, joten kaksi tapahtumaa ei koskaan pelaa samaa peliä.",
-      "q2": "Kuinka monta osallistujaa voi pelata?",
-      "a2": "Mikä tahansa määrä. Asetat osallistujamäärän, ja generaattori skaalaa hahmokaartin sopivaksi — tiiviit pelit 4–6 hengelle, illalliset 8–12:lle tai suuret yritystapahtumat 20:lle tai useammalle. Jokainen osallistuja saa oman hahmonsa motiiveineen, salaisuuksineen ja kierroskohtaisine käsikirjoituksineen, ja voit ottaa lisävieraita mukaan apututkijoina, jos tiimi kasvaa pelin rakentamisen jälkeen."
-    },
     "officeLink": {
       "lead": "Suunnitteletko jotain työpaikalle? Katso, miten se toimii",
       "link": "toimiston murhamysteerijuhlina",
-      "end": "tiimin rakentamiseen."
+      "end": "tiiminrakennukseen."
+    },
+    "faq": {
+      "heading": "Usein kysyttyä räätälöidystä murhamysteeristä",
+      "q1": "Voinko luoda räätälöidyn murhamysteerin?",
+      "a1": "Kyllä. Mystery Maker rakentaa täysin räätälöidyn murhamysteerin tyhjästä sen ympärille, mitä kuvailet — teeman, ympäristön, sisäpiirin vitsin tai todellisen tilaisuuden kuten syntymäpäivän tai toimistojuhlan. Kerrot generaattorille, mitä haluat, ja se kirjoittaa juonen, epäillyt, johtolangat ja jokaisen hahmon käsikirjoituksen. Mitään ei poimita valmiiden pakettien kiinteästä luettelosta, joten kahdet juhlat eivät koskaan pelaa samaa peliä.",
+      "q2": "Kuinka monta vierasta voi pelata?",
+      "a2": "Mikä tahansa määrä. Asetat vieraiden määrän ja generaattori mukauttaa hahmokaartin — intiimit pelit 4–6 pelaajalle, illalliset 8–12 hengelle tai suuret tapahtumat 20 hengelle tai useammalle. Jokainen vieras saa oman hahmonsa motiiveineen, salaisuuksineen ja kierros kierrokselta etenevine käsikirjoituksineen, ja voit ottaa lisävieraita mukaan avustaviksi tutkijoiksi, jos ryhmäsi kasvaa pelin luomisen jälkeen."
+    }
+  },
+  "officeParty": {
+    "seo": {
+      "title": "Toimiston Murhamysteeri — Tiiminrakennusta Kaikille",
+      "description": "Järjestä murhamysteeri toimistolla: tiiminrakennuspeli, joka sopii lounastauolle tai työpäivän jälkeen ja mukautuu mihin tahansa ryhmäkokoon. Luo omasi minuuteissa."
+    },
+    "hero": {
+      "h1": "Toimiston Murhamysteeri",
+      "intro": "Kyllä, voit ehdottomasti järjestää murhamysteerin toimistolla — ja se on yksi harvoista tiiminrakennusaktiviteeteista, joita ihmiset eivät hiljaa pelkää. Se muuttaa tavallisen iltapäivän yhteiseksi arvoitukseksi, jonka tiimisi todella haluaa ratkaista: ei näyttelijöitä palkattavaksi, ei offsitea varattavaksi, ei kiusallisia tutustumisleikkejä. Kuvaile ryhmäsi, niin Mystery Maker kirjoittaa koko pelin — juonen, epäillyt, johtolangat ja tulostettavan paketin — minuuteissa.",
+      "cta": "Luo toimistosi mysteeri"
+    },
+    "body": {
+      "lead": "Murhamysteeri toimii toimistolla, koska tiimityö ei ole vertauskuva — se on itse peli. Kukaan ei voi ratkaista tapausta yksin, joten tuskin toisiaan tapaavat kollegat päätyvät vaihtamaan teorioita, vertailemaan johtolankoja ja aidosti kuuntelemaan toisiaan. Saat aidon tiimitapahtuman yhteenkuuluvuuden ilman luottamusharjoituksia tai pakotettua hauskuutta, ja koska koko paketti generoidaan puolestasi ja on valmis tulostettavaksi, ainoa valmistelu on painaa tulosta.",
+      "benefitsHeading": "Miksi murhamysteeri on aitoa tiiminrakennusta",
+      "benefitsLead": "Useimmat tiiminrakennusharjoitukset ovat jotain, jonka ihmiset istuvat läpi. Murhamysteeri on erilainen, koska sen ratkaiseminen vaatii juuri niitä taitoja, joita haluat tiimissäsi kehittää — ja he harjoittelevat niitä tuntematta koskaan olevansa harjoitutettavina.",
+      "formatsHeading": "Lounastauko tai työpäivän jälkeen — valitse formaattisi",
+      "formatsLead": "Toimiston murhamysteeri mukautuu aikaan, joka sinulla oikeasti on. Alla olevat kaksi formaattia kattavat lähes jokaisen työpaikan, ja valitset keston pelin luodessasi.",
+      "lunchTitle": "Lounastauon mysteeri (45–60 minuuttia)",
+      "lunchBody": "Tilatkaa ruokaa, kokoontukaa neuvottelupöydän ääreen ja pelatkaa tiiviimpi tapaus, joka ratkeaa ennen tunnin päättymistä. Se on kevyin tapa katkaista viikko — kenenkään ei tarvitse jäädä myöhään ja se sopii tavalliseen työpäivään. Ihanteellinen yhdelle tiimille tai kuukausittain toistuvaksi rituaaliksi.",
+      "afterWorkTitle": "Työn jälkeinen tapahtuma (90 minuutista 2 tuntiin)",
+      "afterWorkBody": "Enemmän aikaa antaa sinun pelata täyteläisemmän tarinan, jossa on syvempiä hahmokaaria, pari juonenkäännettä ja tilaa seurustella roolissa juomien ja ruoan äärellä. Tämä on formaatti pikkujouluihin, neljännesvuosittaiseen illanviettoon tai juhlaan, jossa haluat illan itsessään olevan pääasia.",
+      "remoteNote": "Molemmat formaatit toimivat videon välityksellä etä- ja hybriditiimeille — jaa hahmot sähköpostitse, pelaa kierrokset puhelussa ja jaa johtolangat näytöllä.",
+      "guestsHeading": "Viiden hengen tiimistä koko osastoon",
+      "guestsPara1": "Sinä asetat osallistujien määrän ja hahmokaarti mukautuu. Pieni viiden–kahdeksan hengen tiimi saa intiimin tapauksen, jossa jokaisella on johtolanka, jota muut tarvitsevat. Viisitoista–kaksikymmentäviisi on ihanteellinen koko osastojen väliseen tapahtumaan — tarpeeksi suuri sekoittamaan ihmisiä, jotka eivät yleensä työskentele yhdessä, tarpeeksi pieni, että yksi vetäjä pitää tahdin eikä kukaan jää vain katsomaan.",
+      "guestsPara2": "Suurempi porukka? Älä pelaa yhtä jättipeliä. Jakautukaa rinnakkaisiin ryhmiin, jotka ratkaisevat saman tapauksen, ja vertailkaa teorioita lopuksi — siitä tulee ystävällinen kilpailu tiimien välillä. Koko osastolle tai yli viidenkymmenen hengen yhteistilaisuuteen pystytät useita rinnakkaisia huoneita, fyysisiä tai virtuaalisia, samasta paketista. Määrästä riippumatta jokainen vieras saa aidon roolin sivuroolin sijaan."
+    },
+    "benefits": {
+      "communication": {
+        "title": "Viestintä osastojen välillä",
+        "body": "Hyvä tapaus pakottaa talousihmisen selittämään johtolangan markkinoijalle, ja markkinoijan todella kuuntelemaan. Ihmiset harjoittelevat kääntämään osaamisensa kielelle, jota muut osastot ymmärtävät — taito, joka siirtyy suoraan oikeisiin projekteihin."
+      },
+      "perspective": {
+        "title": "Nähdä, miten kollegat ajattelevat",
+        "body": "Kun kaksi ihmistä lähestyy samaa arvoitusta vastakkaisista suunnista, kaikki seuraavat oppivat, miten toinen puoli päättelee. Tuo keskinäinen ymmärrys tekee osastojen välisestä työstä vähemmän vaivalloista seuraavalla viikolla."
+      },
+      "leadership": {
+        "title": "Johtajuutta ilman panoksia",
+        "body": "Joku astuu aina esiin organisoimaan ryhmän, eikä se useinkaan ole henkilö, jolla on korkein titteli. Mysteeri antaa hiljaisemmille tiimin jäsenille jäsennellyn tavan johtaa ja osallistua ilman, että mitään todellista on pelissä."
+      },
+      "engagement": {
+        "title": "Aitoa innostusta, ei pakotettua hauskuutta",
+        "body": "True crime ja arvoitukset ovat nykyään valtavirran viihdettä, joten useimmat tiimit saapuvat aidon uteliaina vastahakoisuuden sijaan. Et raahaa ketään harjoituksen läpi — he haluavat tietää, kuka sen teki."
+      }
+    },
+    "features": {
+      "team": {
+        "title": "Tehty tiimeille",
+        "body": "Peli toimii vain yhteistyön kautta, joten viestintä ja ongelmanratkaisu syntyvät luonnostaan — ei luottamusharjoituksia."
+      },
+      "formats": {
+        "title": "Sopii kalenteriisi",
+        "body": "Pelaa 45 minuutin lounastapaus tai kahden tunnin iltatapahtuma. Sinä asetat keston sitä luodessasi."
+      },
+      "size": {
+        "title": "Mikä tahansa ryhmäkoko",
+        "body": "Viiden hengen tiimistä yli viidenkymmenen hengen osastoon rinnakkaisiin huoneisiin jaettuna — hahmokaarti mukautuu osallistujamääräänne."
+      },
+      "remote": {
+        "title": "Paikan päällä tai etänä",
+        "body": "Pelatkaa neuvottelupöydän ääressä tai videon välityksellä hybridi- ja täysin etätiimeille. Sama paketti kummallakin tavalla."
+      }
+    },
+    "midCta": "Aloita toimistosi mysteerin rakentaminen",
+    "related": {
+      "lead": "Haluatko sen rakennettavan juuri sinun tiimisi ja teemasi ympärille? Aloita",
+      "customLink": "räätälöity murhamysteerijuhla",
+      "mid": ", tai lue syvällisempi oppaamme aiheesta",
+      "blogLink": "tiiminrakennus yritys- ja toimistomurhamysteerillä",
+      "end": "."
+    },
+    "faq": {
+      "heading": "Usein kysyttyä toimiston murhamysteeristä",
+      "q1": "Voimmeko järjestää murhamysteerin toimistolla?",
+      "a1": "Kyllä. Toimiston murhamysteeri on suunniteltu pelattavaksi tavallisella työpaikalla — neuvotteluhuoneessa, taukotilassa tai videon välityksellä etätiimeille. Näyttelijöitä ei tarvitse palkata eikä erityistä tilaa tarvita: Mystery Maker generoi koko pelin ja tulostettavan paketin, joten valitset vain ajan, jaat hahmot ja pelaat. Valitse lyhyt lounastapaus tai pidempi työn jälkeinen tapahtuma käytettävissä olevan ajan mukaan.",
+      "q2": "Kuinka kauan toimiston murhamysteeri kestää?",
+      "a2": "Noin 45 minuutista kahteen tuntiin, ja päätät sen pelin luodessasi. Lounasformaatti päättyy alle tunnissa ja sopii tavalliseen työpäivään; työn jälkeinen tai pikkujouluformaatti kestää 90 minuutista kahteen tuntiin, rikkaammalla tarinalla ja ajalla seurustella roolissa.",
+      "q3": "Kuinka monta henkeä toimiston murhamysteeriin tarvitaan?",
+      "a3": "Viidestä niin moneen kuin haluat. Pienet viiden–kahdeksan hengen tiimit saavat intiimin tapauksen, jossa jokainen on korvaamaton; viisitoista–kaksikymmentäviisi on ihanteellinen osastojen väliseen tapahtumaan. Suuremmille ryhmille jakautukaa rinnakkaisiin tiimeihin, jotka ratkaisevat saman tapauksen, tai pystyttäkää useita huoneita koko osastolle — hahmokaarti mukautuu automaattisesti määräänne.",
+      "q4": "Voivatko etä- tai hybriditiimit pelata?",
+      "a4": "Kyllä. Jokainen toimiston mysteeri toimii videon välityksellä. Jaa jokaiselle hahmonsa sähköpostitse etukäteen, pelaa kierrokset videopuhelussa ja jaa johtolangat ja todisteet näytöllä. Hybriditiimit voivat sekoittaa paikan päällä olevat ja etäpelaajat samaan peliin, joten hajautetut tiimit saavat saman yhteisen kokemuksen."
     }
   },
   "home": {

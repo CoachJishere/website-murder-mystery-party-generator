@@ -100,52 +100,139 @@
   },
   "customParty": {
     "seo": {
-      "title": "Murder Mystery til Firmaevents: Sjov Teambuilding-fest",
-      "description": "Murder mystery-underholdning skræddersyet til firmaevents og kontorfester. Printbart kit, klar med det samme. Lav jeres holdspil nu!"
+      "title": "Skræddersyet Murder Mystery — Gratis AI-Kit på Minutter",
+      "description": "Lav en skræddersyet murder mystery-fest eller -spil til ethvert tema og enhver gruppestørrelse. AI'en skriver plottet, personerne, sporene og det printbare kit på minutter."
     },
     "hero": {
-      "h1": "Murder Mystery til Firmaevents",
-      "intro": "Et murder mystery skrevet helt fra bunden til jeres team, jeres virksomhed og jeres anledning — ikke et færdigpakket kit. Generer hele det printbare spil på få minutter.",
-      "cta": "Lav jeres eget murder mystery"
+      "h1": "Lav et Skræddersyet Murder Mystery",
+      "intro": "For at lave en skræddersyet murder mystery-fest eller -spil beskriver du dit tema, dit antal gæster og anledningen — AI'en skriver hele historien og printer dit kit på minutter. Hvert plot, hver mistænkt, hvert spor og hvert rollemanuskript genereres fra bunden, så det passer til din gruppe, helt uden forberedelse.",
+      "cta": "Lav dit skræddersyede mysterie"
     },
     "body": {
-      "lead": "De fleste murder mystery-produkter giver jer en lukket kasse: et fast tema, et fast antal roller og et manuskript, som tusindvis af andre allerede har spillet. Mystery Maker fungerer omvendt. I beskriver det firmaevent, I rent faktisk vil holde, og generatoren skriver et helt nyt mysterium på mål — plot, mistænkte, motiver, spor og manuskript til hver enkelt rolle inkluderet.",
-      "designHeading": "Skab et murder mystery til teambuilding og firmaevents",
-      "themePara": "Skræddersyningen starter med temaet. En kontorfest, en festlig firmamiddag, en konference, en teambuilding ude af huset eller noget bygget op om en intern joke i teamet — kan I beskrive det, tilpasser historien sig. Der er intet katalog at vælge fra, så jeres spil er helt unikt.",
-      "guestPara": "Dernæst kommer antallet af deltagere. I fortæller generatoren, hvor mange der spiller, og rollelisten tilpasser sig — et tæt spil for 4 til 6 kolleger, en livlig fest for 8 til 12 eller et fuldt firmaevent for 20 eller flere. Hver deltager får en ægte rolle i mysteriet frem for en statistrolle, og ekstra gæster kan deltage som med-efterforskere, hvis gruppen vokser.",
-      "characterPara": "Hver rolle er skræddersyet: en baggrundshistorie, private motiver, hemmeligheder at vogte og runde-for-runde-manuskripter, der griber ind i hinanden, så mysteriet rent faktisk hænger sammen. Anklager, alibier og afsløringer er skrevet til jeres team, ikke genbrugt fra en skabelon.",
-      "kitPara": "Når det er klart, får I et komplet printbart kit — en værtsguide, der fører jer gennem aftenen, individuelle rollehæfter, fysiske spor og beviser samt matchende invitationer. Print det hele, eller del det digitalt. Fra første prompt til færdigt spil tager det minutter, ikke ugers planlægning."
+      "lead": "De fleste murder mystery-produkter giver dig en fast kasse: et fast tema, et fast antal roller og et manuskript, som tusindvis af andre værter allerede har spillet. Mystery Maker fungerer omvendt. Du beskriver den fest, du faktisk vil holde, og generatoren skriver et helt nyt mysterie, der passer til den — plot, mistænkte, motiver, spor og hver rolles manuskript inkluderet.",
+      "designHeading": "Design et skræddersyet murder mystery-spil til enhver gruppe",
+      "themePara": "Tilpasningen starter med temaet. En 1920'er-smugkro, en spøgelsesagtig victoriansk herregård, et luksuskrydstogt, et firmaophold der går galt, eller noget bygget op om en intern joke — hvis du kan beskrive det, tilpasser historien sig. Der er ingen katalog at vælge fra, så dit spil er unikt.",
+      "guestPara": "Dernæst kommer antallet af gæster. Du fortæller generatoren, hvor mange der spiller, og rollelisten tilpasser sig — et tæt spil for 4 til 6 ved bordet, en livlig fest for 8 til 12 eller et helt event for 20 eller flere. Hver spiller får en ægte rolle i mysteriet frem for en statistrolle, og ekstra gæster kan deltage som medefterforskere, hvis din gruppe vokser.",
+      "characterPara": "Hver rolle er skræddersyet: en baggrundshistorie, private motiver, hemmeligheder at vogte og manuskripter runde for runde, der griber ind i alle andres, så mysteriet faktisk hænger sammen. Anklagerne, alibierne og afsløringerne er skrevet til din rolleliste, ikke tilpasset fra en skabelon.",
+      "kitPara": "Når det er klar, får du et komplet printbart kit — en værtsguide, der fører dig gennem aftenen, individuelle rollehæfter, fysiske spor og beviser og matchende invitationer. Print det hele, eller del det digitalt. Fra første prompt til færdigt spil tager det minutter, ikke ugers planlægning.",
+      "howToHeading": "Sådan laver du et skræddersyet murder mystery-spil eller -fest",
+      "howToStep1": "Beskriv din fest — temaet, anledningen og hvor mange gæster der spiller. Alt fungerer, fra en 1920'er-smugkro til en intern joke.",
+      "howToStep2": "AI'en skriver et helt nyt mysterie, der passer: plottet, de mistænkte, hvert motiv og spor og et personligt manuskript til hver rolle.",
+      "howToStep3": "Download dit printbare kit — værtsguide, rollehæfter, spor og invitationer — og du er klar til at spille på minutter.",
+      "howToCta": "Lav dit skræddersyede murder mystery",
+      "howToCtaEnd": "og få det komplette printbare kit genereret på minutter."
     },
     "features": {
       "theme": {
-        "title": "Ethvert tema til jeres virksomhed",
-        "body": "Kontorfest, festlig firmamiddag, konference, teambuilding ude af huset — beskriv det, og historien skrives på mål. Ingen generiske, færdigpakkede plots."
+        "title": "Ethvert tema du kan forestille dig",
+        "body": "1920'er-smugkro, spøgelseshus, rumstation, kongeligt bryllup — beskriv det, og historien skrives, så den passer. Ingen generiske hyldeplots."
       },
       "guests": {
-        "title": "Skræddersyet til jeres team",
-        "body": "Sæt antallet af spillere, og rollelisten tilpasser sig, fra middage for 4 til events med 20+ kolleger. Alle får en ægte rolle."
+        "title": "Bygget til dit antal gæster",
+        "body": "Angiv antallet af spillere, og rollelisten tilpasser sig, fra middage for 4 til events med 20+. Alle får en ægte rolle."
       },
       "characters": {
         "title": "Skræddersyede roller",
-        "body": "Hver kollega får en personlig rolle med motiver, hemmeligheder og manuskript til hver runde, der griber ind i mysteriet."
+        "body": "Hver gæst får en skræddersyet rolle med motiver, hemmeligheder og manuskripter til hver runde, der griber ind i det større mysterie."
       },
       "kit": {
-        "title": "Printbart kit med det samme",
-        "body": "Værtsguide, rollehæfter, spor og invitationer er klar på få minutter — til print eller digital deling, helt uden forberedelse."
+        "title": "Øjeblikkeligt printbart kit",
+        "body": "Værtsguide, rollehæfter, spor og invitationer genereret på minutter — klar til at printe eller dele digitalt, uden forberedelse."
       }
     },
-    "midCta": "Begynd at lave jeres mysterium",
-    "faq": {
-      "heading": "Ofte stillede spørgsmål om murder mystery til firmaer",
-      "q1": "Er det egnet til firmaevents og teambuilding?",
-      "a1": "Ja. Mystery Maker laver et helt skræddersyet murder mystery til den firmasammenhæng, I beskriver — en kontorfest, en festlig firmamiddag, en konference eller en teambuilding ude af huset. I fortæller generatoren, hvad I vil have, og den skriver plottet, de mistænkte, sporene og manuskriptet til hver rolle. Intet hentes fra et fast katalog, så ingen events bliver ens.",
-      "q2": "Hvor mange deltagere kan være med?",
-      "a2": "Et hvilket som helst antal. I sætter antallet af deltagere, og generatoren tilpasser rollelisten — intime spil for 4 til 6 personer, middage for 8 til 12 eller store firmaevents for 20 eller flere. Hver deltager får sin egen rolle med motiver, hemmeligheder og runde-for-runde-manuskript, og I kan tilføje gæster som med-efterforskere, hvis teamet vokser."
-    },
+    "midCta": "Begynd at bygge dit mysterie",
     "officeLink": {
-      "lead": "Planlægger I noget til arbejdet? Se hvordan det fungerer som",
+      "lead": "Planlægger du noget til arbejdet? Se, hvordan det fungerer som et",
       "link": "murder mystery til kontoret",
       "end": "til teambuilding."
+    },
+    "faq": {
+      "heading": "Ofte stillede spørgsmål om skræddersyet murder mystery",
+      "q1": "Kan jeg lave et skræddersyet murder mystery?",
+      "a1": "Ja. Mystery Maker bygger et helt skræddersyet murder mystery fra bunden ud fra alt, hvad du beskriver — et tema, en ramme, en intern joke eller en rigtig anledning som en fødselsdag eller en kontorfest. Du fortæller generatoren, hvad du vil have, og den skriver plottet, de mistænkte, sporene og hver rolles manuskript. Intet hentes fra et fast katalog af færdigskrevne kits, så to fester spiller aldrig det samme spil.",
+      "q2": "Hvor mange gæster kan spille?",
+      "a2": "Ethvert antal. Du angiver antallet af gæster, og generatoren tilpasser rollelisten — intime spil for 4 til 6 spillere, middage for 8 til 12 eller store events for 20 eller flere. Hver gæst får sin egen rolle med motiver, hemmeligheder og manuskripter runde for runde, og du kan tage ekstra gæster med som medefterforskere, hvis din gruppe vokser, efter du har lavet spillet."
+    }
+  },
+  "officeParty": {
+    "seo": {
+      "title": "Murder Mystery til Kontoret — Teambuilding for Alle",
+      "description": "Afhold et murder mystery på kontoret: et teambuilding-spil, der passer til en frokostpause eller efter arbejde og tilpasser sig enhver gruppestørrelse. Lav dit på minutter."
+    },
+    "hero": {
+      "h1": "Murder Mystery til Kontoret",
+      "intro": "Ja, du kan absolut afholde et murder mystery på kontoret — og det er en af de få teambuilding-aktiviteter, folk ikke i stilhed frygter. Det forvandler en almindelig eftermiddag til en fælles krimigåde, dit team faktisk vil løse: ingen skuespillere at hyre, intet offsite at booke, ingen akavede isbrydere. Beskriv din gruppe, og Mystery Maker skriver hele spillet — plot, mistænkte, spor og printbart kit — på minutter.",
+      "cta": "Lav dit kontor-mysterie"
+    },
+    "body": {
+      "lead": "Et murder mystery fungerer på kontoret, fordi teamworket ikke er en metafor — det er selve spillet. Ingen kan knække sagen alene, så kolleger, der næsten ikke mødes, ender med at udveksle teorier, sammenligne spor og faktisk lytte til hinanden. Du får sammenholdet fra et rigtigt team-event uden trust falls eller påtvunget sjov, og fordi hele kittet genereres for dig og er klar til print, er den eneste forberedelse at trykke på print.",
+      "benefitsHeading": "Hvorfor et murder mystery er ægte teambuilding",
+      "benefitsLead": "De fleste teambuilding-øvelser er noget, folk sidder over. Et murder mystery er anderledes, fordi det at løse det kræver præcis de færdigheder, du vil opbygge i dit team — og de øver dem uden nogensinde at føle sig drillet.",
+      "formatsHeading": "Frokostpause eller efter arbejde — vælg dit format",
+      "formatsLead": "Et kontor-murder mystery bøjer sig efter den tid, du faktisk har. De to formater nedenfor dækker næsten enhver arbejdsplads, og du vælger længden, når du laver spillet.",
+      "lunchTitle": "Frokostpause-mysteriet (45–60 minutter)",
+      "lunchBody": "Bestil mad, saml jer om et mødebord og spil en strammere sag, der er løst, før timen er gået. Det er den mindst forpligtende måde at bryde ugen på — ingen skal blive længe, og det passer ind i en almindelig arbejdsdag. Ideelt til et enkelt team eller som et månedligt tilbagevendende ritual.",
+      "afterWorkTitle": "Efter-arbejde-eventet (90 minutter til 2 timer)",
+      "afterWorkBody": "Med mere tid kan du spille en fyldigere historie med dybere karakterbuer, et par plottwister og plads til at mingle i rollen over drinks og mad. Det er formatet til en julefrokost, en kvartalsvis social begivenhed eller en fejring, hvor du vil have, at selve aftenen er hovedbegivenheden.",
+      "remoteNote": "Begge formater fungerer over video for remote og hybride teams — tildel roller via e-mail, spil runderne på et opkald og del spor på skærmen.",
+      "guestsHeading": "Fra et team på fem til hele afdelingen",
+      "guestsPara1": "Du fastsætter antallet af deltagere, og rollelisten tilpasser sig. Et lille team på fem til otte får en intim sag, hvor alle har et spor, de andre har brug for. Femten til femogtyve er det ideelle punkt for et tværfagligt event — stort nok til at blande folk, der normalt ikke arbejder sammen, lille nok til, at en enkelt facilitator holder tempoet, og ingen bare sidder og ser på.",
+      "guestsPara2": "Flere end det? Spil ikke ét kæmpe spil. Del jer op i parallelle grupper, der løser den samme sag, og sammenlign teorier til sidst — det bliver en venskabelig konkurrence mellem teams. For en hel afdeling eller et allhands på halvtreds-plus opretter du flere parallelle rum, fysiske eller virtuelle, ud fra det samme kit. Uanset antallet får hver gæst en ægte rolle frem for en statistrolle."
+    },
+    "benefits": {
+      "communication": {
+        "title": "Kommunikation på tværs af siloer",
+        "body": "En god sag tvinger økonomipersonen til at forklare et spor til marketingpersonen, og marketing til rent faktisk at lytte. Folk øver sig i at oversætte deres ekspertise til et sprog, andre afdelinger forstår — en færdighed, der overføres direkte til de rigtige projekter."
+      },
+      "perspective": {
+        "title": "Se hvordan kolleger tænker",
+        "body": "Når to personer angriber den samme gåde fra modsatte vinkler, lærer alle, der ser på, hvordan den anden halvdel ræsonnerer. Den gensidige forståelse er det, der gør det tværfaglige arbejde mindre besværligt ugen efter."
+      },
+      "leadership": {
+        "title": "Ledelse uden noget på spil",
+        "body": "Der er altid nogen, der træder frem for at organisere gruppen, og det er ofte ikke personen med den højeste titel. Et mysterie giver de mere stille teammedlemmer en struktureret måde at lede og bidrage på uden noget rigtigt på spil."
+      },
+      "engagement": {
+        "title": "Ægte engagement, ikke påtvunget sjov",
+        "body": "True crime og krimigåder er mainstream-underholdning nu, så de fleste teams møder op med ægte nysgerrighed frem for modvilje. Du slæber ikke nogen gennem en øvelse — de vil vide, hvem der gjorde det."
+      }
+    },
+    "features": {
+      "team": {
+        "title": "Bygget til teams",
+        "body": "Spillet fungerer kun gennem samarbejde, så kommunikation og problemløsning opstår naturligt — ingen trust falls nødvendige."
+      },
+      "formats": {
+        "title": "Passer til din kalender",
+        "body": "Spil en 45-minutters frokostsag eller et to timers aftenevent. Du fastsætter længden, når du laver det."
+      },
+      "size": {
+        "title": "Enhver gruppestørrelse",
+        "body": "Fra et team på fem til en afdeling på halvtreds-plus delt op i parallelle rum — rollelisten tilpasser sig jeres deltagerantal."
+      },
+      "remote": {
+        "title": "Fysisk eller remote",
+        "body": "Spil om et mødebord eller over video for hybride og helt remote teams. Samme kit uanset hvad."
+      }
+    },
+    "midCta": "Begynd at bygge dit kontor-mysterie",
+    "related": {
+      "lead": "Vil du have det bygget op om dit præcise team og tema? Start et",
+      "customLink": "skræddersyet murder mystery",
+      "mid": ", eller læs vores dybere guide til",
+      "blogLink": "teambuilding med firma- og kontor-murder mystery",
+      "end": "."
+    },
+    "faq": {
+      "heading": "Ofte stillede spørgsmål om kontor-murder mystery",
+      "q1": "Kan vi afholde et murder mystery på kontoret?",
+      "a1": "Ja. Et kontor-murder mystery er designet til at køre på en almindelig arbejdsplads — et mødelokale, et pauseområde eller over video for remote teams. Der er ingen skuespillere at hyre og intet særligt lokale nødvendigt: Mystery Maker genererer hele spillet og et printbart kit, så du vælger bare et tidspunkt, tildeler rollerne og spiller. Vælg en kort frokostpause-sag eller et længere efter-arbejde-event afhængigt af den tid, du har.",
+      "q2": "Hvor lang tid tager et kontor-murder mystery?",
+      "a2": "Fra omkring 45 minutter til to timer, og du bestemmer det, når du laver spillet. Et frokostpause-format er slut på under en time og passer ind i en almindelig arbejdsdag; et efter-arbejde- eller julefrokost-format varer 90 minutter til to timer med en rigere historie og tid til at være social i rollen.",
+      "q3": "Hvor mange personer skal vi bruge til et kontor-murder mystery?",
+      "a3": "Fra fem til så mange, du vil. Små teams på fem til otte får en intim sag, hvor alle er uundværlige; femten til femogtyve er ideelt til et tværfagligt event. For større grupper deler I jer op i parallelle teams, der løser den samme sag, eller opretter flere rum til en hel afdeling — rollelisten tilpasser sig automatisk jeres antal.",
+      "q4": "Kan remote eller hybride teams spille?",
+      "a4": "Ja. Alle kontor-mysterier fungerer over video. Tildel hver person deres rolle via e-mail på forhånd, spil runderne på et videoopkald, og del spor og beviser på skærmen. Hybride teams kan blande fysiske og remote spillere i samme spil, så spredte teams får den samme fælles oplevelse."
     }
   },
   "home": {

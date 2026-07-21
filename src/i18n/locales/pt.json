@@ -100,52 +100,139 @@
   },
   "customParty": {
     "seo": {
-      "title": "Murder Mystery para Eventos Corporativos e Team Building",
-      "description": "Entretenimento murder mystery à medida para eventos corporativos e festas de escritório. Kit imprimível e pronto a usar. Crie já o seu jogo de equipa!"
+      "title": "Murder Mystery Personalizado — Kit de IA Grátis em Minutos",
+      "description": "Crie uma festa ou um jogo de murder mystery personalizado para qualquer tema e número de convidados. A IA escreve o enredo, as personagens, as pistas e o kit imprimível em minutos."
     },
     "hero": {
-      "h1": "Murder Mystery para Eventos Corporativos",
-      "intro": "Um murder mystery escrito à medida para a sua equipa, a sua empresa e a sua ocasião — não um kit pré-fabricado. Gere o jogo completo e imprimível em poucos minutos.",
-      "cta": "Crie o seu murder mystery"
+      "h1": "Crie um Murder Mystery Personalizado",
+      "intro": "Para criar uma festa ou um jogo de murder mystery personalizado, descreva o tema, o número de convidados e a ocasião — a IA escreve toda a história e imprime o seu kit em minutos. Cada enredo, suspeito, pista e guião de personagem é gerado do zero para se adaptar ao seu grupo, sem qualquer preparação.",
+      "cta": "Crie o seu mistério personalizado"
     },
     "body": {
-      "lead": "A maioria dos produtos de murder mystery entrega-lhe uma caixa fechada: um tema fixo, um número fixo de personagens e um guião já jogado por milhares de outros. O Mystery Maker funciona ao contrário. Descreve o evento corporativo que realmente quer organizar e o gerador escreve um mistério totalmente novo à medida — enredo, suspeitos, motivos, pistas e o guião de cada personagem incluídos.",
-      "designHeading": "Crie um murder mystery para team building e eventos corporativos",
-      "themePara": "A personalização começa pelo tema. Uma festa no escritório, um jantar de gala da empresa, uma convenção, um team building fora das instalações ou algo construído à volta de uma piada interna da equipa — se conseguir descrevê-lo, a história adapta-se. Não há catálogo por onde escolher, por isso o seu jogo é único.",
-      "guestPara": "A seguir vem o número de participantes. Diz ao gerador quantas pessoas vão jogar e o elenco ajusta-se — um jogo restrito para 4 a 6 colegas, uma festa animada para 8 a 12 ou um evento corporativo completo para 20 ou mais. Cada participante tem um papel autêntico no mistério, e não uma simples figuração, e os convidados extra podem juntar-se como co-investigadores se o grupo crescer.",
-      "characterPara": "Cada personagem é criada à medida: um historial, motivos privados, segredos a guardar e guiões ronda a ronda que encaixam com os dos restantes, para que o mistério se aguente de verdade. As acusações, os álibis e as reviravoltas são escritos para a sua equipa, não adaptados de um modelo.",
-      "kitPara": "Quando estiver pronto, recebe um kit imprimível completo — um guia para o anfitrião que o acompanha ao longo da noite, os cadernos individuais de cada personagem, pistas e provas físicas e os convites a condizer. Imprima tudo ou partilhe em digital. Do primeiro pedido ao jogo terminado bastam minutos, e não semanas de organização."
+      "lead": "A maioria dos produtos de murder mystery entrega-lhe uma caixa fechada: um tema fixo, um número fixo de personagens e um guião que milhares de outros anfitriões já jogaram. O Mystery Maker funciona ao contrário. Você descreve a festa que realmente quer organizar e o gerador escreve um mistério totalmente novo à sua medida — enredo, suspeitos, motivos, pistas e o guião de cada personagem incluídos.",
+      "designHeading": "Crie um jogo de murder mystery personalizado para qualquer grupo",
+      "themePara": "A personalização começa pelo tema. Um bar clandestino dos anos 20, uma mansão vitoriana assombrada, um cruzeiro de luxo, um retiro de empresa que corre mal ou algo construído à volta de uma piada interna — se conseguir descrevê-lo, a história adapta-se. Não há catálogo por onde escolher, por isso o seu jogo é único.",
+      "guestPara": "A seguir vem o número de convidados. Diz ao gerador quantas pessoas jogam e o elenco ajusta-se — um jogo reduzido para 4 a 6 à mesa, uma festa animada para 8 a 12 ou um evento completo para 20 ou mais. Cada jogador tem um papel autêntico no mistério em vez de uma mera figuração, e os convidados a mais podem juntar-se como coinvestigadores se o seu grupo crescer.",
+      "characterPara": "Cada personagem é criada à medida: uma história de fundo, motivos privados, segredos a guardar e guiões ronda a ronda que se encaixam com os dos outros para que o mistério se sustente de verdade. As acusações, os álibis e as revelações são escritos para o seu elenco, não adaptados de um modelo.",
+      "kitPara": "Quando está pronto, recebe um kit imprimível completo — um guia do anfitrião que o acompanha durante a noite, os livretos individuais das personagens, pistas e provas físicas e convites a condizer. Imprima tudo ou partilhe em digital. Do primeiro pedido ao jogo terminado passam minutos, não semanas de planeamento.",
+      "howToHeading": "Como criar um jogo ou uma festa de murder mystery personalizado",
+      "howToStep1": "Descreva a sua festa — o tema, a ocasião e quantos convidados jogam. Tudo serve, de um bar clandestino dos anos 20 a uma piada interna.",
+      "howToStep2": "A IA escreve um mistério totalmente novo à medida: o enredo, os suspeitos, cada motivo e pista, e um guião pessoal para cada personagem.",
+      "howToStep3": "Descarregue o seu kit imprimível — guia do anfitrião, livretos das personagens, pistas e convites — e está pronto a jogar em minutos.",
+      "howToCta": "Crie o seu murder mystery personalizado",
+      "howToCtaEnd": "e obtenha o kit imprimível completo gerado em minutos."
     },
     "features": {
       "theme": {
-        "title": "Qualquer tema para a sua empresa",
-        "body": "Festa no escritório, jantar de gala, convenção, retiro corporativo — descreva-o e a história é escrita à medida. Sem enredos genéricos pré-fabricados."
+        "title": "Qualquer tema que imagine",
+        "body": "Bar clandestino dos anos 20, mansão assombrada, estação espacial, casamento real — descreva-o e a história é escrita à medida. Nada de enredos genéricos pré-fabricados."
       },
       "guests": {
-        "title": "À medida da sua equipa",
-        "body": "Defina o número de jogadores e o elenco ajusta-se, de jantares para 4 pessoas a eventos com mais de 20 colegas. Todos têm um papel a sério."
+        "title": "Feito para o seu número de convidados",
+        "body": "Defina o número de jogadores e o elenco ajusta-se, de jantares de 4 pessoas a eventos com mais de 20. Todos têm um papel real."
       },
       "characters": {
         "title": "Personagens personalizadas",
-        "body": "Cada colega recebe uma personagem à medida, com motivos, segredos e guiões para cada ronda que encaixam no mistério."
+        "body": "Cada convidado recebe uma personagem à medida com motivos, segredos e guiões para cada ronda que se encaixam no mistério global."
       },
       "kit": {
         "title": "Kit imprimível imediato",
-        "body": "Guia do anfitrião, cadernos das personagens, pistas e convites prontos em poucos minutos — para imprimir ou partilhar em digital, sem preparação."
+        "body": "Guia do anfitrião, livretos das personagens, pistas e convites gerados em minutos — prontos a imprimir ou partilhar em digital, sem preparação."
       }
     },
     "midCta": "Comece a criar o seu mistério",
-    "faq": {
-      "heading": "Perguntas frequentes sobre murder mystery corporativo",
-      "q1": "É adequado para eventos corporativos e team building?",
-      "a1": "Sim. O Mystery Maker cria um murder mystery totalmente à medida para o contexto corporativo que descrever — uma festa no escritório, um jantar de gala, uma convenção ou um team building fora das instalações. Indica ao gerador o que pretende e ele escreve o enredo, os suspeitos, as pistas e o guião de cada personagem. Nada é retirado de um catálogo fixo, por isso não há dois eventos iguais.",
-      "q2": "Quantos participantes podem jogar?",
-      "a2": "Qualquer número. Define o número de participantes e o gerador ajusta o elenco — jogos íntimos para 4 a 6 pessoas, jantares para 8 a 12 ou grandes eventos corporativos para 20 ou mais. Cada participante tem a sua própria personagem, com motivos, segredos e guiões ronda a ronda, e pode acrescentar convidados como co-investigadores se a equipa crescer."
-    },
     "officeLink": {
-      "lead": "Está a planear algo para o trabalho? Veja como funciona como",
-      "link": "murder mystery de escritório",
+      "lead": "A organizar algo para o trabalho? Veja como funciona como uma",
+      "link": "festa de murder mystery no escritório",
       "end": "para team building."
+    },
+    "faq": {
+      "heading": "Perguntas frequentes sobre o murder mystery personalizado",
+      "q1": "Posso criar um murder mystery personalizado?",
+      "a1": "Sim. O Mystery Maker cria um murder mystery totalmente à medida a partir do que descrever — um tema, um cenário, uma piada interna ou uma ocasião real como um aniversário ou uma festa de escritório. Diz ao gerador o que quer e ele escreve o enredo, os suspeitos, as pistas e o guião de cada personagem. Nada vem de um catálogo fixo de kits pré-escritos, por isso duas festas nunca jogam o mesmo jogo.",
+      "q2": "Quantos convidados podem jogar?",
+      "a2": "Qualquer número. Define o número de convidados e o gerador ajusta o elenco — jogos íntimos para 4 a 6 jogadores, jantares para 8 a 12 ou grandes eventos para 20 ou mais. Cada convidado tem a sua própria personagem com motivos, segredos e guiões ronda a ronda, e pode receber convidados a mais como coinvestigadores se o seu grupo crescer depois de criar o jogo."
+    }
+  },
+  "officeParty": {
+    "seo": {
+      "title": "Murder Mystery no Escritório — Team Building para Grupos",
+      "description": "Organize um murder mystery no escritório: um jogo de team building que cabe numa hora de almoço ou no fim do trabalho e se adapta a qualquer tamanho de grupo. Crie o seu em minutos."
+    },
+    "hero": {
+      "h1": "Murder Mystery no Escritório",
+      "intro": "Sim, pode perfeitamente organizar um murder mystery no escritório — e é uma das poucas atividades de team building que as pessoas não temem em silêncio. Transforma uma tarde comum num caso de assassínio partilhado que a sua equipa realmente quer resolver: sem atores para contratar, sem saída para reservar, sem quebra-gelos constrangedores. Descreva o seu grupo e o Mystery Maker escreve o jogo inteiro — enredo, suspeitos, pistas e kit imprimível — em minutos.",
+      "cta": "Crie o mistério do seu escritório"
+    },
+    "body": {
+      "lead": "Um murder mystery funciona no escritório porque o trabalho de equipa não é uma metáfora: é o próprio jogo. Ninguém consegue resolver o caso sozinho, por isso colegas que mal se cruzam acabam a trocar teorias, comparar pistas e ouvir-se de verdade. Obtém a união de um verdadeiro evento de equipa sem as quedas de confiança nem a diversão forçada e, como todo o kit é gerado por si e está pronto a imprimir, a única preparação é carregar em imprimir.",
+      "benefitsHeading": "Porque é que um murder mystery é verdadeiro team building",
+      "benefitsLead": "A maioria dos exercícios de team building é algo que as pessoas suportam. Um murder mystery é diferente porque resolvê-lo exige exatamente as competências que quer desenvolver na sua equipa — e elas praticam-nas sem nunca se sentirem treinadas.",
+      "formatsHeading": "Hora de almoço ou fim do trabalho: escolha o seu formato",
+      "formatsLead": "Um murder mystery de escritório adapta-se ao tempo que realmente tem. Os dois formatos abaixo cobrem quase todos os locais de trabalho, e escolhe a duração ao criar o jogo.",
+      "lunchTitle": "O mistério da hora de almoço (45–60 minutos)",
+      "lunchBody": "Peçam comida, reúnam-se à volta de uma mesa de reuniões e joguem um caso mais ágil que se resolve antes de a hora acabar. É a forma menos exigente de quebrar a semana — ninguém tem de ficar até tarde e encaixa num dia de trabalho normal. Ideal para uma única equipa ou como ritual mensal recorrente.",
+      "afterWorkTitle": "O evento de fim do trabalho (de 90 minutos a 2 horas)",
+      "afterWorkBody": "Com mais tempo, pode jogar uma história mais completa com arcos de personagem mais profundos, algumas reviravoltas e espaço para conviver na pele da personagem com bebidas e comida. É o formato para uma festa de Natal, um evento social trimestral ou uma celebração em que quer que a própria noite seja o evento principal.",
+      "remoteNote": "Ambos os formatos funcionam por videochamada para equipas remotas e híbridas — atribua as personagens por e-mail, jogue as rondas numa chamada e partilhe as pistas no ecrã.",
+      "guestsHeading": "De uma equipa de cinco pessoas a todo o departamento",
+      "guestsPara1": "Você define o número de participantes e o elenco ajusta-se. Uma equipa pequena de cinco a oito pessoas obtém um caso íntimo em que cada um guarda uma pista de que os outros precisam. Quinze a vinte e cinco é o ponto ideal para um evento interdepartamental — grande o suficiente para misturar pessoas que normalmente não trabalham juntas, pequeno o suficiente para que um único facilitador mantenha o ritmo e ninguém fique só a ver.",
+      "guestsPara2": "Mais numerosos? Não jogue um único jogo gigante. Dividam-se em grupos paralelos que resolvem o mesmo caso e comparem teorias no fim — torna-se uma competição amigável entre equipas. Para todo um departamento ou uma reunião geral de mais de cinquenta, monte várias salas paralelas, físicas ou virtuais, a partir do mesmo kit. Seja qual for o número, cada convidado tem um papel autêntico em vez de uma mera figuração."
+    },
+    "benefits": {
+      "communication": {
+        "title": "Comunicação entre departamentos",
+        "body": "Um bom caso obriga a pessoa das finanças a explicar uma pista à do marketing, e o marketing a ouvir de verdade. As pessoas praticam traduzir a sua especialidade numa linguagem que os outros departamentos entendem — uma competência que se transfere diretamente para os projetos reais."
+      },
+      "perspective": {
+        "title": "Ver como os colegas pensam",
+        "body": "Quando duas pessoas atacam o mesmo enigma de ângulos opostos, todos os que observam aprendem como raciocina a outra metade. Essa compreensão mútua é o que torna o trabalho interfuncional menos penoso na semana seguinte."
+      },
+      "leadership": {
+        "title": "Liderança de baixo risco",
+        "body": "Há sempre alguém que dá um passo em frente para organizar o grupo, e muitas vezes não é a pessoa com o cargo mais alto. Um mistério dá aos membros mais reservados da equipa uma forma estruturada de liderar e contribuir sem nada de real em jogo."
+      },
+      "engagement": {
+        "title": "Envolvimento genuíno, não diversão forçada",
+        "body": "O true crime e os policiais são hoje entretenimento de massas, por isso a maioria das equipas chega com curiosidade real em vez de relutância. Não arrasta ninguém por um exercício — querem saber quem foi."
+      }
+    },
+    "features": {
+      "team": {
+        "title": "Feito para equipas",
+        "body": "O jogo só funciona com colaboração, por isso a comunicação e a resolução de problemas surgem de forma natural — sem quedas de confiança."
+      },
+      "formats": {
+        "title": "Encaixa na sua agenda",
+        "body": "Jogue um caso de 45 minutos na hora de almoço ou um evento noturno de duas horas. Você define a duração ao criá-lo."
+      },
+      "size": {
+        "title": "Qualquer tamanho de grupo",
+        "body": "De uma equipa de cinco pessoas a um departamento de mais de cinquenta dividido em salas paralelas — o elenco adapta-se ao seu número de participantes."
+      },
+      "remote": {
+        "title": "Presencial ou remoto",
+        "body": "Joguem à volta de uma mesa de reuniões ou por videochamada para equipas híbridas e totalmente remotas. O mesmo kit em ambos os casos."
+      }
+    },
+    "midCta": "Comece a criar o mistério do seu escritório",
+    "related": {
+      "lead": "Quer construído à volta da sua equipa e do seu tema exatos? Comece uma",
+      "customLink": "festa de murder mystery personalizada",
+      "mid": ", ou leia o nosso guia mais completo sobre",
+      "blogLink": "team building com murder mystery corporativo e de escritório",
+      "end": "."
+    },
+    "faq": {
+      "heading": "Perguntas frequentes sobre o murder mystery de escritório",
+      "q1": "Podemos organizar um murder mystery no escritório?",
+      "a1": "Sim. Um murder mystery de escritório foi pensado para decorrer num local de trabalho normal — uma sala de reuniões, uma zona de pausa ou por videochamada para equipas remotas. Não há atores para contratar nem é preciso um local especial: o Mystery Maker gera o jogo completo e um kit imprimível, por isso só tem de escolher uma hora, atribuir as personagens e jogar. Escolha um caso curto na hora de almoço ou um evento mais longo no fim do trabalho consoante o tempo que tiver.",
+      "q2": "Quanto tempo dura um murder mystery de escritório?",
+      "a2": "Entre cerca de 45 minutos e duas horas, e decide ao criar o jogo. Um formato de hora de almoço termina em menos de uma hora e encaixa num dia normal; um formato de fim do trabalho ou de festa de Natal dura de 90 minutos a duas horas, com uma história mais rica e tempo para conviver na pele da personagem.",
+      "q3": "Quantas pessoas precisamos para um murder mystery de escritório?",
+      "a3": "De cinco a quantas quiser. As equipas pequenas de cinco a oito pessoas obtêm um caso íntimo em que todos são essenciais; quinze a vinte e cinco é ideal para um evento interdepartamental. Para grupos maiores, dividam-se em equipas paralelas que resolvem o mesmo caso, ou montem várias salas para todo um departamento — o elenco adapta-se automaticamente ao vosso número.",
+      "q4": "As equipas remotas ou híbridas podem jogar?",
+      "a4": "Sim. Todos os mistérios de escritório funcionam por videochamada. Atribua a cada pessoa a sua personagem por e-mail com antecedência, jogue as rondas numa videochamada e partilhe pistas e provas no ecrã. As equipas híbridas podem misturar jogadores presenciais e remotos no mesmo jogo, para que as equipas distribuídas vivam a mesma experiência partilhada."
     }
   },
   "home": {

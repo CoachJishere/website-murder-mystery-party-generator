@@ -13,12 +13,16 @@ const PATH = "office-murder-mystery-party";
 const OG_IMAGE =
   "https://github.com/CoachJ87/murder-mystery-party-generator/blob/main/public/images/custom_themes.png?raw=true";
 
-// English-only at launch. The page targets an English-intent query
-// ("office murder mystery party") and the officeParty.* copy lives only in
-// en.json for now; i18next falls back to English for other locales. When the
-// copy is translated, add the locale codes here and the page will emit the
-// matching hreflang alternates (mirror the addition in scripts/generate-sitemap.mjs).
-const LANGS = ["en"];
+// All languages that have a localized version of this page (corporate/team-building
+// angle). Mirrors CustomMurderMysteryParty; keep in sync with LOCALIZED_LANGS in
+// scripts/generate-sitemap.mjs. 'zh-cn' is our i18n code; Google's canonical form for
+// Simplified Chinese is 'zh-Hans', mapped at emit time. Localized to all 13 per ADR-0040.
+const LANGS = ["en", "es", "fr", "de", "it", "pt", "nl", "da", "sv", "fi", "ko", "ja", "zh-cn"];
+
+const OG_LOCALE_MAP: Record<string, string> = {
+  en: "en_US", es: "es_ES", fr: "fr_FR", de: "de_DE", it: "it_IT", pt: "pt_PT",
+  nl: "nl_NL", da: "da_DK", sv: "sv_SE", fi: "fi_FI", ko: "ko_KR", ja: "ja_JP", "zh-cn": "zh_CN",
+};
 
 const hreflangCode = (lang: string) => (lang === "zh-cn" ? "zh-Hans" : lang);
 const pageUrl = (lang: string) => (lang === "en" ? `${SITE}/${PATH}/` : `${SITE}/${lang}/${PATH}/`);
@@ -40,9 +44,10 @@ export default function OfficeMurderMysteryParty() {
     }
   }, [lang]);
 
-  // Only English is published for this page; canonical always resolves to en so
-  // language-prefixed URLs don't fork into duplicate (English) content.
-  const canonical = pageUrl("en");
+  // Resolve the canonical/og language to one we actually publish; fall back to en.
+  const canonicalLang = LANGS.includes(urlLang) ? urlLang : "en";
+  const canonical = pageUrl(canonicalLang);
+  const ogLocale = OG_LOCALE_MAP[canonicalLang] || "en_US";
 
   const benefits = ["communication", "perspective", "leadership", "engagement"] as const;
 
@@ -75,7 +80,7 @@ export default function OfficeMurderMysteryParty() {
   return (
     <div className="min-h-screen flex flex-col bg-[#000000]">
       <Helmet>
-        <html lang="en" />
+        <html lang={hreflangCode(canonicalLang)} />
         <title>{t("officeParty.seo.title")}</title>
         <meta name="description" content={t("officeParty.seo.description")} />
         <link rel="canonical" href={canonical} />
@@ -88,7 +93,7 @@ export default function OfficeMurderMysteryParty() {
         <meta property="og:title" content={t("officeParty.seo.title")} />
         <meta property="og:description" content={t("officeParty.seo.description")} />
         <meta property="og:image" content={OG_IMAGE} />
-        <meta property="og:locale" content="en_US" />
+        <meta property="og:locale" content={ogLocale} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content={OG_IMAGE} />
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
