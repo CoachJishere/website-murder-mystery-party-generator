@@ -86,21 +86,20 @@ async function generateSitemap() {
     { loc: '/blog/', priority: '0.8', freq: 'daily' },
     { loc: '/support/', priority: '0.5', freq: 'monthly' },
     { loc: '/privacy/', priority: '0.3', freq: 'yearly' },
-    // English-only landing page (not yet translated). When officeParty.* copy is
-    // translated, move this into localizedStaticPages for per-language hreflang.
-    { loc: '/office-murder-mystery-party/', priority: '0.8', freq: 'monthly' },
   ];
 
   // Localized static landing pages: one <url> per language with reciprocal
-  // hreflang alternates (mirrors the blog-post block below). The corporate
-  // murder-mystery page is fully translated into all 13 languages; en lives at
-  // the un-prefixed path, others at /<lang>/<path>/. zh-cn is emitted as the
-  // 'zh-Hans' hreflang code (Google's canonical form), matching the blog logic.
-  // NOTE: the page component (src/pages/CustomMurderMysteryParty.tsx) emits the
-  // same hreflang set in-page; keep the two LANGS lists in sync.
+  // hreflang alternates (mirrors the blog-post block below). Both landing pages
+  // are fully translated into all 13 languages (custom-angle on /custom-…,
+  // corporate-angle on /office-…, per ADR-0040); en lives at the un-prefixed
+  // path, others at /<lang>/<path>/. zh-cn is emitted as the 'zh-Hans' hreflang
+  // code (Google's canonical form), matching the blog logic. NOTE: the page
+  // components (CustomMurderMysteryParty.tsx, OfficeMurderMysteryParty.tsx) emit
+  // the same hreflang set in-page; keep the three LANGS lists in sync.
   const LOCALIZED_LANGS = ['en', 'es', 'fr', 'de', 'it', 'pt', 'nl', 'da', 'sv', 'fi', 'ko', 'ja', 'zh-cn'];
   const localizedStaticPages = [
     { path: 'custom-murder-mystery-party', priority: '0.8', freq: 'monthly' },
+    { path: 'office-murder-mystery-party', priority: '0.8', freq: 'monthly' },
   ];
   const hreflangOf = (l) => (l === 'zh-cn' ? 'zh-Hans' : l);
   const localizedLoc = (l, path) => (l === 'en' ? `${SITE}/${path}/` : `${SITE}/${l}/${path}/`);

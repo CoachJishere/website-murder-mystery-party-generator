@@ -100,52 +100,139 @@
   },
   "customParty": {
     "seo": {
-      "title": "Murder Mystery voor Bedrijfsevenementen: Leuke Teambuilding",
-      "description": "Murder mystery-entertainment op maat voor bedrijfsevenementen en kantoorfeesten. Printbare kit, meteen klaar. Maak nu jouw teamspel!"
+      "title": "Aangepaste Murder Mystery — Gratis AI-Kit in Minuten",
+      "description": "Maak een aangepaste murder mystery-party of -spel voor elk thema en elke groepsgrootte. De AI schrijft het plot, de personages, de aanwijzingen en het printbare pakket in minuten."
     },
     "hero": {
-      "h1": "Murder Mystery voor Bedrijfsevenementen",
-      "intro": "Een murder mystery die helemaal op maat wordt geschreven rond jouw team, jouw bedrijf en jouw gelegenheid — geen kant-en-klaar pakket. Genereer het complete, printbare spel in enkele minuten.",
-      "cta": "Maak jouw murder mystery"
+      "h1": "Maak een Aangepaste Murder Mystery",
+      "intro": "Om een aangepaste murder mystery-party of -spel te maken, beschrijf je je thema, je aantal gasten en de gelegenheid — de AI schrijft het hele verhaal en print je pakket in minuten. Elk plot, elke verdachte, elke aanwijzing en elk personagescript wordt vanaf nul gegenereerd om bij je groep te passen, zonder enige voorbereiding.",
+      "cta": "Maak je aangepaste mysterie"
     },
     "body": {
-      "lead": "De meeste murder mystery-producten geven je een vaste doos: een vast thema, een vast aantal personages en een script dat al door duizenden anderen is gespeeld. Mystery Maker werkt precies andersom. Jij beschrijft het bedrijfsevenement dat je echt wilt organiseren, en de generator schrijft een gloednieuw mysterie dat erbij past — plot, verdachten, motieven, aanwijzingen en het script voor elk personage inbegrepen.",
-      "designHeading": "Maak een murder mystery voor teambuilding en bedrijfsevenementen",
-      "themePara": "Het maatwerk begint bij het thema. Een kantoorfeest, een chic bedrijfsgala, een congres, een teambuilding-uitje of iets dat is opgebouwd rond een interne grap van het team — als je het kunt beschrijven, past het verhaal zich aan. Er is geen catalogus om uit te kiezen, dus jouw spel is uniek.",
-      "guestPara": "Daarna komt het aantal deelnemers. Je vertelt de generator met hoeveel mensen jullie spelen en de cast schaalt mee — een compact spel voor 4 tot 6 collega's, een levendig feest voor 8 tot 12, of een volledig bedrijfsevenement voor 20 of meer. Elke deelnemer krijgt een echte rol in het mysterie in plaats van een figurantenrol, en extra gasten kunnen als mede-onderzoekers meedoen als de groep groeit.",
-      "characterPara": "Elk personage wordt op maat gebouwd: een achtergrondverhaal, persoonlijke motieven, geheimen om te bewaken en scripts per ronde die in elkaar grijpen met die van alle anderen, zodat het mysterie echt klopt. De beschuldigingen, alibi's en onthullingen worden voor jouw team geschreven, niet uit een sjabloon gehaald.",
-      "kitPara": "Als het klaar is, ontvang je een complete printbare kit — een hostgids die je door de avond loodst, individuele personageboekjes, fysieke aanwijzingen en bewijsstukken, en bijpassende uitnodigingen. Print alles uit of deel het digitaal. Van de eerste prompt tot het afgewerkte spel duurt het minuten, geen weken van voorbereiding."
+      "lead": "De meeste murder mystery-producten geven je een vaste doos: een vast thema, een vast aantal personages en een script dat duizenden andere gastheren al hebben gespeeld. Mystery Maker werkt andersom. Jij beschrijft het feest dat je echt wilt geven en de generator schrijft een gloednieuw mysterie op maat — plot, verdachten, motieven, aanwijzingen en het script van elk personage inbegrepen.",
+      "designHeading": "Ontwerp een aangepast murder mystery-spel voor elke groep",
+      "themePara": "De personalisatie begint bij het thema. Een jaren 20-speakeasy, een spookachtig victoriaans landhuis, een luxe cruise, een bedrijfsuitje dat misgaat of iets rond een onderonsje — als je het kunt beschrijven, past het verhaal zich aan. Er is geen catalogus om uit te kiezen, dus je spel is uniek.",
+      "guestPara": "Daarna komt het aantal gasten. Je vertelt de generator hoeveel mensen meespelen en de cast past zich aan — een compact spel voor 4 tot 6 aan tafel, een levendig feest voor 8 tot 12 of een compleet evenement voor 20 of meer. Elke speler krijgt een echte rol in het mysterie in plaats van een figurantenrol, en extra gasten kunnen als mede-onderzoekers meedoen als je groep groeit.",
+      "characterPara": "Elk personage is op maat gemaakt: een achtergrondverhaal, privémotieven, geheimen om te bewaren en scripts ronde voor ronde die in elkaar grijpen met die van alle anderen, zodat het mysterie echt klopt. De beschuldigingen, alibi's en onthullingen zijn geschreven voor jouw cast, niet uit een sjabloon gehaald.",
+      "kitPara": "Als het klaar is, krijg je een compleet printbaar pakket — een gastheergids die je door de avond leidt, individuele personageboekjes, fysieke aanwijzingen en bewijs en bijpassende uitnodigingen. Print alles of deel het digitaal. Van eerste prompt tot afgerond spel duurt minuten, geen weken plannen.",
+      "howToHeading": "Hoe maak je een aangepast murder mystery-spel of -feest",
+      "howToStep1": "Beschrijf je feest — het thema, de gelegenheid en hoeveel gasten meespelen. Alles kan, van een jaren 20-speakeasy tot een onderonsje.",
+      "howToStep2": "De AI schrijft een gloednieuw mysterie op maat: het plot, de verdachten, elk motief en elke aanwijzing, en een persoonlijk script voor elk personage.",
+      "howToStep3": "Download je printbare pakket — gastheergids, personageboekjes, aanwijzingen en uitnodigingen — en je bent in minuten klaar om te spelen.",
+      "howToCta": "Maak je aangepaste murder mystery",
+      "howToCtaEnd": "en laat het volledige printbare pakket in minuten genereren."
     },
     "features": {
       "theme": {
-        "title": "Elk thema voor jouw bedrijf",
-        "body": "Kantoorfeest, bedrijfsgala, congres, teambuilding-uitje — beschrijf het en het verhaal wordt op maat geschreven. Geen generieke, kant-en-klare plots."
+        "title": "Elk thema dat je kunt bedenken",
+        "body": "Jaren 20-speakeasy, spookhuis, ruimtestation, koninklijke bruiloft — beschrijf het en het verhaal wordt op maat geschreven. Geen generieke kant-en-klare plots."
       },
       "guests": {
-        "title": "Op maat van jouw team",
-        "body": "Stel het aantal spelers in en de cast schaalt mee, van diners voor 4 tot evenementen met 20+ collega's. Iedereen krijgt een echte rol."
+        "title": "Gemaakt voor jouw aantal gasten",
+        "body": "Stel het aantal spelers in en de cast past zich aan, van diners voor 4 tot evenementen met 20+. Iedereen krijgt een echte rol."
       },
       "characters": {
-        "title": "Personages op maat",
-        "body": "Elke collega krijgt een persoonlijk personage met motieven, geheimen en scripts per ronde die precies in het grotere mysterie passen."
+        "title": "Aangepaste personages",
+        "body": "Elke gast krijgt een op maat gemaakt personage met motieven, geheimen en scripts voor elke ronde die in het grotere mysterie passen."
       },
       "kit": {
-        "title": "Direct printbare kit",
-        "body": "Hostgids, personageboekjes, aanwijzingen en uitnodigingen klaar in enkele minuten — om te printen of digitaal te delen, zonder voorbereiding."
+        "title": "Direct printbaar pakket",
+        "body": "Gastheergids, personageboekjes, aanwijzingen en uitnodigingen in minuten gegenereerd — klaar om te printen of digitaal te delen, zonder voorbereiding."
       }
     },
-    "midCta": "Begin met het maken van jouw mysterie",
-    "faq": {
-      "heading": "Veelgestelde vragen over murder mystery voor bedrijven",
-      "q1": "Is het geschikt voor bedrijfsevenementen en teambuilding?",
-      "a1": "Ja. Mystery Maker maakt een volledig op maat gemaakte murder mystery rond de zakelijke context die je beschrijft — een kantoorfeest, een bedrijfsgala, een congres of een teambuilding-uitje. Jij geeft de generator door wat je wilt en hij schrijft het plot, de verdachten, de aanwijzingen en het script voor elk personage. Niets komt uit een vaste catalogus, dus geen enkel evenement is hetzelfde.",
-      "q2": "Hoeveel deelnemers kunnen meespelen?",
-      "a2": "Elk aantal. Je stelt het aantal deelnemers in en de generator past de cast aan — intieme spellen voor 4 tot 6 personen, diners voor 8 tot 12, of grote bedrijfsevenementen voor 20 of meer. Elke deelnemer krijgt een eigen personage met motieven, geheimen en scripts per ronde, en je kunt extra gasten als mede-onderzoekers toevoegen als het team groeit."
-    },
+    "midCta": "Begin met het bouwen van je mysterie",
     "officeLink": {
-      "lead": "Plan je iets voor het werk? Bekijk hoe het werkt als",
-      "link": "murder mystery op kantoor",
+      "lead": "Iets plannen voor het werk? Ontdek hoe het werkt als een",
+      "link": "murder mystery-feest op kantoor",
       "end": "voor teambuilding."
+    },
+    "faq": {
+      "heading": "Veelgestelde vragen over de aangepaste murder mystery",
+      "q1": "Kan ik een aangepaste murder mystery maken?",
+      "a1": "Ja. Mystery Maker bouwt een volledig op maat gemaakte murder mystery vanaf nul rond alles wat je beschrijft — een thema, een setting, een onderonsje of een echte gelegenheid zoals een verjaardag of een kantoorfeest. Je vertelt de generator wat je wilt en het schrijft het plot, de verdachten, de aanwijzingen en het script van elk personage. Niets komt uit een vaste catalogus van voorgeschreven pakketten, dus twee feesten spelen nooit hetzelfde spel.",
+      "q2": "Hoeveel gasten kunnen meespelen?",
+      "a2": "Elk aantal. Je stelt het aantal gasten in en de generator past de cast aan — intieme spellen voor 4 tot 6 spelers, dinerfeesten voor 8 tot 12 of grote evenementen voor 20 of meer. Elke gast krijgt een eigen personage met motieven, geheimen en scripts ronde voor ronde, en je kunt extra gasten als mede-onderzoekers ontvangen als je groep groeit nadat je het spel hebt gemaakt."
+    }
+  },
+  "officeParty": {
+    "seo": {
+      "title": "Murder Mystery op Kantoor — Teambuilding voor Elke Groep",
+      "description": "Organiseer een murder mystery op kantoor: een teambuildingspel dat in een lunchpauze of na het werk past en zich aanpast aan elke groepsgrootte. Maak het jouwe in minuten."
+    },
+    "hero": {
+      "h1": "Murder Mystery op Kantoor",
+      "intro": "Ja, je kunt absoluut een murder mystery op kantoor organiseren — en het is een van de weinige teambuildingactiviteiten waar mensen niet stiekem tegenop zien. Het verandert een gewone middag in een gedeeld whodunit dat je team echt wil oplossen: geen acteurs inhuren, geen offsite boeken, geen ongemakkelijke ijsbrekers. Beschrijf je groep en Mystery Maker schrijft het hele spel — plot, verdachten, aanwijzingen en printbaar pakket — in minuten.",
+      "cta": "Maak je kantoormysterie"
+    },
+    "body": {
+      "lead": "Een murder mystery werkt op kantoor omdat het teamwork geen metafoor is — het is het spel zelf. Niemand kan de zaak alleen kraken, dus collega's die elkaar nauwelijks tegenkomen wisselen ineens theorieën uit, vergelijken aanwijzingen en luisteren echt naar elkaar. Je krijgt de band van een echt teamevenement zonder de trust falls of het geforceerde plezier, en omdat het hele pakket voor je wordt gegenereerd en klaar is om te printen, is de enige voorbereiding op printen drukken.",
+      "benefitsHeading": "Waarom een murder mystery echte teambuilding is",
+      "benefitsLead": "De meeste teambuildingoefeningen zijn iets wat mensen uitzitten. Een murder mystery is anders omdat het oplossen ervan precies de vaardigheden vereist die je in je team wilt opbouwen — en ze oefenen die zonder zich ooit gedrild te voelen.",
+      "formatsHeading": "Lunchpauze of na het werk — kies je format",
+      "formatsLead": "Een kantoor-murder mystery buigt mee met de tijd die je echt hebt. De twee formats hieronder dekken bijna elke werkplek, en je kiest de lengte bij het maken van het spel.",
+      "lunchTitle": "Het lunchpauzemysterie (45–60 minuten)",
+      "lunchBody": "Bestel eten, verzamel rond een vergadertafel en speel een strakkere zaak die vóór het einde van het uur is opgelost. Het is de laagdrempeligste manier om de week te onderbreken — niemand hoeft laat te blijven en het past in een normale werkdag. Ideaal voor één team of als maandelijks terugkerend ritueel.",
+      "afterWorkTitle": "Het na-werk-evenement (90 minuten tot 2 uur)",
+      "afterWorkBody": "Met meer tijd kun je een voller verhaal spelen met diepere personagebogen, een paar plotwendingen en ruimte om in personage bij te praten onder het genot van drankjes en eten. Dit is het format voor een kerstborrel, een kwartaalborrel of een viering waarbij je wilt dat de avond zelf het hoofdevenement is.",
+      "remoteNote": "Beide formats werken via video voor remote en hybride teams — wijs personages toe per e-mail, speel de rondes in een call en deel aanwijzingen op het scherm.",
+      "guestsHeading": "Van een team van vijf tot de hele afdeling",
+      "guestsPara1": "Jij bepaalt het aantal deelnemers en de cast past zich aan. Een klein team van vijf tot acht krijgt een intieme zaak waarin iedereen een aanwijzing heeft die de anderen nodig hebben. Vijftien tot vijfentwintig is de ideale maat voor een afdelingsoverstijgend evenement — groot genoeg om mensen te mengen die normaal niet samenwerken, klein genoeg zodat één begeleider het tempo erin houdt en niemand alleen zit toe te kijken.",
+      "guestsPara2": "Groter? Speel geen één gigantisch spel. Verdeel in parallelle groepen die dezelfde zaak oplossen en vergelijk aan het eind jullie theorieën — het wordt een vriendschappelijke competitie tussen teams. Voor een hele afdeling of een allhands van vijftig-plus zet je meerdere parallelle ruimtes op, fysiek of virtueel, vanuit hetzelfde pakket. Wat het aantal ook is, elke gast krijgt een echte rol in plaats van een figurantenrol."
+    },
+    "benefits": {
+      "communication": {
+        "title": "Communicatie tussen afdelingen",
+        "body": "Een goede zaak dwingt de financieel medewerker om een aanwijzing uit te leggen aan de marketeer, en de marketeer om echt te luisteren. Mensen oefenen hun expertise te vertalen naar taal die andere afdelingen begrijpen — een vaardigheid die direct terugkeert naar echte projecten."
+      },
+      "perspective": {
+        "title": "Zien hoe collega's denken",
+        "body": "Wanneer twee mensen dezelfde puzzel vanuit tegenovergestelde hoeken aanpakken, leert iedereen die toekijkt hoe de andere helft redeneert. Dat wederzijdse begrip maakt het afdelingsoverstijgende werk de week erna minder pijnlijk."
+      },
+      "leadership": {
+        "title": "Leiderschap zonder risico",
+        "body": "Er staat altijd iemand op om de groep te organiseren, en dat is vaak niet de persoon met de hoogste titel. Een mysterie geeft de stillere teamleden een gestructureerde manier om te leiden en bij te dragen zonder dat er iets echts op het spel staat."
+      },
+      "engagement": {
+        "title": "Echte betrokkenheid, geen geforceerd plezier",
+        "body": "True crime en whodunits zijn nu mainstream entertainment, dus de meeste teams komen aan met echte nieuwsgierigheid in plaats van tegenzin. Je sleept niemand door een oefening — ze willen weten wie het gedaan heeft."
+      }
+    },
+    "features": {
+      "team": {
+        "title": "Gemaakt voor teams",
+        "body": "Het spel werkt alleen door samenwerking, dus communicatie en probleemoplossing ontstaan vanzelf — geen trust falls nodig."
+      },
+      "formats": {
+        "title": "Past in je agenda",
+        "body": "Speel een zaak van 45 minuten in de lunchpauze of een avondevenement van twee uur. Jij bepaalt de lengte bij het maken."
+      },
+      "size": {
+        "title": "Elke groepsgrootte",
+        "body": "Van een team van vijf tot een afdeling van vijftig-plus verdeeld over parallelle ruimtes — de cast past zich aan je aantal deelnemers aan."
+      },
+      "remote": {
+        "title": "Op locatie of remote",
+        "body": "Speel rond een vergadertafel of via video voor hybride en volledig remote teams. Hetzelfde pakket, hoe dan ook."
+      }
+    },
+    "midCta": "Begin met het bouwen van je kantoormysterie",
+    "related": {
+      "lead": "Wil je het gebouwd rond jouw exacte team en thema? Start een",
+      "customLink": "aangepast murder mystery-feest",
+      "mid": ", of lees onze uitgebreidere gids over",
+      "blogLink": "teambuilding met bedrijfs- en kantoor-murder mystery",
+      "end": "."
+    },
+    "faq": {
+      "heading": "Veelgestelde vragen over de kantoor-murder mystery",
+      "q1": "Kunnen we een murder mystery op kantoor organiseren?",
+      "a1": "Ja. Een kantoor-murder mystery is ontworpen om te draaien op een normale werkplek — een vergaderruimte, een pauzeruimte of via video voor remote teams. Er zijn geen acteurs in te huren en geen speciale locatie nodig: Mystery Maker genereert het volledige spel en een printbaar pakket, dus je kiest alleen een tijd, wijst de personages toe en speelt. Kies een korte zaak in de lunchpauze of een langer evenement na het werk, afhankelijk van de tijd die je hebt.",
+      "q2": "Hoe lang duurt een kantoor-murder mystery?",
+      "a2": "Ergens tussen de 45 minuten en twee uur, en je beslist het bij het maken van het spel. Een lunchpauzeformat is binnen een uur klaar en past in een normale werkdag; een na-werk- of kerstborrelformat duurt 90 minuten tot twee uur, met een rijker verhaal en tijd om in personage te socialiseren.",
+      "q3": "Hoeveel mensen hebben we nodig voor een kantoor-murder mystery?",
+      "a3": "Van vijf tot zoveel als je wilt. Kleine teams van vijf tot acht krijgen een intieme zaak waarin iedereen essentieel is; vijftien tot vijfentwintig is ideaal voor een afdelingsoverstijgend evenement. Voor grotere groepen verdeel je in parallelle teams die dezelfde zaak oplossen, of zet je meerdere ruimtes op voor een hele afdeling — de cast past zich automatisch aan jullie aantal aan.",
+      "q4": "Kunnen remote of hybride teams meespelen?",
+      "a4": "Ja. Elk kantoormysterie werkt via video. Wijs iedereen vooraf zijn personage toe per e-mail, speel de rondes in een videocall en deel aanwijzingen en bewijs op het scherm. Hybride teams kunnen aanwezige en remote spelers in hetzelfde spel mengen, zodat verspreide teams dezelfde gedeelde ervaring krijgen."
     }
   },
   "home": {

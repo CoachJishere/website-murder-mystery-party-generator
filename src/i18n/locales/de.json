@@ -100,52 +100,139 @@
   },
   "customParty": {
     "seo": {
-      "title": "Murder Mystery für Firmenevents: Teambuilding mit Spaß",
-      "description": "Murder-Mystery-Unterhaltung für Firmenevents und Büropartys. Druckfertiges Kit, sofort spielbereit. Erstelle jetzt dein Teamspiel!"
+      "title": "Individuelles Murder Mystery — Gratis-KI-Kit in Minuten",
+      "description": "Erstelle eine individuelle Murder-Mystery-Party oder ein Spiel für jedes Thema und jede Gruppengröße. Die KI schreibt Handlung, Charaktere, Hinweise und das druckbare Kit in Minuten."
     },
     "hero": {
-      "h1": "Murder Mystery für Firmenevents",
-      "intro": "Ein Murder Mystery, maßgeschneidert für dein Team, dein Unternehmen und deinen Anlass — kein Fertigpaket. Generiere das komplette, druckfertige Spiel in wenigen Minuten.",
-      "cta": "Erstelle dein Murder Mystery"
+      "h1": "Erstelle ein individuelles Murder Mystery",
+      "intro": "Um eine individuelle Murder-Mystery-Party oder ein Spiel zu erstellen, beschreibst du dein Thema, deine Gästezahl und den Anlass — die KI schreibt die ganze Geschichte und druckt dein Kit in Minuten. Jede Handlung, jeder Verdächtige, jeder Hinweis und jedes Charakterskript wird von Grund auf für deine Gruppe erzeugt, ganz ohne Vorbereitung.",
+      "cta": "Erstelle dein individuelles Mystery"
     },
     "body": {
-      "lead": "Die meisten Murder-Mystery-Produkte liefern dir eine geschlossene Box: ein festes Thema, eine feste Anzahl von Charakteren und ein Skript, das tausende andere bereits gespielt haben. Mystery Maker funktioniert andersherum. Du beschreibst das Firmenevent, das du wirklich veranstalten willst, und der Generator schreibt ein brandneues Mystery passgenau dazu — Handlung, Verdächtige, Motive, Hinweise und das Skript für jeden Charakter inklusive.",
-      "designHeading": "Gestalte ein Murder Mystery für Teambuilding und Firmenevents",
-      "themePara": "Die Personalisierung beginnt beim Thema. Eine Büroparty, ein festliches Firmendinner, eine Konferenz, ein Teambuilding-Tag außer Haus oder etwas, das ganz auf einen internen Witz im Team aufbaut — wenn du es beschreiben kannst, passt sich die Geschichte an. Es gibt keinen Katalog zur Auswahl, also ist dein Spiel einzigartig.",
-      "guestPara": "Als Nächstes kommt die Teilnehmerzahl. Du sagst dem Generator, wie viele Personen mitspielen, und die Besetzung skaliert mit — eine kompakte Runde für 4 bis 6 Kolleginnen und Kollegen, eine lebhafte Feier für 8 bis 12 oder ein komplettes Firmenevent für 20 oder mehr. Jeder Teilnehmer bekommt eine echte Rolle im Mystery statt nur eines Statistenauftritts, und zusätzliche Gäste können als Mit-Ermittler einsteigen, wenn die Gruppe wächst.",
-      "characterPara": "Jeder Charakter wird maßgeschneidert: eine Hintergrundgeschichte, persönliche Motive, Geheimnisse zum Hüten und Skripte Runde für Runde, die mit denen der anderen ineinandergreifen, damit das Mystery wirklich trägt. Anschuldigungen, Alibis und Enthüllungen sind für dein Team geschrieben, nicht aus einer Vorlage nachträglich angepasst.",
-      "kitPara": "Wenn es fertig ist, erhältst du ein komplettes druckfertiges Kit — eine Gastgeber-Anleitung, die dich durch den Abend führt, einzelne Charakterhefte, physische Hinweise und Beweise sowie passende Einladungen. Drucke alles aus oder teile es digital. Vom ersten Prompt zum fertigen Spiel sind es Minuten, keine wochenlange Planung."
+      "lead": "Die meisten Murder-Mystery-Produkte geben dir eine feste Schachtel: ein festes Thema, eine feste Zahl an Charakteren und ein Skript, das schon Tausende andere Gastgeber gespielt haben. Mystery Maker funktioniert andersherum. Du beschreibst die Party, die du wirklich feiern willst, und der Generator schreibt ein brandneues Mystery genau dafür — Handlung, Verdächtige, Motive, Hinweise und das Skript jedes Charakters inklusive.",
+      "designHeading": "Gestalte ein individuelles Murder-Mystery-Spiel für jede Gruppe",
+      "themePara": "Die Anpassung beginnt beim Thema. Eine Flüsterkneipe der 1920er, eine viktorianische Spukvilla, eine Luxuskreuzfahrt, ein Firmenretreat, das schiefgeht, oder etwas rund um einen Insider-Witz — wenn du es beschreiben kannst, passt sich die Geschichte an. Es gibt keinen Katalog zur Auswahl, also ist dein Spiel einzigartig.",
+      "guestPara": "Als Nächstes kommt die Gästezahl. Du sagst dem Generator, wie viele Leute mitspielen, und die Besetzung passt sich an — eine kompakte Runde für 4 bis 6 am Esstisch, eine lebhafte Party für 8 bis 12 oder ein großes Event für 20 oder mehr. Jeder Mitspieler bekommt eine echte Rolle im Mystery statt einer Statistenrolle, und zusätzliche Gäste können als Mit-Ermittler einsteigen, wenn deine Gruppe wächst.",
+      "characterPara": "Jeder Charakter wird maßgeschneidert: eine Vorgeschichte, private Motive, Geheimnisse zum Hüten und Skripte Runde für Runde, die mit denen aller anderen ineinandergreifen, damit das Mystery wirklich trägt. Anschuldigungen, Alibis und Enthüllungen sind für deine Besetzung geschrieben, nicht aus einer Vorlage übernommen.",
+      "kitPara": "Wenn es fertig ist, bekommst du ein komplettes druckbares Kit — einen Gastgeber-Leitfaden, der dich durch den Abend führt, einzelne Charakterhefte, physische Hinweise und Beweise sowie passende Einladungen. Drucke alles aus oder teile es digital. Vom ersten Prompt bis zum fertigen Spiel dauert es Minuten, keine Wochen Planung.",
+      "howToHeading": "So erstellst du ein individuelles Murder-Mystery-Spiel oder eine Party",
+      "howToStep1": "Beschreibe deine Party — das Thema, den Anlass und wie viele Gäste mitspielen. Alles geht, von einer Flüsterkneipe der 1920er bis zu einem Insider-Witz.",
+      "howToStep2": "Die KI schreibt ein brandneues, passendes Mystery: die Handlung, die Verdächtigen, jedes Motiv und jeden Hinweis und ein persönliches Skript für jeden Charakter.",
+      "howToStep3": "Lade dein druckbares Kit herunter — Gastgeber-Leitfaden, Charakterhefte, Hinweise und Einladungen — und du bist in Minuten spielbereit.",
+      "howToCta": "Erstelle dein individuelles Murder Mystery",
+      "howToCtaEnd": "und lass das komplette druckbare Kit in Minuten erzeugen."
     },
     "features": {
       "theme": {
-        "title": "Jedes Thema für dein Unternehmen",
-        "body": "Büroparty, Gala-Dinner, Konferenz, Firmen-Retreat — beschreibe es und die Geschichte wird passgenau geschrieben. Keine generischen Plots von der Stange."
+        "title": "Jedes Thema, das du dir vorstellst",
+        "body": "Flüsterkneipe der 1920er, Spukvilla, Raumstation, königliche Hochzeit — beschreibe es und die Geschichte wird passend geschrieben. Keine generischen Standardhandlungen."
       },
       "guests": {
-        "title": "Maßgeschneidert für dein Team",
-        "body": "Lege die Teilnehmerzahl fest und die Besetzung passt sich an, von Dinnern für 4 Personen bis zu Events mit 20+ Kollegen. Alle haben eine echte Rolle."
+        "title": "Für deine Gästezahl gemacht",
+        "body": "Lege die Spielerzahl fest und die Besetzung passt sich an, von Dinnern für 4 bis zu Events mit 20+. Jeder bekommt eine echte Rolle."
       },
       "characters": {
         "title": "Individuelle Charaktere",
-        "body": "Jeder Kollege erhält einen maßgeschneiderten Charakter mit Motiven, Geheimnissen und Skripten für jede Runde, die ins Mystery eingreifen."
+        "body": "Jeder Gast erhält einen maßgeschneiderten Charakter mit Motiven, Geheimnissen und Skripten für jede Runde, die ins größere Mystery greifen."
       },
       "kit": {
-        "title": "Sofort druckfertiges Kit",
-        "body": "Gastgeber-Anleitung, Charakterhefte, Hinweise und Einladungen in wenigen Minuten fertig — zum Drucken oder digital teilen, ganz ohne Vorbereitung."
+        "title": "Sofortiges druckbares Kit",
+        "body": "Gastgeber-Leitfaden, Charakterhefte, Hinweise und Einladungen in Minuten erzeugt — bereit zum Drucken oder digitalen Teilen, ohne Vorbereitung."
       }
     },
-    "midCta": "Beginne, dein Mystery zu erstellen",
-    "faq": {
-      "heading": "Häufige Fragen zum Murder Mystery für Firmen",
-      "q1": "Ist es für Firmenevents und Teambuilding geeignet?",
-      "a1": "Ja. Mystery Maker erstellt ein vollständig maßgeschneidertes Murder Mystery für den geschäftlichen Anlass, den du beschreibst — eine Büroparty, ein Gala-Dinner, eine Konferenz oder ein Teambuilding außer Haus. Du sagst dem Generator, was du willst, und er schreibt die Handlung, die Verdächtigen, die Hinweise und das Skript für jeden Charakter. Nichts stammt aus einem festen Katalog, sodass kein Event dem anderen gleicht.",
-      "q2": "Wie viele Teilnehmer können mitspielen?",
-      "a2": "Beliebig viele. Du legst die Teilnehmerzahl fest und der Generator passt die Besetzung an — intime Runden für 4 bis 6 Personen, Dinner für 8 bis 12 oder große Firmenevents für 20 oder mehr. Jeder Teilnehmer erhält einen eigenen Charakter mit Motiven, Geheimnissen und Skripten Runde für Runde, und du kannst Gäste als Mit-Ermittler hinzunehmen, wenn das Team wächst."
-    },
+    "midCta": "Beginne, dein Mystery zu gestalten",
     "officeLink": {
-      "lead": "Planen Sie etwas für die Arbeit? Erfahren Sie, wie es als",
-      "link": "Büro-Krimi-Party",
-      "end": "für Teambuilding funktioniert."
+      "lead": "Planst du etwas für die Arbeit? Sieh, wie es als",
+      "link": "Büro-Murder-Mystery-Party",
+      "end": "fürs Teambuilding funktioniert."
+    },
+    "faq": {
+      "heading": "FAQ zum individuellen Murder Mystery",
+      "q1": "Kann ich ein individuelles Murder Mystery erstellen?",
+      "a1": "Ja. Mystery Maker erstellt ein vollständig maßgeschneidertes Murder Mystery aus allem, was du beschreibst — einem Thema, einem Schauplatz, einem Insider-Witz oder einem echten Anlass wie einem Geburtstag oder einer Büroparty. Du sagst dem Generator, was du willst, und er schreibt die Handlung, die Verdächtigen, die Hinweise und das Skript jedes Charakters. Nichts stammt aus einem festen Katalog vorgefertigter Kits, sodass zwei Partys nie dasselbe Spiel spielen.",
+      "q2": "Wie viele Gäste können mitspielen?",
+      "a2": "Beliebig viele. Du legst die Gästezahl fest und der Generator passt die Besetzung an — intime Runden für 4 bis 6 Spieler, Dinnerpartys für 8 bis 12 oder große Events für 20 oder mehr. Jeder Gast bekommt einen eigenen Charakter mit Motiven, Geheimnissen und Skripten Runde für Runde, und du kannst zusätzliche Gäste als Mit-Ermittler aufnehmen, wenn deine Gruppe nach dem Erstellen wächst."
+    }
+  },
+  "officeParty": {
+    "seo": {
+      "title": "Büro-Murder-Mystery — Teambuilding für jede Gruppe",
+      "description": "Veranstalte ein Murder Mystery im Büro: ein Teambuilding-Spiel, das in eine Mittagspause oder den Feierabend passt und sich jeder Gruppengröße anpasst. Erstelle deins in Minuten."
+    },
+    "hero": {
+      "h1": "Murder Mystery im Büro",
+      "intro": "Ja, du kannst absolut ein Murder Mystery im Büro veranstalten — und es ist eine der wenigen Teambuilding-Aktivitäten, vor denen sich niemand insgeheim fürchtet. Es macht aus einem gewöhnlichen Nachmittag einen gemeinsamen Kriminalfall, den dein Team wirklich lösen will: keine Schauspieler zu engagieren, kein Offsite zu buchen, keine peinlichen Eisbrecher. Beschreibe deine Gruppe und Mystery Maker schreibt das ganze Spiel — Handlung, Verdächtige, Hinweise und druckbares Kit — in Minuten.",
+      "cta": "Erstelle dein Büro-Mystery"
+    },
+    "body": {
+      "lead": "Ein Murder Mystery funktioniert im Büro, weil die Teamarbeit keine Metapher ist — sie ist das eigentliche Spiel. Niemand kann den Fall allein knacken, also tauschen Kollegen, die sich kaum begegnen, plötzlich Theorien aus, vergleichen Hinweise und hören einander wirklich zu. Du bekommst den Zusammenhalt eines echten Team-Events ohne Vertrauensfälle oder erzwungenen Spaß, und weil das ganze Kit für dich erzeugt und druckfertig ist, besteht die einzige Vorbereitung darin, auf Drucken zu klicken.",
+      "benefitsHeading": "Warum ein Murder Mystery echtes Teambuilding ist",
+      "benefitsLead": "Die meisten Teambuilding-Übungen sind etwas, das man über sich ergehen lässt. Ein Murder Mystery ist anders, weil es zum Lösen genau die Fähigkeiten verlangt, die du in deinem Team aufbauen willst — und sie üben sie, ohne sich je gedrillt zu fühlen.",
+      "formatsHeading": "Mittagspause oder Feierabend — wähle dein Format",
+      "formatsLead": "Ein Büro-Murder-Mystery passt sich der Zeit an, die du wirklich hast. Die beiden Formate unten decken fast jeden Arbeitsplatz ab, und du wählst die Länge beim Erstellen des Spiels.",
+      "lunchTitle": "Das Mittagspausen-Mystery (45–60 Minuten)",
+      "lunchBody": "Bestellt Essen, versammelt euch um einen Konferenztisch und spielt einen kompakteren Fall, der vor Ablauf der Stunde gelöst ist. Es ist die unverbindlichste Art, die Woche aufzulockern — niemand muss länger bleiben und es passt in einen normalen Arbeitstag. Ideal für ein einzelnes Team oder als monatliches Ritual.",
+      "afterWorkTitle": "Das Feierabend-Event (90 Minuten bis 2 Stunden)",
+      "afterWorkBody": "Mit mehr Zeit kannst du eine vollere Geschichte mit tieferen Charakterbögen, ein paar Wendungen und Raum spielen, um in der Rolle bei Getränken und Essen zusammenzukommen. Das ist das Format für eine Weihnachtsfeier, ein vierteljährliches Social oder eine Feier, bei der der Abend selbst das Hauptevent sein soll.",
+      "remoteNote": "Beide Formate funktionieren per Video für Remote- und Hybrid-Teams — verteile die Charaktere per E-Mail, spiele die Runden im Call und teile Hinweise auf dem Bildschirm.",
+      "guestsHeading": "Vom Fünf-Personen-Team bis zur ganzen Abteilung",
+      "guestsPara1": "Du legst die Teilnehmerzahl fest und die Besetzung passt sich an. Ein kleines Team von fünf bis acht bekommt einen intimen Fall, in dem jeder einen Hinweis hält, den die anderen brauchen. Fünfzehn bis fünfundzwanzig ist der ideale Bereich für ein abteilungsübergreifendes Event — groß genug, um Menschen zu mischen, die sonst nicht zusammenarbeiten, klein genug, dass ein einzelner Moderator das Tempo hält und niemand nur zuschaut.",
+      "guestsPara2": "Größer? Spiel kein einziges Riesenspiel. Teilt euch in parallele Gruppen, die denselben Fall lösen, und vergleicht am Ende eure Theorien — es wird zu einem freundschaftlichen Wettstreit zwischen Teams. Für eine ganze Abteilung oder ein All-Hands von über fünfzig richtest du mehrere parallele Räume ein, physisch oder virtuell, aus demselben Kit. Egal welche Zahl, jeder Gast bekommt eine echte Rolle statt einer Statistenrolle."
+    },
+    "benefits": {
+      "communication": {
+        "title": "Kommunikation über Abteilungen hinweg",
+        "body": "Ein guter Fall zwingt die Person aus der Finanzabteilung, einen Hinweis dem Marketing zu erklären, und das Marketing, wirklich zuzuhören. Die Leute üben, ihr Fachwissen in eine Sprache zu übersetzen, die andere Abteilungen verstehen — eine Fähigkeit, die sich direkt auf echte Projekte überträgt."
+      },
+      "perspective": {
+        "title": "Sehen, wie Kollegen denken",
+        "body": "Wenn zwei Personen dasselbe Rätsel aus entgegengesetzten Richtungen angehen, lernt jeder Zuschauende, wie die andere Hälfte denkt. Dieses gegenseitige Verständnis macht die abteilungsübergreifende Arbeit in der Folgewoche weniger mühsam."
+      },
+      "leadership": {
+        "title": "Führung ohne Risiko",
+        "body": "Immer steht jemand auf, um die Gruppe zu organisieren, und oft ist es nicht die Person mit dem höchsten Titel. Ein Mystery gibt den stilleren Teammitgliedern einen strukturierten Weg, zu führen und beizutragen, ohne dass etwas Echtes auf dem Spiel steht."
+      },
+      "engagement": {
+        "title": "Echtes Engagement, kein erzwungener Spaß",
+        "body": "True Crime und Krimis sind heute Mainstream-Unterhaltung, also kommen die meisten Teams mit echter Neugier statt Widerwillen. Du zerrst niemanden durch eine Übung — sie wollen wissen, wer es war."
+      }
+    },
+    "features": {
+      "team": {
+        "title": "Für Teams gemacht",
+        "body": "Das Spiel funktioniert nur durch Zusammenarbeit, also entstehen Kommunikation und Problemlösung ganz natürlich — keine Vertrauensfälle nötig."
+      },
+      "formats": {
+        "title": "Passt in deinen Kalender",
+        "body": "Spiel einen 45-minütigen Mittagsfall oder ein zweistündiges Abendevent. Du legst die Länge beim Erstellen fest."
+      },
+      "size": {
+        "title": "Jede Gruppengröße",
+        "body": "Vom Fünf-Personen-Team bis zur Abteilung mit über fünfzig, aufgeteilt in parallele Räume — die Besetzung passt sich deiner Teilnehmerzahl an."
+      },
+      "remote": {
+        "title": "Vor Ort oder remote",
+        "body": "Spielt um einen Konferenztisch oder per Video für Hybrid- und vollständig entfernte Teams. Dasselbe Kit in beiden Fällen."
+      }
+    },
+    "midCta": "Beginne, dein Büro-Mystery zu gestalten",
+    "related": {
+      "lead": "Willst du es rund um dein genaues Team und Thema gebaut? Starte eine",
+      "customLink": "individuelle Murder-Mystery-Party",
+      "mid": "oder lies unseren ausführlicheren Leitfaden zu",
+      "blogLink": "Teambuilding mit Murder Mystery für Firma und Büro",
+      "end": "."
+    },
+    "faq": {
+      "heading": "FAQ zum Büro-Murder-Mystery",
+      "q1": "Können wir ein Murder Mystery im Büro veranstalten?",
+      "a1": "Ja. Ein Büro-Murder-Mystery ist darauf ausgelegt, an einem normalen Arbeitsplatz zu laufen — einem Konferenzraum, einer Pausenzone oder per Video für Remote-Teams. Keine Schauspieler zu engagieren und kein spezieller Veranstaltungsort nötig: Mystery Maker erzeugt das komplette Spiel und ein druckbares Kit, du wählst also nur eine Zeit, verteilst die Charaktere und spielst. Wähle einen kurzen Mittagspausen-Fall oder ein längeres Feierabend-Event, je nach verfügbarer Zeit.",
+      "q2": "Wie lange dauert ein Büro-Murder-Mystery?",
+      "a2": "Zwischen etwa 45 Minuten und zwei Stunden, und du entscheidest es beim Erstellen des Spiels. Ein Mittagspausen-Format ist in unter einer Stunde vorbei und passt in einen normalen Arbeitstag; ein Feierabend- oder Weihnachtsfeier-Format dauert 90 Minuten bis zwei Stunden, mit einer reicheren Geschichte und Zeit zum Geselligsein in der Rolle.",
+      "q3": "Wie viele Personen brauchen wir für ein Büro-Murder-Mystery?",
+      "a3": "So wenige wie fünf und so viele, wie du willst. Kleine Teams von fünf bis acht bekommen einen intimen Fall, in dem jeder unverzichtbar ist; fünfzehn bis fünfundzwanzig ist ideal für ein abteilungsübergreifendes Event. Für größere Gruppen teilt euch in parallele Teams, die denselben Fall lösen, oder richtet mehrere Räume für eine ganze Abteilung ein — die Besetzung passt sich automatisch eurer Teilnehmerzahl an.",
+      "q4": "Können Remote- oder Hybrid-Teams mitspielen?",
+      "a4": "Ja. Jedes Büro-Mystery funktioniert per Video. Weise jeder Person ihren Charakter vorab per E-Mail zu, spiele die Runden in einem Videocall und teile Hinweise und Beweise auf dem Bildschirm. Hybrid-Teams können Präsenz- und Remote-Spieler im selben Spiel mischen, sodass verteilte Teams dasselbe gemeinsame Erlebnis haben."
     }
   },
   "home": {
