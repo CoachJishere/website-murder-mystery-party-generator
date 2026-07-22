@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 243 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 244 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -77,6 +77,7 @@ This index organizes 243 published guides by topic cluster. All guides are avail
 - [Blackmailer Murder Mystery Themes](https://www.mysterymaker.party/blog/blackmailer-murder-mystery-themes-extortion-secrets-deadly-silence): Murder mystery themes with blackmailer characters — extortion plots, weaponized secrets, and the kind of victims people aren't sad to see disappear.
 - [Bollywood Murder Mystery Party Guide](https://www.mysterymaker.party/blog/bollywood-murder-mystery-party-guide): Create a Bollywood murder mystery party with dramatic reveals, colorful costumes, dance sequences, and musical elements for epic entertainment.
 - [How to Host a Cold War Spy Murder Mystery](https://www.mysterymaker.party/blog/cold-war-spy-murder-mystery-party-guide): Host a Cold War spy murder mystery with double agents, coded messages, and Berlin Wall intrigue. Characters, espionage mechanics, and full hosting guide.
+- [How to Throw a Comedy Murder Mystery Party](https://www.mysterymaker.party/blog/comedy-murder-mystery-party-guide): Plan a hilarious comedy murder mystery party with slapstick clues, absurd suspects, and laugh-out-loud reveals. Practical tips for funny mystery nights.
 - [Cooking Competition Murder Mystery Planning](https://www.mysterymaker.party/blog/cooking-competition-murder-mystery-planning-spice-up-your-party-with-culinary-crime): Spice up competition with culinary murder mystery parties featuring chef rivalries and kitchen competitions.
 - [Creating the Perfect Pharmacist Mystery Character](https://www.mysterymaker.party/blog/creating-the-perfect-pharmacist-character-for-your-murder-mystery-party): Prescribe danger with knowledgeable pharmacist characters who understand medicines and chemical mysteries.
 - [Creating Social Media Influencer Mystery Characters](https://www.mysterymaker.party/blog/creating-the-perfect-social-media-influencer-characters-for-your-murder-mystery-party): Influence investigations with trendy social media influencer characters who understand online secrets and digital drama.
