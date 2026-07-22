@@ -183,8 +183,8 @@
 }
 
 /* Form inputs — visible on dark backgrounds (exclude hero chatbox) */
-input:not(#ai-input-with-loading),
-textarea:not(#ai-input-with-loading),
+input:not(#ai-input-with-loading):not(#cold-case-brief-input),
+textarea:not(#ai-input-with-loading):not(#cold-case-brief-input),
 select,
 [role="combobox"],
 [class*="SelectTrigger"] {
@@ -192,15 +192,28 @@ select,
   background-color: var(--color-charcoal) !important;
   color: var(--color-cream) !important;
 }
-input:not(#ai-input-with-loading)::placeholder,
-textarea:not(#ai-input-with-loading)::placeholder {
+input:not(#ai-input-with-loading):not(#cold-case-brief-input)::placeholder,
+textarea:not(#ai-input-with-loading):not(#cold-case-brief-input)::placeholder {
   color: rgba(245, 240, 232, 0.4) !important;
 }
-input:not(#ai-input-with-loading):focus,
-textarea:not(#ai-input-with-loading):focus,
+input:not(#ai-input-with-loading):not(#cold-case-brief-input):focus,
+textarea:not(#ai-input-with-loading):not(#cold-case-brief-input):focus,
 select:focus {
   border-color: rgba(245, 240, 232, 0.4) !important;
   outline: none;
+}
+
+/* Cold Case intake chat — dark variant of the chat pill (the component defaults to light) */
+.cold-case-chat-input .rounded-2xl {
+  background-color: #161210 !important;
+  border: 1px solid #2b251f !important;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.35) !important;
+}
+.cold-case-chat-input textarea {
+  color: #f2ede6 !important;
+}
+.cold-case-chat-input textarea::placeholder {
+  color: rgba(242, 237, 230, 0.35) !important;
 }
 
 /* Mystery content headings — body font, consistent sizing */

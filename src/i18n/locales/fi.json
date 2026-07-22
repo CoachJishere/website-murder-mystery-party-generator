@@ -460,7 +460,7 @@
       "getStarted": "Aloita luomalla ensimmäinen mysteerisi"
     },
     "mysteries": {
-      "title": "Mysteeriesi",
+      "title": "Murhamysteerijuhlasi",
       "searchPlaceholder": "Hae mysteerejä...",
       "deleteSuccess": "Mysteeri arkistoitu",
       "deleteFailed": "Mysteerin arkistointi epäonnistui",
@@ -498,7 +498,8 @@
           "description": "Oletko varma, että haluat poistaa tämän mysteerin? Tätä toimintoa ei voi peruuttaa."
         },
         "generationInProgress": "Generointi käynnissä...",
-        "editedDate": "Muokattu {{date}}"
+        "editedDate": "Muokattu {{date}}",
+          "typeLabel": "Murhamysteerijuhla"
       },
       "status": {
         "completed": "Valmis",

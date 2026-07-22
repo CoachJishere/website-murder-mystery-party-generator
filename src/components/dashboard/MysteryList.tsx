@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import HomeMysteryCard from "./HomeMysteryCard";
+import { ColdCaseCard, SampleCard, ColdCaseOrder } from "./ColdCaseList";
 import { MysteryListSkeleton } from "./MysteryListSkeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,13 +16,22 @@ interface MysteryListProps {
   mysteries: Mystery[];
   isLoading: boolean;
   onRefresh: () => void;
+  // Unified dashboard grid (ADR-0029 v3): cold cases interleave with mysteries by
+  // date, each card carrying its own type label; the free trial card closes the grid.
+  coldCases?: ColdCaseOrder[];
 }
 
-const MysteryList = ({ mysteries, isLoading, onRefresh }: MysteryListProps) => {
+const MysteryList = ({ mysteries, isLoading, onRefresh, coldCases = [] }: MysteryListProps) => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useTranslation();
   
+  const filteredColdCases = useMemo(() => {
+    if (!searchQuery.trim()) return coldCases;
+    const q = searchQuery.toLowerCase();
+    return coldCases.filter((c) => (c.case_title || "cold case").toLowerCase().includes(q));
+  }, [coldCases, searchQuery]);
+
   // Filtered mysteries based on search query
   const filteredMysteries = useMemo(() => {
     if (!searchQuery.trim()) return mysteries;
@@ -123,28 +133,38 @@ const MysteryList = ({ mysteries, isLoading, onRefresh }: MysteryListProps) => {
       
       {isLoading ? (
         <MysteryListSkeleton />
-      ) : filteredMysteries.length > 0 ? (
+      ) : filteredMysteries.length > 0 || filteredColdCases.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredMysteries.map((mystery) => (
-            <HomeMysteryCard
-              key={mystery.id}
-              mystery={{
-                id: mystery.id,
-                title: mystery.title,
-                mystery_data: mystery.mystery_data || {},
-                display_status: mystery.display_status || mystery.status,
-                created_at: mystery.created_at,
-                is_completed: Boolean(mystery.is_completed),
-                is_paid: Boolean(mystery.is_paid),
-                needs_package_generation: Boolean(mystery.needs_package_generation),
-              }}
-              onView={handleViewMystery}
-              onEdit={handleEditMystery}
-              onArchive={handleArchiveMystery}
-              onUnarchive={handleUnarchiveMystery}
-              onDelete={handleDeleteMystery}
-            />
-          ))}
+          {[
+            ...filteredMysteries.map((m) => ({ kind: "mystery" as const, date: m.created_at, item: m })),
+            ...filteredColdCases.map((c) => ({ kind: "coldcase" as const, date: c.created_at, item: c })),
+          ]
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .map((entry) =>
+              entry.kind === "coldcase" ? (
+                <ColdCaseCard key={entry.item.id} order={entry.item as ColdCaseOrder} />
+              ) : (
+                <HomeMysteryCard
+                  key={entry.item.id}
+                  mystery={{
+                    id: entry.item.id,
+                    title: entry.item.title,
+                    mystery_data: entry.item.mystery_data || {},
+                    display_status: entry.item.display_status || entry.item.status,
+                    created_at: entry.item.created_at,
+                    is_completed: Boolean(entry.item.is_completed),
+                    is_paid: Boolean(entry.item.is_paid),
+                    needs_package_generation: Boolean(entry.item.needs_package_generation),
+                  }}
+                  onView={handleViewMystery}
+                  onEdit={handleEditMystery}
+                  onArchive={handleArchiveMystery}
+                  onUnarchive={handleUnarchiveMystery}
+                  onDelete={handleDeleteMystery}
+                />
+              )
+            )}
+          {!searchQuery.trim() && <SampleCard />}
         </div>
       ) : (
         <div className="text-center py-12">

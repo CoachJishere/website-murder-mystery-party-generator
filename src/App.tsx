@@ -32,6 +32,7 @@ import About from "./pages/About";
 import CustomMurderMysteryParty from "./pages/CustomMurderMysteryParty";
 import OfficeMurderMysteryParty from "./pages/OfficeMurderMysteryParty";
 import ColdCaseFiles from "./pages/ColdCaseFiles";
+import ColdCaseCreate from "./pages/ColdCaseCreate";
 import ColdCaseDelivery from "./pages/ColdCaseDelivery";
 import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
@@ -129,8 +130,17 @@ const AppRoutes = () => {
         <Route path="/:lang/custom-murder-mystery-party" element={<CustomMurderMysteryParty />} />
         <Route path="/office-murder-mystery-party" element={<OfficeMurderMysteryParty />} />
         <Route path="/:lang/office-murder-mystery-party" element={<OfficeMurderMysteryParty />} />
-        {/* Cold Case Files — solo product (ADR-0029): own landing + guest token delivery */}
+        {/* Cold Case Files — solo product (ADR-0029): landing → auth → brief form → checkout;
+            delivery stays token-based (works from any device the email is opened on) */}
         <Route path="/cold-case-files" element={<ColdCaseFiles />} />
+        <Route
+          path="/cold-case/create"
+          element={
+            <ProtectedRoute>
+              <ColdCaseCreate />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/cold-case/:token" element={<ColdCaseDelivery />} />
         <Route path="/support" element={<Support />} />
         <Route path="/dark-preview" element={<DarkHomePreview />} />

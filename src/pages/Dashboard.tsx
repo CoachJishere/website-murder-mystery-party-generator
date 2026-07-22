@@ -1,16 +1,17 @@
 
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import MysteryList from "@/components/dashboard/MysteryList";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { Clock, FileText, PlusCircle } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { HomeDashboard } from "@/components/dashboard/HomeDashboard";
+import { ColdCaseOrder } from "@/components/dashboard/ColdCaseList";
 import { useTranslation } from "react-i18next";
 import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 import AttributionSurvey from "@/components/AttributionSurvey";
@@ -20,6 +21,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [mysteries, setMysteries] = useState([]);
+  const [coldCases, setColdCases] = useState<ColdCaseOrder[]>([]);
   const [isLoadingMysteries, setIsLoadingMysteries] = useState(false);
   const [showAttribution, setShowAttribution] = useState(false);
   const { t } = useTranslation();
@@ -27,6 +29,17 @@ const Dashboard = () => {
   // Declared before the effect (and in its deps) — previously it lived after
   // the effect, so the one-time auth listener captured the first-render
   // closure and the effect couldn't list it as a dependency.
+  const fetchColdCases = useCallback(async () => {
+    // RLS scopes to the signed-in owner. Party-only users get [] — they still see
+    // the cold-case section (it always carries the free trial card, the deliberate
+    // launch cross-sell; supersedes the earlier zero-change rule, ADR-0029 07-05).
+    const { data, error } = await supabase
+      .from("cold_case_orders")
+      .select("id, case_title, status, delivery_token, created_at")
+      .order("created_at", { ascending: false });
+    if (!error) setColdCases((data as ColdCaseOrder[]) || []);
+  }, []);
+
   const fetchMysteries = useCallback(async (userId: string) => {
     setIsLoadingMysteries(true);
     try {
@@ -70,8 +83,9 @@ const Dashboard = () => {
         setUser(data.session.user);
         console.log("Dashboard: Session found for user:", data.session.user.id);
 
-        // Fetch user's mysteries
+        // Fetch user's mysteries + cold cases
         await fetchMysteries(data.session.user.id);
+        await fetchColdCases();
 
         // Check if user needs attribution survey.
         // Defer the first ask until either (a) they have at least one mystery,
@@ -134,6 +148,7 @@ const Dashboard = () => {
         } else if (session) {
           setUser(session.user);
           fetchMysteries(session.user.id);
+          fetchColdCases();
         }
       }
     );
@@ -142,11 +157,36 @@ const Dashboard = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate, fetchMysteries]);
+  }, [navigate, fetchMysteries, fetchColdCases]);
 
   const handleCreateNewMystery = () => {
     navigate("/mystery/create");
   };
+
+  // Arrival from the gated free sample (/cold-case-files → sign in → OAuth → here).
+  // The intent flag is set pre-auth on the landing page; read-and-clear once.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [sampleIntent] = useState(() => {
+    try {
+      const v = localStorage.getItem("ccf_sample_intent") === "1";
+      localStorage.removeItem("ccf_sample_intent");
+      return v;
+    } catch {
+      return false;
+    }
+  });
+  const [welcomeDismissed, setWelcomeDismissed] = useState(false);
+  const welcomeCase = !welcomeDismissed && (searchParams.get("welcome_case") === "1" || sampleIntent);
+  const dismissWelcomeCase = () => {
+    setWelcomeDismissed(true);
+    if (searchParams.get("welcome_case")) {
+      searchParams.delete("welcome_case");
+      setSearchParams(searchParams, { replace: true });
+    }
+  };
+
+  // The one transient moment a cold case outranks the party list.
+  const generatingCase = coldCases.find((c) => c.status === "paid" || c.status === "generating");
 
   if (loading) {
     return (
@@ -161,24 +201,63 @@ const Dashboard = () => {
       <Header />
       <main className="flex-grow container mx-auto py-8 px-4">
         <EmailVerificationBanner />
-        {mysteries.length > 0 ? (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-              <div>
-                <h1 className="text-3xl font-bold">{t("dashboard.mysteries.title")}</h1>
-                <p className="text-muted-foreground mt-1">
-                  {t("dashboard.subtitle")}
-                </p>
+        {mysteries.length > 0 || coldCases.length > 0 || welcomeCase ? (
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold">{t("nav.dashboard", "Dashboard")}</h1>
+              <p className="text-muted-foreground mt-1">
+                {t("dashboard.subtitle")}
+              </p>
+            </div>
+
+            {/* A cold case actively being written outranks everything — transient banner
+                instead of section reordering (parties stay first; see ADR-0029). */}
+            {generatingCase && (
+              <div className="rounded-lg border border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-950 px-4 py-3 text-sm flex items-center justify-between gap-3">
+                <span>
+                  <Clock className="inline h-4 w-4 mr-2 animate-pulse" />
+                  Your cold case is being written — usually within the hour.
+                </span>
+                <Link to={`/cold-case/${generatingCase.delivery_token}`} className="underline font-medium shrink-0">
+                  View status
+                </Link>
               </div>
-              <Button onClick={handleCreateNewMystery} className="sm:self-end">
+            )}
+
+            {/* Arrival from the gated free sample: point them at the trial card below. */}
+            {welcomeCase && (
+              <div className="rounded-lg border px-4 py-3 text-sm flex items-center justify-between gap-3" style={{ borderColor: "#c2a14a", backgroundColor: "rgba(194,161,74,0.08)" }}>
+                <span>
+                  <FileText className="inline h-4 w-4 mr-2" style={{ color: "#c2a14a" }} />
+                  Your free cold case is waiting in Your Cold Cases below — on the house.
+                </span>
+                <button onClick={dismissWelcomeCase} className="underline font-medium shrink-0">
+                  Got it
+                </button>
+              </div>
+            )}
+
+            {/* One unified grid (ADR-0029 v3): mysteries and cold cases interleaved by
+                date, each card carrying a type label; the free trial card closes the
+                grid. Two create buttons, one per product. */}
+            <div className="flex flex-wrap gap-3 -mt-2">
+              <Button size="sm" onClick={handleCreateNewMystery}>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 {t("common.buttons.createNew")}
               </Button>
+              <Button
+                size="sm"
+                onClick={() => navigate("/cold-case/create")}
+                className="bg-[#c2a14a] hover:bg-[#d4b35c] text-[#1a1510] font-semibold"
+              >
+                <PlusCircle className="mr-2 h-4 w-4" />
+                New cold case
+              </Button>
             </div>
-            
-            {/* Mystery listing without the filter tabs */}
-            <MysteryList 
-              mysteries={mysteries} 
+
+            <MysteryList
+              mysteries={mysteries}
+              coldCases={coldCases}
               isLoading={isLoadingMysteries}
               onRefresh={() => user && fetchMysteries(user.id)}
             />

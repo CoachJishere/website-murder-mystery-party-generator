@@ -23,11 +23,26 @@ type OrderState =
 const POLL_MS = 30_000;
 
 export default function ColdCaseDelivery() {
-  const { token } = useParams<{ token: string }>();
+  const { token: routeToken } = useParams<{ token: string }>();
+  // Post-payment landing: Stripe's success_url is /cold-case/thanks?sid=cs_... — resolve
+  // the real delivery token from the session id (the webhook may still be writing the
+  // order for a few seconds; "pending" just re-polls).
+  const sid = new URLSearchParams(window.location.search).get("sid") || "";
+  const [token, setToken] = useState(routeToken === "thanks" ? "" : routeToken || "");
   const [state, setState] = useState<OrderState>({ kind: "loading" });
 
   const check = useCallback(async (): Promise<OrderState> => {
     try {
+      if (!token && sid) {
+        const r = await fetch(`${STATUS_URL}?session=${encodeURIComponent(sid)}`);
+        const b = await r.json().catch(() => ({}));
+        if (b.status === "resolved" && b.token) {
+          setToken(b.token);
+          window.history.replaceState(null, "", `/cold-case/${b.token}`);
+          return { kind: "loading" }; // next tick polls with the real token
+        }
+        return { kind: "loading" }; // webhook still writing — keep polling
+      }
       const res = await fetch(`${STATUS_URL}?token=${encodeURIComponent(token || "")}`);
       if (res.status === 404) return { kind: "not_found" };
       if (!res.ok) return { kind: "loading" }; // transient (429/5xx) — keep polling
@@ -40,7 +55,7 @@ export default function ColdCaseDelivery() {
     } catch {
       return { kind: "loading" };
     }
-  }, [token]);
+  }, [token, sid]);
 
   useEffect(() => {
     let alive = true;

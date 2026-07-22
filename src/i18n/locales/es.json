@@ -460,7 +460,7 @@
       "getStarted": "Empieza creando tu primer misterio"
     },
     "mysteries": {
-      "title": "Tus Misterios",
+      "title": "Tus fiestas murder mystery",
       "searchPlaceholder": "Buscar misterios...",
       "deleteSuccess": "Misterio movido a archivo",
       "deleteFailed": "Error al archivar misterio",
@@ -498,7 +498,8 @@
           "description": "¿Estás seguro de que quieres eliminar este misterio? Esta acción no se puede deshacer."
         },
         "generationInProgress": "Generación en curso...",
-        "editedDate": "Editado el {{date}}"
+        "editedDate": "Editado el {{date}}",
+          "typeLabel": "Fiesta murder mystery"
       },
       "status": {
         "completed": "Completado",

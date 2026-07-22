@@ -460,7 +460,7 @@
       "getStarted": "开始创建您的第一个谜团"
     },
     "mysteries": {
-      "title": "您的谜团",
+      "title": "您的谋杀之谜派对",
       "searchPlaceholder": "搜索谜团...",
       "deleteSuccess": "谜团已移至存档",
       "deleteFailed": "归档谜团失败",
@@ -498,7 +498,8 @@
           "description": "您确定要删除此谜团吗？此操作无法撤销。"
         },
         "generationInProgress": "正在生成中...",
-        "editedDate": "{{date}}编辑"
+        "editedDate": "{{date}}编辑",
+          "typeLabel": "谋杀之谜派对"
       },
       "status": {
         "completed": "已完成",

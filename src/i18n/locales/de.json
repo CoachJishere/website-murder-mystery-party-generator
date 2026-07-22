@@ -460,7 +460,7 @@
       "getStarted": "Beginnen Sie, indem Sie Ihr erstes Mysterium erstellen"
     },
     "mysteries": {
-      "title": "Ihre Mysterien",
+      "title": "Ihre Krimi-Partys",
       "searchPlaceholder": "Mysterien suchen...",
       "deleteSuccess": "Mysterium archiviert",
       "deleteFailed": "Fehler beim Archivieren des Mysteriums",
@@ -498,7 +498,8 @@
           "description": "Sind Sie sicher, dass Sie dieses Mysterium löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
         },
         "generationInProgress": "Generierung läuft...",
-        "editedDate": "Bearbeitet am {{date}}"
+        "editedDate": "Bearbeitet am {{date}}",
+          "typeLabel": "Krimi-Party"
       },
       "status": {
         "completed": "Abgeschlossen",

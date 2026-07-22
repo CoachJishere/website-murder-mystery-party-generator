@@ -130,7 +130,12 @@ function HomeMysteryCard({ mystery, onView, onEdit, onArchive, onUnarchive, onDe
       <CardHeader className="pb-3 flex-shrink-0">
         {/* Top Row: Status Badge and Three Dots Menu */}
         <div className="flex items-center justify-between gap-2">
-          {getStatusBadge()}
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
+            {getStatusBadge()}
+            <Badge variant="outline" className="text-xs px-2 py-1 shrink-0 border-primary text-primary">
+              {t('dashboard.mysteries.card.typeLabel', 'Murder mystery party')}
+            </Badge>
+          </div>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

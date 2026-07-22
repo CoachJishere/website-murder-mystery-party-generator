@@ -460,7 +460,7 @@
       "getStarted": "Begin met het creëren van uw eerste mysterie"
     },
     "mysteries": {
-      "title": "Uw Mysteries",
+      "title": "Uw murder mystery-feesten",
       "searchPlaceholder": "Zoek mysteries...",
       "deleteSuccess": "Mysterie verplaatst naar archief",
       "deleteFailed": "Niet gelukt om mysterie te archiveren",
@@ -498,7 +498,8 @@
           "description": "Weet u zeker dat u dit mysterie wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt."
         },
         "generationInProgress": "Generatie bezig...",
-        "editedDate": "Bewerkt {{date}}"
+        "editedDate": "Bewerkt {{date}}",
+          "typeLabel": "Murder mystery-feest"
       },
       "status": {
         "completed": "Voltooid",

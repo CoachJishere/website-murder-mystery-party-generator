@@ -460,7 +460,7 @@
       "getStarted": "첫 번째 미스터리를 만들어 시작하세요"
     },
     "mysteries": {
-      "title": "나의 미스터리",
+      "title": "나의 머더 미스터리 파티",
       "searchPlaceholder": "미스터리 검색...",
       "deleteSuccess": "미스터리를 아카이브로 이동했습니다",
       "deleteFailed": "미스터리 아카이브에 실패했습니다",
@@ -498,7 +498,8 @@
           "description": "이 미스터리를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
         },
         "generationInProgress": "생성 중...",
-        "editedDate": "{{date}}에 편집됨"
+        "editedDate": "{{date}}에 편집됨",
+          "typeLabel": "머더 미스터리 파티"
       },
       "status": {
         "completed": "완료됨",

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
@@ -12,6 +12,11 @@ const Header = () => {
   const { isAuthenticated, user, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = useTranslation();
+  // Product-line awareness (ADR-0029 sub-brand nav; Gap-style sibling pattern): the header
+  // always says WHICH line you're on and offers an explicit, named switch. English-only v1,
+  // matching the cold-case section's launch scope.
+  const { pathname } = useLocation();
+  const isColdCase = pathname.startsWith("/cold-case");
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -21,13 +26,29 @@ const Header = () => {
     <header className="py-3 px-3 md:py-4 md:px-8 border-b sticky top-0 z-50" style={{ backgroundColor: 'var(--color-red)', borderColor: 'var(--color-cream-border)' }}>
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
-          <Link to="/" className="flex items-center space-x-2 mr-4 md:mr-8 no-underline">
-            <span className="text-lg md:text-2xl font-display" style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-display)' }}>
-              MYSTERY MAKER
+          <Link to={isColdCase ? "/cold-case-files" : "/"} className="flex items-center space-x-2 mr-4 md:mr-8 no-underline">
+            <span className="flex flex-col leading-none">
+              <span className="text-lg md:text-2xl font-display" style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-display)' }}>
+                MYSTERY MAKER
+              </span>
+              {/* Product-line descriptor — part of the brand lockup, untranslated like the logo */}
+              <span className="text-[9px] md:text-[10px] tracking-[0.28em] uppercase mt-0.5" style={{ color: '#f7d9a0', fontFamily: 'var(--font-body)' }}>
+                {isColdCase ? "Cold Case Files" : "Murder Mystery Parties"}
+              </span>
             </span>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-6">
+            {/* Sibling product line — explicit named switch (research: label the destination, not "other") */}
+            <Link
+              to={isColdCase ? "/" : "/cold-case-files"}
+              className="text-[13px] no-underline transition-colors"
+              style={{ color: 'rgba(245,240,232,0.75)', fontFamily: 'var(--font-body)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-cream)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(245,240,232,0.75)')}
+            >
+              {isColdCase ? "Murder Mystery Parties →" : "Cold Case Files →"}
+            </Link>
           </nav>
         </div>
 
@@ -110,6 +131,14 @@ const Header = () => {
                 </Link>
               </>
             )}
+            <Link
+              to={isColdCase ? "/" : "/cold-case-files"}
+              className="w-full h-11 no-underline text-sm flex items-center justify-center"
+              style={{ color: 'var(--color-cream)', border: '1.5px solid rgba(245,240,232,0.35)', borderRadius: '6px', fontFamily: 'var(--font-body)', fontWeight: 500 }}
+              onClick={toggleMenu}
+            >
+              {isColdCase ? "Murder Mystery Parties →" : "Cold Case Files →"}
+            </Link>
             <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid rgba(245,240,232,0.15)' }}>
               <Link
                 to="/support"

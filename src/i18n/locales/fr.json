@@ -461,7 +461,7 @@
       "getStarted": "Commencez par créer votre premier mystère"
     },
     "mysteries": {
-      "title": "Vos mystères",
+      "title": "Vos soirées murder mystery",
       "searchPlaceholder": "Rechercher des mystères...",
       "deleteSuccess": "Mystère archivé",
       "deleteFailed": "Échec de l'archivage du mystère",
@@ -499,7 +499,8 @@
           "description": "Êtes-vous sûr de vouloir supprimer ce mystère ? Cette action est irréversible."
         },
         "generationInProgress": "Génération en cours...",
-        "editedDate": "Modifié le {{date}}"
+        "editedDate": "Modifié le {{date}}",
+          "typeLabel": "Soirée murder mystery"
       },
       "status": {
         "completed": "Terminé",
