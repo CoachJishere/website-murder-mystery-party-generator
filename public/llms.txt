@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 242 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 243 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -296,4 +296,5 @@ This index organizes 242 published guides by topic cluster. All guides are avail
 ## Other Guides
 
 - [Best Murder Mystery Games 2026: Top Picks to Play This Year](https://www.mysterymaker.party/blog/best-murder-mystery-games-2026): The best murder mystery games to play in 2026, ranked. Skip generic kits—generate a custom, printable mystery for your exact guest list in minutes.
+- [Night of Mystery vs. a Custom AI Murder Mystery Kit: Which Is Right for Your Party?](https://www.mysterymaker.party/blog/night-of-mystery-vs-custom-ai-murder-mystery-kit): Comparing Night of Mystery to a custom AI murder mystery kit? See how the two stack up on price, replayability, guest-count flexibility, and printing — so you c
 
