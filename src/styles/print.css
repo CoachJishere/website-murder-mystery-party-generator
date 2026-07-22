@@ -141,14 +141,20 @@
     color: black !important;
   }
 
-  /* Each character starts on a new page */
-  .character-accordion {
-    page-break-before: always;
+  /* Each character starts on a new page, so printed packets can be handed
+     out without cutting pages apart. Ancestors must not clip: Chromium
+     ignores forced page breaks inside overflow:hidden containers (the
+     TabsContent wrappers carry overflow-hidden on screen). The cast list +
+     editing notice form a natural cover page before the first break. */
+  [role="tabpanel"],
+  .mystery-content,
+  .mystery-content > div {
+    overflow: visible !important;
   }
 
-  /* But not the first one */
-  .character-accordion:first-child {
-    page-break-before: auto;
+  .character-accordion {
+    break-before: page;
+    page-break-before: always;
   }
 
   /* Editable section headers */

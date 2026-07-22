@@ -152,6 +152,8 @@ You can either:
 - Privately tell the ${culprit} player their role before the party, OR
 - Reveal it during the game when appropriate`}
 
+**Fair-play rule for the ${culprit}${hasAccomplice ? " (and accomplice)" : ""}** — announce this to the group before Round 2: when giving their own account, the ${culprit} may mislead, spin, omit, and stick to their cover story — that's the game. But when another player asks them a direct question, they shouldn't invent brand-new lies on the spot: they deflect, answer selectively, or turn suspicion elsewhere. This keeps the mystery solvable — the evidence stays true, and your guests' job is deciding whose *story* to believe.
+
 ## Round-by-Round Flow
 
 Each round follows the same pattern:
