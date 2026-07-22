@@ -8,6 +8,8 @@
 #   2. Generations stuck in_progress for > 2 hours
 #   3. Packages in needs_review (last 7 days) — the sweep flagged a problem
 #   4. Paid packages missing evidence-card images (ADR-0016 detector)
+#   5. Character identity contamination — ≥2 characters claiming the same
+#      kinship to the victim (ADR-0041 detector, Bollinger incident)
 #
 # On failure: opens (or comments on) a GitHub issue labelled `health-alert`.
 # Always: writes monitoring/health-status.md and commits it if changed.
@@ -96,6 +98,23 @@ jobs:
             fi
           fi
 
+          # 5. Character identity contamination (ADR-0041 detector).
+          # Rolling 30-day window: the backlog itself has no cutoff, but alerting
+          # only on recent generations lets handled incidents age out. The
+          # Bollinger package (c3a54b47…, guest feedback 2026-07-22, already
+          # handled) is excluded explicitly until the window passes it.
+          IDC=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_identity_conflicts" \
+            -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
+          if [ "$IDC" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the identity-conflict detector (Supabase API error)\n"
+            IDC_COUNT="?"
+          else
+            IDC_COUNT=$(echo "$IDC" | jq '[.[] | select(.package_id != "c3a54b47-2f04-48d7-a83e-43eac0db7f52")] | length')
+            if [ "$IDC_COUNT" -gt 0 ]; then
+              PROBLEMS="${PROBLEMS}- 🔴 ${IDC_COUNT} package(s) with character identity contamination (multiple characters claiming the same kinship to the victim): $(echo "$IDC" | jq -r '[.[] | select(.package_id != "c3a54b47-2f04-48d7-a83e-43eac0db7f52") | "\(.title) [\(.kin_term): \(.claimants | join(" / "))]"] | join("; ")')\n"
+            fi
+          fi
+
           # Write status file
           mkdir -p monitoring
           {
@@ -117,6 +136,7 @@ jobs:
             echo "| Generations stuck > 2h | ${STUCK_COUNT} |"
             echo "| needs_review packages (7 days) | ${REVIEW_COUNT} |"
             echo "| Paid packages missing evidence images | ${IMG_COUNT} |"
+            echo "| Character identity conflicts (30 days) | ${IDC_COUNT} |"
           } > monitoring/health-status.md
 
           if [ -n "$PROBLEMS" ]; then
