@@ -109,6 +109,29 @@ const REMINDERS = [
 4. The key question: is the CTR gain real, or just the ~1-position ranking gain? Hold position roughly constant (or note it explicitly) so a ranking shift isn't mistaken for a CTR win. Say whether volumes are now big enough to be meaningful.
 5. If branded CTR is still weak for the position (e.g. "mystery maker" under ~15% while sitting top-3), test the brand-first title variant proposed on 2026-07-20: "Mystery Maker — Printable Murder Mystery Party Kits in Minutes" (current copy in docs/adr/0024-static-homepage-seo-source-of-truth.md).`,
   },
+  {
+    // First measurement of the Night of Mystery comparison post, published
+    // 2026-07-22 in all 13 languages to intercept the buyer-intent query
+    // "night of mystery reviews" (pre-publish site baseline: 21 impr/week at
+    // position 9, 0 clicks — some OTHER page of ours was ranking for it).
+    // Window starts ~4 weeks post-publish; covers the Aug 17/24/31 sends.
+    start: '2026-08-17',
+    end: '2026-08-31',
+    title: 'Measure the Night of Mystery comparison post (published Jul 22)',
+    body:
+      'On <strong>2026-07-22</strong> we published <strong>/blog/night-of-mystery-vs-custom-ai-murder-mystery-kit</strong> ' +
+      '(all 13 languages + FAQ schema + reciprocal link from the games-2026 roundup) to intercept the buyer-intent query ' +
+      '<strong>night of mystery reviews</strong> — which was surfacing at ~21 impressions/week at position 9 <em>before</em> ' +
+      'the post existed. Four-plus weeks of data have accumulated — paste the prompt below into a fresh chat for a ' +
+      'ground-truth read.',
+    prompt: `Measure whether the Night of Mystery comparison post is capturing its target query. Published 2026-07-22: /blog/night-of-mystery-vs-custom-ai-murder-mystery-kit (13 languages, FAQPage schema auto-generated, inbound link from /blog/best-murder-mystery-games-2026). Re-derive everything fresh from Google Search Console — assume problems, default to flagging; do not trust this note's numbers.
+
+1. Site baseline to verify, then beat: pre-publish, "night of mystery reviews" ran ~21 impressions/week at position ~9 with 0 clicks — and the ranking URL was NOT this post (it didn't exist). First check which of our URLs ranks for the query now: if it's still an older page (e.g. the games-2026 roundup) instead of the comparison post, that's a relevance/cannibalization problem — flag it.
+2. Pull query-level data for "night of mystery reviews" plus the halo set: "night of mystery review", "night of mystery alternative(s)", "night of mystery vs", "is night of mystery worth it". Compare ~3 weeks pre-2026-07-22 vs all post-publish data: impressions, clicks, CTR, avg position, ranking page.
+3. Pull page-level data for /blog/night-of-mystery-vs-custom-ai-murder-mystery-kit (all queries): what else is it pulling in? Any AI-answer/LLM referral traffic (GA4 fetch-ai-referrals) attributable to it?
+4. Check the FAQ rich result: is the page's FAQPage schema being picked up (GSC enhancement report or a SERP spot-check for "Is Night of Mystery worth it?")?
+5. Verdicts and follow-ups: position stuck outside top 5 → propose more internal links from related comparison/roundup posts (generators-review, games-review) and check the 12 language variants are indexed. Ranking fine but CTR weak → propose a title/meta tweak (current title leads with the competitor brand — that's intentional for the query match; don't change it without data). Query volume collapsed → say so plainly; the intercept may not be worth further investment.`,
+  },
 ];
 
 // Safety net: neutralise any literal HTML tags the model leaves inside <pre>

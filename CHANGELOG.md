@@ -2,6 +2,9 @@
 
 ## 2026-07-22
 
+### Improvement: Mid-August digest reminder to measure the Night of Mystery comparison post
+Added a date-gated reminder (window 2026-08-17 → 08-31, covering the Aug 17/24/31 sends) to the `REMINDERS` array in [generateSeoDigest.mjs](scripts/generateSeoDigest.mjs), so the weekly SEO email resurfaces the follow-up with a paste-ready, ground-truth-re-deriving prompt — same mechanism as the branded-CTR second read added 2026-07-20 (both will show on the overlapping sends). The prompt is deliberately skeptical: verify which URL actually ranks for "night of mystery reviews" now (flag cannibalization if an older page still holds it), compare pre/post-publish across the halo query set, check FAQ rich-result pickup and the 12 language variants' indexation, and give plain verdicts including "the intercept isn't worth further investment" if volume collapsed. Reminder self-expires after Aug 31; delete the entry once acted on.
+
 ### Feature: Night of Mystery comparison post published — all 13 languages live
 Same-day follow-through on the staged entry below: Jonathan called publish, so the full runbook was executed end-to-end. `/blog/night-of-mystery-vs-custom-ai-murder-mystery-kit` is live in all 13 languages, targeting "night of mystery reviews" (21 impr, pos 9, buyer intent).
 - **Translations ×12 in-session** (parallel agent batches, no metered API), validated by an independent script against every machine-parsed constraint before anything touched the repo: FAQ-heading regex per language, canonical last-updated line (must match `_brand-sanitizer.mjs` date-bump regexes), byte-identical internal-link URLs, H2/table structure parity, brand preservation, length floors.
