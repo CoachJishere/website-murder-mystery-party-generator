@@ -1,6 +1,6 @@
 # Site health status
 
-_Last checked: 2026-07-22 14:26 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-07-22 19:46 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ✅ All checks passing
 
@@ -10,3 +10,4 @@ _Last checked: 2026-07-22 14:26 UTC (runs every 6 hours; see .github/workflows/h
 | Generations stuck > 2h | 0 |
 | needs_review packages (7 days) | 0 |
 | Paid packages missing evidence images | 0 |
+| Character identity conflicts (30 days) | 0 |
