@@ -186,6 +186,40 @@ SELECT * FROM list_packages_missing_evidence_images();
 Empty result = all good. If a row appears, the mystery is still playable; regenerating the
 image needs a developer/AI session (the recipe is in the project memory and CHANGELOG).
 
+### Health-check check 5 fired — "character identity contamination" (ADR-0041)
+
+This alert means the generator gave two or more characters the **same relationship to the
+victim** (e.g. several guests' scripts all claim "Rex was my brother") — the murderer's
+storyline bleeding into other characters. This is what caused the 1-star Bollinger review
+in July 2026.
+
+**This is a pre-party rescue, not a post-mortem.** Hosts buy ~2–3 weeks before their
+party, and the check runs every 6 hours — so a flagged package can almost always be fixed
+before anyone plays it. Treat it as time-sensitive.
+
+**Step 1 — see what's flagged** (character names + the conflicting kinship term):
+
+```sql
+SELECT * FROM list_packages_with_identity_conflicts();
+```
+
+**Step 2 — hand it to an AI session** with this instruction: *"Health check flagged
+identity contamination in package `<package_id>`. Read each flagged character's
+round scripts and final statement against their own background/relationships, find every
+line where they claim another character's identity, kinship, secret, alibi, or guilty
+knowledge, and repair with surgical single-cell `replace()` edits (no bulk regex, no
+regeneration). Also fix the matching `_pointform` columns. Then re-run the detector and
+probe for leftover echo phrases."* The worked example (the Ashworth repair — exactly this
+procedure) is in the CHANGELOG under 2026-07-22 and in project memory.
+
+**Step 3 — confirm clean**: the Step 1 query returns no row for that package, and the
+next health-check run goes green.
+
+Only one character truly has each relationship to the victim — check the murderer's
+background first; the bleed almost always flows *from* the murderer's storyline *to*
+innocents. The detector deliberately ignores single benign mentions ("my mother" about
+their own family), so a flagged row is worth taking seriously.
+
 ---
 
 ## 4. When emails don't arrive

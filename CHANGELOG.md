@@ -2,6 +2,9 @@
 
 ## 2026-07-22
 
+### Improvement: OPERATIONS.md triage playbook for identity-contamination alerts
+Added a "Health-check check 5 fired" section to [docs/OPERATIONS.md](docs/OPERATIONS.md) (after the evidence-images bonus check): what the alert means, the detector query, the AI-session repair instruction (surgical cell edits incl. `_pointform` columns, re-verify, no bulk regex — the Ashworth repair as the worked example), and the key framing that this is a **pre-party rescue**: hosts buy ~2–3 weeks ahead (Bollinger: bought Jul 2, played ~Jul 18–19, feedback Jul 22) and the guest-feedback email fires 14 days post-assignment — so feedback always arrives post-party and the 6-hourly health check is the only pre-party warning channel.
+
 ### Fix: Ashworth Manor script echoes repaired + full contamination audit of paid packages since May (clean)
 Follow-up to the identity-contamination entry below, after Child v17 was imported into Make.com.
 - **Ashworth Manor (same purchaser's other mystery) had milder bleed from its murderer Victor Sterling**: Max Briggs (Rex's personal assistant) implied he was a *business partner* ("what business partners don't?", "a partnership of this size", "partnership structure") and carried Victor's near-verbatim lines ("I'd be in prison ten times over", "brilliant at what he did" — the latter also echoed in Dr. Diana's script). Identities/secrets/alibis were otherwise per-character coherent — party-noticeable, not party-breaking, so **no refund for this one** (the Bollinger $24.99 payment `pi_3Tokq0KgSd73ikMW17k2M1TN` is the refund; matched to the mystery via `purchase_date` timestamps, $19.99 = Ashworth).
