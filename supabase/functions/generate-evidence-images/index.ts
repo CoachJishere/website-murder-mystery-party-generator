@@ -34,6 +34,69 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const REPLICATE_MODEL_URL =
   "https://api.replicate.com/v1/models/black-forest-labs/flux-1.1-pro/predictions";
 
+// Retry tuning for Replicate 429s. When the account has < $5 credit, Replicate
+// throttles prediction creation to 6/min with a burst of 1, so 2 of our 3
+// parallel rounds get rejected on every run (see the evidence-image recovery
+// saga). We honor Replicate's retry_after and add jitter so the retrying rounds
+// don't collide on the burst-of-1 window again. This is a safety net — the real
+// fix is keeping the token's account funded above $5.
+const MAX_PREDICTION_ATTEMPTS = 5;
+const DEFAULT_RETRY_AFTER_SECONDS = 10;
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/**
+ * POST a prediction to Replicate, retrying on 429 (rate limit). Returns the
+ * final Response; non-429 responses (success or other errors) are returned
+ * immediately for the caller to handle.
+ */
+async function createPredictionWithRetry(
+  body: unknown,
+  token: string
+): Promise<Response> {
+  for (let attempt = 1; attempt <= MAX_PREDICTION_ATTEMPTS; attempt++) {
+    const res = await fetch(REPLICATE_MODEL_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Prefer: "wait=60",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (res.status !== 429 || attempt === MAX_PREDICTION_ATTEMPTS) {
+      return res;
+    }
+
+    // Determine how long to wait: prefer the Retry-After header, then the
+    // retry_after field in the JSON body, then a sane default.
+    let retryAfter = DEFAULT_RETRY_AFTER_SECONDS;
+    const headerRetryAfter = Number(res.headers.get("retry-after"));
+    if (Number.isFinite(headerRetryAfter) && headerRetryAfter > 0) {
+      retryAfter = headerRetryAfter;
+    } else {
+      try {
+        const j = await res.clone().json();
+        if (typeof j?.retry_after === "number" && j.retry_after > 0) {
+          retryAfter = j.retry_after;
+        }
+      } catch {
+        // body wasn't JSON — keep the default
+      }
+    }
+
+    const waitMs = retryAfter * 1000 + Math.floor(Math.random() * 2000);
+    console.log(
+      `Replicate 429 (attempt ${attempt}/${MAX_PREDICTION_ATTEMPTS}); waiting ${waitMs}ms before retry`
+    );
+    await sleep(waitMs);
+  }
+
+  // Unreachable: the loop returns on the final attempt.
+  throw new Error("createPredictionWithRetry exhausted attempts without returning");
+}
+
 /**
  * Generate one image via Replicate Flux 1.1 Pro and return the raw PNG bytes.
  *
@@ -41,7 +104,8 @@ const REPLICATE_MODEL_URL =
  * deliberate ~30-line duplicate rather than a shared module because that file is
  * Node (process.env/Buffer) and this is Deno (Deno.env/ArrayBuffer) — see ADR-0017.
  * `Prefer: wait=60` keeps the request synchronous; flux-1.1-pro usually finishes
- * in 5-15s, so we get a final prediction back without polling.
+ * in 5-15s, so we get a final prediction back without polling. Prediction
+ * creation is retried on 429 via createPredictionWithRetry.
  */
 async function callFlux11Pro(prompt: string, token: string): Promise<ArrayBuffer> {
   const body = {
@@ -54,15 +118,7 @@ async function callFlux11Pro(prompt: string, token: string): Promise<ArrayBuffer
     },
   };
 
-  const res = await fetch(REPLICATE_MODEL_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      Prefer: "wait=60",
-    },
-    body: JSON.stringify(body),
-  });
+  const res = await createPredictionWithRetry(body, token);
 
   if (!res.ok) {
     const txt = await res.text();

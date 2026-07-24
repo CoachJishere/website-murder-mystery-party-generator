@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-24
+
+### Fix: Retry Replicate 429s in generate-evidence-images (evidence images no longer dropped under low credit)
+Two paid packages in two days completed missing 2 of their 3 evidence-card images ("Mutiny And Murder On The Crimson Tide", "Death By Dessert") — both recovered manually by re-calling [generate-evidence-images](supabase/functions/generate-evidence-images/index.ts). Root cause (from the edge-function runtime logs, not a Make/Imagen timeout as the old memory assumed): when the Replicate token's account has under $5 credit, Replicate throttles prediction creation to 6/min with a **burst of 1**. The function fires all 3 rounds in parallel (ADR-0017), so 2 of 3 get a `429 … less than $5.0 in credit` on every run and the surviving round is whichever lands a few seconds later.
+- **Hardening:** added `createPredictionWithRetry()` around the Replicate POST — on 429 it honors the `Retry-After` header / `retry_after` body field (default 10s) plus random jitter (so the two retrying rounds don't collide on the burst-of-1 window again), up to 5 attempts. Parallel design kept intact; zero added latency when credit is healthy, self-healing when throttled. Deployed as version 13; verified live (400 on a malformed request). Worst-case added time under low credit ~25–40s, well within Make's ≥120s timeout.
+- **Root cause confirmed (not code — a Replicate account setting):** a 2-parallel-prediction probe with the repo `.env` token (confirmed = `coachjishere`, the same account whose billing page shows $19.40 credit) returned one 201 and one `<$5` 429 — so the token and the funded account are the same; it's not a mismatch. Per [Replicate's rate-limit docs](https://replicate.com/docs/topics/predictions/rate-limits), the low tier (1 req/s, max 6/min, burst 1) is triggered by *"granted credit and no payment method on file"* — the gate is a **card on file, not the credit balance**, so prepaid credit alone doesn't lift it. Fix (self-serve, no code): on coachjishere → Billing, add a payment method and enable auto-reload; standard limit then becomes 600 creates/min. The v13 retry hardening stays as a permanent safety net. Tracked in vault note `evidence-image-recovery-crimson-tide-2026-07-23-mystery-maker.md`.
+- **Why not a Make.com sleep between generations:** post-ADR-0017 the three images are generated inside one edge-function call, not as separate Make modules, so a Make-level timer can't space them; the retry-with-`retry_after` lives where the parallelism is and waits exactly as long as Replicate asks, only when throttled.
+
 ## 2026-07-22
 
 ### Fix: Three follow-ups from the Bollinger host's reply (print page breaks, slip-language leak, fair-play rule)
