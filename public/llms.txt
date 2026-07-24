@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 245 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 246 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -196,6 +196,7 @@ This index organizes 245 published guides by topic cluster. All guides are avail
 - [Broadway Theater Murder Mystery Party Guide](https://www.mysterymaker.party/blog/broadway-theater-murder-mystery-party-guide-the-show-must-go-on): Take center stage with dramatic Broadway theater murder mystery parties featuring actors, directors, and backstage betrayals.
 - [Country Club Murder Mystery Party Guide](https://www.mysterymaker.party/blog/country-club-murder-mystery-party-guide-tee-off-into-trouble-and-social-intrigue): Tee off into trouble with exclusive country club murder mystery parties featuring members, staff, and social climbing.
 - [How Long Should a Murder Mystery Party Last?](https://www.mysterymaker.party/blog/how-long-should-murder-mystery-party-last): Most run 2-4 hours. The right length depends on group size, format, and how much room you want clues to breathe — not just how long people will sit.
+- [How to Create Murder Mystery Clues Step by Step](https://www.mysterymaker.party/blog/how-to-create-murder-mystery-clues-step-by-step): Step-by-step guide to creating murder mystery clues. Covers physical, verbal, and document clue types with difficulty calibration and testing methods.
 - [How to Write a Murder Mystery: From Plot to Playable Game](https://www.mysterymaker.party/blog/how-to-write-a-murder-mystery): Learn how to write a murder mystery game or story. Step-by-step guide covering plot, characters, clues, and testing.
 - [How to Write Murder Mystery Backstories](https://www.mysterymaker.party/blog/how-to-write-murder-mystery-backstories): Backstory creates the foundation for believable suspects and compelling motives. Here's how to construct layered character histories that drive the mystery.
 - [How to Write Murder Mystery Characters](https://www.mysterymaker.party/blog/how-to-write-murder-mystery-characters): Learn how to create murder mystery characters with layered motives, secrets, alibis, and relationships. Includes a character template with worked examples.
