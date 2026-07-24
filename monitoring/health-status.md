@@ -1,10 +1,10 @@
 # Site health status
 
-_Last checked: 2026-07-23 19:48 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-07-24 03:47 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ⚠️ Problems found
 
-- 🟠 1 paid package(s) missing evidence-card images: Mutiny And Murder On The Crimson Tide
+- 🟠 1 paid package(s) missing evidence-card images: Death By Dessert: A Fantastical Baking Tragedy
 
 | Check | Result |
 |---|---|
