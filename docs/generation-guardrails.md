@@ -1,6 +1,6 @@
 # Generation guardrails — per-character content coherence
 
-Canonical rule list for the **Make.com child scenario** per-character prompt (and the parent detective/evidence prompt where noted). Companion to `docs/evidence-card-generation-guardrail.md`. Source decision: ADR-0037 (grounded in the *Whispers From The Void* playtest). Latest blueprints: child `MM Live - Child (Unified)16`, parent `MM Live - Parent46`.
+Canonical rule list for the **Make.com child scenario** per-character prompt (and the parent detective/evidence prompt where noted). Companion to `docs/evidence-card-generation-guardrail.md`. Source decisions: ADR-0037 (Whispers playtest), ADR-0041 (identity contamination), ADR-0042 (content-quality detectors + G7–G10). Latest blueprint files on disk: child `MM Live - Child (Unified)18-PredeterminedDeflectionHeader`, parent `MM Live - Parent47 (Playtest Fixes + Clue-Timing)`. **⚠️ Whether these are the versions actually LIVE in Make.com is not tracked in git — see the Import ledger at the bottom. Confirm the live version before assuming a guardrail is active.**
 
 When you edit a Make.com prompt, apply the matching rule verbatim (or close), and mirror any detective/evidence rule into `supabase/functions/regenerate-parent-content/index.ts` so the recovery tool stays consistent.
 
@@ -57,3 +57,48 @@ Every secret states **concrete prospective consequences** of exposure (financial
 - **Transitions.** After the opening statement: an explicit "proceed immediately to Round 1" cue. Between rounds: a clear beat that the detective has finished and players should talk/investigate before the next detective statement.
 - **No "stand up".** Remove blocking that assumes a standing/theatre setup (e.g. "everyone stand up"); groups play seated.
 - **Hybrid reveal (D1).** The reveal presents a clinching final clue and a "how they did it" walkthrough, while the case remains solvable from the breadcrumbs planted across rounds.
+
+---
+
+## G7–G10 — added after the 2026-07-25 quality audit (ADR-0042)
+
+The 2026-07-25 hand-audit of three recent paid packages found four failure modes reaching customers. G7–G10 are the generation-time prevention; the read-only detectors in `supabase/migrations/20260725_detect_content_quality_issues.sql` (health-check checks 6–9) are the backstop. **Prompt text below is ready to apply; the blueprint build is a separate careful step — duplicate the current head (`temp-files/`, re-list first), insert, save as the next number (child → `19-…`, parent → `48-…`), verify JSON valid + module count unchanged, import, then record in the ledger.**
+
+## G7 — Victim consistency *(parent: game_overview + master_context generators)*
+The victim named in `game_overview` must be the SAME victim the master_context establishes — same name, role, manner of death. Never introduce a different or additional named victim. (Incident: "The Last Will And Testament Of Adelaide Crane" opened with "Sophie Duplock, a 24-year-old real estate magnate" — a foreign victim bled from another package while the rest of the package was Adelaide Crane.)
+
+> Prompt line (add to the overview `<output_instructions>` and the master_context generator): *"VICTIM CONSISTENCY: The victim is already established in the master_context. Name the SAME victim — same name, role, and manner of death. NEVER introduce a different or additional named victim, and never rename or re-gender the established victim. If unsure who the victim is, re-read the master_context; do not invent one."*
+
+## G8 — No fixed culprit in random-slip ("character" style) games *(parent master_context + child character-based route ONLY)*
+In `mystery_style = 'character'` games the culprit is drawn at the table, so NO character is guilty in advance. A character's STATIC fields (`secret`, `background`, `description`, `introduction`) must give a MOTIVE, never a murder confession or guilty knowledge. Guilt appears ONLY in the guilty-slip branch. Innocent-slip branches and improvised accusations must NOT converge on one specific suspect. (Incident: Adelaide Crane — Morgan Ashford's static secret was "You poisoned Adelaide's Earl Grey… You killed Adelaide", and multiple innocent branches fingered Morgan, so the slip mechanic was broken and pointed guests at one player.)
+**⚠️ Add to the character-based route's `<content_coherence_rules>` ONLY — never the predetermined route, where a fixed culprit is correct.**
+
+> Child prompt line (character-based route): *"SLIP-STYLE GUILT (culprit is drawn at the table — no character is guilty in advance): this character's static secret/background/description/introduction must give a MOTIVE or something-to-hide, NEVER a murder confession or guilty knowledge ('you killed X', 'you did it'). Guilt appears ONLY in the guilty-slip branch. In innocent branches and accusations, spread suspicion — never converge on one specific person as the murderer."*
+> Parent master_context line (character style): *"NO FIXED CULPRIT: the murderer is selected by slip-draw at the table. Do NOT designate, name, or imply a pre-assigned murderer anywhere, and do not write any character's static profile as guilty. Every suspect must be equally plausible."*
+
+## G9 — Output hygiene: no chain-of-thought or template artifacts *(BOTH scenarios)*
+Emit only final, in-world content. Never include reasoning/self-correction ("Wait, I need to correct this", "the matrix shows Morgan's row", "let me reconsider"), references to `master_context`/"the matrix"/field names, or bracketed authoring directions ("[CLOSING PARAGRAPH — No Accomplice Beat…]", "[choose someone with strong motive]", "[insert name]"). (Incidents: Crimson Tide — raw chain-of-thought in a relationships field + a bracketed directive in the detective reveal; 10 older packages have "[choose …]" placeholders sitting in player-facing accusations.) Child already has `<no_chain_of_thought_in_output>` + `<no_meta_text_in_output>`; **parent has neither — add an `<output_hygiene>` block to every parent generation prompt**, and extend the child `<no_meta_text_in_output>` to explicitly strip bracketed authoring directions.
+
+> Prompt block (parent): *"<output_hygiene> Emit ONLY final in-world content. Never include reasoning or self-correction ('wait, I need to…', 'the matrix shows…', 'let me reconsider'), references to the generation process / 'master_context' / 'the matrix' / field names, or bracketed authoring directions / placeholders ('[choose …]', '[insert …]', '[CLOSING PARAGRAPH …]'). If you slip mid-generation, silently rewrite the field cleanly. </output_hygiene>"*
+
+## G2 addendum — questions never target the victim
+G2 already forbids self-directed questions. Also forbid questions addressed to the **victim** (dead, not a player). (Incident: Crimson Tide — a Round-2 question was addressed to the murdered Captain.)
+
+> Amended child QUESTIONS line: *"Every question must target a DIFFERENT, LIVING character. Never ask a question of yourself, and never address a question to the victim."*
+
+---
+
+## Import ledger — what is BUILT vs what is LIVE in Make.com
+
+**Root-cause note (2026-07-25):** the audit found guardrails that were authored into blueprint FILES but whose Make.com import was left "manual, pending" — with no record confirming the import happened. That gap is the likeliest reason "fixed" defects recurred. Fill this table whenever a blueprint is imported (the live prompt is the only ground truth; the Make API is unreliable here — confirm in the UI by grepping the live prompt for the marker).
+
+| Guardrail / version | Built (file) | Marker to grep in live prompt | Imported-to-Make (date) | Live-confirmed |
+|---|---|---|---|---|
+| Child v16 PlaytestFixes (G1/G2) | 2026-07-19 | `event-relative` timing line | ? | ? |
+| Child v17 IdentityRule (ADR-0041) | 2026-07-22 | `CHARACTER IDENTITY:` | ? | ? |
+| Child v18 PredeterminedDeflectionHeader | 2026-07-22 | `DEFLECTING SUSPICION — FOR YOUR EYES ONLY` | ? | ? |
+| Parent46 Playtest Fixes (ADR-0037) | 2026-07-19 | detective two-round accusation framing | ? | ? |
+| Parent47 Clue-Timing | 2026-07-20 | clue-timing funnel line | ? | ? |
+| Parent45 Evidence Spoiler Guardrail (ADR-0035) | earlier | `EVIDENCE SPOILER RULE` | ? | ? |
+| Child19 (G8 slip, G9 brackets, G2 victim) | *pending build* | `SLIP-STYLE GUILT` | — | — |
+| Parent48 (G7 victim, G8 no-fixed-culprit, G9 output_hygiene) | *pending build* | `VICTIM CONSISTENCY` / `output_hygiene` | — | — |

@@ -115,6 +115,60 @@ jobs:
             fi
           fi
 
+          # 6-9. Content-quality detectors (audit 2026-07-25, migration 20260725).
+          # Same 30-day rolling window as check 5 so handled/old incidents age out.
+          # 6. Model chain-of-thought / template artifacts in delivered text.
+          MTL=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_meta_text_leak" \
+            -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
+          if [ "$MTL" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the meta-text-leak detector (Supabase API error)\n"
+            MTL_COUNT="?"
+          else
+            MTL_COUNT=$(echo "$MTL" | jq 'length')
+            if [ "$MTL_COUNT" -gt 0 ]; then
+              PROBLEMS="${PROBLEMS}- 🔴 ${MTL_COUNT} recent package(s) with model chain-of-thought or template artifacts in delivered text: $(echo "$MTL" | jq -r '[.[] | .title] | join(", ")')\n"
+            fi
+          fi
+
+          # 7. Wrong victim in game_overview (foreign-victim bleed).
+          VM=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_victim_mismatch" \
+            -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
+          if [ "$VM" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the victim-mismatch detector (Supabase API error)\n"
+            VM_COUNT="?"
+          else
+            VM_COUNT=$(echo "$VM" | jq 'length')
+            if [ "$VM_COUNT" -gt 0 ]; then
+              PROBLEMS="${PROBLEMS}- 🔴 ${VM_COUNT} recent package(s) whose overview names a different victim than the rest of the package: $(echo "$VM" | jq -r '[.[] | "\(.title) [overview: \(.overview_victim)]"] | join("; ")')\n"
+            fi
+          fi
+
+          # 8. Fixed-culprit leak in a random-slip ("character" style) game.
+          SCL=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_slip_culprit_leak" \
+            -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
+          if [ "$SCL" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the slip-culprit-leak detector (Supabase API error)\n"
+            SCL_COUNT="?"
+          else
+            SCL_COUNT=$(echo "$SCL" | jq 'length')
+            if [ "$SCL_COUNT" -gt 0 ]; then
+              PROBLEMS="${PROBLEMS}- 🔴 ${SCL_COUNT} recent random-slip package(s) whose static secret pre-reveals a culprit: $(echo "$SCL" | jq -r '[.[] | .title] | join(", ")')\n"
+            fi
+          fi
+
+          # 9. Self-directed / victim-directed questions.
+          SDQ=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_self_directed_questions" \
+            -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
+          if [ "$SDQ" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the self-directed-questions detector (Supabase API error)\n"
+            SDQ_COUNT="?"
+          else
+            SDQ_COUNT=$(echo "$SDQ" | jq 'length')
+            if [ "$SDQ_COUNT" -gt 0 ]; then
+              PROBLEMS="${PROBLEMS}- 🟠 ${SDQ_COUNT} recent package(s) where a character asks themselves questions: $(echo "$SDQ" | jq -r '[.[] | .title] | join(", ")')\n"
+            fi
+          fi
+
           # Write status file
           mkdir -p monitoring
           {
@@ -137,6 +191,10 @@ jobs:
             echo "| needs_review packages (7 days) | ${REVIEW_COUNT} |"
             echo "| Paid packages missing evidence images | ${IMG_COUNT} |"
             echo "| Character identity conflicts (30 days) | ${IDC_COUNT} |"
+            echo "| Meta-text / CoT artifacts (30 days) | ${MTL_COUNT} |"
+            echo "| Wrong victim in overview (30 days) | ${VM_COUNT} |"
+            echo "| Slip-culprit leak (30 days) | ${SCL_COUNT} |"
+            echo "| Self-directed questions (30 days) | ${SDQ_COUNT} |"
           } > monitoring/health-status.md
 
           if [ -n "$PROBLEMS" ]; then

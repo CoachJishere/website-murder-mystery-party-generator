@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-07-25
+
+### Fix: Content-quality audit of 3 recent paid packages + systematic prevention (ADR-0042)
+A hand-audit of the three most recent paid mysteries found defects that reached "completed", fully-populated packages — invisible to every existing check. All three repaired in place via surgical data edits (no regeneration, no LLM/API spend).
+- **Mutiny And Murder On The Crimson Tide** (predetermined): removed raw model chain-of-thought leaked into First Mate Morgan's `relationships` ("Wait, I need to correct this… the matrix shows Morgan's row…"); removed an ADR-0035 evidence spoiler (R4 card DESCRIPTION named the culprit — "…initial 'W'—in thread matching Sailing Master Weatherby's name" → kept the "W" breadcrumb only); retargeted 3 misdirected Round-2 questions (2 self-directed, 1 to the dead victim) at living suspects; deleted a bracketed authoring artifact from the reveal; renamed the detective (Inspector Thorne → Hargrave) off the victim's surname.
+- **The Last Will And Testament Of Adelaide Crane** (random-slip): fixed a wrong victim in `game_overview` ("Sophie Duplock, a 24-year-old real estate magnate" → Adelaide Crane — a foreign-victim bleed while the rest of the package was correct); rewrote Morgan/Margot Ashford's static `secret`+`secrets` from a fixed murder confession ("You poisoned Adelaide's Earl Grey… You killed Adelaide") to a motive (breaks-slip-integrity fix); de-converged Riley's innocent-branch final statement that fingered Morgan as the sole killer; fixed a child-vs-sibling contradiction and normalised "Adolaide"/"Adélaide" typos.
+- **Death By Dessert**: party-ready; one wording nit (Fennel "business partner" → "supplier").
+
+### Feature: Post-generation content-quality detectors wired into the health check (ADR-0042)
+New migration [20260725_detect_content_quality_issues.sql](supabase/migrations/20260725_detect_content_quality_issues.sql) adds five read-only detectors mirroring the ADR-0041 pattern. Four are wired into [health-check.yml](.github/workflows/health-check.yml) (checks 6–9, 30-day rolling window): **meta-text/chain-of-thought leak**, **wrong victim in overview**, **fixed-culprit leak in a random-slip game**, **self-directed questions**. Validated against all history: the two new-mode detectors return 0 (precise; both would have caught Adelaide pre-fix), the other two return only historical true positives (0 in the 30-day window). The **evidence-culprit-spoiler** detector is included but deliberately **not** wired to alerting — validation showed a high false-positive rate (murderer surname as a location/family/common word; host sections using `### IMPLICATIONS`); kept for manual use, ADR-0035's parent-prompt rule remains its prevention. Side-discovery: the meta-leak detector surfaced ~10 older packages with `[choose …]` placeholders sitting in player-facing accusations — a logged backlog.
+
+### Improvement: Generation-time guardrails G7–G10 specced + Make.com import ledger (ADR-0042)
+[docs/generation-guardrails.md](docs/generation-guardrails.md) gains G7 (victim consistency), G8 (no fixed culprit in random-slip games), G9 (output hygiene — no chain-of-thought/template artifacts), and a G2 addendum (questions never target the victim), each with exact prompt text and placement. The blueprint build (Child19/Parent48) is deferred to a focused pass — a malformed 4.3 MB parent blueprint can silently revert other work. Root-cause fix: an **import ledger** now tracks, per blueprint version, built date / grep marker / imported-to-Make date / live-confirmed — because the audit found guardrails authored into files whose Make import was never confirmed live (the likeliest reason "fixed" defects recurred). Full decision in [ADR-0042](docs/adr/0042-content-quality-detectors-and-generation-guardrails.md).
+
 ## 2026-07-24
 
 ### Fix: Retry Replicate 429s in generate-evidence-images (evidence images no longer dropped under low credit)
