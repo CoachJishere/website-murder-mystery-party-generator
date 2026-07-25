@@ -1,6 +1,6 @@
 # Generation guardrails — per-character content coherence
 
-Canonical rule list for the **Make.com child scenario** per-character prompt (and the parent detective/evidence prompt where noted). Companion to `docs/evidence-card-generation-guardrail.md`. Source decisions: ADR-0037 (Whispers playtest), ADR-0041 (identity contamination), ADR-0042 (content-quality detectors + G7–G10). Latest blueprint files on disk: child `MM Live - Child (Unified)18-PredeterminedDeflectionHeader`, parent `MM Live - Parent47 (Playtest Fixes + Clue-Timing)`. **⚠️ Whether these are the versions actually LIVE in Make.com is not tracked in git — see the Import ledger at the bottom. Confirm the live version before assuming a guardrail is active.**
+Canonical rule list for the **Make.com child scenario** per-character prompt (and the parent detective/evidence prompt where noted). Companion to `docs/evidence-card-generation-guardrail.md`. Source decisions: ADR-0037 (Whispers playtest), ADR-0041 (identity contamination), ADR-0042 (content-quality detectors + G7–G10). Latest blueprint files on disk: child `MM Live - Child (Unified)19-SlipGuilt-OutputHygiene-VictimQuestions` (built 2026-07-25, carries G8/G9/G2), parent `MM Live - Parent48 (Victim-Consistency + No-Fixed-Culprit + Output-Hygiene)` (built 2026-07-25, carries G7/G8/G9). **⚠️ Whether these are the versions actually LIVE in Make.com is not tracked in git — see the Import ledger at the bottom. Confirm the live version before assuming a guardrail is active.**
 
 When you edit a Make.com prompt, apply the matching rule verbatim (or close), and mirror any detective/evidence rule into `supabase/functions/regenerate-parent-content/index.ts` so the recovery tool stays consistent.
 
@@ -100,5 +100,7 @@ G2 already forbids self-directed questions. Also forbid questions addressed to t
 | Parent46 Playtest Fixes (ADR-0037) | 2026-07-19 | detective two-round accusation framing | ? | ? |
 | Parent47 Clue-Timing | 2026-07-20 | clue-timing funnel line | ? | ? |
 | Parent45 Evidence Spoiler Guardrail (ADR-0035) | earlier | `EVIDENCE SPOILER RULE` | ? | ? |
-| Child19 (G8 slip, G9 brackets, G2 victim) | *pending build* | `SLIP-STYLE GUILT` | — | — |
-| Parent48 (G7 victim, G8 no-fixed-culprit, G9 output_hygiene) | *pending build* | `VICTIM CONSISTENCY` / `output_hygiene` | — | — |
+| Child19 (G8 slip, G9 brackets, G2 victim) | 2026-07-25 (`…Child (Unified)19-SlipGuilt-OutputHygiene-VictimQuestions`) | `SLIP-STYLE GUILT` | pending (manual UI import) | pending |
+| Parent48 (G7 victim, G8 no-fixed-culprit, G9 output_hygiene) | 2026-07-25 (`…Parent48 (Victim-Consistency + No-Fixed-Culprit + Output-Hygiene)`) | `VICTIM CONSISTENCY` / `output_hygiene` | pending (manual UI import) | pending |
+
+**Recovery-tool mirror (2026-07-25):** `supabase/functions/regenerate-parent-content/index.ts` now carries the applicable parent rules — G9 `<output_hygiene>` in all 4 regeneration prompts (game_overview, materials, detective_script, evidence_cards) and G7 `VICTIM CONSISTENCY` in the game_overview prompt. G8 is intentionally NOT mirrored (character-only rule; the recovery tool consumes an existing master_context and its detective_script route has a legitimate fixed culprit).

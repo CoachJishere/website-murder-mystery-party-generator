@@ -28,11 +28,17 @@ const PROMPTS: Record<string, string> = {
 You are an expert mystery party game designer. Generate ONLY the Game Overview text — nothing else. Output PLAIN MARKDOWN, NOT JSON.
 </role>
 
+<output_hygiene>
+Emit ONLY final in-world content. Never include reasoning or self-correction ('wait, I need to…', 'the matrix shows…', 'let me reconsider'), references to the generation process / 'master_context' / 'the matrix' / field names, or bracketed authoring directions / placeholders ('[choose …]', '[insert …]', '[CLOSING PARAGRAPH …]'). If you slip mid-generation, silently rewrite the field cleanly.
+</output_hygiene>
+
 <master_context>
 {{MASTER_CONTEXT}}
 </master_context>
 
 <output_instructions>
+VICTIM CONSISTENCY: The victim is already established in the master_context. Name the SAME victim — same name, role, and manner of death. NEVER introduce a different or additional named victim, and never rename or re-gender the established victim. If unsure who the victim is, re-read the master_context; do not invent one.
+
 Output a single markdown document — the Game Overview for this mystery. NO JSON wrapper, NO field names, NO curly braces. Just the markdown content directly.
 
 CRITICAL FIRST-LINE RULE: The very FIRST line of your output MUST be \`## Game Overview\`. Do NOT prepend a scene title, mystery name, atmospheric subtitle, or any other heading above it.
@@ -64,6 +70,10 @@ CRITICAL: First line must literally be \`## Game Overview\`. NO scene-title prea
 You are an expert mystery party game designer. Generate ONLY a SHORT bulleted list of theme-specific props for this mystery. Output PLAIN MARKDOWN, NOT JSON.
 </role>
 
+<output_hygiene>
+Emit ONLY final in-world content. Never include reasoning or self-correction ('wait, I need to…', 'the matrix shows…', 'let me reconsider'), references to the generation process / 'master_context' / 'the matrix' / field names, or bracketed authoring directions / placeholders ('[choose …]', '[insert …]', '[CLOSING PARAGRAPH …]'). If you slip mid-generation, silently rewrite the field cleanly.
+</output_hygiene>
+
 <master_context>
 {{MASTER_CONTEXT}}
 </master_context>
@@ -85,6 +95,10 @@ CRITICAL: Output ONLY the bullets. NO JSON. NO field names. NO heading.
   detective_script: `<role>
 You are an expert mystery party game designer. Generate ONLY the Detective Script — nothing else. Output PLAIN MARKDOWN, NOT JSON.
 </role>
+
+<output_hygiene>
+Emit ONLY final in-world content. Never include reasoning or self-correction ('wait, I need to…', 'the matrix shows…', 'let me reconsider'), references to the generation process / 'master_context' / 'the matrix' / field names, or bracketed authoring directions / placeholders ('[choose …]', '[insert …]', '[CLOSING PARAGRAPH …]'). If you slip mid-generation, silently rewrite the field cleanly.
+</output_hygiene>
 
 <master_context>
 {{MASTER_CONTEXT}}
@@ -214,6 +228,10 @@ CRITICAL: Output ONLY the markdown above with all bracketed sections filled in. 
   evidence_cards: `<role>
 You are an expert mystery party game designer. Generate ONLY the Evidence Cards — nothing else. Output PLAIN MARKDOWN, NOT JSON.
 </role>
+
+<output_hygiene>
+Emit ONLY final in-world content. Never include reasoning or self-correction ('wait, I need to…', 'the matrix shows…', 'let me reconsider'), references to the generation process / 'master_context' / 'the matrix' / field names, or bracketed authoring directions / placeholders ('[choose …]', '[insert …]', '[CLOSING PARAGRAPH …]'). If you slip mid-generation, silently rewrite the field cleanly.
+</output_hygiene>
 
 <master_context>
 {{MASTER_CONTEXT}}

@@ -42,8 +42,18 @@ The three audited packages were repaired in place via surgical data edits (no re
 
 - Health check now reports five extra rows; four can raise alerts on new packages. Historical true positives (10 packages with `[choose …]` accusation placeholders; ~11 with self-directed questions) sit outside the 30-day window and do not alert — a known backlog, logged, not auto-fixed.
 - The evidence-spoiler function exists but is advisory until tokenisation + host-section-format handling are improved.
-- G7–G10 are documented but **not yet live** until Child19/Parent48 are built, imported, and recorded in the ledger. Until then the detectors are the only protection for those modes.
+- G7–G10 are documented and now **built** into Child19/Parent48 (see the 2026-07-25 update below); they become **live** only once imported and recorded in the ledger. Until import, the detectors are the only protection for those modes.
 - New failure modes (fixed-culprit-in-slip, overview victim bleed) are now nameable and monitored; candidate refinements noted in the migration and the audit vault note.
+
+## Update — 2026-07-25: G7–G10 blueprint build completed (import still pending)
+
+The deferred prevention build (Decision point 2) is done. Two new blueprints were duplicated from the current heads and edited programmatically (parse JSON, edit only target prompt fields, JSON re-validated, module count unchanged, diff limited to the intended additions):
+
+- **Child19** (`temp-files/MM Live - Child (Unified)19-SlipGuilt-OutputHygiene-VictimQuestions.blueprint.json`, base Child18, 40 modules): G8 `SLIP-STYLE GUILT` in the **character-based route's** `<content_coherence_rules>` **only** (never the predetermined route); G9 bracketed-authoring-direction stripping added to `<no_meta_text_in_output>` (both routes); G2 addendum in the QUESTIONS rule ("DIFFERENT, LIVING character", never the victim).
+- **Parent48** (`temp-files/MM Live - Parent48 (Victim-Consistency + No-Fixed-Culprit + Output-Hygiene).blueprint.json`, base Parent47, 164 modules): G7 `VICTIM CONSISTENCY` in the 4 game_overview `<output_instructions>` + 8 master_context `<critical_reminders>`; G8 parent-side `NO FIXED CULPRIT` in the 4 **character-based** master_context `<critical_principle>` **only** (verified absent from detective routes); G9 `<output_hygiene>` in every parent generation prompt (28).
+- **Route-scoping** was the critical correctness point and was verified both ways: the slip/no-fixed-culprit rules are present in every character-based generator and absent from every predetermined/detective generator.
+- **Recovery-tool mirror:** `regenerate-parent-content/index.ts` gained G9 in all 4 prompts and G7 in game_overview; G8 was intentionally not mirrored (character-only; the tool consumes an existing master_context and its detective_script route has a legitimate fixed culprit).
+- **Still pending:** Make.com import is Jonathan's manual UI step (the Make API is unreliable here); the ledger rows for Child19/Parent48 show built 2026-07-25 with import/live = pending.
 
 ## Discussion
 
