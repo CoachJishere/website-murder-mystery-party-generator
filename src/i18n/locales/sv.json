@@ -1101,7 +1101,10 @@
       "userEmailMissing": "Användar-e-post hittades inte. Logga ut och in igen.",
       "redirectingToCheckout": "Omdirigerar till säker kassa...",
       "networkError": "Nätverksfel. Kontrollera din anslutning och försök igen.",
-      "checkoutConfigError": "Konfigurationsfel vid kassan. Kontakta supporten."
+      "checkoutConfigError": "Konfigurationsfel vid kassan. Kontakta supporten.",
+      "startingGeneration": "Startar genereringen av ditt mysterium…",
+      "conceptIncomplete": "Ditt mysteriekoncept är inte klart än. Gå tillbaka till chatten för att slutföra det och generera sedan.",
+      "startGenerationFailed": "Det gick inte att starta genereringen. Försök igen."
     },
     "title": "Complete Your Purchase",
     "subtitle": "Get full access to your murder mystery package",
@@ -1123,7 +1126,8 @@
     "buttons": {
       "processing": "Processing...",
       "complete": "Complete Purchase",
-      "backToDesign": "Back to Mystery Design"
+      "backToDesign": "Back to Mystery Design",
+      "generateAlreadyPaid": "Generera mitt mysterium"
     },
     "notes": {
       "title": "Viktig information",
@@ -1167,7 +1171,8 @@
       "hasAccomplice": "Inkluderar medbrottsling"
     },
     "fullyEditableLabel": "Helt redigerbar:",
-    "fullyEditableNote": "Oroa dig inte — du kan redigera alla karaktärsmanus, värdguideinnehåll och bevis-kort efter att ditt mysterium har genererats."
+    "fullyEditableNote": "Oroa dig inte — du kan redigera alla karaktärsmanus, värdguideinnehåll och bevis-kort efter att ditt mysterium har genererats.",
+    "notReadyToPreview": "Ditt mysterium är inte redo att förhandsgranskas än. Gå tillbaka till chatten för att designa klart det — när du kan se din rollista och premiss här kan du generera det."
   },
   "mysteryView": {
     "timing": {
@@ -1182,7 +1187,8 @@
       "resumeFailed": "Kunde inte återuppta generering",
       "startingGeneration": "Startar generering av ditt mysteriepaket. Detta tar {{time}}...",
       "startGenerationFailed": "Kunde inte starta paketgenerering",
-      "packageReady": "Ditt mysteriepaket är klart!"
+      "packageReady": "Ditt mysteriepaket är klart!",
+      "conceptIncomplete": "Ditt mysteriekoncept är inte klart än. Gå tillbaka till chatten och besvara de återstående frågorna — inklusive tillfället och rollistan — och generera sedan igen."
     },
     "errors": {
       "unknownStep": "Genereringen misslyckades vid ett okänt steg",

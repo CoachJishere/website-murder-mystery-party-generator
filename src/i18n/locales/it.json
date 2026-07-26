@@ -1113,7 +1113,10 @@
       "userEmailMissing": "E-mail utente non trovata. Disconnettiti e accedi di nuovo.",
       "redirectingToCheckout": "Reindirizzamento al checkout sicuro...",
       "networkError": "Errore di rete. Controlla la connessione e riprova.",
-      "checkoutConfigError": "Errore di configurazione del checkout. Contatta l'assistenza."
+      "checkoutConfigError": "Errore di configurazione del checkout. Contatta l'assistenza.",
+      "startingGeneration": "Avvio della generazione del tuo mistero…",
+      "conceptIncomplete": "Il concept del tuo mistero non è ancora completo. Torna alla chat per completarlo, poi genera.",
+      "startGenerationFailed": "Impossibile avviare la generazione. Riprova."
     },
     "title": "Finalizza il tuo acquisto",
     "subtitle": "Ottieni accesso completo al tuo pacchetto mistero con delitto",
@@ -1135,7 +1138,8 @@
     "buttons": {
       "processing": "Elaborazione...",
       "complete": "Completa Acquisto",
-      "backToDesign": "Torna al Design del Mistero"
+      "backToDesign": "Torna al Design del Mistero",
+      "generateAlreadyPaid": "Genera il mio mistero"
     },
     "notes": {
       "title": "Note importanti",
@@ -1179,7 +1183,8 @@
       "hasAccomplice": "Include complice"
     },
     "fullyEditableLabel": "Completamente modificabile:",
-    "fullyEditableNote": "Non preoccuparti — potrai modificare tutti i copioni dei personaggi, i contenuti della guida del conduttore e le carte degli indizi dopo aver generato il tuo mistero."
+    "fullyEditableNote": "Non preoccuparti — potrai modificare tutti i copioni dei personaggi, i contenuti della guida del conduttore e le carte degli indizi dopo aver generato il tuo mistero.",
+    "notReadyToPreview": "Il tuo mistero non è ancora pronto per l'anteprima. Torna alla chat per finire di progettarlo — quando qui potrai vedere il cast e la premessa, potrai generarlo."
   },
   "mysteryPackage": {
     "detectiveScript": {
@@ -1326,7 +1331,8 @@
       "resumeFailed": "Impossibile riprendere la generazione",
       "startingGeneration": "Avvio della generazione del tuo pacchetto mistero. Ci vorranno {{time}}...",
       "startGenerationFailed": "Impossibile avviare la generazione del pacchetto",
-      "packageReady": "Il tuo pacchetto mistero è pronto!"
+      "packageReady": "Il tuo pacchetto mistero è pronto!",
+      "conceptIncomplete": "Il concept del tuo mistero non è ancora completo. Torna alla chat e rispondi alle domande rimanenti — inclusi l'occasione e l'elenco dei personaggi — poi genera di nuovo."
     },
     "errors": {
       "unknownStep": "La generazione è fallita in un passaggio sconosciuto",

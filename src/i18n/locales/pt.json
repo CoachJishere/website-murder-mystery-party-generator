@@ -1146,7 +1146,10 @@
       "userEmailMissing": "E-mail do utilizador não encontrado. Por favor, sai e volta a entrar.",
       "redirectingToCheckout": "A redirecionar para o checkout seguro...",
       "networkError": "Erro de rede. Por favor, verifica a tua ligação e tenta novamente.",
-      "checkoutConfigError": "Erro de configuração do checkout. Por favor, contacta o suporte."
+      "checkoutConfigError": "Erro de configuração do checkout. Por favor, contacta o suporte.",
+      "startingGeneration": "A iniciar a geração do teu mistério…",
+      "conceptIncomplete": "O conceito do teu mistério ainda não está terminado. Volta ao chat para o completar e depois gera.",
+      "startGenerationFailed": "Não foi possível iniciar a geração. Tenta novamente."
     },
     "title": "Complete Sua Compra",
     "subtitle": "Obtenha acesso total ao seu pacote de mistério de assassinato",
@@ -1168,7 +1171,8 @@
     "buttons": {
       "processing": "Processando...",
       "complete": "Finalizar Compra",
-      "backToDesign": "Voltar para o Design do Mistério"
+      "backToDesign": "Voltar para o Design do Mistério",
+      "generateAlreadyPaid": "Gerar o meu mistério"
     },
     "notes": {
       "title": "Notas Importantes",
@@ -1212,7 +1216,8 @@
       "hasAccomplice": "Inclui cúmplice"
     },
     "fullyEditableLabel": "Totalmente editável:",
-    "fullyEditableNote": "Não te preocupes — podes editar todos os guiões dos personagens, o conteúdo do guia do anfitrião e as cartas de provas depois de gerares o teu mistério."
+    "fullyEditableNote": "Não te preocupes — podes editar todos os guiões dos personagens, o conteúdo do guia do anfitrião e as cartas de provas depois de gerares o teu mistério.",
+    "notReadyToPreview": "O teu mistério ainda não está pronto para pré-visualizar. Volta ao chat para acabar de o desenhar — assim que vires aqui o teu elenco e a premissa, poderás gerá-lo."
   },
   "mysteryPackage": {
     "detectiveScript": {
@@ -1326,7 +1331,8 @@
       "resumeFailed": "Falha ao retomar a geração",
       "startingGeneration": "A iniciar a geração do teu pacote de mistério. Vai demorar {{time}}...",
       "startGenerationFailed": "Falha ao iniciar a geração do pacote",
-      "packageReady": "O teu pacote de mistério está pronto!"
+      "packageReady": "O teu pacote de mistério está pronto!",
+      "conceptIncomplete": "O conceito do teu mistério ainda não está terminado. Volta ao chat e responde às perguntas restantes — incluindo a ocasião e a lista de personagens — e depois gera novamente."
     },
     "errors": {
       "unknownStep": "A geração falhou num passo desconhecido",

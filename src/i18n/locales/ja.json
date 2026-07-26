@@ -1101,7 +1101,10 @@
       "userEmailMissing": "ユーザーのメールが見つかりませんでした。サインアウトして再度サインインしてください。",
       "redirectingToCheckout": "安全なチェックアウトにリダイレクトしています...",
       "networkError": "ネットワークエラーです。接続を確認してもう一度お試しください。",
-      "checkoutConfigError": "チェックアウトの設定エラーです。サポートまでお問い合わせください。"
+      "checkoutConfigError": "チェックアウトの設定エラーです。サポートまでお問い合わせください。",
+      "startingGeneration": "ミステリーの生成を開始します…",
+      "conceptIncomplete": "ミステリーのコンセプトがまだ完成していません。チャットに戻って完成させてから生成してください。",
+      "startGenerationFailed": "生成を開始できませんでした。もう一度お試しください。"
     },
     "title": "購入を完了",
     "subtitle": "殺人ミステリーパッケージへのフルアクセスを取得",
@@ -1123,7 +1126,8 @@
     "buttons": {
       "processing": "処理中...",
       "complete": "購入を完了",
-      "backToDesign": "ミステリーデザインに戻る"
+      "backToDesign": "ミステリーデザインに戻る",
+      "generateAlreadyPaid": "ミステリーを生成"
     },
     "notes": {
       "title": "重要な注意事項",
@@ -1167,7 +1171,8 @@
       "hasAccomplice": "共犯者あり"
     },
     "fullyEditableLabel": "完全に編集可能:",
-    "fullyEditableNote": "ご安心ください — ミステリー生成後に、すべてのキャラクター台本、ホストガイドの内容、証拠カードを編集できます。"
+    "fullyEditableNote": "ご安心ください — ミステリー生成後に、すべてのキャラクター台本、ホストガイドの内容、証拠カードを編集できます。",
+    "notReadyToPreview": "ミステリーはまだプレビューの準備ができていません。チャットに戻って設計を仕上げてください — 登場人物と設定がここに表示されれば、生成できます。"
   },
   "mysteryView": {
     "timing": {
@@ -1182,7 +1187,8 @@
       "resumeFailed": "生成を再開できませんでした",
       "startingGeneration": "ミステリーパッケージの生成を開始します。これには {{time}} かかります...",
       "startGenerationFailed": "パッケージ生成を開始できませんでした",
-      "packageReady": "ミステリーパッケージの準備ができました!"
+      "packageReady": "ミステリーパッケージの準備ができました!",
+      "conceptIncomplete": "ミステリーのコンセプトがまだ完成していません。チャットに戻って残りの質問 — 開催の機会と登場人物リストを含む — に答えてから、もう一度生成してください。"
     },
     "errors": {
       "unknownStep": "不明なステップで生成に失敗しました",

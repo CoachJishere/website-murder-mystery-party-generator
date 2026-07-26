@@ -1136,7 +1136,10 @@
       "userEmailMissing": "E-mail utilisateur introuvable. Veuillez vous déconnecter et vous reconnecter.",
       "redirectingToCheckout": "Redirection vers le paiement sécurisé...",
       "networkError": "Erreur réseau. Vérifiez votre connexion et réessayez.",
-      "checkoutConfigError": "Erreur de configuration du paiement. Veuillez contacter l'assistance."
+      "checkoutConfigError": "Erreur de configuration du paiement. Veuillez contacter l'assistance.",
+      "startingGeneration": "Démarrage de la génération de votre mystère…",
+      "conceptIncomplete": "Le concept de votre mystère n'est pas encore terminé. Retournez au chat pour le compléter, puis générez-le.",
+      "startGenerationFailed": "Échec du démarrage de la génération. Veuillez réessayer."
     },
     "title": "Finalisez votre achat",
     "subtitle": "Obtenez un accès complet à votre package de mystère de meurtre",
@@ -1158,7 +1161,8 @@
     "buttons": {
       "processing": "Traitement...",
       "complete": "Terminer l'achat",
-      "backToDesign": "Retour à la conception du mystère"
+      "backToDesign": "Retour à la conception du mystère",
+      "generateAlreadyPaid": "Générer mon mystère"
     },
     "notes": {
       "title": "Notes importantes",
@@ -1202,7 +1206,8 @@
       "hasAccomplice": "Avec complice"
     },
     "fullyEditableLabel": "Entièrement modifiable :",
-    "fullyEditableNote": "Pas d'inquiétude — vous pourrez modifier tous les scripts de personnages, le contenu du guide d'animation et les cartes d'indices après la génération de votre mystère."
+    "fullyEditableNote": "Pas d'inquiétude — vous pourrez modifier tous les scripts de personnages, le contenu du guide d'animation et les cartes d'indices après la génération de votre mystère.",
+    "notReadyToPreview": "Votre mystère n'est pas encore prêt à être prévisualisé. Retournez au chat pour finir de le concevoir — une fois que vous verrez ici vos personnages et votre prémisse, vous pourrez le générer."
   },
   "mysteryPackage": {
     "detectiveScript": {
@@ -1327,7 +1332,8 @@
       "resumeFailed": "Échec de la reprise de la génération",
       "startingGeneration": "Démarrage de la génération de votre kit mystère. Cela prendra {{time}}...",
       "startGenerationFailed": "Échec du démarrage de la génération du kit",
-      "packageReady": "Votre kit mystère est prêt !"
+      "packageReady": "Votre kit mystère est prêt !",
+      "conceptIncomplete": "Le concept de votre mystère n'est pas encore terminé. Retournez au chat et répondez aux questions restantes — y compris l'occasion et la liste des personnages — puis générez à nouveau."
     },
     "errors": {
       "unknownStep": "La génération a échoué à une étape inconnue",

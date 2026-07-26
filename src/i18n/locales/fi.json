@@ -1113,7 +1113,10 @@
       "userEmailMissing": "Käyttäjän sähköpostia ei löytynyt. Kirjaudu ulos ja sisään uudelleen.",
       "redirectingToCheckout": "Ohjataan turvalliseen kassaan...",
       "networkError": "Verkkovirhe. Tarkista yhteytesi ja yritä uudelleen.",
-      "checkoutConfigError": "Kassan konfigurointivirhe. Ota yhteyttä tukeen."
+      "checkoutConfigError": "Kassan konfigurointivirhe. Ota yhteyttä tukeen.",
+      "startingGeneration": "Aloitetaan mysteerisi luominen…",
+      "conceptIncomplete": "Mysteerisi konsepti ei ole vielä valmis. Palaa keskusteluun viimeistelläksesi sen ja luo se sitten.",
+      "startGenerationFailed": "Luomisen aloittaminen epäonnistui. Yritä uudelleen."
     },
     "title": "Viimeistele ostoksesi",
     "subtitle": "Hanki täysi pääsy murhamysteeripakettiisi",
@@ -1135,7 +1138,8 @@
     "buttons": {
       "processing": "Käsitellään...",
       "complete": "Suorita osto",
-      "backToDesign": "Takaisin mysteerin suunnitteluun"
+      "backToDesign": "Takaisin mysteerin suunnitteluun",
+      "generateAlreadyPaid": "Luo mysteerini"
     },
     "notes": {
       "title": "Tärkeitä huomioita",
@@ -1179,7 +1183,8 @@
       "hasAccomplice": "Sisältää rikoskumppanin"
     },
     "fullyEditableLabel": "Täysin muokattavissa:",
-    "fullyEditableNote": "Älä huoli — voit muokata kaikkia hahmokäsikirjoituksia, isäntäoppaan sisältöä ja todistekortteja sen jälkeen kun mysteerisi on luotu."
+    "fullyEditableNote": "Älä huoli — voit muokata kaikkia hahmokäsikirjoituksia, isäntäoppaan sisältöä ja todistekortteja sen jälkeen kun mysteerisi on luotu.",
+    "notReadyToPreview": "Mysteerisi ei ole vielä valmis esikatseltavaksi. Palaa keskusteluun viimeistelläksesi sen — kun näet hahmokaartisi ja juonilähtökohdan täällä, voit luoda sen."
   },
   "mysteryPackage": {
     "detectiveScript": {
@@ -1304,7 +1309,8 @@
       "resumeFailed": "Luomisen jatkaminen epäonnistui",
       "startingGeneration": "Aloitetaan mysteeripakettisi luominen. Tämä kestää {{time}}...",
       "startGenerationFailed": "Paketin luomisen aloitus epäonnistui",
-      "packageReady": "Mysteeripakettisi on valmis!"
+      "packageReady": "Mysteeripakettisi on valmis!",
+      "conceptIncomplete": "Mysteerisi konsepti ei ole vielä valmis. Palaa keskusteluun ja vastaa jäljellä oleviin kysymyksiin — mukaan lukien tilaisuus ja hahmolista — ja luo se sitten uudelleen."
     },
     "errors": {
       "unknownStep": "Luominen epäonnistui tuntemattomassa vaiheessa",

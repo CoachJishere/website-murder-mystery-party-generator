@@ -1101,7 +1101,10 @@
       "userEmailMissing": "User email not found. Please sign out and sign in again.",
       "redirectingToCheckout": "Redirecting to secure checkout...",
       "networkError": "Network error. Please check your connection and try again.",
-      "checkoutConfigError": "Checkout configuration error. Please contact support."
+      "checkoutConfigError": "Checkout configuration error. Please contact support.",
+      "startingGeneration": "Starting your mystery generation…",
+      "conceptIncomplete": "Your mystery concept isn't finished yet. Head back to the chat to complete it, then generate.",
+      "startGenerationFailed": "Failed to start generation. Please try again."
     },
     "title": "Complete Your Purchase",
     "subtitle": "Get full access to your murder mystery package",
@@ -1123,7 +1126,8 @@
     "buttons": {
       "processing": "Processing...",
       "complete": "Complete Purchase",
-      "backToDesign": "Back to Mystery Design"
+      "backToDesign": "Back to Mystery Design",
+      "generateAlreadyPaid": "Generate my mystery"
     },
     "notes": {
       "title": "Important Notes",
@@ -1167,7 +1171,8 @@
       "hasAccomplice": "Includes accomplice"
     },
     "fullyEditableLabel": "Fully editable:",
-    "fullyEditableNote": "Don't worry — you can edit all character scripts, host guide content, and evidence cards after your mystery is generated."
+    "fullyEditableNote": "Don't worry — you can edit all character scripts, host guide content, and evidence cards after your mystery is generated.",
+    "notReadyToPreview": "Your mystery isn't ready to preview yet. Head back to the chat to finish designing it — once you can see your cast and premise here, you can generate it."
   },
   "hostAccess": {
     "loading": "Loading host materials...",
@@ -1197,7 +1202,8 @@
       "resumeFailed": "Failed to resume generation",
       "startingGeneration": "Starting generation of your mystery package. This will take {{time}}...",
       "startGenerationFailed": "Failed to start package generation",
-      "packageReady": "Your mystery package is ready!"
+      "packageReady": "Your mystery package is ready!",
+      "conceptIncomplete": "Your mystery concept isn't finished yet. Head back to the chat and answer the remaining question(s) — including the occasion and the character list — then generate again."
     },
     "errors": {
       "unknownStep": "Generation failed at an unknown step",

@@ -1146,7 +1146,10 @@
       "userEmailMissing": "未找到用户邮箱。请退出后重新登录。",
       "redirectingToCheckout": "正在跳转至安全结账...",
       "networkError": "网络错误。请检查您的连接并重试。",
-      "checkoutConfigError": "结账配置错误。请联系支持。"
+      "checkoutConfigError": "结账配置错误。请联系支持。",
+      "startingGeneration": "正在开始生成您的谜案…",
+      "conceptIncomplete": "您的谜案构思尚未完成。请返回聊天完成后再生成。",
+      "startGenerationFailed": "无法开始生成。请重试。"
     },
     "title": "完成您的购买",
     "subtitle": "完全访问您的谋杀悬疑包",
@@ -1168,7 +1171,8 @@
     "buttons": {
       "processing": "正在处理...",
       "complete": "完成购买",
-      "backToDesign": "返回谜团设计"
+      "backToDesign": "返回谜团设计",
+      "generateAlreadyPaid": "生成我的谜案"
     },
     "notes": {
       "title": "重要注意事项",
@@ -1212,7 +1216,8 @@
       "hasAccomplice": "包含同谋"
     },
     "fullyEditableLabel": "完全可编辑:",
-    "fullyEditableNote": "别担心 — 您可以在生成谜案后编辑所有角色剧本、主持人指南内容和证据卡。"
+    "fullyEditableNote": "别担心 — 您可以在生成谜案后编辑所有角色剧本、主持人指南内容和证据卡。",
+    "notReadyToPreview": "您的谜案还无法预览。请返回聊天完成设计——当您能在此看到角色阵容和故事前提后，即可生成。"
   },
   "mysteryPackage": {
     "detectiveScript": {
@@ -1326,7 +1331,8 @@
       "resumeFailed": "无法恢复生成",
       "startingGeneration": "正在开始生成您的谜案套装。预计需要 {{time}}...",
       "startGenerationFailed": "无法开始套装生成",
-      "packageReady": "您的谜案套装已就绪!"
+      "packageReady": "您的谜案套装已就绪!",
+      "conceptIncomplete": "您的谜案构思尚未完成。请返回聊天回答剩余问题——包括场合和角色名单——然后再次生成。"
     },
     "errors": {
       "unknownStep": "生成在未知步骤失败",

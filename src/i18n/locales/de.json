@@ -1113,7 +1113,10 @@
       "userEmailMissing": "Benutzer-E-Mail nicht gefunden. Bitte melde dich ab und wieder an.",
       "redirectingToCheckout": "Weiterleitung zum sicheren Checkout...",
       "networkError": "Netzwerkfehler. Bitte überprüfe deine Verbindung und versuche es erneut.",
-      "checkoutConfigError": "Checkout-Konfigurationsfehler. Bitte kontaktiere den Support."
+      "checkoutConfigError": "Checkout-Konfigurationsfehler. Bitte kontaktiere den Support.",
+      "startingGeneration": "Generierung deines Krimis wird gestartet…",
+      "conceptIncomplete": "Dein Krimi-Konzept ist noch nicht fertig. Kehre zum Chat zurück, um es abzuschließen, und generiere es dann.",
+      "startGenerationFailed": "Generierung konnte nicht gestartet werden. Bitte versuche es erneut."
     },
     "title": "Schließen Sie Ihren Kauf ab",
     "subtitle": "Erhalten Sie vollen Zugriff auf Ihr Krimi-Mysterienpaket",
@@ -1135,7 +1138,8 @@
     "buttons": {
       "processing": "Wird verarbeitet...",
       "complete": "Kauf abschließen",
-      "backToDesign": "Zurück zum Mysterien-Design"
+      "backToDesign": "Zurück zum Mysterien-Design",
+      "generateAlreadyPaid": "Meinen Krimi generieren"
     },
     "notes": {
       "title": "Wichtige Hinweise",
@@ -1179,7 +1183,8 @@
       "hasAccomplice": "Mit Komplize"
     },
     "fullyEditableLabel": "Vollständig bearbeitbar:",
-    "fullyEditableNote": "Keine Sorge — du kannst nach der Generierung deines Krimis alle Charakterskripte, Inhalte des Hostleitfadens und Beweiskarten bearbeiten."
+    "fullyEditableNote": "Keine Sorge — du kannst nach der Generierung deines Krimis alle Charakterskripte, Inhalte des Hostleitfadens und Beweiskarten bearbeiten.",
+    "notReadyToPreview": "Dein Krimi ist noch nicht bereit für die Vorschau. Kehre zum Chat zurück, um ihn fertig zu gestalten — sobald du hier deine Besetzung und die Prämisse siehst, kannst du ihn generieren."
   },
   "mysteryPackage": {
     "detectiveScript": {
@@ -1304,7 +1309,8 @@
       "resumeFailed": "Fortsetzung der Generierung fehlgeschlagen",
       "startingGeneration": "Generierung deines Krimi-Pakets wird gestartet. Dies dauert {{time}}...",
       "startGenerationFailed": "Start der Paketgenerierung fehlgeschlagen",
-      "packageReady": "Dein Krimi-Paket ist fertig!"
+      "packageReady": "Dein Krimi-Paket ist fertig!",
+      "conceptIncomplete": "Dein Krimi-Konzept ist noch nicht fertig. Kehre zum Chat zurück und beantworte die verbleibenden Fragen — einschließlich des Anlasses und der Charakterliste — und generiere dann erneut."
     },
     "errors": {
       "unknownStep": "Generierung schlug bei einem unbekannten Schritt fehl",

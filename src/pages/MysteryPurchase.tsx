@@ -376,20 +376,18 @@ const MysteryPurchase = () => {
     }
     try {
       setProcessing(true);
-      toast.info(t("purchase.toasts.startingGeneration", { defaultValue: "Starting your mystery generation…" }));
+      toast.info(t("purchase.toasts.startingGeneration"));
       const result = await generateCompletePackage(id);
       // Entry gate (ADR-0043): concept not finished — send them back to the chat.
       if (result === "needs_more_info") {
         setProcessing(false);
-        toast.error(t("purchase.toasts.conceptIncomplete", {
-          defaultValue: "Your mystery concept isn't finished yet. Head back to the chat to complete it, then generate.",
-        }), { duration: 10000 });
+        toast.error(t("purchase.toasts.conceptIncomplete"), { duration: 10000 });
         return;
       }
       navigate(`/mystery/${id}`);
     } catch (error: any) {
       setProcessing(false);
-      toast.error(error?.message || t("purchase.toasts.startGenerationFailed", { defaultValue: "Failed to start generation. Please try again." }));
+      toast.error(error?.message || t("purchase.toasts.startGenerationFailed"));
     }
   };
 
@@ -661,7 +659,7 @@ const MysteryPurchase = () => {
                         </>
                       ) : (
                         <>
-                          {t("purchase.buttons.generateAlreadyPaid", { defaultValue: "Generate my mystery" })}
+                          {t("purchase.buttons.generateAlreadyPaid")}
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </>
                       )}
@@ -692,9 +690,7 @@ const MysteryPurchase = () => {
                     // to finish designing so they preview a real concept before paying.
                     <div className="w-full space-y-3 text-center">
                       <p className="text-sm text-muted-foreground">
-                        {t("purchase.notReadyToPreview", {
-                          defaultValue: "Your mystery isn't ready to preview yet. Head back to the chat to finish designing it — once you can see your cast and premise here, you can generate it.",
-                        })}
+                        {t("purchase.notReadyToPreview")}
                       </p>
                       <Button
                         className={cn("w-full font-medium", isMobile ? "h-12 text-base" : "h-11")}

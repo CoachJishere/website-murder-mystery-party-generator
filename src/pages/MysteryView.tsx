@@ -325,10 +325,7 @@ const MysteryView = () => {
         setGenerating(false);
         setGenerationStatus(null);
         toast.error(
-          t("mysteryView.toasts.conceptIncomplete", {
-            defaultValue:
-              "Your mystery concept isn't finished yet. Head back to the chat and answer the remaining question(s) — including the occasion and the character list — then generate again.",
-          }),
+          t("mysteryView.toasts.conceptIncomplete"),
           { duration: 12000 }
         );
         return;

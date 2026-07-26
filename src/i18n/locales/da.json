@@ -1101,7 +1101,10 @@
       "userEmailMissing": "Bruger-e-mail ikke fundet. Log ud og log ind igen.",
       "redirectingToCheckout": "Omdirigerer til sikker betaling...",
       "networkError": "Netværksfejl. Tjek din forbindelse og prøv igen.",
-      "checkoutConfigError": "Konfigurationsfejl ved betaling. Kontakt venligst support."
+      "checkoutConfigError": "Konfigurationsfejl ved betaling. Kontakt venligst support.",
+      "startingGeneration": "Starter genereringen af dit mysterium…",
+      "conceptIncomplete": "Dit mysteriekoncept er ikke færdigt endnu. Gå tilbage til chatten for at fuldføre det, og generér derefter.",
+      "startGenerationFailed": "Kunne ikke starte genereringen. Prøv igen."
     },
     "title": "Complete Your Purchase",
     "subtitle": "Get full access to your murder mystery package",
@@ -1123,7 +1126,8 @@
     "buttons": {
       "processing": "Processing...",
       "complete": "Complete Purchase",
-      "backToDesign": "Back to Mystery Design"
+      "backToDesign": "Back to Mystery Design",
+      "generateAlreadyPaid": "Generér mit mysterium"
     },
     "notes": {
       "title": "Vigtige bemærkninger",
@@ -1167,7 +1171,8 @@
       "hasAccomplice": "Inkluderer medskyldig"
     },
     "fullyEditableLabel": "Fuldt redigerbar:",
-    "fullyEditableNote": "Bare rolig — du kan redigere alle karakter-manuskripter, værtsguide-indhold og beviskort efter dit mysterium er genereret."
+    "fullyEditableNote": "Bare rolig — du kan redigere alle karakter-manuskripter, værtsguide-indhold og beviskort efter dit mysterium er genereret.",
+    "notReadyToPreview": "Dit mysterium er ikke klar til forhåndsvisning endnu. Gå tilbage til chatten for at færdiggøre designet — når du kan se din rolleliste og præmis her, kan du generere det."
   },
   "mysteryView": {
     "timing": {
@@ -1182,7 +1187,8 @@
       "resumeFailed": "Kunne ikke genoptage genereringen",
       "startingGeneration": "Starter generering af din mysteriepakke. Dette tager {{time}}...",
       "startGenerationFailed": "Kunne ikke starte pakkegenerering",
-      "packageReady": "Din mysteriepakke er klar!"
+      "packageReady": "Din mysteriepakke er klar!",
+      "conceptIncomplete": "Dit mysteriekoncept er ikke færdigt endnu. Gå tilbage til chatten og besvar de resterende spørgsmål — herunder anledningen og rollelisten — og generér så igen."
     },
     "errors": {
       "unknownStep": "Genereringen fejlede ved et ukendt trin",

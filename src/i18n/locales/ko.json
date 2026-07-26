@@ -1101,7 +1101,10 @@
       "userEmailMissing": "사용자 이메일을 찾을 수 없습니다. 로그아웃 후 다시 로그인해 주세요.",
       "redirectingToCheckout": "안전한 결제로 이동 중...",
       "networkError": "네트워크 오류입니다. 연결을 확인하고 다시 시도해 주세요.",
-      "checkoutConfigError": "결제 설정 오류입니다. 지원팀에 문의해 주세요."
+      "checkoutConfigError": "결제 설정 오류입니다. 지원팀에 문의해 주세요.",
+      "startingGeneration": "미스터리 생성을 시작합니다…",
+      "conceptIncomplete": "미스터리 콘셉트가 아직 완성되지 않았습니다. 채팅으로 돌아가 완성한 다음 생성하세요.",
+      "startGenerationFailed": "생성을 시작하지 못했습니다. 다시 시도해 주세요."
     },
     "title": "구매 완료",
     "subtitle": "살인 미스터리 패키지에 완전히 액세스하세요",
@@ -1123,7 +1126,8 @@
     "buttons": {
       "processing": "처리 중...",
       "complete": "구매 완료",
-      "backToDesign": "미스터리 디자인으로 돌아가기"
+      "backToDesign": "미스터리 디자인으로 돌아가기",
+      "generateAlreadyPaid": "내 미스터리 생성하기"
     },
     "notes": {
       "title": "중요 사항",
@@ -1167,7 +1171,8 @@
       "hasAccomplice": "공범 포함"
     },
     "fullyEditableLabel": "완전 편집 가능:",
-    "fullyEditableNote": "걱정하지 마세요 — 미스터리가 생성된 후에 모든 캐릭터 대본, 호스트 가이드 내용, 증거 카드를 편집할 수 있습니다."
+    "fullyEditableNote": "걱정하지 마세요 — 미스터리가 생성된 후에 모든 캐릭터 대본, 호스트 가이드 내용, 증거 카드를 편집할 수 있습니다.",
+    "notReadyToPreview": "미스터리를 아직 미리 볼 수 없습니다. 채팅으로 돌아가 디자인을 완성하세요 — 여기에서 등장인물과 설정을 확인할 수 있게 되면 생성할 수 있습니다."
   },
   "mysteryView": {
     "timing": {
@@ -1182,7 +1187,8 @@
       "resumeFailed": "생성을 재개하지 못했습니다",
       "startingGeneration": "미스터리 패키지 생성을 시작합니다. {{time}} 정도 걸립니다...",
       "startGenerationFailed": "패키지 생성을 시작하지 못했습니다",
-      "packageReady": "미스터리 패키지가 준비되었습니다!"
+      "packageReady": "미스터리 패키지가 준비되었습니다!",
+      "conceptIncomplete": "미스터리 콘셉트가 아직 완성되지 않았습니다. 채팅으로 돌아가 남은 질문 — 행사와 등장인물 목록 포함 — 에 답한 다음 다시 생성하세요."
     },
     "errors": {
       "unknownStep": "알 수 없는 단계에서 생성에 실패했습니다",

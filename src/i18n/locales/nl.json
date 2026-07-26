@@ -1113,7 +1113,10 @@
       "userEmailMissing": "Gebruikers-e-mail niet gevonden. Log uit en weer in.",
       "redirectingToCheckout": "Doorsturen naar veilige afrekening...",
       "networkError": "Netwerkfout. Controleer je verbinding en probeer het opnieuw.",
-      "checkoutConfigError": "Configuratiefout bij afrekenen. Neem contact op met support."
+      "checkoutConfigError": "Configuratiefout bij afrekenen. Neem contact op met support.",
+      "startingGeneration": "Generatie van je mysterie starten…",
+      "conceptIncomplete": "Je mysterieconcept is nog niet af. Ga terug naar de chat om het te voltooien en genereer het daarna.",
+      "startGenerationFailed": "Kan generatie niet starten. Probeer het opnieuw."
     },
     "title": "Voltooi Uw Aankoop",
     "subtitle": "Krijg volledige toegang tot uw moordmysteriepakket",
@@ -1135,7 +1138,8 @@
     "buttons": {
       "processing": "Verwerken...",
       "complete": "Aankoop Voltooien",
-      "backToDesign": "Terug naar Mysterie Ontwerp"
+      "backToDesign": "Terug naar Mysterie Ontwerp",
+      "generateAlreadyPaid": "Mijn mysterie genereren"
     },
     "notes": {
       "title": "Belangrijke Opmerkingen",
@@ -1179,7 +1183,8 @@
       "hasAccomplice": "Inclusief medeplichtige"
     },
     "fullyEditableLabel": "Volledig bewerkbaar:",
-    "fullyEditableNote": "Geen zorgen — je kunt alle personageteksten, gastheergidsinhoud en bewijskaarten bewerken nadat je mysterie is gegenereerd."
+    "fullyEditableNote": "Geen zorgen — je kunt alle personageteksten, gastheergidsinhoud en bewijskaarten bewerken nadat je mysterie is gegenereerd.",
+    "notReadyToPreview": "Je mysterie is nog niet klaar voor een voorbeeld. Ga terug naar de chat om het ontwerp af te maken — zodra je hier je personages en premisse ziet, kun je het genereren."
   },
   "mysteryPackage": {
     "detectiveScript": {
@@ -1304,7 +1309,8 @@
       "resumeFailed": "Hervatten van generatie mislukt",
       "startingGeneration": "Generatie van je mysteriepakket starten. Dit duurt {{time}}...",
       "startGenerationFailed": "Starten van pakketgeneratie mislukt",
-      "packageReady": "Je mysteriepakket is klaar!"
+      "packageReady": "Je mysteriepakket is klaar!",
+      "conceptIncomplete": "Je mysterieconcept is nog niet af. Ga terug naar de chat en beantwoord de resterende vraag/vragen — waaronder de gelegenheid en de personagelijst — en genereer daarna opnieuw."
     },
     "errors": {
       "unknownStep": "Generatie mislukte bij een onbekende stap",
