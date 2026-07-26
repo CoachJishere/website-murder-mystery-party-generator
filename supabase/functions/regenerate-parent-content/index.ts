@@ -216,7 +216,7 @@ These scripts can be delivered in two ways:
 
 *[The murderer (player) reads their confession aloud.]*
 
-[ACCOMPLICE BEAT — include this paragraph ONLY IF the master_context defines an accomplice. After the murderer's confession, the detective turns to the room — "But you did not act alone, did you?" — names the accomplice, and invites them to confess their part. ~60-100 words. If there is NO accomplice, omit this beat entirely.]
+[ACCOMPLICE BEAT — conditional. First check whether the master_context defines an accomplice. If it DOES: after the murderer's confession, add one paragraph (~60-100 words) where the detective turns to the room — "But you did not act alone, did you?" — names the accomplice and invites their confession. If it does NOT: write nothing here — no paragraph, no placeholder, no bracketed note, and no sentence explaining that there is no accomplice; continue directly to the closing statement. Never output this instruction itself, or any remark about including or omitting the beat.]
 
 *[If there is an accomplice: the accomplice (player) reads their confession aloud.]*
 
