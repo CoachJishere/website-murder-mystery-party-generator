@@ -11,6 +11,7 @@ import { supabase } from "@/lib/supabase";
 import type { Mystery } from "@/interfaces/mystery";
 import MysteryPreviewCard from "@/components/purchase/MysteryPreviewCard";
 import { extractTitleFromMessages } from "@/utils/titleExtraction";
+import { generateCompletePackage } from "@/services/mysteryPackageService";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
@@ -362,6 +363,36 @@ const MysteryPurchase = () => {
     }
   };
 
+  // Already-paid path (ADR-0044): a customer who has paid must never be sent to
+  // Stripe again. Instead of "Complete purchase" they get "Generate my mystery",
+  // which triggers generation directly (free) and takes them to the progress view.
+  // This is also the recovery path for the "Victorian mansion" incident: the
+  // customer finishes her concept in chat, previews it here, and generates without
+  // re-paying.
+  const handleGenerateAlreadyPaid = async () => {
+    if (!id) {
+      toast.error(t("purchase.toasts.mysteryIdMissing"));
+      return;
+    }
+    try {
+      setProcessing(true);
+      toast.info(t("purchase.toasts.startingGeneration", { defaultValue: "Starting your mystery generation…" }));
+      const result = await generateCompletePackage(id);
+      // Entry gate (ADR-0043): concept not finished — send them back to the chat.
+      if (result === "needs_more_info") {
+        setProcessing(false);
+        toast.error(t("purchase.toasts.conceptIncomplete", {
+          defaultValue: "Your mystery concept isn't finished yet. Head back to the chat to complete it, then generate.",
+        }), { duration: 10000 });
+        return;
+      }
+      navigate(`/mystery/${id}`);
+    } catch (error: any) {
+      setProcessing(false);
+      toast.error(error?.message || t("purchase.toasts.startGenerationFailed", { defaultValue: "Failed to start generation. Please try again." }));
+    }
+  };
+
   const handlePurchase = async () => {
     // Validate authentication
     if (!isAuthenticated) {
@@ -615,27 +646,66 @@ const MysteryPurchase = () => {
                   <p className="text-sm p-3 rounded-md" style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid rgba(245,240,232,0.15)', color: 'rgba(245,240,232,0.7)' }}>
                     <strong>{t("purchase.fullyEditableLabel")}</strong> {t("purchase.fullyEditableNote")}
                   </p>
-                  <Button 
-                    className={cn(
-                      "w-full font-medium",
-                      isMobile ? "h-12 text-base" : "h-11"
-                    )}
-                    size="lg" 
-                    onClick={handlePurchase}
-                    disabled={processing}
-                  >
-                    {processing ? (
-                      <>
-                        <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
-                        {t("purchase.buttons.processing")}
-                      </>
-                    ) : (
-                      <>
-                        {t("purchase.buttons.complete")}
+                  {mystery?.is_purchased ? (
+                    // ALREADY PAID (ADR-0044): generate for free, never re-charge.
+                    <Button
+                      className={cn("w-full font-medium", isMobile ? "h-12 text-base" : "h-11")}
+                      size="lg"
+                      onClick={handleGenerateAlreadyPaid}
+                      disabled={processing}
+                    >
+                      {processing ? (
+                        <>
+                          <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                          {t("purchase.buttons.processing")}
+                        </>
+                      ) : (
+                        <>
+                          {t("purchase.buttons.generateAlreadyPaid", { defaultValue: "Generate my mystery" })}
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
+                  ) : (parsedDetails?.characters?.length ?? 0) > 0 ? (
+                    // Unpaid + a previewable concept exists → normal checkout.
+                    <Button
+                      className={cn("w-full font-medium", isMobile ? "h-12 text-base" : "h-11")}
+                      size="lg"
+                      onClick={handlePurchase}
+                      disabled={processing}
+                    >
+                      {processing ? (
+                        <>
+                          <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                          {t("purchase.buttons.processing")}
+                        </>
+                      ) : (
+                        <>
+                          {t("purchase.buttons.complete")}
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
+                  ) : (
+                    // NO CONCEPT YET (ADR-0044): don't take payment for a mystery that
+                    // doesn't exist — the "Victorian mansion" incident. Send them back
+                    // to finish designing so they preview a real concept before paying.
+                    <div className="w-full space-y-3 text-center">
+                      <p className="text-sm text-muted-foreground">
+                        {t("purchase.notReadyToPreview", {
+                          defaultValue: "Your mystery isn't ready to preview yet. Head back to the chat to finish designing it — once you can see your cast and premise here, you can generate it.",
+                        })}
+                      </p>
+                      <Button
+                        className={cn("w-full font-medium", isMobile ? "h-12 text-base" : "h-11")}
+                        size="lg"
+                        onClick={() => navigate(`/mystery/chat/${id}`)}
+                      >
+                        {t("purchase.buttons.backToDesign", { defaultValue: "Back to design" })}
                         <ArrowRight className="ml-2 h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
+                      </Button>
+                    </div>
+                  )}
                 </CardFooter>
               </Card>
 
