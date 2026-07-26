@@ -46,6 +46,21 @@ interface MysteryPackageData {
 // While needs_review is younger than this, the warning is suppressed.
 const NEEDS_REVIEW_SILENT_WINDOW_MS = 10 * 60 * 1000;
 
+// Generation timing scales with cast size (ADR-0043 follow-up). A 32-player
+// package legitimately takes ~17 min, so the old flat 15-min client timeout
+// false-alarmed on large jobs — firing notify-generation-issue and showing the
+// customer a "team notified" card mid-success ("Death At Thornfield Manor",
+// 2026-07-27). The timeout for each tier is kept comfortably above the ETA we
+// display for that tier, so we never alarm before the time we promised.
+// Tiers map to the mysteryView.timing.{small,medium,large,xlarge} i18n keys.
+const getGenerationTiming = (playerCount: number): { etaKey: string; timeoutMin: number } => {
+  const n = playerCount || 6;
+  if (n <= 10) return { etaKey: 'small', timeoutMin: 20 };
+  if (n <= 18) return { etaKey: 'medium', timeoutMin: 30 };
+  if (n <= 28) return { etaKey: 'large', timeoutMin: 40 };
+  return { etaKey: 'xlarge', timeoutMin: 50 };
+};
+
 const MysteryView = () => {
   const [mystery, setMystery] = useState<any | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
@@ -85,8 +100,8 @@ const MysteryView = () => {
   }, []);
 
   // Generation time is consistent regardless of player count
-  const getEstimatedTime = useCallback((_playerCount: number) => {
-    return t('mysteryView.timing.small');
+  const getEstimatedTime = useCallback((playerCount: number) => {
+    return t(`mysteryView.timing.${getGenerationTiming(playerCount).etaKey}`);
   }, [t]);
 
   // Fetch structured package data with proper error handling
@@ -719,8 +734,8 @@ const MysteryView = () => {
     return () => { subscription.unsubscribe(); };
   }, [packageId, fetchStructuredPackageData]);
 
-  // Generation timeout detection — 15 minutes
-  const GENERATION_TIMEOUT_MS = 15 * 60 * 1000;
+  // Generation timeout detection — scales with cast size (see getGenerationTiming).
+  const GENERATION_TIMEOUT_MS = getGenerationTiming(mystery?.player_count || 6).timeoutMin * 60 * 1000;
 
   const notifyGenerationIssue = useCallback(async (conversationId: string) => {
     if (timeoutNotifiedRef.current) return;
@@ -770,7 +785,7 @@ const MysteryView = () => {
           console.error("Timeout status re-check failed, falling back to timeout alert:", err);
         }
 
-        console.log("⏰ Generation timeout reached (15 min)");
+        console.log(`⏰ Generation timeout reached (${GENERATION_TIMEOUT_MS / 60000} min)`);
         setGenerationTimedOut(true);
         notifyGenerationIssue(id);
       }, GENERATION_TIMEOUT_MS);
@@ -793,7 +808,7 @@ const MysteryView = () => {
         clearTimeout(generationTimerRef.current);
       }
     };
-  }, [generating, generationStatus?.status, id, notifyGenerationIssue]);
+  }, [generating, generationStatus?.status, id, notifyGenerationIssue, GENERATION_TIMEOUT_MS]);
 
   // Initial data loading
   useEffect(() => {
@@ -865,7 +880,10 @@ const MysteryView = () => {
             setGenerating(true);
             console.log("🔄 [DEBUG] Generation in progress, starting polling");
 
-            // Check if generation has already been running > 15 min on page load
+            // Check if generation has already been running past its (cast-scaled)
+            // timeout on page load. Computed from the just-fetched player_count so a
+            // 32-player job (~17 min) isn't flagged at a flat 15 min.
+            const onLoadTimeoutMs = getGenerationTiming(conversation.player_count || 6).timeoutMin * 60 * 1000;
             const { data: pkgCheck } = await supabase
               .from("mystery_packages")
               .select("generation_started_at")
@@ -876,8 +894,8 @@ const MysteryView = () => {
 
             if (pkgCheck?.generation_started_at) {
               const elapsed = Date.now() - new Date(pkgCheck.generation_started_at).getTime();
-              if (elapsed > 15 * 60 * 1000) {
-                console.log("⏰ Generation already exceeded 15 min on page load");
+              if (elapsed > onLoadTimeoutMs) {
+                console.log(`⏰ Generation already exceeded ${onLoadTimeoutMs / 60000} min on page load`);
                 setGenerationTimedOut(true);
                 notifyGenerationIssue(id);
               }

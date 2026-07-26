@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-07-27
+
+### Fix: Generation timeout + ETA now scale with cast size (no more false "stuck" alerts on big mysteries)
+A successful 32-player regeneration ("Death At Thornfield Manor", 32/32 characters, real content) fired a false "Generation Display Issue" alert: it took **16.8 min**, past the flat **15-min client timeout** in [MysteryView.tsx](src/pages/MysteryView.tsx), which triggers `notify-generation-issue` and shows the customer a "team notified" card regardless of the actual (successful) outcome. `getEstimatedTime` also ignored player count (always returned the "small" ETA). Fix: one `getGenerationTiming(playerCount)` helper drives both — tiered to the existing `mysteryView.timing.{small,medium,large,xlarge}` keys, with each tier's timeout kept comfortably above the ETA it shows (≤10→20 min, ≤18→30, ≤28→40, else→50). Both the in-progress timer and the on-load elapsed check now scale (the on-load check computes from the just-fetched `player_count` to avoid a fetch-loop dependency). Server-side monitoring (health-check check 2 @ >2h, ADR-0043 completion invariant + completed-but-empty detector) is unaffected — this is purely the client-side false-alarm/UX. tsc + build green.
+
 ## 2026-07-26
 
 ### Improvement: Localized the 6 new ADR-0043/0044 strings across all 13 locales
