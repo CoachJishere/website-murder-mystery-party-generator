@@ -4,7 +4,7 @@
 
 **Date:** 2026-07-26
 
-**Implementation:** Layers 1 (entry gate) and 2 (completion invariant) implemented in-repo 2026-07-26 (edge function + service + client + `api/generation-complete.js`); the completed-but-empty detector (migration `20260726…`) is applied to production and wired into `health-check.yml` as check 10. **Edge-function and Pages/Vercel deploys are pending Jonathan's approval** (no-unapproved-deploy rule). Layer 3 (Make `incomplete_context` abort) specced as guardrail G11, blueprint import deferred.
+**Implementation (2026-07-26, deployed):** Layer 1 (entry gate) is live as `mystery-webhook-trigger` **edge-function v120** (`verify_jwt` preserved false). Layer 2 (completion invariant) ships in `api/generation-complete.js` + `MysteryView.tsx` + `getPackageGenerationStatus`, deployed via the push to main (site + `api/` pipeline). The completed-but-empty detector (migration `20260726…`) is applied to production and wired into `health-check.yml` as check 10. Layer 3 (Make `incomplete_context` abort) specced as guardrail G11; blueprint import deferred to the guardrails workstream.
 
 ## Context
 
@@ -41,7 +41,7 @@ A code audit of the trigger and completion paths found no single bug — three m
 
 Defense in depth, mirroring the ADR-0016/0037/0041 prevention-plus-backstop pattern. Three layers, in priority order:
 
-1. **Entry gate (primary — prevents the trigger).** Refuse to start generation when the conversation has no completed concept. The concrete, already-present signal is an assistant "CHARACTER LIST" message — the same artifact `extractCharactersFromMessages` looks for. If none exists (the "user hit Generate mid-Q&A" case), block: the UI keeps the Generate button/flow disabled, and `mystery-webhook-trigger` returns a `needs_more_info` refusal (422) instead of POSTing to Make.com, leaving `generation_status` unchanged.
+1. **Entry gate (primary — prevents the trigger).** Refuse to start generation when **no characters can be extracted** from the conversation. The characters come from the user's chat concept — `mystery-webhook-trigger` extracts them (multi-locale regex → Claude fallback → player-count cross-validation) and the parent scenario builds the package from them; zero extracted characters means the concept was never finished. Keying on the *full* extraction result (not a raw header-regex) means the gate is exactly as capable as the extractor, so it never false-refuses a real concept in an odd format or a non-English header. On refusal it writes `generation_status = needs_more_info` and returns `200 {success:false, reason:'needs_more_info'}` (a handled business outcome, not an HTTP error, so the client can message the user kindly) instead of POSTing to Make.com. Service/recovery callers (service-role bearer) bypass so an operator can force a regeneration during triage. The client (`generateCompletePackage`) surfaces this as a `needs_more_info` sentinel and the UI shows a "finish your concept in chat" toast.
 
 2. **Completion invariant (backstop — in-repo, no Make dependency).** A package must never be marked `completed` / `has_complete_package = true` with zero real characters. Add `incomingCharacterCount > 0` to the `allCharactersPresent` condition in `api/generation-complete.js:89`, and remove the `expectedCount === 0 → true` / parse-failure-→-true short-circuits from the client completion path. Worst case becomes a visible "still generating / needs attention" state, never a silent "completed" full of placeholders.
 
