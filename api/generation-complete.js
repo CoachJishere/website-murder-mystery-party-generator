@@ -86,7 +86,17 @@ export default async function handler(req) {
     const effectiveExpected = Math.max(expectedCharacterCount, minFromPlayerCount);
 
     const incomingCharacterCount = Array.isArray(data?.characters) ? data.characters.length : 0;
-    const allCharactersPresent = effectiveExpected === 0 || incomingCharacterCount >= effectiveExpected;
+    // Completion invariant (ADR-0043): a package is NEVER "completed" with zero
+    // characters. The old condition `effectiveExpected === 0 || ...` marked a
+    // 0-character package complete whenever the expected count collapsed to 0
+    // (extraction failed AND player_count unknown) — the exact path that shipped
+    // a placeholder-only "Victorian mansion - 32 Players" as completed. Requiring
+    // at least one real character means the worst case is a visible in_progress
+    // (caught by health-check check 2 and the completed-but-empty detector),
+    // never a silent "done".
+    const allCharactersPresent =
+      incomingCharacterCount > 0 &&
+      (effectiveExpected === 0 || incomingCharacterCount >= effectiveExpected);
 
     if (effectiveExpected !== expectedCharacterCount) {
       console.log(`Player count cross-validation: extracted expects ${expectedCharacterCount}, player_count expects ${minFromPlayerCount}, using ${effectiveExpected}`);

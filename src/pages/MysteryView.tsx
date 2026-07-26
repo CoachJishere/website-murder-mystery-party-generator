@@ -316,7 +316,23 @@ const MysteryView = () => {
       toast.info(t("mysteryView.toasts.startingGeneration", { time: estimatedTime }));
 
       // Just call the webhook - don't wait for completion
-      await generateCompletePackage(id);
+      const genResult = await generateCompletePackage(id);
+
+      // Concept-completeness entry gate (ADR-0043): generation was refused because
+      // the mystery concept isn't finished (no character list yet). Don't leave the
+      // user on a spinner — roll back and tell them to complete the chat.
+      if (genResult === "needs_more_info") {
+        setGenerating(false);
+        setGenerationStatus(null);
+        toast.error(
+          t("mysteryView.toasts.conceptIncomplete", {
+            defaultValue:
+              "Your mystery concept isn't finished yet. Head back to the chat and answer the remaining question(s) — including the occasion and the character list — then generate again.",
+          }),
+          { duration: 12000 }
+        );
+        return;
+      }
 
       // Track mystery creation event for analytics
       trackMysteryCreation(mystery?.theme || 'unknown', {
@@ -425,19 +441,27 @@ const MysteryView = () => {
         return needsReviewStatus as any;
       }
 
-      // Validate that all expected characters have been generated
-      let allCharactersGenerated = true;
-      if (packageData?.extracted_characters) {
+      // Validate that all expected characters have been generated.
+      // Completion invariant (ADR-0043): real character rows MUST exist before we
+      // treat a package as complete. Previously this defaulted to `true` when
+      // extracted_characters was empty/unparseable, so a package with zero
+      // characters but a populated game_overview was force-completed (the
+      // "Victorian mansion - 32 Players" incident). `generatedCount > 0` is now a
+      // hard precondition — no characters, never complete.
+      const generatedCount = packageData?.characters?.[0]?.count ?? 0;
+      let allCharactersGenerated = generatedCount > 0;
+      if (allCharactersGenerated && packageData?.extracted_characters) {
         try {
           const extracted = typeof packageData.extracted_characters === 'string'
             ? JSON.parse(packageData.extracted_characters)
             : packageData.extracted_characters;
           const expectedCount = Array.isArray(extracted) ? extracted.length : 0;
-          const generatedCount = packageData.characters?.[0]?.count ?? 0;
           allCharactersGenerated = expectedCount === 0 || generatedCount >= expectedCount;
           console.log(`=== STATUS CHECK DEBUG === Character count: ${generatedCount} generated, ${expectedCount} expected, allGenerated: ${allCharactersGenerated}`);
         } catch {
-          allCharactersGenerated = true; // If parsing fails, don't block
+          // Parse failure: keep the "characters exist" result from above rather
+          // than optimistically completing a package we can't validate.
+          allCharactersGenerated = generatedCount > 0;
         }
       }
 

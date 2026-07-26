@@ -214,6 +214,29 @@ export async function generateCompletePackage(mysteryId: string, testMode = fals
 
     console.log("Edge Function response:", webhookResponse);
 
+    // Concept-completeness entry gate (ADR-0043): the edge function returns 200
+    // with { success:false, reason:'needs_more_info' } and did NOT send to Make.com
+    // when the conversation has no finished concept (no CHARACTER LIST message).
+    // Don't overwrite that with an in_progress status — surface it as a distinct
+    // sentinel so the UI can ask the customer to finish their concept.
+    if (webhookResponse && webhookResponse.success === false && webhookResponse.reason === 'needs_more_info') {
+      console.warn("Generation gated — concept incomplete:", webhookResponse.message);
+      await supabase
+        .from("mystery_packages")
+        .update({
+          generation_status: {
+            status: 'needs_more_info',
+            progress: 0,
+            currentStep: 'We need a bit more detail before we can build your mystery',
+            error: 'concept_incomplete',
+            resumable: true,
+          },
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", packageId);
+      return "needs_more_info";
+    }
+
     // Update status to indicate webhook was sent successfully
     await supabase
       .from("mystery_packages")
@@ -421,7 +444,27 @@ export async function getPackageGenerationStatus(mysteryId: string): Promise<Gen
     
     const status = currentStatus as GenerationStatus;
     console.log("✅ [STATUS CHECK] Returning generation status:", status);
-    
+
+    // Completion invariant (ADR-0043): never REPORT a package as completed when it
+    // has zero character rows. This function already refuses to *upgrade* to
+    // completed without characters (contentComplete requires hasCharacters), but a
+    // row whose stored status is already 'completed' was returned verbatim — the
+    // path that let the "Victorian mansion - 32 Players" empty package surface as
+    // done and set has_complete_package=true on load. Downgrade to in_progress at
+    // read time so the UI shows the "We're Finalizing" fallback, not fake-complete.
+    // The stored 'completed' row is deliberately left untouched so the
+    // completed-but-empty health-check detector still flags it for triage.
+    if (status.status === 'completed' && !hasCharacters) {
+      console.warn(`⚠️ [STATUS CHECK] Package for ${mysteryId} is stored 'completed' with 0 characters — overriding to in_progress (ADR-0043 completion invariant)`);
+      return {
+        status: 'in_progress' as const,
+        progress: 90,
+        currentStep: 'Finalizing your characters...',
+        startedAt: data.generation_started_at,
+        sections: status.sections || {},
+      };
+    }
+
     // Ensure status has all required fields
     const normalizedStatus: GenerationStatus = {
       status: status.status || 'not_started',

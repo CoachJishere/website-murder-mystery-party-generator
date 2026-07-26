@@ -88,6 +88,18 @@ G2 already forbids self-directed questions. Also forbid questions addressed to t
 
 ---
 
+## G11 — Honor `incomplete_context`: abort, never placeholder *(parent scenario — after master_context Part 1)*
+
+The parent's master_context Part 1 already self-diagnoses when the conversation lacks the essentials — it emits `{"status": "incomplete_context", "missingCriticalInformation": {...}}` naming the missing victim / event / character roster. Today **nothing acts on that flag**: the scenario proceeds to Part 2 and the child fan-out, producing placeholder content ("Character A"–"E") and an empty character extraction, then the package is marked completed. (Incident 2026-07-26: "Victorian mansion - 32 Players" — generation fired ~100s after the assistant was still asking the customer what occasion brings the guests; Part 1 returned `incomplete_context`; the pipeline shipped placeholder junk with 0 characters and status=completed. ADR-0043.)
+
+**Rule:** immediately after the Part 1 generator, add a Make.com router/filter on `master_context.status`. When it equals `incomplete_context` (or victim/characters are unresolved), the scenario must **STOP** before Part 2 / the child webhook and write a package status of `needs_more_info` (progress 0, the missing-info list in `currentStep`), rather than generating any downstream content. No placeholder characters, no "completed".
+
+This is the Make-side twin of the two in-repo guards shipped with ADR-0043 (the `mystery-webhook-trigger` **entry gate** that refuses to fire when there's no CHARACTER LIST message, and the **completion invariant** that never marks a 0-character package completed). The entry gate prevents most cases before Make is even called; G11 is the defense-in-depth for a conversation that slips past it (e.g. a service/recovery call, or a concept that looked present but Part 1 judged too thin).
+
+> Make.com step: after the Part 1 module, a filter — *only continue if `{{Part1.status}}` is not `incomplete_context`*. On the stop path, PATCH `mystery_packages` for this conversation to `generation_status = {"status":"needs_more_info","progress":0,"currentStep":"<missingCriticalInformation summary>"}` and end the scenario. Do NOT run Part 2 or the child webhook.
+
+---
+
 ## Import ledger — what is BUILT vs what is LIVE in Make.com
 
 **Root-cause note (2026-07-25):** the audit found guardrails that were authored into blueprint FILES but whose Make.com import was left "manual, pending" — with no record confirming the import happened. That gap is the likeliest reason "fixed" defects recurred. Fill this table whenever a blueprint is imported (the live prompt is the only ground truth; the Make API is unreliable here — confirm in the UI by grepping the live prompt for the marker).
@@ -102,5 +114,6 @@ G2 already forbids self-directed questions. Also forbid questions addressed to t
 | Parent45 Evidence Spoiler Guardrail (ADR-0035) | earlier | `EVIDENCE SPOILER RULE` | ? | ? |
 | Child19 (G8 slip, G9 brackets, G2 victim) | 2026-07-25 (`…Child (Unified)19-SlipGuilt-OutputHygiene-VictimQuestions`) | `SLIP-STYLE GUILT` | 2026-07-25 (Jonathan, Make UI) | 2026-07-25 behavioral: 1st post-import pkg "Death By High Tea" (detective) clean on all detectors (n=1 — next character-style pkg will exercise G8) |
 | Parent48 (G7 victim, G8 no-fixed-culprit, G9 output_hygiene) | 2026-07-25 (`…Parent48 (Victim-Consistency + No-Fixed-Culprit + Output-Hygiene)`) | `VICTIM CONSISTENCY` / `output_hygiene` | 2026-07-25 (Jonathan, Make UI) | 2026-07-25 behavioral: 1st post-import pkg "Death By High Tea" clean on victim-mismatch/meta-leak/self-q/evidence-spoiler (n=1) |
+| G11 incomplete_context abort (ADR-0043) | **not built** — spec only; needs parent router/filter on `Part1.status` | `incomplete_context` filter after Part 1 | — | — (in-repo entry gate + completion invariant + completed-but-empty detector are the live protection meanwhile) |
 
 **Recovery-tool mirror (2026-07-25):** `supabase/functions/regenerate-parent-content/index.ts` now carries the applicable parent rules — G9 `<output_hygiene>` in all 4 regeneration prompts (game_overview, materials, detective_script, evidence_cards) and G7 `VICTIM CONSISTENCY` in the game_overview prompt. G8 is intentionally NOT mirrored (character-only rule; the recovery tool consumes an existing master_context and its detective_script route has a legitimate fixed culprit).

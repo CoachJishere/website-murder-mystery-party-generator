@@ -336,8 +336,16 @@ serve(async (req) => {
     // Capturing the id here ensures the latest assistant CHARACTER LIST message
     // becomes the single source of truth — both for our local extraction and
     // for the parent webhook's prompt (which receives this as approvedConceptMessageId).
+    //
+    // The regex is hoisted so the concept-completeness ENTRY GATE below and this
+    // snapshot share one definition (memory: paired regexes must not drift).
+    const characterListRegex = /^#{2,3}\s+(?:Character List|Characters|Cast of Characters|Complete Character List|COMPLETE CHARACTER LIST|Full Character List)/im;
+    const hasCharacterListMessage = Array.isArray(conversation.messages) &&
+      (conversation.messages as any[]).some(
+        (m: any) => (m.role === 'assistant' || m.is_ai) && characterListRegex.test(m.content || '')
+      );
+
     if (!conversation.approved_concept_message_id && conversation.messages) {
-      const characterListRegex = /^#{2,3}\s+(?:Character List|Characters|Cast of Characters|Complete Character List|COMPLETE CHARACTER LIST|Full Character List)/im;
       const aiMessagesWithCharList = (conversation.messages as any[])
         .filter((m: any) => (m.role === 'assistant' || m.is_ai) && characterListRegex.test(m.content || ''))
         .sort((a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
@@ -355,6 +363,45 @@ serve(async (req) => {
           console.log(`[ConceptSnapshot] Captured approved_concept_message_id=${candidate.id} (latest CHARACTER LIST message at ${candidate.created_at})`);
         }
       }
+    }
+
+    // ENTRY GATE (ADR-0043): refuse to generate when no mystery concept exists yet.
+    // The "Victorian mansion - 32 Players" incident fired generation ~100s after the
+    // assistant was still ASKING clarifying questions — no victim, no event, no
+    // character roster. The parent flagged master_context Part 1 "incomplete_context"
+    // but produced placeholder junk ("Character A"–"E") and marked it completed.
+    // The concrete concept-ready signal is an assistant CHARACTER LIST message
+    // (the same artifact extraction and the snapshot above key on). No such message
+    // and no previously-approved concept => the concept was never built. Refuse
+    // BEFORE the pre-generation cleanup below (which deletes character rows) and
+    // BEFORE spending on Make.com. Service/recovery callers bypass so an operator
+    // can force a regeneration during triage.
+    if (!hasCharacterListMessage && !conversation.approved_concept_message_id && !isServiceCall) {
+      console.warn(`[ConceptGate] Refusing generation for ${conversationId}: no CHARACTER LIST message / approved concept (conversation not finished)`);
+      const needsMoreInfoStatus = {
+        status: 'needs_more_info',
+        progress: 0,
+        currentStep: 'We need a bit more detail before we can build your mystery',
+        error: 'concept_incomplete',
+        resumable: true,
+      };
+      // Flag any package row so the UI shows the right state and the
+      // completed-but-empty / needs_more_info states are visible to monitoring.
+      await supabase
+        .from("mystery_packages")
+        .update({ generation_status: needsMoreInfoStatus, updated_at: new Date().toISOString() })
+        .eq("conversation_id", conversationId);
+
+      // 200 with success:false (not an HTTP error) so the client can distinguish a
+      // "finish your concept" outcome from a real failure and message the user kindly.
+      return new Response(
+        JSON.stringify({
+          success: false,
+          reason: 'needs_more_info',
+          message: "Your mystery concept isn't finished yet. Head back to the chat, answer the remaining question(s) so we have the occasion and a character list, then generate again.",
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     // Pre-generation cleanup: delete any existing `mystery_characters` rows for this

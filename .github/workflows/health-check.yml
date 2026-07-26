@@ -10,6 +10,12 @@
 #   4. Paid packages missing evidence-card images (ADR-0016 detector)
 #   5. Character identity contamination — ≥2 characters claiming the same
 #      kinship to the victim (ADR-0041 detector, Bollinger incident)
+#   6-9. Content-quality detectors (ADR-0042): meta-text/CoT leak, wrong victim,
+#      slip-culprit leak, self-directed questions
+#   10. Completed-but-empty packages — marked completed/has_complete_package but
+#      0 characters or empty overview (ADR-0043, "Victorian mansion" incident).
+#      This is the check that would have caught a silent empty package with no one
+#      watching — checks 1-9 all missed it because it was marked *completed*.
 #
 # On failure: opens (or comments on) a GitHub issue labelled `health-alert`.
 # Always: writes monitoring/health-status.md and commits it if changed.
@@ -169,6 +175,23 @@ jobs:
             fi
           fi
 
+          # 10. Completed-but-empty packages (ADR-0043 detector).
+          # The gap the "Victorian mansion - 32 Players" incident exposed: a package
+          # marked completed/has_complete_package with 0 characters (or an empty
+          # overview) is invisible to checks 1-9 — check 2 only sees in_progress.
+          # 30-day rolling window so recovered/aged incidents drop off once fixed.
+          EMPTY=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_completed_but_empty_packages" \
+            -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
+          if [ "$EMPTY" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the completed-but-empty detector (Supabase API error)\n"
+            EMPTY_COUNT="?"
+          else
+            EMPTY_COUNT=$(echo "$EMPTY" | jq 'length')
+            if [ "$EMPTY_COUNT" -gt 0 ]; then
+              PROBLEMS="${PROBLEMS}- 🔴 ${EMPTY_COUNT} package(s) marked completed but missing content (0 characters or empty overview) — a delivered mystery with no cast: $(echo "$EMPTY" | jq -r '[.[] | "\(.title) [\(.reason), paid=\(.is_paid), chars=\(.character_count)]"] | join("; ")')\n"
+            fi
+          fi
+
           # Write status file
           mkdir -p monitoring
           {
@@ -195,6 +218,7 @@ jobs:
             echo "| Wrong victim in overview (30 days) | ${VM_COUNT} |"
             echo "| Slip-culprit leak (30 days) | ${SCL_COUNT} |"
             echo "| Self-directed questions (30 days) | ${SDQ_COUNT} |"
+            echo "| Completed-but-empty packages (30 days) | ${EMPTY_COUNT} |"
           } > monitoring/health-status.md
 
           if [ -n "$PROBLEMS" ]; then
