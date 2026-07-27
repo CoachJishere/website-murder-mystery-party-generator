@@ -2,6 +2,14 @@
 
 ## 2026-07-27
 
+### Feature: SEO digest — diagnose the lever (copy vs authority vs both) before recommending it (ADR-0045)
+Fixes the root cause behind three consecutive stale "rewrite the title/meta" prompts (the review post, the custom money page, and the 2026 cluster were each already optimized). The digest's "quick wins" were query-dimension only and hardcoded `reason: "title/meta rewrite"` whenever CTR < 2%, with no idea which page ranked or whether it already targeted the query.
+- **Two-axis diagnostic** ([scripts/_seoLever.mjs](scripts/_seoLever.mjs), new pure/testable module): **CTR gap** (actual − expected-CTR-for-position) isolates a copy/appeal problem; **position band** isolates an authority problem. Each quick win now gets a `lever` verdict — `copy` (page-1 under-clicker → title/meta), `links` (page-2 but CTR normal for rank → internal links/authority, copy rewrite disallowed), `both`, or `watch`. Answers "is it copy or links?" per-opportunity, and keeps "copy can matter on page 1" as a first-class case.
+- **Expected-CTR curve self-calibrates** from our own GSC data (median CTR per position bucket), falling back to a static GSC-aggregate curve for thin buckets — fits murder-mystery SERPs rather than an industry average, and logging `ctrGap` weekly accumulates the evidence to tune thresholds.
+- **Ranking page per query** ([scripts/fetchSeoWeeklySnapshot.mjs](scripts/fetchSeoWeeklySnapshot.mjs)): added a `['query','page']` GSC pull so a "links" recommendation can name the target URL + source pages + anchor text. The on-page relevance check (is the query in the title/H1?) is deferred to the fresh-chat action prompt to keep the cron free of fragile HTML parsing.
+- **Generator is now lever-aware** ([scripts/generateSeoDigest.mjs](scripts/generateSeoDigest.mjs)): SYSTEM_PROMPT gains a LEVER DIAGNOSIS block that routes each verdict to the right action and forbids a title/meta rewrite for a `links`-verdict page-2 query. Softened the "what an action means" brief so copy is no longer the default.
+- Offline unit test ([scripts/__tests__/leverClassifier.test.mjs](scripts/__tests__/leverClassifier.test.mjs), 7 checks, no network/paid API) covers the real /custom-murder-mystery-party case (pos 14.5 → links) and a page-1 under-clicker → copy.
+
 ### Improvement: SEO — rewrote the /custom-murder-mystery-party title/meta/H1 to move two page-2 queries onto page 1
 GSC shows the money page averaging pos 18.7, with "custom murder mystery game" at pos 8.5 (37 impr, 5.4% CTR) and "custom murder mystery party" at pos 14.5 (30 impr, 0 clicks). Reworked the EN copy only (`src/i18n/locales/en.json` → `customParty`), leaving the localized variants untouched since they deliberately target the corporate angle (ADR-0020):
 - **Title** (57 chars) now leads with "Custom Murder Mystery Party & Game" and swaps the generic "Free AI Kit" tail for the benefit hook "Printable in Minutes".

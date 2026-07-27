@@ -20,6 +20,7 @@ import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from './_supabase-node.mjs';
+import { buildExpectedCtrCurve, classifyLever } from './_seoLever.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -111,6 +112,9 @@ async function fetchGSC(snapshot) {
   const curQ = await gscQuery(webmasters, RANGES.current, ['query'], 200);
   const prevQ = await gscQuery(webmasters, RANGES.previous, ['query'], 200);
   const curPages = await gscQuery(webmasters, RANGES.current, ['page'], 25);
+  // query→page so each quick win can name the URL that actually ranks (needed to
+  // make a "links/authority" recommendation actionable). See ADR-0045.
+  const curQP = await gscQuery(webmasters, RANGES.current, ['query', 'page'], 1000);
 
   const totals = totalsFromRows(curQ);
   const totalsPrev = totalsFromRows(prevQ);
@@ -118,20 +122,29 @@ async function fetchGSC(snapshot) {
   const topQueries = shapeRows([...curQ].sort((a, b) => b.clicks - a.clicks).slice(0, 25), 'query');
   const topPages = shapeRows([...curPages].sort((a, b) => b.clicks - a.clicks).slice(0, 25), 'page');
 
-  // quick wins: meaningful impressions + (low CTR or position 5-15)
-  const quickWins = shapeRows(
-    [...curQ].sort((a, b) => b.impressions - a.impressions).slice(0, 100),
-    'query'
-  )
-    .filter((q) => q.impressions >= 20 && (q.ctr < 2 || (q.position >= 5 && q.position <= 15)))
-    .slice(0, 15)
-    .map((q) => ({
-      ...q,
-      reason:
-        q.position >= 5 && q.position <= 15
-          ? `position ${q.position} — one nudge from page 1`
-          : `${q.impressions} impressions but ${q.ctr}% CTR — title/meta rewrite`,
-    }));
+  // Top ranking page per query (by impressions in the current window).
+  const pageByQuery = new Map();
+  for (const r of curQP) {
+    const [query, page] = r.keys;
+    const impr = r.impressions || 0;
+    const cur = pageByQuery.get(query);
+    if (!cur || impr > cur.impressions) pageByQuery.set(query, { page, impressions: impr });
+  }
+
+  // quick wins: meaningful impressions, then diagnose the LEVER (copy vs authority
+  // vs both) per ADR-0045 instead of blindly recommending a title/meta rewrite.
+  const shapedQ = shapeRows([...curQ], 'query');
+  const ctrCurve = buildExpectedCtrCurve(shapedQ);
+  const quickWins = [...shapedQ]
+    .sort((a, b) => b.impressions - a.impressions)
+    .slice(0, 100)
+    .filter((q) => q.impressions >= 20 && q.position <= 20)
+    .map((q) => {
+      const { expectedCtr, ctrGap, lever, reason } = classifyLever(q, ctrCurve);
+      return { ...q, expectedCtr, ctrGap, lever, reason, rankingPage: pageByQuery.get(q.query)?.page || null };
+    })
+    .filter((q) => q.lever !== 'watch')
+    .slice(0, 15);
 
   // rising queries: biggest impression growth vs previous window
   const prevMap = new Map(prevQ.map((r) => [r.keys[0], r.impressions || 0]));
