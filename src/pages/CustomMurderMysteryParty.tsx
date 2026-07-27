@@ -51,10 +51,11 @@ export default function CustomMurderMysteryParty() {
   // mystery party/game" head terms (homepage ~pos 9-14 vs this page ~50-66; this page
   // earns ~1 click / 90 days), and its title already leads with them. rel=canonical
   // hands EN's signals to the winner instead of splitting them. EN-ONLY: the 12 non-EN
-  // locales keep self-referential canonicals so their hreflang clusters (e.g. the
-  // Italian corporate query, ~pos 3) are untouched. Hreflang emission below is left
-  // as-is on purpose — reciprocity is preserved; only EN's canonical differs, which
-  // Google resolves per-URL. See ADR-0046.
+  // locales keep self-referential canonicals so their hreflang cluster (e.g. the
+  // Italian corporate query, ~pos 3) stays intact. Because EN is now non-self-canonical
+  // it is dropped from the emitted hreflang set below (x-default → homepage) so it
+  // can't discount the cluster's return-tags — see the hreflang comment there and
+  // ADR-0046 (Consequences: hreflang hardening follow-up).
   const canonical = canonicalLang === "en" ? `${SITE}/` : selfUrl;
   const ogLocale = OG_LOCALE_MAP[canonicalLang] || "en_US";
 
