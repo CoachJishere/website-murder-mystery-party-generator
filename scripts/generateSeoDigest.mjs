@@ -84,6 +84,34 @@ Keep it skimmable. No preamble before the first <h2>. No closing sign-off.
 // on, or let it lapse after `end` (inclusive). Dates are 'YYYY-MM-DD' (UTC).
 const REMINDERS = [
   {
+    // Follow-up on the 2026-07-27 /custom-murder-mystery-party title/meta/H1
+    // rewrite. Money page was avg pos 18.7; "custom murder mystery game" pos 8.5
+    // (37 impr, 5.4% CTR), "custom murder mystery party" pos 14.5 (30 impr, 0
+    // clicks). Rewrite led the title with both phrases + a benefit hook, trimmed
+    // the meta under 155 with a soft CTA, and put both literal phrases in H1/intro.
+    // The open question is whether on-page copy is even the lever — the page was
+    // already well-optimised, and all 8 of its internal anchors read "custom
+    // murder mystery party", none "custom murder mystery game" (the query nearer
+    // page 1). Window starts ~4 weeks post-deploy; covers Aug 24/31 + Sep 7/14/21.
+    start: '2026-08-24',
+    end: '2026-09-21',
+    title: 'Measure the /custom-murder-mystery-party rewrite — and decide if it needs links, not copy',
+    body:
+      'On <strong>2026-07-27</strong> we rewrote the title, meta and H1 on ' +
+      '<strong>/custom-murder-mystery-party</strong> (EN only) to chase two page-2 queries: ' +
+      '<strong>custom murder mystery game</strong> (pos 8.5, 5.4% CTR) and ' +
+      '<strong>custom murder mystery party</strong> (pos 14.5, 0 clicks). But the page was already ' +
+      'well-optimised on-page, so the real question is whether copy was ever the lever — all 8 of its ' +
+      'internal links are anchored "custom murder mystery party", none "custom murder mystery game". ' +
+      'Paste the prompt below into a fresh chat.',
+    prompt: `Measure whether the 2026-07-27 title/meta/H1 rewrite on /custom-murder-mystery-party moved its two target queries onto page 1 — and decide whether the next move is copy or internal links/authority. Re-derive everything fresh from Google Search Console; assume problems, default to flagging, do not trust this note's numbers.
+
+1. Page: https://www.mysterymaker.party/custom-murder-mystery-party/ . Target queries: "custom murder mystery game" (pre-change 2026-07-27: pos 8.5, 37 impr, 5.4% CTR) and "custom murder mystery party" (pos 14.5, 30 impr, 0 clicks). Compare ~3 weeks BEFORE 2026-07-27 vs all after-data through today: position, impressions, clicks, CTR for each.
+2. Separate position from CTR. If the queries moved onto page 1, did CTR clear 10%? If position barely moved, copy is NOT the lever — do not recommend another title/meta rewrite. That is the stale-prompt trap this digest has already hit three times (see CHANGELOG 2026-07-27: three consecutive "quick win" prompts turned out already-done).
+3. Internal links / authority audit — the likely real lever. The page already has 4 nav links (Footer, homepage, office page, blog index) + 4 contextual links in cross_link_map.json, but grep confirms ALL 8 anchors read "custom murder mystery party"; NONE target "custom murder mystery game", the query nearer page 1. Check: (a) does the high-authority free-printables post (/blog/free-murder-mystery-games-printable/, ~pos 6, 12.4% CTR) link to this page at all? (b) propose 1–2 contextual links using "custom murder mystery game" anchor text from high-authority related posts, added to cross_link_map.json AND applied to the live EN blog_posts.content (ADR-0026 protects it from re-sync).
+4. Verdict: state plainly whether the rewrite worked, and whether this page's page-2 problem is a copy problem or an authority problem. If it's authority, the fix is links, not another rewrite.`,
+  },
+  {
     // Second read of the 2026-06-30 homepage title/meta rewrite (ADR-0024).
     // The FIRST measurement (2026-07-20, first ~3 weeks of after-data) was
     // INCONCLUSIVE: branded CTR was nominally up (combined 12.0%→18.9%) but the
