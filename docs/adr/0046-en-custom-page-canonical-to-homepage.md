@@ -112,9 +112,16 @@ a cosmetic hreflang note on one URL.
   should consolidate its (minimal) equity to the homepage over the next few crawls.
 - The EN page's copy is de-stuffed (pre-`4552cb4` wording); non-EN `customParty` blocks
   and the homepage title are unchanged.
-- A cosmetic canonical/hreflang mismatch on the single EN `/custom` URL is accepted and
+- ~~A cosmetic canonical/hreflang mismatch on the single EN `/custom` URL is accepted and
   documented; monitor GSC International Targeting only if the non-EN cluster shows
-  movement.
+  movement.~~ **Superseded by a follow-up hardening (same day):** the mismatch was not
+  merely cosmetic — a page that canonicalizes elsewhere is not self-canonical, and a
+  non-self-canonical member can get an entire hreflang cluster's return-tags discounted,
+  which would put the corporate locales (Italian ~pos 3) at risk. So the EN `/custom` URL
+  is no longer advertised as a member of the hreflang cluster: `en` is dropped from the
+  emitted `rel=alternate` set (on every language variant) and `x-default` now points to
+  the homepage. Every remaining cluster member is self-canonical, removing the ambiguity
+  rather than monitoring for it.
 - **This is reversible** (remove the `canonicalLang === "en"` branch) but has indexing
   consequences; it was shipped only after explicit approval (Jonathan, 2026-07-27).
 - **Monitor:** homepage position on "custom murder mystery game/party" against the

@@ -89,10 +89,16 @@ export default function CustomMurderMysteryParty() {
         <title>{t("customParty.seo.title")}</title>
         <meta name="description" content={t("customParty.seo.description")} />
         <link rel="canonical" href={canonical} />
-        {LANGS.map((l) => (
+        {/* EN /custom canonicalizes to the homepage (ADR-0046), so it is NOT a
+            self-canonical URL and must not be advertised as a member of the
+            hreflang cluster: a non-self-canonical member can get the whole
+            cluster's return-tags discounted, which would put the corporate
+            locales (e.g. Italian ~pos 3) at risk. Emit alternates for the
+            localized versions only; x-default falls back to the homepage. */}
+        {LANGS.filter((l) => l !== "en").map((l) => (
           <link key={l} rel="alternate" hrefLang={hreflangCode(l)} href={pageUrl(l)} />
         ))}
-        <link rel="alternate" hrefLang="x-default" href={pageUrl("en")} />
+        <link rel="alternate" hrefLang="x-default" href={`${SITE}/`} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={selfUrl} />
         <meta property="og:title" content={t("customParty.seo.title")} />
