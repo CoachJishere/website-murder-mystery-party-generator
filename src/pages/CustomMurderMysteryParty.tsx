@@ -46,7 +46,16 @@ export default function CustomMurderMysteryParty() {
 
   // Resolve the canonical/og language to one we actually publish; fall back to en.
   const canonicalLang = LANGS.includes(urlLang) ? urlLang : "en";
-  const canonical = pageUrl(canonicalLang);
+  const selfUrl = pageUrl(canonicalLang);
+  // EN consolidates to the homepage. GSC shows the homepage owns the "custom murder
+  // mystery party/game" head terms (homepage ~pos 9-14 vs this page ~50-66; this page
+  // earns ~1 click / 90 days), and its title already leads with them. rel=canonical
+  // hands EN's signals to the winner instead of splitting them. EN-ONLY: the 12 non-EN
+  // locales keep self-referential canonicals so their hreflang clusters (e.g. the
+  // Italian corporate query, ~pos 3) are untouched. Hreflang emission below is left
+  // as-is on purpose — reciprocity is preserved; only EN's canonical differs, which
+  // Google resolves per-URL. See ADR-0046.
+  const canonical = canonicalLang === "en" ? `${SITE}/` : selfUrl;
   const ogLocale = OG_LOCALE_MAP[canonicalLang] || "en_US";
 
   const features = [
@@ -85,7 +94,7 @@ export default function CustomMurderMysteryParty() {
         ))}
         <link rel="alternate" hrefLang="x-default" href={pageUrl("en")} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={canonical} />
+        <meta property="og:url" content={selfUrl} />
         <meta property="og:title" content={t("customParty.seo.title")} />
         <meta property="og:description" content={t("customParty.seo.description")} />
         <meta property="og:image" content={OG_IMAGE} />

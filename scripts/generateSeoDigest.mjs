@@ -103,32 +103,35 @@ Keep it skimmable. No preamble before the first <h2>. No closing sign-off.
 // on, or let it lapse after `end` (inclusive). Dates are 'YYYY-MM-DD' (UTC).
 const REMINDERS = [
   {
-    // Follow-up on the 2026-07-27 /custom-murder-mystery-party title/meta/H1
-    // rewrite. Money page was avg pos 18.7; "custom murder mystery game" pos 8.5
-    // (37 impr, 5.4% CTR), "custom murder mystery party" pos 14.5 (30 impr, 0
-    // clicks). Rewrite led the title with both phrases + a benefit hook, trimmed
-    // the meta under 155 with a soft CTA, and put both literal phrases in H1/intro.
-    // The open question is whether on-page copy is even the lever — the page was
-    // already well-optimised, and all 8 of its internal anchors read "custom
-    // murder mystery party", none "custom murder mystery game" (the query nearer
-    // page 1). Window starts ~4 weeks post-deploy; covers Aug 24/31 + Sep 7/14/21.
+    // Follow-up on ADR-0046 (2026-07-27): we CANONICALED the EN
+    // /custom-murder-mystery-party page to the homepage and reverted the 4552cb4
+    // keyword-stuffing, because GSC (page-level, 28d) showed the homepage OWNS the
+    // head terms — "custom murder mystery game" homepage pos 9.6 (6 clk) vs custom
+    // pos 50.5 (0 clk); "custom murder mystery party" homepage pos 13.9 vs custom
+    // pos 66.7 — while the custom page earned ~1 click / 90 days. This SUPERSEDES
+    // the earlier "did the custom-page rewrite work" reminder: the custom page is
+    // no longer meant to rank for these terms; the HOMEPAGE is. Measure whether the
+    // consolidation took and whether the homepage's next lever is authority/links
+    // (NOT copy — the homepage title already leads with the terms and must keep its
+    // "| Mystery Maker" brand suffix, ADR-0024). Also re-check the Italian corporate
+    // query (~pos 3) for hreflang-cluster fallout, since we left hreflang emission
+    // untouched. Window ~4 weeks post-deploy; covers Aug 24/31 + Sep 7/14/21.
     start: '2026-08-24',
     end: '2026-09-21',
-    title: 'Measure the /custom-murder-mystery-party rewrite — and decide if it needs links, not copy',
+    title: 'Measure the ADR-0046 canonical consolidation — did the homepage take the "custom murder mystery" head terms?',
     body:
-      'On <strong>2026-07-27</strong> we rewrote the title, meta and H1 on ' +
-      '<strong>/custom-murder-mystery-party</strong> (EN only) to chase two page-2 queries: ' +
-      '<strong>custom murder mystery game</strong> (pos 8.5, 5.4% CTR) and ' +
-      '<strong>custom murder mystery party</strong> (pos 14.5, 0 clicks). But the page was already ' +
-      'well-optimised on-page, so the real question is whether copy was ever the lever — all 8 of its ' +
-      'internal links are anchored "custom murder mystery party", none "custom murder mystery game". ' +
-      'Paste the prompt below into a fresh chat.',
-    prompt: `Measure whether the 2026-07-27 title/meta/H1 rewrite on /custom-murder-mystery-party moved its two target queries onto page 1 — and decide whether the next move is copy or internal links/authority. Re-derive everything fresh from Google Search Console; assume problems, default to flagging, do not trust this note's numbers.
+      'On <strong>2026-07-27</strong> (ADR-0046) we <strong>canonicaled the EN /custom-murder-mystery-party page ' +
+      'to the homepage</strong> and reverted its keyword-stuffing, because the homepage already owns the head terms ' +
+      '(<strong>custom murder mystery game</strong> homepage pos 9.6 vs custom pos 50.5; ' +
+      '<strong>custom murder mystery party</strong> homepage pos 13.9 vs custom pos 66.7) and the custom page earned ' +
+      '~1 click / 90 days. The question now is whether the consolidation took and whether the homepage’s next lever ' +
+      'is authority/links — <em>not</em> copy. Paste the prompt below into a fresh chat.',
+    prompt: `Measure whether the 2026-07-27 ADR-0046 consolidation worked: we set rel=canonical from the EN /custom-murder-mystery-party page to the homepage and reverted its keyword-stuffing, to consolidate the "custom murder mystery party/game" intent onto the homepage (which already ranks and converts for it). Re-derive everything fresh from Google Search Console; assume problems, default to flagging; do NOT trust this note's numbers.
 
-1. Page: https://www.mysterymaker.party/custom-murder-mystery-party/ . Target queries: "custom murder mystery game" (pre-change 2026-07-27: pos 8.5, 37 impr, 5.4% CTR) and "custom murder mystery party" (pos 14.5, 30 impr, 0 clicks). Compare ~3 weeks BEFORE 2026-07-27 vs all after-data through today: position, impressions, clicks, CTR for each.
-2. Separate position from CTR. If the queries moved onto page 1, did CTR clear 10%? If position barely moved, copy is NOT the lever — do not recommend another title/meta rewrite. That is the stale-prompt trap this digest has already hit three times (see CHANGELOG 2026-07-27: three consecutive "quick win" prompts turned out already-done).
-3. Internal links / authority audit — the likely real lever. The page already has 4 nav links (Footer, homepage, office page, blog index) + 4 contextual links in cross_link_map.json, but grep confirms ALL 8 anchors read "custom murder mystery party"; NONE target "custom murder mystery game", the query nearer page 1. Check: (a) does the high-authority free-printables post (/blog/free-murder-mystery-games-printable/, ~pos 6, 12.4% CTR) link to this page at all? (b) propose 1–2 contextual links using "custom murder mystery game" anchor text from high-authority related posts, added to cross_link_map.json AND applied to the live EN blog_posts.content (ADR-0026 protects it from re-sync).
-4. Verdict: state plainly whether the rewrite worked, and whether this page's page-2 problem is a copy problem or an authority problem. If it's authority, the fix is links, not another rewrite.`,
+1. HEAD TERMS — homepage vs custom page. Queries: "custom murder mystery game" and "custom murder mystery party". Pull the page-level breakdown (dimensions ['page'] filtered to each query) for the homepage https://www.mysterymaker.party/ and https://www.mysterymaker.party/custom-murder-mystery-party/ . Baseline (28d ending 2026-07-26): game → homepage pos 9.6 / custom pos 50.5; party → homepage pos 13.9 / custom pos 66.7. Compare vs the latest window: did the homepage's position improve, and did the custom page's impressions on these terms FALL (the sign the canonical consolidated)? If the custom page is still accruing impressions/ranking for them, the canonical may not be honored — check GSC's URL Inspection / canonical report and flag it.
+2. Separate the two questions. (a) Consolidation: is Google crediting the homepage, not the custom page? (b) Homepage progress: did it break into the top 5, or is it stuck at ~9-14? If stuck, the lever is AUTHORITY/LINKS, not copy — do NOT recommend a homepage title/meta rewrite (the title already leads with "Custom Murder Mystery Party Kits" and must keep the "| Mystery Maker" brand suffix per ADR-0024). Propose 1-2 contextual internal links to the HOMEPAGE using "custom murder mystery game/party" anchor text from high-authority related posts (e.g. /blog/free-murder-mystery-games-printable/), added to cross_link_map.json AND applied to the live EN blog_posts.content (ADR-0026 protects it from re-sync).
+3. GUARDRAIL — non-EN cluster. We deliberately left hreflang emission untouched (EN is x-default/hub of the 13-lang cluster; repointing it would edit the 12 non-EN pages and risk the Italian ranking). Re-pull the Italian corporate query (the ADR-0020/0040 money query, baseline ~pos 3) and confirm it did NOT drop. If it wobbled, that's hreflang-cluster fallout — flag it and consider whether the EN canonical needs a cleaner hreflang design.
+4. Verdict: did the consolidation happen (homepage credited, custom page's head-term impressions faded)? Is the homepage head-term ranking improving? Is the remaining gap a copy problem or an authority problem? If authority, the fix is links to the homepage, not another rewrite. If the homepage still hasn't moved after this window, consider escalating the custom page from rel=canonical to a 301.`,
   },
   {
     // Second read of the 2026-06-30 homepage title/meta rewrite (ADR-0024).
