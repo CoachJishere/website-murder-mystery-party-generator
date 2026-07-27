@@ -34315,6 +34315,18 @@
       ]
     }
   },
+  "best-murder-mystery-games-2026": {
+    "links_to": [
+      "free-murder-mystery-games-printable"
+    ],
+    "insertions": [
+      {
+        "target_slug": "free-murder-mystery-games-printable",
+        "match_text": "Free printable one-page mysteries and DIY templates cost nothing",
+        "replacement": "[Free printable one-page mysteries](/blog/free-murder-mystery-games-printable/) and DIY templates cost nothing"
+      }
+    ]
+  },
   "free-murder-mystery-games-printable": {
     "links_to": [
       "murder-mystery-party-planning-checklist",
@@ -34362,6 +34374,11 @@
         "target_slug": "best-murder-mystery-party-games-review",
         "match_text": "upgrade to MysteryMaker or a premium paid kit. The investment is small",
         "replacement": "upgrade to MysteryMaker or a premium paid kit—see our [comparison of the best murder mystery party games](/blog/best-murder-mystery-party-games-review) to pick the right one for your group size. The investment is small"
+      },
+      {
+        "target_slug": "best-murder-mystery-games-2026",
+        "match_text": "that's where free printables stop and paid kits begin.",
+        "replacement": "that's where free printables stop and paid kits begin — see our [ranked guide to the best murder mystery games in 2026](/blog/best-murder-mystery-games-2026) for the paid options worth buying."
       }
     ],
     "lang_insertions": {
