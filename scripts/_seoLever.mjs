@@ -17,29 +17,42 @@ export const FALLBACK_CTR_CURVE = {
   11: 1.8, 12: 1.6, 13: 1.4, 14: 1.3, 15: 1.2, 16: 1.1, 17: 1.0, 18: 1.0, 19: 0.9, 20: 0.9,
 };
 
-const MIN_BUCKET = 5; // need >= this many of our own queries in a position bucket to trust its median
-
-function median(sortedAsc) {
-  return sortedAsc[Math.floor(sortedAsc.length / 2)];
-}
+// A self-calibrated bucket needs this much impression volume to be trusted; and
+// we never let a (noisy, zero-inflated) self-calibrated value fall below half the
+// static curve. Our query set is heavily zero-inflated — most long-tail queries
+// get 0 clicks in a week — so a *median* per-query CTR collapses to 0. We use the
+// impression-weighted CTR (sum clicks / sum impressions) instead, which is the
+// correct "share of impressions that get clicked at this position" statistic.
+const MIN_BUCKET_IMPRESSIONS = 200;
 
 /**
  * Build a self-calibrating expected-CTR curve from our own query rows.
- * rows: [{ ctr, position, impressions }]. Falls back to FALLBACK_CTR_CURVE
- * for any position 1..20 with fewer than MIN_BUCKET queries.
+ * rows: [{ ctr, position, impressions, clicks? }]. For each position 1..20, uses
+ * the impression-weighted CTR of that bucket when it has real volume, else falls
+ * back to FALLBACK_CTR_CURVE. Floored at half the static curve so a zero-inflated
+ * bucket can never zero out copy detection.
  */
 export function buildExpectedCtrCurve(rows) {
-  const byPos = new Map();
+  const byPos = new Map(); // p -> { clicks, impressions }
   for (const r of rows) {
     const p = Math.round(r.position);
     if (p < 1 || p > 20) continue;
-    if (!byPos.has(p)) byPos.set(p, []);
-    byPos.get(p).push(r.ctr);
+    const impressions = r.impressions || 0;
+    const clicks = r.clicks != null ? r.clicks : Math.round((r.ctr / 100) * impressions);
+    const b = byPos.get(p) || { clicks: 0, impressions: 0 };
+    b.clicks += clicks;
+    b.impressions += impressions;
+    byPos.set(p, b);
   }
   const curve = {};
   for (let p = 1; p <= 20; p++) {
-    const arr = (byPos.get(p) || []).slice().sort((a, b) => a - b);
-    curve[p] = arr.length >= MIN_BUCKET ? median(arr) : FALLBACK_CTR_CURVE[p];
+    const b = byPos.get(p);
+    if (b && b.impressions >= MIN_BUCKET_IMPRESSIONS && b.clicks > 0) {
+      const weighted = Math.round((b.clicks / b.impressions) * 1000) / 10; // %
+      curve[p] = Math.max(weighted, FALLBACK_CTR_CURVE[p] * 0.5);
+    } else {
+      curve[p] = FALLBACK_CTR_CURVE[p];
+    }
   }
   return curve;
 }
@@ -62,6 +75,7 @@ export function classifyLever(q, curve) {
   const expected = expectedCtrAt(q.position, curve);
   const ctrGap = Math.round((q.ctr - expected) * 10) / 10;
   const underClicking = ctrGap <= -Math.max(1.5, expected * 0.4);
+  const overClicking = q.ctr >= expected * 1.5; // already winning CTR for its rank — not an action item
   const onPage2 = q.position > 10 && q.position <= 20;
   const nearPage1 = q.position >= 5 && q.position <= 10;
 
@@ -75,12 +89,12 @@ export function classifyLever(q, curve) {
   } else if (underClicking) {
     lever = 'copy';
     reason = `pos ${q.position} (page 1) but CTR ${q.ctr}% vs ~${expected}% expected — title/meta appeal; verify the query isn't already in the title before rewriting`;
-  } else if (nearPage1) {
+  } else if (nearPage1 && !overClicking) {
     lever = 'links';
-    reason = `pos ${q.position} — one nudge from page 1; CTR healthy for the rank, so a small authority push, not copy`;
+    reason = `pos ${q.position} — one nudge from page 1; CTR is fine for the rank, so a small authority push, not copy`;
   } else {
     lever = 'watch';
-    reason = `pos ${q.position}, CTR ${q.ctr}% — near expected on both axes; monitor`;
+    reason = `pos ${q.position}, CTR ${q.ctr}% — ${overClicking ? 'already over-performing on CTR for its rank' : 'near expected on both axes'}; monitor`;
   }
   return { expectedCtr: expected, ctrGap, lever, reason };
 }

@@ -20,7 +20,9 @@ Jonathan's pushback sharpened the requirement: it is **not** "page 2 ⇒ always 
 
 Introduce a **two-axis lever diagnostic** in the fetcher and make the generator lever-aware.
 
-**Axis 1 — CTR gap (copy / SERP-appeal).** For each candidate query, compute `ctrGap = actualCTR − expectedCTR(position)`. `expectedCTR` comes from a **self-calibrating curve**: the median CTR of our own queries bucketed by rounded position, falling back to a static GSC-aggregate curve for buckets with < 5 queries. A materially negative gap means the result under-clicks for where it ranks → **copy** is a lever, *regardless of position* (this is how "copy matters sometimes" survives).
+**Axis 1 — CTR gap (copy / SERP-appeal).** For each candidate query, compute `ctrGap = actualCTR − expectedCTR(position)`. `expectedCTR` comes from a **self-calibrating curve**: the **impression-weighted** CTR (Σclicks / Σimpressions) of our own queries bucketed by rounded position, falling back to a static GSC-aggregate curve for buckets under 200 impressions, and floored at half the static curve. A materially negative gap means the result under-clicks for where it ranks → **copy** is a lever, *regardless of position* (this is how "copy matters sometimes" survives).
+
+> **Implementation note (found via live GSC on 2026-07-27):** the first cut used the *median* per-query CTR of each bucket. Our query set is heavily zero-inflated — most long-tail queries get 0 clicks in a week — so the median collapsed to 0, expected CTR went to 0 for nearly every position, and *every* query was misclassified `links` (no query could ever be `copy`). Impression-weighted CTR + the static-curve floor fixes this; a live probe then produced a sane copy/links/both/watch mix, including a position-1.1 homepage query at 5.4% CTR (expected ~27%) that the old naive `ctr < 2%` filter would have missed entirely.
 
 **Axis 2 — position band (relevance + authority).** Page 1 (≤ 10) vs page 2 (11–20) vs near-miss (5–10).
 
@@ -38,7 +40,7 @@ The generator SYSTEM_PROMPT gains a **LEVER DIAGNOSIS** block that: routes each 
 ## Rationale
 
 - **It answers the actual question per-opportunity, every week.** The two axes separate the two confounded effects (the ADR-0024 homepage read was inconclusive precisely because CTR *and* position moved together — the CTR-gap axis is designed to hold position constant).
-- **Self-calibrating curve > industry constants.** Murder-mystery SERPs (rich results, competitors) have their own CTR shape; median-of-our-own-data adapts, and logging `ctrGap` weekly accumulates the evidence to tune thresholds over time.
+- **Self-calibrating curve > industry constants.** Murder-mystery SERPs (rich results, competitors) have their own CTR shape; impression-weighted-CTR-of-our-own-data adapts, and logging `ctrGap` weekly accumulates the evidence to tune thresholds over time.
 - **Deterministic where it must be, LLM where it helps.** The lever math is pure and testable; the fragile "read the live page" step stays in the human-in-the-loop prompt.
 - **Directly kills the observed failure.** A `links` verdict cannot emit a copy rewrite, so the three-in-a-row stale-prompt pattern cannot recur for authority-bound page-2 pages.
 
