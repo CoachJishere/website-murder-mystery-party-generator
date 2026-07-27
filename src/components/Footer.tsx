@@ -48,6 +48,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/blog/best-murder-mystery-party-games-review/" className="footer-link">
+                  {t('footer.links.bestGames', { defaultValue: 'Best Mystery Party Games' })}
+                </Link>
+              </li>
+              <li>
                 <Link to="/custom-murder-mystery-party" className="footer-link">
                   {t('footer.links.customMystery', { defaultValue: 'Custom Murder Mystery' })}
                 </Link>

@@ -34357,6 +34357,11 @@
         "target_page": "/custom-murder-mystery-party/",
         "match_text": "or anyone wanting personalized characters",
         "replacement": "or anyone wanting a fully [custom murder mystery party](/custom-murder-mystery-party/) built around their own theme and guest list"
+      },
+      {
+        "target_slug": "best-murder-mystery-party-games-review",
+        "match_text": "upgrade to MysteryMaker or a premium paid kit. The investment is small",
+        "replacement": "upgrade to MysteryMaker or a premium paid kit—see our [comparison of the best murder mystery party games](/blog/best-murder-mystery-party-games-review) to pick the right one for your group size. The investment is small"
       }
     ],
     "lang_insertions": {

@@ -603,7 +603,10 @@ export default function BlogPost() {
       <Header />
       <main className={`flex-grow pt-12 px-4 ${showStickyCTA ? 'pb-40 sm:pb-32' : 'pb-12'}`}>
         <Helmet>
-          <title>{post?.title || 'Loading...'} | Mystery Maker</title>
+          {/* Append the brand suffix only on short titles — long titles keep their
+              keyword tail visible instead of losing it to Google's ~60-char truncation.
+              Must match the same rule in scripts/prerender-blog.mjs. */}
+          <title>{post?.title ? (post.title.length <= 50 ? `${post.title} | Mystery Maker` : post.title) : 'Loading...'}</title>
           {post?.meta_description && (
             <meta name="description" content={post.meta_description} />
           )}

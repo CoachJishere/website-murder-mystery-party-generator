@@ -294,7 +294,14 @@ function buildHead(post, langVariants, schemas, articleHtml) {
   const url = postUrl(post.language, post.slug);
   const desc = post.meta_description || '';
   const og = post.featured_image_url || FALLBACK_SHARE_IMAGE;
-  const titleFull = `${post.title} | Mystery Maker`;
+  // Only append the " | Mystery Maker" brand suffix when the title is short
+  // enough that the suffix won't push the SERP title past Google's ~60-char
+  // truncation point. Long titles (e.g. the review roundup at 57 chars) keep
+  // their keyword-rich tail visible instead of losing it to "…| Myste…".
+  // Brand queries land on the homepage/generator, not blog posts, so dropping
+  // the suffix on long informational titles costs no brand CTR. (CJK titles are
+  // low in char count, so they keep the suffix — their pixel width is still fine.)
+  const titleFull = post.title.length <= 50 ? `${post.title} | Mystery Maker` : post.title;
   const lines = [];
   lines.push(`<title>${htmlEscape(titleFull)}</title>`);
   if (desc) lines.push(`<meta name="description" content="${htmlEscape(desc)}" />`);
