@@ -2,6 +2,13 @@
 
 ## 2026-07-27
 
+### Improvement: SEO — rewrote the /custom-murder-mystery-party title/meta/H1 to move two page-2 queries onto page 1
+GSC shows the money page averaging pos 18.7, with "custom murder mystery game" at pos 8.5 (37 impr, 5.4% CTR) and "custom murder mystery party" at pos 14.5 (30 impr, 0 clicks). Reworked the EN copy only (`src/i18n/locales/en.json` → `customParty`), leaving the localized variants untouched since they deliberately target the corporate angle (ADR-0020):
+- **Title** (57 chars) now leads with "Custom Murder Mystery Party & Game" and swaps the generic "Free AI Kit" tail for the benefit hook "Printable in Minutes".
+- **Meta description** (146 chars, was 162/over-limit) promises a "personalized, printable murder mystery party kit in minutes", keeps the literal "custom murder mystery game" phrase, and adds a soft "Start free." CTA.
+- **H1** now carries both literal target phrases ("Your Custom Murder Mystery Party — a Custom Murder Mystery Game Made for You"); **intro** rewritten so both phrases read naturally in the first paragraph.
+- **Internal links:** page already had three descriptive create-flow anchors (hero CTA, how-to CTA, mid CTA → `/mystery/create`); strengthened the mid CTA anchor to "Start Building Your Custom Murder Mystery Game" for keyword-diverse anchor text. Goal: both queries onto page 1, CTR above 10%.
+
 ### Improvement: SEO — tightened the "murder mystery games 2026" cluster with reciprocal internal links
 Follow-up to the internal-linking work below. The live `best-murder-mystery-games-2026` post (published 2026-07-20) was an **internal-link orphan** — nothing in [cross_link_map.json](cross_link_map.json) pointed to it. Added reciprocal contextual links: the high-authority [free-printables post](https://www.mysterymaker.party/blog/free-murder-mystery-games-printable/) → the 2026 roundup (boosts the newer/weaker page), and the 2026 roundup's "Free Printable / DIY" section → the free-printables guide. Applied to the live EN `blog_posts.content` (protected from re-sync by ADR-0026) **and** added to cross_link_map.json for durability (new source entry for the 2026 post + one insertion on the free-printables entry). Also confirmed while verifying: the **Night of Mystery comparison post** (`night-of-mystery-vs-custom-ai-murder-mystery-kit`, digest action #4) is **already published in all 13 languages** (2026-07-22) — its `docs/blog-drafts/PUBLISH-*.md` runbook is stale and can be cleaned up. Learned: **DB-direct publishing is the wrong path** — the gated `publish-specific-slugs.yml` handles cross-links, TOC, rot-gate, IndexNow, sitemap submit, llms.txt, and the prerender deploy that a raw SQL status-flip skips.
 
