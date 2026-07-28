@@ -55,6 +55,28 @@ const MAX_IMAGE_FETCH_ATTEMPTS = 3;
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /**
+ * Retry a Supabase op (storage upload / DB write) that resolves to a `{ error }`
+ * result, for transient failures. A storage blip or a write hiccup would
+ * otherwise drop an already-generated image — failure modes #5 (upload) and #7
+ * (final DB merge) in the evidence-image failure enumeration.
+ */
+async function retrySupabaseOp<T extends { error: any }>(
+  op: () => Promise<T>,
+  attempts = 3,
+  delayMs = 1500
+): Promise<T> {
+  let result = await op();
+  for (let i = 1; i < attempts && result.error; i++) {
+    console.log(
+      `Supabase op error (attempt ${i}/${attempts}): ${result.error?.message ?? result.error}; retrying in ${delayMs}ms`
+    );
+    await sleep(delayMs);
+    result = await op();
+  }
+  return result;
+}
+
+/**
  * POST a prediction to Replicate, retrying TRANSIENT failures — 429 (rate limit),
  * 5xx (server), and network errors. Non-retryable responses (2xx, or 4xx other
  * than 429) are returned for the caller to handle.
@@ -261,15 +283,17 @@ serve(async (req) => {
           const imageBuffer = await callFlux11Pro(prompt, replicateToken);
           const filePath = `${package_id}/${round}.png`;
 
-          const { error: uploadError } = await supabase.storage
-            .from("evidence-images")
-            .upload(filePath, imageBuffer, {
-              contentType: "image/png",
-              upsert: true,
-            });
+          const { error: uploadError } = await retrySupabaseOp(() =>
+            supabase.storage
+              .from("evidence-images")
+              .upload(filePath, imageBuffer, {
+                contentType: "image/png",
+                upsert: true,
+              })
+          );
 
           if (uploadError) {
-            throw new Error(`Storage upload failed: ${uploadError.message}`);
+            throw new Error(`Storage upload failed after retries: ${uploadError.message}`);
           }
 
           const { data: urlData } = supabase.storage
@@ -299,13 +323,15 @@ serve(async (req) => {
         ...publicUrls,
       };
 
-      const { error: updateError } = await supabase
-        .from("mystery_packages")
-        .update({ evidence_card_images: merged })
-        .eq("id", package_id);
+      const { error: updateError } = await retrySupabaseOp(() =>
+        supabase
+          .from("mystery_packages")
+          .update({ evidence_card_images: merged })
+          .eq("id", package_id)
+      );
 
       if (updateError) {
-        console.error("DB update error:", updateError);
+        console.error("DB update error (after retries):", updateError);
         return new Response(
           JSON.stringify({ error: `DB update failed: ${updateError.message}`, failed }),
           { status: 500, headers: { "Content-Type": "application/json" } }
