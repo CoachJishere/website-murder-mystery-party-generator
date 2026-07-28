@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 249 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 250 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -289,6 +289,7 @@ This index organizes 249 published guides by topic cluster. All guides are avail
 - [11 Best Murder Mystery Party Games (2026): Ranked by Size](https://www.mysterymaker.party/blog/best-murder-mystery-party-games-review): We tested the 11 best murder mystery party games for 2026 — an honest, no-fluff comparison to help you pick the right kit for your party size and budget.
 - [Food Critic Murder Mystery Themes](https://www.mysterymaker.party/blog/food-critic-murder-mystery-themes-culinary-reviews-restaurant-revenge): Murder mystery themes with food critic characters — savage reviews, kitchen feuds, and the kind of grudges that turn restaurants into crime scenes.
 - [Free vs Paid Murder Mystery Games: What Actually Matters](https://www.mysterymaker.party/blog/free-vs-paid-murder-mystery-games-comparison): Murder mystery games range from free printables to $55+ kits. Here's what changes with price and when each option makes sense for your party.
+- [Murder Mystery vs Escape Room Kits](https://www.mysterymaker.party/blog/murder-mystery-escape-room-kits-comparison): Compare murder mystery escape room kits vs. at-home escape rooms. Understand puzzle-focused vs. social deduction formats and pick the right format.
 
 ## Related Party Ideas
 
