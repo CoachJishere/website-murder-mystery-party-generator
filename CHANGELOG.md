@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-07-28
+
+### Fix: Evidence-image generation now polls slow Flux predictions (second failure mode)
+"The Cognitive Dissonance Incident" (paid, 25 characters) generated with round-2's evidence image missing on a **healthy-credit** account — so not the 429/credit mode we fixed with auto-reload + the 429 retry. Root cause found in [generate-evidence-images](supabase/functions/generate-evidence-images/index.ts): the function calls Flux with `Prefer: wait=60` and then did `if (json.status !== "succeeded") throw`. When a round doesn't finish inside the 60s wait window (cold start / queue — the original run took 27s and this round evidently ran longer), Replicate returns the prediction still `processing`, and the old code **threw and dropped that round** while the faster two succeeded. The v13 retry only covered 429, so this path wasn't retried.
+- **Fix (deployed v14):** when the wait window returns a non-terminal prediction, **poll `urls.get` to completion** (`pollPredictionUntilDone`, up to ~60s) instead of throwing; broadened `createPredictionWithRetry` to also retry **5xx and network errors** (not just 429); and the final image fetch now retries transient failures. esbuild-validated on deploy; `verify_jwt` preserved.
+- The affected package's round-2 image was recovered in place first (one `generate-evidence-images` call, ~$0.04). Detector `list_packages_missing_evidence_images()` confirms 0 missing. End-to-end confirmation of the poll path is the next slow generation coming through complete.
+
 ## 2026-07-27
 
 ### Fix: Dependency security — resolved 5 of 7 Dependabot advisories; 2 consciously deferred
