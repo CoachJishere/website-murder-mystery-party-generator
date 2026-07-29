@@ -1,10 +1,8 @@
 # Site health status
 
-_Last checked: 2026-07-29 03:44 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-07-29 09:12 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
-## ⚠️ Problems found
-
-- 🟠 1 recent package(s) where a character asks themselves questions: Ghosts Of The Past: A Halloween Reunion Murder
+## ✅ All checks passing
 
 | Check | Result |
 |---|---|
@@ -16,5 +14,5 @@ _Last checked: 2026-07-29 03:44 UTC (runs every 6 hours; see .github/workflows/h
 | Meta-text / CoT artifacts (30 days) | 0 |
 | Wrong victim in overview (30 days) | 0 |
 | Slip-culprit leak (30 days) | 0 |
-| Self-directed questions (30 days) | 1 |
+| Self-directed questions (30 days) | 0 |
 | Completed-but-empty packages (30 days) | 0 |
