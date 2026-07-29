@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 250 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 251 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -87,6 +87,7 @@ This index organizes 250 published guides by topic cluster. All guides are avail
 - [Hacker Murder Mystery Themes](https://www.mysterymaker.party/blog/hacker-murder-mystery-themes-cybercrime-digital-secrets-tech-intrigue): Murder mystery themes with hacker characters — cybercrime, digital espionage, and investigations where the trail runs through encrypted servers.
 - [How to Host a Horror Murder Mystery Party](https://www.mysterymaker.party/blog/horror-murder-mystery-party-guide): Create a terrifying horror murder mystery party with jump scares, creepy atmosphere, layered sound design, and dark reveals. Adult-only Halloween guide.
 - [How AI Is Changing Murder Mystery Parties](https://www.mysterymaker.party/blog/how-ai-is-changing-murder-mystery-parties): How AI is transforming murder mystery parties through personalization and custom generation. Data-backed look at what's changing and what's next.
+- [Murder Mystery Games for College Dorms](https://www.mysterymaker.party/blog/murder-mystery-for-college-dorm-activities): Plan a murder mystery night for your college dorm floor. RA programming guide with common room setup, budget-friendly tips, and diversity-inclusive theme ideas.
 - [Murder Mystery Games for Library Programs](https://www.mysterymaker.party/blog/murder-mystery-for-library-programs): Run a murder mystery program at your public library on a small budget. Community engagement planning guide with all-ages adaptations and practical setup steps.
 - [Murder Mystery Parties for Small Spaces](https://www.mysterymaker.party/blog/murder-mystery-parties-small-spaces-compact-venues): Generate murder mysteries perfect for small apartments, conference rooms, and compact venues with single-room investigations and intimate formats.
 - [Arabian Nights Murder Mystery Party: 1001 Nights of Intrigue](https://www.mysterymaker.party/blog/murder-mystery-party-arabian-nights-theme): Arabian Nights murder mystery parties feature palace intrigue, mysterious bazaars, treasure, and exotic suspense. Host a 1001 Nights-inspired whodunit.
