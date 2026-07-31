@@ -1,6 +1,6 @@
 # ADR-0047: Closed-loop auto-remediation for content-quality defects
 
-- **Status:** Accepted — **built 2026-07-29** (deployed, unscheduled pending eval; see Build Notes)
+- **Status:** Accepted — **built 2026-07-29**, **scheduled 2026-07-31** (re-eval passed; cron active at `43 */4 * * *`)
 - **Date:** 2026-07-29
 
 ## Context
@@ -81,6 +81,27 @@ Independent fresh-tab eval returned **NOT SAFE to schedule** — one blocking co
 - **#10 — brittle DESCRIPTION terminator.** Broadened to `#{2,6}` (space-optional) + a line-anchored `significance` truncation so the host-only SIGNIFICANCE block (names the murderer) can never reach an image prompt regardless of heading form.
 
 Eval confirmed real and correct: the security grant fix (anon/authenticated EXECUTE=false), the universal gate, escalate-only never mutating, caps, bounded window, byte-for-byte revert. Records were uncommitted — fixed by the same commit as these fixes.
+
+## Re-eval and scheduling (2026-07-31)
+
+Independent fresh-tab re-eval of the post-eval fixes: **PASS — scheduled.** The committed source was deployed as v2 first (the running v1 was still the pre-fix code, so the fixes were not live until this eval deployed them).
+
+Verified from ground truth, with synthetic fixtures created and deleted:
+
+- **#8 is fixed.** A character `accusations` field with an embedded `[choose …]` artifact (476 chars) escalated as `escalate:no_mechanical_fix`; field md5 **identical** before and after, across four consecutive real runs. This is the exact case that emptied the field before.
+- **Content-loss guard fires and reverts cleanly.** A character with a strippable `background` (775 chars) *and* a short `secret` (152 chars) produced a mid-apply throw on field 2 — `content-loss guard: character.secret 152->71 chars`. The already-written `background` was reverted **byte-for-byte (md5 identical)** and logged `…|apply_failed|reverted`. #7 confirmed.
+- **#10 terminator holds** for `#### `, `#####`(no space), `**SIGNIFICANCE**`, `> SIGNIFICANCE`, `# SIGNIFICANCE` and `## Significance`; no culprit name reaches the prompt in any form.
+- **Regressions all hold:** `dry_run` mutated nothing and spent nothing (md5s + empty log); `window_days: 9999` clamped to 30; attempt cap engaged (`3 prior attempts, cap 2`); spend accounting read a simulated $5 day as $5/$5; `anon`/`authenticated` `EXECUTE = false` on both accessor RPCs; escalate-only package untouched (`updated_at` unchanged).
+- **Final production run:** 1 escalation, 0 fixed, 0 failed, **$0**, nothing mutated.
+
+### Findings recorded, none blocking (see `00_INBOX` note)
+
+1. **The `template_artifact` auto-fix is effectively inert in production.** All 9 artifact instances that have ever existed in this database (7 `accusations`, 2 `detective_script`) are embedded mid-sentence — **zero** are standalone lines, including the two `detective_script` cases this ADR described as the standalone shape (they are `Detective [choose a name …]` inside a 464/493-char paragraph). Post-fix that means 9/9 escalate. This is *correct and safe*, but the class no longer self-heals, so the "mechanical defects stop reaching the owner" benefit does not currently apply to it. A span-aware repair (or regeneration) is the real fix.
+2. **The loss guard can block a legitimate standalone-note strip on short fields.** A standalone note only survives the guard when the field is at least `note_length / 0.3` (~267 chars for the standard 80-char note). Below that, the correct fix degrades to `failed` → revert → escalate. Safe direction, but it costs an attempt against the cap.
+3. **`game_overview` is the one revert that *can* trip the guard.** It restores the *shorter* original over a longer regenerated overview; if the regeneration is >1.43× the original, the revert throws and is logged `revert_not_feasible`, leaving the regenerated text in place. The "reverts restore the longer original, so they never trip this" comment in `writeField` does not hold for this handler.
+4. **`before_value` is `NULL` on the `apply_failed` path** (the throwing `apply` never returned it). Harmless for the strip/retarget handlers, whose `revert` reads edits from closure. But `handleVictimMismatch.revert` reads the *passed* `beforeValue`, so an apply-failure after `regenerate-parent-content` had already overwritten `game_overview` yields `apply_failed|revert_not_feasible` with no before-value in the log — the original would be unrecoverable. Narrow (needs a partial failure in the regenerator, and the class currently has 0 flagged packages), but it is a hole in Rail 5.
+
+Findings 3 and 4 both sit in `game_overview_victim_mismatch`, which has zero flagged packages today, so live exposure is nil. They were left unfixed deliberately: making discretionary code changes at the end of an independent eval would invalidate the thing being evaluated.
 
 ## Key Files
 

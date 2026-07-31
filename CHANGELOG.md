@@ -2,6 +2,13 @@
 
 ## 2026-07-31
 
+### Improvement: Auto-remediation worker re-eval passed — cron enabled (ADR-0047)
+Independent re-eval of the blocking fixes returned **PASS**; the worker now runs unattended every 4 hours (`43 */4 * * *`, active). The eval first deployed the committed source as **v2** — the running v1 was still the pre-fix code, so the fixes were not actually live until this ran.
+- **The blocking bug is fixed at the behavioural level:** a character `accusations` field with an embedded `[choose …]` artifact escalated as `escalate:no_mechanical_fix` with its md5 **identical** across four consecutive real runs. Previously this emptied the field.
+- **Content-loss guard + apply-revert confirmed together:** a mid-apply throw on field 2 of 2 reverted the already-written field 1 **byte-for-byte** and logged `…|apply_failed|reverted`.
+- **Regressions hold:** `dry_run` mutated/spent nothing, window clamped 9999→30, attempt cap engaged, spend cap read a simulated $5 day as zero headroom, `anon`/`authenticated` `EXECUTE=false` on the accessor RPCs, escalate-only never mutated. Final production run: 1 escalation, $0, nothing mutated.
+- **Recorded as open, not blocking:** all 9 template artifacts that have ever existed in this DB are embedded mid-sentence (zero standalone), so that auto-fix class now escalates 100% of the time in production rather than self-healing; and two narrow `game_overview` revert/audit gaps. See ADR-0047 "Re-eval and scheduling" and the `00_INBOX` note.
+
 ### Fix: Auto-remediation worker — blocking content-destruction bug caught by eval, fixed (ADR-0047)
 An independent eval of the ADR-0047 [auto-remediate-packages](supabase/functions/auto-remediate-packages/index.ts) worker returned **NOT SAFE to schedule**: its template-artifact fix stripped the whole line containing an artifact, but in production every artifact is embedded mid-sentence in accusation speeches (`I believe [choose …] is the murderer`) — so it emptied the field, and a gutted-but-clean field passes the detector, so the re-detect gate couldn't catch it. Fixes:
 - **`stripArtifactLines` rewritten** to excise only the bracketed artifact span, and only when the line was a standalone authoring note; an artifact embedded in real content returns `safe:false` and the package **escalates instead of being gutted**.
