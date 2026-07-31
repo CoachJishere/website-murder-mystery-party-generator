@@ -1,6 +1,6 @@
 # ADR-0047: Closed-loop auto-remediation for content-quality defects
 
-- **Status:** Accepted
+- **Status:** Accepted — **built 2026-07-29** (deployed, unscheduled pending eval; see Build Notes)
 - **Date:** 2026-07-29
 
 ## Context
@@ -52,10 +52,41 @@ Build a scheduled **`auto-remediate-packages`** edge function, wired to the exis
 - **Open follow-on:** a child-content regenerator to bring identity-contamination and slip-culprit-leak into the auto-fix set; until then they escalate.
 - Build is done as a focused pass with an independent eval before it runs unattended (it mutates paid packages and spends money — highest-stakes automation in the repo).
 
+## Build Notes (2026-07-29)
+
+Built as specified. The worker is **deployed but not scheduled** — the pg_cron migration is committed un-run because this ADR requires an independent eval before it mutates paid packages unattended. `POST { "dry_run": true }` reports planned actions without mutating or spending.
+
+**Implementation decisions worth recording:**
+
+- **All rails live in one shared `runGatedAttempt` code path** (cap → spend → apply → re-detect → accept/revert), rather than in each defect handler. A handler contributes only a `FixPlan` (action, cost, apply, revert), so a future defect class cannot accidentally ship without the gate.
+- **Whitelisted field accessors instead of direct PostgREST writes.** `remediation_read_field`/`remediation_write_field` centralise the jsonb-string handling (`#>> '{}'` in, `to_jsonb` out) that `evidence_cards`/`relationships`/`secrets` need, and refuse any non-whitelisted field — so the worker structurally cannot write `generation_status`, `master_context` or `host_access_token`. The jsonb writer additionally refuses when the column currently holds an object/array, since `to_jsonb(text)` would change its shape.
+- **The artifact strip is narrower than the detector.** Only the three authorised patterns are stripped. The meta-text detector also fires on model chain-of-thought ("let me reconsider"), which needs a rewrite rather than a deletion — so those fail the re-detect gate and escalate, which is the correct outcome.
+- **Image prompts are built only from the player-facing `#### DESCRIPTION`,** stopping at the next `####`. The `SIGNIFICANCE (Host Only)` block routinely names the murderer and must never reach an image prompt.
+- **Attempt-cap counting excludes `skip:`/`escalate:` bookkeeping rows,** and those rows are written at most once per package/class, so a permanently-unfixable package neither consumes its own cap nor grows a log row every 4 hours.
+
+**Trade-off flagged for the eval — revert-on-gate-failure restores a known-bad state.** As specified, a fix rejected by the re-detect gate is reverted. For a package with both a strippable artifact *and* unstrippable chain-of-thought, this means the artifact is put back before escalating, even though the partially-cleaned version was arguably better content. This was chosen deliberately: escalation assumes the human sees the package as the detector described it, and "leave a partial mutation in place" is the harder invariant to reason about. Worth revisiting if it proves annoying in practice — it is a one-line change in `runGatedAttempt`, not a structural one.
+
+**Verification (synthetic fixture, created and deleted):** both free fixes applied and passed the gate; a deliberately poisoned package was rejected by the gate and reverted **byte-for-byte** (md5 match); the third attempt hit `skip:attempt_cap`; the spend cap read a simulated $5 day as zero remaining headroom. Escalate-only classes were logged and never mutated.
+
+**Security issue found and fixed during the build:** the migration's `REVOKE ALL … FROM PUBLIC` did not remove the `EXECUTE` grants Supabase issues to `anon`/`authenticated` by default for `public`-schema functions, leaving `remediation_write_field` — an arbitrary-content writer — callable unauthenticated via PostgREST. Fixed with an explicit `REVOKE … FROM anon, authenticated`, folded back into the migration. Generalises to any future non-public `SECURITY DEFINER` function.
+
+**Still open (unchanged by this build):** the child-content regenerator that would let identity-contamination and slip-culprit-leak join the auto-fix set.
+
+## Post-eval fixes (2026-07-31)
+
+Independent fresh-tab eval returned **NOT SAFE to schedule** — one blocking content-destruction bug the re-detect gate structurally could not catch. Fixes applied (deploy + independent re-eval still required before the cron is enabled):
+
+- **#8 (BLOCKING) — whole-line artifact strip destroyed content.** In production every artifact is embedded mid-sentence in accusation speeches (`I believe [choose …] is the murderer`), never on its own line, so line-stripping emptied the field — and a gutted-but-artifact-free field passes the detector, so the gate accepted it. Rewrote `stripArtifactLines` to excise only *bracketed spans* and only when the line was a standalone authoring note (remainder empty/punctuation); if the artifact is embedded in real content it returns `safe:false` and the handler **escalates instead of gutting**. Added a **content-loss guard** in `writeField` (refuse any write that empties a field or removes >30% of a ≥40-char field) as a handler-independent backstop → throws → gate reverts + escalates.
+- **#7 — all-or-nothing hole on apply failure.** A throw mid-apply (e.g. the loss guard tripping on field 3 of 5) logged `failed` without reverting, leaving a partial mutation. The apply-catch now calls `plan.revert()` (handlers read edits from closure, so it cleans up partial writes) and records `|reverted`.
+- **#10 — brittle DESCRIPTION terminator.** Broadened to `#{2,6}` (space-optional) + a line-anchored `significance` truncation so the host-only SIGNIFICANCE block (names the murderer) can never reach an image prompt regardless of heading form.
+
+Eval confirmed real and correct: the security grant fix (anon/authenticated EXECUTE=false), the universal gate, escalate-only never mutating, caps, bounded window, byte-for-byte revert. Records were uncommitted — fixed by the same commit as these fixes.
+
 ## Key Files
 
-- `supabase/functions/auto-remediate-packages/index.ts` — the worker (to build)
-- `supabase/migrations/*_auto_remediation_log.sql` — audit table (to build)
+- `supabase/functions/auto-remediate-packages/index.ts` — the worker (built; deployed v1, `verify_jwt` on)
+- `supabase/migrations/20260729_auto_remediation_log.sql` — audit table + whitelisted field accessors + the anon/authenticated revoke (built). Note: applied to the DB as **two** migration versions — `20260729082237_auto_remediation_log` and the same-day security follow-up `20260729082931_remediation_field_accessors_revoke_anon`. The single repo file folds both together, so a fresh apply is correct; the DB history simply shows the two-step sequence.
+- `supabase/migrations/20260729_schedule_auto_remediate_packages.sql` — pg_cron schedule (written, **deliberately un-run**)
 - `supabase/functions/generate-evidence-images/index.ts` (v15), `regenerate-parent-content/index.ts` (v6) — the recovery tools it drives
 - `supabase/migrations/20260725_detect_content_quality_issues.sql`, `20260722_detect_character_identity_conflicts.sql` — the detectors it gates on
 - `.github/workflows/health-check.yml` — detection + the escalation channel it falls back to

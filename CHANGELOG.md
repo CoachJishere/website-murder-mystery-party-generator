@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-07-31
+
+### Fix: Auto-remediation worker — blocking content-destruction bug caught by eval, fixed (ADR-0047)
+An independent eval of the ADR-0047 [auto-remediate-packages](supabase/functions/auto-remediate-packages/index.ts) worker returned **NOT SAFE to schedule**: its template-artifact fix stripped the whole line containing an artifact, but in production every artifact is embedded mid-sentence in accusation speeches (`I believe [choose …] is the murderer`) — so it emptied the field, and a gutted-but-clean field passes the detector, so the re-detect gate couldn't catch it. Fixes:
+- **`stripArtifactLines` rewritten** to excise only the bracketed artifact span, and only when the line was a standalone authoring note; an artifact embedded in real content returns `safe:false` and the package **escalates instead of being gutted**.
+- **Content-loss guard added to `writeField`** — refuses any write that empties a field or drops >30% of a ≥40-char field (a backstop the re-detect gate can't provide), which throws → gate reverts + escalates.
+- **Apply-failure now reverts** (was leaving partial mutations with no before-value), restoring the all-or-nothing invariant.
+- **DESCRIPTION→image-prompt terminator hardened** so the host-only SIGNIFICANCE block (names the murderer) can't leak into an image prompt in any heading form.
+Worker committed (was uncommitted — at risk on the shared checkout) but **still not scheduled**: an independent re-eval of these fixes gates enabling the cron.
+
+## 2026-07-29
+
+### Feature: Closed-loop auto-remediation worker — mechanical content defects now self-heal (ADR-0047)
+ADR-0042 gave us **detection**; remediation was still manual. Every live catch so far — Black Swan (meta-leak), Cognitive Dissonance (missing image), Ghosts Of The Past (self-directed question) — was found automatically but *fixed* only because Jonathan was in the loop. New [auto-remediate-packages](supabase/functions/auto-remediate-packages/index.ts) edge function (deployed v1, esbuild-validated, `verify_jwt` on) closes the loop over a bounded 30-day window.
+
+- **Auto-fixed classes:** missing evidence images (forensic prompt derived from the card's player-facing `#### DESCRIPTION`, then `generate-evidence-images` v15, ~$0.04/img); self/victim-directed questions (deterministic retarget to a living suspect not already questioned that round); template artifacts (`[choose …]` / `[CLOSING PARAGRAPH …]` / `master_context` lines stripped); `game_overview` victim mismatch (`regenerate-parent-content` v6, Haiku).
+- **Escalate-only, never auto-fixed:** identity contamination and slip-culprit-leak. Both are child-generated and judgment-heavy with no child-content regenerator yet, so the worker logs the escalation and leaves the existing health-check alert to carry them.
+- **The re-detect gate is the core invariant:** after every fix the worker re-runs *that defect's own detector* and accepts the fix only if the package now passes; otherwise it reverts (where feasible) and escalates. Worst case therefore degrades to today's escalate-to-a-human behaviour — it can never silently ship something worse.
+- **Rails, all enforced in one shared code path** so no defect handler can bypass one: per-package/per-defect attempt cap of 2 (counted from the log, so it can never loop), global daily spend cap of $5 (summed from the log; halt + escalate), the bounded window (a caller may narrow it, never widen it), and a before-value recorded for every mutation so anything it did is reversible by hand.
+- **New `auto_remediation_log` table** ([migration](supabase/migrations/20260729_auto_remediation_log.sql)) is both the audit trail and the safety state — the attempt cap and spend cap read back out of it, so pruning rows re-arms both. Content writes go through whitelisted `remediation_read_field`/`remediation_write_field` accessors that handle the jsonb-string columns (`evidence_cards`/`relationships`/`secrets`) via `#>> '{}'` + `to_jsonb`, and raise on any non-whitelisted field — the worker cannot be induced to touch `generation_status`, `master_context` or `host_access_token`.
+- **Verified against a synthetic fixture** (created, exercised, deleted): both free fixes applied and passed the gate; a package poisoned with an artifact line *plus* unstrippable model chain-of-thought was correctly rejected by the gate and `host_guide` **reverted byte-for-byte** (md5 match); the 3rd attempt on that class hit `skip:attempt_cap`; the spend cap correctly read a $5 day as zero remaining headroom. Audit log and fixture cleaned up afterwards — the table is empty for the pre-enable eval.
+- **Scheduling is written but deliberately NOT applied** ([migration](supabase/migrations/20260729_schedule_auto_remediate_packages.sql), every 4h at :43 — shorter than the health check's 6h so defects self-heal *before* an alert fires, and offset from its :17 slot). ADR-0047 requires an independent eval first; the worker supports `{"dry_run": true}` to report planned actions without mutating or spending.
+
+### Fix: Security — remediation field accessors were reachable by `anon` via PostgREST
+Caught by the Supabase security advisor immediately after applying the ADR-0047 migration, before commit. The migration used `REVOKE ALL … FROM PUBLIC`, which does **not** remove the `EXECUTE` grants Supabase issues to `anon` and `authenticated` by default for functions in the `public` schema — those are explicit role grants. `remediation_write_field` is an arbitrary-content writer over `mystery_packages`/`mystery_characters`, so for a short window anyone could have rewritten any package's delivered text unauthenticated via `/rest/v1/rpc/remediation_write_field`.
+- **Fix:** explicit `REVOKE EXECUTE … FROM anon, authenticated` on both accessors, applied and folded back into the migration file so a fresh apply is correct. Verified via `has_function_privilege`: anon `false`, authenticated `false`, service_role `true`. The worker is unaffected (the service role bypasses the grant system) and was re-run clean afterwards.
+- **Worth generalising:** any future `SECURITY DEFINER` function in `public` that isn't meant to be public needs the explicit anon/authenticated revoke, not just the PUBLIC one.
+
 ## 2026-07-28
 
 ### Fix: Evidence-image generation now polls slow Flux predictions (second failure mode)
