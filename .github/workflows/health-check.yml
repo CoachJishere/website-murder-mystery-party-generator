@@ -16,6 +16,11 @@
 #      0 characters or empty overview (ADR-0043, "Victorian mansion" incident).
 #      This is the check that would have caught a silent empty package with no one
 #      watching — checks 1-9 all missed it because it was marked *completed*.
+#   11. Structural defects (ADR-0048, "Velvet Viper" incident): invalid
+#      character_role (e.g. a raw 502 body stored as the role), >1 murderer in a
+#      predetermined game, a character whose background names a different person,
+#      or a gender-duplicated cast. ESCALATE-ONLY — none of these are auto-fixable
+#      by the ADR-0047 remediation worker; only regeneration resolves them.
 #
 # On failure: opens (or comments on) a GitHub issue labelled `health-alert`.
 # Always: writes monitoring/health-status.md and commits it if changed.
@@ -192,6 +197,28 @@ jobs:
             fi
           fi
 
+          # 11. Structural defects (ADR-0048 detector, migration 20260801).
+          # Structurally broken packages that reached `completed`: an invalid
+          # character_role (the "Velvet Viper"/"Coronation" 502-stored-as-role
+          # failure), two murderers in a predetermined game, a character row whose
+          # own background names a different person, or a gender-duplicated cast.
+          # Same 30-day rolling window as checks 5-10.
+          # ESCALATE-ONLY: do NOT auto-fix. None of these are repairable in place —
+          # you cannot invent the correct role, choose between two murderers, or
+          # un-cross-wire a cast. Regeneration is the only remedy, so this alert
+          # is deliberately outside the auto-remediation worker's fix set.
+          STRUCT=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_structural_defects" \
+            -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
+          if [ "$STRUCT" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the structural-defect detector (Supabase API error)\n"
+            STRUCT_COUNT="?"
+          else
+            STRUCT_COUNT=$(echo "$STRUCT" | jq 'length')
+            if [ "$STRUCT_COUNT" -gt 0 ]; then
+              PROBLEMS="${PROBLEMS}- 🔴 ${STRUCT_COUNT} package(s) with structural defects — NOT auto-fixable, needs regeneration: $(echo "$STRUCT" | jq -r '[.[] | "\(.title) [paid=\(.is_paid)] \(.defects | join(" | "))"] | join("; ")')\n"
+            fi
+          fi
+
           # Write status file
           mkdir -p monitoring
           {
@@ -219,6 +246,7 @@ jobs:
             echo "| Slip-culprit leak (30 days) | ${SCL_COUNT} |"
             echo "| Self-directed questions (30 days) | ${SDQ_COUNT} |"
             echo "| Completed-but-empty packages (30 days) | ${EMPTY_COUNT} |"
+            echo "| Structural defects — escalate only (30 days) | ${STRUCT_COUNT} |"
           } > monitoring/health-status.md
 
           if [ -n "$PROBLEMS" ]; then

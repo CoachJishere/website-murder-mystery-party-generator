@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-08-01
+
+### Feature: Structural-integrity detector — health check 11, escalate-only (ADR-0048)
+ADR-0042's detectors read *prose*; nothing read *structure*. "Death At The Velvet Viper" (paid, 2026-07-30) reached `completed` with a 502 HTML body stored as a character's `character_role`, **two** `murderer` characters for one crime, and a gender-duplicated 30-person cast — and every content detector plus the health check reported green. New [migration](supabase/migrations/20260801_detect_structural_defects.sql) adds `list_packages_with_structural_defects(_since)` (read-only, `SECURITY DEFINER`, `service_role`), wired into [health-check.yml](.github/workflows/health-check.yml) as check 11 🔴 on the same 30-day window as checks 6–10.
+- **Four sub-checks, validated against ALL history: 6 packages flagged, zero false positives.** `invalid_role` (`character_role` outside `murderer/accomplice/suspect/redHerring`; NULL is legitimate for random-slip games) — 3 hits; `multiple_murderers` (>1 murderer in a predetermined game) — 2 hits; `duplicated_cast` (two characters sharing a surname **and** a byte-identical `**Role:**` line) — 1 hit, exactly the Velvet Viper package; `name_background_mismatch` (a row whose own `**Name:**` line names a different person) — 0 hits, zero FP, verified by construction against the original Grace/Gus Marchand cross-wiring.
+- **It found a live defect on its first run:** "Murder At The Coronation: A Royal Scandal" (paid, 2026-07-31) has an **unfixed 502 stored as a `character_role`** — the motivating failure recurred the next day and nobody had noticed. Inside the 30-day window, so check 11 will alert on it.
+- **ESCALATE-ONLY by design.** None of these are repairable in place — you cannot synthesise the correct role from a 502 body, choose between two murderers, or un-cross-wire a cast. Regeneration is the only remedy, so the ADR-0047 auto-remediation worker is deliberately left untouched and its handler allowlist unchanged.
+- **Two sub-checks investigated and dropped rather than shipped noisy** (same discipline as the ADR-0042 meta-leak tightening): cast-count vs `player_count` flagged **35** packages (`player_count` is the request-time ask, not a contract), and raw duplicate-surname flags every legitimate family mystery. The naive name-vs-background comparison flagged **18** packages, almost all benign — mostly the intentional `Jordan/Jordana Vance` gender-flexible naming convention — and was tightened to the cross-wire form instead.
+
+### Fix: Detector `generation_status` filter was silently skipping 17 completed packages (ADR-0048)
+Found while validating check 11. `generation_status` is `jsonb`, but **23 of 144 package rows hold a jsonb *string* of encoded JSON** rather than an object — including the Velvet Viper package itself. For those rows `generation_status->>'status'` returns NULL, so the `= 'completed'` filter used by every ADR-0016/0041/0042 detector (and the ADR-0047 worker's window) skips them entirely; 17 of the 23 are `completed`. The new detector normalises both encodings and is unaffected. The existing detectors still carry the narrow filter — they were validated against a silently reduced corpus. Logged as an open follow-up, not bundled into this change.
+
 ## 2026-07-31
 
 ### Improvement: Auto-remediation worker re-eval passed — cron enabled (ADR-0047)
