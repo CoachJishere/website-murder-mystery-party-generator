@@ -198,20 +198,27 @@ async function writeField(
   rowId: string,
   field: string,
   value: string,
+  opts?: { bypassLossGuard?: boolean },
 ): Promise<void> {
   // Content-loss guard — a backstop independent of any handler. The re-detect
   // gate cannot catch a gutted-but-clean field (a shorter, artifact-free field
   // still passes its detector), so this is what turns "silently destroyed paid
   // content" into a thrown error the gate handles as revert + escalate. Never
-  // empty a substantive field or delete the bulk of it. Reverts restore the
-  // longer original, so they never trip this.
-  const current = (await readField(scope, rowId, field)).trim();
-  if (current.length >= 40) {
-    const newLen = value.trim().length;
-    if (newLen === 0 || newLen < current.length * 0.7) {
-      throw new Error(
-        `content-loss guard: ${scope}.${field} ${current.length}->${newLen} chars (>30% loss) — refusing`,
-      );
+  // empty a substantive field or delete the bulk of it.
+  //
+  // `bypassLossGuard` is for REVERTS: restoring a captured before-value is always
+  // legitimate, even when it's shorter than what's there now (e.g. the
+  // victim-mismatch revert restores the shorter original over a longer
+  // regenerated overview — finding #3). A forward fix must never pass it.
+  if (!opts?.bypassLossGuard) {
+    const current = (await readField(scope, rowId, field)).trim();
+    if (current.length >= 40) {
+      const newLen = value.trim().length;
+      if (newLen === 0 || newLen < current.length * 0.7) {
+        throw new Error(
+          `content-loss guard: ${scope}.${field} ${current.length}->${newLen} chars (>30% loss) — refusing`,
+        );
+      }
     }
   }
   const { error } = await supabase.rpc("remediation_write_field", {
@@ -842,26 +849,34 @@ async function handleTemplateArtifacts(ctx: RunCtx, row: Record<string, unknown>
 async function handleVictimMismatch(ctx: RunCtx, row: Record<string, unknown>): Promise<void> {
   const packageId = row.package_id as string;
 
-  await runGatedAttempt(ctx, packageId, "game_overview_victim_mismatch", async () => ({
-    action: "regenerate_parent_content:game_overview",
-    costUsd: OVERVIEW_REGEN_COST_USD,
-    apply: async () => {
-      const before = await readField("package", packageId, "game_overview");
-      const res = await invokeFunction("regenerate-parent-content", {
-        packageId,
-        fields: ["game_overview"],
-      });
-      if (!res.ok) throw new Error(`regenerate-parent-content: ${res.detail}`);
-      return { beforeValue: before, note: res.detail.slice(0, 200) };
-    },
-    // Feasible: the regenerator only overwrote game_overview, so writing the
-    // old text back restores the exact prior state.
-    revert: async (before) => {
-      if (before === null) return false;
-      await writeField("package", packageId, "game_overview", before);
-      return true;
-    },
-  }));
+  await runGatedAttempt(ctx, packageId, "game_overview_victim_mismatch", async () => {
+    // Capture the before-value at plan-build time so it lives in this closure.
+    // The revert then reads it from closure rather than from its argument, which
+    // is why it still works when apply THREW after regenerate-parent-content had
+    // already overwritten game_overview (the arg is null on that path — finding
+    // #4: previously that left the regenerated text with no recoverable original).
+    const before = await readField("package", packageId, "game_overview");
+    return {
+      action: "regenerate_parent_content:game_overview",
+      costUsd: OVERVIEW_REGEN_COST_USD,
+      apply: async () => {
+        const res = await invokeFunction("regenerate-parent-content", {
+          packageId,
+          fields: ["game_overview"],
+        });
+        if (!res.ok) throw new Error(`regenerate-parent-content: ${res.detail}`);
+        return { beforeValue: before, note: res.detail.slice(0, 200) };
+      },
+      // Restores the captured original. Reads `before` from closure (not the
+      // arg) so it survives an apply-failure, and bypasses the content-loss guard
+      // because the original is legitimately shorter than the regeneration
+      // (finding #3 — otherwise the revert threw and the bad overview stayed).
+      revert: async () => {
+        await writeField("package", packageId, "game_overview", before, { bypassLossGuard: true });
+        return true;
+      },
+    };
+  });
 }
 
 async function handleMissingImages(ctx: RunCtx, row: Record<string, unknown>): Promise<void> {

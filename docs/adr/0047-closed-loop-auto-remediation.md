@@ -112,3 +112,13 @@ Findings 3 and 4 both sit in `game_overview_victim_mismatch`, which has zero fla
 - `supabase/migrations/20260725_detect_content_quality_issues.sql`, `20260722_detect_character_identity_conflicts.sql` — the detectors it gates on
 - `.github/workflows/health-check.yml` — detection + the escalation channel it falls back to
 - [ADR-0042](0042-content-quality-detectors-and-generation-guardrails.md) — the detection layer this closes the loop on
+
+## Findings follow-up (2026-08-01)
+
+After the passing re-eval scheduled the cron, four findings were recorded (vault note "Auto-remediation worker — open findings"). Actions:
+
+- **#1 template_artifact is de-facto escalate-only.** Every artifact instance in the DB is embedded mid-sentence (accusations 531–1277 chars; the two detective_script cases too) — zero standalone. So the (correctly) conservative strip escalates all of them; this class does not self-heal in production. The worker's real live self-heal value is **missing-images + self-directed-questions** (the classes actually hit live) **+ victim-mismatch when it occurs**. Honest downgrade of the benefit claim; the proper fix for embedded artifacts is regeneration (proven on Velvet Viper/Coronation) or a child-content repair — the open follow-on.
+- **#3 + #4 (victim-mismatch handler) — FIXED IN SOURCE (deploy pending).** One closure refactor: `handleVictimMismatch` captures `before` at plan-build time; its `revert` reads it from closure (survives an apply-failure — #4) and writes with a new `writeField` `bypassLossGuard` option (a shorter original restoring over a longer regeneration no longer trips the guard — #3). **Not yet deployed** — folded into the next integrity pass; zero live exposure (no victim-mismatch packages exist), so the live worker is unaffected until one appears.
+- **#2 loss-guard blocks short-field strips** — accepted as safe noise; near-moot given #1 (no standalone notes exist to strip). No change.
+
+Also recorded (separate, larger): **`generation_status` is double-encoded on 23/144 rows (17 completed, incl. Velvet Viper)**, so `generation_status->>'status'` returns NULL and the `= 'completed'` filter used by every ADR-0016/0041/0042 detector silently SKIPS them — their "clean across history" validations were against a reduced corpus. The structural detector (ADR-0048) tolerates both encodings; the others do not. Fix (recommended): normalise the 23 rows to a proper jsonb object in one migration, which repairs all detectors at once. Tracked for a dedicated pass.
