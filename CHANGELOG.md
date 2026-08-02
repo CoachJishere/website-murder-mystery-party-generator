@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-08-02
+
+### Fix: auto-remediation worker could not see the packages the completion gate held (ADR-0055)
+ADR-0053 (shipped the previous day) added `self_directed_question` to the pre-completion gate on the stated grounds that the class "is fixed post-completion by the live ADR-0047 worker." That premise was false as shipped: the gate sets `generation_status.status = 'needs_review'`, but all eight `list_packages_*()` detector RPCs — the way the worker finds work — filtered on `= 'completed'`. The gate's own action made the package invisible to the worker meant to heal it, and since nothing else clears the flag, `MysteryView`'s stale-needs-review banner (>10 min) became permanent.
+- **Fix: [20260802_widen_detector_rpcs_to_needs_review.sql](supabase/migrations/20260802_widen_detector_rpcs_to_needs_review.sql)** — widens the status predicate on all eight detector RPCs to `IN ('completed', 'needs_review')`. Applied to all eight rather than just the one that fired, because the bug is in the shared assumption: a gate-held package is by definition one with a detected defect, so it is the most deserving of detector attention, not the least. No change to the worker, the gate, or the crons — the rest of the chain already works (`heal_completed_packages()` re-checks the blocking-defects function every 2 min and promotes back to `completed` once clean).
+- **Applied programmatically** from `pg_get_functiondef()` with a string replacement on the predicate, so every function body is preserved byte-for-byte apart from that predicate, plus an assertion that exactly 8 functions were rewritten — a future reword fails the migration loudly instead of silently under-applying.
+- **Side effect, intended:** the 6-hourly health check shares these RPCs, so `needs_review` packages that were previously invisible to it now surface. The four hold-only classes (`meta_text_leak`, `victim_mismatch`, `slip_culprit_leak`, `identity_conflict`) are exactly the ones needing a human, and the old filter hid them from the alerting that would say so.
+- **Found via a customer recovery**, not a sweep: package `33671764-71f9-488a-bed7-9afc712b0051` was the first generation to run after ADR-0053 shipped, and hit the deadlock immediately — `package_completion_blocking_defects()` returned two defects while `list_packages_with_self_directed_questions()` returned zero rows. Full record in [ADR-0055](docs/adr/0055-widen-detector-rpcs-to-gate-held-packages.md).
+
+### Fix: customer package rebuilt from the concept she actually approved
+"The Case Of The Stolen Golden Flamingo" (paid, conversation `a027af70-39b7-4e87-aa4e-8be295322447`) was generated from the **first** draft of the customer's concept rather than her final one — she received an entirely different mystery from the one she approved in chat, and emailed to say so.
+- **Cause:** the edge function's concept auto-snapshot ([mystery-webhook-trigger/index.ts:340-360](supabase/functions/mystery-webhook-trigger/index.ts#L340)) picks the *latest* assistant message matching a hardcoded header allow-list. Her revision made the AI rename the section from `## Character List` to `## Suspect List`, which is not in the list — so "latest match" silently fell back to the first draft. The written value is non-null, so nothing downstream corrected it. Failure is completely silent: right title, right player count, no error, one clean run logged in `child_generation_attempts`.
+- **Recovery:** repointed `approved_concept_message_id` at the final concept, reset `generation_status`/`generation_completed_at`, retriggered generation. Old package and characters backed up to `temp-files/` (gitignored) first. Rebuild produced the correct luau cast and plot.
+- **Code fix not yet shipped** — the header allow-list is the shallow patch; the durable fix is to stop keying on header text and instead take the latest message that parses into ≥4 numbered character lines. Tracked in `00_INBOX/concept-snapshot-wrong-message-2026-08-02-mystery-maker.md` with a sweep of recent purchases still outstanding.
+
 ## 2026-08-01
 
 ### Feature: Child-content regenerator deployed — ADR-0051 layer 3 (ADR-0054)
