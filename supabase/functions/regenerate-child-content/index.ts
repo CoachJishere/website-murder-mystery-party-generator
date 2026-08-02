@@ -49,23 +49,34 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
  *      and JSON-safety rules verbatim) per affected character, per "call group"
  *      (the same call boundaries the Make blueprint uses — description/
  *      background/relationships/secret/introduction together, rumors/
- *      accusations together, and the round-script bundle together — so
- *      cross-field coherence within a call, like "don't re-target a question at
- *      someone round 2 already asked", is preserved exactly as the original
- *      generator relied on it being).
+ *      accusations together, and the round-script bundle together). A call
+ *      does NOT regenerate its whole group — the output_schema sent to Claude
+ *      is filtered down to only the requested/effective fields within that
+ *      group (`fieldsToGenerate = group.fields.filter(f =>
+ *      effectiveFields.includes(f))`), and every field that IS generated is
+ *      written; nothing extra is generated, and nothing generated is withheld.
+ *      Cross-field coherence within a call — like "don't re-target a question
+ *      at someone round 2 already asked" — is preserved only for whichever
+ *      fields in the group were actually requested together in the same call;
+ *      a request naming a single field in a group does not pull its
+ *      groupmates along for that benefit.
  *   4. Writes back ONLY the whitelisted fields the caller asked for, through the
  *      SAME `remediation_read_field` / `remediation_write_field` accessors
  *      ADR-0047 built (jsonb-scalar handling for `relationships`; the rest
  *      plain text). This function cannot write a non-whitelisted column — the
  *      accessors enforce that independently of anything below.
  *   5. THE RE-DETECT GATE (mandatory, non-negotiable): re-runs the same
- *      detector RPCs before and after, for all three character-level classes
- *      (identity_conflicts, meta_text_leak, slip_culprit_leak) — not just the
- *      hinted one — so a fix can never be accepted if it silently introduces a
- *      DIFFERENT defect class while curing the targeted one. Accept only if
- *      every defect instance naming a touched character is gone and no new
- *      instance (for ANY of the three classes) appeared; otherwise revert every
- *      write byte-for-byte and report failure. This is the identical
+ *      detector RPCs before and after, for all four character-level classes
+ *      (identity_conflicts, meta_text_leak, slip_culprit_leak,
+ *      self_directed_questions) — not just the hinted one — so a fix can never
+ *      be accepted if it silently introduces a DIFFERENT defect class while
+ *      curing the targeted one. self_directed_questions is included because
+ *      this function is whitelisted to write round2/3/4_questions, and
+ *      ADR-0053's completion gate blocks on that class exactly as it does the
+ *      other three. Accept only if every defect instance naming a touched
+ *      character is gone and no new instance (for ANY of the four classes)
+ *      appeared; otherwise revert every write byte-for-byte and report
+ *      failure. This is the identical
  *      accept-or-revert invariant `auto-remediate-packages`'s `runGatedAttempt`
  *      enforces — re-implemented here rather than imported because this
  *      function's unit of repair is "N characters, M fields" rather than
@@ -480,6 +491,7 @@ interface DetectorState {
   identity: { claimants: string[] }[]; // one entry per flagged kin_term row for this package
   meta: string[] | null;               // `sources` for this package, or null if clean
   slip: string[] | null;               // `characters` for this package, or null if clean
+  selfDirected: string[] | null;       // `offenders` for this package, or null if clean
 }
 
 async function callDetector(rpc: string): Promise<Record<string, unknown>[]> {
@@ -488,21 +500,31 @@ async function callDetector(rpc: string): Promise<Record<string, unknown>[]> {
   return (data ?? []) as Record<string, unknown>[];
 }
 
+// NOTE: there are 4 relevant classes here, not 3. This function is whitelisted
+// to write round2/3/4_questions, and ADR-0053's completion gate blocks on
+// self_directed_question (a "**To <own name>:**" question) exactly as it does
+// on the other three classes below. Omitting list_packages_with_self_directed_
+// questions from this set would let a repair silently reintroduce a
+// self-directed question and still report outcome: "fixed" — the same failure
+// mode the cross-class regression guard exists to prevent for the other three.
 async function detectorState(packageId: string): Promise<DetectorState> {
-  const [identityRows, metaRows, slipRows] = await Promise.all([
+  const [identityRows, metaRows, slipRows, selfDirectedRows] = await Promise.all([
     callDetector("list_packages_with_identity_conflicts"),
     callDetector("list_packages_with_meta_text_leak"),
     callDetector("list_packages_with_slip_culprit_leak"),
+    callDetector("list_packages_with_self_directed_questions"),
   ]);
   const identity = identityRows
     .filter((r) => r.package_id === packageId)
     .map((r) => ({ claimants: (r.claimants as string[]) ?? [] }));
   const metaRow = metaRows.find((r) => r.package_id === packageId);
   const slipRow = slipRows.find((r) => r.package_id === packageId);
+  const selfDirectedRow = selfDirectedRows.find((r) => r.package_id === packageId);
   return {
     identity,
     meta: metaRow ? ((metaRow.sources as string[]) ?? []) : null,
     slip: slipRow ? ((slipRow.characters as string[]) ?? []) : null,
+    selfDirected: selfDirectedRow ? ((selfDirectedRow.offenders as string[]) ?? []) : null,
   };
 }
 
@@ -527,6 +549,11 @@ function stillImplicatesTouched(state: DetectorState, touchedNames: Set<string>)
       if (touchedNames.has(normName(name))) hits.push(`slip_culprit_leak:${name}`);
     }
   }
+  if (state.selfDirected) {
+    for (const name of state.selfDirected) {
+      if (touchedNames.has(normName(name))) hits.push(`self_directed_questions:${name}`);
+    }
+  }
   return hits;
 }
 
@@ -549,6 +576,11 @@ function regressions(before: DetectorState, after: DetectorState): string[] {
   if (after.slip && before.slip) {
     const beforeSet = new Set(before.slip);
     for (const c of after.slip) if (!beforeSet.has(c)) out.push(`new slip_culprit_leak character: ${c}`);
+  }
+  if (after.selfDirected && !before.selfDirected) out.push(`new self_directed_questions: ${after.selfDirected.join(",")}`);
+  if (after.selfDirected && before.selfDirected) {
+    const beforeSet = new Set(before.selfDirected);
+    for (const c of after.selfDirected) if (!beforeSet.has(c)) out.push(`new self_directed_questions character: ${c}`);
   }
   return out;
 }
@@ -927,18 +959,35 @@ serve(async (req) => {
             results.push({ character_id: character.id, character_name: character.character_name, field, status: "error", note: "missing/empty in Claude response" });
             continue;
           }
-          const currentValue = await readField(character.id, field);
-          // Content-loss guard, same shape as auto-remediate-packages's
-          // writeField guard: never accept a regeneration that guts a
-          // substantive field, even though this is a fresh LLM call rather
-          // than a deterministic edit.
-          if (currentValue.trim().length >= 40 && value.trim().length < currentValue.trim().length * 0.5) {
-            results.push({ character_id: character.id, character_name: character.character_name, field, status: "skipped_content_loss_guard", note: `${currentValue.length}->${value.length} chars` });
-            continue;
+          // Guarded write: readField/writeField (remediation_read_field /
+          // remediation_write_field) can throw mid-loop — reproduced for
+          // `relationships` on characters whose existing value is null or a
+          // jsonb object (~7% of prod characters), but the invariant below
+          // must hold for ANY field's throw, not just that one. Before this
+          // guard, an unhandled throw here escaped both for-loops and the
+          // hadError handling below entirely, was caught only by the
+          // function's outermost try/catch, and returned a bare 500 WITHOUT
+          // revertAll() or logRow() — leaving whatever fields this call had
+          // already written in this same invocation committed, unreverted,
+          // and unlogged. That's exactly the "shipped something worse" outcome
+          // the re-detect gate exists to prevent; degrade to escalate instead.
+          try {
+            const currentValue = await readField(character.id, field);
+            // Content-loss guard, same shape as auto-remediate-packages's
+            // writeField guard: never accept a regeneration that guts a
+            // substantive field, even though this is a fresh LLM call rather
+            // than a deterministic edit.
+            if (currentValue.trim().length >= 40 && value.trim().length < currentValue.trim().length * 0.5) {
+              results.push({ character_id: character.id, character_name: character.character_name, field, status: "skipped_content_loss_guard", note: `${currentValue.length}->${value.length} chars` });
+              continue;
+            }
+            beforeValues.push({ character_id: character.id, field, value: currentValue });
+            await writeField(character.id, field, value.trim());
+            results.push({ character_id: character.id, character_name: character.character_name, field, status: "generated" });
+          } catch (e) {
+            hadError = true;
+            results.push({ character_id: character.id, character_name: character.character_name, field, status: "error", note: (e as Error).message });
           }
-          beforeValues.push({ character_id: character.id, field, value: currentValue });
-          await writeField(character.id, field, value.trim());
-          results.push({ character_id: character.id, character_name: character.character_name, field, status: "generated" });
         }
       }
     }
