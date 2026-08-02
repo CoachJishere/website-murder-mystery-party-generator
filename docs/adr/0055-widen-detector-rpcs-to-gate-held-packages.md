@@ -50,7 +50,7 @@ No change to the worker, the gate, or the crons. The rest of the chain already w
 
 1. gate sets `needs_review` (ADR-0053)
 2. detector RPC now returns the package → worker retargets the self-directed questions deterministically (ADR-0047)
-3. `heal_completed_packages()` sees `package_completion_blocking_defects()` clean → flips to `completed`, and `_maintain_needs_review_at()` clears `needs_review_at`, dismissing the banner
+3. `heal_completed_packages()` sees `package_completion_blocking_defects()` clean → flips to `completed`; the banner's own `generationStatus?.status !== 'needs_review'` early-return then dismisses it
 
 ## Rationale
 
@@ -73,6 +73,7 @@ No change to the worker, the gate, or the crons. The rest of the chain already w
 - Slightly larger scan surface for each detector. Negligible: `needs_review` is a small, transient population by design.
 - ADR-0053's "Interim behaviour" section is now accurate as written. No text change to ADR-0053; this ADR records the correction.
 - **Follow-up not addressed here:** nothing tests that the gate's held states and the detectors' visible states stay in agreement. A future assertion — every status the gate can set is a status some detector can see — would prevent the next instance of this class.
+- **Separate bug found while verifying this one, NOT fixed here:** `needs_review_at` is never populated on the gate path, so the banner's 10-minute "silent recovery window" does not work. Both are `BEFORE UPDATE` triggers on `mystery_packages`, and Postgres fires those in **name order**: `trg_maintain_needs_review_at` runs before `trg_validate_package_characters`, so when the timestamp trigger evaluates `NEW.generation_status->>'status'` it still sees the caller's value — the gate has not set `needs_review` yet. Observed directly on package `33671764-...`: `status = 'needs_review'` with `needs_review_at = NULL`. Because `MysteryView.tsx:1235` computes `ageMs = ts ? ... : Infinity`, a NULL timestamp makes the package look infinitely stale and the amber banner renders **immediately** rather than after the intended 10-minute grace period. Harmless for a package that heals promptly, but it defeats the exact UX softening the window was built for. Fix is likely a rename so the maintain trigger sorts after the gate (e.g. `trg_zz_maintain_needs_review_at`), or folding the timestamp assignment into `validate_package_characters()` itself; either deserves its own ADR and a disposable-row test of the ordering.
 
 ## Key files
 
