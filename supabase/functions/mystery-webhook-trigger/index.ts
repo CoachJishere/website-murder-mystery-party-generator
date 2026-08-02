@@ -49,25 +49,131 @@ interface ExtractedCharacter {
   description: string;
 }
 
+// Build regex to match any locale's character list header
+// Pattern: ## <Header> (N PLAYERS) or ## <Header>
+const headerAlternatives = CHARACTER_LIST_HEADERS.map(h =>
+  h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+).join('|');
+const sectionHeaderRegex = new RegExp(
+  `^#{2,3}\\s+(?:${headerAlternatives})(?:\\s*\\(\\d+\\s+.+?\\))?[:\\s]*$`, 'im'
+);
+
+// Pattern for numbered character lines (multiple formats):
+// 1. **Name** - Description  (bold with dash)
+// 1. **Name**: Description   (bold with colon)
+// 1. Name - Description      (plain with dash)
+const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))\s*[-–—:]\s*(.+)/;
+
+// Header-agnostic: 4+ consecutive "**Name** - Description" lines.
+const boldCharRegex = /^\*\*(.+?)\*\*\s*[-–—:]\s*(.+)/;
+
+/** A message proposing fewer names than this isn't a cast. */
+const MIN_ROSTER_SIZE = 4;
+
+/**
+ * What cast does THIS ONE message propose? Tries the explicit header section
+ * first, then falls back to the header-agnostic batch pattern (4+ consecutive
+ * numbered/bold "Name - description" lines).
+ *
+ * ADR-0057: this is the SINGLE definition of "a message that proposes a cast",
+ * used both to CHOOSE `approved_concept_message_id` and to EXTRACT from it. They
+ * used to be two different predicates - the chooser tested a header allow-list
+ * (`Character List|Characters|Cast of Characters|...`) while the extractor parsed
+ * lines. When a customer asked for players-as-investigators and the AI renamed its
+ * section `## Suspect List`, the allow-list stopped matching, "latest match" silently
+ * fell back to her FIRST draft, and she received a completely different mystery from
+ * the one she approved. One function means the snapshot can never point at a message
+ * the extractor cannot read.
+ *
+ * Do NOT reintroduce a header test as the gate. Header wording is model output and
+ * will keep drifting; the parse either finds a cast or it doesn't.
+ */
+function extractRosterFromMessage(content: string): ExtractedCharacter[] {
+  if (!content) return [];
+
+  // Header path: start after an explicit list header and read numbered lines.
+  const headerMatch = content.match(sectionHeaderRegex);
+  if (headerMatch) {
+    const viaHeader = new Map<string, ExtractedCharacter>();
+    const afterHeader = content.substring(headerMatch.index! + headerMatch[0].length);
+    let started = false;
+
+    for (const line of afterHeader.split('\n')) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+
+      const charMatch = trimmed.match(characterLineRegex);
+      if (charMatch) {
+        const name = (charMatch[1] || charMatch[2]).trim().replace(/"/g, "'");
+        const description = charMatch[3].trim().replace(/"/g, "'");
+        viaHeader.set(name.toLowerCase(), { name, description });
+        started = true;
+      } else if (started) {
+        // Tolerate subheadings/dividers between entries; stop only at a new
+        // section header that isn't itself another character-list header.
+        if (/^#{2,3}\s+/.test(trimmed) && !sectionHeaderRegex.test(trimmed)) break;
+      }
+    }
+    if (viaHeader.size >= MIN_ROSTER_SIZE) return Array.from(viaHeader.values());
+  }
+
+  // Batch path: the roster is present but the header is worded in a way we do not
+  // recognise (or absent entirely). This is what makes the function header-agnostic.
+  const found = new Map<string, ExtractedCharacter>();
+  let batch: ExtractedCharacter[] = [];
+  const flush = () => {
+    if (batch.length >= MIN_ROSTER_SIZE) for (const c of batch) found.set(c.name.toLowerCase(), c);
+    batch = [];
+  };
+
+  for (const line of content.split('\n')) {
+    const trimmed = line.trim();
+    const numbered = trimmed.match(characterLineRegex);
+    const bold = trimmed.match(boldCharRegex);
+
+    if (numbered) {
+      batch.push({
+        name: (numbered[1] || numbered[2]).trim().replace(/"/g, "'"),
+        description: numbered[3].trim().replace(/"/g, "'"),
+      });
+    } else if (bold) {
+      batch.push({
+        name: bold[1].trim().replace(/"/g, "'"),
+        description: bold[2].trim().replace(/"/g, "'"),
+      });
+    } else if (batch.length > 0 && trimmed !== '') {
+      flush();
+    }
+  }
+  flush();
+
+  return found.size >= MIN_ROSTER_SIZE ? Array.from(found.values()) : [];
+}
+
+/**
+ * Latest assistant message that actually proposes a cast - the concept the user is
+ * approving when they pay. Chronological, last wins, so a post-revision draft beats
+ * an earlier one. Returns null when no message parses into a roster.
+ */
+function findLatestConceptMessage(messages: any[]): any | null {
+  const assistant = (messages ?? [])
+    .filter((m: any) => m.role === 'assistant' || m.is_ai)
+    .sort((a: any, b: any) =>
+      new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime());
+
+  let latest: any = null;
+  for (const m of assistant) {
+    if (extractRosterFromMessage(m.content || '').length >= MIN_ROSTER_SIZE) latest = m;
+  }
+  return latest;
+}
+
+
 // Primary extraction: regex-based (free, deterministic, <1ms)
 // If approvedMessageId is provided, extracts ONLY from that message (the concept
 // snapshot the user explicitly approved at purchase time).
-// Otherwise, falls back to the latest assistant message containing a CHARACTER LIST.
+// Otherwise, falls back to the latest assistant message that proposes a cast.
 function extractCharactersFromMessages(messages: any[], approvedMessageId?: string | null): ExtractedCharacter[] | null {
-  // Build regex to match any locale's character list header
-  // Pattern: ## <Header> (N PLAYERS) or ## <Header>
-  const headerAlternatives = CHARACTER_LIST_HEADERS.map(h =>
-    h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  ).join('|');
-  const sectionHeaderRegex = new RegExp(
-    `^#{2,3}\\s+(?:${headerAlternatives})(?:\\s*\\(\\d+\\s+.+?\\))?[:\\s]*$`, 'im'
-  );
-
-  // Pattern for numbered character lines (multiple formats):
-  // 1. **Name** - Description  (bold with dash)
-  // 1. **Name**: Description   (bold with colon)
-  // 1. Name - Description      (plain with dash)
-  const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))\s*[-–—:]\s*(.+)/;
 
   const assistantMessages = messages
     .filter((m: any) => m.role === 'assistant' || m.is_ai);
@@ -82,19 +188,24 @@ function extractCharactersFromMessages(messages: any[], approvedMessageId?: stri
     latestMessageWithList = messages.find((m: any) => m.id === approvedMessageId);
     if (latestMessageWithList) {
       console.log(`[CharExtract] Using approved concept message ${approvedMessageId}`);
+      // Same parser that CHOSE this message (ADR-0057). If it yields a roster we are
+      // done — no header-shape guessing, no fall-through to a scan of other messages
+      // that could resurrect a draft the user moved away from.
+      const roster = extractRosterFromMessage(latestMessageWithList.content || '');
+      if (roster.length >= MIN_ROSTER_SIZE && roster.length <= 35) {
+        console.log(`[CharExtract] Roster from approved message: ${roster.length} characters: ${roster.map(c => c.name).join(', ')}`);
+        return roster;
+      }
+      console.warn(`[CharExtract] Approved message parsed to ${roster.length} characters (need ${MIN_ROSTER_SIZE}-35) — falling through to legacy scan`);
     } else {
       console.warn(`[CharExtract] approved_concept_message_id ${approvedMessageId} not found in messages, falling back to latest`);
     }
   }
 
-  // Fallback: find the LAST assistant message containing a CHARACTER LIST section.
+  // Fallback for conversations with no usable snapshot: latest message that parses
+  // into a cast. Same predicate as the snapshot chooser, so the two cannot disagree.
   if (!latestMessageWithList) {
-    for (const msg of assistantMessages) {
-      const content = msg.content || '';
-      if (content.match(sectionHeaderRegex)) {
-        latestMessageWithList = msg;
-      }
-    }
+    latestMessageWithList = findLatestConceptMessage(messages);
   }
 
   const charMap = new Map<string, ExtractedCharacter>();
@@ -333,17 +444,22 @@ serve(async (req) => {
     // (e.g. theme="Family Reunion" but chat pivoted to "circus" → parent merged
     // them into a schizophrenic lake-house-with-circus-names mystery).
     //
-    // Capturing the id here ensures the latest assistant CHARACTER LIST message
-    // becomes the single source of truth — both for our local extraction and
-    // for the parent webhook's prompt (which receives this as approvedConceptMessageId).
+    // Capturing the id here ensures the latest assistant message that actually
+    // proposes a cast becomes the single source of truth — both for our local
+    // extraction and for the parent webhook's prompt (which receives this as
+    // approvedConceptMessageId).
     //
-    const characterListRegex = /^#{2,3}\s+(?:Character List|Characters|Cast of Characters|Complete Character List|COMPLETE CHARACTER LIST|Full Character List)/im;
-
+    // ADR-0057: selection is by PARSE, not by header wording. This used to test a
+    // hardcoded header allow-list (Character List|Characters|Cast of Characters|...).
+    // A customer asked for players-as-investigators, the AI renamed its section
+    // "## Suspect List", the allow-list stopped matching her revised drafts, and
+    // "latest match" silently fell back to her FIRST draft — so she paid for and
+    // received an entirely different mystery. The value written was non-null, so the
+    // downstream null-check never rescued it and nothing errored. Header text is model
+    // output and will keep drifting; `extractRosterFromMessage` is the same parser that
+    // will later read this message, so chooser and reader cannot disagree.
     if (!conversation.approved_concept_message_id && conversation.messages) {
-      const aiMessagesWithCharList = (conversation.messages as any[])
-        .filter((m: any) => (m.role === 'assistant' || m.is_ai) && characterListRegex.test(m.content || ''))
-        .sort((a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-      const candidate = aiMessagesWithCharList[aiMessagesWithCharList.length - 1];
+      const candidate = findLatestConceptMessage(conversation.messages as any[]);
       // Only snapshot real DB ids, not client-generated msg- placeholders
       if (candidate?.id && !String(candidate.id).startsWith('msg-') && candidate.id !== 'initial-message') {
         const { error: snapErr } = await supabase
@@ -354,7 +470,7 @@ serve(async (req) => {
           console.warn(`[ConceptSnapshot] Failed to write approved_concept_message_id: ${snapErr.message}`);
         } else {
           conversation.approved_concept_message_id = candidate.id;
-          console.log(`[ConceptSnapshot] Captured approved_concept_message_id=${candidate.id} (latest CHARACTER LIST message at ${candidate.created_at})`);
+          console.log(`[ConceptSnapshot] Captured approved_concept_message_id=${candidate.id} (latest message parsing into a cast, at ${candidate.created_at})`);
         }
       }
     }
