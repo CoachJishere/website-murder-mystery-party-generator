@@ -297,6 +297,21 @@ export function forensicPrompt(title: string, description: string): string {
 }
 
 /**
+ * What may sit between a question's target name and the closing `**`: an
+ * optional parenthetical annotation the model sometimes emits, then an optional
+ * colon — e.g. `**To Polly Paradise (self):**`.
+ *
+ * MUST stay in sync with the detector `list_packages_with_self_directed_questions()`,
+ * which matches `**to <name>` with a `\M` word-end and therefore DOES flag the
+ * annotated form. ADR-0056: when this pattern was narrower than the detector's,
+ * the worker detected a defect it could not repair — and because revert is
+ * all-or-nothing per package, it discarded a valid fix for a *different*
+ * character in the same package and escalated. Widening the detector without
+ * widening this, or vice versa, re-creates that deadlock.
+ */
+const TARGET_ANNOTATION_RX = String.raw`\s*(?:\([^)]*\))?`;
+
+/**
  * Retarget `**To <bad name>:**` questions onto a living suspect who is not
  * already questioned in this round.
  *
@@ -312,8 +327,15 @@ export function retargetQuestions(
 ): { text: string; changed: number; exhausted: boolean } {
   if (!text) return { text, changed: 0, exhausted: false };
 
+  // Capture stops before `(` so an annotated target (`**To X (self):**`) registers
+  // as "X already questioned", not as the distinct name "X (self)" — otherwise the
+  // candidate pool would happily hand back someone this round already asks about.
   const alreadyTargeted = new Set<string>();
-  for (const m of text.matchAll(/\*\*\s*To\s+([^:*\n]+?)\s*:?\s*\*\*/gi)) {
+  for (
+    const m of text.matchAll(
+      new RegExp(String.raw`\*\*\s*To\s+([^:*\n(]+?)${TARGET_ANNOTATION_RX}\s*:?\s*\*\*`, "gi"),
+    )
+  ) {
     alreadyTargeted.add(norm(m[1]));
   }
 
@@ -328,7 +350,15 @@ export function retargetQuestions(
   for (const badName of badNames) {
     // Non-global regex: `replace` swaps the FIRST remaining occurrence, so each
     // offending question gets its own distinct replacement target.
-    const rx = new RegExp(`(\\*\\*\\s*To\\s+)${escapeRx(badName)}(?=\\s*:?\\s*\\*\\*)`, "i");
+    //
+    // The annotation is CONSUMED, not looked ahead at, so it disappears with the
+    // name it described — retargeting `**To Polly Paradise (self):**` must yield
+    // `**To Captain Kei:**`, never `**To Captain Kei (self):**`, which would be a
+    // false claim about the new target and would still read as self-directed.
+    const rx = new RegExp(
+      `(\\*\\*\\s*To\\s+)${escapeRx(badName)}${TARGET_ANNOTATION_RX}(?=\\s*:?\\s*\\*\\*)`,
+      "i",
+    );
     while (rx.test(out)) {
       const replacement = pool.shift();
       if (!replacement) return { text: out, changed, exhausted: true };
