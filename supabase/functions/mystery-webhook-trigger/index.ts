@@ -570,9 +570,44 @@ serve(async (req) => {
         && fullConvoLength > approvedMsg.content.length * 10;
 
       if (approvedMsg && !snapshotTooThin) {
-        // Single-source-of-truth path: just the locked-in concept message.
-        conversationContent = `AI: ${approvedMsg.content}`;
-        console.log(`[ConversationContent] Trimmed to approved concept message only (id=${approvedId}, ${approvedMsg.content.length} chars)`);
+        // ADR-0059: the approved concept message PLUS everything after it.
+        //
+        // The snapshot alone was the old behaviour, and it silently discarded every
+        // refinement the customer made after approving the cast. Three paid packages
+        // in 35 days were built from a stale concept this way:
+        //   - Black Swan Society (2026-07-26): 13 later messages moved the setting to
+        //     Victorian, renamed the institution off "Morehouse", added a Savannah plot
+        //     thread. None reached Make.com; the delivered package still said Morehouse.
+        //   - Adelaide Crane (2026-07-24): 10 later messages established Camille's
+        //     illegitimacy backstory and Patricia's motive. Delivered package invented
+        //     a different, incompatible backstory for both.
+        //   - The Masked Betrayal (2026-07-27): the customer's "these must exonerate all
+        //     but these three suspects" constraint never reached the generator.
+        //
+        // Why this is safe — i.e. why not just send the whole conversation: messages
+        // BEFORE the snapshot may be pre-pivot drafts, which is the contamination the
+        // narrow-context design exists to prevent (Madysn's "Murder Under The Big Top",
+        // Apr 2026: a lake-house draft bled into a circus concept). Messages AFTER the
+        // snapshot cannot be a superseded draft — the customer wrote them later, on top
+        // of the cast they had already approved. So this widens context in exactly the
+        // one direction that carries no contamination risk, reconciling the two failure
+        // modes that were previously treated as needing opposite fixes.
+        const approvedAt = new Date(approvedMsg.created_at).getTime();
+        const afterSnapshot = (conversation.messages as any[])
+          .filter((m: any) => new Date(m.created_at).getTime() > approvedAt)
+          .sort((a: any, b: any) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+
+        conversationContent = [
+          `AI: ${approvedMsg.content}`,
+          ...afterSnapshot.map((m: any) =>
+            `${m.role === "assistant" ? "AI" : "User"}: ${m.content}`),
+        ].join("\n\n---\n\n");
+
+        console.log(
+          `[ConversationContent] Approved concept message (id=${approvedId}, ${approvedMsg.content.length} chars) ` +
+          `+ ${afterSnapshot.length} later message(s) = ${conversationContent.length} chars`,
+        );
       } else {
         // Fallback: full conversation (either no snapshot, or snapshot is too thin to be trusted)
         conversationContent = (conversation.messages as any[])

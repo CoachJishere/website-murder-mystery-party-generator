@@ -2,6 +2,16 @@
 
 ## 2026-08-02
 
+### Fix: post-snapshot refinements never reached the generator — 3 paid packages affected (ADR-0059)
+An audit of every paid purchase in the 35 days to 2026-08-02 found that ADR-0057 (shipped hours earlier) did NOT close the stale-concept class. It fixed selection when a later draft restates the cast; it cannot help when the customer refines in *prose*.
+- **Three delivered packages were built from a superseded concept:** Black Swan Society (13 later messages moved the setting to Victorian, renamed the institution off "Morehouse", added a Savannah plot thread — delivered package still said Morehouse, no Victorian, no Savannah); Adelaide Crane (10 later messages established Camille's illegitimacy backstory and Patricia's salad-bar motive — delivered package invented a different, incompatible backstory for both); The Masked Betrayal (the customer's "these must exonerate all but these three suspects" constraint never reached the generator).
+- **Why ADR-0057 missed them:** verified against all three — the fixed selector returns the *identical* stale message, because no later message restates the roster for it to find.
+- **Why the existing guard missed them:** `snapshotTooThin` (added after Fotini, May 2026) requires `approved_len < 3000`. These are full ~6KB concept messages that are *stale*, not *thin*. Across 8 paid conversations with post-snapshot activity in 60 days it fired **zero** times — it tests the wrong property.
+- **Fix: [mystery-webhook-trigger/index.ts](supabase/functions/mystery-webhook-trigger/index.ts)** — send the approved concept message **plus every message after it**, chronologically. Messages *before* the snapshot stay excluded.
+- **Why that is safe:** the two failure modes recorded in May 2026 as needing opposite fixes are not opposed — they are asymmetric about the snapshot. Messages before it may be superseded drafts (the Madysn lake-house→circus contamination the narrow design prevents); messages after it cannot be, since the customer wrote them on top of a cast they had already approved. Widening in that one direction carries no contamination risk and recovers all the lost detail.
+- **Verified on the real conversations:** "Victorian", "Savannah", "illegitimacy", "salad bar" and "paternity" are all absent from the old payload and present in the new one. Payloads grow 6,026 → 20,467 and 6,782 → 19,888 chars, far below the ~255KB already sent comfortably.
+- **Does not repair the three delivered packages** — that needs repointing/regeneration, a separate paid operation. Full record in [ADR-0059](docs/adr/0059-send-approved-concept-plus-everything-after-it.md).
+
 ### Fix: `needs_review_at` was never set when the gate held a package (ADR-0058)
 Spotted while watching a paid package heal: `status = 'needs_review'` with `needs_review_at = NULL`, two values that should never disagree.
 - **Cause:** Postgres fires BEFORE row triggers in NAME order, so `trg_maintain_needs_review_at` ('m') ran before `trg_validate_package_characters` ('v'). The timestamp trigger read `NEW.generation_status` while it was still the caller's value (`completed`) — the gate rewrote it to `needs_review` a moment later, too late. Only the *set* path was affected; the clear path always worked because `heal_completed_packages()` writes `completed` directly.
