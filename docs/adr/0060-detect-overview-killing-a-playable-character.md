@@ -52,6 +52,11 @@ Validation across all 101 packages with an overview: **exactly one hit — the k
 ## Consequences
 
 - A package whose overview kills off a playable character is now held at `needs_review` instead of shipping.
+- **Scope is ~60% of packages, by design, and this should NOT be "fixed" by adding non-death phrases.** The check fires only where the overview contains a death phrase: 59 of 98 packages with an overview. The other 39 (40%) are intrigue/theft scenarios with no death — the Golden Flamingo (a stolen ornament) is the canonical example — and the check is silent on them.
+
+  That silence is correct rather than a gap. The check is sound *because* "dead ⇒ not playable" is a hard invariant: a corpse cannot hold a character script, so an overview describing a playable character as dead is always wrong. **No equivalent invariant exists for theft.** The wronged party in a heist is frequently a playable character — the Flamingo's Kaimana Lei is the aggrieved host and could legitimately be at the table. Extending this predicate with "was robbed" / "discovered the theft" style phrases would therefore not widen coverage; it would flag correct packages.
+
+  A genuine equivalent for non-death mysteries would need a different invariant, not more phrases, and none is currently known. Recorded as a deliberate scope boundary.
 - **No auto-repair exists for this class**, so such a package holds until a human intervenes — the interim trade ADR-0053 named. A repair path does exist and is not yet wired: `regenerate-parent-content` rebuilds `game_overview` from `master_context`, which holds the correct victim. Wiring that is the natural follow-up.
 - The already-delivered MSU package is **not** retroactively flipped — the gate fires only on the `generation_completed_at` NULL→NOT NULL transition. It is now visible to the health check, which is the intended route for a human decision.
 - **Open, not fixed: `victim_mismatch` is inert on 78% of packages.** That is a separate and arguably larger hole — the detector has been reporting clean on most of the corpus because it never extracted anything to check. It needs a genuinely robust extractor, validated against the full corpus for false positives before it goes anywhere near the gate.
