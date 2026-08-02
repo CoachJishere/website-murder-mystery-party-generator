@@ -6,7 +6,8 @@
 # Checks:
 #   1. Site is up (homepage returns 200)
 #   2. Generations stuck in_progress for > 2 hours
-#   3. Packages in needs_review (last 7 days) — the sweep flagged a problem
+#   3. Packages in needs_review (last 7 days, held >=10 min — see check 3 below
+#      for why the grace period exists) — the sweep flagged a problem
 #   4. Paid packages missing evidence-card images (ADR-0016 detector)
 #   5. Character identity contamination — ≥2 characters claiming the same
 #      kinship to the victim (ADR-0041 detector, Bollinger incident)
@@ -52,6 +53,7 @@ jobs:
           set -u
           PROBLEMS=""
           NOW_UTC=$(date -u +"%Y-%m-%d %H:%M UTC")
+          TEN_MIN_AGO=$(date -u -d '10 minutes ago' +"%Y-%m-%dT%H:%M:%SZ")
           TWO_H_AGO=$(date -u -d '2 hours ago' +"%Y-%m-%dT%H:%M:%SZ")
           SEVEN_D_AGO=$(date -u -d '7 days ago' +"%Y-%m-%dT%H:%M:%SZ")
           THIRTY_D_AGO=$(date -u -d '30 days ago' +"%Y-%m-%dT%H:%M:%SZ")
@@ -84,8 +86,18 @@ jobs:
             fi
           fi
 
-          # 3. needs_review packages, last 7 days
-          REVIEW=$(api "${SUPABASE_URL}/rest/v1/mystery_packages?select=id,conversation_id,created_at&generation_status-%3E%3Estatus=eq.needs_review&created_at=gt.${SEVEN_D_AGO}" || echo "QUERY_FAILED")
+          # 3. needs_review packages, last 7 days, held for at least 10 minutes.
+          # The closed loop (ADR-0047/0051/0061) self-heals most needs_review
+          # packages within 2-5 minutes (heal_completed_packages, the held-only
+          # remediation sweep) — flagging on first sight caught packages mid-repair
+          # and, once, a disposable row from a live production test of the loop
+          # itself (cloned, broken on purpose, deleted afterward — see CHANGELOG
+          # 2026-08-02 "ADR-0051 loop proven live end-to-end"). needs_review_at
+          # (ADR-0058) gives an accurate hold-duration; the 10-minute floor matches
+          # the grace period MysteryView.tsx already uses before showing the
+          # "finalizing" banner (NEEDS_REVIEW_SILENT_WINDOW_MS), so this only
+          # alerts on packages the loop has genuinely failed to resolve.
+          REVIEW=$(api "${SUPABASE_URL}/rest/v1/mystery_packages?select=id,conversation_id,needs_review_at&generation_status-%3E%3Estatus=eq.needs_review&needs_review_at=lt.${TEN_MIN_AGO}&needs_review_at=gt.${SEVEN_D_AGO}" || echo "QUERY_FAILED")
           if [ "$REVIEW" = "QUERY_FAILED" ]; then
             PROBLEMS="${PROBLEMS}- 🟠 Could not query needs_review packages (Supabase API error)\n"
             REVIEW_COUNT="?"
