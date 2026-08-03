@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 255 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 256 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -216,6 +216,7 @@ This index organizes 255 published guides by topic cluster. All guides are avail
 - [Murder Mystery Party Favors & Prizes Ideas](https://www.mysterymaker.party/blog/murder-mystery-party-favors-prizes-ideas): Murder mystery party favors and prizes by theme. Detective awards, DIY favor ideas, budget-friendly options, and when to give prizes during your game.
 - [Murder Mystery Party Rules Explained](https://www.mysterymaker.party/blog/murder-mystery-party-rules-explained): Learn how to play murder mystery parties with beginner-friendly rules, game formats, host responsibilities, and what every guest needs to know.
 - [What You Need for a Murder Mystery Party](https://www.mysterymaker.party/blog/what-do-you-need-for-a-murder-mystery-party): Checklist of everything you need for a murder mystery party. Essential supplies vs. nice-to-haves. Budget breakdown.
+- [What Is a Murder Mystery Party? Beginner's Guide](https://www.mysterymaker.party/blog/what-is-a-murder-mystery-party-explained): Murder mystery parties are interactive group games where guests become characters in a fictional crime. How they work and what you need.
 
 ## Logistics (Food, Costumes, Decor, Invitations)
 
