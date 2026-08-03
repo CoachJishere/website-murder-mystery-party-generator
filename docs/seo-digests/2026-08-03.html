@@ -1,0 +1,92 @@
+<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:680px;margin:auto;color:#222;"><p style="color:#666;font-size:13px;">SEO/GEO digest — week ending 2026-08-03 · mysterymaker.party</p><h2>Scoreboard</h2>
+<table cellpadding="6" cellspacing="0" border="1" style="border-collapse:collapse;font-size:14px;">
+  <tr style="background:#f4f1ea;">
+    <th align="left">Metric</th>
+    <th align="right">This week</th>
+    <th align="right">Last week</th>
+    <th align="right">Δ</th>
+  </tr>
+  <tr>
+    <td>Organic clicks</td>
+    <td align="right">92</td>
+    <td align="right">64</td>
+    <td align="right" style="color:#080;">+43.8%</td>
+  </tr>
+  <tr>
+    <td>Impressions</td>
+    <td align="right">845</td>
+    <td align="right">865</td>
+    <td align="right" style="color:#b00;">−2.3%</td>
+  </tr>
+  <tr>
+    <td>Avg position</td>
+    <td align="right">14.0</td>
+    <td align="right">13.1</td>
+    <td align="right" style="color:#b00;">+0.9 (worse)</td>
+  </tr>
+  <tr>
+    <td>GA4 sessions</td>
+    <td align="right">824</td>
+    <td align="right">598</td>
+    <td align="right" style="color:#080;">+37.8%</td>
+  </tr>
+  <tr>
+    <td>AI-referral sessions</td>
+    <td align="right">9</td>
+    <td align="right">—</td>
+    <td align="right">1.1% share</td>
+  </tr>
+</table>
+<p>Clicks and sessions jumped ~40% on flat impressions and a slightly worse average position — meaning CTR rose sharply (7.4% → 10.9%): the "free printable" cluster is converting impressions to clicks much better, so the win is quality-of-appeal, not volume.</p>
+
+<h2>Insights</h2>
+<ul>
+  <li><strong>The free-printable blog hub is the engine:</strong> <code>/blog/free-murder-mystery-games-printable/</code> pulls 140 clicks at 14.2% CTR (pos 6.5) — nearly the whole site's momentum sits on one page ranking below page-1 top slots. Push it up and everything moves.</li>
+  <li><strong>"custom murder mystery game" — 41 impressions, 0 clicks at pos 7.3 (page 1).</strong> A real page-1 result under-clicking (expected ~4% CTR, actual 0%). Diagnosed lever: <em>copy</em> — but the ranking page is the homepage, so we must verify the query isn't already in the title before rewriting.</li>
+  <li><strong>"custom murder mystery party" — 32 impressions, 0 clicks at pos 11 (page 2), lever "both".</strong> Note we have a dedicated page <code>/custom-murder-mystery-party/</code> ranking at pos 18.1 — this is an authority problem first. Internal links should point at the dedicated page, not the homepage.</li>
+  <li><strong>Rising query "murder mystery plot generator" (0 → 12 impressions, 3 clicks, pos 7.1)</strong> plus "murder mystery ideas generator" (pos 14) signal a "generator-variant" demand pocket we rank for weakly. Room for a targeted page/section.</li>
+  <li><strong>"office murder mystery party" page is stranded at pos 37.4</strong> (84 impressions, 2.4% CTR) — a money page (corporate buyer intent) with almost no authority. Longer-term internal-link candidate.</li>
+  <li><strong>AI-referral is tiny but present (9 sessions, 8 from ChatGPT, 5 engaged).</strong> Worth monitoring; ChatGPT engagement rate is healthy. No action yet.</li>
+</ul>
+
+<h2>Action prompts</h2>
+
+<p><strong>1. Quick win — internal links to rank the custom-mystery money page (lever: links / authority)</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">
+Task: Raise the ranking of https://www.mysterymaker.party/custom-murder-mystery-party/ for the queries "custom murder mystery party" (currently pos 11 via homepage, 32 impressions, 0 clicks) and "custom murder mystery game" (pos 7.3, 41 impressions, 0 clicks). The dedicated custom page itself only ranks at pos 18.1, so the lever is AUTHORITY — it needs internal links, not a copy rewrite.
+
+Do this:
+1. Add a contextual in-body internal link to /custom-murder-mystery-party/ from these two high-authority pages:
+   - https://www.mysterymaker.party/blog/free-murder-mystery-games-printable/ (top page, 140 clicks)
+   - https://www.mysterymaker.party/blog/ai-murder-mystery-generator-complete-guide/ (18 clicks, pos 7.1)
+2. Use descriptive anchor text built from the target queries, e.g. "build a custom murder mystery party" and "create a custom murder mystery game" — vary the two so they aren't identical.
+3. Place each link in relevant body context (not a footer/nav), near copy about tailoring the story to your group.
+Goal: consolidate authority on the dedicated custom page so it climbs from pos 11/18 toward page-1 top slots and starts capturing those 73 zero-click impressions. Do NOT rewrite titles or metas for this task.
+</pre>
+
+<p><strong>2. Quick win — verify then (only if needed) rewrite homepage copy for "custom murder mystery game" (lever: copy)</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">
+Task: The homepage https://www.mysterymaker.party/ ranks pos 7.3 (page 1) for "custom murder mystery game" but has 41 impressions and 0 clicks (expected CTR ~4%). This is a copy-appeal signal — BUT first verify.
+
+Step 1 (mandatory): Fetch https://www.mysterymaker.party/ and check whether the phrase "custom murder mystery" (or "custom murder mystery game") already appears in the title tag and H1.
+Step 2:
+ - If the query is ALREADY in the title/H1: STOP the rewrite. Report that the real lever is authority, and recommend the internal-link push in Action 1 instead.
+ - If the query is NOT present: propose a revised title tag and meta description that surface "custom murder mystery game" and the tailor-it-to-your-group benefit, keeping the title under ~60 chars and the meta description under ~155 chars. Show old vs new.
+Goal: lift homepage CTR for this page-1 query from 0% toward the ~4% expected. Do not touch other pages.
+</pre>
+
+<p><strong>3. Medium effort — capture the rising "generator variant" queries (lever: content / new section)</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">
+Task: We rank weakly for a rising cluster of generator-variant queries: "murder mystery plot generator" (0→12 impressions this week, 3 clicks, pos 7.1), "murder mystery ideas generator" (pos 14.1), and "murder mystery generator" (pos 3.6, strong). Consolidate this demand.
+
+Do this:
+1. On https://www.mysterymaker.party/blog/ai-murder-mystery-generator-complete-guide/ add a clearly-headed section (H2) titled around "Murder mystery plot generator: from premise to printable" that directly addresses plot/idea generation, using the phrases "murder mystery plot generator" and "murder mystery ideas generator" naturally.
+2. Within that section, link to the generator/create flow with anchor text "generate your murder mystery plot".
+3. Add 3–4 FAQ-style Q&As (e.g. "Can an AI generate a murder mystery plot?") to broaden long-tail coverage.
+Goal: move "murder mystery plot generator" and "ideas generator" from pos 7–14 toward top-of-page-1 and funnel this rising intent into the generator. Report the exact copy added.
+</pre>
+
+<h2>Site health</h2>
+<p>Dead internal links: 0 ✓</p>
+<p>Publish queue: 255 live, 167 drafts remaining (current standing — watch for week-over-week draining).</p>
+<p>Next up by link-graph importance (per ADR-0021): <code>what-is-a-murder-mystery-party-explained</code> (4), <code>winter-murder-mystery-party-ideas-cozy</code> (4), <code>how-to-create-red-herrings-murder-mystery</code> (3), <code>murder-mystery-for-healthcare-team-building</code> (3), <code>murder-mystery-for-remote-teams-virtual</code> (3).</p></div>
