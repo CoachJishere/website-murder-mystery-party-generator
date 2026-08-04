@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-04
+
+### Improvement: tighten the full remediation sweep from 4 hours to 30 minutes (ADR-0062)
+Investigating a customer's `needs_review` package (angela.bone@unt.edu, "Birthday Betrayal In Hot Springs", `9464a4c7-...`) found a routine `self_directed_question` defect (Zach's Round 3 questions asked himself instead of another suspect) that the worker already knows how to fix for free — it just hadn't had its turn, since that class is only swept by the 4-hour full-window job, not the 5-minute held-only job ADR-0061 added. Manually invoked `auto-remediate-packages` (scoped to `classes: ["self_directed_questions"]`, dry-run first) to fix it immediately; confirmed clean via `list_packages_with_self_directed_questions()`.
+- **Root cause of the wait, not just this one case:** ADR-0061 explicitly rejected tightening the full 4-hour job, reasoning it would 48x the paid classes' frequency for no benefit — spend-cap pressure. That reasoning assumed enough purchase volume for the $5/day cap to matter. Confirmed actual volume is 1-3 purchases/day, well short of that.
+- **Change:** `auto-remediate-packages` cron schedule changed from `43 */4 * * *` to `13,43 * * * *` (every 30 minutes) — same job (updated in place via `cron.schedule`, confirmed same `jobid`), same scope (all six classes, all statuses), no code change. Offset keeps the original `:43` (26 min clear of the 6-hourly health check's `:17` slot) and adds `:13` (4 min before), both far outside the worker's observed ~1-11s execution time.
+- Makes a narrower fix considered earlier in this investigation (adding `self_directed_questions` to the 5-minute held-only job) unnecessary — every class now gets picked up within 30 minutes regardless.
+- Full record in [ADR-0062](docs/adr/0062-tighten-full-remediation-sweep-to-30-minutes.md).
+
 ## 2026-08-02
 
 ### Fix: manually recovered a round4 evidence image stuck on a Replicate NSFW rejection
