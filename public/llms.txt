@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 256 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 257 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -118,6 +118,7 @@ This index organizes 256 published guides by topic cluster. All guides are avail
 - [How to Host an Underwater Murder Mystery](https://www.mysterymaker.party/blog/unique-underwater-murder-mystery-plots-that-will-make-a-splash-at-your-party): Design an underwater murder mystery that actually works — submarine scenarios, marine research stations, and how to keep the investigation focused and tense.
 - [How to Plan a Custom Wild West Murder Mystery Party](https://www.mysterymaker.party/blog/wild-west-murder-mystery-party-planning): Plan a wild west murder mystery party by creating custom characters that fit your friends, building frontier atmosphere, and using period clues that make sense.
 - [Wine Cellar Murder Mystery Party Planning](https://www.mysterymaker.party/blog/wine-cellar-murder-mystery-party-planning-vintage-secrets-and-deadly-pairings): Uncork deadly secrets with sophisticated wine cellar murder mystery parties featuring vintners and vintage vengeance.
+- [Winter Murder Mystery Party Ideas: Cozy](https://www.mysterymaker.party/blog/winter-murder-mystery-party-ideas-cozy): Cozy winter murder mystery party ideas with snowed-in themes, fireplace atmospheres, hot cocoa crime solving, and intimate indoor whodunits for cold weather.
 
 ## Themes by Time Period
 
