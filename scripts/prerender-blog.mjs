@@ -378,9 +378,17 @@ function injectIntoTemplate(post, headTags, articleHtml) {
 }
 
 async function fetchAllPosts() {
-  // Page size kept small because the `content` markdown column is large (multi-KB
-  // per row × 1.4k+ rows). A 500-row fetch trips PostgREST's 8s statement_timeout
-  // on the public role; 100 stays well under it.
+  // Page size kept small because the `content` markdown column is large
+  // (avg ~15KB/row across 2650+ published rows as of 2026-08-04). This
+  // script needs SUPABASE_SERVICE_KEY set (wired into deploy.yml's build
+  // step) to run as service_role, which has no statement_timeout override.
+  // If that env var is ever missing, it silently falls back to the
+  // hardcoded anon key below — which has a 3s statement_timeout (NOT the
+  // 8s this comment used to claim; 8s is the `authenticated` role's limit,
+  // which this script never uses). A composite (status, id) index
+  // (20260804_add_blog_posts_status_id_index.sql) keeps each page an
+  // index-ordered range scan instead of a full sort of every published row,
+  // so pagination stays cheap either way.
   const all = [];
   const pageSize = 100;
   for (let from = 0; ; from += pageSize) {
