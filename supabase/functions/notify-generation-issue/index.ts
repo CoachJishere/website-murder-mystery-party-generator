@@ -73,10 +73,11 @@ serve(async (req) => {
       }
     }
 
-    // Get package info — also pulls last_notified_at for the email cooldown gate.
+    // Get package info — also pulls last_notified_at for the email cooldown gate,
+    // and needs_review_at for the self-heal grace period gate (ADR-0065).
     const { data: pkg } = await supabase
       .from("mystery_packages")
-      .select("id, title, generation_status, generation_started_at, extracted_characters, last_notified_at")
+      .select("id, title, generation_status, generation_started_at, extracted_characters, last_notified_at, needs_review_at")
       .eq("conversation_id", conversation_id)
       .order("updated_at", { ascending: false })
       .limit(1)
@@ -244,6 +245,57 @@ serve(async (req) => {
       </div>
     `;
 
+    // Self-heal grace period (ADR-0065): give the auto-remediation worker
+    // (ADR-0047/0061/0062, currently a 30-min full sweep) a real chance
+    // before alerting a human — but only for defect classes it actually
+    // knows how to attempt, and only for as long as needed: if it already
+    // gave up (any escalated/failed attempt logged since needs_review_at),
+    // alert immediately instead of waiting out the rest of the window.
+    //
+    // WORKER_RECOGNIZED_PREFIXES are generation_status.structuralDefects
+    // prefixes (DB-side naming) the worker's detector RPCs cover. These
+    // do NOT always match auto_remediation_log.defect_class 1:1
+    // (self_directed_question vs self_directed_questions, identity_conflict
+    // vs identity_contamination — see ADR-0056, a naming mismatch this
+    // codebase has been bitten by more than once). Deliberately NOT
+    // hand-mapping those labels here: the escalation check below matches
+    // ANY escalated/failed row logged for the package, not a specific
+    // class, precisely to avoid a second driftable name mapping. Defect
+    // classes the worker has no handler for at all (error_body_in_package,
+    // error_body_in_character, invalid_role, victim_is_playable_character)
+    // are deliberately excluded from this list — nothing is coming to fix
+    // those, so they alert immediately, same as before this change.
+    const WORKER_RECOGNIZED_PREFIXES = [
+      "meta_text_leak",
+      "self_directed_question",
+      "victim_mismatch",
+      "identity_conflict",
+      "slip_culprit_leak",
+    ];
+    const GRACE_PERIOD_MS = 35 * 60 * 1000; // one 30-min sweep (ADR-0062) + buffer
+
+    const structuralDefects: string[] = pkg?.generation_status?.structuralDefects || [];
+    const workerMightFixThis =
+      structuralDefects.length > 0 &&
+      structuralDefects.every((d) => WORKER_RECOGNIZED_PREFIXES.some((p) => d.startsWith(`${p}.`)));
+
+    let readyToAlert = true; // default: nothing to wait for, alert as before
+    if (workerMightFixThis && pkg?.needs_review_at) {
+      const ageMs = Date.now() - new Date(pkg.needs_review_at).getTime();
+      let hasGivenUp = false;
+      if (pkg?.id) {
+        const { data: escalations } = await supabase
+          .from("auto_remediation_log")
+          .select("id")
+          .eq("package_id", pkg.id)
+          .in("outcome", ["escalated", "failed"])
+          .gt("created_at", pkg.needs_review_at)
+          .limit(1);
+        hasGivenUp = !!(escalations && escalations.length > 0);
+      }
+      readyToAlert = hasGivenUp || ageMs > GRACE_PERIOD_MS;
+    }
+
     // Email cooldown: skip the actual send if we've already alerted on this
     // package within the last 6 hours. Auto-recovery has already run above
     // either way, so this just prevents support-inbox flooding for persistent
@@ -255,14 +307,15 @@ serve(async (req) => {
       : null;
     const inCooldown = cooldownUntil ? cooldownUntil > new Date() : false;
 
-    if (inCooldown) {
-      console.log(`Email cooldown active until ${cooldownUntil!.toISOString()} for package ${pkg?.id} — skipping email but recovery was attempted (${recovered.length} chars)`);
+    if (inCooldown || !readyToAlert) {
+      const reason = inCooldown ? "cooldown" : "awaiting_self_heal";
+      console.log(`Email suppressed (${reason}) for package ${pkg?.id} — recovery was attempted (${recovered.length} chars) regardless`);
       return new Response(
         JSON.stringify({
           success: true,
           email_sent: false,
-          email_suppressed_reason: "cooldown",
-          cooldown_until: cooldownUntil!.toISOString(),
+          email_suppressed_reason: reason,
+          cooldown_until: cooldownUntil ? cooldownUntil.toISOString() : null,
           recovery_attempted: recovered,
           recovery_skipped: skipped,
         }),
