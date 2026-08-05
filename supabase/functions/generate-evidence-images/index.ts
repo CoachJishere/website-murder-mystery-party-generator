@@ -19,7 +19,11 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
  * Expects POST body:
  * {
  *   "package_id": "uuid",
- *   "prompts": { "round2": "<prompt>", "round3": "<prompt>", "round4": "<prompt>" }
+ *   "prompts": { "round2": "<prompt>", "round3": "<prompt>", "round4": "<prompt>" },
+ *   "safety_tolerance": 2   // optional, 1-6, defaults to 2 (Flux's safety_tolerance
+ *                           // input). Higher = more permissive. For recovering a
+ *                           // round that failed with "NSFW content detected" on an
+ *                           // evidence description that isn't actually graphic.
  * }
  *
  * Returns:
@@ -178,13 +182,13 @@ async function pollPredictionUntilDone(getUrl: string, token: string): Promise<a
  * the round. Transient POST failures (429/5xx/network) are retried, and the
  * final image fetch is retried too.
  */
-async function callFlux11Pro(prompt: string, token: string): Promise<ArrayBuffer> {
+async function callFlux11Pro(prompt: string, token: string, safetyTolerance = 2): Promise<ArrayBuffer> {
   const body = {
     input: {
       prompt,
       aspect_ratio: "16:9", // evidence cards are 16:9 (matches the old Imagen config)
       output_format: "png",
-      safety_tolerance: 2,
+      safety_tolerance: safetyTolerance,
       prompt_upsampling: false,
     },
   };
@@ -244,7 +248,7 @@ serve(async (req) => {
   }
 
   try {
-    const { package_id, prompts } = await req.json();
+    const { package_id, prompts, safety_tolerance } = await req.json();
 
     if (!package_id || !prompts || typeof prompts !== "object") {
       return new Response(
@@ -252,6 +256,16 @@ serve(async (req) => {
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
+
+    // Optional override for Replicate's safety filter strictness (1 = strictest,
+    // higher = more permissive). Defaults to 2 (unchanged behavior) so normal
+    // Make.com calls are unaffected; a caller recovering from an NSFW false
+    // positive can pass a higher value to retry the identical prompt/visual
+    // content without rewriting it.
+    const safetyTolerance =
+      typeof safety_tolerance === "number" && safety_tolerance >= 1 && safety_tolerance <= 6
+        ? safety_tolerance
+        : 2;
 
     const replicateToken = Deno.env.get("REPLICATE_API_TOKEN");
     if (!replicateToken) {
@@ -280,7 +294,7 @@ serve(async (req) => {
         }
 
         try {
-          const imageBuffer = await callFlux11Pro(prompt, replicateToken);
+          const imageBuffer = await callFlux11Pro(prompt, replicateToken, safetyTolerance);
           const filePath = `${package_id}/${round}.png`;
 
           const { error: uploadError } = await retrySupabaseOp(() =>

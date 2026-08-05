@@ -87,6 +87,19 @@ const DAILY_SPEND_CAP_USD = 5.0;
 /** Replicate Flux 1.1 Pro, per image (ADR-0017). */
 const IMAGE_COST_USD = 0.04;
 
+/**
+ * Retry tolerance for a Flux "NSFW content detected" false positive
+ * (generate-evidence-images' `safety_tolerance` input, 1=strictest..6=most
+ * permissive; the pipeline's default is 2). Confirmed 2026-08-05: an evidence
+ * description with no graphic content (a glass decanter stopper, a forensic
+ * latex-residue report) failed identically twice at tolerance=2, then
+ * succeeded on the FIRST attempt at tolerance=5 with the byte-identical
+ * prompt. A stricter default is still the right general setting; this is a
+ * bounded, single retry for a specific, recognizable rejection reason, not a
+ * general loosening.
+ */
+const NSFW_RETRY_SAFETY_TOLERANCE = 5;
+
 /** One Claude Haiku game_overview regeneration (~1.5k output tokens). */
 const OVERVIEW_REGEN_COST_USD = 0.01;
 
@@ -1229,14 +1242,60 @@ async function handleMissingImages(ctx: RunCtx, row: Record<string, unknown>): P
           .select("evidence_card_images")
           .eq("id", packageId)
           .maybeSingle();
-        const res = await invokeFunction("generate-evidence-images", {
+        const beforeValue = JSON.stringify(data?.evidence_card_images ?? null);
+
+        const { ok, json } = await invokeFunctionJson("generate-evidence-images", {
           package_id: packageId,
           prompts,
         });
-        if (!res.ok) throw new Error(`generate-evidence-images: ${res.detail}`);
+
+        if (ok) {
+          return { beforeValue, note: JSON.stringify(json).slice(0, 200) };
+        }
+
+        // Distinguish an NSFW false-positive rejection from every other
+        // failure (network, rate-limit, storage, etc.) — only the former gets
+        // a bounded retry at a higher safety_tolerance; the latter fails
+        // exactly as before (a looser filter can't fix a network error, and
+        // trying would just mask it).
+        const failedList = Array.isArray(json?.failed)
+          ? (json!.failed as Array<{ round: string; error: string }>)
+          : [];
+        const nsfwRounds = failedList
+          .filter((f) => typeof f?.error === "string" && /NSFW content detected/i.test(f.error))
+          .map((f) => f.round)
+          .filter((r) => prompts[r]);
+
+        if (nsfwRounds.length === 0) {
+          throw new Error(`generate-evidence-images: ${JSON.stringify(json ?? { ok }).slice(0, 400)}`);
+        }
+
+        const retryPrompts = Object.fromEntries(nsfwRounds.map((r) => [r, prompts[r]]));
+        const retry = await invokeFunctionJson("generate-evidence-images", {
+          package_id: packageId,
+          prompts: retryPrompts,
+          safety_tolerance: NSFW_RETRY_SAFETY_TOLERANCE,
+        });
+
+        const nonNsfwStillFailed = failedList.some((f) => !nsfwRounds.includes(f.round));
+        const retryStillFailed =
+          !retry.ok || (Array.isArray(retry.json?.failed) && (retry.json!.failed as unknown[]).length > 0);
+
+        if (nonNsfwStillFailed || retryStillFailed) {
+          // Genuinely rejected even at a permissive tolerance (or a separate
+          // non-NSFW round also failed) — not a false positive, escalate with
+          // both attempts' detail. Any round the retry DID recover is already
+          // saved (generate-evidence-images merges per-round, independent of
+          // this throw), so nothing already-fixed is lost by escalating here.
+          throw new Error(
+            `generate-evidence-images: initial=${JSON.stringify(json).slice(0, 200)} ` +
+              `| nsfw-retry@tolerance=${NSFW_RETRY_SAFETY_TOLERANCE}=${JSON.stringify(retry.json).slice(0, 200)}`
+          );
+        }
+
         return {
-          beforeValue: JSON.stringify(data?.evidence_card_images ?? null),
-          note: res.detail.slice(0, 200),
+          beforeValue,
+          note: `NSFW false-positive on [${nsfwRounds.join(",")}], recovered at safety_tolerance=${NSFW_RETRY_SAFETY_TOLERANCE}`,
         };
       },
       // Not feasible, and not desirable: an extra generated image is never
