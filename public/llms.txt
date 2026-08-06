@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 258 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 259 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -151,6 +151,7 @@ This index organizes 258 published guides by topic cluster. All guides are avail
 - [Gatsby Murder Mystery for Birthday Party](https://www.mysterymaker.party/blog/gatsby-murder-mystery-for-birthday-party): Gatsby murder mystery for birthday parties. Age-specific versions for 21st, 30th, 40th birthdays. Birthday person as detective or witness. Roaring 20s theme.
 - [Is Murder Mystery Good for Team Building?](https://www.mysterymaker.party/blog/is-murder-mystery-good-for-team-building): Is murder mystery good for team building? Yes. Data shows 62% of corporate orgs use immersive gaming for team-building.
 - [Christmas Office Party Murder Mystery](https://www.mysterymaker.party/blog/murder-mystery-for-christmas-office-party): Plan a Christmas office murder mystery for corporate holiday parties with inclusive themes, coworker dynamics, and professional team-building entertainment.
+- [Murder Mystery for Healthcare Team Building](https://www.mysterymaker.party/blog/murder-mystery-for-healthcare-team-building): Murder mystery team building for healthcare workers. Shift-friendly timing, stress relief through play, and medical-themed mystery ideas for hospital teams.
 - [Murder Mystery Party for Anniversaries](https://www.mysterymaker.party/blog/murder-mystery-party-for-anniversary-celebrations-romantic-mysteries-for-milestone-moments): Celebrate love with romantic anniversary murder mystery parties customized for couples and milestone moments.
 - [Murder Mystery Party for Bachelorette Parties](https://www.mysterymaker.party/blog/murder-mystery-party-for-bachelorette-parties-celebrate-with-glamorous-mystery): Celebrate the bride-to-be with glamorous bachelorette murder mystery parties featuring friendship and female empowerment.
 - [Murder Mystery Party for Bachelor Parties](https://www.mysterymaker.party/blog/murder-mystery-party-for-bachelor-parties-send-off-the-groom-with-memorable-mystery): Send off the groom with memorable bachelor murder mystery parties featuring brotherhood and masculine themes.
