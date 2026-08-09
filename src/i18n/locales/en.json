@@ -1401,6 +1401,14 @@
       "expiresIn": "Welcome offer expires in {{time}}"
     }
   },
+  "recentSalesPopup": {
+    "namedPurchase": "{{name}} just purchased",
+    "anonymousPurchase": "A customer just purchased",
+    "dismissAriaLabel": "Dismiss notification",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago"
+  },
   "billing": {
     "title": "Purchase History",
     "fallbackTitle": "Mystery Party",

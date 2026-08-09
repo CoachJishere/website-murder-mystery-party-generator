@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-08-09
+
+### Feature: recent sales notification popup (ADR-0071, work-in-progress on `feat/recent-sales-popup`)
+Scoped and built the first pass of a "Lisa just purchased..." social-proof popup for the homepage and purchase page.
+- **Data:** new `get_recent_public_sales()` Postgres RPC returns only mystery title, purchaser first name, and purchase timestamp — deliberately does not expose `conversations` directly, which holds chat content/email and is guarded by the payment-protection triggers from ADR-0032/0033. New nullable `conversations.purchaser_first_name` column, not yet populated (stripe-webhook capture is a deferred follow-up, see below).
+- **Delivery:** client polls the RPC every 45s rather than a Supabase Realtime subscription — avoids opening a live channel to `anon` for a feature where staleness is imperceptible.
+- **Display:** `RecentSalesPopup.tsx`, bottom-left, 4s initial delay, 5s visible/4s gap cycling through the last 15 sales, capped at 6 shown per browser session, dismissible, suppressed while any dialog is open or during the current browser's own in-flight checkout. Route-gated to `/` and `/mystery/purchase/:id` only.
+- **Deliberately deferred:** capturing `customer_details.name` in the live `stripe-webhook` function, and any location/country data (would need Stripe billing-address collection turned on — a separate opt-in decision, not bundled here). Until the webhook change ships, the popup shows real recent purchases with "A customer just purchased" (no name).
+- Currently on a feature branch pending a Vercel preview review before merging to `main` — see [ADR-0071](docs/adr/0071-recent-sales-notification-popup.md).
+
 ## 2026-08-05
 
 ### Fix: optional characters silently dropped from generated package (ADR-0063)
