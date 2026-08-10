@@ -27,6 +27,10 @@ Build this as a small, self-contained feature, phased:
 
 2. **Capture the first name.** Extend `stripe-webhook/index.ts` to also store `customer_details?.name` (first token only, e.g. `"Lisa"` from `"Lisa Chen"`) on the conversation row at checkout-completion time. This is a one-line addition to an existing, already-trusted webhook path — no new endpoint.
 
+   **Update (2026-08-10): displaying that name publicly requires its own consent, separate from capturing it.** Storing the name is fine (Stripe already collects it for the transaction), but *showing it to other site visitors* is a distinct processing purpose from fulfilling the purchase, and GDPR requires its own legal basis — the site's existing privacy policy only carried generic "legitimate interests" boilerplate, not a disclosure specific enough to cover public display to strangers. Resolved by adding an explicit opt-in checkbox on the purchase page (`MysteryPurchase.tsx`, unchecked by default — a genuine opt-in, not a pre-ticked opt-out, per GDPR's freely-given/unambiguous consent standard), written to a new `conversations.social_proof_opt_in` boolean before the Stripe redirect. `get_recent_public_sales()` now only returns the real name when that flag is true; otherwise it returns the same anonymous "A customer" row phase 1 always used. The webhook still captures the name unconditionally (harmless to store), but display is fully gated on the customer's own choice. Privacy policy updated with a specific section (§4) disclosing this use and its opt-in/opt-out nature.
+
+   Also considered and rejected: using `conversations.theme` instead of `title` for extra anonymity. Checked real paid records — `theme` is raw, unmoderated customer-authored free text (e.g. one example named a specific real-sounding company and executive), while `title` is the AI's own generated, stylized product name derived from it. `theme` is strictly less safe, not more; `title` was already the right choice.
+
 3. **No location in phase 1.** Copy reads "Lisa just purchased '{mystery title}'" — no city/country. Enabling billing-address collection on the Payment Link is a Stripe **dashboard** change (outside this repo) plus a webhook field addition; treated as a deliberate phase-2 decision, not bundled in, because it's additional PII collection from every paying customer and deserves its own yes/no rather than riding in on this feature.
 
 4. **Delivery: polling, not Supabase Realtime.** Client polls the RPC every ~45s and caches the last N results client-side to cycle through between polls. Realtime would require opening a live subscription channel to `anon`, which is a larger surface than an RPC call for a feature where a 45-second staleness window is imperceptible — nobody is watching closely enough to notice the lag. Revisit only if this ever needs true sub-second latency, which nothing about the use case demands.
@@ -75,10 +79,12 @@ This is the converged pattern across Fomo/Proof/TrustPulse/Nudgify, and it's wha
 
 ## Key files
 
-- New: Supabase migration adding `get_recent_public_sales()` RPC/view
-- `supabase/functions/stripe-webhook/index.ts` — add `customer_details?.name` capture on `checkout.session.completed`
-- New: `src/components/RecentSalesPopup.tsx`
+- Migrations: `supabase/migrations/20260809_add_recent_public_sales_rpc.sql`, `supabase/migrations/20260810_gate_recent_sales_name_on_opt_in.sql`
+- `supabase/functions/stripe-webhook/index.ts` — captures `customer_details?.name` on `checkout.session.completed` (written, **not yet deployed** to the live function as of 2026-08-10 — pending explicit go-ahead per the payment-webhook caution below)
+- `src/components/RecentSalesPopup.tsx`, `src/hooks/useRecentSalesPopup.ts`
 - `src/App.tsx` — mount point (alongside existing `<Toaster />`), route-gating logic
+- `src/pages/MysteryPurchase.tsx` — opt-in checkbox + `social_proof_opt_in` write before Stripe redirect
+- `src/pages/Privacy.tsx` — §4 disclosure of the public-display use and its opt-in nature
 
 ## Discussion
 

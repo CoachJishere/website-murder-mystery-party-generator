@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-08-10
+
+### Feature: consent gate for recent-sales popup names (ADR-0071 follow-up, `feat/recent-sales-popup`)
+Before showing real purchaser names, checked whether that's legally clean — it isn't by default. Publicly displaying a customer's name to other site visitors is a distinct processing purpose from fulfilling their purchase, and the site's privacy policy only carried generic "legitimate interests" boilerplate, not a disclosure specific enough to cover it.
+- **Opt-in checkbox** added to the purchase page (`MysteryPurchase.tsx`), unchecked by default, written to new `conversations.social_proof_opt_in` before the Stripe redirect.
+- `get_recent_public_sales()` RPC updated to only return the real first name when `social_proof_opt_in = true`; otherwise falls back to the same anonymous "A customer" row phase 1 already used. Verified live: `anon` role gets 0 rows querying `conversations` directly, full (but gated) access through the RPC.
+- `stripe-webhook/index.ts` now captures `customer_details.name` (first token only) unconditionally — harmless to store, display is what's gated. **Code only, not yet deployed to the live function** — deploying it is a separate explicit step given this webhook's history (ADR-0032/0033).
+- Privacy policy (`Privacy.tsx`) gained a specific §4 disclosing the public-display use and its opt-in/opt-out nature.
+- Also checked and rejected: showing `conversations.theme` instead of `title` for extra anonymity. Real paid records show `theme` is raw, unmoderated customer-authored text (one example named a specific real-sounding company and executive) — `title` (the AI's generated, stylized product name) is strictly safer, already the right call.
+- Full record in [ADR-0071](docs/adr/0071-recent-sales-notification-popup.md).
+
 ## 2026-08-09
 
 ### Feature: recent sales notification popup (ADR-0071, work-in-progress on `feat/recent-sales-popup`)
