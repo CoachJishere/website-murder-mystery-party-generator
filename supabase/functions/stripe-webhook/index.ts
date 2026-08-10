@@ -121,11 +121,6 @@ serve(async (req) => {
         // Get customer email
         const customerEmail = session.customer_email || session.customer_details?.email;
 
-        // First name only, for the recent-sales popup (ADR-0071). Display is
-        // separately gated on the customer's own social_proof_opt_in choice
-        // captured at checkout -- this just stores what Stripe already collects.
-        const purchaserFirstName = session.customer_details?.name?.trim().split(/\s+/)[0] || null;
-
         // Update conversation in database
         const { data: conversation, error: updateError } = await supabase
           .from("conversations")
@@ -133,7 +128,6 @@ serve(async (req) => {
             is_paid: true,
             purchase_date: new Date().toISOString(),
             updated_at: new Date().toISOString(),
-            purchaser_first_name: purchaserFirstName,
           })
           .eq("id", conversationId)
           .select("user_id")

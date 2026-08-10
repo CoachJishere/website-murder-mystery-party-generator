@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -42,11 +41,6 @@ interface ParsedMysteryDetails {
 const MysteryPurchase = () => {
   const { id } = useParams();
   const [processing, setProcessing] = useState(false);
-  // ADR-0071: opt-in for showing this purchaser's first name in the public
-  // recent-sales popup. Unchecked by default -- displaying a real name
-  // publicly is a distinct processing purpose from fulfilling the purchase
-  // and needs explicit, freely-given consent rather than an opt-out default.
-  const [socialProofOptIn, setSocialProofOptIn] = useState(false);
   const [mystery, setMystery] = useState<Mystery | null>(null);
   const [parsedDetails, setParsedDetails] = useState<ParsedMysteryDetails | null>(null);
   const navigate = useNavigate();
@@ -466,12 +460,6 @@ const MysteryPurchase = () => {
           .like('title', '% Players');
       }
 
-      // Record the recent-sales-popup name consent choice (ADR-0071) ahead of checkout.
-      await supabase
-        .from('conversations')
-        .update({ social_proof_opt_in: socialProofOptIn })
-        .eq('id', id);
-
       // Store conversation ID as fallback
       localStorage.setItem('pendingConversationId', id);
 
@@ -678,22 +666,6 @@ const MysteryPurchase = () => {
                     </Button>
                   ) : (parsedDetails?.characters?.length ?? 0) > 0 ? (
                     // Unpaid + a previewable concept exists → normal checkout.
-                    <>
-                    <div className="flex items-start gap-2">
-                      <Checkbox
-                        id="social-proof-opt-in"
-                        checked={socialProofOptIn}
-                        onCheckedChange={(checked) => setSocialProofOptIn(checked === true)}
-                        className="mt-0.5"
-                      />
-                      <label
-                        htmlFor="social-proof-opt-in"
-                        className="text-sm cursor-pointer"
-                        style={{ color: 'rgba(245,240,232,0.7)' }}
-                      >
-                        {t("purchase.socialProofOptIn")}
-                      </label>
-                    </div>
                     <Button
                       className={cn("w-full font-medium", isMobile ? "h-12 text-base" : "h-11")}
                       size="lg"
@@ -712,7 +684,6 @@ const MysteryPurchase = () => {
                         </>
                       )}
                     </Button>
-                    </>
                   ) : (
                     // NO CONCEPT YET (ADR-0044): don't take payment for a mystery that
                     // doesn't exist — the "Victorian mansion" incident. Send them back

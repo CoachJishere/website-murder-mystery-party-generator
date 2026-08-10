@@ -31,14 +31,9 @@ export function RecentSalesPopup({ enabled }: { enabled: boolean }) {
             <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
               <ShoppingBag className="h-4 w-4" />
             </div>
-            <div className="min-w-0">
+            <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold leading-snug">
-                {sale.purchaser_first_name
-                  ? t("recentSalesPopup.namedPurchase", {
-                      defaultValue: "{{name}} just purchased",
-                      name: sale.purchaser_first_name,
-                    })
-                  : t("recentSalesPopup.anonymousPurchase", { defaultValue: "A customer just purchased" })}
+                {t("recentSalesPopup.purchaseMessage", { defaultValue: "A customer just purchased" })}
               </p>
               <p className="text-sm text-muted-foreground line-clamp-2">{sale.mystery_title}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{relativeTime(sale.purchased_at, t)}</p>

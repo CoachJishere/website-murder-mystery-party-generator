@@ -1108,7 +1108,6 @@
     },
     "title": "Complete Your Purchase",
     "subtitle": "Get full access to your murder mystery package",
-    "socialProofOptIn": "Show my first name in our \"recent purchases\" notification to help others discover this mystery",
     "package": {
       "title": "Murder Mystery Package",
       "description": "One-time purchase, instant access",
@@ -1403,8 +1402,7 @@
     }
   },
   "recentSalesPopup": {
-    "namedPurchase": "{{name}} just purchased",
-    "anonymousPurchase": "A customer just purchased",
+    "purchaseMessage": "A customer just purchased",
     "dismissAriaLabel": "Dismiss notification",
     "justNow": "Just now",
     "minutesAgo": "{{count}}m ago",

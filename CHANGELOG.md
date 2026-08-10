@@ -2,7 +2,15 @@
 
 ## 2026-08-10
 
-### Feature: consent gate for recent-sales popup names (ADR-0071 follow-up, `feat/recent-sales-popup`)
+### Fix: recent-sales popup — final decision to drop name/location entirely (ADR-0071, `feat/recent-sales-popup`)
+After seeing the popup live with real titles, decided against showing purchaser names or location at all — title alone already reads as customized enough, and a low opt-in rate would have produced a visibly inconsistent mix of named vs. anonymous entries.
+- Fully reverted the same-day opt-in consent-gate work below: `stripe-webhook` name capture, the purchase-page checkbox, and the privacy policy §4 section are all removed (net zero diff on those files vs. before this feature started).
+- Dropped `conversations.purchaser_first_name` and `social_proof_opt_in` columns — no reason to keep collecting a field that's never displayed (data minimization).
+- `get_recent_public_sales()` simplified back to `{ mystery_title, purchased_at }` only.
+- Also fixed the popup's title truncation: was single-line `truncate` at 300px, now `line-clamp-2` at a responsive width so long AI-generated titles wrap instead of getting cut off with an ellipsis.
+- Full record in [ADR-0071](docs/adr/0071-recent-sales-notification-popup.md).
+
+### Feature: consent gate for recent-sales popup names (ADR-0071 follow-up, `feat/recent-sales-popup`) — superseded same day, see entry above
 Before showing real purchaser names, checked whether that's legally clean — it isn't by default. Publicly displaying a customer's name to other site visitors is a distinct processing purpose from fulfilling their purchase, and the site's privacy policy only carried generic "legitimate interests" boilerplate, not a disclosure specific enough to cover it.
 - **Opt-in checkbox** added to the purchase page (`MysteryPurchase.tsx`), unchecked by default, written to new `conversations.social_proof_opt_in` before the Stripe redirect.
 - `get_recent_public_sales()` RPC updated to only return the real first name when `social_proof_opt_in = true`; otherwise falls back to the same anonymous "A customer" row phase 1 already used. Verified live: `anon` role gets 0 rows querying `conversations` directly, full (but gated) access through the RPC.

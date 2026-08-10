@@ -13,16 +13,8 @@ export const SESSION_SHOWN_CAP = 6;
 const SESSION_SHOWN_KEY = "recentSalesPopup:shownCount";
 const SESSION_DISMISSED_KEY = "recentSalesPopup:dismissed";
 
-// Self-purchase heuristic: while a checkout is in flight in this browser
-// (pendingConversationId set by MysteryPurchase before redirecting to Stripe),
-// suppress anything sold in the last 90s so a customer doesn't see their own
-// purchase reflected back as a stranger's. Coarse on purpose — sale volume is
-// low enough that this rarely drops anyone else's real notification.
-const SELF_PURCHASE_WINDOW_MS = 90_000;
-
 export interface RecentSale {
   mystery_title: string;
-  purchaser_first_name: string | null;
   purchased_at: string;
 }
 
@@ -67,11 +59,7 @@ export function useRecentSalesPopup(enabled: boolean) {
         limit_count: POOL_SIZE,
       });
       if (!error && data && !cancelled) {
-        const inSelfPurchaseWindow = Boolean(localStorage.getItem("pendingConversationId"));
-        const cutoff = Date.now() - SELF_PURCHASE_WINDOW_MS;
-        poolRef.current = inSelfPurchaseWindow
-          ? (data as RecentSale[]).filter((sale) => new Date(sale.purchased_at).getTime() < cutoff)
-          : (data as RecentSale[]);
+        poolRef.current = data as RecentSale[];
       }
     };
 

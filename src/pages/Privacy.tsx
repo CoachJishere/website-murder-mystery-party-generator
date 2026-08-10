@@ -18,7 +18,7 @@ const Privacy = () => {
           <h1 className="text-4xl font-bold mb-8 text-center">Privacy Policy</h1>
           
           <div className="prose prose-sm md:prose-base lg:prose-lg max-w-none">
-            <p><em>Last updated: August 10, 2026</em></p>
+            <p><em>Last updated: April 5, 2025</em></p>
             
             <h2>1. Introduction</h2>
             <p>
@@ -50,22 +50,17 @@ const Privacy = () => {
               <li>Where we need to comply with a legal obligation.</li>
             </ul>
             
-            <h2>4. Public Display of Recent Purchases</h2>
-            <p>
-              At checkout, we may show a small "recent purchases" notification to other visitors on our site, naming the mystery package purchased. This does not include any personal data by default. If you tick the optional checkbox at checkout, your first name (as provided to our payment processor) will also be shown alongside your purchase in this notification to other visitors. This is entirely optional, off by default, and based on your consent — you may decline it without affecting your purchase, and you can request removal at any time by contacting us as described in Section 8.
-            </p>
-
-            <h2>5. Data Security</h2>
+            <h2>4. Data Security</h2>
             <p>
               We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorized way, altered or disclosed. In addition, we limit access to your personal data to those employees, agents, contractors and other third parties who have a business need to know.
             </p>
 
-            <h2>6. Data Retention</h2>
+            <h2>5. Data Retention</h2>
             <p>
               We will only retain your personal data for as long as reasonably necessary to fulfill the purposes we collected it for, including for the purposes of satisfying any legal, regulatory, tax, accounting or reporting requirements.
             </p>
 
-            <h2>7. Your Legal Rights</h2>
+            <h2>6. Your Legal Rights</h2>
             <p>
               Under certain circumstances, you have rights under data protection laws in relation to your personal data, including the right to:
             </p>
@@ -79,7 +74,7 @@ const Privacy = () => {
               <li>Right to withdraw consent.</li>
             </ul>
             
-            <h2>8. Contact Us</h2>
+            <h2>7. Contact Us</h2>
             <p>
               If you have any questions about this privacy policy or our privacy practices, please contact us at support@mysterymaker.party.
             </p>
