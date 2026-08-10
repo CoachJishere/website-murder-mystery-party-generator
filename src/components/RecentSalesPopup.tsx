@@ -26,7 +26,7 @@ export function RecentSalesPopup({ enabled }: { enabled: boolean }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="pointer-events-auto flex items-start gap-3 rounded-xl border bg-card text-card-foreground shadow-lg p-3 pr-8 max-w-[300px] relative"
+            className="pointer-events-auto flex items-start gap-3 rounded-xl border bg-card text-card-foreground shadow-lg p-3 pr-8 max-w-[calc(100vw-2rem)] sm:max-w-[340px] relative"
           >
             <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
               <ShoppingBag className="h-4 w-4" />
@@ -40,7 +40,7 @@ export function RecentSalesPopup({ enabled }: { enabled: boolean }) {
                     })
                   : t("recentSalesPopup.anonymousPurchase", { defaultValue: "A customer just purchased" })}
               </p>
-              <p className="text-sm text-muted-foreground truncate">{sale.mystery_title}</p>
+              <p className="text-sm text-muted-foreground line-clamp-2">{sale.mystery_title}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{relativeTime(sale.purchased_at, t)}</p>
             </div>
             <button
