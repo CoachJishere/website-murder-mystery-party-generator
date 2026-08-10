@@ -1,0 +1,99 @@
+<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:680px;margin:auto;color:#222;"><p style="color:#666;font-size:13px;">SEO/GEO digest — week ending 2026-08-10 · mysterymaker.party</p><div style="border:1px solid #d9b310;background:#fffbe6;border-radius:6px;padding:12px 14px;margin:0 0 18px;"><p style="margin:0 0 6px;font-weight:600;color:#7a5c00;">📌 Reminder — Re-measure homepage branded CTR — 2nd read (first one was inconclusive)</p><p style="margin:0 0 10px;font-size:14px;color:#444;">The <strong>2026-06-30</strong> homepage title/meta rewrite (ADR-0024) targeted the branded queries <strong>mystery maker</strong>, <strong>murder mystery maker</strong>, and <strong>mysterymaker</strong>. The first read on 2026-07-20 showed branded CTR nominally up (combined 12.0% → 18.9%) but those queries <em>also</em> gained ~1 ranking position and volumes were tiny — so it could not be called a CTR win vs a ranking win. Enough time has now passed for a cleaner read — paste the prompt below into a fresh chat.</p><pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;font-size:13px;margin:0;">Re-measure whether the 2026-06-30 homepage title/meta rewrite lifted CTR on branded queries. This is the SECOND read — the first (2026-07-20) was inconclusive because CTR rose but ranking rose ~1 position at the same time and volumes were single-digit. Re-derive everything fresh from Google Search Console — do not trust these numbers.
+
+1. Page: https://www.mysterymaker.party/   Queries: "mystery maker", "murder mystery maker", "mysterymaker". You can re-run scripts/ctrRewriteAnalysis.mjs (free, read-only GSC) and widen the after-window to today.
+2. For each query, compare the ~3 weeks BEFORE 2026-06-30 vs ALL after-data through today: CTR, clicks, impressions, avg position.
+3. Ground-truth baseline (re-derived 2026-07-20, verify it still holds): "mystery maker" pre-change ran 2.9% CTR at position 3.6 (~35 impr/week), NOT the 3.6%/pos-5 the old note claimed.
+4. The key question: is the CTR gain real, or just the ~1-position ranking gain? Hold position roughly constant (or note it explicitly) so a ranking shift isn't mistaken for a CTR win. Say whether volumes are now big enough to be meaningful.
+5. If branded CTR is still weak for the position (e.g. "mystery maker" under ~15% while sitting top-3), test the brand-first title variant proposed on 2026-07-20: "Mystery Maker — Printable Murder Mystery Party Kits in Minutes" (current copy in docs/adr/0024-static-homepage-seo-source-of-truth.md).</pre></div><h2>Scoreboard</h2>
+<table cellpadding="6" cellspacing="0" border="1" style="border-collapse:collapse;font-family:sans-serif;font-size:14px;">
+  <tr style="background:#f4f1ea;">
+    <th align="left">Metric</th>
+    <th align="right">This week</th>
+    <th align="right">Last week</th>
+    <th align="right">Δ</th>
+  </tr>
+  <tr>
+    <td>Organic clicks</td>
+    <td align="right">92</td>
+    <td align="right">108</td>
+    <td align="right" style="color:#b00;">−14.8%</td>
+  </tr>
+  <tr>
+    <td>Impressions</td>
+    <td align="right">1,014</td>
+    <td align="right">926</td>
+    <td align="right" style="color:#070;">+9.5%</td>
+  </tr>
+  <tr>
+    <td>Avg position</td>
+    <td align="right">12.7</td>
+    <td align="right">12.2</td>
+    <td align="right" style="color:#b00;">+0.5</td>
+  </tr>
+  <tr>
+    <td>GA4 sessions</td>
+    <td align="right">763</td>
+    <td align="right">824</td>
+    <td align="right" style="color:#b00;">−7.4%</td>
+  </tr>
+  <tr>
+    <td>AI-referral sessions</td>
+    <td align="right">13</td>
+    <td align="right">—</td>
+    <td align="right">1.7% share</td>
+  </tr>
+</table>
+<p>Impressions grew but clicks fell — we're surfacing for more queries while slipping half a position, so CTR (11.7% → 9.1%) did the damage. The lever this week is authority (rank) on our high-intent money queries, not more copy fiddling.</p>
+
+<h2>Insights</h2>
+<ul>
+  <li><strong>"custom murder mystery game" (52 impr) and "custom murder mystery party" (42 impr) both stall on page 2</strong> (pos 11.6 and 13.9) with CTR that's already normal for the rank — these are pure authority/internal-link problems pointing at the homepage generator, and together they're our biggest unclaimed buyer-intent demand.</li>
+  <li><strong>The /custom-murder-mystery-party/ money page ranks only pos 18.9 despite 297 impressions</strong> — a direct-match commercial page buried, reinforcing that our custom-mystery cluster lacks internal link equity.</li>
+  <li><strong>A "Succession murder mystery guide" query cluster is surging</strong> (44+20+16+16 impressions from near-zero last week) at pos 4.5–6.3 but converting 0 clicks — page 1 with 0% CTR is a genuine copy signal on the blog hub, but we need to verify a dedicated Succession guide even exists.</li>
+  <li><strong>"mystery maker" ranks pos 2.7 but pulls only 3.2% CTR vs ~11% expected</strong> (−7.8 gap) — a large page-1 copy gap on our own brand term, worth a homepage title/meta check.</li>
+  <li><strong>"murder mystery role generator" rose from 0 to 15 impressions</strong> at pos 5 with 2 clicks — a rising generator-adjacent query we already rank for; small but on-strategy.</li>
+  <li><strong>Danish "mordgåde gratis" appeared at 15 impressions, pos 6.7</strong> — a non-en free-printable term surging; the /da/ printable page already ranks, worth noting but not actioning this week.</li>
+</ul>
+
+<h2>Action prompts</h2>
+
+<p><strong>1. Quick win — internal links to rank the homepage/custom-mystery cluster for "custom murder mystery" queries</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">
+Context: On mysterymaker.party, two high-intent buyer queries are stuck on page 2 with CTR already normal for their rank, so the lever is internal-link authority, not copy. "custom murder mystery game" ranks pos 11.6 and "custom murder mystery party" ranks pos 13.9, both pointing at the homepage generator (https://www.mysterymaker.party/). The dedicated money page https://www.mysterymaker.party/custom-murder-mystery-party/ ranks only pos 18.9 despite 297 impressions.
+
+Task: Add contextual internal links from our two highest-authority blog posts to https://www.mysterymaker.party/custom-murder-mystery-party/ (the commercial page we want to lift). The source pages are:
+1. https://www.mysterymaker.party/blog/free-murder-mystery-games-printable/ (our top page, 128 clicks / pos 5.9)
+2. https://www.mysterymaker.party/blog/ai-murder-mystery-generator-complete-guide/ (432 impressions)
+
+For each source page, insert one in-body contextual link using descriptive anchor text built from the target queries, e.g. "custom murder mystery game" and "create a custom murder mystery party". Place the link naturally within relevant existing copy (not a footer dump). Show me the exact sentence and paragraph you'd edit on each page before applying.
+
+Goal: pass link equity to the custom-mystery money page so it moves from page 2 toward page 1 for "custom murder mystery game/party", capturing the ~94 combined impressions currently converting almost nothing.
+</pre>
+
+<p><strong>2. Quick win — verify then rewrite homepage title/meta for brand term "mystery maker"</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">
+Context: On mysterymaker.party the query "mystery maker" ranks pos 2.7 (page 1) on the homepage https://www.mysterymaker.party/ but pulls only 3.2% CTR vs ~11% expected for that position — a −7.8 CTR gap. This is diagnosed as a copy/appeal problem.
+
+Task: First fetch https://www.mysterymaker.party/ and read the current title tag and H1.
+- If "mystery maker" / "murder mystery maker" is NOT already in the title tag, rewrite the title tag and meta description so the brand/tool term appears near the front, paired with a clear value hook (e.g. printable kits, generate in minutes, any group size). Give me 3 title-tag options (≤60 chars) and 2 meta-description options (≤155 chars).
+- If "mystery maker" IS already in the title tag, do NOT rewrite copy — instead report back that the lever is really authority, and suggest the top existing pages that should internal-link to the homepage with "murder mystery maker" anchor text.
+
+Goal: close the CTR gap on a page-1 brand term to recover clicks lost this week.
+</pre>
+
+<p><strong>3. Moderate — verify/expand a Succession-themed guide to capture the surging query cluster</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">
+Context: On mysterymaker.party a cluster of queries around a "Succession murder mystery guide" surged this week from near-zero to 46+22+16+16 impressions, ranking pos 4.5–6.3 (page 1) on the blog hub https://www.mysterymaker.party/blog/ but converting 0 clicks. Page 1 + 0% CTR = copy/appeal signal, but we must first confirm we even have a dedicated page.
+
+Task:
+1. Fetch https://www.mysterymaker.party/blog/ and search the site for an existing post about a Succession-themed (corporate-dynasty / boardroom betrayal) murder mystery party. 
+2. If a dedicated page exists but ranks weakly via the hub: check its title tag and H1 include the theme phrasing, and rewrite the title tag + meta description to explicitly promise a "Succession-style murder mystery party guide". Give me 3 title options and 2 meta options.
+3. If NO dedicated page exists (the hub is ranking on scraps): outline a new blog post titled around a Succession-style corporate murder mystery party — characters, plot beats, and a CTA into the generator — plus the title tag and meta description. Provide a full H2 outline ready to draft.
+
+Goal: convert an on-topic, page-1, high-growth query that currently earns 0 clicks into traffic, and funnel it toward the generator.
+</pre>
+
+<h2>Site health</h2>
+<p>Dead internal links: 0 ✓</p>
+<p>Publish queue: 262 live, 160 drafts remaining (no prior-week baseline here to confirm draining — current standing recorded).</p>
+<p>Next up by link-graph importance (per ADR-0021): murder-mystery-party-photography-tips (3), murder-mystery-party-seating-arrangement-guide (3), murder-mystery-party-with-live-actors (3), murder-mystery-party-with-technology-gadgets (3), murder-mystery-progressive-dinner-party (3).</p></div>
