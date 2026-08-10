@@ -22,6 +22,19 @@
 #      predetermined game, a character whose background names a different person,
 #      or a gender-duplicated cast. ESCALATE-ONLY — none of these are auto-fixable
 #      by the ADR-0047 remediation worker; only regeneration resolves them.
+#   12. Roster-count mismatches (ADR-0064, follow-up to ADR-0063 "optional
+#      characters silently dropped" incident): re-parses each paid completed
+#      package's approved concept snapshot with the SHIPPED extractor
+#      (scripts/detect-roster-mismatches.mjs) and compares to the actual
+#      mystery_characters count — catches this bug class even if a future
+#      prompt/parser change reintroduces a variant of it. ESCALATE-ONLY.
+#   13. Final-statement confession leak (ADR-0067 follow-up): character-style
+#      packages where final_guilty/final_accomplice (meant to be a denial for
+#      the Final Statements round) reads as a first-person confession instead
+#      — confirmed live even with the corrected prompt, model-adherence isn't
+#      guaranteed. Scoped to packages with reveal_confession_guilty/accomplice
+#      populated, so pre-ADR-0067 packages (confession-in-final-statement by
+#      original design, not by bug) never false-positive. ESCALATE-ONLY.
 #
 # On failure: opens (or comments on) a GitHub issue labelled `health-alert`.
 # Always: writes monitoring/health-status.md and commits it if changed.
@@ -46,6 +59,12 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies (for check 12, roster-mismatch detector)
+        run: npm ci
 
       - name: Run checks
         id: checks
@@ -75,7 +94,10 @@ jobs:
           # created_at floor: 10 orphaned in_progress rows from 2025 (deleted
           # conversations) would otherwise alert forever — only recent packages
           # can be real stuck customers.
-          STUCK=$(api "${SUPABASE_URL}/rest/v1/mystery_packages?select=id,conversation_id,created_at&generation_status-%3E%3Estatus=eq.in_progress&updated_at=lt.${TWO_H_AGO}&created_at=gt.${THIRTY_D_AGO}" || echo "QUERY_FAILED")
+          # Promoted to an RPC (ADR-0072) so it can join conversations and
+          # exclude is_test — a raw REST filter can't cleanly do that join.
+          STUCK=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_stuck_in_progress_packages" \
+            -H "Content-Type: application/json" -d "{\"_stuck_before\": \"${TWO_H_AGO}\", \"_created_after\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
           if [ "$STUCK" = "QUERY_FAILED" ]; then
             PROBLEMS="${PROBLEMS}- 🟠 Could not query stuck generations (Supabase API error)\n"
             STUCK_COUNT="?"
@@ -97,7 +119,10 @@ jobs:
           # the grace period MysteryView.tsx already uses before showing the
           # "finalizing" banner (NEEDS_REVIEW_SILENT_WINDOW_MS), so this only
           # alerts on packages the loop has genuinely failed to resolve.
-          REVIEW=$(api "${SUPABASE_URL}/rest/v1/mystery_packages?select=id,conversation_id,needs_review_at&generation_status-%3E%3Estatus=eq.needs_review&needs_review_at=lt.${TEN_MIN_AGO}&needs_review_at=gt.${SEVEN_D_AGO}" || echo "QUERY_FAILED")
+          # Promoted to an RPC (ADR-0072) so it can join conversations and
+          # exclude is_test — a raw REST filter can't cleanly do that join.
+          REVIEW=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_needs_review_packages" \
+            -H "Content-Type: application/json" -d "{\"_held_before\": \"${TEN_MIN_AGO}\", \"_since\": \"${SEVEN_D_AGO}\"}" || echo "QUERY_FAILED")
           if [ "$REVIEW" = "QUERY_FAILED" ]; then
             PROBLEMS="${PROBLEMS}- 🟠 Could not query needs_review packages (Supabase API error)\n"
             REVIEW_COUNT="?"
@@ -231,6 +256,42 @@ jobs:
             fi
           fi
 
+          # 12. Roster-count mismatches (ADR-0064 detector, follow-up to ADR-0063).
+          # Re-parses each paid completed package's approved concept snapshot with
+          # the shipped extractRosterFromMessage and compares to the actual
+          # mystery_characters row count. Same 30-day rolling window as checks 5-11.
+          # ESCALATE-ONLY: a mismatch means the delivered cast doesn't match what
+          # the customer approved — not something to guess-fix automatically.
+          ROSTER=$(node scripts/detect-roster-mismatches.mjs "--since=${THIRTY_D_AGO}" --json 2>/tmp/roster-err.log || echo "QUERY_FAILED")
+          if [ "$ROSTER" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the roster-mismatch detector: $(tr '\n' ' ' < /tmp/roster-err.log)\n"
+            ROSTER_COUNT="?"
+          else
+            ROSTER_COUNT=$(echo "$ROSTER" | jq 'length')
+            if [ "$ROSTER_COUNT" -gt 0 ]; then
+              PROBLEMS="${PROBLEMS}- 🔴 ${ROSTER_COUNT} package(s) whose delivered character count doesn't match their approved concept snapshot: $(echo "$ROSTER" | jq -r '[.[] | "\(.title) [approved=\(.approved_roster_count), actual=\(.actual_character_count)]"] | join("; ")')\n"
+            fi
+          fi
+
+          # 13. Final-statement confession leak (ADR-0067 follow-up detector).
+          # Character-style packages where final_guilty/final_accomplice reads as a
+          # first-person confession instead of the intended denial. Scoped (inside the
+          # SQL function) to reveal_confession_guilty/accomplice IS NOT NULL, so
+          # pre-ADR-0067 packages never false-positive. Same 30-day window as 5-12.
+          # ESCALATE-ONLY: confirmed live that even the corrected prompt doesn't
+          # guarantee adherence — not something to guess-fix automatically.
+          FSCL=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_final_statement_confession_leak" \
+            -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
+          if [ "$FSCL" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the final-statement-confession-leak detector (Supabase API error)\n"
+            FSCL_COUNT="?"
+          else
+            FSCL_COUNT=$(echo "$FSCL" | jq 'length')
+            if [ "$FSCL_COUNT" -gt 0 ]; then
+              PROBLEMS="${PROBLEMS}- 🔴 ${FSCL_COUNT} package(s) with a confession leaked into the Final Statements round (should be a denial): $(echo "$FSCL" | jq -r '[.[] | "\(.title) [\(.characters | join(", "))]"] | join("; ")')\n"
+            fi
+          fi
+
           # Write status file
           mkdir -p monitoring
           {
@@ -259,6 +320,8 @@ jobs:
             echo "| Self-directed questions (30 days) | ${SDQ_COUNT} |"
             echo "| Completed-but-empty packages (30 days) | ${EMPTY_COUNT} |"
             echo "| Structural defects — escalate only (30 days) | ${STRUCT_COUNT} |"
+            echo "| Roster-count mismatches — escalate only (30 days) | ${ROSTER_COUNT} |"
+            echo "| Final-statement confession leaks — escalate only (30 days) | ${FSCL_COUNT} |"
           } > monitoring/health-status.md
 
           if [ -n "$PROBLEMS" ]; then

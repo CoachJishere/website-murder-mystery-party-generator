@@ -220,6 +220,23 @@ background first; the bleed almost always flows *from* the murderer's storyline 
 innocents. The detector deliberately ignores single benign mentions ("my mother" about
 their own family), so a flagged row is worth taking seriously.
 
+### Testing against production — always set `is_test = true`
+
+If you (or a developer/AI session) ever trigger a real generation against the live
+database to test a feature — e.g. "create a conversation and generate a package to
+verify ADR-0067" — mark it before you start:
+
+```sql
+UPDATE conversations SET is_test = true WHERE id = 'PASTE-CONVERSATION-ID-HERE';
+```
+
+Every health-check detector excludes `is_test` conversations, so test data can't
+trigger a false alarm even if the row is later forgotten. This was added
+2026-08-10 (ADR-0072) after a test conversation from ADR-0067 work sat with two
+abandoned in_progress package rows for three days and set off both the
+"stuck in_progress" and "completed-but-empty" alerts. Still clean up test rows
+when you're done — the flag is a safety net, not a substitute for tidiness.
+
 ---
 
 ## 4. When emails don't arrive
