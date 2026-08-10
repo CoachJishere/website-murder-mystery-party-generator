@@ -1406,7 +1406,9 @@
     "dismissAriaLabel": "Dismiss notification",
     "justNow": "Just now",
     "minutesAgo": "{{count}}m ago",
-    "hoursAgo": "{{count}}h ago"
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago",
+    "overAWeekAgo": "Over a week ago"
   },
   "billing": {
     "title": "Purchase History",

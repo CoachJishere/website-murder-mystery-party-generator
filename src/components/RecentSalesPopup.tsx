@@ -8,7 +8,10 @@ function relativeTime(isoDate: string, t: (key: string, opts?: Record<string, un
   if (minutes < 1) return t("recentSalesPopup.justNow", { defaultValue: "Just now" });
   if (minutes < 60) return t("recentSalesPopup.minutesAgo", { defaultValue: "{{count}}m ago", count: minutes });
   const hours = Math.floor(minutes / 60);
-  return t("recentSalesPopup.hoursAgo", { defaultValue: "{{count}}h ago", count: hours });
+  if (hours < 24) return t("recentSalesPopup.hoursAgo", { defaultValue: "{{count}}h ago", count: hours });
+  const days = Math.floor(hours / 24);
+  if (days < 7) return t("recentSalesPopup.daysAgo", { defaultValue: "{{count}}d ago", count: days });
+  return t("recentSalesPopup.overAWeekAgo", { defaultValue: "Over a week ago" });
 }
 
 // Route-gated per ADR-0071: mount only on the landing and purchase pages, not app-wide.
