@@ -54,12 +54,12 @@ const Privacy = () => {
             <p>
               We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorized way, altered or disclosed. In addition, we limit access to your personal data to those employees, agents, contractors and other third parties who have a business need to know.
             </p>
-            
+
             <h2>5. Data Retention</h2>
             <p>
               We will only retain your personal data for as long as reasonably necessary to fulfill the purposes we collected it for, including for the purposes of satisfying any legal, regulatory, tax, accounting or reporting requirements.
             </p>
-            
+
             <h2>6. Your Legal Rights</h2>
             <p>
               Under certain circumstances, you have rights under data protection laws in relation to your personal data, including the right to:

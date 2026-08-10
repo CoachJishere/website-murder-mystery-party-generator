@@ -13,6 +13,7 @@ import { captureLandingAttribution } from "@/lib/attribution";
 import { initPostHog, capturePageView } from "@/lib/posthog";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { WelcomeDiscountRibbon } from "@/components/WelcomeDiscountRibbon";
+import { RecentSalesPopup } from "@/components/RecentSalesPopup";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
@@ -107,12 +108,21 @@ const App = () => (
   </HelmetProvider>
 );
 
+// Recent-sales popup is route-gated to high-intent pages only (ADR-0071) —
+// not shown on chat/dashboard/account pages where it'd just be noise.
+const RECENT_SALES_POPUP_ROUTES = [/^\/$/, /^\/mystery\/purchase\//];
+
 const AppRoutes = () => {
   const { loading, isAuthenticated } = useAuth();
+  const location = useLocation();
+  const showRecentSalesPopup = RECENT_SALES_POPUP_ROUTES.some((pattern) =>
+    pattern.test(location.pathname)
+  );
 
   return (
     <LoadingBoundary loading={loading}>
       <WelcomeDiscountRibbon />
+      <RecentSalesPopup enabled={showRecentSalesPopup} />
       {isAuthenticated && <MobileBottomNav />}
       <Routes>
         <Route path="/" element={<Index />} />
