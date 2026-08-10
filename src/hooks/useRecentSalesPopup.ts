@@ -49,6 +49,13 @@ export function useRecentSalesPopup(enabled: boolean) {
 
     let cancelled = false;
 
+    // Testing convenience: ?resetRecentSales in the URL clears this tab's
+    // session cap/dismiss state, so QA doesn't need devtools to re-trigger it.
+    if (new URLSearchParams(window.location.search).has("resetRecentSales")) {
+      sessionStorage.removeItem(SESSION_SHOWN_KEY);
+      sessionStorage.removeItem(SESSION_DISMISSED_KEY);
+    }
+
     const clearTimers = () => {
       timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
