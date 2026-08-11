@@ -1530,6 +1530,15 @@
       "expiresIn": "웰컴 혜택이 {{time}} 후에 만료됩니다"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "고객님이 방금 구매했습니다",
+    "dismissAriaLabel": "알림 닫기",
+    "justNow": "방금 전",
+    "minutesAgo": "{{count}}분 전",
+    "hoursAgo": "{{count}}시간 전",
+    "daysAgo": "{{count}}일 전",
+    "overAWeekAgo": "일주일 이상 전"
+  },
   "generationProgress": {
     "heading": "미스터리를 만들고 있습니다",
     "subheading": "이 페이지는 자동으로 업데이트됩니다 — 열어 두셔도 되고 나중에 다시 오셔도 됩니다.",

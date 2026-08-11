@@ -1530,6 +1530,15 @@
       "expiresIn": "ウェルカム特典はあと {{time}} で終了します"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "お客様がご購入されました",
+    "dismissAriaLabel": "通知を閉じる",
+    "justNow": "たった今",
+    "minutesAgo": "{{count}}分前",
+    "hoursAgo": "{{count}}時間前",
+    "daysAgo": "{{count}}日前",
+    "overAWeekAgo": "1週間以上前"
+  },
   "generationProgress": {
     "heading": "ミステリーを作成しています",
     "subheading": "このページは自動的に更新されます — 開いたままにしても、後で戻ってきても大丈夫です。",

@@ -1530,6 +1530,15 @@
       "expiresIn": "Tervetuliaistarjous vanhenee {{time}} kuluttua"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "Asiakas osti juuri",
+    "dismissAriaLabel": "Sulje ilmoitus",
+    "justNow": "Juuri nyt",
+    "minutesAgo": "{{count}} min sitten",
+    "hoursAgo": "{{count}} t sitten",
+    "daysAgo": "{{count}} pv sitten",
+    "overAWeekAgo": "Yli viikko sitten"
+  },
   "generationProgress": {
     "heading": "Rakennamme mysteeriäsi",
     "subheading": "Tämä sivu päivittyy automaattisesti — voit jättää sen auki tai palata myöhemmin.",

@@ -1530,6 +1530,15 @@
       "expiresIn": "La oferta de bienvenida expira en {{time}}"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "Un cliente acaba de comprar",
+    "dismissAriaLabel": "Cerrar notificación",
+    "justNow": "Justo ahora",
+    "minutesAgo": "Hace {{count}}m",
+    "hoursAgo": "Hace {{count}}h",
+    "daysAgo": "Hace {{count}}d",
+    "overAWeekAgo": "Hace más de una semana"
+  },
   "generationProgress": {
     "heading": "Estamos creando tu misterio",
     "subheading": "Esta página se actualiza automáticamente — puedes dejarla abierta o volver más tarde.",

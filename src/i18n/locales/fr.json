@@ -1531,6 +1531,15 @@
       "expiresIn": "L'offre de bienvenue expire dans {{time}}"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "Un client vient d'acheter",
+    "dismissAriaLabel": "Fermer la notification",
+    "justNow": "À l'instant",
+    "minutesAgo": "Il y a {{count}} min",
+    "hoursAgo": "Il y a {{count}} h",
+    "daysAgo": "Il y a {{count}} j",
+    "overAWeekAgo": "Il y a plus d'une semaine"
+  },
   "generationProgress": {
     "heading": "Nous préparons votre mystère",
     "subheading": "Cette page se met à jour automatiquement — vous pouvez la laisser ouverte ou revenir plus tard.",

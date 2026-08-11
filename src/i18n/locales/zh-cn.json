@@ -1530,6 +1530,15 @@
       "expiresIn": "欢迎优惠将在 {{time}} 后到期"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "有顾客刚刚购买了",
+    "dismissAriaLabel": "关闭通知",
+    "justNow": "刚刚",
+    "minutesAgo": "{{count}}分钟前",
+    "hoursAgo": "{{count}}小时前",
+    "daysAgo": "{{count}}天前",
+    "overAWeekAgo": "一周前"
+  },
   "generationProgress": {
     "heading": "我们正在构建您的谜团",
     "subheading": "本页会自动更新 — 您可以保持页面打开，也可以稍后再回来。",

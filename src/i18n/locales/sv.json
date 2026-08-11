@@ -1530,6 +1530,15 @@
       "expiresIn": "Välkomsterbjudandet går ut om {{time}}"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "En kund köpte precis",
+    "dismissAriaLabel": "Stäng aviseringen",
+    "justNow": "Just nu",
+    "minutesAgo": "{{count}} min sedan",
+    "hoursAgo": "{{count}} tim sedan",
+    "daysAgo": "{{count}} d sedan",
+    "overAWeekAgo": "Mer än en vecka sedan"
+  },
   "generationProgress": {
     "heading": "Vi bygger ditt mysterium",
     "subheading": "Sidan uppdateras automatiskt — låt den gärna vara öppen eller kom tillbaka senare.",
