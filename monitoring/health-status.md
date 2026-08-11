@@ -1,11 +1,10 @@
 # Site health status
 
-_Last checked: 2026-08-11 07:40 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-08-11 08:41 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ⚠️ Problems found
 
-- 🔴 1 package(s) whose delivered character count doesn't match their approved concept snapshot: The Host Herself [approved=11, actual=12]
-- 🔴 2 package(s) with a confession leaked into the Final Statements round (should be a denial): The Host Herself [Cameron/Camille Voss]; Murder At Camp Pine Shadow [Pixie Lens]
+- 🔴 1 package(s) whose delivered character count doesn't match their approved concept snapshot: Death At The Birthday Bash: A Speakeasy Soirée Turned Deadly [approved=22, actual=17]
 
 | Check | Result |
 |---|---|
@@ -21,4 +20,4 @@ _Last checked: 2026-08-11 07:40 UTC (runs every 6 hours; see .github/workflows/h
 | Completed-but-empty packages (30 days) | 0 |
 | Structural defects — escalate only (30 days) | 0 |
 | Roster-count mismatches — escalate only (30 days) | 1 |
-| Final-statement confession leaks — escalate only (30 days) | 2 |
+| Final-statement confession leaks — escalate only (30 days) | 0 |
