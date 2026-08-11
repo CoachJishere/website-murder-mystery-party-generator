@@ -108,9 +108,33 @@ const MysteryPurchase = () => {
         break;
       }
     }
-    
-    if (!characterSection) return characters;
-    
+
+    // Header-agnostic fallback: the AI writes this header in the customer's own
+    // language ("Lista de Personagens", "Personnages", ...), so an English-only
+    // header match misses it entirely for non-English concepts. Rather than
+    // chasing every locale's wording (mystery-webhook-trigger hit this same trap
+    // before ADR-0057), scan the whole message for a run of 4+ consecutive
+    // numbered/bold "Name - description" lines - the roster's shape, not its
+    // heading text.
+    if (!characterSection) {
+      let batch: Character[] = [];
+      const flush = () => {
+        if (batch.length >= 4) characters.push(...batch);
+        batch = [];
+      };
+      for (const line of content.split('\n')) {
+        const trimmed = line.trim();
+        const match = trimmed.match(/^(?:\d+\.|\*|-)?\s*\*\*([^*]+)\*\*\s*[-–—:]\s*(.+)/);
+        if (match) {
+          batch.push({ name: match[1].trim(), description: match[2].trim() });
+        } else if (batch.length > 0 && trimmed !== '') {
+          flush();
+        }
+      }
+      flush();
+      return characters;
+    }
+
     // Pattern 1: Character with description after colon/dash
     const formatOneMatches = Array.from(characterSection.matchAll(/(?:\d+\.|\*|\-)\s*\*\*([^*]+)\*\*\s*[-–:]\s*([^#\n]+)/g));
     

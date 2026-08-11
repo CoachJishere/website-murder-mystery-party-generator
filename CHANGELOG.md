@@ -2,6 +2,13 @@
 
 ## 2026-08-11
 
+### Fix: purchase-preview character parser was English-only, blocking non-English checkout (ADR-0073)
+Customer (pt) reported "Não conseguimos detectar sua lista de personagens" while trying to finish checkout, with the checkout button itself replaced by a "back to design" prompt. Her approved concept was well-formed (`## Lista de Personagens (6 jogadores)` followed by 6 clean numbered characters) — the bug was that `parseCharacters()` in [MysteryPurchase.tsx](src/pages/MysteryPurchase.tsx) only recognized English section headers ("CHARACTER LIST", "Characters", "SUSPECTS"), so a Portuguese (or any non-English) header never matched and the parser returned zero characters, which both showed the warning and hid the checkout button ([MysteryPurchase.tsx:667](src/pages/MysteryPurchase.tsx#L667)). The actual generation backend (`mystery-webhook-trigger`) already handled this correctly via a 13-locale header list plus a header-agnostic fallback (ADR-0057) — this was the same "paired-predicate drift" pattern as before, just in a client-side parser that never got the same fix.
+- `parseCharacters()` now falls back to a header-agnostic scan (4+ consecutive numbered/bold `**Name** – description` lines) when no English header section matches, instead of returning an empty array. Mirrors the edge function's existing batch-path approach rather than duplicating its 26-entry locale header list (avoids reintroducing the same drift risk).
+- Verified against the customer's actual message content: correctly extracts all 6 characters and does not pick up the single isolated "Vítima" bold line as a false character.
+- No backfill needed — this blocks checkout pre-payment, so no customer has a corrupted package from it.
+- Full record in [ADR-0073](docs/adr/0073-purchase-preview-parser-english-only-header-blocked-non-english-checkout.md).
+
 ### Improvement: homepage "Mysteries Created" stat updated to reflect actual volume
 The homepage stats bar had hardcoded "500+ Mysteries Created" ([Index.tsx](src/pages/Index.tsx)) with no record of where that number came from or when it was last checked. Queried Supabase (`mhfikaomkmqcndqfohbp`) directly: 1,062 total conversations started, 128 marked paid, 169 with a complete package, 126 paid conversations with a generated package. 500+ overstated actual completed/paid mysteries by 3-4x. Decided with the user to use total conversations started (1,062, rounded down to 1,000+) rather than a stricter paid/completed-only count, and to keep it a manually-updated static number rather than a live query (no new infra).
 - `src/pages/Index.tsx`: `home.stats.mysteriesCreated` value changed from `500` to `1000` (label/translation keys unchanged).
