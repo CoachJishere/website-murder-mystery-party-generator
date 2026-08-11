@@ -1,10 +1,10 @@
 # Site health status
 
-_Last checked: 2026-08-11 08:41 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-08-11 13:45 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ⚠️ Problems found
 
-- 🔴 1 package(s) whose delivered character count doesn't match their approved concept snapshot: Death At The Birthday Bash: A Speakeasy Soirée Turned Deadly [approved=22, actual=17]
+- 🔴 1 package(s) whose delivered character count doesn't match their approved concept snapshot: Death At The Birthday Bash: A Speakeasy Soirée Turned Deadly [approved=20, actual=17]
 
 | Check | Result |
 |---|---|
