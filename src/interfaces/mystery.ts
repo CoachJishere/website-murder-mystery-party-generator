@@ -117,6 +117,12 @@ export interface MysteryCharacter {
   final_innocent?: string;
   final_guilty?: string;
   final_accomplice?: string;
+  // ADR-0065: the actual confession, read only during The Reveal — final_guilty/
+  // final_accomplice above are Final-Statements-round denials, not confessions.
+  reveal_confession_guilty?: string;
+  reveal_confession_guilty_pointform?: string;
+  reveal_confession_accomplice?: string;
+  reveal_confession_accomplice_pointform?: string;
   questioning_options?: QuestionOption[];
   created_at?: string;
   updated_at?: string;

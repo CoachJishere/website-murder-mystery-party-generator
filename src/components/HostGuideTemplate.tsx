@@ -166,7 +166,7 @@ Each round follows the same pattern:
 After Round 4 come **two distinct rounds** — say this out loud so players don't jump ahead:
 
 1. **Accusations** — going around the group, each player accuses *someone else* and gives a one-sentence reason from the evidence. This round points **outward**: ask players to hold their own defense for now.
-2. **Final Statements** — *after everyone has accused*, each player gets their turn to defend themselves and make one last plea or confession.
+2. **Final Statements** — *after everyone has accused*, each player gets their turn to defend themselves${isCharacterBased ? ` and make one last plea. This round is still denial, not confession — even the ${culprit} sticks to their story here` : " and make one last plea or confession"}.
 
 A nice way to run the accusations: gather everyone into one **big circle** so the whole group weighs in together. It builds pressure and keeps the conversation coherent as suspicion shifts around the room.
 
@@ -189,7 +189,7 @@ Keep the Game Overview and each character's secret handy (you skimmed them in th
 - **Read evidence neutrally.** Don't hint at who you think did it (even if you know).
 - **Watch for quiet players.** Prompt them with a question if they haven't spoken in a round.
 - **Watch for dominant players.** Gently redirect: "Let's hear from someone we haven't heard from."
-- **The ${culprit} should NOT confess too early** — they should defend themselves until cornered. Encourage them to play it cool.
+- **The ${culprit} should NOT confess too early**${isCharacterBased ? ` — their Final Statement is a denial like everyone else's. The real confession only comes if the ${investigator} specifically names them during the Reveal — that's a separate, later section on their character page ("The Reveal — Your Confession"). Encourage them to play it cool through Final Statements.` : " — they should defend themselves until cornered. Encourage them to play it cool."}
 - **Everyone protects their secret.** Each character has a secret with real consequences if it gets out. Remind players to guard it — a player who shrugs off their secret drains the tension for everyone. Defending your reputation is half the game.
 - **Let the group move.** Small clusters of conversation and one big circle for the accusations both work well — don't force everyone to stay in one seated formation the whole time.
 - **Improvise.** If a player asks something not in their script options, encourage in-character improvisation.

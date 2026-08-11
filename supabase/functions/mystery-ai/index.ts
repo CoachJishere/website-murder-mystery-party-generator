@@ -409,7 +409,7 @@ If you decide the theme is specific enough, generate the full concept using this
 2. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to the crime or wronged party]
 [Continue for all ${playerCount} characters]
 
-Each character MUST have a vivid personality trait or quirk — not just a job title. This makes them instantly memorable and fun to play. All ${playerCount} listed characters must be SUSPECTS with motives connected to the crime. The Inspector/Detective is NOT included — that role is played by the host.
+Each character MUST have a vivid personality trait or quirk — not just a job title. This makes them instantly memorable and fun to play. All ${playerCount} listed characters must be SUSPECTS with motives connected to the crime. The Inspector/Detective is NOT included — that role is played by the host. List EXACTLY ${playerCount} characters, no more, no fewer — never propose "optional," "bonus," or scalable extra characters for a larger group. If the user wants more or fewer characters, that's a different player count, not an addition to this list.
 
 ## ${(labels as any).crimeMethod}
 [How the crime was executed — the planning, the tools or access required, and what clues might exist. What makes this crime clever or daring?]
@@ -463,7 +463,7 @@ If you decide the theme is specific enough, generate the full concept using this
 
 Each character MUST have a vivid personality trait or quirk (e.g. "a jittery accountant who triple-checks everything", "a charming socialite with a barely-concealed temper") — not just a job title. This makes them instantly memorable and fun to play.
 
-IMPORTANT: The victim is NOT included in the ${playerCount} characters. The Inspector/Detective is also NOT included — that role is played by the host. All ${playerCount} listed characters must be SUSPECTS with motives, secrets, and connections to the victim.
+IMPORTANT: The victim is NOT included in the ${playerCount} characters. The Inspector/Detective is also NOT included — that role is played by the host. All ${playerCount} listed characters must be SUSPECTS with motives, secrets, and connections to the victim. List EXACTLY ${playerCount} characters, no more, no fewer — never propose "optional," "bonus," or scalable extra characters for a larger group. If the user wants more or fewer characters, that's a different player count, not an addition to this list.
 
 ## ${(labels as any).murderMethod}
 [How the murder was committed, clues]
@@ -503,7 +503,7 @@ Create a complete mystery CONCEPT using this EXACT format:
 2. **[Character Name]** - [Profession] with [one defining personality trait or quirk]; [connection to the crime or wronged party]
 [Continue for all ${playerCount} characters]
 
-Each character MUST have a vivid personality trait or quirk — not just a job title. All ${playerCount} listed characters must be SUSPECTS with motives connected to the crime. The Inspector/Detective is NOT included — that role is played by the host.
+Each character MUST have a vivid personality trait or quirk — not just a job title. All ${playerCount} listed characters must be SUSPECTS with motives connected to the crime. The Inspector/Detective is NOT included — that role is played by the host. List EXACTLY ${playerCount} characters, no more, no fewer — never propose "optional," "bonus," or scalable extra characters for a larger group. If the user wants more or fewer characters, that's a different player count, not an addition to this list.
 
 ## ${(labels as any).crimeMethod}
 [How the crime was executed — planning, tools, access, and clues. What makes it clever or daring?]
@@ -533,7 +533,7 @@ Create a complete mystery CONCEPT using this format:
 
 Each character MUST have a vivid personality trait or quirk (e.g. "a jittery accountant who triple-checks everything", "a charming socialite with a barely-concealed temper") — not just a job title. This makes them instantly memorable and fun to play.
 
-IMPORTANT: The victim is NOT included in the ${playerCount} characters. The Inspector/Detective is also NOT included — that role is played by the host. All ${playerCount} listed characters must be SUSPECTS with motives, secrets, and connections to the victim.
+IMPORTANT: The victim is NOT included in the ${playerCount} characters. The Inspector/Detective is also NOT included — that role is played by the host. All ${playerCount} listed characters must be SUSPECTS with motives, secrets, and connections to the victim. List EXACTLY ${playerCount} characters, no more, no fewer — never propose "optional," "bonus," or scalable extra characters for a larger group. If the user wants more or fewer characters, that's a different player count, not an addition to this list.
 
 ## ${(labels as any).murderMethod}
 [Paragraph describing how the murder was committed, interesting details about the method, and what clues might be found]
@@ -548,6 +548,15 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
       if (messages.length > 100) {
         systemPrompt += `\n\nNote: This has been a wonderfully detailed conversation! When it feels natural, warmly encourage the user that their concept is very well-developed and suggest hitting 'Generate Mystery' to bring it to life. But continue helping if they want to keep refining — don't block or pressure them.`;
       }
+
+      // Applied unconditionally regardless of which branch above set systemPrompt
+      // (inline template or the MYSTERY_FREE_PROMPT secret via applyDatabasePrompt) —
+      // a customer received a concept promising 3 "optional characters for 16-18
+      // players" that generation silently dropped, because nothing told the model
+      // not to invent scaling tiers the product has no mechanism to honor. Appending
+      // here means the guardrail can't be silently lost if the external prompt is
+      // edited later without this file changing too.
+      systemPrompt += `\n\nCRITICAL: List EXACTLY the established player count of characters — never propose "optional," "bonus," or scalable extra characters for a larger group ("15 core + 3 optional for 16-18 players" or similar). Every character you list will be generated and included; there is no mechanism to add characters after the fact. If the user might end up with more guests than characters, do not solve it by offering additional characters — that is handled separately by inviting extra guests as co-investigators, not by expanding the cast.`;
     }
 
     // Format messages for Anthropic API

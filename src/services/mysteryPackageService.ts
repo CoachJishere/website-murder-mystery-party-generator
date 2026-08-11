@@ -528,6 +528,8 @@ const EDITABLE_CHARACTER_FIELDS = [
   'final_innocent',
   'final_guilty',
   'final_accomplice',
+  'reveal_confession_guilty',
+  'reveal_confession_accomplice',
 ] as const;
 
 /**

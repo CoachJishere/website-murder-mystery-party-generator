@@ -67,6 +67,8 @@ const CHARACTER_FIELD_LABELS: Record<string, string> = {
   final_innocent: 'Final Statement — Innocent',
   final_guilty: 'Final Statement — Guilty',
   final_accomplice: 'Final Statement — Accomplice',
+  reveal_confession_guilty: 'The Reveal — Your Confession',
+  reveal_confession_accomplice: 'The Reveal — Accomplice Confession',
 };
 
 // Static "what to do now" helper lines shown above each round (ADR-0037 R1/R2).
@@ -74,6 +76,7 @@ const CHARACTER_FIELD_LABELS: Record<string, string> = {
 // (round_script) and character-based (innocent) styles are mutually exclusive so
 // only one variant per round renders.
 const ROUND_INTENT: Record<string, string> = {
+  character_name: "**Renaming only updates this field.** It will not change the name anywhere else — round scripts, clues, and the host guide will still use the original name. Best used to pick a side of a dual name (e.g. \"Clarabelle/Clarence\") before your first read-through, not as a late correction once you've started reviewing the script.",
   introduction: "**Round 1 — Introductions.** When it's your turn, deliver your introduction below. Listen closely to everyone else's — the details you hear now will matter in later rounds.",
   round2_script: "**Round 2 — Motives.** The question now is *why*. Use your questions below to probe why others might have wanted the victim gone — and be ready to answer for your own motive.",
   round2_innocent: "**Round 2 — Motives.** The question now is *why*. Use your questions below to probe why others might have wanted the victim gone — and be ready to answer for your own motive.",
@@ -83,7 +86,13 @@ const ROUND_INTENT: Record<string, string> = {
   round4_innocent: "**Round 4 — Opportunity.** Where was everyone? Use the evidence to pin down alibis — and be ready to account for your own whereabouts.",
   accusations: "**Accusations — point outward.** When the accusations round begins, accuse the person you most suspect and give one reason from the evidence. Save your own defense for the final statements that follow.",
   final_statement: "**Final Statements — your turn to defend.** After everyone has accused, this is your last word. Defend yourself — or, if you're guilty, make your confession.",
-  final_innocent: "**Final Statements — your turn to defend.** After everyone has accused, this is your last word. Defend yourself — or, if you're guilty, make your confession.",
+  // ADR-0065: character-style Final Statements is denial for everyone, guilty or not —
+  // the confession moved to a separate reveal_confession_* field/round (below), so this
+  // no longer tells guilty players to crack here (detective-style final_statement above
+  // is unaffected — that format's culprit is predetermined and unchanged by this fix).
+  final_innocent: "**Final Statements — your turn to defend.** After everyone has accused, this is your last word before The Reveal. Defend yourself and stick to your story — whether you're innocent or guilty, this round is not where the truth comes out.",
+  reveal_confession_guilty: "**The Reveal — your confession.** Read this ONLY if the Detective specifically names you as the murderer during The Reveal, after every player has already given their Final Statement above. This is a separate, later moment — don't read it early.",
+  reveal_confession_accomplice: "**The Reveal — your confession.** Read this ONLY if the Detective specifically calls on you as the accomplice during The Reveal, after the murderer has already confessed. This is a separate, later moment — don't read it early.",
 };
 
 // Static stakes reminder shown under each character's secret (ADR-0037 G6).
@@ -412,6 +421,11 @@ const MysteryPackageTabView = React.memo(({
       if (character.round2_guilty && !isStub(character.round2_guilty)) {
         content += `${character.round2_guilty}\n\n`;
       }
+      // Was missing entirely — a player who drew the accomplice slip got no round
+      // scripts at all in their downloaded guide. Matches the innocent/guilty pattern.
+      if (character.round2_accomplice && !isStub(character.round2_accomplice)) {
+        content += `${character.round2_accomplice}\n\n`;
+      }
     }
 
     if (character.round3_questions) {
@@ -426,6 +440,9 @@ const MysteryPackageTabView = React.memo(({
       }
       if (character.round3_guilty && !isStub(character.round3_guilty)) {
         content += `${character.round3_guilty}\n\n`;
+      }
+      if (character.round3_accomplice && !isStub(character.round3_accomplice)) {
+        content += `${character.round3_accomplice}\n\n`;
       }
     }
 
@@ -442,6 +459,9 @@ const MysteryPackageTabView = React.memo(({
       if (character.round4_guilty && !isStub(character.round4_guilty)) {
         content += `${character.round4_guilty}\n\n`;
       }
+      if (character.round4_accomplice && !isStub(character.round4_accomplice)) {
+        content += `${character.round4_accomplice}\n\n`;
+      }
     }
 
     if (character.final_statement && !isStub(character.final_statement)) {
@@ -452,6 +472,17 @@ const MysteryPackageTabView = React.memo(({
       }
       if (character.final_guilty && !isStub(character.final_guilty)) {
         content += `${character.final_guilty}\n\n`;
+      }
+      if (character.final_accomplice && !isStub(character.final_accomplice)) {
+        content += `${character.final_accomplice}\n\n`;
+      }
+      // ADR-0065: the actual confession, held back for The Reveal — a separate
+      // moment from the Final Statement denials above.
+      if (character.reveal_confession_guilty && !isStub(character.reveal_confession_guilty)) {
+        content += `${character.reveal_confession_guilty}\n\n`;
+      }
+      if (character.reveal_confession_accomplice && !isStub(character.reveal_confession_accomplice)) {
+        content += `${character.reveal_confession_accomplice}\n\n`;
       }
     }
     
@@ -984,6 +1015,12 @@ const MysteryPackageTabView = React.memo(({
                           { key: 'final_innocent',   content: composeFormat(character.final_innocent,   character.final_innocent_pointform,   true) },
                           { key: 'final_guilty',     content: composeFormat(character.final_guilty,     character.final_guilty_pointform,     true) },
                           { key: 'final_accomplice', content: composeFormat(character.final_accomplice, character.final_accomplice_pointform, true) },
+                          // ADR-0065: the actual confession, held back for The Reveal —
+                          // distinct from final_guilty/final_accomplice above, which are
+                          // now Final-Statements-round denials. No innocent counterpart:
+                          // innocent characters are never called on to confess.
+                          { key: 'reveal_confession_guilty',     content: composeFormat(character.reveal_confession_guilty,     character.reveal_confession_guilty_pointform,     true) },
+                          { key: 'reveal_confession_accomplice', content: composeFormat(character.reveal_confession_accomplice, character.reveal_confession_accomplice_pointform, true) },
                         ]),
                   ];
 

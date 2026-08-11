@@ -32,6 +32,10 @@ const ROLE_VARIANT_FIELDS = [
   'round3_innocent', 'round3_guilty', 'round3_accomplice',
   'round4_innocent', 'round4_guilty', 'round4_accomplice',
   'final_innocent',  'final_guilty',  'final_accomplice',
+  // ADR-0065: the guilty/accomplice confession, read only during The Reveal —
+  // distinct from final_guilty/final_accomplice, which are now Final-Statements-round
+  // denials. No innocent counterpart: innocent characters are never called on to confess.
+  'reveal_confession_guilty', 'reveal_confession_accomplice',
 ] as const;
 const SOURCE_FIELDS = [...SHARED_FIELDS, ...UNIFIED_FIELDS, ...ROLE_VARIANT_FIELDS] as const;
 
@@ -55,7 +59,7 @@ Output format: a single valid JSON object with one key per source field, named "
 
   Shared:        introduction, rumors, accusations
   Detective:     round2_script, round3_script, round4_script, final_statement
-  Character-based: round{2,3,4}_innocent, round{2,3,4}_guilty, round{2,3,4}_accomplice, final_innocent, final_guilty, final_accomplice
+  Character-based: round{2,3,4}_innocent, round{2,3,4}_guilty, round{2,3,4}_accomplice, final_innocent, final_guilty, final_accomplice, reveal_confession_guilty, reveal_confession_accomplice
 
 Example output for a character with mixed populated fields:
 {

@@ -17,9 +17,52 @@ function getCorsHeaders(req: Request) {
 }
 
 /**
+ * Escape raw control-character bytes (literal newline/tab/CR) that appear
+ * inside a JSON string literal, leaving everything outside strings (including
+ * legitimate structural whitespace in pretty-printed JSON) untouched. Tracks
+ * string-open/close state character by character, respecting `\"` escapes so
+ * an escaped quote doesn't get mistaken for a string boundary.
+ */
+function escapeControlCharsInStrings(s: string): string {
+  let out = '';
+  let inString = false;
+  let escaped = false;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (inString) {
+      if (escaped) {
+        out += ch;
+        escaped = false;
+        continue;
+      }
+      if (ch === '\\') {
+        out += ch;
+        escaped = true;
+        continue;
+      }
+      if (ch === '"') {
+        inString = false;
+        out += ch;
+        continue;
+      }
+      if (ch === '\n') { out += '\\n'; continue; }
+      if (ch === '\r') { out += '\\r'; continue; }
+      if (ch === '\t') { out += '\\t'; continue; }
+      out += ch;
+    } else {
+      if (ch === '"') inString = true;
+      out += ch;
+    }
+  }
+  return out;
+}
+
+/**
  * Parse a Claude text response that's *supposed* to be JSON but may contain
  * common malformations:
  *   - leading/trailing ```json or ``` code fences
+ *   - raw control characters (literal newline/tab/CR bytes) left unescaped
+ *     inside a string value instead of the two-character \n/\t/\r sequence
  *   - JS-style apostrophe escapes inside string values: `That\'s` → invalid JSON
  *   - JS-style escaped backslashes inside strings: `\\\\'` → invalid JSON
  *   - smart quotes (em-dash, curly quotes) — usually fine since UTF-8 string content is allowed
@@ -45,18 +88,36 @@ function parseClaudeJson(text: string): { data?: any; error?: string; sanitized?
     // fall through to repair
   }
 
-  // Stage 3: replace invalid `\'` JS-escape with plain `'`. This is the most
+  // Stage 3: escape raw control-character bytes that should have been
+  // JSON-escaped as \n/\t/\r. Claude (Sonnet 5, seen 2026-08-11) occasionally
+  // emits a real line break mid-paragraph inside a string value instead of
+  // the two-character escape sequence — JSON.parse rejects any unescaped
+  // control character (U+0000-U+001F) inside a string literal ("Bad control
+  // character in string literal"). Must be scoped to inside strings only —
+  // a naive global replace also mangles legitimate structural newlines in
+  // pretty-printed JSON (real newlines between top-level fields), breaking
+  // otherwise-valid input. Already-correct `\n` two-character sequences are
+  // untouched either way since they're two ordinary characters, not a
+  // control byte.
+  let s1b = escapeControlCharsInStrings(s);
+  try {
+    return { data: JSON.parse(s1b), sanitized: s1b };
+  } catch {
+    // fall through
+  }
+
+  // Stage 4: replace invalid `\'` JS-escape with plain `'`. This is the most
   // common Claude failure mode for prompts that ask for JSON with single-quoted
   // dialogue. The model defensively escapes apostrophes the way JS would, but
   // JSON spec rejects `\'`.
-  let s2 = s.replace(/\\'/g, "'");
+  let s2 = s1b.replace(/\\'/g, "'");
   try {
     return { data: JSON.parse(s2), sanitized: s2 };
   } catch {
     // fall through
   }
 
-  // Stage 4: also collapse `''` (double single-quote run) to single — sometimes
+  // Stage 5: also collapse `''` (double single-quote run) to single — sometimes
   // the model adds an extra closing apostrophe when wrapping up a quoted phrase.
   let s3 = s2.replace(/''+/g, "'");
   try {
@@ -65,7 +126,7 @@ function parseClaudeJson(text: string): { data?: any; error?: string; sanitized?
     // fall through
   }
 
-  // Stage 5: strip trailing commas before } or ] (lenient JSON5-ish). Some models
+  // Stage 6: strip trailing commas before } or ] (lenient JSON5-ish). Some models
   // produce these out of habit.
   let s4 = s3.replace(/,(\s*[}\]])/g, '$1');
   try {
