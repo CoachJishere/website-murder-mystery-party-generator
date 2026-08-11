@@ -1530,6 +1530,15 @@
       "expiresIn": "A oferta de boas-vindas expira em {{time}}"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "Um cliente acabou de comprar",
+    "dismissAriaLabel": "Fechar notificação",
+    "justNow": "Agora mesmo",
+    "minutesAgo": "Há {{count}} min",
+    "hoursAgo": "Há {{count}} h",
+    "daysAgo": "Há {{count}} d",
+    "overAWeekAgo": "Há mais de uma semana"
+  },
   "generationProgress": {
     "heading": "Estamos a construir o teu mistério",
     "subheading": "Esta página atualiza-se automaticamente — podes deixá-la aberta ou voltar mais tarde.",

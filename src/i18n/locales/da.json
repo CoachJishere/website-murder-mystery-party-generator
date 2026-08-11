@@ -1530,6 +1530,15 @@
       "expiresIn": "Velkomsttilbuddet udløber om {{time}}"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "En kunde har lige købt",
+    "dismissAriaLabel": "Luk notifikation",
+    "justNow": "Lige nu",
+    "minutesAgo": "{{count}} min. siden",
+    "hoursAgo": "{{count}} t. siden",
+    "daysAgo": "{{count}} d. siden",
+    "overAWeekAgo": "Mere end en uge siden"
+  },
   "generationProgress": {
     "heading": "Vi bygger dit mysterium",
     "subheading": "Denne side opdaterer automatisk — lad den gerne stå åben, eller kom tilbage senere.",

@@ -1530,6 +1530,15 @@
       "expiresIn": "L'offerta di benvenuto scade tra {{time}}"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "Un cliente ha appena acquistato",
+    "dismissAriaLabel": "Chiudi notifica",
+    "justNow": "Proprio ora",
+    "minutesAgo": "{{count}} min fa",
+    "hoursAgo": "{{count}} h fa",
+    "daysAgo": "{{count}} g fa",
+    "overAWeekAgo": "Più di una settimana fa"
+  },
   "generationProgress": {
     "heading": "Stiamo creando il tuo mistero",
     "subheading": "Questa pagina si aggiorna automaticamente — puoi lasciarla aperta o tornare più tardi.",

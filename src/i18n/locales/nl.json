@@ -1530,6 +1530,15 @@
       "expiresIn": "Welkomstaanbieding verloopt over {{time}}"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "Een klant heeft zojuist gekocht",
+    "dismissAriaLabel": "Melding sluiten",
+    "justNow": "Zojuist",
+    "minutesAgo": "{{count}} min geleden",
+    "hoursAgo": "{{count}} u geleden",
+    "daysAgo": "{{count}} d geleden",
+    "overAWeekAgo": "Meer dan een week geleden"
+  },
   "generationProgress": {
     "heading": "We bouwen aan je mysterie",
     "subheading": "Deze pagina wordt automatisch bijgewerkt — laat hem gerust open of kom later terug.",

@@ -1530,6 +1530,15 @@
       "expiresIn": "Das Willkommensangebot läuft in {{time}} ab"
     }
   },
+  "recentSalesPopup": {
+    "purchaseMessage": "Ein Kunde hat gerade gekauft",
+    "dismissAriaLabel": "Benachrichtigung schließen",
+    "justNow": "Gerade eben",
+    "minutesAgo": "Vor {{count}} Min.",
+    "hoursAgo": "Vor {{count}} Std.",
+    "daysAgo": "Vor {{count}} Tagen",
+    "overAWeekAgo": "Vor mehr als einer Woche"
+  },
   "generationProgress": {
     "heading": "Wir erstellen Ihr Mysterium",
     "subheading": "Diese Seite aktualisiert sich automatisch — Sie können sie geöffnet lassen oder später zurückkommen.",
