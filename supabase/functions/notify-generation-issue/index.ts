@@ -150,15 +150,76 @@ serve(async (req) => {
     // v14 child webhook to regenerate. Make.com's v14 child uses searchRows so
     // a re-fire UPDATEs the existing row in place. We don't wait for completion;
     // the next sweep cycle will detect whether recovery succeeded.
+    //
+    // Safety rails (2026-08-11): this call site had NEITHER an attempt cap NOR
+    // a spend cap, unlike auto-remediate-packages (ADR-0047), which caps every
+    // defect class at 2 attempts and a shared $5/day spend ceiling. Because
+    // this function is invoked every 10 minutes by
+    // sweep_stuck_needs_review_packages for as long as a package stays
+    // needs_review (up to 30 days), a genuinely unrecoverable empty character
+    // (the same root cause every time, not a transient blip) would fire a
+    // real, paid Sonnet 5 regeneration call every single cycle indefinitely --
+    // discovered 2026-08-11 when a stuck package's generation_status kept
+    // re-writing every few minutes with no progress. Mirrors the existing
+    // pattern exactly: attempts counted from auto_remediation_log, capped per
+    // character; spend summed from the SAME table, so this shares one $5/day
+    // ceiling with auto-remediate-packages rather than getting its own
+    // independent budget.
     const CHILD_WEBHOOK = "https://hook.eu2.make.com/3l26wasbsjzh5396np25qoyv8g82u6j3";
+    const MAX_ATTEMPTS_PER_CHARACTER = 2;
+    const DAILY_SPEND_CAP_USD = 5.0;
+    // Estimate only (not a measured figure like the Haiku/Replicate costs in
+    // auto-remediate-packages): one full child-scenario character
+    // regeneration on Sonnet 5 -- description/background/relationships/
+    // secrets/4 rounds/final statement plus point-form variants.
+    const CHARACTER_REGEN_COST_USD = 0.15;
+
+    async function spentToday(): Promise<number> {
+      const midnight = new Date();
+      midnight.setUTCHours(0, 0, 0, 0);
+      const { data, error } = await supabase
+        .from("auto_remediation_log")
+        .select("cost_usd")
+        .gte("created_at", midnight.toISOString());
+      if (error) throw new Error(`spend lookup failed: ${error.message}`);
+      return (data ?? []).reduce((sum: number, r: { cost_usd: number }) => sum + Number(r.cost_usd || 0), 0);
+    }
+
+    async function characterAttemptsUsed(packageId: string, charName: string): Promise<number> {
+      const { data, error } = await supabase
+        .from("auto_remediation_log")
+        .select("action")
+        .eq("package_id", packageId)
+        .eq("defect_class", "empty_character_content");
+      if (error) throw new Error(`attempt-cap lookup failed: ${error.message}`);
+      const expected = `regenerate_character:${charName}`;
+      return (data ?? []).filter((r: { action: string }) => r.action === expected).length;
+    }
+
     const recovered: string[] = [];
     const skipped: string[] = [];
+    const capped: string[] = [];
+    let budgetRemaining = Math.max(0, DAILY_SPEND_CAP_USD - (await spentToday()));
+
     for (const charName of emptyCharacters) {
       const description = charDescriptions[charName];
       if (!description) {
         skipped.push(charName); // can't recover without a description in master_context
         continue;
       }
+
+      if (pkg?.id) {
+        const used = await characterAttemptsUsed(pkg.id, charName);
+        if (used >= MAX_ATTEMPTS_PER_CHARACTER) {
+          capped.push(charName);
+          continue;
+        }
+      }
+      if (budgetRemaining < CHARACTER_REGEN_COST_USD) {
+        capped.push(charName);
+        continue;
+      }
+
       try {
         const resp = await fetch(CHILD_WEBHOOK, {
           method: "POST",
@@ -175,6 +236,17 @@ serve(async (req) => {
         });
         if (resp.ok) {
           recovered.push(charName);
+          budgetRemaining -= CHARACTER_REGEN_COST_USD;
+          if (pkg?.id) {
+            await supabase.from("auto_remediation_log").insert({
+              package_id: pkg.id,
+              defect_class: "empty_character_content",
+              action: `regenerate_character:${charName}`,
+              before_value: null,
+              outcome: "escalated", // fire-and-forget; next sweep confirms fixed vs. still-broken
+              cost_usd: CHARACTER_REGEN_COST_USD,
+            });
+          }
         } else {
           skipped.push(charName);
         }
@@ -184,7 +256,11 @@ serve(async (req) => {
       }
     }
 
-    const recoveryHtml = recovered.length > 0
+    // Each list is independent (a package can have characters in more than one
+    // bucket at once), so they render as separate rows rather than the old
+    // recovered > skipped priority chain, which silently dropped whichever
+    // list lost the ternary when both were non-empty.
+    const recoveredHtml = recovered.length > 0
       ? `<tr>
           <td style="padding: 8px 0; color: #6b7280;">Auto-Recovery:</td>
           <td style="padding: 8px 0; color: #059669; font-weight: 600;">
@@ -194,14 +270,27 @@ serve(async (req) => {
             </span>
           </td>
         </tr>`
-      : skipped.length > 0
+      : "";
+    const skippedHtml = skipped.length > 0
       ? `<tr>
-          <td style="padding: 8px 0; color: #6b7280;">Auto-Recovery:</td>
+          <td style="padding: 8px 0; color: #6b7280;">Auto-Recovery Skipped:</td>
           <td style="padding: 8px 0; color: #d97706;">
-            Skipped (no description available in extracted_characters): ${skipped.join(", ")}
+            No description available in extracted_characters: ${skipped.join(", ")}
           </td>
         </tr>`
       : "";
+    const cappedHtml = capped.length > 0
+      ? `<tr>
+          <td style="padding: 8px 0; color: #6b7280;">Auto-Recovery Capped:</td>
+          <td style="padding: 8px 0; color: #dc2626; font-weight: 600;">
+            ${capped.join(", ")}<br>
+            <span style="font-size: 12px; font-weight: normal; color: #6b7280;">
+              Hit the ${MAX_ATTEMPTS_PER_CHARACTER}-attempt cap or today's $${DAILY_SPEND_CAP_USD.toFixed(2)} shared spend cap. This needs manual intervention -- it will not retry itself.
+            </span>
+          </td>
+        </tr>`
+      : "";
+    const recoveryHtml = recoveredHtml + skippedHtml + cappedHtml;
 
     const html = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
