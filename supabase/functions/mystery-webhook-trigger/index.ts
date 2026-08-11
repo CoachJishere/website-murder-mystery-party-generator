@@ -188,6 +188,32 @@ function findLatestConceptMessage(messages: any[]): any | null {
   return latest;
 }
 
+/**
+ * ADR-0069: does a LATER message that independently parses into a cast propose
+ * a meaningfully different roster than the current snapshot? `findLatestConceptMessage`
+ * already guarantees the later message is itself a clean, structurally complete roster
+ * (>= MIN_ROSTER_SIZE) - this only decides whether it's a DIFFERENT one worth promoting.
+ *
+ * Conservative on purpose: only "different" when the character count changed or fewer
+ * than half the names match. Cosmetic rewording of the same cast (spelling tweaks, a
+ * subheading reshuffle, a header rename with the same 10 names) must NOT trigger a
+ * re-snapshot - that would just be re-litigating ADR-0057 in the other direction.
+ */
+function rosterDiffersMeaningfully(
+  snapshotRoster: ExtractedCharacter[],
+  latestRoster: ExtractedCharacter[],
+): boolean {
+  if (latestRoster.length === 0) return false;
+  if (snapshotRoster.length !== latestRoster.length) return true;
+
+  const normalize = (n: string) => n.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const snapshotNames = new Set(snapshotRoster.map((c) => normalize(c.name)));
+  const latestNames = new Set(latestRoster.map((c) => normalize(c.name)));
+  let shared = 0;
+  for (const n of latestNames) if (snapshotNames.has(n)) shared++;
+  const overlap = shared / Math.max(snapshotNames.size, latestNames.size, 1);
+  return overlap < 0.5;
+}
 
 // Primary extraction: regex-based (free, deterministic, <1ms)
 // If approvedMessageId is provided, extracts ONLY from that message (the concept
@@ -348,13 +374,39 @@ async function extractCharactersWithClaude(
     return null;
   }
 
-  // Only send assistant messages that contain bold text (character names)
-  const relevantContent = messages
+  // Only send assistant messages that contain bold text (character names).
+  //
+  // ADR-0069: budget from the MOST RECENT message backward, not head-truncate the
+  // naive concatenation. "Death At The Blackthorn Wedding" (2026-08-07): with
+  // ~38,000+ chars of draft history preceding the customer's actual final 10-player
+  // revision, the old `relevantContent.substring(0, 8000)` cut off long before her
+  // real final message was reached at all - the fallback silently extracted from
+  // stale earlier drafts instead. Dropping OLDER drafts first when the budget is
+  // tight means the most recent (most likely approved/final) content always survives.
+  const relevantMessages = (messages as any[])
     .filter((m: any) => (m.role === 'assistant' || m.is_ai) && (m.content || '').includes('**'))
-    .map((m: any) => m.content)
-    .join('\n\n---\n\n');
+    .sort((a: any, b: any) =>
+      new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime());
 
-  if (!relevantContent) return null;
+  if (relevantMessages.length === 0) return null;
+
+  const CONTENT_BUDGET = 8000;
+  const kept: string[] = [];
+  let usedChars = 0;
+  for (let i = relevantMessages.length - 1; i >= 0; i--) {
+    const content: string = relevantMessages[i].content || '';
+    if (usedChars + content.length > CONTENT_BUDGET) {
+      if (kept.length === 0) {
+        // Even the single most recent message alone exceeds the budget - keep it,
+        // truncated, rather than send nothing.
+        kept.unshift(content.substring(0, CONTENT_BUDGET));
+      }
+      break;
+    }
+    kept.unshift(content);
+    usedChars += content.length;
+  }
+  const relevantContent = kept.join('\n\n---\n\n');
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -371,7 +423,7 @@ async function extractCharactersWithClaude(
         system: "You are a strict JSON extraction tool. Output ONLY a valid JSON array of objects with 'name' and 'description' fields. Extract the playable character names and descriptions. Never continue the story. Never output anything except the JSON array.",
         messages: [{
           role: "user",
-          content: `Extract ALL playable character names and their one-line descriptions from this mystery content. Output ONLY a JSON array like: [{"name":"Character Name","description":"Their description"}]\n\nExpected count: ${playerCount || 'unknown'}\n\n${relevantContent.substring(0, 8000)}`
+          content: `Extract ALL playable character names and their one-line descriptions from this mystery content. Output ONLY a JSON array like: [{"name":"Character Name","description":"Their description"}]\n\nExpected count: ${playerCount || 'unknown'}\n\n${relevantContent}`
         }],
       }),
     });
@@ -492,6 +544,60 @@ serve(async (req) => {
         } else {
           conversation.approved_concept_message_id = candidate.id;
           console.log(`[ConceptSnapshot] Captured approved_concept_message_id=${candidate.id} (latest message parsing into a cast, at ${candidate.created_at})`);
+        }
+      }
+    }
+
+    // Re-capture on roster-shape drift (ADR-0069). The block above captures the
+    // snapshot ONCE; nothing previously re-evaluated it when a customer substantively
+    // revised their roster afterward. "Death At The Blackthorn Wedding"
+    // (cd4ca44d-d3ac-46ea-8663-6811c98fe1fc): customer approved a 12-player roster on
+    // 2026-07-22, then 16 days later said "Change it to be ten players" and received a
+    // revised 10-player roster as her final message - `approved_concept_message_id`
+    // never moved, so `extractCharactersFromMessages` (which reads ONLY the snapshot,
+    // by design per ADR-0057) kept reading the stale 12-player draft.
+    //
+    // Mirrors the existing player_count auto-sync's spirit, applied to the snapshot
+    // pointer itself: if the latest message that independently parses into a cast
+    // (same predicate that chose the snapshot originally) proposes a meaningfully
+    // different roster, promote it to the new snapshot before generation reads it.
+    //
+    // Deliberately narrow: this only catches a later message that RESTATES a full
+    // roster in a different shape. A sweep of the 46 paid conversations with a
+    // snapshot set (2026-08-11) found this is the only failure shape in the data -
+    // two other known incidents (Black Swan Society, Adelaide Crane) were later
+    // PROSE-only revisions (setting/tone/backstory) that never restated a roster at
+    // all, so no roster-comparison approach here could catch them; those are already
+    // covered by ADR-0059's conversationContent widening below, which sends the
+    // snapshot plus everything after it to Make.com's prose-generation prompts.
+    if (conversation.approved_concept_message_id && conversation.messages) {
+      const currentSnapshotMsg = (conversation.messages as any[])
+        .find((m: any) => m.id === conversation.approved_concept_message_id);
+      const latestConceptMsg = findLatestConceptMessage(conversation.messages as any[]);
+
+      if (
+        currentSnapshotMsg && latestConceptMsg &&
+        latestConceptMsg.id !== currentSnapshotMsg.id &&
+        new Date(latestConceptMsg.created_at).getTime() > new Date(currentSnapshotMsg.created_at).getTime()
+      ) {
+        const snapshotRoster = extractRosterFromMessage(currentSnapshotMsg.content || '');
+        const latestRoster = extractRosterFromMessage(latestConceptMsg.content || '');
+
+        if (rosterDiffersMeaningfully(snapshotRoster, latestRoster)) {
+          console.warn(
+            `[ConceptSnapshot] Roster drift detected: snapshot=${snapshotRoster.length} chars ` +
+            `(msg ${currentSnapshotMsg.id}, ${currentSnapshotMsg.created_at}), latest=${latestRoster.length} ` +
+            `chars (msg ${latestConceptMsg.id}, ${latestConceptMsg.created_at}). Re-capturing snapshot.`
+          );
+          const { error: recaptureErr } = await supabase
+            .from("conversations")
+            .update({ approved_concept_message_id: latestConceptMsg.id })
+            .eq("id", conversationId);
+          if (recaptureErr) {
+            console.warn(`[ConceptSnapshot] Failed to re-capture approved_concept_message_id: ${recaptureErr.message}`);
+          } else {
+            conversation.approved_concept_message_id = latestConceptMsg.id;
+          }
         }
       }
     }

@@ -45,11 +45,11 @@ assert.ok(start > 0 && end > start, 'could not locate the pure prelude');
 const { transformSync } = await import('esbuild');
 const js = transformSync(
   src.slice(start, end) +
-    '\nexport { extractRosterFromMessage, findLatestConceptMessage, MIN_ROSTER_SIZE };',
+    '\nexport { extractRosterFromMessage, findLatestConceptMessage, rosterDiffersMeaningfully, MIN_ROSTER_SIZE };',
   { loader: 'ts', format: 'esm' },
 ).code;
 
-const { extractRosterFromMessage, findLatestConceptMessage } = await import(
+const { extractRosterFromMessage, findLatestConceptMessage, rosterDiffersMeaningfully } = await import(
   'data:text/javascript;base64,' + Buffer.from(js).toString('base64')
 );
 
@@ -189,6 +189,69 @@ check('bracket-wrapped reserve/placeholder slots are excluded from the roster (2
   const names = extractRosterFromMessage(draftWithReserveSlots).map((c) => c.name);
   assert.strictEqual(names.length, 4, `got: ${names.join(', ')}`);
   assert.ok(!names.some((n) => n.startsWith('[')), `a placeholder slot leaked through as a character; got: ${names.join(', ')}`);
+});
+
+// --- ADR-0069: re-capture the snapshot when a LATER message restates a meaningfully
+// different roster ------------------------------------------------------------------
+// The live bug ("Death At The Blackthorn Wedding", cd4ca44d-...): customer approved a
+// 12-player roster, then 16 days later said "Change it to be ten players" and got a
+// revised 10-player roster as her final message. `approved_concept_message_id` never
+// moved, so generation kept reading the stale 12-player draft. `rosterDiffersMeaningfully`
+// is the pure predicate the edge function's re-capture block gates on.
+const roster12 = roster([
+  'Lady Vivienne Blackthorn', 'Lord Edmund Blackthorn', 'Reverend Cassius Wren', 'Dr. Marlowe Finch',
+  'Constance Sinclair', 'Rosalind Hart', 'Captain Percival Wade', 'Genevieve Ashworth',
+  'Bartholomew Croft', 'Ophelia Grant', 'Winston Cole', 'Marigold Pryce',
+]);
+const roster10 = roster([
+  'Lady Vivienne Blackthorn', 'Lord Edmund Blackthorn', 'Reverend Cassius Wren', 'Dr. Marlowe Finch',
+  'Constance Sinclair', 'Rosalind Hart', 'Captain Percival Wade', 'Genevieve Ashworth',
+  'Bartholomew Croft', 'Ophelia Grant',
+]);
+
+check('ADR-0069: a later message restating a different-count roster is flagged as drift', () => {
+  const snapshotRoster = extractRosterFromMessage(`## Character List (12 players)\n\n${roster12}`);
+  const laterRoster = extractRosterFromMessage(`## Character List (10 players)\n\n${roster10}`);
+  assert.strictEqual(snapshotRoster.length, 12);
+  assert.strictEqual(laterRoster.length, 10);
+  assert.ok(rosterDiffersMeaningfully(snapshotRoster, laterRoster));
+});
+
+check('ADR-0069: cosmetic rewording of the SAME cast is not flagged as drift', () => {
+  const snapshotRoster = extractRosterFromMessage(`## Character List (8 players)\n\n${roster(['Riley Brennan', 'Casey Delmar', 'Jordan Hale', 'Avery Quinn', 'Taylor Frost', 'Devon Pierce', 'Skylar Vance', 'Cameron Ellis'])}`);
+  const laterRoster = extractRosterFromMessage(`## Suspect List (8 fictional characters)\n\n${roster(['Riley Brennan', 'Casey Delmar', 'Jordan Hale', 'Avery Quinn', 'Taylor Frost', 'Devon Pierce', 'Skylar Vance', 'Cameron Ellis'])}`);
+  assert.strictEqual(snapshotRoster.length, 8);
+  assert.strictEqual(laterRoster.length, 8);
+  assert.ok(!rosterDiffersMeaningfully(snapshotRoster, laterRoster));
+});
+
+check('ADR-0069: end-to-end — findLatestConceptMessage + rosterDiffersMeaningfully picks up the live regression', () => {
+  const blackthornMsgs = [
+    { id: 'approved', role: 'assistant', content: `# Death At The Blackthorn Wedding\n\n## Character List (12 players)\n\n${roster12}`, created_at: '2026-07-22T21:59:00Z' },
+    { id: 'u-later', role: 'user', content: 'Change it to be ten players', created_at: '2026-08-07T17:30:00Z' },
+    { id: 'a-later', role: 'assistant', content: `# Death At The Blackthorn Wedding (Revised)\n\n## Character List (10 players)\n\n${roster10}`, created_at: '2026-08-07T17:35:00Z' },
+  ];
+  const currentSnapshotMsg = blackthornMsgs.find((m) => m.id === 'approved');
+  const latestConceptMsg = findLatestConceptMessage(blackthornMsgs);
+  assert.strictEqual(latestConceptMsg.id, 'a-later');
+
+  const snapshotRoster = extractRosterFromMessage(currentSnapshotMsg.content);
+  const latestRoster = extractRosterFromMessage(latestConceptMsg.content);
+  assert.ok(rosterDiffersMeaningfully(snapshotRoster, latestRoster), 'should detect the 12-vs-10 drift and promote the later message');
+});
+
+check('ADR-0069: a later PROSE-only revision (no restated roster) is not flagged — Black Swan Society shape', () => {
+  // "The Black Swan Society" (926cd375-...): 13 later assistant messages changed the
+  // setting to Victorian, renamed the institution, added a Savannah plot thread — but
+  // never restated a full character list. extractRosterFromMessage correctly finds no
+  // roster in the later message, so rosterDiffersMeaningfully must not fire (there is
+  // nothing to promote the snapshot to). This class of drift is out of scope for the
+  // roster-comparison fix — it's covered separately by ADR-0059's conversationContent
+  // widening, not by this function.
+  const snapshotRoster = extractRosterFromMessage(draft1);
+  const laterProseOnly = extractRosterFromMessage('Let\'s change it to Victorian era, with witty banter and clever wordplay — full absurd comedic tone, and let\'s rename the institution away from Morehouse.');
+  assert.strictEqual(laterProseOnly.length, 0);
+  assert.ok(!rosterDiffersMeaningfully(snapshotRoster, laterProseOnly));
 });
 
 console.log(`\n${passed} checks passed.`);
