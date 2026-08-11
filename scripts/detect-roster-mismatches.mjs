@@ -57,8 +57,19 @@ async function main() {
 
   if (error) throw error;
 
+  // Packages where a human has already investigated this exact finding and
+  // decided to leave it — see supabase/migrations/20260811_acknowledged_health_alerts.sql.
+  // Distinct from is_test: these are real, understood gaps, not disposable rows.
+  const { data: acknowledged } = await supabase
+    .from('acknowledged_health_alerts')
+    .select('package_id')
+    .eq('detector', 'roster_mismatch');
+  const acknowledgedIds = new Set((acknowledged ?? []).map((a) => a.package_id));
+
   const mismatches = [];
   for (const pkg of packages ?? []) {
+    if (acknowledgedIds.has(pkg.id)) continue;
+
     const { data: conv } = await supabase
       .from('conversations')
       .select('id, title, is_paid, is_test, approved_concept_message_id')
