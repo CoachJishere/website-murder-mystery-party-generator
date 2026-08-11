@@ -2,6 +2,11 @@
 
 ## 2026-08-11
 
+### Fix: health-check retries transient Supabase API errors instead of alerting on them
+Before deciding whether to build ADR-0075's autonomous detector-fix loop, backtested the full 56-comment history of GitHub issue #3. Found the largest single source of noise wasn't a detector bug at all: 29 of 56 comments were "Could not query ... Supabase API error" — the workflow's `api()` helper (`.github/workflows/health-check.yml`) does a bare `curl -sf` with zero retry, so any transient Supabase API blip surfaced as a false alarm.
+- **Fix:** added `--retry 3 --retry-delay 5` to the curl call. Only retries curl's built-in transient set (connection errors, 408/429/500/502/503/504) — a genuine 401/403/404 still fails immediately, unchanged from before.
+- **Decision on ADR-0075:** held for now. The backtest validated the core mechanical-vs-judgment classification idea (it would have correctly kept content-quality alerts like identity contamination, structural defects, and self-directed-questions escalate-only) but also surfaced that the drafted rule's "never touch package-adjacent tables" exclusion would incorrectly block automating evidence-image retries, which the codebase already trusts an existing worker (ADR-0051/0066) to do autonomously. This fix — near-zero risk, no new tables, no classifier — resolves the majority of historical noise on its own; the full loop is deferred pending evidence it's still needed after this and the acknowledgment-table fix above.
+
 ### Feature: suppress accepted health-check findings instead of re-alerting forever
 Birthday Bash's roster-mismatch alert (see entries above/below) kept firing every 6 hours even after full investigation and an explicit decision to leave it — nothing about the package changes between runs, so the detector correctly kept re-finding the same already-accepted gap with no way to say "seen, decided, stop."
 - **Added `acknowledged_health_alerts`** (`package_id`, `detector`, `note`, `acknowledged_at`, unique per package+detector, service-role only). Distinct from ADR-0072's `is_test` flag — that's for disposable test rows excluded from every detector permanently; this is for real, investigated production packages where a human decided to accept a specific, understood gap.
