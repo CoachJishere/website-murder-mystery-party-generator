@@ -35,6 +35,14 @@
 #      guaranteed. Scoped to packages with reveal_confession_guilty/accomplice
 #      populated, so pre-ADR-0067 packages (confession-in-final-statement by
 #      original design, not by bug) never false-positive. ESCALATE-ONLY.
+#   14. Unconfessed detective-style culprit (ADR-0070 detector): the sibling
+#      failure mode to check 13, in the other mystery format. Detective-style
+#      has no separate Reveal round — Final Statements IS the reveal — so a
+#      murderer whose final_statement denies instead of confessing, or an
+#      accomplice who denies a role the murderer already named them for,
+#      means the package ships with no scripted solution at all. Heuristic,
+#      documented false-positive rate (see the detector migration). Excludes
+#      is_test packages. ESCALATE-ONLY.
 #
 # On failure: opens (or comments on) a GitHub issue labelled `health-alert`.
 # Always: writes monitoring/health-status.md and commits it if changed.
@@ -297,6 +305,26 @@ jobs:
             fi
           fi
 
+          # 14. Unconfessed detective-style culprit (ADR-0070 detector).
+          # Sibling to check 13 for the other mystery format: detective-style has
+          # no separate Reveal round, so a murderer/accomplice denial in
+          # final_statement means the package's ONLY reveal moment never actually
+          # reveals anything. Same 30-day rolling window as checks 5-13.
+          # ESCALATE-ONLY: heuristic with a documented false-positive rate (see
+          # the detector migration) — read the flagged final_statement, don't
+          # auto-remediate off this count.
+          UCC=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_unconfessed_culprit" \
+            -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
+          if [ "$UCC" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the unconfessed-culprit detector (Supabase API error)\n"
+            UCC_COUNT="?"
+          else
+            UCC_COUNT=$(echo "$UCC" | jq 'length')
+            if [ "$UCC_COUNT" -gt 0 ]; then
+              PROBLEMS="${PROBLEMS}- 🔴 ${UCC_COUNT} detective-style package(s) whose Final Statements round doesn't actually reveal the solution: $(echo "$UCC" | jq -r '[.[] | "\(.title) [\(.reason): \(.character_name)]"] | join("; ")')\n"
+            fi
+          fi
+
           # Write status file
           mkdir -p monitoring
           {
@@ -327,6 +355,7 @@ jobs:
             echo "| Structural defects — escalate only (30 days) | ${STRUCT_COUNT} |"
             echo "| Roster-count mismatches — escalate only (30 days) | ${ROSTER_COUNT} |"
             echo "| Final-statement confession leaks — escalate only (30 days) | ${FSCL_COUNT} |"
+            echo "| Unconfessed detective-style culprits — escalate only (30 days) | ${UCC_COUNT} |"
           } > monitoring/health-status.md
 
           if [ -n "$PROBLEMS" ]; then

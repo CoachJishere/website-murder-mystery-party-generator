@@ -2,6 +2,13 @@
 
 ## 2026-08-11
 
+### Wired into health-check: unconfessed detective-style culprit detector (ADR-0070, check 14)
+Finished the loop ADR-0070 left open: the detector existed and was live-tested, but wasn't monitored — a future regression (like the one caught mid-session while live-testing the fix) would only surface via another customer complaint.
+- **Bug caught while wiring it in:** `list_packages_with_unconfessed_culprit()` didn't exclude `is_test` packages, unlike the other RPC-based health-check detectors (they specifically use an RPC rather than a raw REST filter *so* they can join `conversations` and exclude `is_test` — ADR-0072). The disposable package created to live-test the ADR-0070 fix would have been eligible to alert on a future regression. Fixed via `supabase/migrations/20260811_exclude_is_test_from_unconfessed_culprit.sql` (`CREATE OR REPLACE`, same function signature); re-verified the detector still returns the same 3 known rows (the documented false positives) after the change.
+- **Added as check 14** in `.github/workflows/health-check.yml`, same pattern as check 13 (its character-style sibling): plain RPC call via the existing `api()` curl helper, 30-day rolling window, ESCALATE-ONLY. No new dependencies — unlike check 12 (roster-mismatch), this detector is pure SQL, no `npm ci` needed.
+- Validated the workflow YAML parses correctly and the new step's variables are wired through to both the alert body and the status-file table.
+- Full record in [ADR-0070](docs/adr/0070-detective-style-culprit-final-statement-unreliable-confession.md).
+
 ### Fix: health-check retries transient Supabase API errors instead of alerting on them
 Before deciding whether to build ADR-0075's autonomous detector-fix loop, backtested the full 56-comment history of GitHub issue #3. Found the largest single source of noise wasn't a detector bug at all: 29 of 56 comments were "Could not query ... Supabase API error" — the workflow's `api()` helper (`.github/workflows/health-check.yml`) does a bare `curl -sf` with zero retry, so any transient Supabase API blip surfaced as a false alarm.
 - **Fix:** added `--retry 3 --retry-delay 5` to the curl call. Only retries curl's built-in transient set (connection errors, 408/429/500/502/503/504) — a genuine 401/403/404 still fails immediately, unchanged from before.
