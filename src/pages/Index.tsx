@@ -145,7 +145,7 @@ function StatsSection() {
         className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8"
       >
         {[
-          { value: 500, suffix: "+", label: t("home.stats.mysteriesCreated") },
+          { value: 1000, suffix: "+", label: t("home.stats.mysteriesCreated") },
           { value: 999, suffix: "+", label: t("home.stats.themesPossible") },
           { value: 5, suffix: ` ${t("home.stats.minutesShort")}`, label: t("home.stats.toGetStarted") },
         ].map((stat, i) => (
