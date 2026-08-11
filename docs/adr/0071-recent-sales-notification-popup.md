@@ -1,6 +1,6 @@
 # ADR-0071: Recent sales notification popup — data source, delivery, and display spec
 
-- **Status:** Proposed
+- **Status:** Accepted (merged to `main` and verified live in production 2026-08-11)
 - **Date:** 2026-08-09
 - **Final decision (2026-08-10):** no purchaser name or location, ever — title alone, always. See "Final decision" section below; the opt-in-checkbox plan documented inline further down was built, tested, then deliberately reverted.
 
