@@ -5,7 +5,7 @@
  * Page:    https://www.mysterymaker.party/
  * Queries: "mystery maker", "murder mystery maker", "mysterymaker"
  * Windows: BEFORE = 2026-06-09..2026-06-29 (21 days, pre-change)
- *          AFTER  = 2026-06-30..2026-07-19 (post-change; GSC lags ~2-3 days)
+ *          AFTER  = 2026-06-30..2026-08-08 (2nd read, widened to present; GSC lags ~2-3 days)
  *
  * Also pulls a per-day series per query so a ranking (position) shift can be told
  * apart from a genuine CTR win.
@@ -20,7 +20,7 @@ const SITE = 'https://www.mysterymaker.party/';
 const PAGE = 'https://www.mysterymaker.party/';
 const QUERIES = ['mystery maker', 'murder mystery maker', 'mysterymaker'];
 const BEFORE = { startDate: '2026-06-09', endDate: '2026-06-29' };
-const AFTER = { startDate: '2026-06-30', endDate: '2026-07-19' };
+const AFTER = { startDate: '2026-06-30', endDate: '2026-08-08' };
 const KEYFILE = join(__dirname, '../temp-files/mystery-maker-analytics-3e8af2760f57.json');
 
 function auth() {

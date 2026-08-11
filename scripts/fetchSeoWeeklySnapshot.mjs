@@ -131,6 +131,18 @@ async function fetchGSC(snapshot) {
     if (!cur || impr > cur.impressions) pageByQuery.set(query, { page, impressions: impr });
   }
 
+  // Heuristic: real people essentially never type literal quote marks into a search
+  // box, but GSC reports them verbatim when they appear. A cluster of queries built
+  // from permuted quoted-phrase fragments (e.g. `"guide to" "murder mystery" "x"`,
+  // `"x" "murder mystery" "guide" series`) is a much stronger tell of scripted/bot
+  // query generation than organic long-tail phrasing — confirmed 2026-08-10/11 when
+  // a "surging, page-1, 0-click" query cluster that looked like real demand turned
+  // out to be ~20 quote-permuted variants, 0 clicks across all of them. Not a hard
+  // filter (a human might legitimately search a quoted phrase once) — flagged so the
+  // digest treats a CLUSTER of these as noise, not demand, while staying visible for
+  // a human to double-check.
+  const looksBotGenerated = (query) => query.includes('"');
+
   // quick wins: meaningful impressions, then diagnose the LEVER (copy vs authority
   // vs both) per ADR-0045 instead of blindly recommending a title/meta rewrite.
   const shapedQ = shapeRows([...curQ], 'query');
@@ -141,7 +153,15 @@ async function fetchGSC(snapshot) {
     .filter((q) => q.impressions >= 20 && q.position <= 20)
     .map((q) => {
       const { expectedCtr, ctrGap, lever, reason } = classifyLever(q, ctrCurve);
-      return { ...q, expectedCtr, ctrGap, lever, reason, rankingPage: pageByQuery.get(q.query)?.page || null };
+      return {
+        ...q,
+        expectedCtr,
+        ctrGap,
+        lever,
+        reason,
+        rankingPage: pageByQuery.get(q.query)?.page || null,
+        suspiciousQueryShape: looksBotGenerated(q.query),
+      };
     })
     .filter((q) => q.lever !== 'watch')
     .slice(0, 15);
@@ -155,6 +175,7 @@ async function fetchGSC(snapshot) {
       prevImpressions: prevMap.get(r.keys[0]) || 0,
       clicks: r.clicks || 0,
       position: Math.round((r.position || 0) * 10) / 10,
+      suspiciousQueryShape: looksBotGenerated(r.keys[0]),
     }))
     .map((r) => ({ ...r, growth: r.impressions - r.prevImpressions }))
     .filter((r) => r.growth >= 10)
