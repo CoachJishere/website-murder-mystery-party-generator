@@ -54,6 +54,7 @@ Two parts, mirroring ADR-0063/0064's prevention-plus-detection pattern:
 - Fixes future generations where a customer-approved roster line has an inline annotation between name and separator (any wording, any bracket style).
 - **Does not backfill:** other already-completed packages that may have hit the same bug are not swept in this pass. A scan for other paid packages whose approved concept snapshot contains a similar bracketed/italic annotation pattern on a numbered character line is flagged as follow-up, not done here.
 - **Does not touch the batch-path (header-agnostic) regex** if it turns out to share the same limitation — should be checked in the same pass as the header-path fix, since `boldCharRegex` has an analogous structure.
+- **Deployed 2026-08-11** (function version 122 → 123, `verify_jwt: false` preserved). Confirmed live via `mcp__supabase__get_edge_function` immediately after deploy. Local git had carried this fix (plus the pre-existing, likewise-undeployed ADR-0063 peek-ahead subheading fix) since 2026-08-07 without reaching production — a 4-day gap during which any customer hitting either bug would not have been protected. Verified against source, not assumed: re-fetched the deployed function post-deploy and diffed the regex lines directly.
 
 ## Key files
 
