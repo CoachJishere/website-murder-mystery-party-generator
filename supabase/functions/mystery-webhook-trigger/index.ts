@@ -62,10 +62,10 @@ const sectionHeaderRegex = new RegExp(
 // 1. **Name** - Description  (bold with dash)
 // 1. **Name**: Description   (bold with colon)
 // 1. Name - Description      (plain with dash)
-const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))\s*[-–—:]\s*(.+)/;
+const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))(?:\s*\*?\([^)]*\)\*?)?\s*[-–—:]\s*(.+)/;
 
 // Header-agnostic: 4+ consecutive "**Name** - Description" lines.
-const boldCharRegex = /^\*\*(.+?)\*\*\s*[-–—:]\s*(.+)/;
+const boldCharRegex = /^\*\*(.+?)\*\*(?:\s*\*?\([^)]*\)\*?)?\s*[-–—:]\s*(.+)/;
 
 /** A message proposing fewer names than this isn't a cast. */
 const MIN_ROSTER_SIZE = 4;
@@ -96,10 +96,11 @@ function extractRosterFromMessage(content: string): ExtractedCharacter[] {
   if (headerMatch) {
     const viaHeader = new Map<string, ExtractedCharacter>();
     const afterHeader = content.substring(headerMatch.index! + headerMatch[0].length);
+    const lines = afterHeader.split('\n');
     let started = false;
 
-    for (const line of afterHeader.split('\n')) {
-      const trimmed = line.trim();
+    for (let i = 0; i < lines.length; i++) {
+      const trimmed = lines[i].trim();
       if (!trimmed) continue;
 
       const charMatch = trimmed.match(characterLineRegex);
@@ -110,8 +111,19 @@ function extractRosterFromMessage(content: string): ExtractedCharacter[] {
         started = true;
       } else if (started) {
         // Tolerate subheadings/dividers between entries; stop only at a new
-        // section header that isn't itself another character-list header.
-        if (/^#{2,3}\s+/.test(trimmed) && !sectionHeaderRegex.test(trimmed)) break;
+        // section header that isn't itself another character-list header AND
+        // doesn't lead back into more roster lines (e.g. "### Optional
+        // Characters (for 16-18 players)" is a roster continuation, not a new
+        // section - the model's wording for "more characters" will keep
+        // drifting, so check structure instead: does a character line follow?).
+        if (/^#{2,3}\s+/.test(trimmed) && !sectionHeaderRegex.test(trimmed)) {
+          let nextContentLine = '';
+          for (let j = i + 1; j < lines.length; j++) {
+            const t = lines[j].trim();
+            if (t) { nextContentLine = t; break; }
+          }
+          if (!characterLineRegex.test(nextContentLine)) break;
+        }
       }
     }
     if (viaHeader.size >= MIN_ROSTER_SIZE) return Array.from(viaHeader.values());
@@ -261,7 +273,7 @@ function extractCharactersFromMessages(messages: any[], approvedMessageId?: stri
   // Secondary pattern: 4+ consecutive **Name** - Description lines (no section header).
   // Iterate messages chronologically; LATER messages with a valid batch overwrite
   // earlier ones, so we always use the most recent character list.
-  const boldCharRegex = /^\*\*(.+?)\*\*\s*[-–—:]\s*(.+)/;
+  const boldCharRegex = /^\*\*(.+?)\*\*(?:\s*\*?\([^)]*\)\*?)?\s*[-–—:]\s*(.+)/;
   let secondaryMap = new Map<string, ExtractedCharacter>();
 
   for (const msg of assistantMessages) {

@@ -129,4 +129,47 @@ check('is_ai flag is honoured as well as role', () => {
   );
 });
 
+// --- ADR-0063: "### Optional Characters" no longer terminates the roster ----------
+// Customer's actual bug: 15 core characters under "## Character List (15 players)",
+// then 3 more under "### Optional Characters (for 16-18 players)" — a subheading not
+// on CHARACTER_LIST_HEADERS. The old code stopped at the first unrecognised ##/###
+// line; the fix peeks at whether a character line follows before stopping, so ANY
+// subheading wording works as long as the roster actually continues after it.
+const draftWithOptional = `# Camp Mystery\n\n## Premise\n\nA camp.\n\n## Character List (15 players)\n\n${roster([
+  'Blaze Kingston', 'Rocket Chen', 'Flash Martinez', 'Ace Sullivan', 'Scout Hayes',
+  'Ziggy Kowalski', 'Hawk Blackwood', 'Dash Reed', 'Comet Tran', 'Phoenix Moreno',
+  'Storm Winters', 'Jet Fontaine', 'Blitz Thornton', 'Maverick Cruz', 'Ridge Foster',
+])}\n\n### Optional Characters (for 16-18 players)\n\n${roster(['Nitro Patel', 'Crash Yamamoto', 'Timber Wolfe'])}\n\n## Murder Method\n\nPoison in the smoothie.`;
+
+check('roster continues past an unrecognised subheading when more character lines follow (ADR-0063)', () => {
+  const names = extractRosterFromMessage(draftWithOptional).map((c) => c.name);
+  assert.strictEqual(names.length, 18, `got: ${names.join(', ')}`);
+  assert.ok(names.includes('Nitro Patel'));
+  assert.ok(names.includes('Timber Wolfe'));
+});
+
+check('parsing still stops at a real new section (Murder Method is prose, not more characters)', () => {
+  const names = extractRosterFromMessage(draftWithOptional).map((c) => c.name);
+  assert.ok(!names.some((n) => n.includes('Poison')));
+});
+
+// --- ADR-0068: an inline annotation between the name and the dash no longer drops the line ---
+// Customer's actual bug ("The Host Herself", ac2c3610-...): she explicitly asked for and
+// approved a 12th "optional player" character. The approved snapshot's roster line for it —
+// "12. **Blaire/Blair Ashford** *(OPTIONAL PLAYER)* – ..." — has an italic parenthetical
+// between the bolded name and the en-dash separator. The old characterLineRegex required the
+// separator immediately after the closing "**", so this one line silently failed to match
+// while all 11 other (unannotated) lines matched fine — extractRosterFromMessage returned 11
+// instead of 12, no error, no count mismatch signal. Verified against her exact approved text.
+const draftWithAnnotatedOptional = `# Secrets at the Summit\n\n## Premise\n\nA resort weekend.\n\n## Character List (11-12 players)\n\n${roster([
+  'Vivienne Ashford', 'Jordan Keating', 'Reese Holloway', 'Cameron Voss', 'Sloane Fitzgerald',
+  'Harper Chen', 'Avery Blackwood', 'Riley Sutton', 'Morgan Delacroix', 'Emerson Vale', 'Quinn Marchetti',
+])}\n\n12. **Blaire/Blair Ashford** *(OPTIONAL PLAYER)* – Vivienne's unpredictable older sister who wasn't officially invited but showed up late to dinner anyway; known for stirring up trouble and saying what everyone else is thinking.\n\n## Murder Method\n\nPoison in the green juice.`;
+
+check('roster line with an inline annotation between name and dash still parses (ADR-0068)', () => {
+  const names = extractRosterFromMessage(draftWithAnnotatedOptional).map((c) => c.name);
+  assert.strictEqual(names.length, 12, `got: ${names.join(', ')}`);
+  assert.ok(names.includes('Blaire/Blair Ashford'), `missing annotated 12th character; got: ${names.join(', ')}`);
+});
+
 console.log(`\n${passed} checks passed.`);
