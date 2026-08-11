@@ -172,4 +172,23 @@ check('roster line with an inline annotation between name and dash still parses 
   assert.ok(names.includes('Blaire/Blair Ashford'), `missing annotated 12th character; got: ${names.join(', ')}`);
 });
 
+// --- bracket-wrapped reserve/placeholder slots aren't real characters (2026-08-11) ---
+// Customer's actual bug ("Death At The Birthday Bash", 7072e6eb-...): the AI's response
+// got cut off mid-draft, and the last two roster lines were leftover placeholder text
+// it invented while trying to fill "two more maybe characters" slots the customer only
+// gave one real answer for: "21. **[RESERVE CHARACTER - Brian's Alternate]** - If Brian
+// cannot attend, his character's secrets and motives will be redistributed among the
+// other suspects." These match characterLineRegex structurally (bold name + separator +
+// description) but aren't real characters — the health-check's roster-mismatch detector
+// counted them as 2 extra "approved" characters that were never meant to be generated.
+const draftWithReserveSlots = `# Party\n\n## Premise\n\nA party.\n\n## Character List (6 players)\n\n${roster([
+  'Nick Nichols', 'Emily Divine', 'Justin Sims', 'Benton Fitzgerald',
+])}\n\n5. **[RESERVE CHARACTER - Brian's Alternate]** - If Brian cannot attend, his character's secrets and motives will be redistributed among the other suspects.\n\n6. **[RESERVE CHARACTER - Jessica's Alternate]** - If Jessica cannot atten`;
+
+check('bracket-wrapped reserve/placeholder slots are excluded from the roster (2026-08-11)', () => {
+  const names = extractRosterFromMessage(draftWithReserveSlots).map((c) => c.name);
+  assert.strictEqual(names.length, 4, `got: ${names.join(', ')}`);
+  assert.ok(!names.some((n) => n.startsWith('[')), `a placeholder slot leaked through as a character; got: ${names.join(', ')}`);
+});
+
 console.log(`\n${passed} checks passed.`);

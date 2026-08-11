@@ -70,6 +70,14 @@ const boldCharRegex = /^\*\*(.+?)\*\*(?:\s*\*?\([^)]*\)\*?)?\s*[-–—:]\s*(.+)
 /** A message proposing fewer names than this isn't a cast. */
 const MIN_ROSTER_SIZE = 4;
 
+// A numbered/bold line can match characterLineRegex/boldCharRegex structurally
+// while not naming a real character at all — e.g. a truncated draft's leftover
+// placeholder slot: "21. **[RESERVE CHARACTER - Brian's Alternate]** - If Brian
+// cannot attend, his character's secrets and motives will be redistributed..."
+// Real character names are never wrapped in brackets, so this is a safe,
+// structural (not literal-wording) filter, same principle as ADR-0063/ADR-0068.
+const isPlaceholderCharacterName = (name: string): boolean => name.trim().startsWith('[');
+
 /**
  * What cast does THIS ONE message propose? Tries the explicit header section
  * first, then falls back to the header-agnostic batch pattern (4+ consecutive
@@ -107,7 +115,7 @@ function extractRosterFromMessage(content: string): ExtractedCharacter[] {
       if (charMatch) {
         const name = (charMatch[1] || charMatch[2]).trim().replace(/"/g, "'");
         const description = charMatch[3].trim().replace(/"/g, "'");
-        viaHeader.set(name.toLowerCase(), { name, description });
+        if (!isPlaceholderCharacterName(name)) viaHeader.set(name.toLowerCase(), { name, description });
         started = true;
       } else if (started) {
         // Tolerate subheadings/dividers between entries; stop only at a new
@@ -144,15 +152,15 @@ function extractRosterFromMessage(content: string): ExtractedCharacter[] {
     const bold = trimmed.match(boldCharRegex);
 
     if (numbered) {
-      batch.push({
-        name: (numbered[1] || numbered[2]).trim().replace(/"/g, "'"),
-        description: numbered[3].trim().replace(/"/g, "'"),
-      });
+      const name = (numbered[1] || numbered[2]).trim().replace(/"/g, "'");
+      if (!isPlaceholderCharacterName(name)) {
+        batch.push({ name, description: numbered[3].trim().replace(/"/g, "'") });
+      }
     } else if (bold) {
-      batch.push({
-        name: bold[1].trim().replace(/"/g, "'"),
-        description: bold[2].trim().replace(/"/g, "'"),
-      });
+      const name = bold[1].trim().replace(/"/g, "'");
+      if (!isPlaceholderCharacterName(name)) {
+        batch.push({ name, description: bold[2].trim().replace(/"/g, "'") });
+      }
     } else if (batch.length > 0 && trimmed !== '') {
       flush();
     }
@@ -242,7 +250,7 @@ function extractCharactersFromMessages(messages: any[], approvedMessageId?: stri
           // errors in downstream Make.com scenarios that use string interpolation
           const name = (charMatch[1] || charMatch[2]).trim().replace(/"/g, "'");
           const description = charMatch[3].trim().replace(/"/g, "'");
-          charMap.set(name.toLowerCase(), { name, description });
+          if (!isPlaceholderCharacterName(name)) charMap.set(name.toLowerCase(), { name, description });
           foundCharsInSection = true;
         } else if (foundCharsInSection) {
           // Allow non-matching lines (subheadings, dividers, category labels)
@@ -291,9 +299,10 @@ function extractCharactersFromMessages(messages: any[], approvedMessageId?: stri
       if (numberedMatch) {
         const name = (numberedMatch[1] || numberedMatch[2]).trim().replace(/"/g, "'");
         const description = numberedMatch[3].trim().replace(/"/g, "'");
-        batch.push({ name, description });
+        if (!isPlaceholderCharacterName(name)) batch.push({ name, description });
       } else if (boldMatch) {
-        batch.push({ name: boldMatch[1].trim().replace(/"/g, "'"), description: boldMatch[2].trim().replace(/"/g, "'") });
+        const name = boldMatch[1].trim().replace(/"/g, "'");
+        if (!isPlaceholderCharacterName(name)) batch.push({ name, description: boldMatch[2].trim().replace(/"/g, "'") });
       } else if (batch.length > 0 && trimmed !== '') {
         // Non-matching non-empty line — flush batch if 4+
         if (batch.length >= 4) {
