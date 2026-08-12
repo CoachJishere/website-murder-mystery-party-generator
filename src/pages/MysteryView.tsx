@@ -88,6 +88,21 @@ const MysteryView = () => {
   const timeoutNotifiedRef = useRef<boolean>(false);
   const [generationTimedOut, setGenerationTimedOut] = useState(false);
 
+  // Hard quality guarantee (ADR-0077): while a package is held `needs_review`
+  // and still inside the silent self-heal window, content is never revealed —
+  // the building screen shows instead. `needs_review_at == null` (trigger
+  // didn't stamp it, or ADR-0058's ordering fix hasn't run for this row) is
+  // treated as OUT of the window rather than hidden forever, so a package can
+  // never get stuck — it falls through to the existing post-window reveal +
+  // warning banner immediately, same as today's ts-is-null handling below.
+  const needsReviewWithinWindow = useMemo(() => {
+    if (generationStatus?.status !== 'needs_review') return false;
+    const ts = packageData?.needs_review_at;
+    if (!ts) return false;
+    const ageMs = Date.now() - new Date(ts).getTime();
+    return ageMs < NEEDS_REVIEW_SILENT_WINDOW_MS;
+  }, [generationStatus?.status, packageData?.needs_review_at]);
+
   const debugLog = useCallback((message: string, data?: any) => {
     if (!DEBUG_MODE) return;
     
@@ -1171,6 +1186,7 @@ const MysteryView = () => {
         hasDetective={!!packageData?.detectiveScript}
         hasImages={!!packageData?.evidenceCardImages}
         generationStartedAt={generationStatus?.startedAt}
+        finalizing={needsReviewWithinWindow}
         isMobile={isMobile}
       />
     );
@@ -1231,9 +1247,7 @@ const MysteryView = () => {
               doesn't see a warning for issues that'll fix themselves. */}
           {(() => {
             if (generationStatus?.status !== 'needs_review') return null;
-            const ts = packageData?.needs_review_at;
-            const ageMs = ts ? Date.now() - new Date(ts).getTime() : Infinity;
-            if (ageMs < NEEDS_REVIEW_SILENT_WINDOW_MS) return null;
+            if (needsReviewWithinWindow) return null;
             return (
               <Alert className={cn(
                 "mb-4 border-amber-400/60 bg-amber-50/50 dark:bg-amber-950/20",
@@ -1259,10 +1273,16 @@ const MysteryView = () => {
             );
           })()}
 
-          {/* Show TabView when content is sufficiently present. We INCLUDE
-              `needs_review` here so the customer can see/use their mystery
-              while auto-recovery patches gaps in the background. */}
-          {((((generationStatus?.status === 'completed' || generationStatus?.status === 'needs_review')
+          {/* Show TabView when content is sufficiently present. `completed` is
+              trusted-clean (ADR-0049/0053 gate guarantee) and reveals
+              immediately. `needs_review` only reveals once it's past the
+              silent self-heal window (ADR-0077 hard quality guarantee) — while
+              `needsReviewWithinWindow` is true, the building screen renders
+              instead (see the branch below), so a customer is never shown
+              content that might still be a defect the self-heal loop is
+              actively repairing. */}
+          {((((generationStatus?.status === 'completed' ||
+               (generationStatus?.status === 'needs_review' && !needsReviewWithinWindow))
               && characters.length > 0
               && !!packageData?.evidenceCards && !!packageData?.detectiveScript) ||
              (!generating && !generationStatus && packageData?.gameOverview && characters.length > 0))) ? (
@@ -1290,7 +1310,11 @@ const MysteryView = () => {
             // Show generation progress or start button.
             // Also treat "completed but content not all in" as still-in-progress, since the
             // parent sometimes flips to completed before children/evidence finish (timing race).
+            // `needsReviewWithinWindow` also renders the building screen (with the new
+            // "Final quality checks" phase) instead of the content-blocked package, since
+            // the reveal gate above holds it back until the window passes.
             (generationStatus?.status === 'in_progress' ||
+             needsReviewWithinWindow ||
              (generationStatus?.status === 'completed' &&
               (characters.length === 0 || !packageData?.evidenceCards || !packageData?.detectiveScript)))
               ? renderGenerationProgress() : (

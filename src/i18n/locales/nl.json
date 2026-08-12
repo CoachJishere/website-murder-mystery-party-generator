@@ -1560,6 +1560,10 @@
       "evidence": {
         "label": "Bewijskaarten, detectivescript en afbeeldingen",
         "description": "Aanwijzingen per ronde, vertellersdialoog en forensische afbeeldingen"
+      },
+      "finalChecks": {
+        "label": "Laatste kwaliteitscontroles",
+        "description": "Automatische controles worden uitgevoerd voordat je mysterie wordt getoond"
       }
     }
   }

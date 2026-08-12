@@ -38,6 +38,12 @@ interface GenerationProgressProps {
   // ISO timestamp when generation started — anchors the phase-1 simulation so a page
   // refresh mid-phase resumes near where it was instead of restarting the creep at 0.
   generationStartedAt?: string | null;
+  // True while the package is held `needs_review` inside the self-heal silent window
+  // (ADR-0077). Surfaces a 5th "Final quality checks" phase and caps displayed progress
+  // below 100 instead of claiming done. Defaults false so the ordinary completed path
+  // (which never passes through `needs_review`) auto-bypasses phase 5 entirely — it goes
+  // straight from phase4Done to fully done, never rendering phase 5 as a lingering step.
+  finalizing?: boolean;
   isMobile?: boolean;
 }
 
@@ -47,6 +53,12 @@ const PHASE_BAND = 25;
 const SIM_CAP = 22; // asymptote of the eased bonus
 const SIM_MAX = 24; // hard clamp, stays below the band boundary
 const SIM_TAU = 75; // seconds — time constant of the ease
+
+// Phase 5 ("Final quality checks") only ever appears while `finalizing` is true, which
+// caps its displayed progress in this narrow band — never claiming 100 until the package
+// is actually `completed`. Small span since this phase can legitimately hold for minutes.
+const FINALIZING_FLOOR = 95;
+const FINALIZING_SPAN = 3; // eases 95 -> 98, never reaching 100 on its own
 
 // Eased simulated bonus within a phase band, given seconds elapsed in the phase.
 // ~7 pts at 30s, ~13 at 60s, ~18 at 120s, ~22 at 300s; never reaches 25.
@@ -62,6 +74,9 @@ function computeState(p: GenerationProgressProps, t: TFunction) {
   const phase2Done = phase1Done && p.hasGameOverview && p.hasMaterials;
   const phase3Done = phase2Done && p.charactersExpected > 0 && p.charactersDone >= p.charactersExpected;
   const phase4Done = phase3Done && p.hasEvidence && p.hasDetective && p.hasImages;
+  // Phase 5 is bypassed the instant `finalizing` is false — a package that goes straight to
+  // `completed` never sets `finalizing`, so phase4Done -> phase5Done happens same-render.
+  const phase5Done = phase4Done && !p.finalizing;
 
   // Active = first not-done phase
   let activeIdx: number;
@@ -69,6 +84,7 @@ function computeState(p: GenerationProgressProps, t: TFunction) {
   else if (!phase2Done) activeIdx = 1;
   else if (!phase3Done) activeIdx = 2;
   else if (!phase4Done) activeIdx = 3;
+  else if (!phase5Done) activeIdx = 4;
   else activeIdx = -1; // all done
 
   const phases: Omit<Phase, "state">[] = [
@@ -94,6 +110,11 @@ function computeState(p: GenerationProgressProps, t: TFunction) {
       label: t("generationProgress.phases.evidence.label"),
       description: t("generationProgress.phases.evidence.description"),
     },
+    {
+      key: "finalChecks",
+      label: t("generationProgress.phases.finalChecks.label"),
+      description: t("generationProgress.phases.finalChecks.description"),
+    },
   ];
 
   const phasesWithState: Phase[] = phases.map((ph, i) => ({
@@ -110,7 +131,7 @@ function computeState(p: GenerationProgressProps, t: TFunction) {
   if (activeIdx === 2 && p.charactersExpected > 0) {
     realBonus = Math.min(PHASE_BAND, Math.round((p.charactersDone / p.charactersExpected) * PHASE_BAND));
   }
-  const floor = activeIdx === -1 ? 100 : activeIdx * PHASE_BAND + realBonus;
+  const floor = activeIdx === -1 ? 100 : activeIdx === 4 ? FINALIZING_FLOOR : activeIdx * PHASE_BAND + realBonus;
 
   return { phases: phasesWithState, progress: floor, activeIdx, activeKey, realBonus };
 }
@@ -156,9 +177,16 @@ const GenerationProgress: React.FC<GenerationProgressProps> = (props) => {
   if (incomplete) {
     const elapsedSeconds = (Date.now() - anchorRef.current.t) / 1000;
     const simBonus = simulatedBonus(elapsedSeconds);
-    // Never let simulation undercut real progress inside the active band; take the max.
-    const bandBonus = Math.min(SIM_MAX, Math.max(realBonus, simBonus));
-    progress = activeIdx * PHASE_BAND + bandBonus;
+    if (activeIdx === 4) {
+      // Finalizing phase: ease within the narrow FINALIZING_FLOOR..+SPAN band, capped
+      // well below 100 — only an actual `completed` status ever reaches 100.
+      const frac = Math.min(1, simBonus / SIM_CAP);
+      progress = FINALIZING_FLOOR + frac * FINALIZING_SPAN;
+    } else {
+      // Never let simulation undercut real progress inside the active band; take the max.
+      const bandBonus = Math.min(SIM_MAX, Math.max(realBonus, simBonus));
+      progress = activeIdx * PHASE_BAND + bandBonus;
+    }
   }
 
   // Monotonic guard: the displayed number never goes backwards across re-renders.

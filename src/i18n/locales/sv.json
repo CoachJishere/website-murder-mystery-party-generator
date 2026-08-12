@@ -1560,6 +1560,10 @@
       "evidence": {
         "label": "Beviskort, detektivmanus och bilder",
         "description": "Ledtrådar runda för runda, berättardialog och kriminaltekniska bilder"
+      },
+      "finalChecks": {
+        "label": "Sista kvalitetskontrollerna",
+        "description": "Automatiska kontroller pågår innan ditt mysterium visas"
       }
     }
   }

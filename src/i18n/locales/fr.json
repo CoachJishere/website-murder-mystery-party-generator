@@ -1561,6 +1561,10 @@
       "evidence": {
         "label": "Cartes d'indices, script du détective et images",
         "description": "Indices tour par tour, dialogues du narrateur et images médico-légales"
+      },
+      "finalChecks": {
+        "label": "Contrôles qualité finaux",
+        "description": "Vérifications automatiques en cours avant de révéler votre mystère"
       }
     }
   }

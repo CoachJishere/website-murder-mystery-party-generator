@@ -1560,6 +1560,10 @@
       "evidence": {
         "label": "Evidence cards, detective script, and images",
         "description": "Round-by-round clues, narrator dialogue, and forensic images"
+      },
+      "finalChecks": {
+        "label": "Final quality checks",
+        "description": "Running automated checks before your mystery is revealed"
       }
     }
   }

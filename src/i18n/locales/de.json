@@ -1560,6 +1560,10 @@
       "evidence": {
         "label": "Beweiskarten, Detektiv-Skript und Bilder",
         "description": "Hinweise Runde für Runde, Erzähler-Dialoge und forensische Bilder"
+      },
+      "finalChecks": {
+        "label": "Abschließende Qualitätsprüfungen",
+        "description": "Automatische Prüfungen laufen, bevor dein Mystery angezeigt wird"
       }
     }
   }

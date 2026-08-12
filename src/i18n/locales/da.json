@@ -1560,6 +1560,10 @@
       "evidence": {
         "label": "Beviskort, detektivmanuskript og billeder",
         "description": "Spor runde for runde, fortællerdialog og retstekniske billeder"
+      },
+      "finalChecks": {
+        "label": "Sidste kvalitetstjek",
+        "description": "Automatiske tjek kører, før dit mysterie vises"
       }
     }
   }

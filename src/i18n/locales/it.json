@@ -1560,6 +1560,10 @@
       "evidence": {
         "label": "Carte degli indizi, copione dell'investigatore e immagini",
         "description": "Indizi round per round, dialoghi del narratore e immagini forensi"
+      },
+      "finalChecks": {
+        "label": "Controlli di qualità finali",
+        "description": "Verifiche automatiche in corso prima di mostrare il tuo mistero"
       }
     }
   }

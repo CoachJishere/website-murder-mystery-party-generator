@@ -1560,6 +1560,10 @@
       "evidence": {
         "label": "Tarjetas de evidencia, guion del detective e imágenes",
         "description": "Pistas ronda a ronda, diálogo del narrador e imágenes forenses"
+      },
+      "finalChecks": {
+        "label": "Comprobaciones finales de calidad",
+        "description": "Ejecutando comprobaciones automáticas antes de mostrar tu misterio"
       }
     }
   }

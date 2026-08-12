@@ -1560,6 +1560,10 @@
       "evidence": {
         "label": "Todistekortit, etsivän käsikirjoitus ja kuvat",
         "description": "Kierroskohtaiset vihjeet, kertojan vuorosanat ja rikostekniset kuvat"
+      },
+      "finalChecks": {
+        "label": "Viimeiset laatutarkastukset",
+        "description": "Automaattiset tarkastukset käynnissä ennen mysteerisi näyttämistä"
       }
     }
   }
