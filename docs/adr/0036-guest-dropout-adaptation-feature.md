@@ -38,11 +38,17 @@ guest drops, the flow identifies the character and routes to the cheapest tool
 that produces a *valid, playable* mystery:
 
 1. **Reassign / double up** (free, no LLM, no content change) — a remaining guest
-   or a couple takes the role. A good default for anyone; the fallback for the
-   murderer.
-2. **Host voices the absent character** (cheap, no DB mutation) — generate a
-   one-page Host Adaptation Sheet; the character stays "present" and the host
-   reads their few key lines. For minor characters a host wants to keep.
+   plays a second character (an inspector/extra role absorbing it works well), or
+   a couple shares one role. A good default for anyone and the fallback for the
+   murderer, though one person juggling two parts (or a couple sharing) is the most
+   demanding on guests — flag that in the UI.
+2. **Host voices / holds the absent character** (cheap, no DB mutation) — the
+   character stays "present" in the fiction and is simply offstage. Recommended
+   device for a **non-essential** absentee: the detective says something like
+   *"We're holding this guest in a separate room; they're being cleared separately,
+   so please proceed without them."* No empty chair, nothing to interrogate, and the
+   host reads their few load-bearing lines if needed. Does **not** work for the
+   murderer (they must be in the room to be unmasked and confess).
 3. **Remove / write-out** (paid, surgical edit) — for **non-essential** characters
    (red herring / spare suspect) when nobody wants to double up. Strips all
    direct-address beats (interrogation questions, rumors, alibi name-drops → swap
@@ -78,6 +84,19 @@ Suggested copy (paste into the Make host-guide/prep template):
 | Victim | **Blocked** — the mystery is about them |
 | Detective | N/A (host/NPC, not a guest seat) |
 
+**Purpose of the gating (cover vs reduce).** Every dropout is the same underlying
+problem — N characters, N-1 players — with two clean resolutions. **Cover (free):**
+keep all N characters; someone doubles up or the host holds the absentee offstage
+(above). **Reduce (paid):** drop to N-1 by surgically removing one character. The
+role only decides what the *reduce* path must do: removing a non-essential character
+is a straight surgical edit; if the dropped guest held the murderer (or accomplice),
+you can't delete that role, so the paid flow promotes a new killer and removes a
+freed-up non-essential slot instead — a re-solve rides along. From the host's view
+it is simply "cover them, or pay to cleanly drop to N-1"; the role table just tells
+the *system* whether a re-solve is needed. This is why the murderer case is still a
+paid job even with reassignment: reassigning the killer only *moves* the empty seat,
+so a character always has to be removed.
+
 **Orchestration:** the trigger may be Make or the Stripe webhook, but the
 **analyze → edit → verify → repair** logic lives in an **edge function**, not a
 Make module chain. Make is fine for linear "call LLM, save" flows and bad at the
@@ -93,6 +112,18 @@ iterative verification loop this needs.
   land on the new murderer and find no one else with means+motive+opportunity.
 - No metered LLM calls wired into a deployed flow without explicit owner sign-off
   on per-request cost; the price must cover a worst-case multi-call re-solve.
+
+**Pricing (decided 2026-07-21).** Flat **$5 per adaptation**, regardless of the
+removed character's role *or* how many characters the edit touches — a red-herring
+removal and a murderer re-solve cost the buyer the same. Rationale: customer-facing
+simplicity beats squeezing margin on the rare hard case (tiered pricing would force
+a stressed, day-before host to reason about *whether their dropped guest is the
+murderer* — exactly what we don't want), and $5 still clears the worst-case API
+cost (~$1–3) with margin. Unit = one adaptation request, which covers a single
+dropout situation however many fields/characters it has to touch; a separate later
+dropout is a new $5 adaptation. Customer-facing label still TBD (working phrase:
+"AI-assisted edit") — prefer framing the *outcome* ("adapt my mystery for a missing
+guest") over the *mechanism*.
 
 ## Murderer-swap audit (2026-07-21)
 
