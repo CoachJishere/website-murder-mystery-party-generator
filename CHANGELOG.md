@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-08-12
+
+### Fix: detective-style "Final Statements" backlog — 1 real bug patched, 1 false positive corrected, detector now honors acknowledgments (ADR-0070)
+Scheduled health check flagged 2 packages for check 14 (`accomplice_denies_despite_named`): "The Case Of The Stolen Golden Flamingo" (Marina Splash) and "Ghosts Of The Past: A Halloween Reunion Murder" (Parker/Petra Wolfe). Investigated both individually rather than trusting the 2026-08-11 changelog entry's claim that the then-current 3 flagged rows were "documented false positives" — that claim wasn't actually re-verified per-row.
+- **Golden Flamingo was a real, unpatched bug**, not a false positive: Marina Splash's `final_statement` flatly denied the theft ("I didn't steal the Flamingo... that's something I would never do") despite the murderer Coconut Chris's own confession explicitly naming her as having helped move the statue. Almost certainly the "1 of 15" ADR-0070's original hand-patch pass missed (Chris's statement already carries the polished `**YOUR CONFESSION**` header from that earlier patch; Marina's didn't). Hand-patched to an in-character admission consistent with Chris's account.
+- **Ghosts Of The Past is a confirmed false positive**: Parker/Petra Wolfe's statement is a genuine, unambiguous admission of conspiracy — the detector's denial regex matched the true-but-embedded clause "I didn't kill Reese/Raven," and none of the confession-keyword exclusions matched Parker's specific phrasing. Same false-positive class ADR-0070 already documented for "Death At The Velvet Rose."
+- **Systemic gap fixed**: `acknowledged_health_alerts` (built 2026-08-11) was only ever wired into the roster-mismatch script (check 12), despite its own migration comment saying every detector should honor it. `list_packages_with_unconfessed_culprit` (check 14) now excludes any package acknowledged for `detector = 'unconfessed_culprit'` — both Ghosts Of The Past and the pre-existing Velvet Rose false positive are now acknowledged instead of re-alerting every 6 hours for as long as they sit inside the 30-day window. `supabase/migrations/20260812_unconfessed_culprit_honor_acknowledged_alerts.sql`, applied directly to production.
+- **`Child (Unified)26` confirmed live in production**, closing an open question from ADR-0070: the same day's unrelated stuck-generation incident (below) happened to be a fresh detective-style package, and its murderer/accomplice pair generated a correct confession/admission on the first try. Import ledger row added to `docs/generation-guardrails.md`.
+- Full record in [ADR-0070](docs/adr/0070-detective-style-culprit-final-statement-unreliable-confession.md).
+
+### Confirmed: auto-recovery retry (ADR-0076) successfully repopulated a stuck character with no manual intervention
+"Contamination: Death At The Infection Control Expo" (customer `chelseagirrior@gmail.com`, conversation `81060006-...`) alerted with Devon Cross (Gojo) empty after generation. By the time this was investigated, the auto-recovery re-fire (sent automatically ~3 minutes after the stuck-character alert) had already completed: `mystery_packages.generation_status` reads `completed`, all 8 characters have content, and Devon Cross's `final_statement` is a correct, in-character accomplice admission naming the murderer. No manual action needed — first real-traffic confirmation that both the ADR-0076 auto-recovery retry path and the ADR-0070 accomplice-confession fix are working correctly together in production.
+
 ## 2026-08-11
 
 ### Fix: Parent51's empty master_context (Sonnet 5 `.textResponse` bug) + unbounded auto-recovery retries (ADR-0076)
