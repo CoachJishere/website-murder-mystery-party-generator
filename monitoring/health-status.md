@@ -1,10 +1,8 @@
 # Site health status
 
-_Last checked: 2026-08-12 02:47 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-08-12 07:55 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
-## ⚠️ Problems found
-
-- 🔴 2 detective-style package(s) whose Final Statements round doesn't actually reveal the solution: The Case Of The Stolen Golden Flamingo [accomplice_denies_despite_named: Marina Splash]; Ghosts Of The Past: A Halloween Reunion Murder [accomplice_denies_despite_named: Parker/Petra Wolfe]
+## ✅ All checks passing
 
 | Check | Result |
 |---|---|
@@ -21,4 +19,4 @@ _Last checked: 2026-08-12 02:47 UTC (runs every 6 hours; see .github/workflows/h
 | Structural defects — escalate only (30 days) | 0 |
 | Roster-count mismatches — escalate only (30 days) | 0 |
 | Final-statement confession leaks — escalate only (30 days) | 0 |
-| Unconfessed detective-style culprits — escalate only (30 days) | 2 |
+| Unconfessed detective-style culprits — escalate only (30 days) | 0 |
