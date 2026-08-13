@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 265 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 266 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -312,6 +312,7 @@ This index organizes 265 published guides by topic cluster. All guides are avail
 - [Murder Mystery Party With Escape Room Elements](https://www.mysterymaker.party/blog/murder-mystery-party-with-escape-room-elements): Combine murder mystery and escape room elements for hybrid experiences. Puzzles, clue integration, immersive gameplay for mystery parties.
 - [Murder Mystery Meets Improv: Hosting Guide](https://www.mysterymaker.party/blog/murder-mystery-party-with-improv-elements): Blend improv theater with murder mystery games using yes-and mechanics, unscripted moments, and structured spontaneity for unforgettable party nights.
 - [Murder Mystery Party With Live Actors](https://www.mysterymaker.party/blog/murder-mystery-party-with-live-actors): Professional actors transform a murder mystery into theater. Here's how to hire, direct, and manage live performance in a party setting.
+- [Murder Mystery With Tech Gadgets](https://www.mysterymaker.party/blog/murder-mystery-party-with-technology-gadgets): Using smart devices, UV lights, and QR codes to run a murder mystery that feels modern and immersive. Low-tech and premium setups both work.
 - [Ultimate Escape Room Murder Mystery Party Guide](https://www.mysterymaker.party/blog/the-ultimate-escape-room-murder-mystery-party-guide-puzzles-clues-and-confined-space-thrills): Break out of boredom with escape room murder mystery parties combining puzzles, clues, and confined space thrills.
 - [How to Host a Virtual Murder Mystery Party](https://www.mysterymaker.party/blog/virtual-murder-mystery-party-online): Run virtual murder mystery parties on Zoom, Teams, or Discord. Learn platform options, what works, hybrid formats, and host tips.
 
