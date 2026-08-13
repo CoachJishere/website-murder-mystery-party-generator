@@ -1,6 +1,24 @@
 # Changelog
 
+## 2026-08-13
+
+### Fix: Kommetjie Coconut Club Mystery stuck in `needs_review` — role-only defect, misdiagnosed as missing content first (ADR-0079)
+Customer `alib.botha@gmail.com` purchased "The Kommetjie Coconut Club Mystery" (8 players) at 07:43:51 UTC; generation landed `needs_review` 13 minutes later. All 8 characters had `character_role` coerced to the ADR-0052 sentinel `'invalid_role'`.
+- **Misdiagnosis, corrected mid-investigation**: initially read as missing round content because `round2_script`/`round3_script`/`round4_script`/`final_statement` (the *unified* format) were empty — but this mystery is a random-slip, no-accomplice, no-fixed-murderer character-style game, which uses the *branching* format (`round2_innocent`/`round2_guilty`, etc.) instead. Those columns were already fully populated and correct, matching a same-shape reference package almost exactly. **`character_role` was the only actual defect.**
+- **Two webhook re-fires turned out to be unnecessary** (~$2.40 combined, approved in advance): fired before the format mixup was caught, both regenerated already-correct content a second/third time without touching the role field.
+- **The actual fix**: `UPDATE mystery_characters SET character_role = 'suspect' WHERE ... character_role = 'invalid_role'` (matching the reference package's convention), then `package_completion_blocking_defects()` confirmed clean and `promote_complete_packages()` flipped the package to `completed` immediately. Package is now live for the customer.
+- **Real, separate bug found and fixed along the way**: `notify-generation-issue`'s own inline quick-recovery loop filters on `!c.description || !c.character_role` — `'invalid_role'` is a non-empty string, so the filter treated all 8 characters as "already fine" and never attempted a re-fire, silently. Patched to `!c.description || !c.character_role || c.character_role === "invalid_role"`. Deployed `notify-generation-issue` v14 → v15 (`verify_jwt: true` preserved).
+- Full record, including the misdiagnosis cost, in [ADR-0079](docs/adr/0079-invalid-role-sentinel-invisible-to-auto-recovery-filter.md).
+
 ## 2026-08-12
+
+### Docs: post-purchase email onboarding pipeline — Phase 1 audit + design (ADR-0078)
+No code shipped, artifacts only, per the phase-1 scope (build nothing that sends). Full ground-truth audit of every email currently sent (13 emails/functions across welcome, discount reminders, host/character/guest-feedback, and the Trustpilot/invite-friends followup pair), written to `docs/email-lifecycle-audit.md`. Two findings that overturned assumptions in the original project brief:
+- **No customer-facing purchase confirmation exists in code.** The only send in `stripe-webhook`'s `checkout.session.completed` handler goes to `support@mysterymaker.party` (internal sales alert), not the buyer. Checkout is a static Stripe Payment Link, not an API-created session, so whatever the buyer gets is Stripe's own Dashboard-configured receipt (unverifiable from this repo) or nothing.
+- **ADR-0036's guest-dropout adaptation feature is `Status: Proposed`, not built** — no `adapt-mystery-*` functions or frontend entry point exist. The proposed Day+2-3 upsell email can't go live until it does.
+- Designed the sequence in `docs/post-purchase-sequence-design.md` (Day+1 hosting-tips-and-video email, Day+2-3 dropout-feature intro, both anchored to `mystery_packages.generation_completed_at` to reuse the proven trigger/cron pattern already scheduling `how_did_it_go`/`invite_friends`; 11-day clearance from the nearest existing send, no audience or unsubscribe collisions found), including EN draft copy for both.
+- Architectural calls (scheduling mechanism = extend `followup_emails`, video hosting = YouTube unlisted + written fallback, Day+2-3 gated on ADR-0036 shipping) recorded in [ADR-0078](docs/adr/0078-post-purchase-sequence-scheduling-and-video-hosting.md).
+- Stopped here per the hard constraint: no sending/scheduling code, no live rows, no cron changes. Handed back for owner approval before implementation.
 
 ### Chore: repo hygiene — committed orphaned ADR-0036, filed a stray audit note to the vault, dropped duplicate/empty files
 Session cleanup, unrelated to the hard-quality-guarantee work below. Found several files that had been sitting dirty/untracked in the shared checkout, evaluated each individually rather than bulk-deleting:

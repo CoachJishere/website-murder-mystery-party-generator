@@ -132,8 +132,16 @@ serve(async (req) => {
 
         if (chars) {
           characterCount = chars.length;
+          // ADR-0052's completion-gate trigger coerces any invalid Make.com
+          // write to the sentinel string 'invalid_role' (never NULL) so it
+          // still trips the completion gate's own invalid-role check. That
+          // sentinel is a non-empty string, so a plain `!c.character_role`
+          // falsiness check here treats it as "already has a role" and
+          // silently skips auto-recovery for it — found 2026-08-13 on a
+          // package where all 8 characters got the sentinel and empty round
+          // scripts, and none were offered for re-fire.
           emptyCharacters = chars
-            .filter((c: any) => !c.description || !c.character_role)
+            .filter((c: any) => !c.description || !c.character_role || c.character_role === "invalid_role")
             .map((c: any) => c.character_name);
         }
       }
