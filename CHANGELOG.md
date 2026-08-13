@@ -2,6 +2,27 @@
 
 ## 2026-08-13
 
+### Feature: SEO/GEO effectiveness tracking — durable snapshot history + retroactive backfill (ADR-0084)
+
+Follow-up to today's earlier SEO/GEO documentation audit: Jonathan asked whether we can tell if `docs/seo-geo-playbook.md`'s recommendations are actually working, retroactively or otherwise. Built the free, immediately-available half (SEO/GA4 signals; true AI-citation confirmation is out of scope, needs a paid tool — see ADR-0084).
+
+- **New `seo_performance_snapshots` table** (migration `20260813_seo_performance_snapshots.sql`) — `scripts/fetchSeoWeeklySnapshot.mjs` computed a rich GSC/GA4/AI-referral snapshot every week already, but only ever wrote it to a gitignored local JSON file that gets overwritten on every run. It now also inserts into this table (additive, try/catch'd like every other section — can't break the digest), so future weeks build a real time series instead of vanishing after one email.
+- **New `scripts/backfillSeoHistory.mjs`** — pulls historical GSC (site-wide + blog-only) and GA4 AI-referral-traffic windows before/after a known past content intervention, using the fact that GSC/GA4 both retain ~14-16 months of history at Google, and writes pre/post rows into the same table tagged `source='backfill'`.
+- **First run: March 2026 GEO enrichment (58 EN posts, stats/citations added).** Result was NOT a clean read — flagging clearly rather than overstating it:
+  - Blog-page GSC: clicks 58→25 (-56.9%), impressions 4563→2187 (-52.1%), avg position 10.3→7.8 (improved). Site-wide GA4 sessions grew +14.5% (523→599) in the same window, so the blog-specific drop isn't a site-wide ranking problem.
+  - AI-referral sessions: 4→0.
+  - **Confound found after the fact:** the chosen intervention date (2026-03-17, from the "Full SEO/GEO Pipeline Complete" CHANGELOG entry) sat inside an active crisis, not a clean shipped-and-stable moment — `docs/blog-content-pipeline-history-2026-03.md` shows a mass Finnish-content-corruption incident (~573/754 posts) discovered 2026-03-15 with recovery still in progress ("Full Recovery: New Approach (Excel-First)") on 2026-03-16-17, and Phase 4 translation work explicitly marked IN PROGRESS past that date. The "post" window (Mar 27-Apr 26) overlaps that recovery, not a settled post-enrichment state.
+  - **Conclusion:** this first case study can't be used to judge whether the playbook's GEO-enrichment claim held — pick a cleaner, more isolated intervention next (e.g. ADR-0045/0046, both well after the site stabilized) for an actual read. The pipeline itself is verified working end-to-end (real data pulled, computed, persisted, confirmed via SQL).
+
+### Docs: rescued two SEO/GEO "learnings" documents that only existed in gitignored `temp-files/` — ADR-0083 backfilled
+
+Jonathan asked whether ongoing SEO/GEO work and learnings are being durably captured for reuse on future projects. Audit found the week-to-week engineering trail in good shape (ADR-0018, ADR-0045, ADR-0046 etc. + weekly digest archives in `docs/seo-digests/` are all tracked and vault-synced), but two documents meant to capture *transferable* learnings were sitting only in `temp-files/`, which `.gitignore` strips (`temp-files/**/*.md`) — never committed, never vault-synced, one `mv`/cleanup away from being lost entirely:
+
+- **`temp-files/seo-geo-playbook.md`** — the general SEO/GEO strategy playbook (content-length targets, GEO citation tactics, competitive landscape, technical foundations) — promoted to [docs/seo-geo-playbook.md](docs/seo-geo-playbook.md).
+- **`temp-files/SEO_GEO_CHANGELOG.md`** — a March 2026 history of the blog voice-rewrite/GEO-enrichment/translation pipeline, including an undocumented incident: a translation-propagation bug wrote Finnish content into ~573 of 754 published posts across languages (21 of 58 EN source posts corrupted), recovered in two attempts, the second of which triggered the still-standing architecture decision that blog content edits happen in a local Excel workbook first and Supabase is only ever updated via one deliberate bulk import — never via direct parallel agent writes. That decision governs every `blog_map.xlsx` recovery entry elsewhere in this changelog but was never written down. Preserved verbatim at [docs/blog-content-pipeline-history-2026-03.md](docs/blog-content-pipeline-history-2026-03.md) and the architecture decision backfilled as [ADR-0083](docs/adr/0083-excel-as-source-of-truth-for-blog-content-pipeline.md).
+
+**Process takeaway:** documents written under `temp-files/` during a working session need an explicit "promote to `docs/` or vault before the session ends" step — `.gitignore` silently strips `temp-files/**/*.md`, so anything meant to outlive the session has to leave that directory.
+
 ### Docs: rescued two SEO/GEO "learnings" documents that only existed in gitignored `temp-files/` — ADR-0083 backfilled
 
 Jonathan asked whether ongoing SEO/GEO work and learnings are being durably captured for reuse on future projects. Audit found the week-to-week engineering trail in good shape (ADR-0018, ADR-0045, ADR-0046 etc. + weekly digest archives in `docs/seo-digests/` are all tracked and vault-synced), but two documents meant to capture *transferable* learnings were sitting only in `temp-files/`, which `.gitignore` strips (`temp-files/**/*.md`) — never committed, never vault-synced, one `mv`/cleanup away from being lost entirely:

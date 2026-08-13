@@ -8,7 +8,9 @@
  *     current vs prior.
  *   - AI referrals: traffic from chatgpt.com / perplexity.ai / etc. (the GEO/AEO signal).
  *
- * Output: temp-files/seo-weekly-snapshot.json  (consumed by generateSeoDigest.mjs)
+ * Output: temp-files/seo-weekly-snapshot.json  (consumed by generateSeoDigest.mjs),
+ * plus a durable copy in the seo_performance_snapshots Supabase table (ADR-0084) —
+ * the local file is overwritten every run, the table is the only historical record.
  *
  * Auth: service account via GSC_SERVICE_ACCOUNT_JSON (CI) or a local key file (dev).
  * Each section is independently try/catch'd so one failure degrades to a noted
@@ -360,6 +362,25 @@ async function fetchSiteHealth(snapshot) {
   };
 }
 
+// ---- persistence (ADR-0084) -----------------------------------------------------
+// Durable history: the local JSON (below) is overwritten every run, so nothing
+// before "this week" was ever queryable. This is purely additive — failure here
+// degrades to a logged error like every other section, it never blocks the digest.
+async function persistSnapshot(snapshot) {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) throw new Error('SUPABASE_URL / SUPABASE_SERVICE_KEY not set');
+  const supabase = createClient(url, key);
+
+  const { error } = await supabase.from('seo_performance_snapshots').insert({
+    window_start: RANGES.current.startDate,
+    window_end: RANGES.current.endDate,
+    source: 'weekly_live',
+    metrics: snapshot,
+  });
+  if (error) throw new Error(error.message);
+}
+
 // ---- main ---------------------------------------------------------------------
 async function main() {
   const snapshot = {
@@ -382,6 +403,16 @@ async function main() {
 
   writeFileSync(CONFIG.outputPath, JSON.stringify(snapshot, null, 2));
   console.log(`\n📄 Snapshot → ${CONFIG.outputPath}`);
+
+  try {
+    console.log('Persisting to seo_performance_snapshots…');
+    await persistSnapshot(snapshot);
+    console.log('  ✅ Persisted');
+  } catch (err) {
+    console.error(`  ❌ Persist: ${err.message}`);
+    snapshot.errors.push({ source: 'Persist', message: err.message });
+  }
+
   if (snapshot.gsc) {
     const t = snapshot.gsc.totals;
     console.log(
