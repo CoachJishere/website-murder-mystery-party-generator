@@ -45,7 +45,7 @@ Critically: **neither the parse HTTP call nor the upsert has any Make error hand
 - **Positive (already live):** re-fires now carry more of the original generation's context, closing a confirmed gap regardless of whether it was the specific cause of this incident.
 - **Not addressed:** the underlying Claude JSON-parse fragility itself (why the identity call's output sometimes fails all of `parse-claude-json`'s repair stages, especially on `relationships`) — this ADR makes the failure mode safe, not the failure rate lower. A prompt-engineering pass on the `<critical_json_rules>` block is a separate, not-yet-scoped follow-up.
 - **Not addressed:** whether this was actually the cause of Phoenix Rivers' specific incident — no Make.com execution log access to confirm. If a `description`-empty-with-rounds-fine case recurs after Child28 is live, that would strongly suggest a third, still-undiscovered failure mode.
-- **Blocked on Jonathan:** Child28 is built and verified but not imported into Make.com. Per the established pattern, this ADR's blueprint half is inert until that manual step happens; tracked in `docs/generation-guardrails.md`'s Import Ledger.
+- **Imported 2026-08-14 (Jonathan, Make UI).** Live-confirm still pending — this defect class is intermittent, so no repeat isn't proof the fix works; watch for any future `needs_review` package with empty identity fields but populated round scripts, which the fix should now make impossible. Tracked in `docs/generation-guardrails.md`'s Import Ledger.
 
 ## Key files
 
