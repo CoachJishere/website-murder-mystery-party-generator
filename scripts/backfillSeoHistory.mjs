@@ -40,10 +40,22 @@ const AI_SOURCES = [
   'poe.com', 'bard.google.com',
 ];
 
-// Known past content interventions worth checking against the playbook's claims.
-// Add more here as they're identified (e.g. from CHANGELOG.md / docs/adr/) — this
-// list is intentionally small to start; each entry is one deliberate, dateable,
-// site-wide-ish content change, not every individual post edit.
+// GSC's own reporting lag — the last ~2-3 days of data are typically incomplete
+// or absent. Post-windows are capped to (today - this) rather than requested in
+// full, so a recent intervention doesn't silently query into a data void.
+const GSC_LAG_DAYS = 3;
+
+// Known past content/technical interventions worth checking against the
+// playbook's claims. Add more here as they're identified (e.g. from
+// CHANGELOG.md / docs/adr/) — this list is intentionally small to start.
+//
+// Two modes:
+//   - blog-wide: filters GSC page rows to '/blog/' — for interventions that
+//     touched many blog posts (voice rewrite, GEO enrichment).
+//   - `queries`: filters GSC query rows to a specific list — for interventions
+//     with a precise, stated target (e.g. a canonicalization ADR that names the
+//     exact queries it expects to move). More precise than the page filter when
+//     the ADR itself already specifies which queries should be affected.
 const INTERVENTIONS = [
   {
     name: 'march_2026_geo_enrichment',
@@ -54,6 +66,23 @@ const INTERVENTIONS = [
       + 'specific claim (Princeton GEO paper: stats/citations +30-40% AI visibility).',
     windowDays: 30,
     lagDays: 10, // skip this many days post-intervention for crawl/re-rank lag
+  },
+  {
+    name: 'jul2026_custom_page_canonicalization',
+    date: '2026-07-27',
+    description:
+      'ADR-0046: EN /custom-murder-mystery-party/ canonicalized to homepage after '
+      + 'both pages were found competing for the same 3 head-term queries. Predicted '
+      + 'effect: homepage consolidates and improves on these specific queries once '
+      + 'the split signal stops diluting it. Testing the ADR\'s own named queries, '
+      + 'not blog-wide totals — this wasn\'t a blog-content change.',
+    windowDays: 30,
+    lagDays: 5,
+    queries: [
+      'custom murder mystery game',
+      'custom murder mystery party',
+      'custom murder mystery',
+    ],
   },
 ];
 
@@ -104,6 +133,27 @@ async function fetchGSCWindow(webmasters, range) {
     siteWide: totalsFromRows(rows),
     blogOnly: totalsFromRows(blogRows),
     blogPageCount: blogRows.length,
+  };
+}
+
+// ---- GSC: totals for a specific set of queries over an arbitrary window ----
+async function fetchGSCQueriesWindow(webmasters, range, queries) {
+  const res = await webmasters.searchanalytics.query({
+    siteUrl: CONFIG.siteUrl,
+    requestBody: { ...range, dimensions: ['query'], rowLimit: 5000 },
+  });
+  const rows = res.data.rows || [];
+  const wanted = new Set(queries.map((q) => q.toLowerCase()));
+  const matched = rows.filter((r) => wanted.has((r.keys?.[0] || '').toLowerCase()));
+  return {
+    matchedTotals: totalsFromRows(matched),
+    matchedQueryCount: matched.length,
+    perQuery: matched.map((r) => ({
+      query: r.keys[0],
+      clicks: r.clicks || 0,
+      impressions: r.impressions || 0,
+      position: Math.round((r.position || 0) * 10) / 10,
+    })),
   };
 }
 
@@ -169,22 +219,47 @@ function fmtDelta(pre, post, label, isPct = false) {
   return `${label}: ${pre} → ${post} (${sign}${rawDelta}${unit})`;
 }
 
+function rangeDays(range) {
+  return Math.round((new Date(range.endDate) - new Date(range.startDate)) / 86400000) + 1;
+}
+
+// Raw sums (clicks, impressions, AI sessions) are only comparable if the two
+// windows are the same length — and a THIN post-window (see runIntervention)
+// means they often aren't. Report a per-day rate alongside the raw totals so a
+// shorter post-window can't masquerade as "traffic dropped."
+function fmtDeltaPerDay(preSum, postSum, preDays, postDays, label) {
+  const preRate = Math.round((preSum / preDays) * 10) / 10;
+  const postRate = Math.round((postSum / postDays) * 10) / 10;
+  const windowNote = preDays !== postDays ? ` [${preDays}d vs ${postDays}d — raw totals below are NOT comparable]` : '';
+  return `${label}/day: ${preRate} → ${postRate}  (raw: ${preSum} over ${preDays}d → ${postSum} over ${postDays}d)${windowNote}`;
+}
+
 async function runIntervention(webmasters, analyticsData, intervention) {
-  const { name, date, windowDays, lagDays } = intervention;
+  const { name, date, windowDays, lagDays, queries } = intervention;
 
   const preRange = { startDate: addDays(date, -windowDays), endDate: addDays(date, -1) };
-  const postRange = { startDate: addDays(date, lagDays), endDate: addDays(date, lagDays + windowDays) };
+  const latestAvailable = addDays(new Date().toISOString().split('T')[0], -GSC_LAG_DAYS);
+  const requestedPostEnd = addDays(date, lagDays + windowDays);
+  const postEnd = requestedPostEnd < latestAvailable ? requestedPostEnd : latestAvailable;
+  const postRange = { startDate: addDays(date, lagDays), endDate: postEnd };
+  const postDaysAvailable = Math.round(
+    (new Date(postRange.endDate) - new Date(postRange.startDate)) / 86400000
+  ) + 1;
+  const thin = postEnd !== requestedPostEnd;
 
   console.log(`\n=== ${name} (${date}) ===`);
   console.log(intervention.description);
   console.log(`Pre:  ${preRange.startDate} → ${preRange.endDate}`);
-  console.log(`Post: ${postRange.startDate} → ${postRange.endDate} (${lagDays}d lag)`);
+  console.log(`Post: ${postRange.startDate} → ${postRange.endDate} (${lagDays}d lag)` +
+    (thin ? `  ⚠️  THIN: only ${postDaysAvailable}d available (wanted ${windowDays}d) — re-run later for a fuller read` : ''));
 
   const results = {};
   for (const [phase, range] of [['pre', preRange], ['post', postRange]]) {
     let gsc = null, ai = null, error = null;
     try {
-      gsc = await fetchGSCWindow(webmasters, range);
+      gsc = queries
+        ? await fetchGSCQueriesWindow(webmasters, range, queries)
+        : await fetchGSCWindow(webmasters, range);
     } catch (err) {
       error = `GSC: ${err.message}`;
       console.error(`  ❌ ${phase} GSC: ${err.message}`);
@@ -200,28 +275,64 @@ async function runIntervention(webmasters, analyticsData, intervention) {
     console.log(`  ✅ ${phase} persisted`);
   }
 
+  const preDays = rangeDays(preRange);
+  const postDays = rangeDays(postRange);
+
   if (results.pre.gsc && results.post.gsc) {
-    console.log('\nGSC — blog pages only:');
-    console.log('  ' + fmtDelta(results.pre.gsc.blogOnly.clicks, results.post.gsc.blogOnly.clicks, 'Clicks'));
-    console.log('  ' + fmtDelta(results.pre.gsc.blogOnly.impressions, results.post.gsc.blogOnly.impressions, 'Impressions'));
-    console.log('  ' + fmtDelta(results.pre.gsc.blogOnly.ctr, results.post.gsc.blogOnly.ctr, 'CTR', true));
-    console.log('  ' + fmtDelta(results.pre.gsc.blogOnly.position, results.post.gsc.blogOnly.position, 'Avg position', true) + ' (negative = better)');
+    if (queries) {
+      console.log(`\nGSC — named queries only (${queries.join(', ')}):`);
+      console.log('  ' + fmtDeltaPerDay(results.pre.gsc.matchedTotals.clicks, results.post.gsc.matchedTotals.clicks, preDays, postDays, 'Clicks'));
+      console.log('  ' + fmtDeltaPerDay(results.pre.gsc.matchedTotals.impressions, results.post.gsc.matchedTotals.impressions, preDays, postDays, 'Impressions'));
+      console.log('  ' + fmtDelta(results.pre.gsc.matchedTotals.position, results.post.gsc.matchedTotals.position, 'Avg position', true) + ' (negative = better; position is a window-length-independent average, safe to compare directly)');
+      console.log(`  Matched ${results.pre.gsc.matchedQueryCount} → ${results.post.gsc.matchedQueryCount} of ${queries.length} named queries`);
+      for (const q of queries) {
+        const pre = results.pre.gsc.perQuery.find((r) => r.query.toLowerCase() === q.toLowerCase());
+        const post = results.post.gsc.perQuery.find((r) => r.query.toLowerCase() === q.toLowerCase());
+        console.log(`    "${q}": pos ${pre?.position ?? '—'} → ${post?.position ?? '—'}, impr ${pre?.impressions ?? 0} → ${post?.impressions ?? 0}, clicks ${pre?.clicks ?? 0} → ${post?.clicks ?? 0}`);
+      }
+    } else {
+      console.log('\nGSC — blog pages only:');
+      console.log('  ' + fmtDeltaPerDay(results.pre.gsc.blogOnly.clicks, results.post.gsc.blogOnly.clicks, preDays, postDays, 'Clicks'));
+      console.log('  ' + fmtDeltaPerDay(results.pre.gsc.blogOnly.impressions, results.post.gsc.blogOnly.impressions, preDays, postDays, 'Impressions'));
+      console.log('  ' + fmtDelta(results.pre.gsc.blogOnly.ctr, results.post.gsc.blogOnly.ctr, 'CTR', true));
+      console.log('  ' + fmtDelta(results.pre.gsc.blogOnly.position, results.post.gsc.blogOnly.position, 'Avg position', true) + ' (negative = better)');
+    }
   }
   if (results.pre.ai && results.post.ai) {
     console.log('\nGA4 — AI-referral traffic:');
-    console.log('  ' + fmtDelta(results.pre.ai.aiSessions, results.post.ai.aiSessions, 'AI sessions'));
+    console.log('  ' + fmtDeltaPerDay(results.pre.ai.aiSessions, results.post.ai.aiSessions, preDays, postDays, 'AI sessions'));
     console.log('  ' + fmtDelta(results.pre.ai.sharePct, results.post.ai.sharePct, 'AI share of traffic', true));
   }
+
+  return { thin, postDaysAvailable };
 }
 
+// Optional: node scripts/backfillSeoHistory.mjs <intervention_name> to run just
+// one (e.g. to re-run a THIN one later once more post-window data exists).
+// Re-running always appends new rows rather than replacing — there's no unique
+// constraint on (intervention_name, phase) in seo_performance_snapshots, so a
+// query against this table should take the latest captured_at per pair.
 async function main() {
+  const filter = process.argv[2];
+  const toRun = filter ? INTERVENTIONS.filter((i) => i.name === filter) : INTERVENTIONS;
+  if (filter && toRun.length === 0) {
+    console.error(`No intervention named "${filter}". Known: ${INTERVENTIONS.map((i) => i.name).join(', ')}`);
+    process.exit(1);
+  }
+
   const gscAuth = buildAuth(['https://www.googleapis.com/auth/webmasters.readonly']);
   const webmasters = google.webmasters({ version: 'v3', auth: gscAuth });
   const ga4Auth = buildAuth(['https://www.googleapis.com/auth/analytics.readonly']);
   const analyticsData = google.analyticsdata({ version: 'v1beta', auth: ga4Auth });
 
-  for (const intervention of INTERVENTIONS) {
-    await runIntervention(webmasters, analyticsData, intervention);
+  const thinRuns = [];
+  for (const intervention of toRun) {
+    const { thin, postDaysAvailable } = await runIntervention(webmasters, analyticsData, intervention);
+    if (thin) thinRuns.push({ name: intervention.name, postDaysAvailable });
+  }
+  if (thinRuns.length) {
+    console.log('\n⚠️  Thin post-windows (re-run these later for a fuller read):');
+    for (const t of thinRuns) console.log(`   node scripts/backfillSeoHistory.mjs ${t.name}  (currently ${t.postDaysAvailable}d)`);
   }
 }
 
