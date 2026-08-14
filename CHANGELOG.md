@@ -2,6 +2,13 @@
 
 ## 2026-08-14
 
+### Improvement: wired the ADR-0046 backfill re-run into the existing weekly-digest REMINDERS mechanism
+
+Jonathan asked for the "re-run in ~3 weeks" follow-up (see backfill entry below) to show up in the SEO/GEO email so it isn't just something he has to remember. `scripts/generateSeoDigest.mjs` already had a `REMINDERS` array for exactly this pattern — self-expiring, date-gated nudges with a paste-ready prompt, injected at the top of the digest during a window — and it already had an ADR-0046 measurement entry (`start: 2026-08-24, end: 2026-09-21`) written by an earlier session, unrelated to today's backfill tooling but covering the same underlying question.
+
+- Updated that existing reminder instead of adding a duplicate one: its `body` now notes today's first thin-window read (11 of 30 wanted post-days, avg position 12→11.6, cautiously positive but too small to trust), and its `prompt` gained a step 0 — run `node scripts/backfillSeoHistory.mjs jul2026_custom_page_canonicalization` first for a fresh, normalized-for-window-length pre/post pull (persisted to `seo_performance_snapshots`) — before the existing deep-dive steps (canonical-honored check, homepage lever diagnosis, Italian hreflang-cluster guardrail).
+- The reminder's existing window (Aug 24 – Sep 21, spanning several weekly sends) already lines up with when the script's full 30-day post-window matures, so no date change was needed — just pointed the same mechanism at the new tooling.
+
 ### Improvement: SEO/GEO backfill — added a second, cleaner intervention + fixed a window-length reporting bug (ADR-0084 follow-up)
 
 Added `jul2026_custom_page_canonicalization` (ADR-0046, 2026-07-27) as a second backfill candidate in `scripts/backfillSeoHistory.mjs` — a better test case than the March 2026 GEO enrichment because it's a precise, single technical change (canonicalize `/custom-murder-mystery-party/` to the homepage) with 3 named target queries stated in the ADR itself, well clear of the March corruption incident. Added query-targeted mode (`fetchGSCQueriesWindow`) alongside the existing blog-wide mode.
