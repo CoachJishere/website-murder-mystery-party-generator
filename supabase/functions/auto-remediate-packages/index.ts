@@ -78,11 +78,17 @@ const WINDOW_DAYS = 30;
 const MAX_ATTEMPTS_PER_DEFECT = 2;
 
 /**
- * Global daily spend cap (USD). At ~$0.04/image and ~$0.01/overview regen this
- * is roughly 120 images a day — far above any plausible real backlog, so
- * hitting it means something is wrong and we should stop and shout.
+ * Global daily spend cap (USD), shared with notify-generation-issue's
+ * empty-character re-fire (same auto_remediation_log table, one ceiling not
+ * two independent budgets — ADR-0076). Raised $5 -> $10 (ADR-0086,
+ * 2026-08-14): a single 34-character package's own recovery burned $3.90
+ * (78%) of one day's $5 cap, leaving only $0.05 of headroom for every other
+ * package's recovery that same day. The per-character/per-defect 2-attempt
+ * cap already bounds any one item's worst case, so the daily ceiling was the
+ * binding constraint on multi-incident days, not runaway spend on a single
+ * broken item.
  */
-const DAILY_SPEND_CAP_USD = 5.0;
+const DAILY_SPEND_CAP_USD = 10.0;
 
 /** Replicate Flux 1.1 Pro, per image (ADR-0017). */
 const IMAGE_COST_USD = 0.04;

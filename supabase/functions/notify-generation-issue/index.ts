@@ -161,7 +161,7 @@ serve(async (req) => {
     //
     // Safety rails (2026-08-11): this call site had NEITHER an attempt cap NOR
     // a spend cap, unlike auto-remediate-packages (ADR-0047), which caps every
-    // defect class at 2 attempts and a shared $5/day spend ceiling. Because
+    // defect class at 2 attempts and a shared daily spend ceiling. Because
     // this function is invoked every 10 minutes by
     // sweep_stuck_needs_review_packages for as long as a package stays
     // needs_review (up to 30 days), a genuinely unrecoverable empty character
@@ -170,12 +170,18 @@ serve(async (req) => {
     // discovered 2026-08-11 when a stuck package's generation_status kept
     // re-writing every few minutes with no progress. Mirrors the existing
     // pattern exactly: attempts counted from auto_remediation_log, capped per
-    // character; spend summed from the SAME table, so this shares one $5/day
+    // character; spend summed from the SAME table, so this shares one daily
     // ceiling with auto-remediate-packages rather than getting its own
-    // independent budget.
+    // independent budget. Raised $5 -> $10 (ADR-0086, 2026-08-14): a single
+    // 34-character package's own recovery burned $3.90 (78%) of one day's
+    // shared $5 cap, leaving only $0.05 of headroom for every other
+    // package's recovery that same day -- the per-character 2-attempt cap
+    // already bounds any one character's worst case ($0.30), so the daily
+    // ceiling was the binding constraint on multi-incident days, not runaway
+    // spend on a single broken character.
     const CHILD_WEBHOOK = "https://hook.eu2.make.com/3l26wasbsjzh5396np25qoyv8g82u6j3";
     const MAX_ATTEMPTS_PER_CHARACTER = 2;
-    const DAILY_SPEND_CAP_USD = 5.0;
+    const DAILY_SPEND_CAP_USD = 10.0;
     // Estimate only (not a measured figure like the Haiku/Replicate costs in
     // auto-remediate-packages): one full child-scenario character
     // regeneration on Sonnet 5 -- description/background/relationships/

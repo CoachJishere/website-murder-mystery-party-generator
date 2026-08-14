@@ -2,6 +2,16 @@
 
 ## 2026-08-14
 
+### Improvement: raise the shared daily auto-remediation spend cap $5 -> $10 (ADR-0086)
+A 34-character package's own recovery attempts burned $3.90 (78%) of one day's $5 shared spend cap, leaving only $0.05 of headroom for two other packages' recovery that same day — one of which only just squeezed under the cap. The per-character/per-defect 2-attempt cap already bounds any single item's worst case ($0.30), so the daily ceiling — not runaway spend on one broken item — was the actual constraint on multi-incident days. Raised `DAILY_SPEND_CAP_USD` from 5.0 to 10.0 in both places it's hardcoded (kept in sync, one shared ceiling per ADR-0076): `notify-generation-issue` (v18→v19) and `auto-remediate-packages` (v6→v7).
+- Confirmed this wasn't the cause of the specific incident that prompted the question — the two capped characters used their full 2-attempt-per-character budget, not the shared daily one.
+- Full record in [ADR-0086](docs/adr/0086-raise-shared-daily-remediation-spend-cap-to-10.md).
+
+### Fix: hand-recovered "Sunset Songs: The Stolen Spotlight" — 2 characters capped, one needed a full identity rewrite
+Package landed `needs_review` with Phoenix Rivers and Indigo Chase both hitting the 2-attempt auto-recovery cap. Checked the DB directly rather than assume: Indigo Chase had already self-healed by the time it was checked (stale `capped` state). Phoenix Rivers hadn't — her `round2_script`/`round3_script`/`round4_script`/`final_statement` were all fine after 2 fired attempts, but `description`/`background`/`secret`/`relationships` were completely untouched both times, a new failure shape distinct from anything seen earlier this week (Kommetjie was role-only; this is identity-fields-only, rounds fine).
+- Hand-wrote description/background/secret/relationships for Phoenix Rivers, grounded in her existing round 3/4 scripts (suspects Jasper Gold and Reese Taylor, alibi with a manager and videographer) and `master_context`'s actual assigned secret for her (quietly moved up her single's release date out of competitive anxiety about Stella's surprise album) — matching Indigo Chase's in-package format exactly. Swept all 34 characters afterward, confirmed no other gaps, gate clean, promoted to `completed`.
+- **Under investigation, not yet resolved**: whether the re-fire webhook's route structurally never reaches the identity-field-writing step regardless of attempt count — if so, this failure class needs a different fix than "try again," since 2 successful re-fires never touched those fields. Background agent dispatched to compare the original-generation payload against the re-fire payload and trace the Child scenario blueprint.
+
 ### Improvement: wired the ADR-0046 backfill re-run into the existing weekly-digest REMINDERS mechanism
 
 Jonathan asked for the "re-run in ~3 weeks" follow-up (see backfill entry below) to show up in the SEO/GEO email so it isn't just something he has to remember. `scripts/generateSeoDigest.mjs` already had a `REMINDERS` array for exactly this pattern — self-expiring, date-gated nudges with a paste-ready prompt, injected at the top of the digest during a window — and it already had an ADR-0046 measurement entry (`start: 2026-08-24, end: 2026-09-21`) written by an earlier session, unrelated to today's backfill tooling but covering the same underlying question.
