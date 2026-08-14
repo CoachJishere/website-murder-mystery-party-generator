@@ -207,12 +207,6 @@ serve(async (req) => {
     const recovered: string[] = [];
     const skipped: string[] = [];
     const capped: string[] = [];
-    // Tracks whether every successfully re-fired character was on its FIRST
-    // recovery attempt (used === 0 before this fire). A repeat failure --
-    // already tried once and still empty on a later sweep -- is a stronger
-    // signal something's actually wrong, so that case should alert even
-    // before the hard MAX_ATTEMPTS_PER_CHARACTER cap is hit. See usage below.
-    let allRecoveredAreFirstAttempt = true;
     let budgetRemaining = Math.max(0, DAILY_SPEND_CAP_USD - (await spentToday()));
 
     for (const charName of emptyCharacters) {
@@ -222,9 +216,8 @@ serve(async (req) => {
         continue;
       }
 
-      let attemptsUsed = 0;
       if (pkg?.id) {
-        attemptsUsed = await characterAttemptsUsed(pkg.id, charName);
+        const attemptsUsed = await characterAttemptsUsed(pkg.id, charName);
         if (attemptsUsed >= MAX_ATTEMPTS_PER_CHARACTER) {
           capped.push(charName);
           continue;
@@ -251,7 +244,6 @@ serve(async (req) => {
         });
         if (resp.ok) {
           recovered.push(charName);
-          if (attemptsUsed > 0) allRecoveredAreFirstAttempt = false;
           budgetRemaining -= CHARACTER_REGEN_COST_USD;
           if (pkg?.id) {
             await supabase.from("auto_remediation_log").insert({
@@ -402,24 +394,29 @@ serve(async (req) => {
     }
 
     // Same idea as the worker grace period above, but for THIS function's own
-    // empty-character re-fire (2026-08-13): don't page a human for a defect
-    // this same invocation just fired a clean recovery attempt at. Only
-    // suppresses when empty characters are the ONLY issue (no
-    // structuralDefects also present -- something else being wrong should
-    // still alert immediately), nothing was skipped or capped (a recovery
-    // attempt that couldn't even fire, or already exhausted its cap, is a
-    // real "you need to look at this" signal), and every recovered character
-    // was on its first attempt (a repeat failure on a later sweep means the
-    // first re-fire didn't actually fix it -- alert on that rather than
-    // suppressing again). Mutually exclusive with workerMightFixThis by
+    // empty-character re-fire (2026-08-13, corrected 2026-08-14 -- see
+    // ADR-0085): don't page a human for a defect auto-recovery still has
+    // budget left to keep working on. Suppresses whenever empty characters
+    // are the ONLY issue (no structuralDefects also present -- something
+    // else being wrong should still alert immediately) AND nothing has
+    // landed in skipped/capped (a recovery attempt that couldn't even fire,
+    // or already exhausted its MAX_ATTEMPTS_PER_CHARACTER cap, is the actual
+    // "you need to look at this" signal). Deliberately does NOT alert merely
+    // for being a repeat attempt (used > 0) -- ADR-0081 originally treated a
+    // second try as a stronger signal of real trouble, but a same-day case
+    // (Death At The Velvet Lounge, character needed 2 of its 2 allowed
+    // attempts and still resolved cleanly with zero human action) showed
+    // that heuristic just adds noise for ordinary variance in how many tries
+    // a character needs. The cap itself already bounds the cost/time of
+    // waiting this out (max 2 attempts, $0.15 each), so suppressing all the
+    // way to the cap is safe. Mutually exclusive with workerMightFixThis by
     // construction (that one requires structuralDefects.length > 0, this one
     // requires it to be 0), so no ordering conflict between the two gates.
     const emptyCharacterRecoveryLooksClean =
       emptyCharacters.length > 0 &&
       structuralDefects.length === 0 &&
       skipped.length === 0 &&
-      capped.length === 0 &&
-      allRecoveredAreFirstAttempt;
+      capped.length === 0;
     readyToAlert = readyToAlert && !emptyCharacterRecoveryLooksClean;
 
     // Email cooldown: skip the actual send if we've already alerted on this

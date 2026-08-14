@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-14
+
+### Improvement: drop the "repeat attempt" alert heuristic — it was still noisy (ADR-0085)
+One day after ADR-0081 shipped, a live case falsified its "repeat failure = stronger signal" reasoning: "Death At The Velvet Lounge" had a character that needed both of its 2 allowed auto-recovery attempts and still resolved cleanly with zero human action — but because it was a repeat attempt, ADR-0081's logic alerted anyway. Asked directly whether that email should have fired: no.
+- **Removed `allRecoveredAreFirstAttempt`** from the suppression condition entirely. `emptyCharacterRecoveryLooksClean` now only requires empty characters to be the sole issue and nothing landed in `skipped`/`capped` — suppression holds all the way to the hard 2-attempt cap (ADR-0076), which already bounds the cost/time of waiting this out ($0.15 × 2 max, one extra ~10-min sweep).
+- A persistent defect still alerts at the same worst-case cadence as before (once genuinely `capped`) — no loss of real signal, only removal of the premature "still trying" alert.
+- Deployed `notify-generation-issue` v16 → v18 (v17 had a typo'd ADR reference in a code comment, corrected same-session as v18; no logic difference).
+- Full record in [ADR-0085](docs/adr/0085-drop-repeat-attempt-alert-heuristic-from-empty-character-suppression.md).
+
 ## 2026-08-13
 
 ### Feature: SEO/GEO effectiveness tracking — durable snapshot history + retroactive backfill (ADR-0084)
