@@ -77,7 +77,7 @@ serve(async (req) => {
     // and needs_review_at for the self-heal grace period gate (ADR-0065).
     const { data: pkg } = await supabase
       .from("mystery_packages")
-      .select("id, title, generation_status, generation_started_at, extracted_characters, last_notified_at, needs_review_at")
+      .select("id, title, generation_status, generation_started_at, extracted_characters, last_notified_at, needs_review_at, user_conversation")
       .eq("conversation_id", conversation_id)
       .order("updated_at", { ascending: false })
       .limit(1)
@@ -246,6 +246,23 @@ serve(async (req) => {
             scriptType,
             hasAccomplice,
             mysteryType,
+            // 2026-08-14: the original full-generation call (fired by
+            // mystery-webhook-trigger) also sends conversationContent and
+            // characterChatExcerpts, both missing here until now. Adding
+            // conversationContent via mystery_packages.user_conversation --
+            // a persisted proxy already used the same way in
+            // regenerate-child-content (see its `conversationContent: pkg.
+            // user_conversation ?? ""`). characterChatExcerpts is NOT
+            // included: per ADR-0054, it is never persisted anywhere and is
+            // "not recoverable post-hoc" -- recomputing it here would mean
+            // duplicating mystery-webhook-trigger's alias-regex extraction
+            // logic in a second place, an accepted gap this fix doesn't
+            // reopen. Not proven to be the root cause of the identity-field
+            // silent-blank-write bug (see ADR-0079 for a case where the
+            // re-fire payload, missing both fields, still populated
+            // identity fields successfully) -- this closes a confirmed
+            // context gap regardless, cheaply and safely.
+            conversationContent: pkg?.user_conversation ?? "",
           }),
         });
         if (resp.ok) {
