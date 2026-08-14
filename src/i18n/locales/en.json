@@ -740,6 +740,10 @@
           "question": "How long does a typical game last?",
           "answer": "Most mysteries run 2-3 hours, but you control the pacing. Our host guide includes timing suggestions that you can adjust to fit your schedule."
         },
+        "roundCount": {
+          "question": "Can I choose or change the number of rounds?",
+          "answer": "The round structure is fixed by our system and can't be customized or shortened - if you mention a specific round count while creating your mystery, please know it won't change how the game is generated. This is the same for every mystery we create, regardless of theme or player count."
+        },
         "themedMysteries": {
           "question": "Do you offer themed mysteries for special occasions?",
           "answer": "We create any theme you can imagine! From classic 1920s speakeasies to space stations to fairy tale kingdoms - tell us your vision and we'll make it happen."

@@ -557,6 +557,14 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
       // here means the guardrail can't be silently lost if the external prompt is
       // edited later without this file changing too.
       systemPrompt += `\n\nCRITICAL: List EXACTLY the established player count of characters — never propose "optional," "bonus," or scalable extra characters for a larger group ("15 core + 3 optional for 16-18 players" or similar). Every character you list will be generated and included; there is no mechanism to add characters after the fact. If the user might end up with more guests than characters, do not solve it by offering additional characters — that is handled separately by inviting extra guests as co-investigators, not by expanding the cast.`;
+
+      // A customer explicitly asked for "only 3 rounds total," the chat
+      // acknowledged it, and generation produced 4 rounds anyway — round
+      // count is fixed by the Make.com prompt schema and there is currently
+      // no mechanism anywhere in the pipeline to vary it per request.
+      // Confirming a specific count here creates a promise nothing downstream
+      // can keep.
+      systemPrompt += `\n\nCRITICAL: Round count is fixed by the system and cannot be customized, shortened, or extended — if the user requests a specific number of rounds (e.g. "only 3 rounds," "make it 5 rounds," "keep it short, just 2 rounds"), do NOT agree to, confirm, or acknowledge that request as something that will happen. Tell them clearly and warmly that the round structure is fixed and the same for every mystery, and steer the conversation back to theme, characters, and story. Do not say "got it" or otherwise imply the request is understood as an instruction that will be followed.`;
     }
 
     // Format messages for Anthropic API

@@ -58,6 +58,10 @@ const Faq1 = ({
       answer: t('supportPage.faqs.questions.gameDuration.answer')
     },
     {
+      question: t('supportPage.faqs.questions.roundCount.question'),
+      answer: t('supportPage.faqs.questions.roundCount.answer')
+    },
+    {
       question: t('supportPage.faqs.questions.themedMysteries.question'),
       answer: t('supportPage.faqs.questions.themedMysteries.answer')
     },
