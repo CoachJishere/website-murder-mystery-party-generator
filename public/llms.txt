@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 266 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 267 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -197,6 +197,7 @@ This index organizes 266 published guides by topic cluster. All guides are avail
 - [Murder Mystery Party for Mother's Day Brunch](https://www.mysterymaker.party/blog/murder-mystery-party-for-mothers-day-brunch-honor-mom-with-elegant-intrigue): Honor mothers with elegant brunch murder mystery parties combining family appreciation with sophisticated fun.
 - [Murder Mystery Picnic Party: How to Host One Outdoors](https://www.mysterymaker.party/blog/murder-mystery-picnic-party-guide): How to host a murder mystery party outside. Outdoor picnic format, weather planning, evidence that won't blow away, portable mysteries for parks.
 - [Murder Mystery Potluck Dinner Party](https://www.mysterymaker.party/blog/murder-mystery-potluck-dinner-party): How to host a murder mystery potluck dinner. Budget-friendly mystery hosting, each guest brings a dish and a clue, community potluck format.
+- [Murder Mystery Progressive Dinner Party](https://www.mysterymaker.party/blog/murder-mystery-progressive-dinner-party): How to host a murder mystery progressive dinner. Multiple location mystery, each act at different house, walking between homes, neighborhood mystery.
 - [Outdoor Murder Mystery Party Guide](https://www.mysterymaker.party/blog/outdoor-murder-mystery-party-guide): Guide to hosting outdoor murder mystery parties in backyards and parks. Master weather planning, lighting, sound, and prop management for outdoor events.
 
 ## Rules & Planning
