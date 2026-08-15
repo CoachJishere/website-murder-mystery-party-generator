@@ -1,8 +1,10 @@
 # Site health status
 
-_Last checked: 2026-08-15 13:01 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-08-15 18:50 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
-## ✅ All checks passing
+## ⚠️ Problems found
+
+- 🔴 1 package(s) with structural defects — NOT auto-fixable, needs regeneration: The Host Herself [paid=true] name_background_mismatch: Harper Blackwell -> background says "Harper Chen"
 
 | Check | Result |
 |---|---|
@@ -16,7 +18,7 @@ _Last checked: 2026-08-15 13:01 UTC (runs every 6 hours; see .github/workflows/h
 | Slip-culprit leak (30 days) | 0 |
 | Self-directed questions (30 days) | 0 |
 | Completed-but-empty packages (30 days) | 0 |
-| Structural defects — escalate only (30 days) | 0 |
+| Structural defects — escalate only (30 days) | 1 |
 | Roster-count mismatches — escalate only (30 days) | 0 |
 | Final-statement confession leaks — escalate only (30 days) | 0 |
 | Unconfessed detective-style culprits — escalate only (30 days) | 0 |
