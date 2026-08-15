@@ -763,6 +763,10 @@
         "canIEdit": {
           "question": "Voinko muokata mysteeriäni sen luomisen jälkeen?",
           "answer": "Kyllä! Jokainen hahmo ja osio on täysin muokattavissa luomisen jälkeen — hienosäädä hahmojen käsikirjoituksia, muokkaa isännöintiopasta, muuta todistekortteja ja päivitä etsivän käsikirjoitusta, kaikki suoraan sovelluksessa, ja tallenna se PDF-tiedostona. Yksi asia on hyvä tietää: muokkaaminen muuttaa sisältöä, ei hahmojen määrää. Epäiltyhahmojen määrä lukitaan, kun mysteerisi luodaan, joten epäiltyjen lisääminen tai poistaminen tarkoittaa mysteerin luomista uudelleen. Jos sinulla on yksinkertaisesti enemmän vieraita kuin hahmoja, he voivat liittyä apututkijoiksi etsivän tiimiin — muutoksia ei tarvita."
+        },
+        "roundCount": {
+          "question": "Voinko valita tai muuttaa kierrosten määrää?",
+          "answer": "Kierrosrakenne on järjestelmämme määrittämä, eikä sitä voi muokata tai lyhentää - jos mainitset tietyn kierrosmäärän mysteeriäsi luodessa, se ei muuta sitä, miten peli luodaan. Näin on jokaisen luomamme mysteerin kohdalla, teemasta tai pelaajamäärästä riippumatta."
         }
       }
     },
@@ -1180,7 +1184,8 @@
         "both": "Täydet + tiivistetyt käsikirjoitukset",
         "summary": "Tiivistetyt käsikirjoitukset"
       },
-      "hasAccomplice": "Sisältää rikoskumppanin"
+      "hasAccomplice": "Sisältää rikoskumppanin",
+      "charactersFinalNote": "Tämä on lopullinen hahmokokoonpanosi - hahmojen määrä lukittuu ostohetkellä. Voit nimetä yksittäisiä hahmoja uudelleen jälkikäteen, mutta uudelleennimeäminen päivittää vain hahmolistan, ei muuta käsikirjoitusta."
     },
     "fullyEditableLabel": "Täysin muokattavissa:",
     "fullyEditableNote": "Älä huoli — voit muokata kaikkia hahmokäsikirjoituksia, isäntäoppaan sisältöä ja todistekortteja sen jälkeen kun mysteerisi on luotu.",
@@ -1200,7 +1205,8 @@
       "clues": "Vihjeet",
       "inspector": "Tarkastaja-opas",
       "relationships": "Suhteet",
-      "inspectorIntrigue": "Tutkijan opas"
+      "inspectorIntrigue": "Tutkijan opas",
+      "extras": "Lisät"
     },
     "mobileTabs": {
       "host": "Isäntä",
@@ -1565,6 +1571,70 @@
         "label": "Viimeiset laatutarkastukset",
         "description": "Automaattiset tarkastukset käynnissä ennen mysteerisi näyttämistä"
       }
+    }
+  },
+  "adaptation": {
+    "card": {
+      "sectionIntro": "Lisää tapoja muokata mysteeriäsi - tämä osio kasvaa ajan myötä",
+      "title": "Roolinvaihto",
+      "teaser": "Vieras ei pääse paikalle? Poista tai korvaa hänet tarinassa - kiinteä 5 $:n hinta, korjaa niin monta hahmoa kuin tarvitset kerralla.",
+      "cta": "Lue lisää",
+      "inProgressTitle": "Roolinvaihto käynnissä",
+      "inProgressSummary": "{{done}}/{{total}} päivitetty",
+      "inProgressNotice": "Lähetämme sähköpostia, kun se on valmis - voit rauhassa käyttää mysteerisi muita osia sillä välin.",
+      "comingSoonTitle": "Isännän vinkit ja videot",
+      "comingSoonBadge": "Tulossa pian",
+      "comingSoonBody": "Lyhyitä videoita ja nopeita vinkkejä mysteerisi vetämiseen illan aikana."
+    },
+    "explainer": {
+      "title": "Roolinvaihto",
+      "subtitle": "Poista hahmo mysteeristäsi yhdellä napin painalluksella.",
+      "characterStyleHeadline": "Tästä ei todennäköisesti tarvitse maksaa.",
+      "characterStyleBody": "Tämä on hahmopohjainen mysteeri - ennalta määrättyä syyllistä ei ole, joten puuttuvan hahmon poissaolon voi selittää itse, ilmaiseksi. Sano vieraillesi vaikka näin: \"X on myös epäilty, mutta häntä kuulustellaan erikseen - jatkakaa ilman häntä\", tai \"Olemme jo sulkeneet X:n pois.\" Jäljelle jääneet huhut hänestä eivät sen jälkeen ole ongelma.",
+      "characterStyleContinue": "Haluatko silti, että hahmo poistetaan siististi kaikista dokumenteista? Jatka alta.",
+      "realEditBody": "Jokaisen hahmon tarina kietoutuu muiden tarinoihin - alibit, huhut, todisteet. Päivitämme jokaisen hahmoarkin, etsivän käsikirjoituksen ja todistekortit, jotta mikään ei enää mainitse ketään, joka ei ole enää mukana.",
+      "goodToKnowLabel": "Hyvä tietää",
+      "irreversibleBody": "Kun olet lähettänyt tämän, paluuta ei ole.",
+      "timingBody": "Käytä tätä mieluiten mahdollisimman myöhään - ihanteellisesti vasta juhlapäivänä. Jos toinenkin vieras perääntyy sen jälkeen kun olet jo lähettänyt tämän, joudut tekemään sen uudelleen (ja maksamaan uudelleen).",
+      "noThanks": "Ei kiitos",
+      "continue": "Jatka"
+    },
+    "picker": {
+      "title": "Kuka ei pääse paikalle?",
+      "subtitle": "Valitse jokainen hahmo, jonka vieras ei pääse paikalle. Voit poistaa useamman kerralla.",
+      "reassignNote": "Jos poistat {{role}}, jonkun toisen täytyy ottaa se rooli. Valitse kuka, tai anna meidän valita.",
+      "replacementAuto": "Anna meidän valita",
+      "maxReached": "Mysteeri tarvitsee toimiakseen vähintään {{min}} hahmoa - se on enimmäismäärä, jonka voit poistaa kerralla.",
+      "selectedSummary": "{{count}} valittu - {{total}} $"
+    },
+    "confirm": {
+      "back": "Takaisin",
+      "title": "Tätä ei voi perua.",
+      "sharedConsequence": "Jokainen hahmoarkki, etsivän käsikirjoitus ja todistekortit päivitetään, jotta mikään ei mainitse:",
+      "replacedBy": "{{name}} tulee uudeksi {{role}}",
+      "replacedByAuto": "valitsemme uuden {{role}}",
+      "totalLabel": "Yhteensä: {{total}} $",
+      "cancel": "Peruuta",
+      "cta": "Poista - {{total}} $"
+    },
+    "processing": {
+      "title": "Mysteeriäsi päivitetään",
+      "waiting": "Tämä voi kestää useita minuutteja - kauemmin, jos siirrämme syyllisyyden toiselle hahmolle, sillä se on suurempi uudelleenkirjoitus kuin pelkkä poisto. Sinun ei tarvitse odottaa tässä.",
+      "goNow": "Siirry mysteeriisi nyt",
+      "emailNotice": "Lähetämme myös sähköpostia heti, kun se on valmis."
+    },
+    "result": {
+      "verified": "Valmis - mysteerisi on päivitetty",
+      "partial": "Päivitys valmis - katso tiedot alta",
+      "rowFailed": "tätä ei voitu viimeistellä turvallisesti, joten se jätettiin ennalleen.",
+      "reassignmentNotice": "Syyllisen vaihtaminen vaati etsivän käsikirjoituksen paljastuksen ja tunnustuksen uudelleenkirjoittamisen - suosittelemme lukemaan molemmat kertaalleen ennen illan vetämistä.",
+      "missingId": "Emme löytäneet kyseistä roolinvaihtopyyntöä.",
+      "backToMystery": "Takaisin mysteeriisi"
+    },
+    "toasts": {
+      "createdNoCheckout": "Roolinvaihtopyyntö luotu {{count}} hahmolle (staging-tila - maksua ei ole määritetty).",
+      "createFailed": "Pyyntöä ei voitu käynnistää. Yritä uudelleen.",
+      "alreadyInProgress": "Yhdellä näistä hahmoista on jo käynnissä oleva roolinvaihtopyyntö."
     }
   }
 }

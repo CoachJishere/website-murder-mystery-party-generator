@@ -763,6 +763,10 @@
         "canIEdit": {
           "question": "谜团生成后还能编辑吗？",
           "answer": "当然可以！生成后，每个角色和每个部分都可以完全编辑 — 调整角色剧本、修改主持指南、更改证据卡、更新侦探剧本，全部直接在应用内完成，并可保存为 PDF。有一点需要了解：编辑改变的是内容，而不是演员阵容的规模。嫌疑人角色的数量在谜团生成时就已确定，因此添加或删除嫌疑人意味着重新生成谜团。如果您只是宾客比角色多，他们可以作为侦探团队的协同调查员加入 — 无需任何更改。"
+        },
+        "roundCount": {
+          "question": "我可以选择或更改回合数吗？",
+          "answer": "回合结构由我们的系统固定，无法自定义或缩短 - 如果你在创建谜案时提到了具体的回合数，请知悉这不会改变游戏的生成方式。无论主题或玩家人数如何，我们创建的每个谜案都是如此。"
         }
       }
     },
@@ -1213,7 +1217,8 @@
         "both": "完整 + 摘要剧本",
         "summary": "摘要剧本"
       },
-      "hasAccomplice": "包含同谋"
+      "hasAccomplice": "包含同谋",
+      "charactersFinalNote": "这就是你的最终角色阵容 - 角色数量在购买时即被锁定。之后你可以重命名单个角色，但重命名只会更新角色列表，不会更新剧本的其他部分。"
     },
     "fullyEditableLabel": "完全可编辑:",
     "fullyEditableNote": "别担心 — 您可以在生成谜案后编辑所有角色剧本、主持人指南内容和证据卡。",
@@ -1233,7 +1238,8 @@
       "clues": "线索",
       "inspector": "侦探指南",
       "relationships": "关系",
-      "inspectorIntrigue": "调查员指南"
+      "inspectorIntrigue": "调查员指南",
+      "extras": "更多内容"
     },
     "mobileTabs": {
       "host": "主持",
@@ -1565,6 +1571,70 @@
         "label": "最终质量检查",
         "description": "在展示您的谜案前，正在进行自动检查"
       }
+    }
+  },
+  "adaptation": {
+    "card": {
+      "sectionIntro": "更多打造你的谜案的方式 - 这里会不断增加新内容",
+      "title": "重新选角",
+      "teaser": "有客人来不了？在故事中删除或替换该角色 - 统一收费5美元，一次性修改你需要的任意数量角色。",
+      "cta": "了解更多",
+      "inProgressTitle": "重新选角进行中",
+      "inProgressSummary": "已更新{{done}}/{{total}}",
+      "inProgressNotice": "完成后我们会给你发邮件通知 - 在此期间你可以照常使用谜案的其他部分。",
+      "comingSoonTitle": "主持技巧和视频",
+      "comingSoonBadge": "即将上线",
+      "comingSoonBody": "简短的视频和实用小技巧，帮你在当晚顺利主持谜案。"
+    },
+    "explainer": {
+      "title": "重新选角",
+      "subtitle": "点击一下按钮，即可从你的谜案中删除一个角色。",
+      "characterStyleHeadline": "你可能根本不需要为此付费。",
+      "characterStyleBody": "这是一个角色驱动型谜案 - 没有预先设定的凶手，所以某个角色的缺席很容易自己免费圆过去。只需告诉客人类似这样的话：“X也是嫌疑人，但我们正在单独审问 - 大家先不用管他继续进行”，或者“我们已经排除了X的嫌疑”。关于这个人剩下的传闻也就不再是问题了。",
+      "characterStyleContinue": "仍然希望从所有文档中彻底删除该角色？请在下方继续。",
+      "realEditBody": "每个角色的故事都和其他人的故事交织在一起 - 不在场证明、传闻、证据。我们会更新每一份角色资料、侦探剧本和证据卡，确保不会再提及已经不在场的角色。",
+      "goodToKnowLabel": "小贴士",
+      "irreversibleBody": "一旦提交，就无法撤回。",
+      "timingBody": "最好尽量晚一点使用 - 理想情况下是聚会当天再操作。如果提交之后又有其他客人退出，你需要重新操作一次（并再次付费）。",
+      "noThanks": "不用了",
+      "continue": "继续"
+    },
+    "picker": {
+      "title": "谁来不了？",
+      "subtitle": "选择每一位客人无法到场所对应的角色。你可以一次删除多个角色。",
+      "reassignNote": "删除{{role}}意味着需要有人接替这个角色。你可以自己选，也可以交给我们决定。",
+      "replacementAuto": "交给我们决定",
+      "maxReached": "一个谜案至少需要{{min}}个角色才能运作 - 这是你一次最多可以删除的数量。",
+      "selectedSummary": "已选{{count}}个 - ${{total}}"
+    },
+    "confirm": {
+      "back": "返回",
+      "title": "此操作无法撤销。",
+      "sharedConsequence": "每一份角色资料、侦探剧本和证据卡都会更新，确保不再提及：",
+      "replacedBy": "{{name}}将成为新的{{role}}",
+      "replacedByAuto": "我们将为你选择新的{{role}}",
+      "totalLabel": "总计：${{total}}",
+      "cancel": "取消",
+      "cta": "删除 - ${{total}}"
+    },
+    "processing": {
+      "title": "正在更新你的谜案",
+      "waiting": "这可能需要几分钟 - 如果需要重新指定凶手，耗时会更长，因为这比单纯删除角色的改动大得多。你不需要在这里等待。",
+      "goNow": "现在前往你的谜案",
+      "emailNotice": "准备好后我们也会给你发邮件通知。"
+    },
+    "result": {
+      "verified": "完成 - 你的谜案已更新",
+      "partial": "更新已完成 - 详情见下方",
+      "rowFailed": "这一项无法安全完成，已保持不变。",
+      "reassignmentNotice": "重新指定凶手意味着要重写侦探剧本的揭晓部分和一段认罪陈词 - 建议你在主持前把两者都通读一遍。",
+      "missingId": "我们找不到该重新选角请求。",
+      "backToMystery": "返回你的谜案"
+    },
+    "toasts": {
+      "createdNoCheckout": "已为{{count}}个角色创建重新选角请求（测试模式 - 未配置付款）。",
+      "createFailed": "无法启动该请求，请重试。",
+      "alreadyInProgress": "其中一个角色已经有一个正在进行的重新选角请求。"
     }
   }
 }

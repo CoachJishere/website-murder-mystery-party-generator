@@ -763,6 +763,10 @@
         "canIEdit": {
           "question": "Kan jeg redigere mit mysterium, efter det er genereret?",
           "answer": "Ja! Hver karakter og hvert afsnit kan redigeres fuldt ud efter genereringen — juster karakternes manuskripter, tilpas værtsguiden, ændr beviskortene og opdater detektivmanuskriptet, alt sammen direkte i appen, og gem det som PDF. Én ting du skal vide: redigering ændrer indholdet, ikke rollebesætningens størrelse. Antallet af mistænkte-karakterer fastlægges, når dit mysterium genereres, så at tilføje eller fjerne mistænkte betyder en ny generering af mysteriet. Hvis du blot har flere gæster end karakterer, kan de deltage som med-efterforskere på detektivens hold — ingen ændringer nødvendige."
+        },
+        "roundCount": {
+          "question": "Kan jeg vælge eller ændre antallet af runder?",
+          "answer": "Rundestrukturen er fastlagt af vores system og kan ikke tilpasses eller forkortes - hvis du nævner et bestemt antal runder, mens du opretter dit mysterie, ændrer det ikke, hvordan spillet genereres. Sådan er det for alle mysterier, vi skaber, uanset tema eller antal spillere."
         }
       }
     },
@@ -1168,7 +1172,8 @@
         "both": "Fulde + opsummerede manuskripter",
         "summary": "Opsummerede manuskripter"
       },
-      "hasAccomplice": "Inkluderer medskyldig"
+      "hasAccomplice": "Inkluderer medskyldig",
+      "charactersFinalNote": "Dette er din endelige rollebesætning - antallet af karakterer fastlåses ved købet. Du kan omdøbe enkelte karakterer bagefter, men en omdøbning opdaterer kun karakterlisten, ikke resten af manuskriptet."
     },
     "fullyEditableLabel": "Fuldt redigerbar:",
     "fullyEditableNote": "Bare rolig — du kan redigere alle karakter-manuskripter, værtsguide-indhold og beviskort efter dit mysterium er genereret.",
@@ -1243,7 +1248,8 @@
       "clues": "Evidence",
       "inspector": "Detective Guide",
       "relationships": "Relationships",
-      "inspectorIntrigue": "Efterforskerguide"
+      "inspectorIntrigue": "Efterforskerguide",
+      "extras": "Ekstra"
     },
     "mobileTabs": {
       "host": "Host",
@@ -1565,6 +1571,70 @@
         "label": "Sidste kvalitetstjek",
         "description": "Automatiske tjek kører, før dit mysterie vises"
       }
+    }
+  },
+  "adaptation": {
+    "card": {
+      "sectionIntro": "Flere måder at forme dit mysterie på - dette vokser over tid",
+      "title": "Ombesætning",
+      "teaser": "Kan en gæst ikke deltage? Fjern eller udskift vedkommende i historien - fast pris på $5, ret lige så mange karakterer, du har brug for, på én gang.",
+      "cta": "Læs mere",
+      "inProgressTitle": "Ombesætning i gang",
+      "inProgressSummary": "{{done}} af {{total}} opdateret",
+      "inProgressNotice": "Vi sender dig en e-mail, når det er klar - du er velkommen til at bruge resten af dit mysterie i mellemtiden.",
+      "comingSoonTitle": "Værtstips & videoer",
+      "comingSoonBadge": "Kommer snart",
+      "comingSoonBody": "Korte videoer og hurtige tips til at afvikle dit mysterie på selve aftenen."
+    },
+    "explainer": {
+      "title": "Ombesætning",
+      "subtitle": "Fjern en karakter fra dit mysterie med et enkelt klik.",
+      "characterStyleHeadline": "Du behøver sandsynligvis ikke betale for dette.",
+      "characterStyleBody": "Dette er et karakterbaseret mysterie - der er ingen forudbestemt gerningsmand, så en manglende karakters fravær er let at dække over selv, gratis. Sig bare noget til dine gæster som: \"X er også mistænkt, men bliver afhørt separat - fortsæt uden vedkommende\", eller \"Vi har allerede udelukket X.\" Eventuelle tiloversblevne rygter om personen bliver dermed irrelevante.",
+      "characterStyleContinue": "Vil du alligevel have vedkommende fjernet helt fra alle dokumenter? Fortsæt nedenfor.",
+      "realEditBody": "Hver karakters historie er flettet sammen med alle andres - alibier, rygter, beviser. Vi opdaterer hvert karakterark, detektivmanuskriptet og bevis-kortene, så intet efterlades, der nævner nogen, der ikke længere er der.",
+      "goodToKnowLabel": "Godt at vide",
+      "irreversibleBody": "Når det først er sendt, er der ingen vej tilbage.",
+      "timingBody": "Bruges bedst så sent som muligt - helst selve dagen for festen. Hvis endnu en gæst melder afbud, efter du allerede har sendt det, skal du gøre det igen (og betale igen).",
+      "noThanks": "Nej tak",
+      "continue": "Fortsæt"
+    },
+    "picker": {
+      "title": "Hvem kan ikke deltage?",
+      "subtitle": "Vælg hver karakter, hvis gæst ikke kan deltage. Du kan fjerne mere end én ad gangen.",
+      "reassignNote": "Fjerner du {{role}}, skal en anden overtage den rolle. Vælg hvem, eller lad os vælge.",
+      "replacementAuto": "Lad os vælge",
+      "maxReached": "Et mysterie kræver mindst {{min}} karakterer for at fungere - det er det maksimale, du kan fjerne på én gang.",
+      "selectedSummary": "{{count}} valgt - ${{total}}"
+    },
+    "confirm": {
+      "back": "Tilbage",
+      "title": "Dette kan ikke fortrydes.",
+      "sharedConsequence": "Hvert karakterark, detektivmanuskriptet og bevis-kortene opdateres, så intet efterlades, der nævner:",
+      "replacedBy": "{{name}} bliver den nye {{role}}",
+      "replacedByAuto": "vi vælger den nye {{role}}",
+      "totalLabel": "I alt: ${{total}}",
+      "cancel": "Annuller",
+      "cta": "Fjern - ${{total}}"
+    },
+    "processing": {
+      "title": "Opdaterer dit mysterie",
+      "waiting": "Dette kan tage flere minutter - længere, hvis vi omfordeler, hvem gerningsmanden er, da det er en større omskrivning end en simpel fjernelse. Du behøver ikke vente her.",
+      "goNow": "Gå til dit mysterie nu",
+      "emailNotice": "Vi sender dig også en e-mail, så snart det er klar."
+    },
+    "result": {
+      "verified": "Færdig - dit mysterie er blevet opdateret",
+      "partial": "Opdatering afsluttet - se detaljer nedenfor",
+      "rowFailed": "denne kunne ikke gennemføres sikkert og blev efterladt uændret.",
+      "reassignmentNotice": "At omfordele, hvem gerningsmanden er, krævede en omskrivning af afsløringen i detektivmanuskriptet samt en tilståelse - vi anbefaler at læse begge dele igennem én gang inden aftenen.",
+      "missingId": "Vi kunne ikke finde den ombesætningsanmodning.",
+      "backToMystery": "Tilbage til dit mysterie"
+    },
+    "toasts": {
+      "createdNoCheckout": "Ombesætningsanmodning oprettet for {{count}} karakter(er) (staging-tilstand - ingen betaling konfigureret).",
+      "createFailed": "Kunne ikke starte den anmodning. Prøv igen.",
+      "alreadyInProgress": "En af disse karakterer har allerede en ombesætningsanmodning i gang."
     }
   }
 }

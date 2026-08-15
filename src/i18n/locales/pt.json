@@ -763,6 +763,10 @@
         "gameDesignEngagement": {
           "question": "Como o design do seu jogo garante que todos permaneçam engajados?",
           "answer": "Nossos mistérios são construídos em torno de ricas interações entre personagens, histórias compartilhadas e segredos entrelaçados. Cada personagem está profundamente conectado — não apenas à vítima, mas uns aos outros — criando drama natural e garantindo que todos os jogadores permaneçam ativamente envolvidos durante toda a experiência."
+        },
+        "roundCount": {
+          "question": "Posso escolher ou mudar o número de rodadas?",
+          "answer": "A estrutura de rodadas é definida pelo nosso sistema e não pode ser personalizada ou reduzida - se você mencionar um número específico de rodadas ao criar seu mistério, saiba que isso não muda como o jogo é gerado. Isso vale para todo mistério que criamos, independentemente do tema ou do número de jogadores."
         }
       }
     },
@@ -1213,7 +1217,8 @@
         "both": "Scripts completos + resumidos",
         "summary": "Scripts resumidos"
       },
-      "hasAccomplice": "Inclui cúmplice"
+      "hasAccomplice": "Inclui cúmplice",
+      "charactersFinalNote": "Este é o seu elenco final - o número de personagens fica definido na compra. Você pode renomear personagens individualmente depois, mas isso só atualiza a lista de personagens, não o resto do roteiro."
     },
     "fullyEditableLabel": "Totalmente editável:",
     "fullyEditableNote": "Não te preocupes — podes editar todos os guiões dos personagens, o conteúdo do guia do anfitrião e as cartas de provas depois de gerares o teu mistério.",
@@ -1233,7 +1238,8 @@
       "clues": "Evidências",
       "inspector": "Guia do Inspetor",
       "relationships": "Relacionamentos",
-      "inspectorIntrigue": "Guia do Investigador"
+      "inspectorIntrigue": "Guia do Investigador",
+      "extras": "Extras"
     },
     "mobileTabs": {
       "host": "Anfitrião",
@@ -1565,6 +1571,70 @@
         "label": "Verificações finais de qualidade",
         "description": "A executar verificações automáticas antes de mostrar o seu mistério"
       }
+    }
+  },
+  "adaptation": {
+    "card": {
+      "sectionIntro": "Mais formas de moldar seu mistério - isso cresce com o tempo",
+      "title": "Nova escalação",
+      "teaser": "Um convidado não pode vir? Remova ou substitua ele na história - $5 fixo, ajuste quantos personagens precisar de uma vez.",
+      "cta": "Saiba mais",
+      "inProgressTitle": "Troca de elenco em andamento",
+      "inProgressSummary": "{{done}} de {{total}} atualizados",
+      "inProgressNotice": "Vamos te avisar por e-mail quando terminar - fique à vontade para continuar usando o resto do seu mistério enquanto isso.",
+      "comingSoonTitle": "Dicas e vídeos para anfitriões",
+      "comingSoonBadge": "Em breve",
+      "comingSoonBody": "Vídeos curtos e dicas rápidas para conduzir seu mistério na noite do evento."
+    },
+    "explainer": {
+      "title": "Nova escalação",
+      "subtitle": "Remova um personagem do seu mistério com um clique.",
+      "characterStyleHeadline": "Você provavelmente não precisa pagar por isso.",
+      "characterStyleBody": "Este é um mistério baseado em personagens - não existe um culpado predeterminado, então a ausência de um personagem é fácil de contornar você mesmo, de graça. Basta dizer aos seus convidados algo como: \"X também é suspeito, mas está sendo interrogado separadamente - continuem sem ele\", ou \"Já descartamos X\". Qualquer boato solto sobre essa pessoa deixa de ser um problema.",
+      "characterStyleContinue": "Mesmo assim quer que ele seja removido completamente de todos os documentos? Continue abaixo.",
+      "realEditBody": "A história de cada personagem está entrelaçada com a dos outros - álibis, boatos, evidências. Atualizamos cada ficha de personagem, o roteiro do detetive e as cartas de evidência para que nada mencione alguém que não está mais lá.",
+      "goodToKnowLabel": "Bom saber",
+      "irreversibleBody": "Depois de enviado, não há como voltar atrás.",
+      "timingBody": "Melhor usar o mais tarde possível - idealmente no próprio dia da festa. Se outro convidado desistir depois que você já enviou, será preciso fazer de novo (e pagar de novo).",
+      "noThanks": "Não, obrigado",
+      "continue": "Continuar"
+    },
+    "picker": {
+      "title": "Quem não pode vir?",
+      "subtitle": "Selecione cada personagem cujo convidado não pode comparecer. Você pode remover mais de um de uma vez.",
+      "reassignNote": "Remover {{role}} significa que outra pessoa precisa assumir esse papel. Escolha quem, ou deixe que a gente escolha.",
+      "replacementAuto": "Deixe que a gente escolha",
+      "maxReached": "Um mistério precisa de pelo menos {{min}} personagens para funcionar - esse é o máximo que você pode remover de uma vez.",
+      "selectedSummary": "{{count}} selecionados - ${{total}}"
+    },
+    "confirm": {
+      "back": "Voltar",
+      "title": "Isso não pode ser desfeito.",
+      "sharedConsequence": "Cada ficha de personagem, o roteiro do detetive e as cartas de evidência são atualizados para que nada mencione:",
+      "replacedBy": "{{name}} se torna o novo {{role}}",
+      "replacedByAuto": "vamos escolher o novo {{role}}",
+      "totalLabel": "Total: ${{total}}",
+      "cancel": "Cancelar",
+      "cta": "Remover - ${{total}}"
+    },
+    "processing": {
+      "title": "Atualizando seu mistério",
+      "waiting": "Isso pode levar vários minutos - mais tempo se estivermos reatribuindo quem é o culpado, já que essa reescrita é maior do que uma simples remoção. Não precisa esperar aqui.",
+      "goNow": "Ir para o seu mistério agora",
+      "emailNotice": "Também vamos te avisar por e-mail assim que estiver pronto."
+    },
+    "result": {
+      "verified": "Pronto - seu mistério foi atualizado",
+      "partial": "Atualização concluída - veja os detalhes abaixo",
+      "rowFailed": "este não pôde ser concluído com segurança e foi deixado sem alterações.",
+      "reassignmentNotice": "Reatribuir quem é o culpado exigiu reescrever a revelação do roteiro do detetive e uma confissão - recomendamos ler os dois uma vez antes de conduzir a noite.",
+      "missingId": "Não conseguimos encontrar essa solicitação de troca de elenco.",
+      "backToMystery": "Voltar para o seu mistério"
+    },
+    "toasts": {
+      "createdNoCheckout": "Solicitação de troca de elenco criada para {{count}} personagem(ns) (modo de teste - sem pagamento configurado).",
+      "createFailed": "Não foi possível iniciar essa solicitação. Tente novamente.",
+      "alreadyInProgress": "Um desses personagens já tem uma solicitação de troca de elenco em andamento."
     }
   }
 }

@@ -764,6 +764,10 @@
         "canIEdit": {
           "question": "Puis-je modifier mon mystère après sa génération ?",
           "answer": "Oui ! Chaque personnage et chaque section est entièrement modifiable après la génération — retouchez les scripts des personnages, ajustez le guide de l'hôte, modifiez les cartes d'indices et mettez à jour le script du détective, le tout directement dans l'application, et enregistrez-le au format PDF. Une chose à savoir : la modification change le contenu, pas la taille de la distribution. Le nombre de personnages suspects est fixé lors de la génération de votre mystère, donc ajouter ou supprimer des suspects implique de régénérer le mystère. Si vous avez simplement plus d'invités que de personnages, ils peuvent participer comme co-enquêteurs dans l'équipe du détective — aucune modification nécessaire."
+        },
+        "roundCount": {
+          "question": "Est-ce que je peux choisir ou changer le nombre de manches ?",
+          "answer": "La structure des manches est fixée par notre système et ne peut pas être personnalisée ni raccourcie - si vous mentionnez un nombre de manches précis lors de la création de votre mystère, sachez que cela ne changera pas la façon dont le jeu est généré. C'est la même chose pour chaque mystère que nous créons, quel que soit le thème ou le nombre de joueurs."
         }
       }
     },
@@ -1203,7 +1207,8 @@
         "both": "Scripts complets + résumés",
         "summary": "Scripts résumés"
       },
-      "hasAccomplice": "Avec complice"
+      "hasAccomplice": "Avec complice",
+      "charactersFinalNote": "Voici votre distribution finale - le nombre de personnages est fixé au moment de l'achat. Vous pouvez renommer des personnages individuellement par la suite, mais un changement de nom ne met à jour que la liste des personnages, pas le reste du scénario."
     },
     "fullyEditableLabel": "Entièrement modifiable :",
     "fullyEditableNote": "Pas d'inquiétude — vous pourrez modifier tous les scripts de personnages, le contenu du guide d'animation et les cartes d'indices après la génération de votre mystère.",
@@ -1223,7 +1228,8 @@
       "clues": "Indices",
       "inspector": "Guide de l'inspecteur",
       "relationships": "Relations",
-      "inspectorIntrigue": "Guide de l'enquêteur"
+      "inspectorIntrigue": "Guide de l'enquêteur",
+      "extras": "Extras"
     },
     "mobileTabs": {
       "host": "Hôte",
@@ -1566,6 +1572,70 @@
         "label": "Contrôles qualité finaux",
         "description": "Vérifications automatiques en cours avant de révéler votre mystère"
       }
+    }
+  },
+  "adaptation": {
+    "card": {
+      "sectionIntro": "D'autres façons de façonner votre mystère - cette section s'enrichit avec le temps",
+      "title": "Nouveau casting",
+      "teaser": "Un invité ne peut pas venir ? Retirez-le ou remplacez-le dans l'histoire - 5 $ forfaitaires, corrigez autant de personnages que nécessaire en une seule fois.",
+      "cta": "En savoir plus",
+      "inProgressTitle": "Changement de casting en cours",
+      "inProgressSummary": "{{done}} sur {{total}} mis à jour",
+      "inProgressNotice": "Nous vous enverrons un e-mail une fois terminé - n'hésitez pas à continuer à utiliser le reste de votre mystère en attendant.",
+      "comingSoonTitle": "Conseils et vidéos pour l'animation",
+      "comingSoonBadge": "Bientôt disponible",
+      "comingSoonBody": "De courtes vidéos et des astuces rapides pour animer votre mystère le soir venu."
+    },
+    "explainer": {
+      "title": "Nouveau casting",
+      "subtitle": "Retirez un personnage de votre mystère en un clic.",
+      "characterStyleHeadline": "Vous n'avez probablement pas besoin de payer pour ça.",
+      "characterStyleBody": "Ce mystère est basé sur les personnages - il n'y a pas de coupable prédéterminé, donc l'absence d'un personnage est facile à camoufler vous-même, gratuitement. Dites simplement à vos invités quelque chose comme : \"X est aussi suspect, mais on l'interroge séparément - continuez sans lui\", ou \"On a déjà écarté X\". Les rumeurs restantes à son sujet ne posent alors plus aucun problème.",
+      "characterStyleContinue": "Vous voulez quand même qu'il soit proprement retiré de tous les documents ? Continuez ci-dessous.",
+      "realEditBody": "L'histoire de chaque personnage est liée à celle de tous les autres - alibis, rumeurs, indices. Nous mettons à jour chaque fiche de personnage, le scénario du détective et les cartes d'indices pour qu'il ne reste aucune mention de quelqu'un qui n'est plus là.",
+      "goodToKnowLabel": "Bon à savoir",
+      "irreversibleBody": "Une fois envoyé, il n'y a pas de retour en arrière possible.",
+      "timingBody": "À utiliser le plus tard possible - idéalement le jour même de la soirée. Si un autre invité se désiste après votre envoi, vous devrez recommencer (et payer à nouveau).",
+      "noThanks": "Non merci",
+      "continue": "Continuer"
+    },
+    "picker": {
+      "title": "Qui ne peut pas venir ?",
+      "subtitle": "Sélectionnez chaque personnage dont l'invité ne peut pas assister. Vous pouvez en retirer plusieurs à la fois.",
+      "reassignNote": "Retirer {{role}} signifie que quelqu'un d'autre doit reprendre ce rôle. Choisissez qui, ou laissez-nous choisir.",
+      "replacementAuto": "Laissez-nous choisir",
+      "maxReached": "Un mystère a besoin d'au moins {{min}} personnages pour fonctionner - c'est le maximum que vous pouvez retirer en une fois.",
+      "selectedSummary": "{{count}} sélectionnés - {{total}} $"
+    },
+    "confirm": {
+      "back": "Retour",
+      "title": "Cette action est irréversible.",
+      "sharedConsequence": "Chaque fiche de personnage, le scénario du détective et les cartes d'indices sont mis à jour pour qu'il ne reste aucune mention de :",
+      "replacedBy": "{{name}} devient le nouveau {{role}}",
+      "replacedByAuto": "nous choisirons le nouveau {{role}}",
+      "totalLabel": "Total : {{total}} $",
+      "cancel": "Annuler",
+      "cta": "Retirer - {{total}} $"
+    },
+    "processing": {
+      "title": "Mise à jour de votre mystère",
+      "waiting": "Cela peut prendre plusieurs minutes - davantage si nous devons réattribuer le rôle du coupable, car c'est une réécriture plus importante qu'un simple retrait. Pas besoin d'attendre ici.",
+      "goNow": "Aller à votre mystère maintenant",
+      "emailNotice": "Nous vous enverrons aussi un e-mail dès que ce sera prêt."
+    },
+    "result": {
+      "verified": "Terminé - votre mystère a été mis à jour",
+      "partial": "Mise à jour terminée - voir les détails ci-dessous",
+      "rowFailed": "celui-ci n'a pas pu être finalisé en toute sécurité et a été laissé inchangé.",
+      "reassignmentNotice": "Réattribuer le rôle du coupable a impliqué de réécrire la révélation du scénario du détective ainsi qu'une confession - nous vous recommandons de lire les deux une fois avant d'animer la soirée.",
+      "missingId": "Nous n'avons pas trouvé cette demande de changement.",
+      "backToMystery": "Retour à votre mystère"
+    },
+    "toasts": {
+      "createdNoCheckout": "Demande de changement de casting créée pour {{count}} personnage(s) (mode test - aucun paiement configuré).",
+      "createFailed": "Impossible de démarrer cette demande. Veuillez réessayer.",
+      "alreadyInProgress": "L'un de ces personnages a déjà une demande de changement de casting en cours."
     }
   }
 }

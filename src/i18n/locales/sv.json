@@ -763,6 +763,10 @@
         "canIEdit": {
           "question": "Kan jag redigera mitt mysterium efter att det har genererats?",
           "answer": "Ja! Varje karaktär och avsnitt går att redigera fullt ut efter genereringen — justera karaktärernas manus, anpassa värdguiden, ändra beviskorten och uppdatera detektivmanuset, allt direkt i appen, och spara det som PDF. En sak att känna till: redigering ändrar innehållet, inte rollbesättningens storlek. Antalet misstänkta karaktärer fastställs när ditt mysterium genereras, så att lägga till eller ta bort misstänkta innebär att mysteriet genereras på nytt. Om du helt enkelt har fler gäster än karaktärer kan de delta som medutredare i detektivens team — inga ändringar behövs."
+        },
+        "roundCount": {
+          "question": "Kan jag välja eller ändra antalet omgångar?",
+          "answer": "Omgångsstrukturen är fastställd av vårt system och kan inte anpassas eller förkortas - om du nämner ett specifikt antal omgångar när du skapar ditt mysterium ändrar det inte hur spelet genereras. Så är det för varje mysterium vi skapar, oavsett tema eller antal spelare."
         }
       }
     },
@@ -1168,7 +1172,8 @@
         "both": "Fullständiga + sammanfattade manus",
         "summary": "Sammanfattade manus"
       },
-      "hasAccomplice": "Inkluderar medbrottsling"
+      "hasAccomplice": "Inkluderar medbrottsling",
+      "charactersFinalNote": "Det här är din slutgiltiga rollbesättning - antalet karaktärer låses vid köpet. Du kan byta namn på enskilda karaktärer efteråt, men ett namnbyte uppdaterar bara karaktärslistan, inte resten av manuset."
     },
     "fullyEditableLabel": "Helt redigerbar:",
     "fullyEditableNote": "Oroa dig inte — du kan redigera alla karaktärsmanus, värdguideinnehåll och bevis-kort efter att ditt mysterium har genererats.",
@@ -1243,7 +1248,8 @@
       "clues": "Evidence",
       "inspector": "Detective Guide",
       "relationships": "Relationships",
-      "inspectorIntrigue": "Utredarguide"
+      "inspectorIntrigue": "Utredarguide",
+      "extras": "Extra"
     },
     "mobileTabs": {
       "host": "Host",
@@ -1565,6 +1571,70 @@
         "label": "Sista kvalitetskontrollerna",
         "description": "Automatiska kontroller pågår innan ditt mysterium visas"
       }
+    }
+  },
+  "adaptation": {
+    "card": {
+      "sectionIntro": "Fler sätt att forma ditt mysterium - det här växer med tiden",
+      "title": "Ny rollbesättning",
+      "teaser": "Kan en gäst inte komma? Ta bort eller ersätt personen i berättelsen - fast pris 5 $, fixa så många karaktärer du behöver på en gång.",
+      "cta": "Läs mer",
+      "inProgressTitle": "Omcastning pågår",
+      "inProgressSummary": "{{done}} av {{total}} uppdaterade",
+      "inProgressNotice": "Vi mejlar dig när det är klart - använd gärna resten av ditt mysterium under tiden.",
+      "comingSoonTitle": "Värdtips & videor",
+      "comingSoonBadge": "Kommer snart",
+      "comingSoonBody": "Korta videor och snabba tips för att leda ditt mysterium på själva kvällen."
+    },
+    "explainer": {
+      "title": "Ny rollbesättning",
+      "subtitle": "Ta bort en karaktär från ditt mysterium med ett klick.",
+      "characterStyleHeadline": "Du behöver förmodligen inte betala för det här.",
+      "characterStyleBody": "Det här är ett karaktärsbaserat mysterium - det finns ingen förutbestämd gärningsperson, så en saknad karaktärs frånvaro är lätt att förklara bort själv, gratis. Säg bara något till dina gäster som: \"X är också misstänkt, men förhörs separat - fortsätt utan personen\", eller \"Vi har redan uteslutit X.\" Eventuella kvarvarande rykten om personen blir då irrelevanta.",
+      "characterStyleContinue": "Vill du ändå ha personen helt borttagen från alla dokument? Fortsätt nedan.",
+      "realEditBody": "Varje karaktärs historia är sammanflätad med alla andras - alibin, rykten, bevis. Vi uppdaterar varje karaktärsblad, detektivmanuset och bevis-korten så att inget lämnas kvar som nämner någon som inte längre är med.",
+      "goodToKnowLabel": "Bra att veta",
+      "irreversibleBody": "När det väl är skickat finns det ingen väg tillbaka.",
+      "timingBody": "Använd det helst så sent som möjligt - helst själva festdagen. Hoppar ännu en gäst av efter att du redan skickat in det, måste du göra om det (och betala igen).",
+      "noThanks": "Nej tack",
+      "continue": "Fortsätt"
+    },
+    "picker": {
+      "title": "Vem kan inte komma?",
+      "subtitle": "Välj varje karaktär vars gäst inte kan delta. Du kan ta bort fler än en åt gången.",
+      "reassignNote": "Tar du bort {{role}} måste någon annan ta över den rollen. Välj vem, eller låt oss välja.",
+      "replacementAuto": "Låt oss välja",
+      "maxReached": "Ett mysterium behöver minst {{min}} karaktärer för att fungera - det är max du kan ta bort på en gång.",
+      "selectedSummary": "{{count}} valda - ${{total}}"
+    },
+    "confirm": {
+      "back": "Tillbaka",
+      "title": "Det här går inte att ångra.",
+      "sharedConsequence": "Varje karaktärsblad, detektivmanuset och bevis-korten uppdateras så att inget lämnas kvar som nämner:",
+      "replacedBy": "{{name}} blir den nya {{role}}",
+      "replacedByAuto": "vi väljer den nya {{role}}",
+      "totalLabel": "Totalt: ${{total}}",
+      "cancel": "Avbryt",
+      "cta": "Ta bort - ${{total}}"
+    },
+    "processing": {
+      "title": "Uppdaterar ditt mysterium",
+      "waiting": "Det här kan ta flera minuter - längre om vi omfördelar vem gärningspersonen är, eftersom det är en större omskrivning än en enkel borttagning. Du behöver inte vänta här.",
+      "goNow": "Gå till ditt mysterium nu",
+      "emailNotice": "Vi mejlar dig också så fort det är klart."
+    },
+    "result": {
+      "verified": "Klart - ditt mysterium har uppdaterats",
+      "partial": "Uppdatering klar - se detaljer nedan",
+      "rowFailed": "den här kunde inte slutföras säkert och lämnades oförändrad.",
+      "reassignmentNotice": "Att omfördela vem gärningspersonen är innebar att skriva om avslöjandet i detektivmanuset och en bekännelse - vi rekommenderar att läsa igenom båda en gång innan du är värd för kvällen.",
+      "missingId": "Vi kunde inte hitta den där omcastningsförfrågan.",
+      "backToMystery": "Tillbaka till ditt mysterium"
+    },
+    "toasts": {
+      "createdNoCheckout": "Omcastningsförfrågan skapad för {{count}} karaktär(er) (staging-läge - ingen betalning konfigurerad).",
+      "createFailed": "Kunde inte starta den förfrågan. Försök igen.",
+      "alreadyInProgress": "En av dessa karaktärer har redan en omcastningsförfrågan pågående."
     }
   }
 }

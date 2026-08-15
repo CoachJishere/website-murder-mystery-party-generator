@@ -763,6 +763,10 @@
         "canIEdit": {
           "question": "Kan ik mijn mysterie bewerken nadat het is gegenereerd?",
           "answer": "Ja! Elk personage en elk onderdeel is na het genereren volledig te bewerken — pas personagescripts aan, werk de hostgids bij, wijzig bewijskaarten en pas het detectivescript aan, allemaal direct in de app, en sla het op als PDF. Eén ding om te weten: bewerken verandert de inhoud, niet de omvang van de cast. Het aantal verdachte personages wordt bepaald wanneer je mysterie wordt gegenereerd, dus het toevoegen of verwijderen van verdachten betekent het mysterie opnieuw genereren. Als je simpelweg meer gasten dan personages hebt, kunnen ze meedoen als mede-onderzoekers in het team van de detective — geen wijzigingen nodig."
+        },
+        "roundCount": {
+          "question": "Kan ik het aantal rondes kiezen of aanpassen?",
+          "answer": "De rondestructuur ligt vast in ons systeem en kan niet aangepast of ingekort worden - als je tijdens het maken van je mysterie een specifiek aantal rondes noemt, verandert dat niets aan hoe het spel wordt gegenereerd. Dit geldt voor elk mysterie dat we maken, ongeacht thema of aantal spelers."
         }
       }
     },
@@ -1180,7 +1184,8 @@
         "both": "Volledige + samengevatte scripts",
         "summary": "Samengevatte scripts"
       },
-      "hasAccomplice": "Inclusief medeplichtige"
+      "hasAccomplice": "Inclusief medeplichtige",
+      "charactersFinalNote": "Dit is je definitieve cast - het aantal personages ligt vast vanaf het moment van aankoop. Je kunt losse personages achteraf hernoemen, maar een naamswijziging werkt alleen door in de personagelijst, niet in de rest van het script."
     },
     "fullyEditableLabel": "Volledig bewerkbaar:",
     "fullyEditableNote": "Geen zorgen — je kunt alle personageteksten, gastheergidsinhoud en bewijskaarten bewerken nadat je mysterie is gegenereerd.",
@@ -1200,7 +1205,8 @@
       "clues": "Bewijs",
       "inspector": "Detective Gids",
       "relationships": "Relaties",
-      "inspectorIntrigue": "Onderzoekersgids"
+      "inspectorIntrigue": "Onderzoekersgids",
+      "extras": "Extra's"
     },
     "mobileTabs": {
       "host": "Host",
@@ -1565,6 +1571,70 @@
         "label": "Laatste kwaliteitscontroles",
         "description": "Automatische controles worden uitgevoerd voordat je mysterie wordt getoond"
       }
+    }
+  },
+  "adaptation": {
+    "card": {
+      "sectionIntro": "Meer manieren om je mysterie vorm te geven - dit groeit na verloop van tijd",
+      "title": "Herbezetting",
+      "teaser": "Een gast kan niet komen? Verwijder of vervang diegene in het verhaal - vast tarief van $5, pas in één keer zoveel personages aan als nodig.",
+      "cta": "Meer informatie",
+      "inProgressTitle": "Herbezetting bezig",
+      "inProgressSummary": "{{done}} van {{total}} bijgewerkt",
+      "inProgressNotice": "We e-mailen je zodra het klaar is - gebruik ondertussen gerust de rest van je mysterie.",
+      "comingSoonTitle": "Hosttips & video's",
+      "comingSoonBadge": "Binnenkort",
+      "comingSoonBody": "Korte video's en snelle tips om je mysterie op de avond zelf te leiden."
+    },
+    "explainer": {
+      "title": "Herbezetting",
+      "subtitle": "Verwijder een personage uit je mysterie met één klik.",
+      "characterStyleHeadline": "Hier hoef je waarschijnlijk niet voor te betalen.",
+      "characterStyleBody": "Dit is een mysterie op basis van personages - er is geen vooraf vastgestelde dader, dus het ontbreken van een personage is gemakkelijk zelf en gratis te verbloemen. Zeg gewoon tegen je gasten iets als: \"X is ook verdacht, maar wordt apart ondervraagd - ga verder zonder hem\", of \"We hebben X al uitgesloten.\" Eventuele overgebleven geruchten over die persoon worden dan geen probleem meer.",
+      "characterStyleContinue": "Toch liever dat het personage netjes uit alle documenten wordt verwijderd? Ga hieronder verder.",
+      "realEditBody": "Het verhaal van elk personage is verweven met dat van de anderen - alibi's, geruchten, bewijs. We werken elk personageblad, het detectivescript en de bewijskaarten bij, zodat er niets achterblijft dat iemand noemt die er niet meer bij is.",
+      "goodToKnowLabel": "Goed om te weten",
+      "irreversibleBody": "Eenmaal verzonden is er geen weg terug.",
+      "timingBody": "Gebruik dit het beste zo laat mogelijk - idealiter pas op de dag van het feest zelf. Als er daarna nog een gast afzegt, moet je het opnieuw doen (en opnieuw betalen).",
+      "noThanks": "Nee, bedankt",
+      "continue": "Doorgaan"
+    },
+    "picker": {
+      "title": "Wie kan er niet bij zijn?",
+      "subtitle": "Selecteer elk personage waarvan de gast niet aanwezig kan zijn. Je kunt er meerdere tegelijk verwijderen.",
+      "reassignNote": "Als je {{role}} verwijdert, moet iemand anders die rol overnemen. Kies wie, of laat ons kiezen.",
+      "replacementAuto": "Laat ons kiezen",
+      "maxReached": "Een mysterie heeft minstens {{min}} personages nodig om te werken - dat is het maximum dat je in één keer kunt verwijderen.",
+      "selectedSummary": "{{count}} geselecteerd - ${{total}}"
+    },
+    "confirm": {
+      "back": "Terug",
+      "title": "Dit kan niet ongedaan worden gemaakt.",
+      "sharedConsequence": "Elk personageblad, het detectivescript en de bewijskaarten worden bijgewerkt zodat er niets achterblijft dat het volgende noemt:",
+      "replacedBy": "{{name}} wordt de nieuwe {{role}}",
+      "replacedByAuto": "wij kiezen de nieuwe {{role}}",
+      "totalLabel": "Totaal: ${{total}}",
+      "cancel": "Annuleren",
+      "cta": "Verwijderen - ${{total}}"
+    },
+    "processing": {
+      "title": "Je mysterie wordt bijgewerkt",
+      "waiting": "Dit kan enkele minuten duren - langer als we opnieuw bepalen wie de dader is, want dat is een grotere herschrijving dan een simpele verwijdering. Je hoeft hier niet te wachten.",
+      "goNow": "Ga nu naar je mysterie",
+      "emailNotice": "We e-mailen je ook zodra het klaar is."
+    },
+    "result": {
+      "verified": "Klaar - je mysterie is bijgewerkt",
+      "partial": "Update voltooid - zie details hieronder",
+      "rowFailed": "dit personage kon niet veilig worden afgerond en is ongewijzigd gelaten.",
+      "reassignmentNotice": "Opnieuw bepalen wie de dader is, betekende dat de onthulling in het detectivescript en een bekentenis herschreven moesten worden - we raden aan beide een keer door te lezen voordat je gaat hosten.",
+      "missingId": "We konden dat herbezettingsverzoek niet vinden.",
+      "backToMystery": "Terug naar je mysterie"
+    },
+    "toasts": {
+      "createdNoCheckout": "Herbezettingsverzoek aangemaakt voor {{count}} personage(s) (staging-modus - geen betaling geconfigureerd).",
+      "createFailed": "Kon dit verzoek niet starten. Probeer het opnieuw.",
+      "alreadyInProgress": "Voor een van deze personages loopt al een herbezettingsverzoek."
     }
   }
 }

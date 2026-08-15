@@ -763,6 +763,10 @@
         "canIEdit": {
           "question": "Posso modificare il mio mistero dopo che è stato generato?",
           "answer": "Sì! Ogni personaggio e sezione è completamente modificabile dopo la generazione — ritocca i copioni dei personaggi, adatta la guida per l'organizzatore, modifica le carte degli indizi e aggiorna il copione dell'investigatore, tutto direttamente nell'app, e salvalo come PDF. Una cosa da sapere: la modifica cambia il contenuto, non la dimensione del cast. Il numero di personaggi sospettati viene fissato quando il tuo mistero viene generato, quindi aggiungere o rimuovere sospettati significa rigenerare il mistero. Se semplicemente hai più ospiti che personaggi, possono partecipare come co-investigatori nella squadra dell'investigatore — nessuna modifica necessaria."
+        },
+        "roundCount": {
+          "question": "Posso scegliere o cambiare il numero di round?",
+          "answer": "La struttura dei round è fissata dal nostro sistema e non può essere personalizzata o accorciata - se indichi un numero di round specifico durante la creazione del tuo mistero, sappi che non cambierà il modo in cui il gioco viene generato. Questo vale per ogni mistero che creiamo, indipendentemente dal tema o dal numero di giocatori."
         }
       }
     },
@@ -1180,7 +1184,8 @@
         "both": "Script completi + riassunti",
         "summary": "Script riassunti"
       },
-      "hasAccomplice": "Include complice"
+      "hasAccomplice": "Include complice",
+      "charactersFinalNote": "Questo è il tuo cast definitivo - il numero di personaggi viene fissato al momento dell'acquisto. Puoi rinominare i singoli personaggi in seguito, ma rinominarli aggiorna solo l'elenco dei personaggi, non il resto dello script."
     },
     "fullyEditableLabel": "Completamente modificabile:",
     "fullyEditableNote": "Non preoccuparti — potrai modificare tutti i copioni dei personaggi, i contenuti della guida del conduttore e le carte degli indizi dopo aver generato il tuo mistero.",
@@ -1200,7 +1205,8 @@
       "clues": "Indizi",
       "inspector": "Guida dell'Investigatore",
       "relationships": "Relazioni",
-      "inspectorIntrigue": "Guida dell'Investigatore"
+      "inspectorIntrigue": "Guida dell'Investigatore",
+      "extras": "Extra"
     },
     "mobileTabs": {
       "host": "Organizzatore",
@@ -1565,6 +1571,70 @@
         "label": "Controlli di qualità finali",
         "description": "Verifiche automatiche in corso prima di mostrare il tuo mistero"
       }
+    }
+  },
+  "adaptation": {
+    "card": {
+      "sectionIntro": "Altri modi per plasmare il tuo mistero - questa sezione cresce nel tempo",
+      "title": "Nuovo cast",
+      "teaser": "Un ospite non può venire? Rimuovilo o sostituiscilo nella storia - 5 $ fissi, sistema tutti i personaggi che ti servono in un'unica volta.",
+      "cta": "Scopri di più",
+      "inProgressTitle": "Cambio cast in corso",
+      "inProgressSummary": "{{done}} di {{total}} aggiornati",
+      "inProgressNotice": "Ti avviseremo via email quando sarà pronto - nel frattempo puoi continuare a usare il resto del tuo mistero.",
+      "comingSoonTitle": "Consigli e video per gli host",
+      "comingSoonBadge": "In arrivo",
+      "comingSoonBody": "Brevi video e consigli rapidi per gestire il tuo mistero la sera dell'evento."
+    },
+    "explainer": {
+      "title": "Nuovo cast",
+      "subtitle": "Rimuovi un personaggio dal tuo mistero con un clic.",
+      "characterStyleHeadline": "Probabilmente non hai bisogno di pagare per questo.",
+      "characterStyleBody": "Questo è un mistero basato sui personaggi - non c'è un colpevole predeterminato, quindi l'assenza di un personaggio è facile da coprire da solo, gratis. Basta dire ai tuoi ospiti qualcosa come: \"Anche X è sospettato, ma lo stiamo interrogando separatamente - continuate senza di lui\", oppure \"Abbiamo già escluso X\". Eventuali voci rimaste su quella persona diventano irrilevanti.",
+      "characterStyleContinue": "Vuoi comunque che venga rimosso completamente da tutti i documenti? Continua qui sotto.",
+      "realEditBody": "La storia di ogni personaggio è intrecciata con quella degli altri - alibi, voci, prove. Aggiorniamo ogni scheda personaggio, lo script del detective e le carte prova, così non resta nulla che menzioni qualcuno che non c'è più.",
+      "goodToKnowLabel": "Da sapere",
+      "irreversibleBody": "Una volta inviato, non si può tornare indietro.",
+      "timingBody": "Meglio usarlo il più tardi possibile - idealmente il giorno stesso della festa. Se un altro ospite dà forfait dopo che hai già inviato la richiesta, dovrai rifarlo (e ripagare).",
+      "noThanks": "No grazie",
+      "continue": "Continua"
+    },
+    "picker": {
+      "title": "Chi non può venire?",
+      "subtitle": "Seleziona ogni personaggio il cui ospite non può partecipare. Puoi rimuoverne più di uno alla volta.",
+      "reassignNote": "Rimuovere {{role}} significa che qualcun altro dovrà assumere quel ruolo. Scegli tu chi, oppure lascia scegliere a noi.",
+      "replacementAuto": "Lascia scegliere a noi",
+      "maxReached": "Un mistero ha bisogno di almeno {{min}} personaggi per funzionare - è il massimo che puoi rimuovere in una volta.",
+      "selectedSummary": "{{count}} selezionati - {{total}} $"
+    },
+    "confirm": {
+      "back": "Indietro",
+      "title": "Questa azione non può essere annullata.",
+      "sharedConsequence": "Ogni scheda personaggio, lo script del detective e le carte prova vengono aggiornati così che non resti nulla che menzioni:",
+      "replacedBy": "{{name}} diventa il nuovo {{role}}",
+      "replacedByAuto": "sceglieremo noi il nuovo {{role}}",
+      "totalLabel": "Totale: {{total}} $",
+      "cancel": "Annulla",
+      "cta": "Rimuovi - {{total}} $"
+    },
+    "processing": {
+      "title": "Aggiornamento del tuo mistero in corso",
+      "waiting": "Può richiedere diversi minuti - di più se stiamo riassegnando chi è il colpevole, perché è una riscrittura più ampia di una semplice rimozione. Non serve aspettare qui.",
+      "goNow": "Vai subito al tuo mistero",
+      "emailNotice": "Ti avviseremo anche via email non appena sarà pronto."
+    },
+    "result": {
+      "verified": "Fatto - il tuo mistero è stato aggiornato",
+      "partial": "Aggiornamento completato - vedi i dettagli qui sotto",
+      "rowFailed": "questo non è stato possibile completarlo in sicurezza ed è stato lasciato invariato.",
+      "reassignmentNotice": "Riassegnare chi è il colpevole ha richiesto di riscrivere la rivelazione dello script del detective e una confessione - ti consigliamo di leggere entrambi una volta prima di condurre la serata.",
+      "missingId": "Non siamo riusciti a trovare questa richiesta di cambio cast.",
+      "backToMystery": "Torna al tuo mistero"
+    },
+    "toasts": {
+      "createdNoCheckout": "Richiesta di cambio cast creata per {{count}} personaggio/i (modalità staging - nessun pagamento configurato).",
+      "createFailed": "Impossibile avviare questa richiesta. Riprova.",
+      "alreadyInProgress": "Uno di questi personaggi ha già una richiesta di cambio cast in corso."
     }
   }
 }

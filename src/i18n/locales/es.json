@@ -763,6 +763,10 @@
         "canIEdit": {
           "question": "¿Puedo editar mi misterio después de que se haya generado?",
           "answer": "¡Sí! Cada personaje y sección es totalmente editable después de la generación — retoca los guiones de los personajes, ajusta la guía del anfitrión, modifica las tarjetas de evidencia y actualiza el guion del detective, todo directamente en la aplicación, y guárdalo como PDF. Una cosa que debes saber: editar cambia el contenido, no el tamaño del reparto. El número de personajes sospechosos se fija cuando se genera tu misterio, así que añadir o eliminar sospechosos significa volver a generar el misterio. Si simplemente tienes más invitados que personajes, pueden unirse como coinvestigadores en el equipo del detective — sin necesidad de cambios."
+        },
+        "roundCount": {
+          "question": "¿Puedo elegir o cambiar el número de rondas?",
+          "answer": "La estructura de rondas está fijada por nuestro sistema y no se puede personalizar ni acortar - si mencionas un número de rondas concreto al crear tu misterio, ten en cuenta que no cambiará cómo se genera el juego. Esto es igual para todos los misterios que creamos, sin importar el tema o el número de jugadores."
         }
       }
     },
@@ -1202,7 +1206,8 @@
         "both": "Guiones completos + resumidos",
         "summary": "Guiones resumidos"
       },
-      "hasAccomplice": "Incluye cómplice"
+      "hasAccomplice": "Incluye cómplice",
+      "charactersFinalNote": "Este es tu reparto final - el número de personajes queda fijado en el momento de la compra. Puedes renombrar personajes individuales después, pero un cambio de nombre solo actualiza la lista de personajes, no el resto del guion."
     },
     "fullyEditableLabel": "Totalmente editable:",
     "fullyEditableNote": "No te preocupes — puedes editar todos los guiones de los personajes, el contenido de la guía del anfitrión y las cartas de pruebas después de generar tu misterio.",
@@ -1222,7 +1227,8 @@
       "clues": "Evidencia",
       "inspector": "Guía del Detective",
       "relationships": "Relaciones",
-      "inspectorIntrigue": "Guía del Investigador"
+      "inspectorIntrigue": "Guía del Investigador",
+      "extras": "Extras"
     },
     "mobileTabs": {
       "host": "Anfitrión",
@@ -1565,6 +1571,70 @@
         "label": "Comprobaciones finales de calidad",
         "description": "Ejecutando comprobaciones automáticas antes de mostrar tu misterio"
       }
+    }
+  },
+  "adaptation": {
+    "card": {
+      "sectionIntro": "Más formas de dar forma a tu misterio - esto crece con el tiempo",
+      "title": "Nuevo reparto",
+      "teaser": "¿Un invitado no puede venir? Elimínalo o reemplázalo en la historia - 5 $ fijos, arregla tantos personajes como necesites de una vez.",
+      "cta": "Más información",
+      "inProgressTitle": "Cambio de reparto en curso",
+      "inProgressSummary": "{{done}} de {{total}} actualizados",
+      "inProgressNotice": "Te avisaremos por correo cuando esté listo - mientras tanto, puedes seguir usando el resto de tu misterio.",
+      "comingSoonTitle": "Consejos y vídeos para el anfitrión",
+      "comingSoonBadge": "Próximamente",
+      "comingSoonBody": "Vídeos cortos y consejos rápidos para dirigir tu misterio la noche del evento."
+    },
+    "explainer": {
+      "title": "Nuevo reparto",
+      "subtitle": "Elimina un personaje de tu misterio con solo pulsar un botón.",
+      "characterStyleHeadline": "Probablemente no necesites pagar por esto.",
+      "characterStyleBody": "Este es un misterio basado en personajes - no hay un culpable predeterminado, así que la ausencia de un personaje es fácil de disimular tú mismo, sin coste. Basta con decirles a tus invitados algo como: \"X también es sospechoso, pero lo estamos interrogando aparte - continuad sin él\", o \"Ya hemos descartado a X\". Cualquier rumor suelto sobre esa persona deja de ser un problema.",
+      "characterStyleContinue": "¿Aun así quieres que se elimine por completo de todos los documentos? Continúa abajo.",
+      "realEditBody": "La historia de cada personaje está entrelazada con la de los demás - coartadas, rumores, pruebas. Actualizamos cada ficha de personaje, el guion del detective y las tarjetas de pruebas para que no quede nada que mencione a alguien que ya no está.",
+      "goodToKnowLabel": "Bueno saberlo",
+      "irreversibleBody": "Una vez enviado, no hay marcha atrás.",
+      "timingBody": "Mejor usarlo lo más tarde posible - idealmente el mismo día de la fiesta. Si otro invitado cancela después de que ya lo hayas enviado, tendrás que hacerlo de nuevo (y pagar de nuevo).",
+      "noThanks": "No, gracias",
+      "continue": "Continuar"
+    },
+    "picker": {
+      "title": "¿Quién no puede venir?",
+      "subtitle": "Selecciona cada personaje cuyo invitado no pueda asistir. Puedes eliminar más de uno a la vez.",
+      "reassignNote": "Eliminar a {{role}} significa que otra persona debe asumir ese papel. Elige quién, o deja que lo elijamos nosotros.",
+      "replacementAuto": "Que lo elijamos nosotros",
+      "maxReached": "Un misterio necesita al menos {{min}} personajes para funcionar - ese es el máximo que puedes eliminar de una vez.",
+      "selectedSummary": "{{count}} seleccionados - ${{total}}"
+    },
+    "confirm": {
+      "back": "Atrás",
+      "title": "Esto no se puede deshacer.",
+      "sharedConsequence": "Cada ficha de personaje, el guion del detective y las tarjetas de pruebas se actualizan para que no quede nada que mencione a:",
+      "replacedBy": "{{name}} pasa a ser el nuevo {{role}}",
+      "replacedByAuto": "elegiremos nosotros el nuevo {{role}}",
+      "totalLabel": "Total: ${{total}}",
+      "cancel": "Cancelar",
+      "cta": "Eliminar - ${{total}}"
+    },
+    "processing": {
+      "title": "Actualizando tu misterio",
+      "waiting": "Esto puede tardar varios minutos - más si estamos reasignando quién es el culpable, ya que supone una reescritura mayor que una simple eliminación. No hace falta que esperes aquí.",
+      "goNow": "Ir a tu misterio ahora",
+      "emailNotice": "También te avisaremos por correo en cuanto esté listo."
+    },
+    "result": {
+      "verified": "Listo - tu misterio ha sido actualizado",
+      "partial": "Actualización terminada - ver detalles abajo",
+      "rowFailed": "este no se pudo completar de forma segura y se dejó sin cambios.",
+      "reassignmentNotice": "Reasignar quién es el culpable implicó reescribir la revelación del guion del detective y una confesión - te recomendamos leer ambos una vez antes de dirigir la partida.",
+      "missingId": "No pudimos encontrar esa solicitud de cambio de reparto.",
+      "backToMystery": "Volver a tu misterio"
+    },
+    "toasts": {
+      "createdNoCheckout": "Solicitud de cambio de reparto creada para {{count}} personaje(s) (modo de pruebas - sin pago configurado).",
+      "createFailed": "No se pudo iniciar esa solicitud. Inténtalo de nuevo.",
+      "alreadyInProgress": "Uno de estos personajes ya tiene una solicitud de cambio de reparto en curso."
     }
   }
 }

@@ -763,6 +763,10 @@
         "canIEdit": {
           "question": "Kann ich mein Mysterium nach der Generierung bearbeiten?",
           "answer": "Ja! Jeder Charakter und jeder Abschnitt ist nach der Generierung vollständig bearbeitbar — passen Sie Charakter-Skripte an, überarbeiten Sie die Gastgeberanleitung, ändern Sie Beweiskarten und aktualisieren Sie das Detektiv-Skript, alles direkt in der App, und speichern Sie es als PDF. Eines sollten Sie wissen: Beim Bearbeiten ändert sich der Inhalt, nicht die Größe der Besetzung. Die Anzahl der Verdächtigen-Charaktere wird bei der Generierung Ihres Mysteriums festgelegt, sodass das Hinzufügen oder Entfernen von Verdächtigen eine erneute Generierung des Mysteriums bedeutet. Wenn Sie einfach mehr Gäste als Charaktere haben, können sie als Mit-Ermittler im Team des Detektivs mitmachen — keine Änderungen nötig."
+        },
+        "roundCount": {
+          "question": "Kann ich die Anzahl der Runden wählen oder ändern?",
+          "answer": "Die Rundenstruktur ist durch unser System festgelegt und kann nicht angepasst oder verkürzt werden - falls du bei der Erstellung deines Mysteriums eine bestimmte Rundenzahl erwähnst, ändert das nichts daran, wie das Spiel generiert wird. Das gilt für jedes Mysterium, das wir erstellen, unabhängig von Thema oder Spieleranzahl."
         }
       }
     },
@@ -1180,7 +1184,8 @@
         "both": "Vollständige + Zusammenfassungen",
         "summary": "Zusammenfassungen"
       },
-      "hasAccomplice": "Mit Komplize"
+      "hasAccomplice": "Mit Komplize",
+      "charactersFinalNote": "Das ist deine endgültige Besetzung - die Anzahl der Charaktere wird beim Kauf festgelegt. Du kannst einzelne Charaktere danach umbenennen, aber eine Umbenennung aktualisiert nur die Charakterliste, nicht den Rest des Skripts."
     },
     "fullyEditableLabel": "Vollständig bearbeitbar:",
     "fullyEditableNote": "Keine Sorge — du kannst nach der Generierung deines Krimis alle Charakterskripte, Inhalte des Hostleitfadens und Beweiskarten bearbeiten.",
@@ -1200,7 +1205,8 @@
       "clues": "Beweise",
       "inspector": "Detektivanleitung",
       "relationships": "Beziehungen",
-      "inspectorIntrigue": "Ermittleranleitung"
+      "inspectorIntrigue": "Ermittleranleitung",
+      "extras": "Extras"
     },
     "mobileTabs": {
       "host": "Gastgeber",
@@ -1565,6 +1571,70 @@
         "label": "Abschließende Qualitätsprüfungen",
         "description": "Automatische Prüfungen laufen, bevor dein Mystery angezeigt wird"
       }
+    }
+  },
+  "adaptation": {
+    "card": {
+      "sectionIntro": "Weitere Möglichkeiten, dein Mysterium zu gestalten - dieser Bereich wächst mit der Zeit",
+      "title": "Neubesetzung",
+      "teaser": "Ein Gast kann nicht kommen? Entferne oder ersetze ihn in der Geschichte - pauschal 5 $, beliebig viele Charaktere in einem Durchgang korrigieren.",
+      "cta": "Mehr erfahren",
+      "inProgressTitle": "Neubesetzung läuft",
+      "inProgressSummary": "{{done}} von {{total}} aktualisiert",
+      "inProgressNotice": "Wir schicken dir eine E-Mail, sobald es fertig ist - du kannst in der Zwischenzeit den Rest deines Mysteriums weiter nutzen.",
+      "comingSoonTitle": "Tipps & Videos fürs Hosten",
+      "comingSoonBadge": "Demnächst",
+      "comingSoonBody": "Kurze Videos und schnelle Tipps, um dein Mysterium am Abend selbst zu leiten."
+    },
+    "explainer": {
+      "title": "Neubesetzung",
+      "subtitle": "Entferne einen Charakter aus deinem Mysterium per Klick.",
+      "characterStyleHeadline": "Dafür musst du wahrscheinlich nicht bezahlen.",
+      "characterStyleBody": "Dies ist ein charakterbasiertes Mysterium - es gibt keinen vorbestimmten Täter, daher lässt sich das Fehlen eines Charakters leicht selbst und kostenlos überspielen. Sag deinen Gästen einfach etwas wie: \"X ist auch verdächtig, wird aber separat befragt - macht ohne ihn weiter\", oder \"Wir haben X bereits ausgeschlossen.\" Übrig gebliebene Gerüchte über diese Person werden dann irrelevant.",
+      "characterStyleContinue": "Möchtest du ihn trotzdem sauber aus allen Dokumenten entfernen lassen? Weiter unten.",
+      "realEditBody": "Die Geschichte jedes Charakters ist mit allen anderen verwoben - Alibis, Gerüchte, Beweise. Wir aktualisieren jeden Charakterbogen, das Detektiv-Skript und die Beweiskarten, damit nichts mehr eine Person erwähnt, die nicht mehr dabei ist.",
+      "goodToKnowLabel": "Gut zu wissen",
+      "irreversibleBody": "Nach dem Absenden gibt es kein Zurück mehr.",
+      "timingBody": "Am besten so spät wie möglich nutzen - idealerweise erst am Tag der Feier. Springt danach noch ein weiterer Gast ab, musst du es erneut machen (und erneut bezahlen).",
+      "noThanks": "Nein danke",
+      "continue": "Weiter"
+    },
+    "picker": {
+      "title": "Wer kann nicht kommen?",
+      "subtitle": "Wähle jeden Charakter aus, dessen Gast nicht teilnehmen kann. Du kannst mehrere auf einmal entfernen.",
+      "reassignNote": "Wenn du {{role}} entfernst, muss jemand anderes diese Rolle übernehmen. Wähle wer, oder lass uns entscheiden.",
+      "replacementAuto": "Lasst uns entscheiden",
+      "maxReached": "Ein Mysterium braucht mindestens {{min}} Charaktere, um zu funktionieren - mehr kannst du nicht auf einmal entfernen.",
+      "selectedSummary": "{{count}} ausgewählt - {{total}} $"
+    },
+    "confirm": {
+      "back": "Zurück",
+      "title": "Das kann nicht rückgängig gemacht werden.",
+      "sharedConsequence": "Jeder Charakterbogen, das Detektiv-Skript und die Beweiskarten werden aktualisiert, damit nichts mehr erwähnt wird von:",
+      "replacedBy": "{{name}} wird der neue {{role}}",
+      "replacedByAuto": "wir wählen den neuen {{role}}",
+      "totalLabel": "Gesamt: {{total}} $",
+      "cancel": "Abbrechen",
+      "cta": "Entfernen - {{total}} $"
+    },
+    "processing": {
+      "title": "Dein Mysterium wird aktualisiert",
+      "waiting": "Das kann mehrere Minuten dauern - länger, wenn wir neu zuweisen, wer der Täter ist, da das ein größerer Eingriff ist als eine einfache Entfernung. Du musst hier nicht warten.",
+      "goNow": "Jetzt zu deinem Mysterium",
+      "emailNotice": "Wir schicken dir außerdem eine E-Mail, sobald es fertig ist."
+    },
+    "result": {
+      "verified": "Fertig - dein Mysterium wurde aktualisiert",
+      "partial": "Aktualisierung abgeschlossen - Details unten",
+      "rowFailed": "dieser Charakter konnte nicht sicher fertiggestellt werden und wurde unverändert gelassen.",
+      "reassignmentNotice": "Die Neuzuweisung des Täters erforderte, die Auflösung im Detektiv-Skript und ein Geständnis neu zu schreiben - wir empfehlen, beides vor dem Hosten einmal durchzulesen.",
+      "missingId": "Wir konnten diese Neubesetzungsanfrage nicht finden.",
+      "backToMystery": "Zurück zu deinem Mysterium"
+    },
+    "toasts": {
+      "createdNoCheckout": "Neubesetzungsanfrage für {{count}} Charakter(e) erstellt (Staging-Modus - keine Zahlung konfiguriert).",
+      "createFailed": "Diese Anfrage konnte nicht gestartet werden. Bitte versuche es erneut.",
+      "alreadyInProgress": "Für einen dieser Charaktere läuft bereits eine Neubesetzungsanfrage."
     }
   }
 }
