@@ -85,6 +85,254 @@ async function sendGA4Event(
   }
 }
 
+// ── Cold Case Files (ADR-0029) ──────────────────────────────────────────────
+// The cold-case Payment Link carries metadata {product: "cold_case"}, which Stripe
+// copies onto the checkout session. This branch is dead code until that link exists;
+// the party flow is untouched.
+//
+// Recovered 2026-08-15: this block was live in production (stripe-webhook v61,
+// deployed directly, not via this repo's main) but absent from this file — main
+// never had the feat/cold-case-files branch merged in. Diffing local against
+// live before deploying the ADR-0088 changes below caught the divergence before
+// it would have silently deleted live Cold Case order processing; restored here
+// verbatim from the deployed version so this file matches reality again.
+const COLD_CASE_LANGS = new Set([
+  "en", "es", "fr", "de", "it", "pt", "nl", "da", "sv", "fi", "ko", "ja", "zh-cn",
+]);
+
+async function handleColdCaseOrder(session: Stripe.Checkout.Session) {
+  const email = session.customer_email || session.customer_details?.email;
+  if (!email) {
+    console.error("[cold-case] session has no customer email:", session.id);
+    return;
+  }
+
+  // buyer_language: the Payment Link's ?locale= param lands on session.locale
+  // ("auto" when unset). Guests have no profiles.language row, so this is the
+  // only language signal we get (drives the localized READY email).
+  const rawLocale = (session.locale || "").toLowerCase();
+  const lang = COLD_CASE_LANGS.has(rawLocale)
+    ? rawLocale
+    : COLD_CASE_LANGS.has(rawLocale.slice(0, 2))
+      ? rawLocale.slice(0, 2)
+      : "en";
+
+  const slug = `cc-${crypto.randomUUID().slice(0, 8)}`;
+
+  // Buyer brief (ADR-0029 amendment): the Payment Link's custom fields carry the buyer's
+  // era/place/details — the core promise ("you pick the era and the place"). Field keys are
+  // set when the link is created (see docs/cold-case-launch-runbook.md): setting_era, details.
+  // Both optional; absent/blank = "surprise me" (the engine invents).
+  const fieldVal = (key: string) =>
+    (session.custom_fields || []).find((f) => f.key === key)?.text?.value?.trim() || "";
+  // Primary: session metadata (create-cold-case-checkout carries the landing brief box).
+  // Fallback: Payment-Link custom fields (if that path is ever used).
+  const briefSetting = session.metadata?.setting_era?.trim() || fieldVal("setting_era");
+  const briefDetails = session.metadata?.details?.trim() || fieldVal("details");
+  const brief =
+    briefSetting || briefDetails
+      ? { ...(briefSetting && { setting: briefSetting }), ...(briefDetails && { details: briefDetails }) }
+      : null;
+
+  const { data: order, error } = await supabase
+    .from("cold_case_orders")
+    .insert({
+      email,
+      buyer_language: lang,
+      slug,
+      brief,
+      user_id: session.metadata?.user_id || null,
+      stripe_session_id: session.id,
+      amount_total: session.amount_total,
+      currency: session.currency,
+    })
+    .select("id, delivery_token")
+    .single();
+
+  if (error) {
+    // 23505 unique violation on stripe_session_id = Stripe webhook retry — idempotent no-op
+    if ((error as { code?: string }).code === "23505") {
+      console.log("[cold-case] duplicate webhook replay for", session.id);
+      return;
+    }
+    console.error("[cold-case] order insert failed:", error);
+    return;
+  }
+  console.log(`[cold-case] order ${order.id} queued as ${slug} for ${email} (${lang})`);
+
+  // GA4 purchase with a DISTINCT item id (the party flow hardcodes murder_mystery_party)
+  await sendGA4Event(session.id, null, "purchase", {
+    currency: session.currency?.toUpperCase() || "USD",
+    value: (session.amount_total || 0) / 100,
+    transaction_id: session.payment_intent as string,
+    items: [
+      {
+        item_id: "cold_case_files",
+        item_name: "Cold Case File (bespoke)",
+        price: (session.amount_total || 0) / 100,
+        quantity: 1,
+      },
+    ],
+    cold_case_order_id: order.id,
+  });
+
+  const resendApiKey = Deno.env.get("RESEND_API_KEY");
+  if (!resendApiKey) {
+    console.warn("[cold-case] RESEND_API_KEY not set — skipping emails");
+    return;
+  }
+  const siteUrl = Deno.env.get("SITE_URL") || "https://www.mysterymaker.party";
+  const statusUrl = `${siteUrl}/cold-case/${order.delivery_token}`;
+
+  // Buyer confirmation — async expectation set immediately, never "download now".
+  // v1 ships English-only; buyer_language localizes the READY email (the deliverable).
+  try {
+    const confirmRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Mystery Maker <noreply@mysterymaker.party>",
+        to: [email],
+        subject: "Your cold case is being assembled 🔍",
+        html: `
+          <div style="font-family: Georgia, 'Times New Roman', serif; max-width: 560px; margin: 0 auto; color: #1a1a1a;">
+            <div style="background: #14100e; color: #f2ede6; padding: 28px 24px; border-radius: 8px 8px 0 0;">
+              <h2 style="margin: 0; font-weight: 600; letter-spacing: .02em;">Case file in preparation</h2>
+            </div>
+            <div style="background: #f7f4ee; padding: 26px 24px; border: 1px solid #e3ded3; border-top: none; border-radius: 0 0 8px 8px; line-height: 1.7;">
+              <p>Thank you — your order is confirmed.</p>
+              <p>We're now generating your <strong>one-of-one cold case</strong>: an original unsolved murder that has never existed before and will never be generated again. Twenty-five period documents, photographs, a real twist — and everything you need to solve it is in the file.</p>
+              <p><strong>We'll email you when it's ready — usually within the hour.</strong></p>
+              <p style="margin-top: 18px;">You can check progress any time:<br>
+              <a href="${statusUrl}" style="color: #8a2b1d;">${statusUrl}</a></p>
+              <p style="font-size: 13px; color: #6d675c; margin-top: 22px;">Questions? Just reply to this email.</p>
+            </div>
+          </div>`,
+      }),
+    });
+    if (!confirmRes.ok) {
+      console.error(`[cold-case] buyer confirmation email failed: ${confirmRes.status} ${await confirmRes.text()}`);
+    } else {
+      console.log("[cold-case] buyer confirmation email sent");
+    }
+  } catch (e) {
+    console.error("[cold-case] buyer confirmation email error:", e);
+  }
+
+  // Owner notification (mirrors the party purchase alert)
+  try {
+    const amountFormatted = ((session.amount_total || 0) / 100).toFixed(2);
+    const currency = (session.currency || "usd").toUpperCase();
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Mystery Maker <noreply@mysterymaker.party>",
+        to: ["support@mysterymaker.party"],
+        subject: `🕵️ New COLD CASE order (${currency} ${amountFormatted})`,
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: #1e293b; color: white; padding: 20px; border-radius: 8px 8px 0 0;">
+              <h2 style="margin: 0;">New Cold Case Order</h2>
+            </div>
+            <div style="background: #f9fafb; padding: 20px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr><td style="padding: 8px 0; color: #6b7280;">Order</td><td style="padding: 8px 0; font-size: 12px;">${order.id}</td></tr>
+                <tr><td style="padding: 8px 0; color: #6b7280;">Slug</td><td style="padding: 8px 0; font-weight: 600;">${slug}</td></tr>
+                <tr><td style="padding: 8px 0; color: #6b7280;">Amount</td><td style="padding: 8px 0; font-weight: 600;">${currency} ${amountFormatted}</td></tr>
+                <tr><td style="padding: 8px 0; color: #6b7280;">Customer</td><td style="padding: 8px 0;">${email}</td></tr>
+                <tr><td style="padding: 8px 0; color: #6b7280;">Language</td><td style="padding: 8px 0;">${lang}</td></tr>
+                <tr><td style="padding: 8px 0; color: #6b7280;">Stripe Session</td><td style="padding: 8px 0; font-size: 12px;">${session.id}</td></tr>
+              </table>
+              <p style="font-size: 12px; color: #9ca3af; margin-top: 16px;">The worker will claim this order and generate the case (~30 min). Failure alerts go to Telegram.</p>
+            </div>
+          </div>`,
+      }),
+    });
+  } catch (e) {
+    console.error("[cold-case] owner notification error:", e);
+  }
+}
+
+// ADR-0088: owner notification for Recast purchases, mirroring the existing
+// party-purchase and Cold Case notification emails above — fires at PURCHASE
+// time (not completion time; send-adaptation-complete-email already covers
+// completion, to the customer, separately). Fire-and-forgotten alongside the
+// adapt-mystery-apply dispatch below so it never delays the customer's
+// actual processing start. Exists so the owner has a way to notice real
+// purchases happened and go check how they turned out, without needing to
+// watch the DB — see CHANGELOG 2026-08-15.
+async function sendAdaptationPurchaseNotification(params: {
+  batchId: string;
+  rows: { character_name: string; character_role: string | null }[];
+  amountTotalCents: number | null;
+  currency: string | null;
+  customerEmail: string | null;
+  conversationId: string | null;
+}) {
+  const resendApiKey = Deno.env.get("RESEND_API_KEY");
+  if (!resendApiKey) {
+    console.warn("[recast] RESEND_API_KEY not set — skipping purchase notification email");
+    return;
+  }
+  const { batchId, rows, amountTotalCents, currency, customerEmail, conversationId } = params;
+
+  const amountFormatted = ((amountTotalCents ?? 0) / 100).toFixed(2);
+  const currencyFormatted = (currency || "usd").toUpperCase();
+  const characterListHtml = rows.map((r) => {
+    const isReassign = r.character_role === "murderer" || r.character_role === "accomplice";
+    return `<li style="margin-bottom: 6px;">${r.character_name} <span style="color: #6b7280;">(${r.character_role ?? "unknown"})</span>${isReassign ? ` <strong style="color: #d97706;">— reassignment, worth a look</strong>` : ""}</li>`;
+  }).join("");
+  const mysteryUrl = conversationId ? `https://www.mysterymaker.party/mystery/${conversationId}` : null;
+
+  try {
+    const resp = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Mystery Maker <noreply@mysterymaker.party>",
+        to: ["support@mysterymaker.party"],
+        subject: `🎭 New Recast purchase (${currencyFormatted} ${amountFormatted})`,
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: #7c3aed; color: white; padding: 20px; border-radius: 8px 8px 0 0;">
+              <h2 style="margin: 0;">New Recast Purchase</h2>
+            </div>
+            <div style="background: #f9fafb; padding: 20px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr><td style="padding: 8px 0; color: #6b7280;">Amount</td><td style="padding: 8px 0; font-weight: 600;">${currencyFormatted} ${amountFormatted}</td></tr>
+                <tr><td style="padding: 8px 0; color: #6b7280;">Customer</td><td style="padding: 8px 0;">${customerEmail || "N/A"}</td></tr>
+                <tr><td style="padding: 8px 0; color: #6b7280;">Batch ID</td><td style="padding: 8px 0; font-size: 12px;">${batchId}</td></tr>
+              </table>
+              <p style="margin: 16px 0 6px 0; color: #6b7280;">Characters (${rows.length}):</p>
+              <ul style="margin: 0; padding-left: 20px;">${characterListHtml}</ul>
+              ${mysteryUrl ? `<div style="margin-top: 20px;"><a href="${mysteryUrl}" style="color: #7c3aed;">View this mystery →</a></div>` : ""}
+              <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af;">
+                ${new Date().toLocaleString("en-AU", { timeZone: "Australia/Sydney" })} · fires at purchase, not completion — check back in a few minutes to see how it turned out
+              </div>
+            </div>
+          </div>`,
+      }),
+    });
+    if (!resp.ok) {
+      console.error(`[recast] purchase notification email failed: ${resp.status} ${await resp.text()}`);
+    } else {
+      console.log(`[recast] purchase notification email sent for batch ${batchId}`);
+    }
+  } catch (e) {
+    console.error("[recast] purchase notification email error:", e);
+  }
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -126,6 +374,12 @@ serve(async (req) => {
         const session = event.data.object as Stripe.Checkout.Session;
         console.log("Processing checkout.session.completed:", session.id);
 
+        // Cold Case Files order? (Payment Link metadata → session metadata, ADR-0029)
+        if (session.metadata?.product === "cold_case") {
+          await handleColdCaseOrder(session);
+          break;
+        }
+
         const refId = session.client_reference_id;
 
         // ADR-0036/0082/0088 (staging only): adaptation checkouts use a
@@ -157,12 +411,34 @@ serve(async (req) => {
             })
             .eq("batch_id", batchId)
             .eq("status", "pending") // idempotent against Stripe's at-least-once delivery
-            .select("id, batch_sequence");
+            .select("id, batch_sequence, character_name, character_role, requested_by_email, conversation_id");
 
           if (adaptUpdateError) {
             console.error("Failed to mark adaptation batch paid:", adaptUpdateError);
           } else {
             console.log(`Marked ${paidRows?.length ?? 0} adaptation row(s) paid for batch ${batchId}`);
+          }
+
+          if (paidRows && paidRows.length > 0) {
+            // Fire-and-forget, same as the processing dispatch below — a slow
+            // or failed notification email must never delay the customer's
+            // actual batch from starting. amount_total/currency come from the
+            // session itself (the real charge, flat $5 regardless of N
+            // characters — ADR-0088), not summed from row-level amount_usd.
+            fireAndForget(sendAdaptationPurchaseNotification({
+              batchId,
+              rows: paidRows.map((r) => ({
+                character_name: r.character_name as string,
+                character_role: r.character_role as string | null,
+              })),
+              amountTotalCents: session.amount_total,
+              currency: session.currency,
+              customerEmail: session.customer_email
+                || session.customer_details?.email
+                || (paidRows.find((r) => r.requested_by_email)?.requested_by_email as string | undefined)
+                || null,
+              conversationId: (paidRows[0]?.conversation_id as string | undefined) ?? null,
+            }));
           }
 
           const firstRow = (paidRows ?? []).find((r) => r.batch_sequence === 0);

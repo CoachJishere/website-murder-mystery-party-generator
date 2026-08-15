@@ -47,6 +47,9 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          # ADR-0088 "Recast": not a secret (a client-side boolean baked into the
+          # bundle either way), so a literal value here rather than a repo secret.
+          VITE_ENABLE_GUEST_DROPOUT_ADAPTATION: "true"
         run: |
           echo "=== Build Environment ==="
           node --version

@@ -513,7 +513,7 @@ const REASSIGN_OUTPUT_SCHEMA = {
     },
     evidence_cards_text: {
       type: "string",
-      description: "The FULL evidence card markdown text, with ONLY host-only 'SIGNIFICANCE' section(s) rewritten to point to the promoted character instead of the removed one. Player-facing description sections must never name a culprit and must be copied through unchanged.",
+      description: "The FULL evidence card markdown text, with ONLY host-only 'SIGNIFICANCE' section(s) rewritten to point to the promoted character instead of the removed one — but only where the evidence's fixed physical description can plausibly support that connection (see hard_rules). Player-facing description sections must never name a culprit and must be copied through unchanged.",
     },
   },
   required: [
@@ -564,6 +564,7 @@ Then rewrite the CURRENT detective_script and evidence card text below so the re
 - The promoted character's core identity (name, who they are as a person) does not change — only their guilt-relevant content does.
 - final_statement must read as a real confession/admission, not a hedge or another denial.
 - detective_script and evidence_cards_text: reproduce every section you are not changing byte-for-byte from the CURRENT text given below. Only the culprit-naming sections should differ.
+- Evidence significance must stay physically plausible: each evidence item's physical description is fixed and cannot change, only its SIGNIFICANCE explanation can. Before rewriting a SIGNIFICANCE section, check whether this specific physical item could plausibly reveal a fact about the promoted character's actual motive/method/opportunity (a financial ledger can plausibly show a bribe, payoff, or paper trail, but not a physical struggle; a torn photograph can place someone at a scene, but not prove a financial motive). If a genuine connection exists, use it — do not force an implausible one just to keep the culprit-naming pattern. If no plausible connection exists for a given item, keep its significance general (e.g. what it still proves about the crime, or that it doesn't clearly implicate anyone) rather than asserting a link that doesn't logically follow from what the item actually is.
 </hard_rules>
 
 <candidates>

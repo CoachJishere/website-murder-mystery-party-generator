@@ -66,14 +66,16 @@ const ENABLED = Deno.env.get("ENABLE_GUEST_DROPOUT_ADAPTATION") === "true";
 // MIN_REMAINING_CHARACTERS below.
 const ADAPTATION_PRICE_USD = 5.0;
 // Real Stripe Product/Price (owner-provided, not a secret — a price/product
-// id can't move money on its own, that still requires an actual secret key,
-// which is never wired into any environment this code runs in yet). Mode
-// (test vs. live) not confirmed — Stripe itself enforces that a Checkout
-// Session's price must be in the same mode as the API key used to create it,
-// so a mismatch fails loudly rather than silently succeeding; still worth
-// confirming this is the TEST-mode price before a real key is ever wired in
-// (see ADR-0088's promote-to-prod checklist).
-const STRIPE_PRICE_ID = "price_1U4h9wKgSd73ikMWh0U3P5r8"; // product: prod_V4qrXB1FOwSi6Q
+// id can't move money on its own, that still requires an actual secret key).
+// Confirmed LIVE-mode (prod_V4qrXB1FOwSi6Q) — kept as the hardcoded default
+// since that's what production should ultimately use. A separate TEST-mode
+// product/price (prod_V4s7uHbSrTO9td / price_1U4iN8QRPhtnYN2x0t3pLhjS) was
+// created for local/staging verification — set via STRIPE_PRICE_ID in the
+// environment to override the default without touching this constant, since
+// Stripe rejects a mode mismatch between the price and whatever secret key
+// is paired with it (fails loudly, not silently). Local functions.env for
+// this session's testing sets the override to the test price.
+const STRIPE_PRICE_ID = Deno.env.get("STRIPE_PRICE_ID") || "price_1U4h9wKgSd73ikMWh0U3P5r8"; // default: live, product prod_V4qrXB1FOwSi6Q
 
 // Duplicated from adapt-mystery-apply/index.ts's verify-step constant of the
 // same name — kept in sync by hand, not shared, matching this codebase's
