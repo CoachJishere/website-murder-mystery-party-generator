@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-15
+
+### Investigation: host_guide/timeline "null on 56% of packages" was a false alarm — real gap is 13 old pre-ADR-0043 records, zero live customer impact
+Follow-up from yesterday's Alexandra Broadus refund: found `host_guide`/`timeline` null on 70 of 128 paid `completed` packages, escalating to 100% every month since May 2026. Traced it fully before treating it as urgent.
+- **Not a regression.** `host_guide`/`timeline`/`preparation_instructions`/`hosting_tips` going null was the deliberate outcome of the 2026-04-25 "Static host guide template" refactor — that content moved from AI-generated-per-mystery to a static, parameterized component (`HostGuideTemplate.tsx`). Confirmed via the Make.com parent blueprint history (`temp-files/MM Live - Parent22` → `Parent23`, module 178's mapper dropped those three keys outright, and module 174's prompt was rewritten to explicitly tell Claude not to generate them) and the same-day CHANGELOG entry.
+- **Live product is unaffected.** `MysteryPackageTabView.tsx:862` renders `HostGuideTemplate` whenever `gameOverview` is present (the normal case), and the PDF/print path is `window.print()` on that same live-rendered DOM (`print.css`) — not a separate export reading the empty columns. Customers were never actually served an incomplete host guide from this.
+- **Real residual: 13 old records**, not 78 — checked each one. 1 is a test conversation. The other 12 were all created July-December 2025, well before the April 2026 migration; 7 of 12 have 0 characters at all, the rest have implausibly low character counts against their player counts — these are pre-`ADR-0043` instances of the "completed but empty" bug that fix (2026-07-26) was built to catch, just from before it existed. No `host_email` on any, `updated_at` clustered around a single 2026-07-02 batch touch, not ongoing activity. No action needed — already superseded by ADR-0043 for anything new.
+- **Minor dead code identified, not yet cleaned up**: `mysteryPackageService.ts:327`'s status-repair check still references `host_guide` as a completeness signal (can never fire now that the column is permanently null by design), and `HostGuideTemplate.tsx` accepts a `hostingTips` prop that's passed in but never rendered anywhere. Low priority, cosmetic.
+
 ## 2026-08-14
 
 ### Fix: close the identity-field silent-blank-write gap — payload fix live, blueprint fix awaiting import (ADR-0087)
