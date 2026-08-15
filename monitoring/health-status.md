@@ -1,6 +1,6 @@
 # Site health status
 
-_Last checked: 2026-08-15 07:00 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-08-15 13:01 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ✅ All checks passing
 
