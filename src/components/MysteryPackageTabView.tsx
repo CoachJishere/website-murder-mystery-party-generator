@@ -11,6 +11,7 @@ import { MysteryCharacter } from "@/interfaces/mystery";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import MysteryGuestManager from "./MysteryGuestManager";
+import GuestDropoutPanel from "./GuestDropoutPanel"; // ADR-0036 Phase B / ADR-0082, staging only
 import EditableSection from "./EditableSection";
 import EditableMultiSection from "./EditableMultiSection";
 import "../styles/mystery-package.css";
@@ -257,6 +258,10 @@ const MysteryPackageTabView = React.memo(({
   const [activeTab, setActiveTab] = useState("host-guide");
   const [statusMessage, setStatusMessage] = useState("Starting generation...");
   const [showGuestManager, setShowGuestManager] = useState(false);
+  // ADR-0036 Phase B / ADR-0082, staging only -- unset (undefined) in prod
+  // Vercel env, same off-by-default mechanism as VITE_COLD_CASE_PAYMENT_LINK
+  // in ColdCaseFiles.tsx. Gates a whole "Manage" tab, not just a button.
+  const guestDropoutAdaptationEnabled = import.meta.env.VITE_ENABLE_GUEST_DROPOUT_ADAPTATION === 'true';
   const isMobile = useIsMobile();
   const { t } = useTranslation();
 
@@ -786,7 +791,9 @@ const MysteryPackageTabView = React.memo(({
         <TabsList
           className={cn(
             "w-full mb-4 p-1.5 overflow-hidden rounded-lg h-auto",
-            isMobile ? "grid grid-cols-2 gap-1" : "grid grid-cols-2 md:grid-cols-4 gap-1"
+            isMobile
+              ? "grid grid-cols-2 gap-1"
+              : cn("grid grid-cols-2 gap-1", guestDropoutAdaptationEnabled ? "md:grid-cols-5" : "md:grid-cols-4")
           )}
           style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid var(--color-cream-border)' }}
         >
@@ -833,6 +840,18 @@ const MysteryPackageTabView = React.memo(({
               ? t(isMobile ? 'mysteryPackage.mobileTabs.inspectorIntrigue' : 'mysteryPackage.tabs.inspectorIntrigue')
               : t(isMobile ? 'mysteryPackage.mobileTabs.inspector' : 'mysteryPackage.tabs.inspector')}
           </TabsTrigger>
+          {guestDropoutAdaptationEnabled && (
+            <TabsTrigger
+              value="extras"
+              className={cn(
+                "whitespace-nowrap rounded-md transition-all",
+                isMobile && "text-xs px-2 py-2 h-auto"
+              )}
+              style={{ color: 'var(--color-cream)', fontFamily: 'var(--font-body)', fontWeight: 500 }}
+            >
+              {t('mysteryPackage.tabs.extras')}
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="host-guide" className={cn("overflow-hidden", isMobile && "px-2")}>
@@ -917,7 +936,10 @@ const MysteryPackageTabView = React.memo(({
                   "rounded-md border border-muted bg-muted/40 px-3 py-2 text-xs text-muted-foreground mb-2",
                   isMobile && "text-[11px]"
                 )}>
-                  You can edit every character below, but the number of suspects is fixed for this mystery — adding or removing a character means regenerating. Have more guests than characters? They can join as <strong>co-investigators</strong> on the detective's team (see the Host Guide) — just don't share the detective script with them, as it names the culprit.
+                  {guestDropoutAdaptationEnabled
+                    ? t('adaptation.entryPoint.notice')
+                    : <>You can edit every character below, but the number of suspects is fixed for this mystery — adding or removing a character means regenerating.</>}
+                  {' '}Have more guests than characters? They can join as <strong>co-investigators</strong> on the detective's team (see the Host Guide) — just don't share the detective script with them, as it names the culprit.
                 </div>
                 {charactersList.map((character, index) => {
                   // Detective-style uses round_script fields (with headers); character-based uses innocent/guilty fields
@@ -1299,6 +1321,18 @@ const MysteryPackageTabView = React.memo(({
             )}
           </div>
         </TabsContent>
+
+        {guestDropoutAdaptationEnabled && packageId && (
+          <TabsContent value="extras" className={cn("overflow-hidden", isMobile && "px-2")}>
+            <div className={cn("mystery-content", isMobile && "text-sm")}>
+              <GuestDropoutPanel
+                packageId={packageId}
+                characters={characters}
+                mysteryStyle={mysteryStyle}
+              />
+            </div>
+          </TabsContent>
+        )}
       </Tabs>
 
       {/* Feedback Nudge */}
@@ -1374,6 +1408,7 @@ const MysteryPackageTabView = React.memo(({
         mysteryTitle={mysteryTitle}
         packageId={packageId}
       />
+
     </div>
   );
 });

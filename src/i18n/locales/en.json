@@ -734,7 +734,7 @@
         },
         "canIEdit": {
           "question": "Can I edit my mystery after it's been generated?",
-          "answer": "Yes! Every character and section is fully editable after generation — tweak character scripts, adjust the host guide, modify evidence cards, and update the detective script, all directly in the app, and save it as a PDF. One thing to know: editing changes the content, not the cast size. The number of suspect characters is set when your mystery is generated, so adding or removing suspects means regenerating the mystery. If you simply have more guests than characters, they can join as co-investigators on the detective's team — no changes needed."
+          "answer": "Yes! Every character and section is fully editable after generation — tweak character scripts, adjust the host guide, modify evidence cards, and update the detective script, all directly in the app, and save it as a PDF. One thing to know: editing changes the content, not the cast size. The number of suspect characters is set when your mystery is generated, so adding or removing suspects means regenerating the mystery. If you simply have more guests than characters, they can join as co-investigators on the detective's team — no changes needed. Renaming a character only updates that character's name in the character list — it does not update the name anywhere else (round scripts, clues, host guide), so it's best done before your first read-through rather than as a later correction."
         },
         "gameDuration": {
           "question": "How long does a typical game last?",
@@ -1138,6 +1138,7 @@
       "items": [
         "This is a one-time purchase for this specific mystery package",
         "Your cast size is set when the mystery is generated — every character is fully editable afterward, but adding or removing suspect characters requires regenerating. Have more guests than characters? They can join as co-investigators on the detective's team (see the host guide).",
+        "Renaming a character only updates the character list — it won't update that name in the round scripts, clues, or host guide. Best done before your first read-through, not as a late correction.",
         "You'll have permanent access to download all materials",
         "Content is for personal use only, not for commercial redistribution",
         "Need help? Contact our support at {{email}}"
@@ -1162,6 +1163,7 @@
         "Full gameplay script and timeline"
       ],
       "charactersTitle": "Your Characters ({{count}})",
+      "charactersFinalNote": "This is your final cast — the character count is locked in at purchase. You can rename individual characters afterward, but a rename only updates the character list, not the rest of the script.",
       "noCharactersWarning": "We couldn't detect your character list. Please go back and verify your mystery design includes all characters.",
       "mysteryStyle": {
         "character": "Character-driven",
@@ -1262,7 +1264,8 @@
       "clues": "Evidence",
       "inspector": "Detective Guide",
       "inspectorIntrigue": "Investigator Guide",
-      "relationships": "Relationships"
+      "relationships": "Relationships",
+      "extras": "Extras"
     },
     "mobileTabs": {
       "host": "Host",
@@ -1569,6 +1572,70 @@
         "label": "Final quality checks",
         "description": "Running automated checks before your mystery is revealed"
       }
+    }
+  },
+  "adaptation": {
+    "card": {
+      "sectionIntro": "More ways to shape your mystery — this grows over time",
+      "title": "Recast",
+      "teaser": "A guest can't make it? Remove or replace them in the story - $5 flat, fix as many characters as you need in one go.",
+      "cta": "Learn more",
+      "inProgressTitle": "Recast in progress",
+      "inProgressSummary": "{{done}} of {{total}} updated",
+      "inProgressNotice": "We'll email you when it's done — feel free to keep using the rest of your mystery.",
+      "comingSoonTitle": "Hosting tips & videos",
+      "comingSoonBadge": "Coming soon",
+      "comingSoonBody": "Short videos and quick tips for running your mystery on the night."
+    },
+    "explainer": {
+      "title": "Recast",
+      "subtitle": "Remove a character from your mystery with the click of a button.",
+      "characterStyleHeadline": "You probably don't need to pay for this.",
+      "characterStyleBody": "This is a character-based mystery - there's no predetermined culprit, so a missing character's absence is easy to paper over yourself, for free. Just tell your guests something like: \"X is also a suspect, but we're interviewing them separately - please carry on without them,\" or \"We've already ruled X out.\" Any leftover rumors about them become a non-issue.",
+      "characterStyleContinue": "Still want it cleanly removed from every document? Continue below.",
+      "realEditBody": "Every character's story is woven into everyone else's - alibis, rumors, evidence. We update every character sheet, the detective script, and evidence cards so nothing left behind mentions someone who isn't there.",
+      "goodToKnowLabel": "Good to know",
+      "irreversibleBody": "Once submitted, there's no way back.",
+      "timingBody": "Best used as late as possible - ideally the day of the party. If another guest drops out after you've already submitted, you'll need to do it again (and pay again).",
+      "noThanks": "No thanks",
+      "continue": "Continue"
+    },
+    "picker": {
+      "title": "Who can't make it?",
+      "subtitle": "Select every character whose guest can't attend. You can remove more than one at once.",
+      "reassignNote": "Removing the {{role}} means someone else needs to take over that role. Pick who, or let us choose.",
+      "replacementAuto": "Let us choose",
+      "maxReached": "A mystery needs at least {{min}} characters to work - that's as many as you can remove at once.",
+      "selectedSummary": "{{count}} selected — ${{total}}"
+    },
+    "confirm": {
+      "back": "Back",
+      "title": "This can't be undone.",
+      "sharedConsequence": "Every character sheet, the detective script, and evidence cards get updated so nothing left behind mentions:",
+      "replacedBy": "{{name}} becomes the new {{role}}",
+      "replacedByAuto": "we'll choose the new {{role}}",
+      "totalLabel": "Total: ${{total}}",
+      "cancel": "Cancel",
+      "cta": "Remove — ${{total}}"
+    },
+    "processing": {
+      "title": "Updating your mystery",
+      "waiting": "This can take several minutes - longer if we're reassigning who the culprit is, since that's a bigger rewrite than a simple removal. No need to wait here.",
+      "goNow": "Go to your mystery now",
+      "emailNotice": "We'll also email you the moment it's ready."
+    },
+    "result": {
+      "verified": "Done - your mystery has been updated",
+      "partial": "Update finished - see details below",
+      "rowFailed": "this one couldn't be safely completed and was left unchanged.",
+      "reassignmentNotice": "Reassigning who the culprit is meant rewriting the detective script's reveal and a confession - we recommend reading through both once before hosting.",
+      "missingId": "We couldn't find that adaptation request.",
+      "backToMystery": "Back to your mystery"
+    },
+    "toasts": {
+      "createdNoCheckout": "Recast request created for {{count}} character(s) (staging mode - no payment configured).",
+      "createFailed": "Couldn't start that request. Please try again.",
+      "alreadyInProgress": "One of these characters already has a Recast request in progress."
     }
   }
 }

@@ -22,6 +22,21 @@ const stripe = new Stripe(stripeSecretKey, {
   httpClient: Stripe.createFetchHttpClient(),
 });
 
+// ADR-0088: the adaptation dispatch below is deliberately fire-and-forget (a
+// slow/failed transform must never make Stripe think this event delivery
+// failed) — EdgeRuntime.waitUntil is the documented way to guarantee the
+// isolate survives long enough for it to actually complete
+// (https://supabase.com/docs/guides/functions/background-tasks). Checked
+// defensively at runtime, not declared as a TS ambient global: this
+// project's pinned local edge-runtime (v1.74.3) predates it, so this falls
+// back to a plain un-awaited fetch (this function's existing behavior)
+// wherever it isn't available, rather than assuming a specific version.
+function fireAndForget(promise: Promise<unknown>): void {
+  const settled = promise.catch((e) => console.error("background dispatch failed:", e));
+  const runtime = (globalThis as { EdgeRuntime?: { waitUntil?: (p: Promise<unknown>) => void } }).EdgeRuntime;
+  if (runtime?.waitUntil) runtime.waitUntil(settled);
+}
+
 // GA4 configuration
 const GA4_MEASUREMENT_ID = "G-XGD48X4ZQS";
 const GA4_API_SECRET = Deno.env.get("GA4_API_SECRET") || "";
@@ -111,8 +126,66 @@ serve(async (req) => {
         const session = event.data.object as Stripe.Checkout.Session;
         console.log("Processing checkout.session.completed:", session.id);
 
-        // Extract conversation ID from client_reference_id
-        const conversationId = session.client_reference_id;
+        const refId = session.client_reference_id;
+
+        // ADR-0036/0082/0088 (staging only): adaptation checkouts use a
+        // prefixed client_reference_id so they can never collide with a bare
+        // conversations.id. This branch returns early via `break` -- every
+        // line below it (the existing purchase path: conversations UPDATE,
+        // GA4 event, purchase-notification email) is completely unchanged
+        // for any client_reference_id that doesn't start with "adaptation-batch:".
+        //
+        // ADR-0088: a batch can cover multiple characters in one checkout
+        // (one flat $5 charge regardless of count) -- one multi-row UPDATE
+        // marks every row in the batch paid, then only batch_sequence=0 is
+        // dispatched. adapt-mystery-apply chain-dispatches the rest of the
+        // batch itself, strictly sequentially, once each prior row commits --
+        // see that function's header comment for why concurrent dispatch of
+        // a whole batch is unsafe. (The old singular "adaptation:" prefix is
+        // retired, not kept alongside -- nothing in production ever used it;
+        // every mystery_adaptations row now always belongs to a batch, even
+        // a batch of one.)
+        if (refId?.startsWith("adaptation-batch:")) {
+          const batchId = refId.slice("adaptation-batch:".length);
+          const { data: paidRows, error: adaptUpdateError } = await supabase
+            .from("mystery_adaptations")
+            .update({
+              status: "paid",
+              stripe_session_id: session.id,
+              stripe_client_reference_id: refId,
+              paid_at: new Date().toISOString(),
+            })
+            .eq("batch_id", batchId)
+            .eq("status", "pending") // idempotent against Stripe's at-least-once delivery
+            .select("id, batch_sequence");
+
+          if (adaptUpdateError) {
+            console.error("Failed to mark adaptation batch paid:", adaptUpdateError);
+          } else {
+            console.log(`Marked ${paidRows?.length ?? 0} adaptation row(s) paid for batch ${batchId}`);
+          }
+
+          const firstRow = (paidRows ?? []).find((r) => r.batch_sequence === 0);
+          if (firstRow) {
+            // Fire-and-forget: the webhook must return fast, and a slow/failed
+            // transform must never make Stripe think this event delivery failed.
+            fireAndForget(fetch(`${supabaseUrl}/functions/v1/adapt-mystery-apply`, {
+              method: "POST",
+              headers: { Authorization: `Bearer ${supabaseKey}`, "Content-Type": "application/json" },
+              body: JSON.stringify({ adaptation_id: firstRow.id }),
+            }));
+          } else {
+            // Re-delivered event after the batch was already claimed/processed
+            // (or, unexpectedly, batch_sequence 0 wasn't in this UPDATE's
+            // result) -- nothing new to dispatch, not an error.
+            console.log(`No batch_sequence=0 row to dispatch for batch ${batchId} (already processed or re-delivered event)`);
+          }
+
+          break;
+        }
+
+        // Extract conversation ID from client_reference_id (UNCHANGED)
+        const conversationId = refId;
         if (!conversationId) {
           console.warn("No client_reference_id found in session");
           break;

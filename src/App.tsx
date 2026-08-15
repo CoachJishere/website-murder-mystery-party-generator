@@ -41,6 +41,7 @@ import HostAccess from "./pages/HostAccess";
 import BlogIndex from "./pages/BlogIndex";
 import BlogPost from "./pages/BlogPost";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import AdaptationSuccess from "./pages/AdaptationSuccess"; // ADR-0036 Phase B, staging only
 import Feedback from "./pages/Feedback";
 import GuestFeedback from "./pages/GuestFeedback";
 import BillingHistory from "./pages/BillingHistory";
@@ -51,6 +52,7 @@ import HomeParallaxPreview from "./pages/HomeParallaxPreview";
 import EmailPreview from "./pages/EmailPreview";
 import MysteryRoomHero from "./components/MysteryRoomHero";
 import EvidenceCardPreview from "./pages/EvidenceCardPreview";
+import GuestDropoutPreview from "./pages/GuestDropoutPreview"; // ADR-0036/0082 mock preview, not the real feature
 import EvidenceCardPrint from "./pages/EvidenceCardPrint";
 import React from "react";
 
@@ -148,6 +150,7 @@ const AppRoutes = () => {
         <Route path="/home-parallax" element={<HomeParallaxPreview />} />
         <Route path="/email-preview" element={<EmailPreview />} />
         <Route path="/evidence-card-preview" element={<EvidenceCardPreview />} />
+        <Route path="/guest-dropout-preview" element={<GuestDropoutPreview />} />
         <Route path="/evidence-card-print" element={<EvidenceCardPrint />} />
         <Route path="/mystery-hero" element={<div className="bg-[#1a0a1a]"><MysteryRoomHero /><div className="px-6 py-32 text-center"><p className="text-white/20 text-sm">Rest of homepage content would go below</p></div></div>} />
         
@@ -165,6 +168,7 @@ const AppRoutes = () => {
 
         {/* Payment success and cancel routes */}
         <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/adaptation-success" element={<AdaptationSuccess />} />
         <Route path="/payment-canceled" element={<Navigate to="/" replace />} />
         
         {/* Protected routes */}
