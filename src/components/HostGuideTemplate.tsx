@@ -31,6 +31,12 @@ function timeGuidelines(playerCount: number | null | undefined): string {
   return "Approximately 3 hours total";
 }
 
+// ~45 sec/player is enough for a name, role, and one line about the victim —
+// the pace hosts need to hold at scale (see the large-group callout in Round 1 Part A).
+function introMinutes(playerCount: number | null | undefined): number {
+  return Math.round((playerCount ?? 6) * 0.75);
+}
+
 const HostGuideTemplate: React.FC<HostGuideTemplateProps> = ({
   mysteryType,
   mysteryStyle,
@@ -50,6 +56,7 @@ const HostGuideTemplate: React.FC<HostGuideTemplateProps> = ({
   const culprit = isIntrigue ? "culprit" : "murderer";
   const crimeNoun = isIntrigue ? "incident" : "murder";
   const isCharacterBased = mysteryStyle === "character";
+  const introTime = introMinutes(playerCount);
 
   // The static template content as one large markdown block.
   // This is intentionally not in i18n yet — keep simple for v1, translate later.
@@ -63,14 +70,7 @@ Keep this open during the game — it's your at-a-glance control panel, especial
 - [ ] ${isCharacterBased ? `Slips prepared for the ${culprit}${hasAccomplice ? "/accomplice" : ""} draw` : `You know who the ${culprit}${hasAccomplice ? " and accomplice are" : " is"} (see the ${Investigator} Guide)`}
 - [ ] Keep the cast list (top of each player's guide) and the Game Overview within reach — you'll use them to pull the story back on track
 
-**Round order at a glance:**
-1. Round 1 — Introductions & Rumors
-2. Round 2 — Motives
-3. Round 3 — Method
-4. Round 4 — Opportunity
-5. Accusations
-6. Final Statements
-7. The Reveal
+**Round order at a glance:** see "Running the Game" below for the full step-by-step.
 
 ## Materials
 
@@ -78,9 +78,11 @@ Keep this open during the game — it's your at-a-glance control panel, especial
 - Character guides — already sent to each guest digitally before the party
 - Printed evidence cards (or shown on a phone/screen — your choice)
 - ${Investigator} script (${investigator} dialogue for each round, in the ${Investigator} Guide tab)
-- Container for slips of paper (hat, bowl, decorative box)
-- Slips of paper for ${culprit} selection${hasAccomplice ? " (and accomplice selection)" : ""}
 - Timer or clock${isMobile ? "" : "\n- Optional: themed décor, music, food/drink"}
+${isCharacterBased ? `
+**For the slip draw:**
+- Container for slips of paper (hat, bowl, decorative box)
+- Slips of paper for ${culprit} selection${hasAccomplice ? " (and accomplice selection)" : ""}` : ""}
 
 ## Preparation Before the Party
 
@@ -91,8 +93,8 @@ Keep this open during the game — it's your at-a-glance control panel, especial
 - Confirm guest list and finalize attendees
 
 **Day of:**
-- Prepare the slip draw: cut ${(playerCount ?? 7) + 0} small slips of paper. Write "${Culprit.toUpperCase()}" on one slip${hasAccomplice ? `, "ACCOMPLICE" on another` : ""}. Leave the rest blank (or write "Innocent"). Fold each so the writing isn't visible. Place them in your container.
-- Print evidence cards (optional) — you can also just show them on a phone or read aloud
+${isCharacterBased ? `- Prepare the slip draw: cut ${(playerCount ?? 7) + 0} small slips of paper. Write "${Culprit.toUpperCase()}" on one slip${hasAccomplice ? `, "ACCOMPLICE" on another` : ""}. Leave the rest blank (or write "Innocent"). Fold each so the writing isn't visible. Place them in your container.
+` : ""}- Print evidence cards (optional) — you can also just show them on a phone or read aloud
 - Set the atmosphere if you want (themed music, dim lights, themed snacks) — none of this is required
 
 ## Managing Last-Minute Guest Changes
@@ -116,7 +118,7 @@ You have two ways to handle the ${investigator} narration:
 **Option 1 — Host as ${Investigator}**
 - You play the ${investigator} character throughout the game
 - Read each round's ${investigator} script aloud as the action progresses
-- ${isCharacterBased ? `In character-based mysteries, you do NOT participate as a suspect, so you can pre-decide the ${culprit} (skip the slip draw) or still use the slip draw for variety.` : `In detective-style mysteries, the ${culprit} is predetermined by the mystery — no slip draw needed.`}
+- ${isCharacterBased ? `In character-based mysteries, you do NOT participate as a suspect, so you can pre-decide the ${culprit} (skip the slip draw) or still use the slip draw for variety.` : `In detective-style mysteries, the ${culprit} is predetermined — you'll see who they are in the ${Investigator} Guide. Decide before the party whether to tell that player privately or let it reveal itself during the game.`}
 
 **Option 2 — Audio ${Investigator}**
 - You play one of the suspect characters (you participate in the mystery)
@@ -128,58 +130,49 @@ You have two ways to handle the ${investigator} narration:
 - Play each round's audio at the appropriate moment
 - Have backup printed scripts ready in case of tech issues
 
-## Time Guidelines
+## Running the Game
 
-${timeGuidelines(playerCount)} (for ${playerCount ?? 6} players).
+${timeGuidelines(playerCount)} (for ${playerCount ?? 6} players). Follow this section straight through, in order, once your guests are gathered — it's the actual script for the night. Everything above is what you prepare beforehand; this is what you do once it starts.
 
-- **Round 1 — Introductions & rumors:** 20–25 min${isCharacterBased ? `\n- **Slip draw (${culprit} selection):** 5 min` : ""}
-- **Round 2 — Motives:** 20 min
-- **Round 3 — Method:** 20 min
-- **Round 4 — Opportunity:** 20 min
-- **Accusations & final statements:** 15–20 min
-- **The Reveal:** 10 min
+1. **Opening Statement** — 2–3 min
+   Deliver the ${Investigator}'s Opening Statement: read it aloud, or play the pre-recorded audio (whichever you chose above). Found in the ${Investigator} Guide.
 
-Round timing scales with group size — smaller groups (4–6) move quickly, larger groups (12+) need more time per round.
+2. **Round 1, Part A — Introductions** — ~${introTime} min for your group of ${playerCount ?? 6} (roughly 45 sec/player)
+   Going around the group, each player reads or improvises their character's introduction. **For larger groups (15+), ask players to keep it to 2–3 sentences — name, role, one line about the victim — rather than reading the full page.** At 1 minute each, 30 guests is a 30-minute round on its own.
 
-## ${isCharacterBased ? `Determining the ${Culprit}` : "How the Mystery Works"}
+3. **Round 1, Part B — Rumors** — 10 min
+   Right after introductions, no break: each player shares their rumor(s) from their character page with the rest of the group. Everyone should hear at least one rumor before you move on.
 
-${isCharacterBased
-  ? `In this character-based mystery, the ${culprit} is selected **at random** after Round 1 — meaning anyone could be guilty. The game plays differently every time you run it.
+${isCharacterBased ? `4. **Slip Draw — Determining the ${Culprit}** — 5 min
+   1. Tell the players to keep a blank face
+   2. Pass the slip container around — each player draws ONE slip in secret and reads it silently
+   3. Whoever drew "${Culprit.toUpperCase()}" is the ${culprit}${hasAccomplice ? `; whoever drew "ACCOMPLICE" is the accomplice` : ""}; everyone else is innocent
+   4. The ${culprit}${hasAccomplice ? " and accomplice" : ""} should now use their **Guilty${hasAccomplice ? " / Accomplice" : ""}** script sections; everyone else uses **Innocent**
+   5. Do NOT reveal who drew which slip
+   6. Continue to Round 2
+` : `4. **The ${Culprit} Is Already Set** — detective-style mysteries skip the slip draw entirely. The ${culprit} is predetermined; see the ${Investigator} Guide for who. Continue straight to Round 2.
+`}
+**Announce this before Round 2:** when giving their own account, the ${culprit} may mislead, spin, omit, and stick to their cover story — that's the game. But when another player asks them a direct question, they shouldn't invent brand-new lies on the spot: they deflect, answer selectively, or turn suspicion elsewhere. This keeps the mystery solvable — the evidence stays true, and your guests' job is deciding whose *story* to believe.
 
-After Round 1 (introductions and rumors):
-1. Tell the players to keep a blank face
-2. Pass the slip container around — each player draws ONE slip in secret and reads it silently
-3. Whoever drew "${Culprit.toUpperCase()}" is the ${culprit}${hasAccomplice ? `; whoever drew "ACCOMPLICE" is the accomplice` : ""}; everyone else is innocent
-4. The ${culprit}${hasAccomplice ? " and accomplice" : ""} should now use their **Guilty${hasAccomplice ? " / Accomplice" : ""} script** sections from their character page. Innocent players use **Innocent** script sections.
-5. Do NOT reveal who drew which slip
-6. Continue to Round 2`
-  : `The ${culprit} in this mystery is **predetermined** — you'll see who they are in the ${Investigator} Guide. Each character has both Innocent and Guilty script options on their character page; the ${culprit} uses the Guilty version and everyone else uses Innocent.
+5. **Round 2 — Motives** — 20 min
+   - The ${Investigator} narrates the round — read aloud, or play the audio
+   - Partway through, watch for a bracketed cue like *[Present Round 2 Evidence]* — that's your signal to reveal the card. Not before the round starts, not right after the opening: exactly at that cue
+   - Once the ${investigator} steps back, players question each other using their Round 2 options
 
-You can either:
-- Privately tell the ${culprit} player their role before the party, OR
-- Reveal it during the game when appropriate`}
+6. **Round 3 — Method** — 20 min
+   Same pattern as Round 2: narration → evidence cue → questions.
 
-**Fair-play rule for the ${culprit}${hasAccomplice ? " (and accomplice)" : ""}** — announce this to the group before Round 2: when giving their own account, the ${culprit} may mislead, spin, omit, and stick to their cover story — that's the game. But when another player asks them a direct question, they shouldn't invent brand-new lies on the spot: they deflect, answer selectively, or turn suspicion elsewhere. This keeps the mystery solvable — the evidence stays true, and your guests' job is deciding whose *story* to believe.
+7. **Round 4 — Opportunity** — 20 min
+   Same pattern again.
 
-## Round-by-Round Flow
+8. **Accusations** — 10 min
+   Going around the group, each player accuses *someone else* with one sentence of reasoning. Point outward — save your own defense for the next step. A big circle works well here — it builds pressure and keeps the room coherent.
 
-**Round 1 is Introductions and Rumors together, no break in between.** The ${Investigator}'s opening statement flows straight into both: each player introduces their character, then shares one rumor they've heard about somebody else at the party. Once everyone's done both, move on to Round 2.
+9. **Final Statements** — 10 min
+   Going around again, each player defends themselves${isCharacterBased ? `. Still denial, not confession — even the ${culprit} sticks to their story here` : " and make one last plea or confession"}.
 
-Rounds 2 through 4 (Motives, Method, Opportunity) each follow the same pattern:
-
-1. **The ${Investigator} starts the round** — read aloud by whoever is playing the ${investigator}, OR played as a pre-recorded audio file (whichever delivery method you chose). Found in the ${Investigator} Guide.
-2. **Evidence is revealed mid-script, not before it starts.** The ${investigator}'s narration builds up to it — watch for a bracketed cue like *[Present Round 2 Evidence]* partway through, and reveal the card at that exact moment. Don't show it before the round begins.
-3. **Players ask each other questions** using their character page's question/response options for that round
-4. **Keep pacing tight** — don't let one round drag. The host (regardless of whether they're playing the ${investigator} or a suspect) keeps time
-
-After Round 4 come **two distinct rounds** — say this out loud so players don't jump ahead:
-
-1. **Accusations** — going around the group, each player accuses *someone else* and gives a one-sentence reason from the evidence. This round points **outward**: ask players to hold their own defense for now.
-2. **Final Statements** — *after everyone has accused*, each player gets their turn to defend themselves${isCharacterBased ? ` and make one last plea. This round is still denial, not confession — even the ${culprit} sticks to their story here` : " and make one last plea or confession"}.
-
-A nice way to run the accusations: gather everyone into one **big circle** so the whole group weighs in together. It builds pressure and keeps the conversation coherent as suspicion shifts around the room.
-
-Finally, the **Reveal** — the ${Investigator} names the ${culprit}, who reads their confession aloud${hasAccomplice ? `. Then the ${Investigator} turns to the accomplice, who confesses too — and **both** are arrested` : ""}.
+10. **The Reveal** — 5–10 min
+    The ${Investigator} names the ${culprit}, who reads their confession aloud${hasAccomplice ? `. Then the ${Investigator} turns to the accomplice, who confesses too — and **both** are arrested` : ""}.
 
 ## Keeping the Story on Track
 
