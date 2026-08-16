@@ -135,43 +135,57 @@ You have two ways to handle the ${investigator} narration:
 ${timeGuidelines(playerCount)} (for ${playerCount ?? 6} players). Follow this section straight through, in order, once your guests are gathered — it's the actual script for the night. Everything above is what you prepare beforehand; this is what you do once it starts.
 
 1. **Opening Statement** — 2–3 min
+
    Deliver the ${Investigator}'s Opening Statement: read it aloud, or play the pre-recorded audio (whichever you chose above). Found in the ${Investigator} Guide.
 
 2. **Round 1, Part A — Introductions** — ~${introTime} min for your group of ${playerCount ?? 6} (roughly 45 sec/player)
-   Going around the group, each player reads or improvises their character's introduction. **For larger groups (15+), ask players to keep it to 2–3 sentences — name, role, one line about the victim — rather than reading the full page.** At 1 minute each, 30 guests is a 30-minute round on its own.
+
+   Going around the group, each player reads or improvises their character's introduction.
+
+   **For larger groups (15+), ask players to keep it to 2–3 sentences** — name, role, one line about the victim — rather than reading the full page. At 1 minute each, 30 guests is a 30-minute round on its own.
 
 3. **Round 1, Part B — Rumors** — 10 min
+
    Right after introductions, no break: each player shares their rumor(s) from their character page with the rest of the group. Everyone should hear at least one rumor before you move on.
 
 ${isCharacterBased ? `4. **Slip Draw — Determining the ${Culprit}** — 5 min
+
    1. Tell the players to keep a blank face
    2. Pass the slip container around — each player draws ONE slip in secret and reads it silently
    3. Whoever drew "${Culprit.toUpperCase()}" is the ${culprit}${hasAccomplice ? `; whoever drew "ACCOMPLICE" is the accomplice` : ""}; everyone else is innocent
    4. The ${culprit}${hasAccomplice ? " and accomplice" : ""} should now use their **Guilty${hasAccomplice ? " / Accomplice" : ""}** script sections; everyone else uses **Innocent**
    5. Do NOT reveal who drew which slip
    6. Continue to Round 2
-` : `4. **The ${Culprit} Is Already Set** — detective-style mysteries skip the slip draw entirely. The ${culprit} is predetermined; see the ${Investigator} Guide for who. Continue straight to Round 2.
+` : `4. **The ${Culprit} Is Already Set** — no action needed here
+
+   Detective-style mysteries skip the slip draw entirely. The ${culprit} is predetermined; see the ${Investigator} Guide for who. Continue straight to Round 2.
 `}
 **Announce this before Round 2:** when giving their own account, the ${culprit} may mislead, spin, omit, and stick to their cover story — that's the game. But when another player asks them a direct question, they shouldn't invent brand-new lies on the spot: they deflect, answer selectively, or turn suspicion elsewhere. This keeps the mystery solvable — the evidence stays true, and your guests' job is deciding whose *story* to believe.
 
 5. **Round 2 — Motives** — 20 min
+
    - The ${Investigator} narrates the round — read aloud, or play the audio
    - Partway through, watch for a bracketed cue like *[Present Round 2 Evidence]* — that's your signal to reveal the card. Not before the round starts, not right after the opening: exactly at that cue
    - Once the ${investigator} steps back, players question each other using their Round 2 options
 
 6. **Round 3 — Method** — 20 min
+
    Same pattern as Round 2: narration → evidence cue → questions.
 
 7. **Round 4 — Opportunity** — 20 min
+
    Same pattern again.
 
 8. **Accusations** — 10 min
+
    Going around the group, each player accuses *someone else* with one sentence of reasoning. Point outward — save your own defense for the next step. A big circle works well here — it builds pressure and keeps the room coherent.
 
 9. **Final Statements** — 10 min
+
    Going around again, each player defends themselves${isCharacterBased ? `. Still denial, not confession — even the ${culprit} sticks to their story here` : " and make one last plea or confession"}.
 
 10. **The Reveal** — 5–10 min
+
     The ${Investigator} names the ${culprit}, who reads their confession aloud${hasAccomplice ? `. Then the ${Investigator} turns to the accomplice, who confesses too — and **both** are arrested` : ""}.
 
 ## Keeping the Story on Track
