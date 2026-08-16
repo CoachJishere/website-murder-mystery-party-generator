@@ -65,7 +65,7 @@ const CharacterAccess: React.FC = () => {
   // Predetermined ('detective') vs random-slip ('character'). We only surface a
   // "you are the murderer" banner for predetermined mysteries — in random-slip
   // games the culprit is drawn secretly at the table, so revealing the role here
-  // would spoil it. See HostGuideTemplate "Determining the Culprit".
+  // would spoil it. See HostGuideTemplate "Running the Game" step 4 (Slip Draw).
   const [mysteryStyle, setMysteryStyle] = useState<string | null>(null);
   // Cast roster (name + public description only) so players can keep track of
   // who's who — ADR-0037 R3, via the token-scoped get_cast_by_token RPC.
