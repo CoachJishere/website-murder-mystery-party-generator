@@ -1586,6 +1586,9 @@
       "comingSoonBadge": "Kommer snart",
       "comingSoonBody": "Korta videor och snabba tips för att leda ditt mysterium på själva kvällen."
     },
+    "entryPoint": {
+      "notice": "Du kan redigera varje karaktär nedan. Behöver du ta bort eller byta ut någon helt? Använd Ny rollbesättning (se fliken Extra) istället för att generera om."
+    },
     "explainer": {
       "title": "Ny rollbesättning",
       "subtitle": "Ta bort en karaktär från ditt mysterium med ett klick.",

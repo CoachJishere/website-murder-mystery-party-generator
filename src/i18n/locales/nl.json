@@ -1586,6 +1586,9 @@
       "comingSoonBadge": "Binnenkort",
       "comingSoonBody": "Korte video's en snelle tips om je mysterie op de avond zelf te leiden."
     },
+    "entryPoint": {
+      "notice": "Je kunt elk personage hieronder bewerken. Moet je iemand volledig verwijderen of vervangen? Gebruik Herbezetting (zie het tabblad Extra's) in plaats van opnieuw te genereren."
+    },
     "explainer": {
       "title": "Herbezetting",
       "subtitle": "Verwijder een personage uit je mysterie met één klik.",

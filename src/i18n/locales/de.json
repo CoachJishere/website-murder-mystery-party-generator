@@ -1586,6 +1586,9 @@
       "comingSoonBadge": "Demnächst",
       "comingSoonBody": "Kurze Videos und schnelle Tipps, um dein Mysterium am Abend selbst zu leiten."
     },
+    "entryPoint": {
+      "notice": "Du kannst jeden Charakter unten bearbeiten. Musst du jemanden komplett entfernen oder ersetzen? Nutze die Neubesetzung (siehe Tab Extras), statt neu zu generieren."
+    },
     "explainer": {
       "title": "Neubesetzung",
       "subtitle": "Entferne einen Charakter aus deinem Mysterium per Klick.",

@@ -1586,6 +1586,9 @@
       "comingSoonBadge": "Tulossa pian",
       "comingSoonBody": "Lyhyitä videoita ja nopeita vinkkejä mysteerisi vetämiseen illan aikana."
     },
+    "entryPoint": {
+      "notice": "Voit muokata kaikkia hahmoja alla. Täytyykö sinun poistaa tai vaihtaa joku kokonaan? Käytä Roolinvaihtoa (katso Lisät-välilehti) uudelleengeneroinnin sijaan."
+    },
     "explainer": {
       "title": "Roolinvaihto",
       "subtitle": "Poista hahmo mysteeristäsi yhdellä napin painalluksella.",

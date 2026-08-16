@@ -68,7 +68,7 @@ Keep this open during the game — it's your at-a-glance control panel, especial
 - [ ] You've read this guide and the ${Investigator} Guide, and skimmed every character's secret so you know who is hiding what
 - [ ] Evidence cards ready (printed or on a screen), one per round
 - [ ] ${isCharacterBased ? `Slips prepared for the ${culprit}${hasAccomplice ? "/accomplice" : ""} draw` : `You know who the ${culprit}${hasAccomplice ? " and accomplice are" : " is"} (see the ${Investigator} Guide)`}
-- [ ] Keep the cast list (top of each player's guide) and the Game Overview within reach — you'll use them to pull the story back on track
+- [ ] Keep the suspect list (top of each player's guide) and the Game Overview within reach — you'll use them to pull the story back on track
 
 **Round order at a glance:** see "Running the Game" below for the full step-by-step.
 

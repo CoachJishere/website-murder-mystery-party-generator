@@ -1586,6 +1586,9 @@
       "comingSoonBadge": "In arrivo",
       "comingSoonBody": "Brevi video e consigli rapidi per gestire il tuo mistero la sera dell'evento."
     },
+    "entryPoint": {
+      "notice": "Puoi modificare ogni personaggio qui sotto. Devi rimuovere o sostituire qualcuno del tutto? Usa Nuovo cast (vedi la scheda Extra) invece di rigenerare."
+    },
     "explainer": {
       "title": "Nuovo cast",
       "subtitle": "Rimuovi un personaggio dal tuo mistero con un clic.",

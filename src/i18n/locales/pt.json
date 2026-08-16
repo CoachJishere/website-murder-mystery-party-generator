@@ -1586,6 +1586,9 @@
       "comingSoonBadge": "Em breve",
       "comingSoonBody": "Vídeos curtos e dicas rápidas para conduzir seu mistério na noite do evento."
     },
+    "entryPoint": {
+      "notice": "Você pode editar cada personagem abaixo. Precisa remover ou substituir alguém completamente? Use a Nova escalação (veja a aba Extras) em vez de regenerar."
+    },
     "explainer": {
       "title": "Nova escalação",
       "subtitle": "Remova um personagem do seu mistério com um clique.",

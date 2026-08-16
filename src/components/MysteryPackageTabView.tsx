@@ -980,7 +980,7 @@ const MysteryPackageTabView = React.memo(({
               )}>
                 {charactersList.length > 1 && (
                   <div className={cn("prose max-w-none mb-2", isMobile && "prose-sm")}>
-                    <ReactMarkdown>{`## The Cast — Who's Who\n\nA quick reference so players can keep everyone straight.\n\n${charactersList.map((c: any) => `- **${c.character_name}** — ${castBriefLine(c.description)}`).join('\n')}`}</ReactMarkdown>
+                    <ReactMarkdown>{`## The Suspects — Who's Who\n\nA quick reference so players can keep everyone straight.\n\n${charactersList.map((c: any) => `- **${c.character_name}** — ${castBriefLine(c.description)}`).join('\n')}`}</ReactMarkdown>
                   </div>
                 )}
                 <div className={cn(

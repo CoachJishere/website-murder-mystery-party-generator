@@ -1586,6 +1586,9 @@
       "comingSoonBadge": "Próximamente",
       "comingSoonBody": "Vídeos cortos y consejos rápidos para dirigir tu misterio la noche del evento."
     },
+    "entryPoint": {
+      "notice": "Puedes editar cada personaje a continuación. ¿Necesitas eliminar o sustituir a alguien por completo? Usa Nuevo reparto (consulta la pestaña Extras) en lugar de regenerar."
+    },
     "explainer": {
       "title": "Nuevo reparto",
       "subtitle": "Elimina un personaje de tu misterio con solo pulsar un botón.",

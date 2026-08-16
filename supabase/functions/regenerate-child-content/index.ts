@@ -858,7 +858,6 @@ serve(async (req) => {
     const effectiveFields = effectiveFieldsFor(defect_class_hint, style, fields);
     const { has_accomplice, mystery_type } = await loadConversation(pkg.conversation_id);
     const allCharacters = await loadCharacters(package_id);
-    const cast = allCharacters.map((c) => ({ character_name: c.character_name, character_role: c.character_role }));
 
     const primary = allCharacters.find((c) => c.id === character_id);
     if (!primary) throw new Error(`character ${character_id} not found in package ${package_id}`);
@@ -930,6 +929,12 @@ serve(async (req) => {
 
     for (const character of targetList) {
       const seedDescription = extractSeedDescription(pkg.extracted_characters, character.character_name);
+      // Exclude the character being written about — including self in the "cast
+      // names only" roster let the model pick itself as its own ally/rival
+      // (e.g. "You are yourself"), seen on dual-gender-variant names.
+      const cast = allCharacters
+        .filter((c) => c.id !== character.id)
+        .map((c) => ({ character_name: c.character_name, character_role: c.character_role }));
       for (const group of groups) {
         const fieldsToGenerate = group.fields.filter((f) => effectiveFields.includes(f));
         if (fieldsToGenerate.length === 0) continue;

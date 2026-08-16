@@ -1587,6 +1587,9 @@
       "comingSoonBadge": "Bientôt disponible",
       "comingSoonBody": "De courtes vidéos et des astuces rapides pour animer votre mystère le soir venu."
     },
+    "entryPoint": {
+      "notice": "Vous pouvez modifier chaque personnage ci-dessous. Besoin de supprimer ou remplacer quelqu'un complètement ? Utilisez Nouveau casting (voir l'onglet Extras) plutôt que de tout régénérer."
+    },
     "explainer": {
       "title": "Nouveau casting",
       "subtitle": "Retirez un personnage de votre mystère en un clic.",

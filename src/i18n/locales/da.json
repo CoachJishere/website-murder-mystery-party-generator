@@ -1586,6 +1586,9 @@
       "comingSoonBadge": "Kommer snart",
       "comingSoonBody": "Korte videoer og hurtige tips til at afvikle dit mysterie på selve aftenen."
     },
+    "entryPoint": {
+      "notice": "Du kan redigere hver karakter nedenfor. Skal du fjerne eller udskifte nogen helt? Brug Ombesætning (se fanen Ekstra) i stedet for at gendanne."
+    },
     "explainer": {
       "title": "Ombesætning",
       "subtitle": "Fjern en karakter fra dit mysterie med et enkelt klik.",

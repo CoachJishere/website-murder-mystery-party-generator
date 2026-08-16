@@ -1587,6 +1587,9 @@
       "comingSoonBadge": "Coming soon",
       "comingSoonBody": "Short videos and quick tips for running your mystery on the night."
     },
+    "entryPoint": {
+      "notice": "You can edit every character below. Need to remove or replace someone entirely instead? Use Recast (see the Extras tab) instead of regenerating."
+    },
     "explainer": {
       "title": "Recast",
       "subtitle": "Remove a character from your mystery with the click of a button.",

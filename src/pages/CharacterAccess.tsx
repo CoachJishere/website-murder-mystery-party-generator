@@ -259,7 +259,7 @@ const CharacterAccess: React.FC = () => {
         const isSelf = c.character_name === character.character_name;
         return `- **${c.character_name}${isSelf ? ' (you)' : ''}** — ${briefLine(c.description)}`;
       }).join('\n');
-      content += `## The Cast — Who's Who\n\nA quick reference so you can keep everyone straight. Knowing who's who is not the same as knowing their secrets.\n\n${rows}\n\n`;
+      content += `## The Suspects — Who's Who\n\nA quick reference so you can keep everyone straight. Knowing who's who is not the same as knowing their secrets.\n\n${rows}\n\n`;
     }
 
     // Static character info — no pointform variants
