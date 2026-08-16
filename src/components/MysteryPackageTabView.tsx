@@ -79,6 +79,7 @@ const CHARACTER_FIELD_LABELS: Record<string, string> = {
 const ROUND_INTENT: Record<string, string> = {
   character_name: "**Renaming only updates this field.** It will not change the name anywhere else — round scripts, clues, and the host guide will still use the original name. Best used to pick a side of a dual name (e.g. \"Clarabelle/Clarence\") before your first read-through, not as a late correction once you've started reviewing the script.",
   introduction: "**Round 1 — Introductions.** When it's your turn, deliver your introduction below. Listen closely to everyone else's — the details you hear now will matter in later rounds.",
+  rumors: "**Round 1 — Rumors.** Still part of Round 1, right after introductions — no break in between. Share the rumor below with anyone who'll listen, and pay attention to what you hear from others: it'll matter in later rounds.",
   round2_script: "**Round 2 — Motives.** The question now is *why*. Use your questions below to probe why others might have wanted the victim gone — and be ready to answer for your own motive.",
   round2_innocent: "**Round 2 — Motives.** The question now is *why*. Use your questions below to probe why others might have wanted the victim gone — and be ready to answer for your own motive.",
   round3_script: "**Round 3 — The Method.** Focus shifts to *how* it was done. Press others on what they knew about the method, the means, and the scene of the crime.",

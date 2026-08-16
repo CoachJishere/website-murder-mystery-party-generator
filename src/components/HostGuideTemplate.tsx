@@ -63,7 +63,14 @@ Keep this open during the game — it's your at-a-glance control panel, especial
 - [ ] ${isCharacterBased ? `Slips prepared for the ${culprit}${hasAccomplice ? "/accomplice" : ""} draw` : `You know who the ${culprit}${hasAccomplice ? " and accomplice are" : " is"} (see the ${Investigator} Guide)`}
 - [ ] Keep the cast list (top of each player's guide) and the Game Overview within reach — you'll use them to pull the story back on track
 
-**Round order at a glance:** Introductions → Round 2 (Motives) → Round 3 (Means) → Round 4 (Opportunity) → Accusations → Final Statements → The Reveal.
+**Round order at a glance:**
+1. Round 1 — Introductions & Rumors
+2. Round 2 — Motives
+3. Round 3 — Method
+4. Round 4 — Opportunity
+5. Accusations
+6. Final Statements
+7. The Reveal
 
 ## Materials
 
@@ -125,9 +132,9 @@ You have two ways to handle the ${investigator} narration:
 
 ${timeGuidelines(playerCount)} (for ${playerCount ?? 6} players).
 
-- **Welcome & character introductions:** 20–25 min${isCharacterBased ? `\n- **Slip draw (${culprit} selection):** 5 min` : ""}
+- **Round 1 — Introductions & rumors:** 20–25 min${isCharacterBased ? `\n- **Slip draw (${culprit} selection):** 5 min` : ""}
 - **Round 2 — Motives:** 20 min
-- **Round 3 — Means:** 20 min
+- **Round 3 — Method:** 20 min
 - **Round 4 — Opportunity:** 20 min
 - **Accusations & final statements:** 15–20 min
 - **The Reveal:** 10 min
@@ -139,7 +146,7 @@ Round timing scales with group size — smaller groups (4–6) move quickly, lar
 ${isCharacterBased
   ? `In this character-based mystery, the ${culprit} is selected **at random** after Round 1 — meaning anyone could be guilty. The game plays differently every time you run it.
 
-After Round 1 introductions:
+After Round 1 (introductions and rumors):
 1. Tell the players to keep a blank face
 2. Pass the slip container around — each player draws ONE slip in secret and reads it silently
 3. Whoever drew "${Culprit.toUpperCase()}" is the ${culprit}${hasAccomplice ? `; whoever drew "ACCOMPLICE" is the accomplice` : ""}; everyone else is innocent
@@ -156,10 +163,12 @@ You can either:
 
 ## Round-by-Round Flow
 
-Each round follows the same pattern:
+**Round 1 is Introductions and Rumors together, no break in between.** The ${Investigator}'s opening statement flows straight into both: each player introduces their character, then shares one rumor they've heard about somebody else at the party. Once everyone's done both, move on to Round 2.
 
-1. **The ${Investigator}'s round opening is delivered** — read aloud by whoever is playing the ${investigator}, OR played as a pre-recorded audio file (whichever delivery method you chose). Found in the ${Investigator} Guide.
-2. **Reveal evidence** for that round (Round 2 = motives, Round 3 = means, Round 4 = opportunity)
+Rounds 2 through 4 (Motives, Method, Opportunity) each follow the same pattern:
+
+1. **The ${Investigator} starts the round** — read aloud by whoever is playing the ${investigator}, OR played as a pre-recorded audio file (whichever delivery method you chose). Found in the ${Investigator} Guide.
+2. **Evidence is revealed mid-script, not before it starts.** The ${investigator}'s narration builds up to it — watch for a bracketed cue like *[Present Round 2 Evidence]* partway through, and reveal the card at that exact moment. Don't show it before the round begins.
 3. **Players ask each other questions** using their character page's question/response options for that round
 4. **Keep pacing tight** — don't let one round drag. The host (regardless of whether they're playing the ${investigator} or a suspect) keeps time
 
