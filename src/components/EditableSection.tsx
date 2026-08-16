@@ -14,6 +14,10 @@ interface EditableSectionProps {
   sectionLabel: string;
   /** Shown as an H3 label when the content has no embedded `#` heading. */
   fallbackLabel?: string;
+  /** Suppresses the header row entirely (e.g. when a caller renders its own
+   *  heading above this section). Header extraction/stripping and the
+   *  save-reconstruction logic are unaffected — only the visible row is hidden. */
+  hideHeader?: boolean;
   isMobile: boolean;
   className?: string;
 }
@@ -73,6 +77,7 @@ const EditableSection: React.FC<EditableSectionProps> = ({
   canEdit,
   sectionLabel,
   fallbackLabel,
+  hideHeader,
   isMobile,
   className,
 }) => {
@@ -178,7 +183,7 @@ const EditableSection: React.FC<EditableSectionProps> = ({
   return (
     <div className={cn("editable-section relative group", className)}>
       {/* Fixed header with edit button */}
-      {header && (
+      {header && !hideHeader && (
         <div className={cn("flex items-center justify-between", bodyContent ? "mb-2" : "mb-0")}>
           <h3
             className={cn(
@@ -202,8 +207,8 @@ const EditableSection: React.FC<EditableSectionProps> = ({
         </div>
       )}
 
-      {/* No header case — show edit button inline */}
-      {!header && canEdit && !isEditing && (
+      {/* No visible header case (either no header exists, or a caller hid it) — show edit button inline */}
+      {(!header || hideHeader) && canEdit && !isEditing && (
         <div className="absolute top-0 right-0 print:hidden">
           <Button
             variant="ghost"
