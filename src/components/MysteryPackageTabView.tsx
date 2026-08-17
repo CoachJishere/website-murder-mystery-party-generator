@@ -22,6 +22,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { parseEvidenceCards } from "@/utils/evidenceCardUtils";
 import HostGuideTemplate from "./HostGuideTemplate";
+import { useCharacterGuideCopy } from "@/lib/characterGuideCopy";
 
 function stripH4Section(markdown: string, pattern: RegExp): string {
   const lines = markdown.split('\n');
@@ -37,118 +38,6 @@ function stripH4Section(markdown: string, pattern: RegExp): string {
   }
   return out.join('\n');
 }
-
-// Display label for each editable character field. Field data is plain text with no
-// embedded section heading, so we supply one via EditableSection's fallbackLabel prop.
-const CHARACTER_FIELD_LABELS: Record<string, string> = {
-  character_name: 'Character Name',
-  description: 'Description',
-  background: 'Background',
-  relationships: 'Relationships',
-  secret: 'Secret',
-  introduction: 'Introduction',
-  rumors: 'Rumors',
-  round2_script: 'Round 2 Script',
-  round2_questions: 'Round 2 Questions',
-  round2_innocent: 'Round 2 — Innocent',
-  round2_guilty: 'Round 2 — Guilty',
-  round2_accomplice: 'Round 2 — Accomplice',
-  round3_script: 'Round 3 Script',
-  round3_questions: 'Round 3 Questions',
-  round3_innocent: 'Round 3 — Innocent',
-  round3_guilty: 'Round 3 — Guilty',
-  round3_accomplice: 'Round 3 — Accomplice',
-  round4_script: 'Round 4 Script',
-  round4_questions: 'Round 4 Questions',
-  round4_innocent: 'Round 4 — Innocent',
-  round4_guilty: 'Round 4 — Guilty',
-  round4_accomplice: 'Round 4 — Accomplice',
-  accusations: 'Accusations',
-  final_statement: 'Final Statement',
-  final_innocent: 'Final Statement — Innocent',
-  final_guilty: 'Final Statement — Guilty',
-  final_accomplice: 'Final Statement — Accomplice',
-  reveal_confession_guilty: 'The Reveal — Your Confession',
-  reveal_confession_accomplice: 'The Reveal — Accomplice Confession',
-};
-
-// Non-round editing tips shown above a field (ADR-0037 R1/R2 legacy path).
-// Non-editable — never saved to the DB. Round-labeled fields moved to
-// ROUND_HEADERS below (2026-08-16) so the round context renders as the
-// actual heading instead of competing with the AI's own embedded header.
-const ROUND_INTENT: Record<string, string> = {
-  character_name: "**Renaming only updates this field.** It will not change the name anywhere else — round scripts, clues, and the host guide will still use the original name. Best used to pick a side of a dual name (e.g. \"Clarabelle/Clarence\") before your first read-through, not as a late correction once you've started reviewing the script.",
-};
-
-// Round-context heading + "what to do now" instruction, shown as the section's
-// actual title (not a blockquote aside). Keyed to the round's lead field;
-// detective (round_script) and character-based (innocent) styles are mutually
-// exclusive so only one variant per round renders. When present, the field's
-// own EditableSection header is hidden (hideHeader) — the AI-generated content
-// almost always embeds its own `## ROUND X: ...`-style header (96% of
-// introduction/rumors fields do), which used to render as a second, larger,
-// redundant heading below this one. 2026-08-16.
-const ROUND_HEADERS: Record<string, { title: string; instruction: string }> = {
-  introduction: {
-    title: "Round 1 — Introductions",
-    instruction: "When it's your turn, deliver your introduction below. Listen closely to everyone else's — the details you hear now will matter in later rounds.",
-  },
-  rumors: {
-    title: "Round 1 — Rumors",
-    instruction: "Still part of Round 1, right after introductions — no break in between. Share the rumor below with anyone who'll listen, and pay attention to what you hear from others: it'll matter in later rounds.",
-  },
-  round2_script: {
-    title: "Round 2 — Motives",
-    instruction: "The question now is why. Use your questions below to probe why others might have wanted the victim gone — and be ready to answer for your own motive.",
-  },
-  round2_innocent: {
-    title: "Round 2 — Motives",
-    instruction: "The question now is why. Use your questions below to probe why others might have wanted the victim gone — and be ready to answer for your own motive.",
-  },
-  round3_script: {
-    title: "Round 3 — The Method",
-    instruction: "Focus shifts to how it was done. Press others on what they knew about the method, the means, and the scene of the crime.",
-  },
-  round3_innocent: {
-    title: "Round 3 — The Method",
-    instruction: "Focus shifts to how it was done. Press others on what they knew about the method, the means, and the scene of the crime.",
-  },
-  round4_script: {
-    title: "Round 4 — Opportunity",
-    instruction: "Where was everyone? Use the evidence to pin down alibis — and be ready to account for your own whereabouts.",
-  },
-  round4_innocent: {
-    title: "Round 4 — Opportunity",
-    instruction: "Where was everyone? Use the evidence to pin down alibis — and be ready to account for your own whereabouts.",
-  },
-  accusations: {
-    title: "Accusations — Point Outward",
-    instruction: "When the accusations round begins, accuse the person you most suspect and give one reason from the evidence. Save your own defense for the final statements that follow.",
-  },
-  final_statement: {
-    title: "Final Statements — Your Turn to Defend",
-    instruction: "After everyone has accused, this is your last word. Defend yourself — or, if you're guilty, make your confession.",
-  },
-  // ADR-0065: character-style Final Statements is denial for everyone, guilty or not —
-  // the confession moved to a separate reveal_confession_* field/round (below), so this
-  // no longer tells guilty players to crack here (detective-style final_statement above
-  // is unaffected — that format's culprit is predetermined and unchanged by this fix).
-  final_innocent: {
-    title: "Final Statements — Your Turn to Defend",
-    instruction: "After everyone has accused, this is your last word before The Reveal. Defend yourself and stick to your story — whether you're innocent or guilty, this round is not where the truth comes out.",
-  },
-  reveal_confession_guilty: {
-    title: "The Reveal — Your Confession",
-    instruction: "Read this ONLY if the Detective specifically names you as the murderer during The Reveal, after every player has already given their Final Statement above. This is a separate, later moment — don't read it early.",
-  },
-  reveal_confession_accomplice: {
-    title: "The Reveal — Accomplice Confession",
-    instruction: "Read this ONLY if the Detective specifically calls on you as the accomplice during The Reveal, after the murderer has already confessed. This is a separate, later moment — don't read it early.",
-  },
-};
-
-// Static stakes reminder shown under each character's secret (ADR-0037 G6).
-const GUARD_DIRECTIVE = "**Guard this secret at all costs.** Your reputation — and perhaps your freedom — depends on keeping it hidden. Deny, deflect, and never give it up willingly. A secret handed over freely drains the tension for the whole table.";
 
 // Extract a one-line "who is this" summary from a character description for the
 // cast cheat-sheet (ADR-0037 R3).
@@ -315,6 +204,7 @@ const MysteryPackageTabView = React.memo(({
   const guestDropoutAdaptationEnabled = import.meta.env.VITE_ENABLE_GUEST_DROPOUT_ADAPTATION === 'true';
   const isMobile = useIsMobile();
   const { t } = useTranslation();
+  const characterGuideCopy = useCharacterGuideCopy();
 
   // Feedback nudge state
   const [showFeedbackNudge, setShowFeedbackNudge] = useState(false);
@@ -1133,20 +1023,22 @@ const MysteryPackageTabView = React.memo(({
                             )}
                             {characterFields
                               .filter(f => f.content && !isStub(f.content))
-                              .map(field => (
+                              .map(field => {
+                                const roundHeader = characterGuideCopy.roundHeaderForField(field.key);
+                                return (
                                 <React.Fragment key={`${character.id}-${field.key}`}>
-                                  {ROUND_HEADERS[field.key] ? (
+                                  {roundHeader ? (
                                     <div className={cn("mb-2", isMobile && "text-sm")}>
                                       <h3 className={cn("font-semibold", isMobile ? "text-base" : "text-lg")}>
-                                        {ROUND_HEADERS[field.key].title}
+                                        {roundHeader.title}
                                       </h3>
                                       <p className={cn("italic text-muted-foreground mt-1", isMobile ? "text-sm" : "text-base")}>
-                                        {ROUND_HEADERS[field.key].instruction}
+                                        {roundHeader.instruction}
                                       </p>
                                     </div>
-                                  ) : ROUND_INTENT[field.key] && (
+                                  ) : field.key === 'character_name' && (
                                     <div className={cn("prose max-w-none guide-intent", isMobile && "prose-sm")}>
-                                      <ReactMarkdown>{`> ${ROUND_INTENT[field.key]}`}</ReactMarkdown>
+                                      <ReactMarkdown>{`> ${characterGuideCopy.characterNameEditingTip}`}</ReactMarkdown>
                                     </div>
                                   )}
                                   <EditableSection
@@ -1156,17 +1048,18 @@ const MysteryPackageTabView = React.memo(({
                                     }
                                     canEdit={!!onCharacterFieldUpdate}
                                     sectionLabel={`${character.character_name} - ${field.key}`}
-                                    fallbackLabel={CHARACTER_FIELD_LABELS[field.key]}
-                                    hideHeader={!!ROUND_HEADERS[field.key]}
+                                    fallbackLabel={characterGuideCopy.fieldLabels[field.key]}
+                                    hideHeader={!!roundHeader}
                                     isMobile={isMobile}
                                   />
                                   {field.key === 'secret' && (
                                     <div className={cn("prose max-w-none guide-intent", isMobile && "prose-sm")}>
-                                      <ReactMarkdown>{`> ${GUARD_DIRECTIVE}`}</ReactMarkdown>
+                                      <ReactMarkdown>{`> ${characterGuideCopy.guardDirective}`}</ReactMarkdown>
                                     </div>
                                   )}
                                 </React.Fragment>
-                              ))}
+                                );
+                              })}
                           </div>
                         </AccordionContent>
                       </AccordionItem>

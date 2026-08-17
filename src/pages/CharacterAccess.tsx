@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from 'react-markdown';
 import { toast } from "sonner";
 import { useTranslation, Trans } from "react-i18next";
+import { useCharacterGuideCopy } from "@/lib/characterGuideCopy";
 
 interface CharacterAssignment {
   id: string;
@@ -58,6 +59,7 @@ type ScriptType = 'full' | 'pointForm' | 'both';
 
 const CharacterAccess: React.FC = () => {
   const { t } = useTranslation();
+  const characterGuideCopy = useCharacterGuideCopy();
   const { token } = useParams<{ token: string }>();
   const [assignment, setAssignment] = useState<CharacterAssignment | null>(null);
   const [scriptType, setScriptType] = useState<ScriptType>('full');
@@ -273,7 +275,7 @@ const CharacterAccess: React.FC = () => {
       // Static stakes reminder (ADR-0037 G6): players who shrug off their secret
       // flatten the tension for everyone. Keep it generic — the generated secret
       // now carries its own specific consequences.
-      content += `> **Guard this secret at all costs.** Your reputation — and perhaps your freedom — depends on keeping it hidden. Deny, deflect, and never give it up willingly. A secret handed over freely drains the tension for the whole table.\n\n`;
+      content += `> ${characterGuideCopy.guardDirective}\n\n`;
     }
 
     // Round 1 setup — has pointform variants
@@ -283,7 +285,8 @@ const CharacterAccess: React.FC = () => {
     );
     if (introBlock) {
       // Static "what to do now" line for Round 1 (ADR-0037 R1)
-      content += `> **Round 1 — Introductions.** When it's your turn, deliver your introduction below. Listen closely to everyone else's — the details you hear now will matter in later rounds.\n\n`;
+      const introHeader = characterGuideCopy.roundHeaders.introduction;
+      content += `> **${introHeader.title}.** ${introHeader.instruction}\n\n`;
       // Pull off the section heading, wrap the prose body in quotes, re-emit
       const m = introBlock.match(/^(##\s+[^\n]+\n+)([\s\S]*)$/);
       if (m && (scriptType === 'full' || (scriptType === 'both' && !introBlock.includes('**Point Form:**')))) {
@@ -297,7 +300,13 @@ const CharacterAccess: React.FC = () => {
       character.rumors, character.rumors_pointform,
       'RUMORS TO SPREAD',
     );
-    if (rumorsBlock) content += `${cleanMarkdownHeaders(rumorsBlock)}\n\n`;
+    if (rumorsBlock) {
+      // Was previously missing here despite existing on the host's equivalent
+      // view (ADR-0090 de-dup) — added for consistency, same pattern as Round 1.
+      const rumorsHeader = characterGuideCopy.roundHeaders.rumors;
+      content += `> **${rumorsHeader.title}.** ${rumorsHeader.instruction}\n\n`;
+      content += `${cleanMarkdownHeaders(rumorsBlock)}\n\n`;
+    }
 
     // For each role variant, strip its baked-in `## ROUND N:` heading so we don't
     // get duplicate round headers when innocent + guilty + accomplice are stacked.
@@ -311,11 +320,12 @@ const CharacterAccess: React.FC = () => {
     // columns (character-based) when the unified column is absent. Both paths respect
     // the host's script_type choice (pointForm/full/both) via formatScriptField.
     // Static "what to do now" line per round, keyed to each round's fixed theme
-    // (ADR-0037 R1/R2). Rendered only when the round actually has content.
-    const roundIntro: Record<2 | 3 | 4, string> = {
-      2: "**Round 2 — Motives.** The question now is *why*. Use your questions below to probe why others might have wanted the victim gone — and be ready to answer for your own motive.",
-      3: "**Round 3 — The Method.** Focus shifts to *how* it was done. Press others on what they knew about the method, the means, and the scene of the crime.",
-      4: "**Round 4 — Opportunity.** Where was everyone? Use the evidence to pin down alibis — and be ready to account for your own whereabouts.",
+    // (ADR-0037 R1/R2, shared copy via ADR-0090). Rendered only when the round
+    // actually has content.
+    const roundIntro: Record<2 | 3 | 4, { title: string; instruction: string }> = {
+      2: characterGuideCopy.roundHeaders.round2,
+      3: characterGuideCopy.roundHeaders.round3,
+      4: characterGuideCopy.roundHeaders.round4,
     };
 
     const renderRound = (roundNum: 2 | 3 | 4) => {
@@ -327,7 +337,7 @@ const CharacterAccess: React.FC = () => {
         character[`round${roundNum}_guilty`] ||
         character[`round${roundNum}_accomplice`]
       );
-      if (hasRoundContent) content += `> ${roundIntro[roundNum]}\n\n`;
+      if (hasRoundContent) content += `> **${roundIntro[roundNum].title}.** ${roundIntro[roundNum].instruction}\n\n`;
       if (questions) content += `${cleanMarkdownHeaders(questions)}\n\n`;
 
       const unified = character[`round${roundNum}_script`];
@@ -389,7 +399,14 @@ const CharacterAccess: React.FC = () => {
       character.final_guilty || character.final_accomplice
     );
     if (hasFinal) {
-      content += `> **Final Statements — your turn to defend.** After everyone has made their accusations, this is your last word. Defend yourself against what was said — or, if you're guilty, make your confession.\n\n`;
+      // final_statement (detective-style) permits confession-or-denial; final_innocent
+      // (character-style, ADR-0065) is denial-only — genuinely different copy, not a
+      // duplicate pair. Previously this page showed one generic note for both paths;
+      // now picks the same copy the host's equivalent view uses (ADR-0090 de-dup).
+      const finalHeader = character.final_statement
+        ? characterGuideCopy.roundHeaders.finalStatement
+        : characterGuideCopy.roundHeaders.finalInnocent;
+      content += `> **${finalHeader.title}.** ${finalHeader.instruction}\n\n`;
     }
     if (character.final_statement) {
       const finalBlock = formatScriptField(
@@ -435,7 +452,8 @@ const CharacterAccess: React.FC = () => {
 
     // Accusations — has pointform variants (only populated for guilty/accomplice)
     if (character.accusations) {
-      content += `> **Accusations — point outward.** When the accusations round begins, accuse the person you most suspect and give one reason from the evidence. This round is for pointing the finger — save your own defense for the final statements that follow.\n\n`;
+      const accusationsHeader = characterGuideCopy.roundHeaders.accusations;
+      content += `> **${accusationsHeader.title}.** ${accusationsHeader.instruction}\n\n`;
       const accBlock = formatScriptField(
         character.accusations, character.accusations_pointform,
         'ACCUSATIONS',

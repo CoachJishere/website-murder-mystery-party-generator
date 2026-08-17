@@ -18,7 +18,8 @@ import {
   isTerminalStatus, AdaptationBatchRow,
 } from "@/services/adaptationService";
 
-// "Recast" — ADR-0036 Phase B (staging only) / ADR-0082 / ADR-0088. Lives in
+// "Remove a Character" (renamed from "Recast" — ADR-0091) — ADR-0036 Phase B
+// (staging only) / ADR-0082 / ADR-0088. Lives in
 // its own "Extras" tab (a small, growing catalog — the hosting-tips-video
 // card below is a placeholder for ADR-0078's already-designed, not-yet-built
 // second citizen) with the pick -> confirm sequence in a focused lightbox.
@@ -44,7 +45,7 @@ import {
 // completion email, since a real Stripe redirect happens in between.
 //
 // Live progress (owner decision after live review): a host shouldn't have to
-// keep that other tab open to know a Recast is working — this card polls for
+// keep that other tab open to know a request is working — this card polls for
 // an in-flight batch on this package and shows progress (bar + per-character
 // checklist) directly here whenever one exists, reverting to the normal idle
 // card once it's done. Only one batch may be in flight per package at a time
@@ -92,7 +93,7 @@ const GuestDropoutPanel: React.FC<GuestDropoutPanelProps> = ({
       setActiveBatch(stillActive ? batch : null);
       return stillActive;
     } catch (e) {
-      console.error("Error checking for an active Recast batch:", e);
+      console.error("Error checking for an active adaptation batch:", e);
       return false;
     }
   };
@@ -224,9 +225,6 @@ const GuestDropoutPanel: React.FC<GuestDropoutPanelProps> = ({
   return (
     <>
       <div className="max-w-lg">
-        <p className="text-xs uppercase tracking-wide mb-3 text-muted-foreground">
-          {t("adaptation.card.sectionIntro")}
-        </p>
         <div className="grid gap-4">
           {activeBatch ? (
             <div className="rounded-lg border p-4 space-y-3">
@@ -459,8 +457,12 @@ const GuestDropoutPanel: React.FC<GuestDropoutPanelProps> = ({
                   <Button variant="outline" onClick={() => setStep("picker")} disabled={submitting}>
                     {t("adaptation.confirm.cancel")}
                   </Button>
-                  <Button variant="destructive" onClick={handleSubmit} disabled={submitting}>
-                    {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : t("adaptation.confirm.cta", { total })}
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={submitting}
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : t("adaptation.confirm.cta")}
                   </Button>
                 </div>
               </div>

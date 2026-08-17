@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// "Recast" — ADR-0036/0082/0088 (staging only). Thin wrapper around the
+// "Remove a Character" (renamed from "Recast" — ADR-0091) — ADR-0036/0082/0088
+// (staging only). Thin wrapper around the
 // adaptation edge functions, matching the supabase.functions.invoke()
 // convention already used in mysteryPackageService.ts.
 
@@ -81,7 +82,7 @@ export async function getAdaptationBatchStatus(batchId: string): Promise<Adaptat
 
 /** Finds the currently in-flight batch for a package, if any (only one is
  *  ever allowed at a time — see adapt-mystery-create's package-wide guard).
- *  Used to show live progress directly on the Recast card, not just on the
+ *  Used to show live progress directly on the card, not just on the
  *  post-payment success page, so a host doesn't have to keep that other tab
  *  open to know it's working. Returns null when nothing is in progress. */
 export async function getActiveAdaptationBatch(packageId: string): Promise<AdaptationBatchRow[] | null> {

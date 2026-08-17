@@ -1,5 +1,6 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import EditableSection from "./EditableSection";
 
@@ -8,6 +9,13 @@ import EditableSection from "./EditableSection";
 // and Hosting Tips (mystery-specific notes) genuinely vary. This component renders the
 // static template with parameterized terminology (Detective/Investigator, Murderer/Culprit)
 // and interpolated dynamic content.
+//
+// Localized via i18next (ADR-0090). Terminology- and branch-dependent sentences use full
+// sentence-per-variant keys rather than word-splicing, selected by appending a context
+// suffix built from mysteryType (`murder`/`intrigue`) and, where relevant, `_accomplice` —
+// e.g. `hostGuide.checklist.item2_murder`. This keeps every language grammatically natural
+// instead of interpolating a translated noun into a templated sentence (see ADR-0090
+// Discussion for why interpolation-only was rejected).
 
 interface HostGuideTemplateProps {
   mysteryType?: string | null;        // 'murder' | 'intrigue'
@@ -23,12 +31,12 @@ interface HostGuideTemplateProps {
   isMobile?: boolean;
 }
 
-function timeGuidelines(playerCount: number | null | undefined): string {
+function timeGuidelineKey(playerCount: number | null | undefined): string {
   const n = playerCount ?? 6;
-  if (n <= 8) return "Approximately 1.5 hours total";
-  if (n <= 14) return "Approximately 2 hours total";
-  if (n <= 20) return "Approximately 2 to 2.5 hours total";
-  return "Approximately 3 hours total";
+  if (n <= 8) return "timeShort";
+  if (n <= 14) return "timeMedium";
+  if (n <= 20) return "timeLong";
+  return "timeXlong";
 }
 
 // ~45 sec/player is enough for a name, role, and one line about the victim —
@@ -48,168 +56,174 @@ const HostGuideTemplate: React.FC<HostGuideTemplateProps> = ({
   onPackageFieldUpdate,
   isMobile,
 }) => {
-  // Terminology adapts to mystery type.
+  const { t } = useTranslation();
+
+  // Terminology adapts to mystery type. `ctx`/`actx` select the right full-sentence
+  // translation variant (ADR-0090) — ctx for sentences that only depend on
+  // murder-vs-intrigue terminology, actx for sentences that also branch on whether
+  // there's an accomplice.
   const isIntrigue = mysteryType === "intrigue";
-  const Investigator = isIntrigue ? "Investigator" : "Detective";
-  const investigator = isIntrigue ? "investigator" : "detective";
-  const Culprit = isIntrigue ? "Culprit" : "Murderer";
-  const culprit = isIntrigue ? "culprit" : "murderer";
-  const crimeNoun = isIntrigue ? "incident" : "murder";
+  const ctx = isIntrigue ? "intrigue" : "murder";
+  const actx = hasAccomplice ? `${ctx}_accomplice` : ctx;
   const isCharacterBased = mysteryStyle === "character";
   const introTime = introMinutes(playerCount);
+  const players = playerCount ?? 6;
+  const slipCount = playerCount ?? 7;
 
-  // The static template content as one large markdown block.
-  // This is intentionally not in i18n yet — keep simple for v1, translate later.
-  const staticTemplate = `## Host Quick-Start Checklist
+  const tt = (key: string) => t(`hostGuide.${key}`);
 
-Keep this open during the game — it's your at-a-glance control panel, especially if you're also playing the ${Investigator}.
+  // The static template content as one large markdown block, assembled from
+  // translated per-section/per-variant keys.
+  const staticTemplate = `## ${tt("checklist.heading")}
 
-- [ ] Everyone has their character page open (sent digitally before the party)
-- [ ] You've read this guide and the ${Investigator} Guide, and skimmed every character's secret so you know who is hiding what
-- [ ] Evidence cards ready (printed or on a screen), one per round
-- [ ] ${isCharacterBased ? `Slips prepared for the ${culprit}${hasAccomplice ? "/accomplice" : ""} draw` : `You know who the ${culprit}${hasAccomplice ? " and accomplice are" : " is"} (see the ${Investigator} Guide)`}
-- [ ] Keep the suspect list (top of each player's guide) and the Game Overview within reach — you'll use them to pull the story back on track
+${tt(`checklist.intro_${ctx}`)}
 
-**Round order at a glance:** see "Running the Game" below for the full step-by-step.
+- [ ] ${tt("checklist.item1")}
+- [ ] ${tt(`checklist.item2_${ctx}`)}
+- [ ] ${tt("checklist.item3")}
+- [ ] ${isCharacterBased ? tt(`checklist.item4SlipDraw_${actx}`) : tt(`checklist.item4Predetermined_${actx}`)}
+- [ ] ${tt("checklist.item5")}
 
-## Materials
+${tt("checklist.roundOrderNote")}
 
-**Universal items:**
-- Character guides — already sent to each guest digitally before the party
-- Printed evidence cards (or shown on a phone/screen — your choice)
-- ${Investigator} script (${investigator} dialogue for each round, in the ${Investigator} Guide tab)
-- Timer or clock${isMobile ? "" : "\n- Optional: themed décor, music, food/drink"}
+## ${tt("materials.heading")}
+
+${tt("materials.universalLabel")}
+- ${tt("materials.item1")}
+- ${tt("materials.item2")}
+- ${tt(`materials.item3_${ctx}`)}
+- ${tt("materials.item4")}${isMobile ? "" : `\n- ${tt("materials.item5")}`}
 ${isCharacterBased ? `
-**For the slip draw:**
-- Container for slips of paper (hat, bowl, decorative box)
-- Slips of paper for ${culprit} selection${hasAccomplice ? " (and accomplice selection)" : ""}` : ""}
+${tt("materials.slipDrawLabel")}
+- ${tt("materials.slipDrawItem1")}
+- ${tt(`materials.slipDrawItem2_${actx}`)}` : ""}
 
-## Preparation Before the Party
+## ${tt("prep.heading")}
 
-**A few days before:**
-- Read this entire host guide and the ${Investigator} Guide
-- Send each guest their character page (digital link or PDF) at least 3 days before the event
-- Encourage guests to read their character intro before arriving — they don't need to memorize, just be familiar
-- Confirm guest list and finalize attendees
+${tt("prep.beforeLabel")}
+- ${tt(`prep.item1_${ctx}`)}
+- ${tt("prep.item2")}
+- ${tt("prep.item3")}
+- ${tt("prep.item4")}
 
-**Day of:**
-${isCharacterBased ? `- Prepare the slip draw: cut ${(playerCount ?? 7) + 0} small slips of paper. Write "${Culprit.toUpperCase()}" on one slip${hasAccomplice ? `, "ACCOMPLICE" on another` : ""}. Leave the rest blank (or write "Innocent"). Fold each so the writing isn't visible. Place them in your container.
-` : ""}- Print evidence cards (optional) — you can also just show them on a phone or read aloud
-- Set the atmosphere if you want (themed music, dim lights, themed snacks) — none of this is required
+${tt("prep.dayOfLabel")}
+${isCharacterBased ? `- ${t(`hostGuide.prep.slipDrawSetup_${actx}`, { playerCount: slipCount })}
+` : ""}- ${tt("prep.item5")}
+- ${tt("prep.item6")}
 
-## Managing Last-Minute Guest Changes
+## ${tt("guestChanges.heading")}
 
-Your cast of suspects is fixed — it's woven into the plot, so you can't add or remove suspect characters. But real guest lists change, and the game is built to absorb that.
+${tt("guestChanges.intro")}
 
-**More guests than characters (someone extra wants to join):**
-- Bring them in as **co-investigators** on the ${Investigator}'s team — no character page needed. As many as you like.
-- They question the suspects each round, work the clues and evidence alongside everyone else, and make their case at the accusation stage.
-- **Important:** co-investigators do NOT get the ${Investigator} script or this host guide — those are your case file and they name the ${culprit}. Keep them to yourself. Your co-investigators solve it fair and square from the clues, exactly like the suspects do.
+${tt("guestChanges.moreLabel")}
+- ${tt(`guestChanges.moreItem1_${ctx}`)}
+- ${tt("guestChanges.moreItem2")}
+- ${tt(`guestChanges.moreItem3_${ctx}`)}
 
-**Fewer guests than characters (someone drops out):**
-- Never cut the ${culprit}${hasAccomplice ? " or the accomplice" : ""} — the plot depends on them being in play.
-- To drop a suspect, pick a purely innocent character. Either fold their key facts into another guest's briefing, or have the ${Investigator} mention them as "unavailable for questioning" so their clues still surface.
-- If several guests drop out, consider regenerating the mystery at the new headcount for the cleanest fit.
+${tt("guestChanges.fewerLabel")}
+- ${tt(`guestChanges.fewerItem1_${actx}`)}
+- ${tt(`guestChanges.fewerItem2_${ctx}`)}
+- ${tt("guestChanges.fewerItem3")}
 
-## ${Investigator} Setup Choice
+## ${tt(`setupChoice.heading_${ctx}`)}
 
-You have two ways to handle the ${investigator} narration:
+${tt(`setupChoice.intro_${ctx}`)}
 
-**Option 1 — Host as ${Investigator}**
-- You play the ${investigator} character throughout the game
-- Read each round's ${investigator} script aloud as the action progresses
-- ${isCharacterBased ? `In character-based mysteries, you do NOT participate as a suspect, so you can pre-decide the ${culprit} (skip the slip draw) or still use the slip draw for variety.` : `In detective-style mysteries, the ${culprit} is predetermined — you'll see who they are in the ${Investigator} Guide. Decide before the party whether to tell that player privately or let it reveal itself during the game.`}
+${tt(`setupChoice.option1Label_${ctx}`)}
+- ${tt(`setupChoice.option1Item1_${ctx}`)}
+- ${tt(`setupChoice.option1Item2_${ctx}`)}
+- ${isCharacterBased ? tt(`setupChoice.option1NoteCharacterBased_${ctx}`) : tt(`setupChoice.option1NoteDetective_${ctx}`)}
 
-**Option 2 — Audio ${Investigator}**
-- You play one of the suspect characters (you participate in the mystery)
-- Generate audio of the ${investigator} script using a free AI tool:
-  - [Google AI Studio Speech](https://aistudio.google.com/generate-speech) — paste the script, generate TTS audio
-  - [Google NotebookLM](https://notebooklm.google.com) — paste the script, use Audio Overview
-  - Or any other TTS service (ElevenLabs, etc.)
-- Skip the [bracketed stage directions] when generating audio
-- Play each round's audio at the appropriate moment
-- Have backup printed scripts ready in case of tech issues
+${tt(`setupChoice.option2Label_${ctx}`)}
+- ${tt("setupChoice.option2Item1")}
+- ${tt(`setupChoice.option2Item2_${ctx}`)}
+  - ${tt("setupChoice.ttsOption1")}
+  - ${tt("setupChoice.ttsOption2")}
+  - ${tt("setupChoice.ttsOption3")}
+- ${tt("setupChoice.option2Item3")}
+- ${tt("setupChoice.option2Item4")}
+- ${tt("setupChoice.option2Item5")}
 
-## Running the Game
+## ${tt("runningGame.heading")}
 
-${timeGuidelines(playerCount)} (for ${playerCount ?? 6} players). Follow this section straight through, in order, once your guests are gathered — it's the actual script for the night. Everything above is what you prepare beforehand; this is what you do once it starts.
+${t(`hostGuide.runningGame.intro`, { timeEstimate: tt(`runningGame.${timeGuidelineKey(playerCount)}`), playerCount: players })}
 
-1. **Opening Statement** — 2–3 min
+1. **${tt("runningGame.step1Label")}**
 
-   Deliver the ${Investigator}'s Opening Statement: read it aloud, or play the pre-recorded audio (whichever you chose above). Found in the ${Investigator} Guide.
+   ${tt(`runningGame.step1Body_${ctx}`)}
 
-2. **Round 1, Part A — Introductions** — ~${introTime} min for your group of ${playerCount ?? 6} (roughly 45 sec/player)
+2. **${t("hostGuide.runningGame.step2Label", { introTime, playerCount: players })}**
 
-   Going around the group, each player reads or improvises their character's introduction.
+   ${tt("runningGame.step2Body")}
 
-   **For larger groups (15+), ask players to keep it to 2–3 sentences** — name, role, one line about the victim — rather than reading the full page. At 1 minute each, 30 guests is a 30-minute round on its own.
+   ${tt("runningGame.step2LargeGroupNote")}
 
-3. **Round 1, Part B — Rumors** — 10 min
+3. **${tt("runningGame.step3Label")}**
 
-   Right after introductions, no break: each player shares their rumor(s) from their character page with the rest of the group. Everyone should hear at least one rumor before you move on.
+   ${tt("runningGame.step3Body")}
 
-${isCharacterBased ? `4. **Slip Draw — Determining the ${Culprit}** — 5 min
+${isCharacterBased ? `4. **${tt(`runningGame.step4SlipDrawLabel_${ctx}`)}**
 
-   1. Tell the players to keep a blank face
-   2. Pass the slip container around — each player draws ONE slip in secret and reads it silently
-   3. Whoever drew "${Culprit.toUpperCase()}" is the ${culprit}${hasAccomplice ? `; whoever drew "ACCOMPLICE" is the accomplice` : ""}; everyone else is innocent
-   4. The ${culprit}${hasAccomplice ? " and accomplice" : ""} should now use their **Guilty${hasAccomplice ? " / Accomplice" : ""}** script sections; everyone else uses **Innocent**
-   5. Do NOT reveal who drew which slip
-   6. Continue to Round 2
-` : `4. **The ${Culprit} Is Already Set** — no action needed here
+   1. ${tt("runningGame.step4SlipDrawItem1")}
+   2. ${tt("runningGame.step4SlipDrawItem2")}
+   3. ${tt(`runningGame.step4SlipDrawItem3_${actx}`)}
+   4. ${tt(`runningGame.step4SlipDrawItem4_${actx}`)}
+   5. ${tt("runningGame.step4SlipDrawItem5")}
+   6. ${tt("runningGame.step4SlipDrawItem6")}
+` : `4. **${tt(`runningGame.step4PredeterminedLabel_${ctx}`)}**
 
-   Detective-style mysteries skip the slip draw entirely. The ${culprit} is predetermined; see the ${Investigator} Guide for who. Continue straight to Round 2.
+   ${tt(`runningGame.step4PredeterminedBody_${ctx}`)}
 `}
-**Announce this before Round 2:** when giving their own account, the ${culprit} may mislead, spin, omit, and stick to their cover story — that's the game. But when another player asks them a direct question, they shouldn't invent brand-new lies on the spot: they deflect, answer selectively, or turn suspicion elsewhere. This keeps the mystery solvable — the evidence stays true, and your guests' job is deciding whose *story* to believe.
+${tt(`runningGame.beforeRound2Note_${ctx}`)}
 
-5. **Round 2 — Motives** — 20 min
+5. **${tt("runningGame.step5Label")}**
 
-   - The ${Investigator} narrates the round — read aloud, or play the audio
-   - Partway through, watch for a bracketed cue like *[Present Round 2 Evidence]* — that's your signal to reveal the card. Not before the round starts, not right after the opening: exactly at that cue
-   - Once the ${investigator} steps back, players question each other using their Round 2 options
+   - ${tt(`runningGame.step5Item1_${ctx}`)}
+   - ${tt("runningGame.step5Item2")}
+   - ${tt(`runningGame.step5Item3_${ctx}`)}
 
-6. **Round 3 — Method** — 20 min
+6. **${tt("runningGame.step6Label")}**
 
-   Same pattern as Round 2: narration → evidence cue → questions.
+   ${tt("runningGame.step6Body")}
 
-7. **Round 4 — Opportunity** — 20 min
+7. **${tt("runningGame.step7Label")}**
 
-   Same pattern again.
+   ${tt("runningGame.step7Body")}
 
-8. **Accusations** — 10 min
+8. **${tt("runningGame.step8Label")}**
 
-   Going around the group, each player accuses *someone else* with one sentence of reasoning. Point outward — save your own defense for the next step. A big circle works well here — it builds pressure and keeps the room coherent.
+   ${tt("runningGame.step8Body")}
 
-9. **Final Statements** — 10 min
+9. **${tt("runningGame.step9Label")}**
 
-   Going around again, each player defends themselves${isCharacterBased ? `. Still denial, not confession — even the ${culprit} sticks to their story here` : " and make one last plea or confession"}.
+   ${isCharacterBased ? tt(`runningGame.step9BodyCharacterBased_${ctx}`) : tt("runningGame.step9BodyDetective")}
 
-10. **The Reveal** — 5–10 min
+10. **${tt("runningGame.step10Label")}**
 
-    The ${Investigator} names the ${culprit}, who reads their confession aloud${hasAccomplice ? `. Then the ${Investigator} turns to the accomplice, who confesses too — and **both** are arrested` : ""}.
+    ${tt(`runningGame.step10Body_${actx}`)}
 
-## Keeping the Story on Track
+## ${tt("keepingOnTrack.heading")}
 
-Players will improvise, add their own flair, and sometimes wander off-script — **this is normal and it's fine.** A little chaos is part of the fun, and you don't need to correct every departure. Only step in when the thread is genuinely lost.
+${tt("keepingOnTrack.intro")}
 
-When it drifts, the ${Investigator} is your tool for pulling it back. Because the ${investigator} is suspicious of everyone, you can always cut in with a pointed question:
-- "Wait — a moment ago you said you were in the parlor. How does that square with what we just heard?"
-- "That's curious. Earlier you told us something different. Which is it?"
-- "Let's come back to the facts. [Name], where exactly were you when it happened?"
+${tt(`keepingOnTrack.tool_${ctx}`)}
+- ${tt("keepingOnTrack.example1")}
+- ${tt("keepingOnTrack.example2")}
+- ${tt("keepingOnTrack.example3")}
 
-Keep the Game Overview and each character's secret handy (you skimmed them in the checklist) so you can always re-anchor the group in what's actually true.
+${tt("keepingOnTrack.closing")}
 
-## Hosting Tips
+## ${tt("tips.heading")}
 
-- **Keep it moving.** If a round is dragging, summarize and prompt: "OK — based on what we've heard, who's looking suspicious?"
-- **Read evidence neutrally.** Don't hint at who you think did it (even if you know).
-- **Watch for quiet players.** Prompt them with a question if they haven't spoken in a round.
-- **Watch for dominant players.** Gently redirect: "Let's hear from someone we haven't heard from."
-- **The ${culprit} should NOT confess too early**${isCharacterBased ? ` — their Final Statement is a denial like everyone else's. The real confession only comes if the ${investigator} specifically names them during the Reveal — that's a separate, later section on their character page ("The Reveal — Your Confession"). Encourage them to play it cool through Final Statements.` : " — they should defend themselves until cornered. Encourage them to play it cool."}
-- **Everyone protects their secret.** Each character has a secret with real consequences if it gets out. Remind players to guard it — a player who shrugs off their secret drains the tension for everyone. Defending your reputation is half the game.
-- **Let the group move.** Small clusters of conversation and one big circle for the accusations both work well — don't force everyone to stay in one seated formation the whole time.
-- **Improvise.** If a player asks something not in their script options, encourage in-character improvisation.
-- **Have fun with atmosphere.** Music and a themed snack go a long way; nothing else is required.
+- ${tt("tips.tip1")}
+- ${tt("tips.tip2")}
+- ${tt("tips.tip3")}
+- ${tt("tips.tip4")}
+- ${isCharacterBased ? tt(`tips.tip5CharacterBased_${ctx}`) : tt(`tips.tip5Detective_${ctx}`)}
+- ${tt("tips.tip6")}
+- ${tt("tips.tip7")}
+- ${tt("tips.tip8")}
+- ${tt("tips.tip9")}
 `;
 
   return (

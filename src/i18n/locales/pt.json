@@ -1575,11 +1575,10 @@
   },
   "adaptation": {
     "card": {
-      "sectionIntro": "Mais formas de moldar seu mistério - isso cresce com o tempo",
-      "title": "Nova escalação",
+      "title": "Remover uma personagem",
       "teaser": "Um convidado não pode vir? Remova ou substitua ele na história - $5 fixo, ajuste quantos personagens precisar de uma vez.",
       "cta": "Saiba mais",
-      "inProgressTitle": "Troca de elenco em andamento",
+      "inProgressTitle": "Atualização em curso",
       "inProgressSummary": "{{done}} de {{total}} atualizados",
       "inProgressNotice": "Vamos te avisar por e-mail quando terminar - fique à vontade para continuar usando o resto do seu mistério enquanto isso.",
       "comingSoonTitle": "Dicas e vídeos para anfitriões",
@@ -1587,10 +1586,10 @@
       "comingSoonBody": "Vídeos curtos e dicas rápidas para conduzir seu mistério na noite do evento."
     },
     "entryPoint": {
-      "notice": "Você pode editar cada personagem abaixo. Precisa remover ou substituir alguém completamente? Use a Nova escalação (veja a aba Extras) em vez de regenerar."
+      "notice": "Você pode editar cada personagem abaixo. Precisa remover ou substituir alguém completamente? Use Remover uma personagem (veja a aba Extras) em vez de regenerar."
     },
     "explainer": {
-      "title": "Nova escalação",
+      "title": "Remover uma personagem",
       "subtitle": "Remova um personagem do seu mistério com um clique.",
       "characterStyleHeadline": "Você provavelmente não precisa pagar por isso.",
       "characterStyleBody": "Este é um mistério baseado em personagens - não existe um culpado predeterminado, então a ausência de um personagem é fácil de contornar você mesmo, de graça. Basta dizer aos seus convidados algo como: \"X também é suspeito, mas está sendo interrogado separadamente - continuem sem ele\", ou \"Já descartamos X\". Qualquer boato solto sobre essa pessoa deixa de ser um problema.",
@@ -1618,7 +1617,7 @@
       "replacedByAuto": "vamos escolher o novo {{role}}",
       "totalLabel": "Total: ${{total}}",
       "cancel": "Cancelar",
-      "cta": "Remover - ${{total}}"
+      "cta": "Pagar agora"
     },
     "processing": {
       "title": "Atualizando seu mistério",
@@ -1635,9 +1634,266 @@
       "backToMystery": "Voltar para o seu mistério"
     },
     "toasts": {
-      "createdNoCheckout": "Solicitação de troca de elenco criada para {{count}} personagem(ns) (modo de teste - sem pagamento configurado).",
+      "createdNoCheckout": "Solicitação criada para {{count}} personagem(ns) (modo de teste - sem pagamento configurado).",
       "createFailed": "Não foi possível iniciar essa solicitação. Tente novamente.",
-      "alreadyInProgress": "Um desses personagens já tem uma solicitação de troca de elenco em andamento."
+      "alreadyInProgress": "Um desses personagens já tem uma solicitação em andamento."
     }
+  },
+  "hostGuide": {
+    "checklist": {
+      "heading": "Lista de Verificação Rápida do Anfitrião",
+      "intro_murder": "Mantém isto aberto durante o jogo — é o teu painel de controlo rápido, especialmente se também estiveres a interpretar o Detetive.",
+      "intro_intrigue": "Mantém isto aberto durante o jogo — é o teu painel de controlo rápido, especialmente se também estiveres a interpretar o Investigador.",
+      "item1": "Todos têm a página da sua personagem aberta (enviada digitalmente antes da festa)",
+      "item2_murder": "Já leste este guia e o Guia do Detetive, e passaste os olhos pelo segredo de cada personagem para saberes quem esconde o quê",
+      "item2_intrigue": "Já leste este guia e o Guia do Investigador, e passaste os olhos pelo segredo de cada personagem para saberes quem esconde o quê",
+      "item3": "Cartões de prova preparados (impressos ou num ecrã), um por ronda",
+      "item4SlipDraw_murder": "Papelinhos preparados para o sorteio do assassino",
+      "item4SlipDraw_murder_accomplice": "Papelinhos preparados para o sorteio do assassino/cúmplice",
+      "item4SlipDraw_intrigue": "Papelinhos preparados para o sorteio do culpado",
+      "item4SlipDraw_intrigue_accomplice": "Papelinhos preparados para o sorteio do culpado/cúmplice",
+      "item4Predetermined_murder": "Sabes quem é o assassino (consulta o Guia do Detetive)",
+      "item4Predetermined_murder_accomplice": "Sabes quem são o assassino e o cúmplice (consulta o Guia do Detetive)",
+      "item4Predetermined_intrigue": "Sabes quem é o culpado (consulta o Guia do Investigador)",
+      "item4Predetermined_intrigue_accomplice": "Sabes quem são o culpado e o cúmplice (consulta o Guia do Investigador)",
+      "item5": "Mantém a lista de suspeitos (no topo do guia de cada jogador) e a Visão Geral do Jogo à mão — vais usá-las para voltar a encaminhar a história",
+      "roundOrderNote": "**Ordem das rondas num relance:** consulta \"Conduzir o Jogo\" abaixo para o processo completo, passo a passo."
+    },
+    "materials": {
+      "heading": "Materiais",
+      "universalLabel": "**Itens universais:**",
+      "item1": "Guias das personagens — já enviados a cada convidado digitalmente antes da festa",
+      "item2": "Cartões de prova impressos (ou mostrados num telemóvel/ecrã — a tua escolha)",
+      "item3_murder": "Guião do Detetive (diálogo do detetive para cada ronda, no separador Guia do Detetive)",
+      "item3_intrigue": "Guião do Investigador (diálogo do investigador para cada ronda, no separador Guia do Investigador)",
+      "item4": "Cronómetro ou relógio",
+      "item5": "Opcional: decoração temática, música, comida/bebida",
+      "slipDrawLabel": "**Para o sorteio de papelinhos:**",
+      "slipDrawItem1": "Recipiente para os papelinhos (chapéu, taça, caixa decorativa)",
+      "slipDrawItem2_murder": "Papelinhos para a seleção do assassino",
+      "slipDrawItem2_murder_accomplice": "Papelinhos para a seleção do assassino (e do cúmplice)",
+      "slipDrawItem2_intrigue": "Papelinhos para a seleção do culpado",
+      "slipDrawItem2_intrigue_accomplice": "Papelinhos para a seleção do culpado (e do cúmplice)"
+    },
+    "prep": {
+      "heading": "Preparação Antes da Festa",
+      "beforeLabel": "**Uns dias antes:**",
+      "item1_murder": "Lê este guia do anfitrião na íntegra e o Guia do Detetive",
+      "item1_intrigue": "Lê este guia do anfitrião na íntegra e o Guia do Investigador",
+      "item2": "Envia a cada convidado a página da sua personagem (link digital ou PDF) pelo menos 3 dias antes do evento",
+      "item3": "Incentiva os convidados a lerem a introdução da sua personagem antes de chegarem — não precisam de decorar, só de se familiarizarem",
+      "item4": "Confirma a lista de convidados e finaliza os participantes",
+      "dayOfLabel": "**No dia:**",
+      "slipDrawSetup_murder": "Prepara o sorteio de papelinhos: corta {{playerCount}} pequenos papelinhos. Escreve \"ASSASSINO\" num deles. Deixa os restantes em branco (ou escreve \"Inocente\"). Dobra cada um para que a escrita não fique visível. Coloca-os no teu recipiente.",
+      "slipDrawSetup_murder_accomplice": "Prepara o sorteio de papelinhos: corta {{playerCount}} pequenos papelinhos. Escreve \"ASSASSINO\" num papelinho e \"CÚMPLICE\" noutro. Deixa os restantes em branco (ou escreve \"Inocente\"). Dobra cada um para que a escrita não fique visível. Coloca-os no teu recipiente.",
+      "slipDrawSetup_intrigue": "Prepara o sorteio de papelinhos: corta {{playerCount}} pequenos papelinhos. Escreve \"CULPADO\" num deles. Deixa os restantes em branco (ou escreve \"Inocente\"). Dobra cada um para que a escrita não fique visível. Coloca-os no teu recipiente.",
+      "slipDrawSetup_intrigue_accomplice": "Prepara o sorteio de papelinhos: corta {{playerCount}} pequenos papelinhos. Escreve \"CULPADO\" num papelinho e \"CÚMPLICE\" noutro. Deixa os restantes em branco (ou escreve \"Inocente\"). Dobra cada um para que a escrita não fique visível. Coloca-os no teu recipiente.",
+      "item5": "Imprime os cartões de prova (opcional) — também podes simplesmente mostrá-los num telemóvel ou lê-los em voz alta",
+      "item6": "Cria o ambiente se quiseres (música temática, luzes suaves, petiscos temáticos) — nada disto é obrigatório"
+    },
+    "guestChanges": {
+      "heading": "Gerir Alterações de Última Hora nos Convidados",
+      "intro": "O teu elenco de suspeitos é fixo — está entrelaçado na trama, por isso não podes adicionar ou remover personagens suspeitas. Mas as listas de convidados reais mudam, e o jogo foi criado para se adaptar a isso.",
+      "moreLabel": "**Mais convidados do que personagens (alguém extra quer participar):**",
+      "moreItem1_murder": "Integra-os como **coinvestigadores** na equipa do Detetive — não precisam de página de personagem. Podem ser quantos quiseres.",
+      "moreItem1_intrigue": "Integra-os como **coinvestigadores** na equipa do Investigador — não precisam de página de personagem. Podem ser quantos quiseres.",
+      "moreItem2": "Interrogam os suspeitos em cada ronda, trabalham as pistas e as provas junto com todos os outros, e apresentam o seu caso na fase de acusações.",
+      "moreItem3_murder": "**Importante:** os coinvestigadores NÃO recebem o guião do Detetive nem este guia do anfitrião — esses são o teu processo do caso e revelam quem é o assassino. Guarda-os só para ti. Os teus coinvestigadores resolvem o caso de forma justa a partir das pistas, tal como os suspeitos.",
+      "moreItem3_intrigue": "**Importante:** os coinvestigadores NÃO recebem o guião do Investigador nem este guia do anfitrião — esses são o teu processo do caso e revelam quem é o culpado. Guarda-os só para ti. Os teus coinvestigadores resolvem o caso de forma justa a partir das pistas, tal como os suspeitos.",
+      "fewerLabel": "**Menos convidados do que personagens (alguém desiste):**",
+      "fewerItem1_murder": "Nunca cortes o assassino — a trama depende de ele estar em jogo.",
+      "fewerItem1_murder_accomplice": "Nunca cortes o assassino nem o cúmplice — a trama depende de eles estarem em jogo.",
+      "fewerItem1_intrigue": "Nunca cortes o culpado — a trama depende de ele estar em jogo.",
+      "fewerItem1_intrigue_accomplice": "Nunca cortes o culpado nem o cúmplice — a trama depende de eles estarem em jogo.",
+      "fewerItem2_murder": "Para retirar um suspeito, escolhe uma personagem puramente inocente. Podes incorporar os seus factos-chave no briefing de outro convidado, ou fazer com que o Detetive a mencione como \"indisponível para interrogatório\", para que as suas pistas continuem a surgir.",
+      "fewerItem2_intrigue": "Para retirar um suspeito, escolhe uma personagem puramente inocente. Podes incorporar os seus factos-chave no briefing de outro convidado, ou fazer com que o Investigador a mencione como \"indisponível para interrogatório\", para que as suas pistas continuem a surgir.",
+      "fewerItem3": "Se vários convidados desistirem, considera gerar novamente o mistério com o novo número de participantes, para um ajuste mais limpo."
+    },
+    "setupChoice": {
+      "heading_murder": "Escolha de Configuração do Detetive",
+      "heading_intrigue": "Escolha de Configuração do Investigador",
+      "intro_murder": "Tens duas formas de gerir a narração do detetive:",
+      "intro_intrigue": "Tens duas formas de gerir a narração do investigador:",
+      "option1Label_murder": "**Opção 1 — Anfitrião como Detetive**",
+      "option1Label_intrigue": "**Opção 1 — Anfitrião como Investigador**",
+      "option1Item1_murder": "Interpretas a personagem do detetive durante todo o jogo",
+      "option1Item1_intrigue": "Interpretas a personagem do investigador durante todo o jogo",
+      "option1Item2_murder": "Lê em voz alta o guião do detetive de cada ronda à medida que a ação avança",
+      "option1Item2_intrigue": "Lê em voz alta o guião do investigador de cada ronda à medida que a ação avança",
+      "option1NoteCharacterBased_murder": "Em mistérios baseados em personagens, NÃO participas como suspeito, por isso podes decidir antecipadamente quem é o assassino (saltando o sorteio de papelinhos) ou continuar a usar o sorteio para variar.",
+      "option1NoteCharacterBased_intrigue": "Em mistérios baseados em personagens, NÃO participas como suspeito, por isso podes decidir antecipadamente quem é o culpado (saltando o sorteio de papelinhos) ou continuar a usar o sorteio para variar.",
+      "option1NoteDetective_murder": "Em mistérios no estilo detetivesco, o assassino já está predeterminado — vais ver quem é no Guia do Detetive. Decide antes da festa se vais contar a esse jogador em privado ou deixar que se revele durante o jogo.",
+      "option1NoteDetective_intrigue": "Em mistérios no estilo detetivesco, o culpado já está predeterminado — vais ver quem é no Guia do Investigador. Decide antes da festa se vais contar a esse jogador em privado ou deixar que se revele durante o jogo.",
+      "option2Label_murder": "**Opção 2 — Detetive em Áudio**",
+      "option2Label_intrigue": "**Opção 2 — Investigador em Áudio**",
+      "option2Item1": "Interpretas uma das personagens suspeitas (participas no mistério)",
+      "option2Item2_murder": "Gera áudio do guião do detetive com uma ferramenta de IA gratuita:",
+      "option2Item2_intrigue": "Gera áudio do guião do investigador com uma ferramenta de IA gratuita:",
+      "ttsOption1": "[Google AI Studio Speech](https://aistudio.google.com/generate-speech) — cola o guião, gera áudio TTS",
+      "ttsOption2": "[Google NotebookLM](https://notebooklm.google.com) — cola o guião, usa o Audio Overview",
+      "ttsOption3": "Ou qualquer outro serviço de TTS (ElevenLabs, etc.)",
+      "option2Item3": "Ignora as [indicações de cena entre parênteses retos] ao gerar o áudio",
+      "option2Item4": "Reproduz o áudio de cada ronda no momento apropriado",
+      "option2Item5": "Tem guiões impressos de reserva prontos, para o caso de problemas técnicos"
+    },
+    "runningGame": {
+      "heading": "Conduzir o Jogo",
+      "timeShort": "Aproximadamente 1h30 no total",
+      "timeMedium": "Aproximadamente 2 horas no total",
+      "timeLong": "Aproximadamente 2 a 2h30 no total",
+      "timeXlong": "Aproximadamente 3 horas no total",
+      "intro": "{{timeEstimate}} (para {{playerCount}} jogadores). Segue esta secção do início ao fim, pela ordem indicada, assim que os teus convidados estiverem reunidos — é o guião real da noite. Tudo o que vem antes é o que preparas com antecedência; isto é o que fazes assim que tudo começa.",
+      "step1Label": "Declaração de Abertura — 2 a 3 min",
+      "step1Body_murder": "Faz a Declaração de Abertura do Detetive: lê-a em voz alta ou reproduz o áudio pré-gravado (conforme o que escolheste acima). Encontra-a no Guia do Detetive.",
+      "step1Body_intrigue": "Faz a Declaração de Abertura do Investigador: lê-a em voz alta ou reproduz o áudio pré-gravado (conforme o que escolheste acima). Encontra-a no Guia do Investigador.",
+      "step2Label": "Ronda 1, Parte A — Apresentações — ~{{introTime}} min para o teu grupo de {{playerCount}} (cerca de 45 seg/jogador)",
+      "step2Body": "Percorrendo o grupo, cada jogador lê ou improvisa a introdução da sua personagem.",
+      "step2LargeGroupNote": "**Para grupos maiores (15+), pede aos jogadores que se limitem a 2 a 3 frases** — nome, papel, uma linha sobre a vítima — em vez de lerem a página inteira. A 1 minuto cada, 30 convidados representam, só por si, uma ronda de 30 minutos.",
+      "step3Label": "Ronda 1, Parte B — Rumores — 10 min",
+      "step3Body": "Logo a seguir às apresentações, sem pausa: cada jogador partilha o(s) seu(s) rumor(es) da página da sua personagem com o resto do grupo. Todos devem ouvir pelo menos um rumor antes de avançares.",
+      "step4SlipDrawLabel_murder": "Sorteio de Papelinhos — Determinar o Assassino — 5 min",
+      "step4SlipDrawLabel_intrigue": "Sorteio de Papelinhos — Determinar o Culpado — 5 min",
+      "step4SlipDrawItem1": "Diz aos jogadores para manterem uma expressão neutra",
+      "step4SlipDrawItem2": "Faz circular o recipiente dos papelinhos — cada jogador tira UM papelinho em segredo e lê-o em silêncio",
+      "step4SlipDrawItem3_murder": "Quem tirou \"ASSASSINO\" é o assassino; todos os outros são inocentes",
+      "step4SlipDrawItem3_murder_accomplice": "Quem tirou \"ASSASSINO\" é o assassino; quem tirou \"CÚMPLICE\" é o cúmplice; todos os outros são inocentes",
+      "step4SlipDrawItem3_intrigue": "Quem tirou \"CULPADO\" é o culpado; todos os outros são inocentes",
+      "step4SlipDrawItem3_intrigue_accomplice": "Quem tirou \"CULPADO\" é o culpado; quem tirou \"CÚMPLICE\" é o cúmplice; todos os outros são inocentes",
+      "step4SlipDrawItem4_murder": "O assassino deve agora usar as secções **Culpado** do seu guião; todos os outros usam **Inocente**",
+      "step4SlipDrawItem4_murder_accomplice": "O assassino e o cúmplice devem agora usar as secções **Culpado / Cúmplice** do seu guião; todos os outros usam **Inocente**",
+      "step4SlipDrawItem4_intrigue": "O culpado deve agora usar as secções **Culpado** do seu guião; todos os outros usam **Inocente**",
+      "step4SlipDrawItem4_intrigue_accomplice": "O culpado e o cúmplice devem agora usar as secções **Culpado / Cúmplice** do seu guião; todos os outros usam **Inocente**",
+      "step4SlipDrawItem5": "NÃO revelem quem tirou qual papelinho",
+      "step4SlipDrawItem6": "Passa à Ronda 2",
+      "step4PredeterminedLabel_murder": "O Assassino Já Está Definido — não é necessária nenhuma ação aqui",
+      "step4PredeterminedLabel_intrigue": "O Culpado Já Está Definido — não é necessária nenhuma ação aqui",
+      "step4PredeterminedBody_murder": "Os mistérios no estilo detetivesco dispensam totalmente o sorteio de papelinhos. O assassino já está predeterminado; consulta o Guia do Detetive para saber quem é. Passa diretamente à Ronda 2.",
+      "step4PredeterminedBody_intrigue": "Os mistérios no estilo detetivesco dispensam totalmente o sorteio de papelinhos. O culpado já está predeterminado; consulta o Guia do Investigador para saber quem é. Passa diretamente à Ronda 2.",
+      "beforeRound2Note_murder": "**Anuncia isto antes da Ronda 2:** ao dar o seu próprio relato, o assassino pode induzir em erro, distorcer factos, omitir informação e manter a sua versão da história — isso faz parte do jogo. Mas quando outro jogador lhe faz uma pergunta direta, não deve inventar mentiras completamente novas ali mesmo: deve desviar-se, responder de forma seletiva ou desviar as suspeitas para outra pessoa. Isto mantém o mistério resolúvel — as provas permanecem verdadeiras, e o trabalho dos teus convidados é decidir em qual *versão* acreditar.",
+      "beforeRound2Note_intrigue": "**Anuncia isto antes da Ronda 2:** ao dar o seu próprio relato, o culpado pode induzir em erro, distorcer factos, omitir informação e manter a sua versão da história — isso faz parte do jogo. Mas quando outro jogador lhe faz uma pergunta direta, não deve inventar mentiras completamente novas ali mesmo: deve desviar-se, responder de forma seletiva ou desviar as suspeitas para outra pessoa. Isto mantém o mistério resolúvel — as provas permanecem verdadeiras, e o trabalho dos teus convidados é decidir em qual *versão* acreditar.",
+      "step5Label": "Ronda 2 — Motivos — 20 min",
+      "step5Item1_murder": "O Detetive narra a ronda — lê em voz alta ou reproduz o áudio",
+      "step5Item1_intrigue": "O Investigador narra a ronda — lê em voz alta ou reproduz o áudio",
+      "step5Item2": "A meio, fica atento a uma indicação entre parênteses retos como *[Apresentar a Prova da Ronda 2]* — esse é o teu sinal para revelares o cartão. Nem antes de a ronda começar, nem logo a seguir à abertura: exatamente nessa indicação",
+      "step5Item3_murder": "Depois de o detetive se retirar, os jogadores interrogam-se uns aos outros usando as suas opções da Ronda 2",
+      "step5Item3_intrigue": "Depois de o investigador se retirar, os jogadores interrogam-se uns aos outros usando as suas opções da Ronda 2",
+      "step6Label": "Ronda 3 — Método — 20 min",
+      "step6Body": "Mesmo padrão da Ronda 2: narração → indicação de prova → perguntas.",
+      "step7Label": "Ronda 4 — Oportunidade — 20 min",
+      "step7Body": "O mesmo padrão outra vez.",
+      "step8Label": "Acusações — 10 min",
+      "step8Body": "Percorrendo o grupo, cada jogador acusa *outra pessoa* com uma frase de justificação. Aponta para fora — guarda a tua própria defesa para o passo seguinte. Um grande círculo funciona bem aqui — cria tensão e mantém a sala coerente.",
+      "step9Label": "Declarações Finais — 10 min",
+      "step9BodyCharacterBased_murder": "Percorrendo o grupo outra vez, cada jogador defende-se. Ainda é negação, não confissão — mesmo o assassino se mantém fiel à sua versão aqui.",
+      "step9BodyCharacterBased_intrigue": "Percorrendo o grupo outra vez, cada jogador defende-se. Ainda é negação, não confissão — mesmo o culpado se mantém fiel à sua versão aqui.",
+      "step9BodyDetective": "Percorrendo o grupo outra vez, cada jogador defende-se e faz um último apelo ou confissão.",
+      "step10Label": "A Revelação — 5 a 10 min",
+      "step10Body_murder": "O Detetive revela o nome do assassino, que lê a sua confissão em voz alta.",
+      "step10Body_murder_accomplice": "O Detetive revela o nome do assassino, que lê a sua confissão em voz alta. Depois o Detetive dirige-se ao cúmplice, que também confessa — e **ambos** são presos.",
+      "step10Body_intrigue": "O Investigador revela o nome do culpado, que lê a sua confissão em voz alta.",
+      "step10Body_intrigue_accomplice": "O Investigador revela o nome do culpado, que lê a sua confissão em voz alta. Depois o Investigador dirige-se ao cúmplice, que também confessa — e **ambos** são presos."
+    },
+    "keepingOnTrack": {
+      "heading": "Manter a História nos Eixos",
+      "intro": "Os jogadores vão improvisar, acrescentar o seu toque pessoal e, por vezes, fugir ao guião — **isso é normal e não há problema.** Um pouco de caos faz parte da diversão, e não precisas de corrigir todos os desvios. Intervém apenas quando o fio da história se perder mesmo.",
+      "tool_murder": "Quando a história se desvia, o Detetive é a tua ferramenta para a trazer de volta. Como o detetive desconfia de todos, podes sempre intervir com uma pergunta direta:",
+      "tool_intrigue": "Quando a história se desvia, o Investigador é a tua ferramenta para a trazer de volta. Como o investigador desconfia de todos, podes sempre intervir com uma pergunta direta:",
+      "example1": "\"Espera — há pouco disseste que estavas na sala de estar. Como é que isso se encaixa com o que acabámos de ouvir?\"",
+      "example2": "\"Que curioso. Há bocado disseste-nos algo diferente. Então qual é?\"",
+      "example3": "\"Vamos voltar aos factos. [Nome], onde estavas exatamente quando isto aconteceu?\"",
+      "closing": "Mantém a Visão Geral do Jogo e o segredo de cada personagem à mão (já os percorreste na lista de verificação) para conseguires sempre reancorar o grupo naquilo que é realmente verdade."
+    },
+    "tips": {
+      "heading": "Dicas para o Anfitrião",
+      "tip1": "**Mantém o ritmo.** Se uma ronda estiver a arrastar-se, resume e incentiva: \"Ok — com base no que ouvimos, quem é que parece suspeito?\"",
+      "tip2": "**Lê as provas com neutralidade.** Não dês pistas sobre quem achas que foi (mesmo que já saibas).",
+      "tip3": "**Presta atenção aos jogadores mais calados.** Incentiva-os com uma pergunta se não tiverem falado numa ronda.",
+      "tip4": "**Presta atenção aos jogadores mais dominantes.** Redireciona com delicadeza: \"Vamos ouvir alguém que ainda não falou.\"",
+      "tip5CharacterBased_murder": "**O assassino NÃO deve confessar demasiado cedo** — a sua Declaração Final é uma negação como a de todos os outros. A confissão verdadeira só acontece se o detetive o nomear especificamente durante a Revelação — essa é uma secção separada e posterior na página da sua personagem (\"A Revelação — A Tua Confissão\"). Incentiva-o a manter a compostura ao longo das Declarações Finais.",
+      "tip5CharacterBased_intrigue": "**O culpado NÃO deve confessar demasiado cedo** — a sua Declaração Final é uma negação como a de todos os outros. A confissão verdadeira só acontece se o investigador o nomear especificamente durante a Revelação — essa é uma secção separada e posterior na página da sua personagem (\"A Revelação — A Tua Confissão\"). Incentiva-o a manter a compostura ao longo das Declarações Finais.",
+      "tip5Detective_murder": "**O assassino NÃO deve confessar demasiado cedo** — deve defender-se até ser encurralado. Incentiva-o a manter a compostura.",
+      "tip5Detective_intrigue": "**O culpado NÃO deve confessar demasiado cedo** — deve defender-se até ser encurralado. Incentiva-o a manter a compostura.",
+      "tip6": "**Todos protegem o seu segredo.** Cada personagem tem um segredo com consequências reais se for descoberto. Lembra os jogadores de o guardarem — um jogador que despreza o seu segredo tira a tensão a todos os outros. Defender a tua reputação é metade do jogo.",
+      "tip7": "**Deixa o grupo mover-se.** Tanto pequenos grupos de conversa como um grande círculo para as acusações funcionam bem — não obrigues todos a ficarem sentados na mesma formação o tempo todo.",
+      "tip8": "**Improvisa.** Se um jogador perguntar algo que não está nas opções do seu guião, incentiva a improvisação dentro da personagem.",
+      "tip9": "**Diverte-te com o ambiente.** Música e um petisco temático já fazem uma grande diferença; mais nada é obrigatório."
+    }
+  },
+  "characterGuide": {
+    "fieldLabels": {
+      "characterName": "Nome da Personagem",
+      "description": "Descrição",
+      "background": "Antecedentes",
+      "relationships": "Relações",
+      "secret": "Segredo",
+      "introduction": "Introdução",
+      "rumors": "Rumores",
+      "round2Script": "Guião da Ronda 2",
+      "round2Questions": "Perguntas da Ronda 2",
+      "round2Innocent": "Ronda 2 — Inocente",
+      "round2Guilty": "Ronda 2 — Culpado",
+      "round2Accomplice": "Ronda 2 — Cúmplice",
+      "round3Script": "Guião da Ronda 3",
+      "round3Questions": "Perguntas da Ronda 3",
+      "round3Innocent": "Ronda 3 — Inocente",
+      "round3Guilty": "Ronda 3 — Culpado",
+      "round3Accomplice": "Ronda 3 — Cúmplice",
+      "round4Script": "Guião da Ronda 4",
+      "round4Questions": "Perguntas da Ronda 4",
+      "round4Innocent": "Ronda 4 — Inocente",
+      "round4Guilty": "Ronda 4 — Culpado",
+      "round4Accomplice": "Ronda 4 — Cúmplice",
+      "accusations": "Acusações",
+      "finalStatement": "Declaração Final",
+      "finalInnocent": "Declaração Final — Inocente",
+      "finalGuilty": "Declaração Final — Culpado",
+      "finalAccomplice": "Declaração Final — Cúmplice",
+      "revealConfessionGuilty": "A Revelação — A Tua Confissão",
+      "revealConfessionAccomplice": "A Revelação — Confissão do Cúmplice"
+    },
+    "roundHeaders": {
+      "introduction": {
+        "title": "Ronda 1 — Apresentações",
+        "instruction": "Quando for a tua vez, faz a tua introdução abaixo. Presta muita atenção às dos outros — os detalhes que ouvires agora vão ser importantes em rondas posteriores."
+      },
+      "rumors": {
+        "title": "Ronda 1 — Rumores",
+        "instruction": "Ainda faz parte da Ronda 1, logo a seguir às apresentações — sem pausa. Partilha o rumor abaixo com quem quiser ouvir, e presta atenção ao que ouves dos outros: vai ser importante em rondas posteriores."
+      },
+      "round2": {
+        "title": "Ronda 2 — Motivos",
+        "instruction": "A pergunta agora é porquê. Usa as tuas perguntas abaixo para investigar por que razão outros poderiam querer ver a vítima morta — e está pronto para responder pelo teu próprio motivo."
+      },
+      "round3": {
+        "title": "Ronda 3 — O Método",
+        "instruction": "O foco passa a ser como foi feito. Pressiona os outros sobre o que sabiam acerca do método, dos meios e da cena do crime."
+      },
+      "round4": {
+        "title": "Ronda 4 — Oportunidade",
+        "instruction": "Onde estava cada um? Usa as provas para apurar álibis — e está pronto para dar conta do teu próprio paradeiro."
+      },
+      "accusations": {
+        "title": "Acusações — Aponta para Fora",
+        "instruction": "Quando a ronda de acusações começar, acusa a pessoa que mais suspeitas e dá uma razão baseada nas provas. Guarda a tua própria defesa para as declarações finais que se seguem."
+      },
+      "finalStatement": {
+        "title": "Declarações Finais — A Tua Vez de te Defenderes",
+        "instruction": "Depois de todos terem acusado, esta é a tua última palavra. Defende-te — ou, se fores culpado, faz a tua confissão."
+      },
+      "revealGuilty": {
+        "title": "A Revelação — A Tua Confissão",
+        "instruction": "Lê isto APENAS se o Detetive te nomear especificamente como o assassino durante A Revelação, depois de todos os jogadores já terem feito a sua Declaração Final acima. Este é um momento separado e posterior — não o leias antes da hora."
+      },
+      "revealAccomplice": {
+        "title": "A Revelação — Confissão do Cúmplice",
+        "instruction": "Lê isto APENAS se o Detetive te chamar especificamente como o cúmplice durante A Revelação, depois de o assassino já ter confessado. Este é um momento separado e posterior — não o leias antes da hora."
+      },
+      "finalInnocent": {
+        "title": "Declarações Finais — A Tua Vez de te Defenderes",
+        "instruction": "Depois de todos terem acusado, esta é a tua última palavra antes de A Revelação. Defende-te e mantém-te fiel à tua versão — quer sejas inocente quer sejas culpado, esta ronda não é onde a verdade vem ao de cima."
+      }
+    },
+    "guardDirective": "**Guarda este segredo a todo o custo.** A tua reputação — e talvez a tua liberdade — depende de o manteres escondido. Nega, desvia o assunto e nunca o reveles de livre vontade. Um segredo entregue voluntariamente tira a tensão a toda a mesa.",
+    "characterNameEditingTip": "**Renomear só atualiza este campo.** Não vai alterar o nome em mais lado nenhum — os guiões das rondas, as pistas e o guia do anfitrião continuarão a usar o nome original. É melhor usar isto para escolher um dos lados de um nome duplo (por exemplo, \"Clarabelle/Clarence\") antes da tua primeira leitura, e não como uma correção tardia depois de já teres começado a rever o guião."
   }
 }

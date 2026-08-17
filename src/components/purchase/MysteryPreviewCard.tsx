@@ -134,6 +134,12 @@ const MysteryPreviewCard = ({ mystery, parsedDetails }: MysteryPreviewCardProps)
                 </div>
               ))}
             </div>
+            <p className={cn(
+              "italic text-muted-foreground mt-2",
+              isMobile ? "text-xs" : "text-xs"
+            )}>
+              {t('purchase.preview.charactersFinalNote')}
+            </p>
           </div>
         ) : parsedDetails?.premise && (
           <div className={cn(

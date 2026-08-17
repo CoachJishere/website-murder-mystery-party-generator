@@ -1576,11 +1576,10 @@
   },
   "adaptation": {
     "card": {
-      "sectionIntro": "More ways to shape your mystery — this grows over time",
-      "title": "Recast",
+      "title": "Remove a Character",
       "teaser": "A guest can't make it? Remove or replace them in the story - $5 flat, fix as many characters as you need in one go.",
       "cta": "Learn more",
-      "inProgressTitle": "Recast in progress",
+      "inProgressTitle": "Update in progress",
       "inProgressSummary": "{{done}} of {{total}} updated",
       "inProgressNotice": "We'll email you when it's done — feel free to keep using the rest of your mystery.",
       "comingSoonTitle": "Hosting tips & videos",
@@ -1588,10 +1587,10 @@
       "comingSoonBody": "Short videos and quick tips for running your mystery on the night."
     },
     "entryPoint": {
-      "notice": "You can edit every character below. Need to remove or replace someone entirely instead? Use Recast (see the Extras tab) instead of regenerating."
+      "notice": "You can edit every character below. Need to remove or replace someone entirely instead? See Remove a Character in the Extras tab instead of regenerating."
     },
     "explainer": {
-      "title": "Recast",
+      "title": "Remove a Character",
       "subtitle": "Remove a character from your mystery with the click of a button.",
       "characterStyleHeadline": "You probably don't need to pay for this.",
       "characterStyleBody": "This is a character-based mystery - there's no predetermined culprit, so a missing character's absence is easy to paper over yourself, for free. Just tell your guests something like: \"X is also a suspect, but we're interviewing them separately - please carry on without them,\" or \"We've already ruled X out.\" Any leftover rumors about them become a non-issue.",
@@ -1619,7 +1618,7 @@
       "replacedByAuto": "we'll choose the new {{role}}",
       "totalLabel": "Total: ${{total}}",
       "cancel": "Cancel",
-      "cta": "Remove — ${{total}}"
+      "cta": "Pay now"
     },
     "processing": {
       "title": "Updating your mystery",
@@ -1636,9 +1635,266 @@
       "backToMystery": "Back to your mystery"
     },
     "toasts": {
-      "createdNoCheckout": "Recast request created for {{count}} character(s) (staging mode - no payment configured).",
+      "createdNoCheckout": "Request created for {{count}} character(s) (staging mode - no payment configured).",
       "createFailed": "Couldn't start that request. Please try again.",
-      "alreadyInProgress": "One of these characters already has a Recast request in progress."
+      "alreadyInProgress": "One of these characters already has a request in progress."
+    }
+  },
+  "characterGuide": {
+    "fieldLabels": {
+      "characterName": "Character Name",
+      "description": "Description",
+      "background": "Background",
+      "relationships": "Relationships",
+      "secret": "Secret",
+      "introduction": "Introduction",
+      "rumors": "Rumors",
+      "round2Script": "Round 2 Script",
+      "round2Questions": "Round 2 Questions",
+      "round2Innocent": "Round 2 — Innocent",
+      "round2Guilty": "Round 2 — Guilty",
+      "round2Accomplice": "Round 2 — Accomplice",
+      "round3Script": "Round 3 Script",
+      "round3Questions": "Round 3 Questions",
+      "round3Innocent": "Round 3 — Innocent",
+      "round3Guilty": "Round 3 — Guilty",
+      "round3Accomplice": "Round 3 — Accomplice",
+      "round4Script": "Round 4 Script",
+      "round4Questions": "Round 4 Questions",
+      "round4Innocent": "Round 4 — Innocent",
+      "round4Guilty": "Round 4 — Guilty",
+      "round4Accomplice": "Round 4 — Accomplice",
+      "accusations": "Accusations",
+      "finalStatement": "Final Statement",
+      "finalInnocent": "Final Statement — Innocent",
+      "finalGuilty": "Final Statement — Guilty",
+      "finalAccomplice": "Final Statement — Accomplice",
+      "revealConfessionGuilty": "The Reveal — Your Confession",
+      "revealConfessionAccomplice": "The Reveal — Accomplice Confession"
+    },
+    "roundHeaders": {
+      "introduction": {
+        "title": "Round 1 — Introductions",
+        "instruction": "When it's your turn, deliver your introduction below. Listen closely to everyone else's — the details you hear now will matter in later rounds."
+      },
+      "rumors": {
+        "title": "Round 1 — Rumors",
+        "instruction": "Still part of Round 1, right after introductions — no break in between. Share the rumor below with anyone who'll listen, and pay attention to what you hear from others: it'll matter in later rounds."
+      },
+      "round2": {
+        "title": "Round 2 — Motives",
+        "instruction": "The question now is why. Use your questions below to probe why others might have wanted the victim gone — and be ready to answer for your own motive."
+      },
+      "round3": {
+        "title": "Round 3 — The Method",
+        "instruction": "Focus shifts to how it was done. Press others on what they knew about the method, the means, and the scene of the crime."
+      },
+      "round4": {
+        "title": "Round 4 — Opportunity",
+        "instruction": "Where was everyone? Use the evidence to pin down alibis — and be ready to account for your own whereabouts."
+      },
+      "accusations": {
+        "title": "Accusations — Point Outward",
+        "instruction": "When the accusations round begins, accuse the person you most suspect and give one reason from the evidence. Save your own defense for the final statements that follow."
+      },
+      "finalStatement": {
+        "title": "Final Statements — Your Turn to Defend",
+        "instruction": "After everyone has accused, this is your last word. Defend yourself — or, if you're guilty, make your confession."
+      },
+      "revealGuilty": {
+        "title": "The Reveal — Your Confession",
+        "instruction": "Read this ONLY if the Detective specifically names you as the murderer during The Reveal, after every player has already given their Final Statement above. This is a separate, later moment — don't read it early."
+      },
+      "revealAccomplice": {
+        "title": "The Reveal — Accomplice Confession",
+        "instruction": "Read this ONLY if the Detective specifically calls on you as the accomplice during The Reveal, after the murderer has already confessed. This is a separate, later moment — don't read it early."
+      },
+      "finalInnocent": {
+        "title": "Final Statements — Your Turn to Defend",
+        "instruction": "After everyone has accused, this is your last word before The Reveal. Defend yourself and stick to your story — whether you're innocent or guilty, this round is not where the truth comes out."
+      }
+    },
+    "guardDirective": "**Guard this secret at all costs.** Your reputation — and perhaps your freedom — depends on keeping it hidden. Deny, deflect, and never give it up willingly. A secret handed over freely drains the tension for the whole table.",
+    "characterNameEditingTip": "**Renaming only updates this field.** It will not change the name anywhere else — round scripts, clues, and the host guide will still use the original name. Best used to pick a side of a dual name (e.g. \"Clarabelle/Clarence\") before your first read-through, not as a late correction once you've started reviewing the script."
+  },
+  "hostGuide": {
+    "checklist": {
+      "heading": "Host Quick-Start Checklist",
+      "intro_murder": "Keep this open during the game — it's your at-a-glance control panel, especially if you're also playing the Detective.",
+      "intro_intrigue": "Keep this open during the game — it's your at-a-glance control panel, especially if you're also playing the Investigator.",
+      "item1": "Everyone has their character page open (sent digitally before the party)",
+      "item2_murder": "You've read this guide and the Detective Guide, and skimmed every character's secret so you know who is hiding what",
+      "item2_intrigue": "You've read this guide and the Investigator Guide, and skimmed every character's secret so you know who is hiding what",
+      "item3": "Evidence cards ready (printed or on a screen), one per round",
+      "item4SlipDraw_murder": "Slips prepared for the murderer draw",
+      "item4SlipDraw_murder_accomplice": "Slips prepared for the murderer/accomplice draw",
+      "item4SlipDraw_intrigue": "Slips prepared for the culprit draw",
+      "item4SlipDraw_intrigue_accomplice": "Slips prepared for the culprit/accomplice draw",
+      "item4Predetermined_murder": "You know who the murderer is (see the Detective Guide)",
+      "item4Predetermined_murder_accomplice": "You know who the murderer and accomplice are (see the Detective Guide)",
+      "item4Predetermined_intrigue": "You know who the culprit is (see the Investigator Guide)",
+      "item4Predetermined_intrigue_accomplice": "You know who the culprit and accomplice are (see the Investigator Guide)",
+      "item5": "Keep the suspect list (top of each player's guide) and the Game Overview within reach — you'll use them to pull the story back on track",
+      "roundOrderNote": "**Round order at a glance:** see \"Running the Game\" below for the full step-by-step."
+    },
+    "materials": {
+      "heading": "Materials",
+      "universalLabel": "**Universal items:**",
+      "item1": "Character guides — already sent to each guest digitally before the party",
+      "item2": "Printed evidence cards (or shown on a phone/screen — your choice)",
+      "item3_murder": "Detective script (detective dialogue for each round, in the Detective Guide tab)",
+      "item3_intrigue": "Investigator script (investigator dialogue for each round, in the Investigator Guide tab)",
+      "item4": "Timer or clock",
+      "item5": "Optional: themed décor, music, food/drink",
+      "slipDrawLabel": "**For the slip draw:**",
+      "slipDrawItem1": "Container for slips of paper (hat, bowl, decorative box)",
+      "slipDrawItem2_murder": "Slips of paper for murderer selection",
+      "slipDrawItem2_murder_accomplice": "Slips of paper for murderer selection (and accomplice selection)",
+      "slipDrawItem2_intrigue": "Slips of paper for culprit selection",
+      "slipDrawItem2_intrigue_accomplice": "Slips of paper for culprit selection (and accomplice selection)"
+    },
+    "prep": {
+      "heading": "Preparation Before the Party",
+      "beforeLabel": "**A few days before:**",
+      "item1_murder": "Read this entire host guide and the Detective Guide",
+      "item1_intrigue": "Read this entire host guide and the Investigator Guide",
+      "item2": "Send each guest their character page (digital link or PDF) at least 3 days before the event",
+      "item3": "Encourage guests to read their character intro before arriving — they don't need to memorize, just be familiar",
+      "item4": "Confirm guest list and finalize attendees",
+      "dayOfLabel": "**Day of:**",
+      "slipDrawSetup_murder": "Prepare the slip draw: cut {{playerCount}} small slips of paper. Write \"MURDERER\" on one slip. Leave the rest blank (or write \"Innocent\"). Fold each so the writing isn't visible. Place them in your container.",
+      "slipDrawSetup_murder_accomplice": "Prepare the slip draw: cut {{playerCount}} small slips of paper. Write \"MURDERER\" on one slip, \"ACCOMPLICE\" on another. Leave the rest blank (or write \"Innocent\"). Fold each so the writing isn't visible. Place them in your container.",
+      "slipDrawSetup_intrigue": "Prepare the slip draw: cut {{playerCount}} small slips of paper. Write \"CULPRIT\" on one slip. Leave the rest blank (or write \"Innocent\"). Fold each so the writing isn't visible. Place them in your container.",
+      "slipDrawSetup_intrigue_accomplice": "Prepare the slip draw: cut {{playerCount}} small slips of paper. Write \"CULPRIT\" on one slip, \"ACCOMPLICE\" on another. Leave the rest blank (or write \"Innocent\"). Fold each so the writing isn't visible. Place them in your container.",
+      "item5": "Print evidence cards (optional) — you can also just show them on a phone or read aloud",
+      "item6": "Set the atmosphere if you want (themed music, dim lights, themed snacks) — none of this is required"
+    },
+    "guestChanges": {
+      "heading": "Managing Last-Minute Guest Changes",
+      "intro": "Your cast of suspects is fixed — it's woven into the plot, so you can't add or remove suspect characters. But real guest lists change, and the game is built to absorb that.",
+      "moreLabel": "**More guests than characters (someone extra wants to join):**",
+      "moreItem1_murder": "Bring them in as **co-investigators** on the Detective's team — no character page needed. As many as you like.",
+      "moreItem1_intrigue": "Bring them in as **co-investigators** on the Investigator's team — no character page needed. As many as you like.",
+      "moreItem2": "They question the suspects each round, work the clues and evidence alongside everyone else, and make their case at the accusation stage.",
+      "moreItem3_murder": "**Important:** co-investigators do NOT get the Detective script or this host guide — those are your case file and they name the murderer. Keep them to yourself. Your co-investigators solve it fair and square from the clues, exactly like the suspects do.",
+      "moreItem3_intrigue": "**Important:** co-investigators do NOT get the Investigator script or this host guide — those are your case file and they name the culprit. Keep them to yourself. Your co-investigators solve it fair and square from the clues, exactly like the suspects do.",
+      "fewerLabel": "**Fewer guests than characters (someone drops out):**",
+      "fewerItem1_murder": "Never cut the murderer — the plot depends on them being in play.",
+      "fewerItem1_murder_accomplice": "Never cut the murderer or the accomplice — the plot depends on them being in play.",
+      "fewerItem1_intrigue": "Never cut the culprit — the plot depends on them being in play.",
+      "fewerItem1_intrigue_accomplice": "Never cut the culprit or the accomplice — the plot depends on them being in play.",
+      "fewerItem2_murder": "To drop a suspect, pick a purely innocent character. Either fold their key facts into another guest's briefing, or have the Detective mention them as \"unavailable for questioning\" so their clues still surface.",
+      "fewerItem2_intrigue": "To drop a suspect, pick a purely innocent character. Either fold their key facts into another guest's briefing, or have the Investigator mention them as \"unavailable for questioning\" so their clues still surface.",
+      "fewerItem3": "If several guests drop out, consider regenerating the mystery at the new headcount for the cleanest fit."
+    },
+    "setupChoice": {
+      "heading_murder": "Detective Setup Choice",
+      "heading_intrigue": "Investigator Setup Choice",
+      "intro_murder": "You have two ways to handle the detective narration:",
+      "intro_intrigue": "You have two ways to handle the investigator narration:",
+      "option1Label_murder": "**Option 1 — Host as Detective**",
+      "option1Label_intrigue": "**Option 1 — Host as Investigator**",
+      "option1Item1_murder": "You play the detective character throughout the game",
+      "option1Item1_intrigue": "You play the investigator character throughout the game",
+      "option1Item2_murder": "Read each round's detective script aloud as the action progresses",
+      "option1Item2_intrigue": "Read each round's investigator script aloud as the action progresses",
+      "option1NoteCharacterBased_murder": "In character-based mysteries, you do NOT participate as a suspect, so you can pre-decide the murderer (skip the slip draw) or still use the slip draw for variety.",
+      "option1NoteCharacterBased_intrigue": "In character-based mysteries, you do NOT participate as a suspect, so you can pre-decide the culprit (skip the slip draw) or still use the slip draw for variety.",
+      "option1NoteDetective_murder": "In detective-style mysteries, the murderer is predetermined — you'll see who they are in the Detective Guide. Decide before the party whether to tell that player privately or let it reveal itself during the game.",
+      "option1NoteDetective_intrigue": "In detective-style mysteries, the culprit is predetermined — you'll see who they are in the Investigator Guide. Decide before the party whether to tell that player privately or let it reveal itself during the game.",
+      "option2Label_murder": "**Option 2 — Audio Detective**",
+      "option2Label_intrigue": "**Option 2 — Audio Investigator**",
+      "option2Item1": "You play one of the suspect characters (you participate in the mystery)",
+      "option2Item2_murder": "Generate audio of the detective script using a free AI tool:",
+      "option2Item2_intrigue": "Generate audio of the investigator script using a free AI tool:",
+      "ttsOption1": "[Google AI Studio Speech](https://aistudio.google.com/generate-speech) — paste the script, generate TTS audio",
+      "ttsOption2": "[Google NotebookLM](https://notebooklm.google.com) — paste the script, use Audio Overview",
+      "ttsOption3": "Or any other TTS service (ElevenLabs, etc.)",
+      "option2Item3": "Skip the [bracketed stage directions] when generating audio",
+      "option2Item4": "Play each round's audio at the appropriate moment",
+      "option2Item5": "Have backup printed scripts ready in case of tech issues"
+    },
+    "runningGame": {
+      "heading": "Running the Game",
+      "timeShort": "Approximately 1.5 hours total",
+      "timeMedium": "Approximately 2 hours total",
+      "timeLong": "Approximately 2 to 2.5 hours total",
+      "timeXlong": "Approximately 3 hours total",
+      "intro": "{{timeEstimate}} (for {{playerCount}} players). Follow this section straight through, in order, once your guests are gathered — it's the actual script for the night. Everything above is what you prepare beforehand; this is what you do once it starts.",
+      "step1Label": "Opening Statement — 2–3 min",
+      "step1Body_murder": "Deliver the Detective's Opening Statement: read it aloud, or play the pre-recorded audio (whichever you chose above). Found in the Detective Guide.",
+      "step1Body_intrigue": "Deliver the Investigator's Opening Statement: read it aloud, or play the pre-recorded audio (whichever you chose above). Found in the Investigator Guide.",
+      "step2Label": "Round 1, Part A — Introductions — ~{{introTime}} min for your group of {{playerCount}} (roughly 45 sec/player)",
+      "step2Body": "Going around the group, each player reads or improvises their character's introduction.",
+      "step2LargeGroupNote": "**For larger groups (15+), ask players to keep it to 2–3 sentences** — name, role, one line about the victim — rather than reading the full page. At 1 minute each, 30 guests is a 30-minute round on its own.",
+      "step3Label": "Round 1, Part B — Rumors — 10 min",
+      "step3Body": "Right after introductions, no break: each player shares their rumor(s) from their character page with the rest of the group. Everyone should hear at least one rumor before you move on.",
+      "step4SlipDrawLabel_murder": "Slip Draw — Determining the Murderer — 5 min",
+      "step4SlipDrawLabel_intrigue": "Slip Draw — Determining the Culprit — 5 min",
+      "step4SlipDrawItem1": "Tell the players to keep a blank face",
+      "step4SlipDrawItem2": "Pass the slip container around — each player draws ONE slip in secret and reads it silently",
+      "step4SlipDrawItem3_murder": "Whoever drew \"MURDERER\" is the murderer; everyone else is innocent",
+      "step4SlipDrawItem3_murder_accomplice": "Whoever drew \"MURDERER\" is the murderer; whoever drew \"ACCOMPLICE\" is the accomplice; everyone else is innocent",
+      "step4SlipDrawItem3_intrigue": "Whoever drew \"CULPRIT\" is the culprit; everyone else is innocent",
+      "step4SlipDrawItem3_intrigue_accomplice": "Whoever drew \"CULPRIT\" is the culprit; whoever drew \"ACCOMPLICE\" is the accomplice; everyone else is innocent",
+      "step4SlipDrawItem4_murder": "The murderer should now use their **Guilty** script sections; everyone else uses **Innocent**",
+      "step4SlipDrawItem4_murder_accomplice": "The murderer and accomplice should now use their **Guilty / Accomplice** script sections; everyone else uses **Innocent**",
+      "step4SlipDrawItem4_intrigue": "The culprit should now use their **Guilty** script sections; everyone else uses **Innocent**",
+      "step4SlipDrawItem4_intrigue_accomplice": "The culprit and accomplice should now use their **Guilty / Accomplice** script sections; everyone else uses **Innocent**",
+      "step4SlipDrawItem5": "Do NOT reveal who drew which slip",
+      "step4SlipDrawItem6": "Continue to Round 2",
+      "step4PredeterminedLabel_murder": "The Murderer Is Already Set — no action needed here",
+      "step4PredeterminedLabel_intrigue": "The Culprit Is Already Set — no action needed here",
+      "step4PredeterminedBody_murder": "Detective-style mysteries skip the slip draw entirely. The murderer is predetermined; see the Detective Guide for who. Continue straight to Round 2.",
+      "step4PredeterminedBody_intrigue": "Detective-style mysteries skip the slip draw entirely. The culprit is predetermined; see the Investigator Guide for who. Continue straight to Round 2.",
+      "beforeRound2Note_murder": "**Announce this before Round 2:** when giving their own account, the murderer may mislead, spin, omit, and stick to their cover story — that's the game. But when another player asks them a direct question, they shouldn't invent brand-new lies on the spot: they deflect, answer selectively, or turn suspicion elsewhere. This keeps the mystery solvable — the evidence stays true, and your guests' job is deciding whose *story* to believe.",
+      "beforeRound2Note_intrigue": "**Announce this before Round 2:** when giving their own account, the culprit may mislead, spin, omit, and stick to their cover story — that's the game. But when another player asks them a direct question, they shouldn't invent brand-new lies on the spot: they deflect, answer selectively, or turn suspicion elsewhere. This keeps the mystery solvable — the evidence stays true, and your guests' job is deciding whose *story* to believe.",
+      "step5Label": "Round 2 — Motives — 20 min",
+      "step5Item1_murder": "The Detective narrates the round — read aloud, or play the audio",
+      "step5Item1_intrigue": "The Investigator narrates the round — read aloud, or play the audio",
+      "step5Item2": "Partway through, watch for a bracketed cue like *[Present Round 2 Evidence]* — that's your signal to reveal the card. Not before the round starts, not right after the opening: exactly at that cue",
+      "step5Item3_murder": "Once the detective steps back, players question each other using their Round 2 options",
+      "step5Item3_intrigue": "Once the investigator steps back, players question each other using their Round 2 options",
+      "step6Label": "Round 3 — Method — 20 min",
+      "step6Body": "Same pattern as Round 2: narration → evidence cue → questions.",
+      "step7Label": "Round 4 — Opportunity — 20 min",
+      "step7Body": "Same pattern again.",
+      "step8Label": "Accusations — 10 min",
+      "step8Body": "Going around the group, each player accuses *someone else* with one sentence of reasoning. Point outward — save your own defense for the next step. A big circle works well here — it builds pressure and keeps the room coherent.",
+      "step9Label": "Final Statements — 10 min",
+      "step9BodyCharacterBased_murder": "Going around again, each player defends themselves. Still denial, not confession — even the murderer sticks to their story here.",
+      "step9BodyCharacterBased_intrigue": "Going around again, each player defends themselves. Still denial, not confession — even the culprit sticks to their story here.",
+      "step9BodyDetective": "Going around again, each player defends themselves and make one last plea or confession.",
+      "step10Label": "The Reveal — 5–10 min",
+      "step10Body_murder": "The Detective names the murderer, who reads their confession aloud.",
+      "step10Body_murder_accomplice": "The Detective names the murderer, who reads their confession aloud. Then the Detective turns to the accomplice, who confesses too — and **both** are arrested.",
+      "step10Body_intrigue": "The Investigator names the culprit, who reads their confession aloud.",
+      "step10Body_intrigue_accomplice": "The Investigator names the culprit, who reads their confession aloud. Then the Investigator turns to the accomplice, who confesses too — and **both** are arrested."
+    },
+    "keepingOnTrack": {
+      "heading": "Keeping the Story on Track",
+      "intro": "Players will improvise, add their own flair, and sometimes wander off-script — **this is normal and it's fine.** A little chaos is part of the fun, and you don't need to correct every departure. Only step in when the thread is genuinely lost.",
+      "tool_murder": "When it drifts, the Detective is your tool for pulling it back. Because the detective is suspicious of everyone, you can always cut in with a pointed question:",
+      "tool_intrigue": "When it drifts, the Investigator is your tool for pulling it back. Because the investigator is suspicious of everyone, you can always cut in with a pointed question:",
+      "example1": "\"Wait — a moment ago you said you were in the parlor. How does that square with what we just heard?\"",
+      "example2": "\"That's curious. Earlier you told us something different. Which is it?\"",
+      "example3": "\"Let's come back to the facts. [Name], where exactly were you when it happened?\"",
+      "closing": "Keep the Game Overview and each character's secret handy (you skimmed them in the checklist) so you can always re-anchor the group in what's actually true."
+    },
+    "tips": {
+      "heading": "Hosting Tips",
+      "tip1": "**Keep it moving.** If a round is dragging, summarize and prompt: \"OK — based on what we've heard, who's looking suspicious?\"",
+      "tip2": "**Read evidence neutrally.** Don't hint at who you think did it (even if you know).",
+      "tip3": "**Watch for quiet players.** Prompt them with a question if they haven't spoken in a round.",
+      "tip4": "**Watch for dominant players.** Gently redirect: \"Let's hear from someone we haven't heard from.\"",
+      "tip5CharacterBased_murder": "**The murderer should NOT confess too early** — their Final Statement is a denial like everyone else's. The real confession only comes if the detective specifically names them during the Reveal — that's a separate, later section on their character page (\"The Reveal — Your Confession\"). Encourage them to play it cool through Final Statements.",
+      "tip5CharacterBased_intrigue": "**The culprit should NOT confess too early** — their Final Statement is a denial like everyone else's. The real confession only comes if the investigator specifically names them during the Reveal — that's a separate, later section on their character page (\"The Reveal — Your Confession\"). Encourage them to play it cool through Final Statements.",
+      "tip5Detective_murder": "**The murderer should NOT confess too early** — they should defend themselves until cornered. Encourage them to play it cool.",
+      "tip5Detective_intrigue": "**The culprit should NOT confess too early** — they should defend themselves until cornered. Encourage them to play it cool.",
+      "tip6": "**Everyone protects their secret.** Each character has a secret with real consequences if it gets out. Remind players to guard it — a player who shrugs off their secret drains the tension for everyone. Defending your reputation is half the game.",
+      "tip7": "**Let the group move.** Small clusters of conversation and one big circle for the accusations both work well — don't force everyone to stay in one seated formation the whole time.",
+      "tip8": "**Improvise.** If a player asks something not in their script options, encourage in-character improvisation.",
+      "tip9": "**Have fun with atmosphere.** Music and a themed snack go a long way; nothing else is required."
     }
   }
 }

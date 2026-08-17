@@ -1576,11 +1576,10 @@
   },
   "adaptation": {
     "card": {
-      "sectionIntro": "D'autres façons de façonner votre mystère - cette section s'enrichit avec le temps",
-      "title": "Nouveau casting",
+      "title": "Retirer un personnage",
       "teaser": "Un invité ne peut pas venir ? Retirez-le ou remplacez-le dans l'histoire - 5 $ forfaitaires, corrigez autant de personnages que nécessaire en une seule fois.",
       "cta": "En savoir plus",
-      "inProgressTitle": "Changement de casting en cours",
+      "inProgressTitle": "Mise à jour en cours",
       "inProgressSummary": "{{done}} sur {{total}} mis à jour",
       "inProgressNotice": "Nous vous enverrons un e-mail une fois terminé - n'hésitez pas à continuer à utiliser le reste de votre mystère en attendant.",
       "comingSoonTitle": "Conseils et vidéos pour l'animation",
@@ -1588,10 +1587,10 @@
       "comingSoonBody": "De courtes vidéos et des astuces rapides pour animer votre mystère le soir venu."
     },
     "entryPoint": {
-      "notice": "Vous pouvez modifier chaque personnage ci-dessous. Besoin de supprimer ou remplacer quelqu'un complètement ? Utilisez Nouveau casting (voir l'onglet Extras) plutôt que de tout régénérer."
+      "notice": "Vous pouvez modifier chaque personnage ci-dessous. Besoin de supprimer ou remplacer quelqu'un complètement ? Utilisez Retirer un personnage (voir l'onglet Extras) plutôt que de tout régénérer."
     },
     "explainer": {
-      "title": "Nouveau casting",
+      "title": "Retirer un personnage",
       "subtitle": "Retirez un personnage de votre mystère en un clic.",
       "characterStyleHeadline": "Vous n'avez probablement pas besoin de payer pour ça.",
       "characterStyleBody": "Ce mystère est basé sur les personnages - il n'y a pas de coupable prédéterminé, donc l'absence d'un personnage est facile à camoufler vous-même, gratuitement. Dites simplement à vos invités quelque chose comme : \"X est aussi suspect, mais on l'interroge séparément - continuez sans lui\", ou \"On a déjà écarté X\". Les rumeurs restantes à son sujet ne posent alors plus aucun problème.",
@@ -1619,7 +1618,7 @@
       "replacedByAuto": "nous choisirons le nouveau {{role}}",
       "totalLabel": "Total : {{total}} $",
       "cancel": "Annuler",
-      "cta": "Retirer - {{total}} $"
+      "cta": "Payer maintenant"
     },
     "processing": {
       "title": "Mise à jour de votre mystère",
@@ -1636,9 +1635,266 @@
       "backToMystery": "Retour à votre mystère"
     },
     "toasts": {
-      "createdNoCheckout": "Demande de changement de casting créée pour {{count}} personnage(s) (mode test - aucun paiement configuré).",
+      "createdNoCheckout": "Demande créée pour {{count}} personnage(s) (mode test - aucun paiement configuré).",
       "createFailed": "Impossible de démarrer cette demande. Veuillez réessayer.",
-      "alreadyInProgress": "L'un de ces personnages a déjà une demande de changement de casting en cours."
+      "alreadyInProgress": "L'un de ces personnages a déjà une demande en cours."
     }
+  },
+  "hostGuide": {
+    "checklist": {
+      "heading": "Check-list de démarrage rapide pour l'hôte",
+      "intro_murder": "Gardez ceci ouvert pendant la partie — c'est votre tableau de bord en un coup d'œil, surtout si vous jouez aussi le rôle du détective.",
+      "intro_intrigue": "Gardez ceci ouvert pendant la partie — c'est votre tableau de bord en un coup d'œil, surtout si vous jouez aussi le rôle de l'enquêteur.",
+      "item1": "Chaque invité a sa fiche de personnage ouverte (envoyée numériquement avant la soirée)",
+      "item2_murder": "Vous avez lu ce guide ainsi que le Guide du détective, et parcouru le secret de chaque personnage pour savoir qui cache quoi",
+      "item2_intrigue": "Vous avez lu ce guide ainsi que le Guide de l'enquêteur, et parcouru le secret de chaque personnage pour savoir qui cache quoi",
+      "item3": "Cartes de preuves prêtes (imprimées ou sur un écran), une par tour",
+      "item4SlipDraw_murder": "Papiers préparés pour le tirage au sort du meurtrier",
+      "item4SlipDraw_murder_accomplice": "Papiers préparés pour le tirage au sort du meurtrier et du complice",
+      "item4SlipDraw_intrigue": "Papiers préparés pour le tirage au sort du coupable",
+      "item4SlipDraw_intrigue_accomplice": "Papiers préparés pour le tirage au sort du coupable et du complice",
+      "item4Predetermined_murder": "Vous savez qui est le meurtrier (voir le Guide du détective)",
+      "item4Predetermined_murder_accomplice": "Vous savez qui sont le meurtrier et le complice (voir le Guide du détective)",
+      "item4Predetermined_intrigue": "Vous savez qui est le coupable (voir le Guide de l'enquêteur)",
+      "item4Predetermined_intrigue_accomplice": "Vous savez qui sont le coupable et le complice (voir le Guide de l'enquêteur)",
+      "item5": "Gardez la liste des suspects (en haut du guide de chaque joueur) et l'Aperçu du jeu à portée de main — vous vous en servirez pour remettre l'histoire sur les rails",
+      "roundOrderNote": "**Ordre des tours en un coup d'œil :** consultez \"Déroulement de la partie\" ci-dessous pour le déroulé complet, étape par étape."
+    },
+    "materials": {
+      "heading": "Matériel",
+      "universalLabel": "**Éléments universels :**",
+      "item1": "Guides de personnage — déjà envoyés numériquement à chaque invité avant la soirée",
+      "item2": "Cartes de preuves imprimées (ou affichées sur un téléphone/écran — à votre choix)",
+      "item3_murder": "Script du détective (dialogues du détective pour chaque tour, dans l'onglet Guide du détective)",
+      "item3_intrigue": "Script de l'enquêteur (dialogues de l'enquêteur pour chaque tour, dans l'onglet Guide de l'enquêteur)",
+      "item4": "Minuteur ou horloge",
+      "item5": "Facultatif : décoration à thème, musique, nourriture/boissons",
+      "slipDrawLabel": "**Pour le tirage au sort :**",
+      "slipDrawItem1": "Récipient pour les papiers (chapeau, bol, boîte décorative)",
+      "slipDrawItem2_murder": "Papiers pour la désignation du meurtrier",
+      "slipDrawItem2_murder_accomplice": "Papiers pour la désignation du meurtrier (et du complice)",
+      "slipDrawItem2_intrigue": "Papiers pour la désignation du coupable",
+      "slipDrawItem2_intrigue_accomplice": "Papiers pour la désignation du coupable (et du complice)"
+    },
+    "prep": {
+      "heading": "Préparatifs avant la soirée",
+      "beforeLabel": "**Quelques jours avant :**",
+      "item1_murder": "Lisez ce guide de l'hôte en entier ainsi que le Guide du détective",
+      "item1_intrigue": "Lisez ce guide de l'hôte en entier ainsi que le Guide de l'enquêteur",
+      "item2": "Envoyez à chaque invité sa fiche de personnage (lien numérique ou PDF) au moins 3 jours avant l'événement",
+      "item3": "Encouragez les invités à lire l'introduction de leur personnage avant d'arriver — pas besoin de l'apprendre par cœur, juste de s'en imprégner",
+      "item4": "Confirmez la liste des invités et finalisez les participants",
+      "dayOfLabel": "**Le jour même :**",
+      "slipDrawSetup_murder": "Préparez le tirage au sort : découpez {{playerCount}} petits papiers. Écrivez \"MEURTRIER\" sur l'un d'eux. Laissez les autres vierges (ou écrivez \"Innocent\"). Pliez chaque papier pour que l'écriture ne soit pas visible. Placez-les dans votre récipient.",
+      "slipDrawSetup_murder_accomplice": "Préparez le tirage au sort : découpez {{playerCount}} petits papiers. Écrivez \"MEURTRIER\" sur l'un d'eux, \"COMPLICE\" sur un autre. Laissez les autres vierges (ou écrivez \"Innocent\"). Pliez chaque papier pour que l'écriture ne soit pas visible. Placez-les dans votre récipient.",
+      "slipDrawSetup_intrigue": "Préparez le tirage au sort : découpez {{playerCount}} petits papiers. Écrivez \"COUPABLE\" sur l'un d'eux. Laissez les autres vierges (ou écrivez \"Innocent\"). Pliez chaque papier pour que l'écriture ne soit pas visible. Placez-les dans votre récipient.",
+      "slipDrawSetup_intrigue_accomplice": "Préparez le tirage au sort : découpez {{playerCount}} petits papiers. Écrivez \"COUPABLE\" sur l'un d'eux, \"COMPLICE\" sur un autre. Laissez les autres vierges (ou écrivez \"Innocent\"). Pliez chaque papier pour que l'écriture ne soit pas visible. Placez-les dans votre récipient.",
+      "item5": "Imprimez les cartes de preuves (facultatif) — vous pouvez aussi simplement les montrer sur un téléphone ou les lire à voix haute",
+      "item6": "Créez l'ambiance si vous le souhaitez (musique à thème, lumière tamisée, collations à thème) — rien de tout cela n'est obligatoire"
+    },
+    "guestChanges": {
+      "heading": "Gérer les changements de dernière minute parmi les invités",
+      "intro": "Votre distribution de suspects est figée — elle est tissée dans l'intrigue, donc vous ne pouvez pas ajouter ou retirer de personnages suspects. Mais dans la réalité, les listes d'invités changent, et le jeu est conçu pour s'adapter.",
+      "moreLabel": "**Plus d'invités que de personnages (une personne en plus veut participer) :**",
+      "moreItem1_murder": "Intégrez-les comme **co-enquêteurs** dans l'équipe du détective — aucune fiche de personnage nécessaire. Autant que vous voulez.",
+      "moreItem1_intrigue": "Intégrez-les comme **co-enquêteurs** dans l'équipe de l'enquêteur — aucune fiche de personnage nécessaire. Autant que vous voulez.",
+      "moreItem2": "Ils interrogent les suspects à chaque tour, exploitent les indices et les preuves aux côtés de tout le monde, et plaident leur cause au moment des accusations.",
+      "moreItem3_murder": "**Important :** les co-enquêteurs n'ont PAS accès au script du détective ni à ce guide de l'hôte — ce sont votre dossier d'enquête, et ils y révèlent le nom du meurtrier. Gardez-les pour vous. Vos co-enquêteurs doivent résoudre l'affaire honnêtement à partir des indices, exactement comme les suspects.",
+      "moreItem3_intrigue": "**Important :** les co-enquêteurs n'ont PAS accès au script de l'enquêteur ni à ce guide de l'hôte — ce sont votre dossier d'enquête, et ils y révèlent le nom du coupable. Gardez-les pour vous. Vos co-enquêteurs doivent résoudre l'affaire honnêtement à partir des indices, exactement comme les suspects.",
+      "fewerLabel": "**Moins d'invités que de personnages (quelqu'un se désiste) :**",
+      "fewerItem1_murder": "Ne retirez jamais le meurtrier — l'intrigue dépend de sa présence dans le jeu.",
+      "fewerItem1_murder_accomplice": "Ne retirez jamais le meurtrier ni le complice — l'intrigue dépend de leur présence dans le jeu.",
+      "fewerItem1_intrigue": "Ne retirez jamais le coupable — l'intrigue dépend de sa présence dans le jeu.",
+      "fewerItem1_intrigue_accomplice": "Ne retirez jamais le coupable ni le complice — l'intrigue dépend de leur présence dans le jeu.",
+      "fewerItem2_murder": "Pour retirer un suspect, choisissez un personnage purement innocent. Soit vous intégrez ses informations clés au briefing d'un autre invité, soit vous faites en sorte que le détective le mentionne comme \"indisponible pour l'interrogatoire\" afin que ses indices ressortent quand même.",
+      "fewerItem2_intrigue": "Pour retirer un suspect, choisissez un personnage purement innocent. Soit vous intégrez ses informations clés au briefing d'un autre invité, soit vous faites en sorte que l'enquêteur le mentionne comme \"indisponible pour l'interrogatoire\" afin que ses indices ressortent quand même.",
+      "fewerItem3": "Si plusieurs invités se désistent, envisagez de régénérer le mystère avec le nouveau nombre de participants pour un résultat optimal."
+    },
+    "setupChoice": {
+      "heading_murder": "Choix de configuration du détective",
+      "heading_intrigue": "Choix de configuration de l'enquêteur",
+      "intro_murder": "Vous avez deux façons de gérer la narration du détective :",
+      "intro_intrigue": "Vous avez deux façons de gérer la narration de l'enquêteur :",
+      "option1Label_murder": "**Option 1 — L'hôte joue le détective**",
+      "option1Label_intrigue": "**Option 1 — L'hôte joue l'enquêteur**",
+      "option1Item1_murder": "Vous incarnez le personnage du détective pendant toute la partie",
+      "option1Item1_intrigue": "Vous incarnez le personnage de l'enquêteur pendant toute la partie",
+      "option1Item2_murder": "Lisez à voix haute le script du détective de chaque tour au fur et à mesure de la partie",
+      "option1Item2_intrigue": "Lisez à voix haute le script de l'enquêteur de chaque tour au fur et à mesure de la partie",
+      "option1NoteCharacterBased_murder": "Dans les mystères axés sur les personnages, vous ne participez PAS comme suspect, vous pouvez donc décider à l'avance qui est le meurtrier (en sautant le tirage au sort) ou tout de même utiliser le tirage au sort pour varier.",
+      "option1NoteCharacterBased_intrigue": "Dans les mystères axés sur les personnages, vous ne participez PAS comme suspect, vous pouvez donc décider à l'avance qui est le coupable (en sautant le tirage au sort) ou tout de même utiliser le tirage au sort pour varier.",
+      "option1NoteDetective_murder": "Dans les mystères de style détective, le meurtrier est déterminé à l'avance — vous découvrirez qui il est dans le Guide du détective. Décidez avant la soirée si vous voulez le dire en privé à ce joueur ou laisser le jeu le révéler de lui-même.",
+      "option1NoteDetective_intrigue": "Dans les mystères de style détective, le coupable est déterminé à l'avance — vous découvrirez qui il est dans le Guide de l'enquêteur. Décidez avant la soirée si vous voulez le dire en privé à ce joueur ou laisser le jeu le révéler de lui-même.",
+      "option2Label_murder": "**Option 2 — Détective audio**",
+      "option2Label_intrigue": "**Option 2 — Enquêteur audio**",
+      "option2Item1": "Vous incarnez l'un des personnages suspects (vous participez au mystère)",
+      "option2Item2_murder": "Générez un audio du script du détective à l'aide d'un outil d'IA gratuit :",
+      "option2Item2_intrigue": "Générez un audio du script de l'enquêteur à l'aide d'un outil d'IA gratuit :",
+      "ttsOption1": "[Google AI Studio Speech](https://aistudio.google.com/generate-speech) — collez le script, générez l'audio TTS",
+      "ttsOption2": "[Google NotebookLM](https://notebooklm.google.com) — collez le script, utilisez Audio Overview",
+      "ttsOption3": "Ou tout autre service de synthèse vocale (ElevenLabs, etc.)",
+      "option2Item3": "Ignorez les [indications scéniques entre crochets] lors de la génération de l'audio",
+      "option2Item4": "Jouez l'audio de chaque tour au moment approprié",
+      "option2Item5": "Ayez des scripts imprimés de secours prêts en cas de problème technique"
+    },
+    "runningGame": {
+      "heading": "Déroulement de la partie",
+      "timeShort": "Environ 1h30 au total",
+      "timeMedium": "Environ 2 heures au total",
+      "timeLong": "Environ 2 à 2h30 au total",
+      "timeXlong": "Environ 3 heures au total",
+      "intro": "{{timeEstimate}} (pour {{playerCount}} joueurs). Suivez cette section dans l'ordre, une fois vos invités réunis — c'est le véritable script de la soirée. Tout ce qui précède, c'est ce que vous préparez à l'avance ; ceci, c'est ce que vous faites une fois que ça commence.",
+      "step1Label": "Déclaration d'ouverture — 2 à 3 min",
+      "step1Body_murder": "Prononcez la Déclaration d'ouverture du détective : lisez-la à voix haute, ou diffusez l'audio préenregistré (selon ce que vous avez choisi plus haut). Disponible dans le Guide du détective.",
+      "step1Body_intrigue": "Prononcez la Déclaration d'ouverture de l'enquêteur : lisez-la à voix haute, ou diffusez l'audio préenregistré (selon ce que vous avez choisi plus haut). Disponible dans le Guide de l'enquêteur.",
+      "step2Label": "Tour 1, Partie A — Présentations — environ {{introTime}} min pour votre groupe de {{playerCount}} (environ 45 s/joueur)",
+      "step2Body": "À tour de rôle, chaque joueur lit ou improvise l'introduction de son personnage.",
+      "step2LargeGroupNote": "**Pour les grands groupes (15 et plus), demandez aux joueurs de se limiter à 2-3 phrases** — nom, rôle, une ligne sur la victime — plutôt que de lire la page entière. À raison d'1 minute chacun, 30 invités représentent à eux seuls un tour de 30 minutes.",
+      "step3Label": "Tour 1, Partie B — Rumeurs — 10 min",
+      "step3Body": "Juste après les présentations, sans pause : chaque joueur partage sa ou ses rumeurs indiquées sur sa fiche de personnage avec le reste du groupe. Tout le monde doit avoir entendu au moins une rumeur avant de continuer.",
+      "step4SlipDrawLabel_murder": "Tirage au sort — Désignation du meurtrier — 5 min",
+      "step4SlipDrawLabel_intrigue": "Tirage au sort — Désignation du coupable — 5 min",
+      "step4SlipDrawItem1": "Demandez aux joueurs de garder un visage neutre",
+      "step4SlipDrawItem2": "Faites circuler le récipient — chaque joueur tire UN papier en secret et le lit en silence",
+      "step4SlipDrawItem3_murder": "Celui ou celle qui a tiré \"MEURTRIER\" est le meurtrier ; tous les autres sont innocents",
+      "step4SlipDrawItem3_murder_accomplice": "Celui ou celle qui a tiré \"MEURTRIER\" est le meurtrier ; celui ou celle qui a tiré \"COMPLICE\" est le complice ; tous les autres sont innocents",
+      "step4SlipDrawItem3_intrigue": "Celui ou celle qui a tiré \"COUPABLE\" est le coupable ; tous les autres sont innocents",
+      "step4SlipDrawItem3_intrigue_accomplice": "Celui ou celle qui a tiré \"COUPABLE\" est le coupable ; celui ou celle qui a tiré \"COMPLICE\" est le complice ; tous les autres sont innocents",
+      "step4SlipDrawItem4_murder": "Le meurtrier doit maintenant utiliser les sections **Coupable** de son script ; tous les autres utilisent les sections **Innocent**",
+      "step4SlipDrawItem4_murder_accomplice": "Le meurtrier et le complice doivent maintenant utiliser les sections **Coupable / Complice** de leur script ; tous les autres utilisent les sections **Innocent**",
+      "step4SlipDrawItem4_intrigue": "Le coupable doit maintenant utiliser les sections **Coupable** de son script ; tous les autres utilisent les sections **Innocent**",
+      "step4SlipDrawItem4_intrigue_accomplice": "Le coupable et le complice doivent maintenant utiliser les sections **Coupable / Complice** de leur script ; tous les autres utilisent les sections **Innocent**",
+      "step4SlipDrawItem5": "NE révélez PAS qui a tiré quel papier",
+      "step4SlipDrawItem6": "Passez au Tour 2",
+      "step4PredeterminedLabel_murder": "Le meurtrier est déjà déterminé — aucune action requise ici",
+      "step4PredeterminedLabel_intrigue": "Le coupable est déjà déterminé — aucune action requise ici",
+      "step4PredeterminedBody_murder": "Les mystères de style détective sautent entièrement le tirage au sort. Le meurtrier est déterminé à l'avance ; consultez le Guide du détective pour savoir qui c'est. Passez directement au Tour 2.",
+      "step4PredeterminedBody_intrigue": "Les mystères de style détective sautent entièrement le tirage au sort. Le coupable est déterminé à l'avance ; consultez le Guide de l'enquêteur pour savoir qui c'est. Passez directement au Tour 2.",
+      "beforeRound2Note_murder": "**À annoncer avant le Tour 2 :** lorsqu'il raconte sa propre version, le meurtrier peut induire en erreur, enjoliver, omettre des détails et s'en tenir à sa couverture — c'est le jeu. Mais quand un autre joueur lui pose une question directe, il ne doit pas inventer de nouveaux mensonges sur-le-champ : il détourne la question, répond de façon sélective, ou reporte les soupçons ailleurs. Cela garde le mystère résoluble — les preuves, elles, restent vraies, et le travail de vos invités consiste à décider quelle *version* croire.",
+      "beforeRound2Note_intrigue": "**À annoncer avant le Tour 2 :** lorsqu'il raconte sa propre version, le coupable peut induire en erreur, enjoliver, omettre des détails et s'en tenir à sa couverture — c'est le jeu. Mais quand un autre joueur lui pose une question directe, il ne doit pas inventer de nouveaux mensonges sur-le-champ : il détourne la question, répond de façon sélective, ou reporte les soupçons ailleurs. Cela garde le mystère résoluble — les preuves, elles, restent vraies, et le travail de vos invités consiste à décider quelle *version* croire.",
+      "step5Label": "Tour 2 — Mobiles — 20 min",
+      "step5Item1_murder": "Le détective narre le tour — lisez à voix haute, ou diffusez l'audio",
+      "step5Item1_intrigue": "L'enquêteur narre le tour — lisez à voix haute, ou diffusez l'audio",
+      "step5Item2": "À mi-parcours, guettez une indication entre crochets du type *[Présentez la preuve du Tour 2]* — c'est votre signal pour révéler la carte. Ni avant le début du tour, ni juste après l'introduction : exactement à cette indication",
+      "step5Item3_murder": "Une fois que le détective se retire, les joueurs s'interrogent entre eux à l'aide de leurs options du Tour 2",
+      "step5Item3_intrigue": "Une fois que l'enquêteur se retire, les joueurs s'interrogent entre eux à l'aide de leurs options du Tour 2",
+      "step6Label": "Tour 3 — Méthode — 20 min",
+      "step6Body": "Même déroulement que le Tour 2 : narration → indication de preuve → questions.",
+      "step7Label": "Tour 4 — Opportunité — 20 min",
+      "step7Body": "Même déroulement à nouveau.",
+      "step8Label": "Accusations — 10 min",
+      "step8Body": "À tour de rôle, chaque joueur accuse *quelqu'un d'autre* en une phrase de justification. Pointez vers l'extérieur — gardez votre propre défense pour l'étape suivante. Un grand cercle fonctionne bien ici — cela crée de la pression et garde la salle cohérente.",
+      "step9Label": "Déclarations finales — 10 min",
+      "step9BodyCharacterBased_murder": "En reprenant le tour de table, chaque joueur se défend. On reste dans le déni, pas la confession — même le meurtrier s'en tient à sa version ici.",
+      "step9BodyCharacterBased_intrigue": "En reprenant le tour de table, chaque joueur se défend. On reste dans le déni, pas la confession — même le coupable s'en tient à sa version ici.",
+      "step9BodyDetective": "En reprenant le tour de table, chaque joueur se défend et fait un dernier plaidoyer ou une confession.",
+      "step10Label": "La Révélation — 5 à 10 min",
+      "step10Body_murder": "Le détective nomme le meurtrier, qui lit sa confession à voix haute.",
+      "step10Body_murder_accomplice": "Le détective nomme le meurtrier, qui lit sa confession à voix haute. Puis le détective se tourne vers le complice, qui confesse à son tour — et **les deux** sont arrêtés.",
+      "step10Body_intrigue": "L'enquêteur nomme le coupable, qui lit sa confession à voix haute.",
+      "step10Body_intrigue_accomplice": "L'enquêteur nomme le coupable, qui lit sa confession à voix haute. Puis l'enquêteur se tourne vers le complice, qui confesse à son tour — et **les deux** sont arrêtés."
+    },
+    "keepingOnTrack": {
+      "heading": "Garder l'histoire sur les rails",
+      "intro": "Les joueurs vont improviser, ajouter leur propre touche, et parfois s'écarter du script — **c'est normal et ce n'est pas grave.** Un peu de chaos fait partie du plaisir, et vous n'avez pas besoin de corriger chaque écart. N'intervenez que lorsque le fil est vraiment perdu.",
+      "tool_murder": "Quand ça dérive, le détective est votre outil pour tout ramener sur les rails. Comme le détective se méfie de tout le monde, vous pouvez toujours intervenir avec une question ciblée :",
+      "tool_intrigue": "Quand ça dérive, l'enquêteur est votre outil pour tout ramener sur les rails. Comme l'enquêteur se méfie de tout le monde, vous pouvez toujours intervenir avec une question ciblée :",
+      "example1": "\"Attendez — il y a un instant, vous avez dit que vous étiez dans le salon. Comment cela concorde-t-il avec ce qu'on vient d'entendre ?\"",
+      "example2": "\"C'est curieux. Plus tôt, vous nous avez dit autre chose. Alors, laquelle des deux versions est vraie ?\"",
+      "example3": "\"Revenons-en aux faits. [Nom], où étiez-vous exactement au moment des faits ?\"",
+      "closing": "Gardez l'Aperçu du jeu et le secret de chaque personnage à portée de main (vous les avez parcourus dans la check-list) afin de toujours pouvoir recentrer le groupe sur ce qui est réellement vrai."
+    },
+    "tips": {
+      "heading": "Conseils pour animer",
+      "tip1": "**Gardez le rythme.** Si un tour traîne en longueur, résumez et relancez : \"Bon — d'après ce qu'on a entendu, qui a l'air suspect ?\"",
+      "tip2": "**Lisez les preuves avec neutralité.** Ne laissez rien transparaître de qui vous pensez être coupable (même si vous le savez).",
+      "tip3": "**Surveillez les joueurs silencieux.** Relancez-les avec une question s'ils n'ont pas parlé pendant un tour.",
+      "tip4": "**Surveillez les joueurs qui monopolisent la parole.** Redirigez en douceur : \"Écoutons quelqu'un qu'on n'a pas encore entendu.\"",
+      "tip5CharacterBased_murder": "**Le meurtrier ne doit PAS confesser trop tôt** — sa Déclaration finale est un déni, comme celle de tout le monde. La vraie confession n'intervient que si le détective le nomme spécifiquement pendant la Révélation — c'est une section séparée, plus tardive, sur sa fiche de personnage (\"La Révélation — Votre confession\"). Encouragez-le à rester impassible pendant les Déclarations finales.",
+      "tip5CharacterBased_intrigue": "**Le coupable ne doit PAS confesser trop tôt** — sa Déclaration finale est un déni, comme celle de tout le monde. La vraie confession n'intervient que si l'enquêteur le nomme spécifiquement pendant la Révélation — c'est une section séparée, plus tardive, sur sa fiche de personnage (\"La Révélation — Votre confession\"). Encouragez-le à rester impassible pendant les Déclarations finales.",
+      "tip5Detective_murder": "**Le meurtrier ne doit PAS confesser trop tôt** — il doit se défendre jusqu'à être acculé. Encouragez-le à rester impassible.",
+      "tip5Detective_intrigue": "**Le coupable ne doit PAS confesser trop tôt** — il doit se défendre jusqu'à être acculé. Encouragez-le à rester impassible.",
+      "tip6": "**Chacun protège son secret.** Chaque personnage a un secret avec de vraies conséquences s'il venait à être révélé. Rappelez aux joueurs de le garder — un joueur qui prend son secret à la légère fait retomber la tension pour tout le monde. Défendre sa réputation, c'est la moitié du jeu.",
+      "tip7": "**Laissez le groupe bouger.** De petits groupes de conversation et un grand cercle pour les accusations fonctionnent bien tous les deux — ne forcez pas tout le monde à rester assis dans la même formation pendant toute la partie.",
+      "tip8": "**Improvisez.** Si un joueur pose une question qui ne figure pas dans ses options de script, encouragez l'improvisation dans la peau du personnage.",
+      "tip9": "**Amusez-vous avec l'ambiance.** Un peu de musique et des collations à thème font déjà beaucoup ; rien d'autre n'est requis."
+    }
+  },
+  "characterGuide": {
+    "fieldLabels": {
+      "characterName": "Nom du personnage",
+      "description": "Description",
+      "background": "Contexte",
+      "relationships": "Relations",
+      "secret": "Secret",
+      "introduction": "Introduction",
+      "rumors": "Rumeurs",
+      "round2Script": "Script du Tour 2",
+      "round2Questions": "Questions du Tour 2",
+      "round2Innocent": "Tour 2 — Innocent",
+      "round2Guilty": "Tour 2 — Coupable",
+      "round2Accomplice": "Tour 2 — Complice",
+      "round3Script": "Script du Tour 3",
+      "round3Questions": "Questions du Tour 3",
+      "round3Innocent": "Tour 3 — Innocent",
+      "round3Guilty": "Tour 3 — Coupable",
+      "round3Accomplice": "Tour 3 — Complice",
+      "round4Script": "Script du Tour 4",
+      "round4Questions": "Questions du Tour 4",
+      "round4Innocent": "Tour 4 — Innocent",
+      "round4Guilty": "Tour 4 — Coupable",
+      "round4Accomplice": "Tour 4 — Complice",
+      "accusations": "Accusations",
+      "finalStatement": "Déclaration finale",
+      "finalInnocent": "Déclaration finale — Innocent",
+      "finalGuilty": "Déclaration finale — Coupable",
+      "finalAccomplice": "Déclaration finale — Complice",
+      "revealConfessionGuilty": "La Révélation — Votre confession",
+      "revealConfessionAccomplice": "La Révélation — Confession du complice"
+    },
+    "roundHeaders": {
+      "introduction": {
+        "title": "Tour 1 — Présentations",
+        "instruction": "Quand c'est votre tour, prononcez votre introduction ci-dessous. Écoutez attentivement celles des autres — les détails que vous entendez maintenant compteront dans les tours suivants."
+      },
+      "rumors": {
+        "title": "Tour 1 — Rumeurs",
+        "instruction": "Toujours dans le Tour 1, juste après les présentations — sans pause entre les deux. Partagez la rumeur ci-dessous avec quiconque veut bien l'écouter, et prêtez attention à ce que vous entendez des autres : cela comptera dans les tours suivants."
+      },
+      "round2": {
+        "title": "Tour 2 — Mobiles",
+        "instruction": "La question, maintenant, c'est pourquoi. Utilisez vos questions ci-dessous pour sonder pourquoi les autres auraient pu vouloir la mort de la victime — et soyez prêt à répondre de votre propre mobile."
+      },
+      "round3": {
+        "title": "Tour 3 — La Méthode",
+        "instruction": "L'attention se porte maintenant sur comment cela a été fait. Pressez les autres sur ce qu'ils savaient de la méthode, des moyens et de la scène du crime."
+      },
+      "round4": {
+        "title": "Tour 4 — Opportunité",
+        "instruction": "Où se trouvait chacun ? Utilisez les preuves pour établir les alibis — et soyez prêt à justifier vos propres allées et venues."
+      },
+      "accusations": {
+        "title": "Accusations — Pointez vers l'extérieur",
+        "instruction": "Quand le tour des accusations commence, accusez la personne que vous soupçonnez le plus et donnez une raison tirée des preuves. Gardez votre propre défense pour les déclarations finales qui suivent."
+      },
+      "finalStatement": {
+        "title": "Déclarations finales — À vous de vous défendre",
+        "instruction": "Une fois que tout le monde a accusé, c'est votre dernier mot. Défendez-vous — ou, si vous êtes coupable, faites votre confession."
+      },
+      "revealGuilty": {
+        "title": "La Révélation — Votre confession",
+        "instruction": "Lisez ceci UNIQUEMENT si le détective vous désigne spécifiquement comme le meurtrier pendant la Révélation, après que chaque joueur a déjà donné sa Déclaration finale ci-dessus. C'est un moment séparé, plus tardif — ne le lisez pas trop tôt."
+      },
+      "revealAccomplice": {
+        "title": "La Révélation — Confession du complice",
+        "instruction": "Lisez ceci UNIQUEMENT si le détective vous appelle spécifiquement comme le complice pendant la Révélation, après que le meurtrier a déjà confessé. C'est un moment séparé, plus tardif — ne le lisez pas trop tôt."
+      },
+      "finalInnocent": {
+        "title": "Déclarations finales — À vous de vous défendre",
+        "instruction": "Une fois que tout le monde a accusé, c'est votre dernier mot avant la Révélation. Défendez-vous et tenez-vous-en à votre version — que vous soyez innocent ou coupable, ce n'est pas dans ce tour que la vérité éclate."
+      }
+    },
+    "guardDirective": "**Gardez ce secret à tout prix.** Votre réputation — et peut-être votre liberté — dépend du fait de le garder caché. Niez, détournez, et ne le révélez jamais volontairement. Un secret livré trop facilement fait retomber la tension pour toute la tablée.",
+    "characterNameEditingTip": "**Renommer ne met à jour que ce champ.** Cela ne changera pas le nom ailleurs — les scripts des tours, les indices et le guide de l'hôte utiliseront toujours le nom d'origine. À utiliser de préférence pour choisir une variante d'un nom double (par ex. \"Clarabelle/Clarence\") avant votre première lecture, pas comme correction tardive une fois que vous avez commencé à relire le script."
   }
 }

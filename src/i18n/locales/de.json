@@ -1575,11 +1575,10 @@
   },
   "adaptation": {
     "card": {
-      "sectionIntro": "Weitere Möglichkeiten, dein Mysterium zu gestalten - dieser Bereich wächst mit der Zeit",
-      "title": "Neubesetzung",
+      "title": "Einen Charakter entfernen",
       "teaser": "Ein Gast kann nicht kommen? Entferne oder ersetze ihn in der Geschichte - pauschal 5 $, beliebig viele Charaktere in einem Durchgang korrigieren.",
       "cta": "Mehr erfahren",
-      "inProgressTitle": "Neubesetzung läuft",
+      "inProgressTitle": "Aktualisierung läuft",
       "inProgressSummary": "{{done}} von {{total}} aktualisiert",
       "inProgressNotice": "Wir schicken dir eine E-Mail, sobald es fertig ist - du kannst in der Zwischenzeit den Rest deines Mysteriums weiter nutzen.",
       "comingSoonTitle": "Tipps & Videos fürs Hosten",
@@ -1587,10 +1586,10 @@
       "comingSoonBody": "Kurze Videos und schnelle Tipps, um dein Mysterium am Abend selbst zu leiten."
     },
     "entryPoint": {
-      "notice": "Du kannst jeden Charakter unten bearbeiten. Musst du jemanden komplett entfernen oder ersetzen? Nutze die Neubesetzung (siehe Tab Extras), statt neu zu generieren."
+      "notice": "Du kannst jeden Charakter unten bearbeiten. Musst du jemanden komplett entfernen oder ersetzen? Nutze „Einen Charakter entfernen\" im Tab Extras, statt neu zu generieren."
     },
     "explainer": {
-      "title": "Neubesetzung",
+      "title": "Einen Charakter entfernen",
       "subtitle": "Entferne einen Charakter aus deinem Mysterium per Klick.",
       "characterStyleHeadline": "Dafür musst du wahrscheinlich nicht bezahlen.",
       "characterStyleBody": "Dies ist ein charakterbasiertes Mysterium - es gibt keinen vorbestimmten Täter, daher lässt sich das Fehlen eines Charakters leicht selbst und kostenlos überspielen. Sag deinen Gästen einfach etwas wie: \"X ist auch verdächtig, wird aber separat befragt - macht ohne ihn weiter\", oder \"Wir haben X bereits ausgeschlossen.\" Übrig gebliebene Gerüchte über diese Person werden dann irrelevant.",
@@ -1618,7 +1617,7 @@
       "replacedByAuto": "wir wählen den neuen {{role}}",
       "totalLabel": "Gesamt: {{total}} $",
       "cancel": "Abbrechen",
-      "cta": "Entfernen - {{total}} $"
+      "cta": "Jetzt bezahlen"
     },
     "processing": {
       "title": "Dein Mysterium wird aktualisiert",
@@ -1635,9 +1634,266 @@
       "backToMystery": "Zurück zu deinem Mysterium"
     },
     "toasts": {
-      "createdNoCheckout": "Neubesetzungsanfrage für {{count}} Charakter(e) erstellt (Staging-Modus - keine Zahlung konfiguriert).",
+      "createdNoCheckout": "Anfrage für {{count}} Charakter(e) erstellt (Staging-Modus - keine Zahlung konfiguriert).",
       "createFailed": "Diese Anfrage konnte nicht gestartet werden. Bitte versuche es erneut.",
-      "alreadyInProgress": "Für einen dieser Charaktere läuft bereits eine Neubesetzungsanfrage."
+      "alreadyInProgress": "Für einen dieser Charaktere läuft bereits eine Anfrage."
     }
+  },
+  "hostGuide": {
+    "checklist": {
+      "heading": "Schnellstart-Checkliste für den Gastgeber",
+      "intro_murder": "Halte das während des Spiels offen — das ist deine Kommandozentrale auf einen Blick, besonders wenn du auch den Detektiv spielst.",
+      "intro_intrigue": "Halte das während des Spiels offen — das ist deine Kommandozentrale auf einen Blick, besonders wenn du auch den Ermittler spielst.",
+      "item1": "Alle haben ihre Charakterseite geöffnet (wurde vor der Party digital verschickt)",
+      "item2_murder": "Du hast diese Anleitung und die Detektiv-Anleitung gelesen und dir das Geheimnis jedes Charakters angesehen, damit du weißt, wer was verbirgt",
+      "item2_intrigue": "Du hast diese Anleitung und die Ermittler-Anleitung gelesen und dir das Geheimnis jedes Charakters angesehen, damit du weißt, wer was verbirgt",
+      "item3": "Beweiskarten bereit (ausgedruckt oder auf einem Bildschirm), eine pro Runde",
+      "item4SlipDraw_murder": "Zettel für die Mörder-Ziehung vorbereitet",
+      "item4SlipDraw_murder_accomplice": "Zettel für die Mörder/Komplizen-Ziehung vorbereitet",
+      "item4SlipDraw_intrigue": "Zettel für die Täter-Ziehung vorbereitet",
+      "item4SlipDraw_intrigue_accomplice": "Zettel für die Täter/Komplizen-Ziehung vorbereitet",
+      "item4Predetermined_murder": "Du weißt, wer der Mörder ist (siehe die Detektiv-Anleitung)",
+      "item4Predetermined_murder_accomplice": "Du weißt, wer der Mörder und wer der Komplize ist (siehe die Detektiv-Anleitung)",
+      "item4Predetermined_intrigue": "Du weißt, wer der Täter ist (siehe die Ermittler-Anleitung)",
+      "item4Predetermined_intrigue_accomplice": "Du weißt, wer der Täter und wer der Komplize ist (siehe die Ermittler-Anleitung)",
+      "item5": "Halte die Verdächtigenliste (oben auf jeder Spieleranleitung) und die Spielübersicht griffbereit — damit bringst du die Geschichte wieder auf Kurs, wenn nötig",
+      "roundOrderNote": "**Rundenablauf auf einen Blick:** Die vollständige Schritt-für-Schritt-Anleitung findest du weiter unten unter \"Das Spiel leiten\"."
+    },
+    "materials": {
+      "heading": "Materialien",
+      "universalLabel": "**Allgemeine Materialien:**",
+      "item1": "Charakteranleitungen — bereits vor der Party digital an jeden Gast verschickt",
+      "item2": "Ausgedruckte Beweiskarten (oder auf einem Handy/Bildschirm gezeigt — deine Wahl)",
+      "item3_murder": "Detektiv-Skript (Detektiv-Dialoge für jede Runde, im Tab Detektiv-Anleitung)",
+      "item3_intrigue": "Ermittler-Skript (Ermittler-Dialoge für jede Runde, im Tab Ermittler-Anleitung)",
+      "item4": "Timer oder Uhr",
+      "item5": "Optional: thematische Deko, Musik, Essen/Getränke",
+      "slipDrawLabel": "**Für die Zettel-Ziehung:**",
+      "slipDrawItem1": "Behälter für Zettel (Hut, Schüssel, dekorative Box)",
+      "slipDrawItem2_murder": "Zettel für die Mörder-Auswahl",
+      "slipDrawItem2_murder_accomplice": "Zettel für die Mörder-Auswahl (und Komplizen-Auswahl)",
+      "slipDrawItem2_intrigue": "Zettel für die Täter-Auswahl",
+      "slipDrawItem2_intrigue_accomplice": "Zettel für die Täter-Auswahl (und Komplizen-Auswahl)"
+    },
+    "prep": {
+      "heading": "Vorbereitung vor der Party",
+      "beforeLabel": "**Ein paar Tage vorher:**",
+      "item1_murder": "Lies diese gesamte Gastgeberanleitung und die Detektiv-Anleitung",
+      "item1_intrigue": "Lies diese gesamte Gastgeberanleitung und die Ermittler-Anleitung",
+      "item2": "Schick jedem Gast seine Charakterseite (digitaler Link oder PDF) mindestens 3 Tage vor der Veranstaltung",
+      "item3": "Ermutige die Gäste, ihre Charaktereinführung vor der Ankunft zu lesen — sie müssen sie nicht auswendig lernen, nur damit vertraut sein",
+      "item4": "Bestätige die Gästeliste und lege die Teilnehmer endgültig fest",
+      "dayOfLabel": "**Am Tag selbst:**",
+      "slipDrawSetup_murder": "Bereite die Zettel-Ziehung vor: Schneide {{playerCount}} kleine Zettel zu. Schreib \"MÖRDER\" auf einen Zettel. Lass die übrigen leer (oder schreib \"Unschuldig\"). Falte jeden so, dass die Schrift nicht sichtbar ist. Leg sie in deinen Behälter.",
+      "slipDrawSetup_murder_accomplice": "Bereite die Zettel-Ziehung vor: Schneide {{playerCount}} kleine Zettel zu. Schreib \"MÖRDER\" auf einen Zettel, \"KOMPLIZE\" auf einen weiteren. Lass die übrigen leer (oder schreib \"Unschuldig\"). Falte jeden so, dass die Schrift nicht sichtbar ist. Leg sie in deinen Behälter.",
+      "slipDrawSetup_intrigue": "Bereite die Zettel-Ziehung vor: Schneide {{playerCount}} kleine Zettel zu. Schreib \"TÄTER\" auf einen Zettel. Lass die übrigen leer (oder schreib \"Unschuldig\"). Falte jeden so, dass die Schrift nicht sichtbar ist. Leg sie in deinen Behälter.",
+      "slipDrawSetup_intrigue_accomplice": "Bereite die Zettel-Ziehung vor: Schneide {{playerCount}} kleine Zettel zu. Schreib \"TÄTER\" auf einen Zettel, \"KOMPLIZE\" auf einen weiteren. Lass die übrigen leer (oder schreib \"Unschuldig\"). Falte jeden so, dass die Schrift nicht sichtbar ist. Leg sie in deinen Behälter.",
+      "item5": "Beweiskarten ausdrucken (optional) — du kannst sie auch einfach auf einem Handy zeigen oder laut vorlesen",
+      "item6": "Stimmung schaffen, wenn du möchtest (thematische Musik, gedämpftes Licht, thematische Snacks) — nichts davon ist erforderlich"
+    },
+    "guestChanges": {
+      "heading": "Kurzfristige Gaständerungen managen",
+      "intro": "Deine Verdächtigen-Besetzung ist fest — sie ist in die Handlung eingewoben, du kannst also keine Verdächtigen-Charaktere hinzufügen oder entfernen. Aber echte Gästelisten ändern sich, und das Spiel ist so gebaut, dass es das abfedern kann.",
+      "moreLabel": "**Mehr Gäste als Charaktere (jemand Zusätzliches möchte mitmachen):**",
+      "moreItem1_murder": "Bring sie als **Mit-Ermittler** im Team des Detektivs mit ein — keine Charakterseite nötig. So viele du willst.",
+      "moreItem1_intrigue": "Bring sie als **Mit-Ermittler** im Team des Ermittlers mit ein — keine Charakterseite nötig. So viele du willst.",
+      "moreItem2": "Sie befragen die Verdächtigen in jeder Runde, arbeiten die Hinweise und Beweise gemeinsam mit allen anderen durch und tragen bei der Anklage ihren Fall vor.",
+      "moreItem3_murder": "**Wichtig:** Mit-Ermittler bekommen NICHT das Detektiv-Skript oder diese Gastgeberanleitung — das ist deine Ermittlungsakte, und dort steht der Name des Mörders. Behalte sie für dich. Deine Mit-Ermittler lösen den Fall fair aus den Hinweisen, genau wie die Verdächtigen.",
+      "moreItem3_intrigue": "**Wichtig:** Mit-Ermittler bekommen NICHT das Ermittler-Skript oder diese Gastgeberanleitung — das ist deine Ermittlungsakte, und dort steht der Name des Täters. Behalte sie für dich. Deine Mit-Ermittler lösen den Fall fair aus den Hinweisen, genau wie die Verdächtigen.",
+      "fewerLabel": "**Weniger Gäste als Charaktere (jemand springt ab):**",
+      "fewerItem1_murder": "Streiche niemals den Mörder — die Handlung hängt davon ab, dass er im Spiel ist.",
+      "fewerItem1_murder_accomplice": "Streiche niemals den Mörder oder den Komplizen — die Handlung hängt davon ab, dass sie im Spiel sind.",
+      "fewerItem1_intrigue": "Streiche niemals den Täter — die Handlung hängt davon ab, dass er im Spiel ist.",
+      "fewerItem1_intrigue_accomplice": "Streiche niemals den Täter oder den Komplizen — die Handlung hängt davon ab, dass sie im Spiel sind.",
+      "fewerItem2_murder": "Um einen Verdächtigen zu streichen, wähle einen rein unschuldigen Charakter. Füge entweder seine wichtigsten Fakten in das Briefing eines anderen Gastes ein, oder lass den Detektiv erwähnen, dass er \"nicht für eine Befragung verfügbar\" ist, damit seine Hinweise trotzdem auftauchen.",
+      "fewerItem2_intrigue": "Um einen Verdächtigen zu streichen, wähle einen rein unschuldigen Charakter. Füge entweder seine wichtigsten Fakten in das Briefing eines anderen Gastes ein, oder lass den Ermittler erwähnen, dass er \"nicht für eine Befragung verfügbar\" ist, damit seine Hinweise trotzdem auftauchen.",
+      "fewerItem3": "Wenn mehrere Gäste absagen, erwäge, das Mystery für die neue Gästezahl neu zu generieren, damit alles optimal passt."
+    },
+    "setupChoice": {
+      "heading_murder": "Detektiv-Setup-Wahl",
+      "heading_intrigue": "Ermittler-Setup-Wahl",
+      "intro_murder": "Du hast zwei Möglichkeiten, die Detektiv-Erzählung zu handhaben:",
+      "intro_intrigue": "Du hast zwei Möglichkeiten, die Ermittler-Erzählung zu handhaben:",
+      "option1Label_murder": "**Option 1 — Gastgeber als Detektiv**",
+      "option1Label_intrigue": "**Option 1 — Gastgeber als Ermittler**",
+      "option1Item1_murder": "Du spielst den Detektiv-Charakter während des gesamten Spiels",
+      "option1Item1_intrigue": "Du spielst den Ermittler-Charakter während des gesamten Spiels",
+      "option1Item2_murder": "Lies das Detektiv-Skript jeder Runde laut vor, während die Handlung voranschreitet",
+      "option1Item2_intrigue": "Lies das Ermittler-Skript jeder Runde laut vor, während die Handlung voranschreitet",
+      "option1NoteCharacterBased_murder": "Bei charakterbasierten Mysterien nimmst du NICHT als Verdächtiger teil, also kannst du den Mörder vorher festlegen (Zettel-Ziehung überspringen) oder trotzdem die Zettel-Ziehung für Abwechslung nutzen.",
+      "option1NoteCharacterBased_intrigue": "Bei charakterbasierten Mysterien nimmst du NICHT als Verdächtiger teil, also kannst du den Täter vorher festlegen (Zettel-Ziehung überspringen) oder trotzdem die Zettel-Ziehung für Abwechslung nutzen.",
+      "option1NoteDetective_murder": "Bei Mysterien im Detektiv-Stil steht der Mörder von vornherein fest — wer es ist, siehst du in der Detektiv-Anleitung. Entscheide vor der Party, ob du es diesem Spieler privat sagst oder es sich während des Spiels von selbst zeigen lässt.",
+      "option1NoteDetective_intrigue": "Bei Mysterien im Detektiv-Stil steht der Täter von vornherein fest — wer es ist, siehst du in der Ermittler-Anleitung. Entscheide vor der Party, ob du es diesem Spieler privat sagst oder es sich während des Spiels von selbst zeigen lässt.",
+      "option2Label_murder": "**Option 2 — Audio-Detektiv**",
+      "option2Label_intrigue": "**Option 2 — Audio-Ermittler**",
+      "option2Item1": "Du spielst einen der Verdächtigen-Charaktere (du nimmst am Mystery teil)",
+      "option2Item2_murder": "Erzeuge Audio des Detektiv-Skripts mit einem kostenlosen KI-Tool:",
+      "option2Item2_intrigue": "Erzeuge Audio des Ermittler-Skripts mit einem kostenlosen KI-Tool:",
+      "ttsOption1": "[Google AI Studio Speech](https://aistudio.google.com/generate-speech) — Skript einfügen, TTS-Audio erzeugen",
+      "ttsOption2": "[Google NotebookLM](https://notebooklm.google.com) — Skript einfügen, Audio-Überblick nutzen",
+      "ttsOption3": "Oder ein anderer TTS-Dienst (ElevenLabs usw.)",
+      "option2Item3": "Überspringe die [Regieanweisungen in eckigen Klammern] beim Erzeugen des Audios",
+      "option2Item4": "Spiel das Audio jeder Runde zum passenden Zeitpunkt ab",
+      "option2Item5": "Halte gedruckte Backup-Skripte bereit, falls es technische Probleme gibt"
+    },
+    "runningGame": {
+      "heading": "Das Spiel leiten",
+      "timeShort": "Etwa 1,5 Stunden insgesamt",
+      "timeMedium": "Etwa 2 Stunden insgesamt",
+      "timeLong": "Etwa 2 bis 2,5 Stunden insgesamt",
+      "timeXlong": "Etwa 3 Stunden insgesamt",
+      "intro": "{{timeEstimate}} (für {{playerCount}} Spieler). Folge diesem Abschnitt der Reihe nach, sobald deine Gäste versammelt sind — das ist das eigentliche Skript für den Abend. Alles oben ist das, was du vorher vorbereitest; das hier ist das, was du tust, sobald es losgeht.",
+      "step1Label": "Eröffnungsrede — 2–3 Min.",
+      "step1Body_murder": "Halte die Eröffnungsrede des Detektivs: Lies sie laut vor oder spiel die vorab aufgenommene Audiodatei ab (je nachdem, was du oben gewählt hast). Zu finden in der Detektiv-Anleitung.",
+      "step1Body_intrigue": "Halte die Eröffnungsrede des Ermittlers: Lies sie laut vor oder spiel die vorab aufgenommene Audiodatei ab (je nachdem, was du oben gewählt hast). Zu finden in der Ermittler-Anleitung.",
+      "step2Label": "Runde 1, Teil A — Vorstellungen — ~{{introTime}} Min. für deine Gruppe von {{playerCount}} (etwa 45 Sek./Spieler)",
+      "step2Body": "Der Reihe nach liest oder improvisiert jeder Spieler die Einführung seines Charakters.",
+      "step2LargeGroupNote": "**Bei größeren Gruppen (15+) bitte die Spieler, sich auf 2–3 Sätze zu beschränken** — Name, Rolle, ein Satz über das Opfer — statt die ganze Seite vorzulesen. Bei 1 Minute pro Person sind 30 Gäste allein schon eine 30-minütige Runde.",
+      "step3Label": "Runde 1, Teil B — Gerüchte — 10 Min.",
+      "step3Body": "Direkt nach den Vorstellungen, ohne Pause: Jeder Spieler teilt sein(e) Gerücht(e) von seiner Charakterseite mit der restlichen Gruppe. Alle sollten mindestens ein Gerücht gehört haben, bevor es weitergeht.",
+      "step4SlipDrawLabel_murder": "Zettel-Ziehung — Den Mörder bestimmen — 5 Min.",
+      "step4SlipDrawLabel_intrigue": "Zettel-Ziehung — Den Täter bestimmen — 5 Min.",
+      "step4SlipDrawItem1": "Sag den Spielern, dass sie ein Pokerface aufsetzen sollen",
+      "step4SlipDrawItem2": "Gib den Zettel-Behälter herum — jeder Spieler zieht heimlich EINEN Zettel und liest ihn im Stillen",
+      "step4SlipDrawItem3_murder": "Wer \"MÖRDER\" gezogen hat, ist der Mörder; alle anderen sind unschuldig",
+      "step4SlipDrawItem3_murder_accomplice": "Wer \"MÖRDER\" gezogen hat, ist der Mörder; wer \"KOMPLIZE\" gezogen hat, ist der Komplize; alle anderen sind unschuldig",
+      "step4SlipDrawItem3_intrigue": "Wer \"TÄTER\" gezogen hat, ist der Täter; alle anderen sind unschuldig",
+      "step4SlipDrawItem3_intrigue_accomplice": "Wer \"TÄTER\" gezogen hat, ist der Täter; wer \"KOMPLIZE\" gezogen hat, ist der Komplize; alle anderen sind unschuldig",
+      "step4SlipDrawItem4_murder": "Der Mörder sollte jetzt seine **Schuldig**-Skriptabschnitte verwenden; alle anderen verwenden **Unschuldig**",
+      "step4SlipDrawItem4_murder_accomplice": "Der Mörder und der Komplize sollten jetzt ihre **Schuldig / Komplize**-Skriptabschnitte verwenden; alle anderen verwenden **Unschuldig**",
+      "step4SlipDrawItem4_intrigue": "Der Täter sollte jetzt seine **Schuldig**-Skriptabschnitte verwenden; alle anderen verwenden **Unschuldig**",
+      "step4SlipDrawItem4_intrigue_accomplice": "Der Täter und der Komplize sollten jetzt ihre **Schuldig / Komplize**-Skriptabschnitte verwenden; alle anderen verwenden **Unschuldig**",
+      "step4SlipDrawItem5": "Enthülle NICHT, wer welchen Zettel gezogen hat",
+      "step4SlipDrawItem6": "Weiter zu Runde 2",
+      "step4PredeterminedLabel_murder": "Der Mörder steht schon fest — hier ist keine Aktion nötig",
+      "step4PredeterminedLabel_intrigue": "Der Täter steht schon fest — hier ist keine Aktion nötig",
+      "step4PredeterminedBody_murder": "Bei Mysterien im Detektiv-Stil entfällt die Zettel-Ziehung komplett. Der Mörder steht von vornherein fest; wer es ist, steht in der Detektiv-Anleitung. Weiter direkt zu Runde 2.",
+      "step4PredeterminedBody_intrigue": "Bei Mysterien im Detektiv-Stil entfällt die Zettel-Ziehung komplett. Der Täter steht von vornherein fest; wer es ist, steht in der Ermittler-Anleitung. Weiter direkt zu Runde 2.",
+      "beforeRound2Note_murder": "**Kündige das vor Runde 2 an:** Wenn der Mörder seine eigene Version der Geschehnisse erzählt, darf er in die Irre führen, beschönigen, auslassen und bei seiner Coverstory bleiben — das ist Teil des Spiels. Aber wenn ein anderer Spieler ihm eine direkte Frage stellt, sollte er sich keine brandneuen Lügen auf der Stelle ausdenken: Er weicht aus, antwortet selektiv oder lenkt den Verdacht auf jemand anderen. So bleibt das Mystery lösbar — die Beweise bleiben wahr, und die Aufgabe deiner Gäste ist es, zu entscheiden, wessen *Geschichte* sie glauben.",
+      "beforeRound2Note_intrigue": "**Kündige das vor Runde 2 an:** Wenn der Täter seine eigene Version der Geschehnisse erzählt, darf er in die Irre führen, beschönigen, auslassen und bei seiner Coverstory bleiben — das ist Teil des Spiels. Aber wenn ein anderer Spieler ihm eine direkte Frage stellt, sollte er sich keine brandneuen Lügen auf der Stelle ausdenken: Er weicht aus, antwortet selektiv oder lenkt den Verdacht auf jemand anderen. So bleibt das Mystery lösbar — die Beweise bleiben wahr, und die Aufgabe deiner Gäste ist es, zu entscheiden, wessen *Geschichte* sie glauben.",
+      "step5Label": "Runde 2 — Motive — 20 Min.",
+      "step5Item1_murder": "Der Detektiv erzählt die Runde — lies laut vor oder spiel das Audio ab",
+      "step5Item1_intrigue": "Der Ermittler erzählt die Runde — lies laut vor oder spiel das Audio ab",
+      "step5Item2": "Achte etwa in der Mitte auf einen Hinweis in eckigen Klammern wie *[Beweis für Runde 2 präsentieren]* — das ist dein Signal, die Karte aufzudecken. Nicht bevor die Runde beginnt, nicht direkt nach der Eröffnung: genau bei diesem Hinweis",
+      "step5Item3_murder": "Sobald sich der Detektiv zurückzieht, befragen sich die Spieler gegenseitig mit ihren Runde-2-Optionen",
+      "step5Item3_intrigue": "Sobald sich der Ermittler zurückzieht, befragen sich die Spieler gegenseitig mit ihren Runde-2-Optionen",
+      "step6Label": "Runde 3 — Methode — 20 Min.",
+      "step6Body": "Gleiches Muster wie Runde 2: Erzählung → Beweis-Hinweis → Fragen.",
+      "step7Label": "Runde 4 — Gelegenheit — 20 Min.",
+      "step7Body": "Wieder das gleiche Muster.",
+      "step8Label": "Anklagen — 10 Min.",
+      "step8Body": "Der Reihe nach beschuldigt jeder Spieler *jemand anderen* mit einem Satz Begründung. Zeig nach außen — heb dir deine eigene Verteidigung für den nächsten Schritt auf. Ein großer Kreis funktioniert hier gut — er baut Spannung auf und hält den Raum übersichtlich.",
+      "step9Label": "Schlussworte — 10 Min.",
+      "step9BodyCharacterBased_murder": "Wieder der Reihe nach verteidigt sich jeder Spieler. Immer noch Leugnen, kein Geständnis — selbst der Mörder bleibt hier bei seiner Geschichte.",
+      "step9BodyCharacterBased_intrigue": "Wieder der Reihe nach verteidigt sich jeder Spieler. Immer noch Leugnen, kein Geständnis — selbst der Täter bleibt hier bei seiner Geschichte.",
+      "step9BodyDetective": "Wieder der Reihe nach verteidigt sich jeder Spieler und hält ein letztes Plädoyer oder Geständnis.",
+      "step10Label": "Die Enthüllung — 5–10 Min.",
+      "step10Body_murder": "Der Detektiv nennt den Mörder, der sein Geständnis laut vorliest.",
+      "step10Body_murder_accomplice": "Der Detektiv nennt den Mörder, der sein Geständnis laut vorliest. Dann wendet sich der Detektiv an den Komplizen, der ebenfalls gesteht — und **beide** werden verhaftet.",
+      "step10Body_intrigue": "Der Ermittler nennt den Täter, der sein Geständnis laut vorliest.",
+      "step10Body_intrigue_accomplice": "Der Ermittler nennt den Täter, der sein Geständnis laut vorliest. Dann wendet sich der Ermittler an den Komplizen, der ebenfalls gesteht — und **beide** werden verhaftet."
+    },
+    "keepingOnTrack": {
+      "heading": "Die Geschichte auf Kurs halten",
+      "intro": "Spieler werden improvisieren, ihre eigene Note einbringen und manchmal vom Skript abweichen — **das ist normal und völlig in Ordnung.** Ein bisschen Chaos gehört zum Spaß dazu, und du musst nicht jede Abweichung korrigieren. Greif nur ein, wenn der rote Faden wirklich verloren geht.",
+      "tool_murder": "Wenn es abdriftet, ist der Detektiv dein Werkzeug, um es zurückzuholen. Da der Detektiv jeden verdächtigt, kannst du jederzeit mit einer gezielten Frage einhaken:",
+      "tool_intrigue": "Wenn es abdriftet, ist der Ermittler dein Werkzeug, um es zurückzuholen. Da der Ermittler jeden verdächtigt, kannst du jederzeit mit einer gezielten Frage einhaken:",
+      "example1": "\"Moment mal — vor einem Moment hast du gesagt, du warst im Salon. Wie passt das zu dem, was wir gerade gehört haben?\"",
+      "example2": "\"Das ist merkwürdig. Vorhin hast du uns etwas anderes erzählt. Was stimmt denn nun?\"",
+      "example3": "\"Kommen wir zurück zu den Fakten. [Name], wo genau warst du, als es passiert ist?\"",
+      "closing": "Halte die Spielübersicht und das Geheimnis jedes Charakters griffbereit (die hast du dir in der Checkliste angeschaut), damit du die Gruppe jederzeit wieder bei dem verankern kannst, was tatsächlich wahr ist."
+    },
+    "tips": {
+      "heading": "Hosting-Tipps",
+      "tip1": "**Halte den Ablauf in Bewegung.** Wenn sich eine Runde zieht, fass zusammen und stell die Frage: \"OK — nach dem, was wir gehört haben, wer wirkt verdächtig?\"",
+      "tip2": "**Lies Beweise neutral vor.** Verrate nicht, wen du für schuldig hältst (selbst wenn du es weißt).",
+      "tip3": "**Achte auf stille Spieler.** Sprich sie mit einer Frage an, wenn sie in einer Runde nichts gesagt haben.",
+      "tip4": "**Achte auf dominante Spieler.** Lenk sanft um: \"Lass uns von jemandem hören, den wir noch nicht gehört haben.\"",
+      "tip5CharacterBased_murder": "**Der Mörder sollte NICHT zu früh gestehen** — sein Schlusswort ist ein Leugnen wie das aller anderen. Das echte Geständnis kommt nur, wenn der Detektiv ihn während der Enthüllung ausdrücklich nennt — das ist ein separater, späterer Abschnitt auf seiner Charakterseite (\"Die Enthüllung — Dein Geständnis\"). Ermutige ihn, bis zu den Schlussworten cool zu bleiben.",
+      "tip5CharacterBased_intrigue": "**Der Täter sollte NICHT zu früh gestehen** — sein Schlusswort ist ein Leugnen wie das aller anderen. Das echte Geständnis kommt nur, wenn der Ermittler ihn während der Enthüllung ausdrücklich nennt — das ist ein separater, späterer Abschnitt auf seiner Charakterseite (\"Die Enthüllung — Dein Geständnis\"). Ermutige ihn, bis zu den Schlussworten cool zu bleiben.",
+      "tip5Detective_murder": "**Der Mörder sollte NICHT zu früh gestehen** — er sollte sich verteidigen, bis er in die Enge getrieben wird. Ermutige ihn, cool zu bleiben.",
+      "tip5Detective_intrigue": "**Der Täter sollte NICHT zu früh gestehen** — er sollte sich verteidigen, bis er in die Enge getrieben wird. Ermutige ihn, cool zu bleiben.",
+      "tip6": "**Jeder schützt sein Geheimnis.** Jeder Charakter hat ein Geheimnis mit echten Konsequenzen, falls es herauskommt. Erinnere die Spieler daran, es zu bewahren — ein Spieler, der sein Geheimnis achselzuckend abtut, nimmt allen anderen die Spannung. Den eigenen Ruf zu verteidigen ist die halbe Miete.",
+      "tip7": "**Lass die Gruppe sich bewegen.** Kleine Gesprächsgrüppchen und ein großer Kreis für die Anklagen funktionieren beide gut — zwing niemanden, die ganze Zeit sitzend in einer Formation zu bleiben.",
+      "tip8": "**Improvisiere.** Wenn ein Spieler nach etwas fragt, das nicht in seinen Skriptoptionen steht, ermutige zur Improvisation in der Rolle.",
+      "tip9": "**Hab Spaß mit der Atmosphäre.** Musik und ein thematischer Snack bringen viel — alles andere ist nicht erforderlich."
+    }
+  },
+  "characterGuide": {
+    "fieldLabels": {
+      "characterName": "Charaktername",
+      "description": "Beschreibung",
+      "background": "Hintergrund",
+      "relationships": "Beziehungen",
+      "secret": "Geheimnis",
+      "introduction": "Einführung",
+      "rumors": "Gerüchte",
+      "round2Script": "Skript Runde 2",
+      "round2Questions": "Fragen Runde 2",
+      "round2Innocent": "Runde 2 — Unschuldig",
+      "round2Guilty": "Runde 2 — Schuldig",
+      "round2Accomplice": "Runde 2 — Komplize",
+      "round3Script": "Skript Runde 3",
+      "round3Questions": "Fragen Runde 3",
+      "round3Innocent": "Runde 3 — Unschuldig",
+      "round3Guilty": "Runde 3 — Schuldig",
+      "round3Accomplice": "Runde 3 — Komplize",
+      "round4Script": "Skript Runde 4",
+      "round4Questions": "Fragen Runde 4",
+      "round4Innocent": "Runde 4 — Unschuldig",
+      "round4Guilty": "Runde 4 — Schuldig",
+      "round4Accomplice": "Runde 4 — Komplize",
+      "accusations": "Anklagen",
+      "finalStatement": "Schlusswort",
+      "finalInnocent": "Schlusswort — Unschuldig",
+      "finalGuilty": "Schlusswort — Schuldig",
+      "finalAccomplice": "Schlusswort — Komplize",
+      "revealConfessionGuilty": "Die Enthüllung — Dein Geständnis",
+      "revealConfessionAccomplice": "Die Enthüllung — Geständnis des Komplizen"
+    },
+    "roundHeaders": {
+      "introduction": {
+        "title": "Runde 1 — Vorstellungen",
+        "instruction": "Wenn du an der Reihe bist, halte deine Einführung unten. Hör aufmerksam auf die aller anderen — die Details, die du jetzt hörst, werden in späteren Runden wichtig."
+      },
+      "rumors": {
+        "title": "Runde 1 — Gerüchte",
+        "instruction": "Immer noch Teil von Runde 1, direkt nach den Vorstellungen — ohne Pause dazwischen. Teile das Gerücht unten mit jedem, der zuhört, und achte darauf, was du von anderen hörst: Es wird in späteren Runden wichtig."
+      },
+      "round2": {
+        "title": "Runde 2 — Motive",
+        "instruction": "Jetzt geht es um das Warum. Nutze deine Fragen unten, um herauszufinden, warum andere den Tod des Opfers gewollt haben könnten — und sei bereit, für dein eigenes Motiv geradezustehen."
+      },
+      "round3": {
+        "title": "Runde 3 — Die Methode",
+        "instruction": "Der Fokus verschiebt sich auf das Wie. Bohr bei anderen nach, was sie über die Methode, die Mittel und den Tatort wussten."
+      },
+      "round4": {
+        "title": "Runde 4 — Gelegenheit",
+        "instruction": "Wo war jeder? Nutze die Beweise, um Alibis festzunageln — und sei bereit, deinen eigenen Aufenthaltsort zu erklären."
+      },
+      "accusations": {
+        "title": "Anklagen — Zeig nach außen",
+        "instruction": "Wenn die Anklagerunde beginnt, beschuldige die Person, die du am meisten verdächtigst, und nenne einen Grund aus den Beweisen. Heb dir deine eigene Verteidigung für die Schlussworte danach auf."
+      },
+      "finalStatement": {
+        "title": "Schlusswort — Du bist an der Reihe, dich zu verteidigen",
+        "instruction": "Nachdem alle angeklagt haben, ist das dein letztes Wort. Verteidige dich — oder, wenn du schuldig bist, gesteh."
+      },
+      "revealGuilty": {
+        "title": "Die Enthüllung — Dein Geständnis",
+        "instruction": "Lies das NUR, wenn der Detektiv dich während der Enthüllung ausdrücklich als den Mörder nennt, nachdem jeder Spieler bereits sein Schlusswort oben gehalten hat. Das ist ein separater, späterer Moment — lies es nicht zu früh."
+      },
+      "revealAccomplice": {
+        "title": "Die Enthüllung — Geständnis des Komplizen",
+        "instruction": "Lies das NUR, wenn der Detektiv dich während der Enthüllung ausdrücklich als den Komplizen aufruft, nachdem der Mörder bereits gestanden hat. Das ist ein separater, späterer Moment — lies es nicht zu früh."
+      },
+      "finalInnocent": {
+        "title": "Schlusswort — Du bist an der Reihe, dich zu verteidigen",
+        "instruction": "Nachdem alle angeklagt haben, ist das dein letztes Wort vor der Enthüllung. Verteidige dich und bleib bei deiner Geschichte — ob du unschuldig oder schuldig bist, in dieser Runde kommt die Wahrheit noch nicht ans Licht."
+      }
+    },
+    "guardDirective": "**Bewahre dieses Geheimnis um jeden Preis.** Dein Ruf — und vielleicht deine Freiheit — hängt davon ab, es geheim zu halten. Leugne, lenk ab und gib es niemals freiwillig preis. Ein Geheimnis, das freiwillig preisgegeben wird, nimmt der ganzen Tischrunde die Spannung.",
+    "characterNameEditingTip": "**Das Umbenennen aktualisiert nur dieses Feld.** Der Name ändert sich nirgendwo sonst — Rundenskripte, Hinweise und die Gastgeberanleitung verwenden weiterhin den ursprünglichen Namen. Am besten geeignet, um dich vor deinem ersten Durchlesen für eine Seite eines Doppelnamens zu entscheiden (z. B. \"Clarabelle/Clarence\"), nicht als nachträgliche Korrektur, nachdem du schon mit der Durchsicht des Skripts begonnen hast."
   }
 }

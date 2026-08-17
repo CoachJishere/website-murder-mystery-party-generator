@@ -230,9 +230,6 @@ export default function GuestDropoutPreview() {
           </div>
         ) : (
           <div className="max-w-lg">
-            <p className="text-xs uppercase tracking-wide mb-3" style={{ color: "rgba(245,240,232,0.45)" }}>
-              More ways to shape your mystery — this grows over time
-            </p>
             <div className="grid gap-4">
               <div
                 className="rounded-lg border p-4 space-y-3"
@@ -240,7 +237,7 @@ export default function GuestDropoutPreview() {
               >
                 <div className="flex items-center gap-2" style={{ color: "var(--color-cream, #f5f0e8)" }}>
                   <UserX className="h-5 w-5" />
-                  <h3 className="text-lg font-semibold">Recast</h3>
+                  <h3 className="text-lg font-semibold">Remove a Character</h3>
                 </div>
                 <p className="text-sm" style={{ color: "rgba(245,240,232,0.6)" }}>
                   A guest can't make it? Remove or replace them in the story — $5 flat, fix as many
@@ -278,7 +275,7 @@ export default function GuestDropoutPreview() {
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <UserX className="h-5 w-5" />
-                  Recast
+                  Remove a Character
                 </DialogTitle>
               </DialogHeader>
 
@@ -457,7 +454,7 @@ export default function GuestDropoutPreview() {
                 <span className="text-sm font-medium">Total: ${total}</span>
                 <div className="flex gap-2">
                   <Button variant="outline" onClick={() => setStep("picker")}>Cancel</Button>
-                  <Button variant="destructive" onClick={handleConfirm}>Remove — ${total}</Button>
+                  <Button onClick={handleConfirm} className="bg-blue-600 hover:bg-blue-700 text-white">Pay now</Button>
                 </div>
               </div>
             </div>

@@ -11,7 +11,8 @@ import {
 } from "@/services/adaptationService";
 import { Button } from "@/components/ui/button";
 
-// "Recast" — ADR-0036/0082/0088 (staging only). Stripe success_url lands
+// "Remove a Character" (renamed from "Recast" — ADR-0091) — ADR-0036/0082/0088
+// (staging only). Stripe success_url lands
 // here with ?batch_id=... A batch can genuinely take several minutes —
 // longer with a murderer/accomplice reassignment in it, a much bigger
 // generation than a plain removal — so this page is deliberately

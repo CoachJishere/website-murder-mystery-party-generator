@@ -1575,11 +1575,10 @@
   },
   "adaptation": {
     "card": {
-      "sectionIntro": "Lisää tapoja muokata mysteeriäsi - tämä osio kasvaa ajan myötä",
-      "title": "Roolinvaihto",
+      "title": "Poista hahmo",
       "teaser": "Vieras ei pääse paikalle? Poista tai korvaa hänet tarinassa - kiinteä 5 $:n hinta, korjaa niin monta hahmoa kuin tarvitset kerralla.",
       "cta": "Lue lisää",
-      "inProgressTitle": "Roolinvaihto käynnissä",
+      "inProgressTitle": "Päivitys käynnissä",
       "inProgressSummary": "{{done}}/{{total}} päivitetty",
       "inProgressNotice": "Lähetämme sähköpostia, kun se on valmis - voit rauhassa käyttää mysteerisi muita osia sillä välin.",
       "comingSoonTitle": "Isännän vinkit ja videot",
@@ -1587,10 +1586,10 @@
       "comingSoonBody": "Lyhyitä videoita ja nopeita vinkkejä mysteerisi vetämiseen illan aikana."
     },
     "entryPoint": {
-      "notice": "Voit muokata kaikkia hahmoja alla. Täytyykö sinun poistaa tai vaihtaa joku kokonaan? Käytä Roolinvaihtoa (katso Lisät-välilehti) uudelleengeneroinnin sijaan."
+      "notice": "Voit muokata kaikkia hahmoja alla. Täytyykö sinun poistaa tai vaihtaa joku kokonaan? Käytä Poista hahmo -toimintoa (katso Lisät-välilehti) uudelleengeneroinnin sijaan."
     },
     "explainer": {
-      "title": "Roolinvaihto",
+      "title": "Poista hahmo",
       "subtitle": "Poista hahmo mysteeristäsi yhdellä napin painalluksella.",
       "characterStyleHeadline": "Tästä ei todennäköisesti tarvitse maksaa.",
       "characterStyleBody": "Tämä on hahmopohjainen mysteeri - ennalta määrättyä syyllistä ei ole, joten puuttuvan hahmon poissaolon voi selittää itse, ilmaiseksi. Sano vieraillesi vaikka näin: \"X on myös epäilty, mutta häntä kuulustellaan erikseen - jatkakaa ilman häntä\", tai \"Olemme jo sulkeneet X:n pois.\" Jäljelle jääneet huhut hänestä eivät sen jälkeen ole ongelma.",
@@ -1618,7 +1617,7 @@
       "replacedByAuto": "valitsemme uuden {{role}}",
       "totalLabel": "Yhteensä: {{total}} $",
       "cancel": "Peruuta",
-      "cta": "Poista - {{total}} $"
+      "cta": "Maksa nyt"
     },
     "processing": {
       "title": "Mysteeriäsi päivitetään",
@@ -1635,9 +1634,266 @@
       "backToMystery": "Takaisin mysteeriisi"
     },
     "toasts": {
-      "createdNoCheckout": "Roolinvaihtopyyntö luotu {{count}} hahmolle (staging-tila - maksua ei ole määritetty).",
+      "createdNoCheckout": "Pyyntö luotu {{count}} hahmolle (staging-tila - maksua ei ole määritetty).",
       "createFailed": "Pyyntöä ei voitu käynnistää. Yritä uudelleen.",
-      "alreadyInProgress": "Yhdellä näistä hahmoista on jo käynnissä oleva roolinvaihtopyyntö."
+      "alreadyInProgress": "Yhdellä näistä hahmoista on jo käynnissä oleva pyyntö."
     }
+  },
+  "hostGuide": {
+    "checklist": {
+      "heading": "Isännän pikatarkistuslista",
+      "intro_murder": "Pidä tämä auki koko pelin ajan – tämä on ohjauspaneelisi yhdellä silmäyksellä, varsinkin jos näyttelet myös etsivää.",
+      "intro_intrigue": "Pidä tämä auki koko pelin ajan – tämä on ohjauspaneelisi yhdellä silmäyksellä, varsinkin jos näyttelet myös tutkijaa.",
+      "item1": "Kaikilla on hahmosivunsa auki (lähetetty digitaalisesti ennen juhlia)",
+      "item2_murder": "Olet lukenut tämän oppaan ja Etsivän oppaan, ja silmäillyt jokaisen hahmon salaisuuden, joten tiedät kuka salaa mitäkin",
+      "item2_intrigue": "Olet lukenut tämän oppaan ja Tutkijan oppaan, ja silmäillyt jokaisen hahmon salaisuuden, joten tiedät kuka salaa mitäkin",
+      "item3": "Todistekortit valmiina (tulostettuina tai näytöllä), yksi per kierros",
+      "item4SlipDraw_murder": "Liput valmiina murhaaja-arvontaa varten",
+      "item4SlipDraw_murder_accomplice": "Liput valmiina murhaaja/rikoskumppani-arvontaa varten",
+      "item4SlipDraw_intrigue": "Liput valmiina syyllisen arvontaa varten",
+      "item4SlipDraw_intrigue_accomplice": "Liput valmiina syyllisen/rikoskumppanin arvontaa varten",
+      "item4Predetermined_murder": "Tiedät, kuka murhaaja on (katso Etsivän opas)",
+      "item4Predetermined_murder_accomplice": "Tiedät, keitä murhaaja ja rikoskumppani ovat (katso Etsivän opas)",
+      "item4Predetermined_intrigue": "Tiedät, kuka syyllinen on (katso Tutkijan opas)",
+      "item4Predetermined_intrigue_accomplice": "Tiedät, keitä syyllinen ja rikoskumppani ovat (katso Tutkijan opas)",
+      "item5": "Pidä epäiltyjen lista (jokaisen pelaajan oppaan yläreunassa) ja Pelin yleiskatsaus käden ulottuvilla – käytät niitä ohjataksesi tarinan takaisin raiteilleen",
+      "roundOrderNote": "**Kierrosjärjestys yhdellä silmäyksellä:** katso alta \"Pelin vetäminen\" saadaksesi täydet vaiheittaiset ohjeet."
+    },
+    "materials": {
+      "heading": "Tarvikkeet",
+      "universalLabel": "**Yleiset tarvikkeet:**",
+      "item1": "Hahmo-oppaat – lähetetty jo digitaalisesti jokaiselle vieraalle ennen juhlia",
+      "item2": "Tulostetut todistekortit (tai näytettynä puhelimella/näytöllä – valinta on sinun)",
+      "item3_murder": "Etsivän käsikirjoitus (etsivän repliikit jokaiselle kierrokselle, Etsivän opas -välilehdellä)",
+      "item3_intrigue": "Tutkijan käsikirjoitus (tutkijan repliikit jokaiselle kierrokselle, Tutkijan opas -välilehdellä)",
+      "item4": "Ajastin tai kello",
+      "item5": "Valinnainen: teemakoristelu, musiikki, ruoka/juoma",
+      "slipDrawLabel": "**Lippuarvontaa varten:**",
+      "slipDrawItem1": "Astia paperilipuille (hattu, kulho, koristerasia)",
+      "slipDrawItem2_murder": "Paperilippuja murhaajan valintaan",
+      "slipDrawItem2_murder_accomplice": "Paperilippuja murhaajan valintaan (ja rikoskumppanin valintaan)",
+      "slipDrawItem2_intrigue": "Paperilippuja syyllisen valintaan",
+      "slipDrawItem2_intrigue_accomplice": "Paperilippuja syyllisen valintaan (ja rikoskumppanin valintaan)"
+    },
+    "prep": {
+      "heading": "Valmistelut ennen juhlia",
+      "beforeLabel": "**Muutama päivä etukäteen:**",
+      "item1_murder": "Lue tämä isännän opas kokonaan sekä Etsivän opas",
+      "item1_intrigue": "Lue tämä isännän opas kokonaan sekä Tutkijan opas",
+      "item2": "Lähetä jokaiselle vieraalle heidän hahmosivunsa (digitaalinen linkki tai PDF) vähintään 3 päivää ennen tapahtumaa",
+      "item3": "Kannusta vieraita lukemaan hahmonsa esittely ennen saapumista – heidän ei tarvitse opetella sitä ulkoa, riittää että he tuntevat sen",
+      "item4": "Vahvista vieraslista ja lyö osallistujat lukkoon",
+      "dayOfLabel": "**Juhlapäivänä:**",
+      "slipDrawSetup_murder": "Valmistele lippuarvonta: leikkaa {{playerCount}} pientä paperilippua. Kirjoita yhteen lippuun \"MURHAAJA\". Jätä loput tyhjiksi (tai kirjoita niihin \"Viaton\"). Taita jokainen lippu niin, ettei kirjoitus näy. Aseta liput astiaan.",
+      "slipDrawSetup_murder_accomplice": "Valmistele lippuarvonta: leikkaa {{playerCount}} pientä paperilippua. Kirjoita yhteen lippuun \"MURHAAJA\" ja toiseen \"RIKOSKUMPPANI\". Jätä loput tyhjiksi (tai kirjoita niihin \"Viaton\"). Taita jokainen lippu niin, ettei kirjoitus näy. Aseta liput astiaan.",
+      "slipDrawSetup_intrigue": "Valmistele lippuarvonta: leikkaa {{playerCount}} pientä paperilippua. Kirjoita yhteen lippuun \"SYYLLINEN\". Jätä loput tyhjiksi (tai kirjoita niihin \"Viaton\"). Taita jokainen lippu niin, ettei kirjoitus näy. Aseta liput astiaan.",
+      "slipDrawSetup_intrigue_accomplice": "Valmistele lippuarvonta: leikkaa {{playerCount}} pientä paperilippua. Kirjoita yhteen lippuun \"SYYLLINEN\" ja toiseen \"RIKOSKUMPPANI\". Jätä loput tyhjiksi (tai kirjoita niihin \"Viaton\"). Taita jokainen lippu niin, ettei kirjoitus näy. Aseta liput astiaan.",
+      "item5": "Tulosta todistekortit (valinnainen) – voit myös vain näyttää ne puhelimella tai lukea ne ääneen",
+      "item6": "Luo tunnelmaa halutessasi (teemamusiikki, himmennetty valaistus, teemanmukaiset naposteltavat) – mikään näistä ei ole pakollista"
+    },
+    "guestChanges": {
+      "heading": "Viime hetken vierasmuutosten hallinta",
+      "intro": "Epäiltyjen joukko on kiinteä – se on kudottu juoneen, joten et voi lisätä tai poistaa epäiltyjä hahmoja. Mutta todelliset vieraslistat muuttuvat, ja peli on suunniteltu joustamaan sen mukana.",
+      "moreLabel": "**Enemmän vieraita kuin hahmoja (joku ylimääräinen haluaa mukaan):**",
+      "moreItem1_murder": "Ota heidät mukaan **apututkijoiksi** etsivän tiimiin – hahmosivua ei tarvita. Niin monta kuin haluat.",
+      "moreItem1_intrigue": "Ota heidät mukaan **apututkijoiksi** tutkijan tiimiin – hahmosivua ei tarvita. Niin monta kuin haluat.",
+      "moreItem2": "He kuulustelevat epäiltyjä joka kierroksella, työskentelevät johtolankojen ja todisteiden parissa yhdessä muiden kanssa ja esittävät oman näkemyksensä syytösvaiheessa.",
+      "moreItem3_murder": "**Tärkeää:** apututkijat EIVÄT saa Etsivän käsikirjoitusta tai tätä isännän opasta – ne ovat sinun tutkinta-aineistoasi ja paljastavat murhaajan. Pidä ne itselläsi. Apututkijasi ratkaisevat tapauksen reilusti johtolankojen avulla, aivan kuten epäillytkin.",
+      "moreItem3_intrigue": "**Tärkeää:** apututkijat EIVÄT saa Tutkijan käsikirjoitusta tai tätä isännän opasta – ne ovat sinun tutkinta-aineistoasi ja paljastavat syyllisen. Pidä ne itselläsi. Apututkijasi ratkaisevat tapauksen reilusti johtolankojen avulla, aivan kuten epäillytkin.",
+      "fewerLabel": "**Vähemmän vieraita kuin hahmoja (joku perääntyy):**",
+      "fewerItem1_murder": "Älä koskaan poista murhaajaa – juoni riippuu siitä, että hän on mukana pelissä.",
+      "fewerItem1_murder_accomplice": "Älä koskaan poista murhaajaa tai rikoskumppania – juoni riippuu siitä, että he ovat mukana pelissä.",
+      "fewerItem1_intrigue": "Älä koskaan poista syyllistä – juoni riippuu siitä, että hän on mukana pelissä.",
+      "fewerItem1_intrigue_accomplice": "Älä koskaan poista syyllistä tai rikoskumppania – juoni riippuu siitä, että he ovat mukana pelissä.",
+      "fewerItem2_murder": "Jos poistat epäillyn, valitse täysin viaton hahmo. Sulauta hänen tärkeät tietonsa toisen vieraan hahmoon, tai anna Etsivän mainita hänet \"kuulusteltavaksi tavoittamattomana\", jotta hänen johtolankansa tulevat silti esiin.",
+      "fewerItem2_intrigue": "Jos poistat epäillyn, valitse täysin viaton hahmo. Sulauta hänen tärkeät tietonsa toisen vieraan hahmoon, tai anna Tutkijan mainita hänet \"kuulusteltavaksi tavoittamattomana\", jotta hänen johtolankansa tulevat silti esiin.",
+      "fewerItem3": "Jos useampi vieras perääntyy, harkitse mysteerin uudelleenluomista uudella osallistujamäärällä parhaan lopputuloksen saamiseksi."
+    },
+    "setupChoice": {
+      "heading_murder": "Etsivän toteutustapa",
+      "heading_intrigue": "Tutkijan toteutustapa",
+      "intro_murder": "Voit hoitaa etsivän kerronnan kahdella tavalla:",
+      "intro_intrigue": "Voit hoitaa tutkijan kerronnan kahdella tavalla:",
+      "option1Label_murder": "**Vaihtoehto 1 – Isäntä etsivänä**",
+      "option1Label_intrigue": "**Vaihtoehto 1 – Isäntä tutkijana**",
+      "option1Item1_murder": "Näyttelet etsivän hahmoa koko pelin ajan",
+      "option1Item1_intrigue": "Näyttelet tutkijan hahmoa koko pelin ajan",
+      "option1Item2_murder": "Lue jokaisen kierroksen etsivän käsikirjoitus ääneen tapahtumien edetessä",
+      "option1Item2_intrigue": "Lue jokaisen kierroksen tutkijan käsikirjoitus ääneen tapahtumien edetessä",
+      "option1NoteCharacterBased_murder": "Hahmopohjaisissa mysteereissä et osallistu epäiltynä, joten voit päättää murhaajan etukäteen (ohittaa lippuarvonnan) tai silti käyttää lippuarvontaa vaihtelun vuoksi.",
+      "option1NoteCharacterBased_intrigue": "Hahmopohjaisissa mysteereissä et osallistu epäiltynä, joten voit päättää syyllisen etukäteen (ohittaa lippuarvonnan) tai silti käyttää lippuarvontaa vaihtelun vuoksi.",
+      "option1NoteDetective_murder": "Etsivätyylisissä mysteereissä murhaaja on ennalta määrätty – näet kuka hän on Etsivän oppaasta. Päätä ennen juhlia, kerrotko sen kyseiselle pelaajalle kahden kesken vai annatko sen paljastua pelin aikana.",
+      "option1NoteDetective_intrigue": "Tutkijatyylisissä mysteereissä syyllinen on ennalta määrätty – näet kuka hän on Tutkijan oppaasta. Päätä ennen juhlia, kerrotko sen kyseiselle pelaajalle kahden kesken vai annatko sen paljastua pelin aikana.",
+      "option2Label_murder": "**Vaihtoehto 2 – Äänitetty etsivä**",
+      "option2Label_intrigue": "**Vaihtoehto 2 – Äänitetty tutkija**",
+      "option2Item1": "Näyttelet yhtä epäillyistä hahmoista (osallistut mysteeriin)",
+      "option2Item2_murder": "Luo äänite etsivän käsikirjoituksesta ilmaisella tekoälytyökalulla:",
+      "option2Item2_intrigue": "Luo äänite tutkijan käsikirjoituksesta ilmaisella tekoälytyökalulla:",
+      "ttsOption1": "[Google AI Studio Speech](https://aistudio.google.com/generate-speech) – liitä käsikirjoitus, luo puhesynteesiääni",
+      "ttsOption2": "[Google NotebookLM](https://notebooklm.google.com) – liitä käsikirjoitus, käytä Audio Overview -toimintoa",
+      "ttsOption3": "Tai mikä tahansa muu puhesynteesipalvelu (ElevenLabs jne.)",
+      "option2Item3": "Ohita [hakasulkeissa olevat näyttämöohjeet] äänitettä luodessasi",
+      "option2Item4": "Toista jokaisen kierroksen äänite oikealla hetkellä",
+      "option2Item5": "Pidä varalla tulostetut käsikirjoitukset teknisten ongelmien varalta"
+    },
+    "runningGame": {
+      "heading": "Pelin vetäminen",
+      "timeShort": "Yhteensä noin 1,5 tuntia",
+      "timeMedium": "Yhteensä noin 2 tuntia",
+      "timeLong": "Yhteensä noin 2–2,5 tuntia",
+      "timeXlong": "Yhteensä noin 3 tuntia",
+      "intro": "{{timeEstimate}} ({{playerCount}} pelaajalle). Seuraa tätä osiota suoraan järjestyksessä, kun vieraasi ovat koolla – tämä on illan varsinainen käsikirjoitus. Kaikki edellä oleva on sitä, mitä valmistelet etukäteen; tämä on se, mitä teet kun peli alkaa.",
+      "step1Label": "Avauspuhe – 2–3 min",
+      "step1Body_murder": "Pidä Etsivän avauspuhe: lue se ääneen tai toista valmiiksi äänitetty versio (kumman tahansa valitsit yllä). Löytyy Etsivän oppaasta.",
+      "step1Body_intrigue": "Pidä Tutkijan avauspuhe: lue se ääneen tai toista valmiiksi äänitetty versio (kumman tahansa valitsit yllä). Löytyy Tutkijan oppaasta.",
+      "step2Label": "Kierros 1, osa A – Esittelyt – noin {{introTime}} min {{playerCount}} hengen ryhmällesi (noin 45 sek/pelaaja)",
+      "step2Body": "Kierretään ryhmä läpi, ja jokainen pelaaja lukee tai improvisoi hahmonsa esittelyn.",
+      "step2LargeGroupNote": "**Suuremmille ryhmille (15+) pyydä pelaajia pitämään esittely 2–3 lauseessa** – nimi, rooli, yksi rivi uhrista – sen sijaan että he lukisivat koko sivun. Yhden minuutin per pelaaja tahdilla 30 vierasta tarkoittaa jo yksinään 30 minuutin kierrosta.",
+      "step3Label": "Kierros 1, osa B – Huhut – 10 min",
+      "step3Body": "Heti esittelyjen jälkeen, ilman taukoa: jokainen pelaaja jakaa hahmosivultaan löytyvät huhunsa muulle ryhmälle. Kaikkien tulisi kuulla vähintään yksi huhu ennen kuin jatkatte eteenpäin.",
+      "step4SlipDrawLabel_murder": "Lippuarvonta – Murhaajan selvittäminen – 5 min",
+      "step4SlipDrawLabel_intrigue": "Lippuarvonta – Syyllisen selvittäminen – 5 min",
+      "step4SlipDrawItem1": "Pyydä pelaajia pitämään ilmeetön naama",
+      "step4SlipDrawItem2": "Kierrätä lippuastiaa – jokainen pelaaja nostaa YHDEN lipun salaa ja lukee sen hiljaa",
+      "step4SlipDrawItem3_murder": "Se, joka nosti lipun \"MURHAAJA\", on murhaaja; kaikki muut ovat viattomia",
+      "step4SlipDrawItem3_murder_accomplice": "Se, joka nosti lipun \"MURHAAJA\", on murhaaja; se, joka nosti lipun \"RIKOSKUMPPANI\", on rikoskumppani; kaikki muut ovat viattomia",
+      "step4SlipDrawItem3_intrigue": "Se, joka nosti lipun \"SYYLLINEN\", on syyllinen; kaikki muut ovat viattomia",
+      "step4SlipDrawItem3_intrigue_accomplice": "Se, joka nosti lipun \"SYYLLINEN\", on syyllinen; se, joka nosti lipun \"RIKOSKUMPPANI\", on rikoskumppani; kaikki muut ovat viattomia",
+      "step4SlipDrawItem4_murder": "Murhaajan tulee nyt käyttää **Syyllinen**-käsikirjoitusosioitaan; kaikki muut käyttävät **Viaton**-osioita",
+      "step4SlipDrawItem4_murder_accomplice": "Murhaajan ja rikoskumppanin tulee nyt käyttää **Syyllinen / Rikoskumppani**-käsikirjoitusosioitaan; kaikki muut käyttävät **Viaton**-osioita",
+      "step4SlipDrawItem4_intrigue": "Syyllisen tulee nyt käyttää **Syyllinen**-käsikirjoitusosioitaan; kaikki muut käyttävät **Viaton**-osioita",
+      "step4SlipDrawItem4_intrigue_accomplice": "Syyllisen ja rikoskumppanin tulee nyt käyttää **Syyllinen / Rikoskumppani**-käsikirjoitusosioitaan; kaikki muut käyttävät **Viaton**-osioita",
+      "step4SlipDrawItem5": "ÄLÄ paljasta, kuka nosti minkäkin lipun",
+      "step4SlipDrawItem6": "Jatka kierrokseen 2",
+      "step4PredeterminedLabel_murder": "Murhaaja on jo päätetty – ei toimenpiteitä tässä vaiheessa",
+      "step4PredeterminedLabel_intrigue": "Syyllinen on jo päätetty – ei toimenpiteitä tässä vaiheessa",
+      "step4PredeterminedBody_murder": "Etsivätyyliset mysteerit ohittavat lippuarvonnan kokonaan. Murhaaja on ennalta määrätty; katso kuka hän on Etsivän oppaasta. Jatka suoraan kierrokseen 2.",
+      "step4PredeterminedBody_intrigue": "Tutkijatyyliset mysteerit ohittavat lippuarvonnan kokonaan. Syyllinen on ennalta määrätty; katso kuka hän on Tutkijan oppaasta. Jatka suoraan kierrokseen 2.",
+      "beforeRound2Note_murder": "**Kerro tämä ennen kierrosta 2:** kun murhaaja kertoo omaa versiotaan, hän saa johtaa harhaan, kaunistella, jättää asioita mainitsematta ja pitäytyä peitetarinassaan – se on osa peliä. Mutta kun toinen pelaaja esittää hänelle suoran kysymyksen, hän ei saa keksiä täysin uusia valheita paikan päällä: hän väistelee, vastaa valikoiden tai kääntää epäilyt muualle. Näin mysteeri pysyy ratkaistavissa – todisteet pysyvät totuudenmukaisina, ja vieraidesi tehtävä on päättää, kenen *tarinaan* he uskovat.",
+      "beforeRound2Note_intrigue": "**Kerro tämä ennen kierrosta 2:** kun syyllinen kertoo omaa versiotaan, hän saa johtaa harhaan, kaunistella, jättää asioita mainitsematta ja pitäytyä peitetarinassaan – se on osa peliä. Mutta kun toinen pelaaja esittää hänelle suoran kysymyksen, hän ei saa keksiä täysin uusia valheita paikan päällä: hän väistelee, vastaa valikoiden tai kääntää epäilyt muualle. Näin mysteeri pysyy ratkaistavissa – todisteet pysyvät totuudenmukaisina, ja vieraidesi tehtävä on päättää, kenen *tarinaan* he uskovat.",
+      "step5Label": "Kierros 2 – Motiivit – 20 min",
+      "step5Item1_murder": "Etsivä kertoo kierroksen tapahtumat – lue ääneen tai toista äänite",
+      "step5Item1_intrigue": "Tutkija kertoo kierroksen tapahtumat – lue ääneen tai toista äänite",
+      "step5Item2": "Kierroksen puolivälissä pidä silmällä hakasulkeissa olevaa vihjettä, kuten *[Esitä kierroksen 2 todiste]* – se on merkkisi paljastaa kortti. Ei ennen kierroksen alkua, ei heti avauksen jälkeen: juuri sillä hetkellä",
+      "step5Item3_murder": "Kun etsivä vetäytyy taka-alalle, pelaajat kuulustelevat toisiaan kierroksen 2 kysymysvaihtoehtojen avulla",
+      "step5Item3_intrigue": "Kun tutkija vetäytyy taka-alalle, pelaajat kuulustelevat toisiaan kierroksen 2 kysymysvaihtoehtojen avulla",
+      "step6Label": "Kierros 3 – Tekotapa – 20 min",
+      "step6Body": "Sama kaava kuin kierroksella 2: kerronta → todistevihje → kysymykset.",
+      "step7Label": "Kierros 4 – Tilaisuus – 20 min",
+      "step7Body": "Sama kaava jälleen.",
+      "step8Label": "Syytökset – 10 min",
+      "step8Body": "Kierretään ryhmä läpi, ja jokainen pelaaja syyttää *jotakuta muuta* yhdellä perustelulauseella. Osoita ulospäin – säästä oma puolustuksesi seuraavaan vaiheeseen. Iso piiri toimii tässä hyvin – se kasvattaa jännitystä ja pitää tilanteen selkeänä.",
+      "step9Label": "Loppulausunnot – 10 min",
+      "step9BodyCharacterBased_murder": "Kierretään ryhmä uudelleen läpi, ja jokainen pelaaja puolustautuu. Yhä kieltäytymistä, ei tunnustusta – myös murhaaja pitäytyy tarinassaan tässä vaiheessa.",
+      "step9BodyCharacterBased_intrigue": "Kierretään ryhmä uudelleen läpi, ja jokainen pelaaja puolustautuu. Yhä kieltäytymistä, ei tunnustusta – myös syyllinen pitäytyy tarinassaan tässä vaiheessa.",
+      "step9BodyDetective": "Kierretään ryhmä uudelleen läpi, ja jokainen pelaaja puolustautuu ja esittää viimeisen vetoomuksensa tai tunnustuksensa.",
+      "step10Label": "Paljastus – 5–10 min",
+      "step10Body_murder": "Etsivä nimeää murhaajan, joka lukee tunnustuksensa ääneen.",
+      "step10Body_murder_accomplice": "Etsivä nimeää murhaajan, joka lukee tunnustuksensa ääneen. Sitten Etsivä kääntyy rikoskumppanin puoleen, joka tunnustaa myös – ja **molemmat** pidätetään.",
+      "step10Body_intrigue": "Tutkija nimeää syyllisen, joka lukee tunnustuksensa ääneen.",
+      "step10Body_intrigue_accomplice": "Tutkija nimeää syyllisen, joka lukee tunnustuksensa ääneen. Sitten Tutkija kääntyy rikoskumppanin puoleen, joka tunnustaa myös – ja **molemmat** pidätetään."
+    },
+    "keepingOnTrack": {
+      "heading": "Tarinan pitäminen raiteillaan",
+      "intro": "Pelaajat improvisoivat, tuovat omaa tyyliään mukaan ja eksyvät joskus käsikirjoituksesta – **tämä on normaalia ja täysin ok.** Pieni kaaos kuuluu hauskuuteen, eikä sinun tarvitse korjata jokaista poikkeamaa. Puutu peliin vain kun lanka on aidosti kadonnut.",
+      "tool_murder": "Kun tarina ajelehtii sivuraiteille, Etsivä on työkalusi sen palauttamiseen. Koska etsivä epäilee kaikkia, voit aina keskeyttää osuvalla kysymyksellä:",
+      "tool_intrigue": "Kun tarina ajelehtii sivuraiteille, Tutkija on työkalusi sen palauttamiseen. Koska tutkija epäilee kaikkia, voit aina keskeyttää osuvalla kysymyksellä:",
+      "example1": "\"Hetkinen – äsken sanoit olleesi salongissa. Miten se sopii yhteen sen kanssa, mitä juuri kuulimme?\"",
+      "example2": "\"Mielenkiintoista. Aiemmin kerroit meille jotain muuta. Kumpi on totta?\"",
+      "example3": "\"Palataanpa tosiasioihin. [Nimi], missä tarkalleen olit, kun se tapahtui?\"",
+      "closing": "Pidä Pelin yleiskatsaus ja jokaisen hahmon salaisuus käden ulottuvilla (silmäilit ne tarkistuslistassa), jotta voit aina palauttaa ryhmän kiinni siihen, mikä todella on totta."
+    },
+    "tips": {
+      "heading": "Isännöintivinkit",
+      "tip1": "**Pidä vauhtia yllä.** Jos kierros junnaa paikallaan, tee yhteenveto ja kysy: \"No niin – kuulemamme perusteella, kuka vaikuttaa epäilyttävältä?\"",
+      "tip2": "**Lue todisteet neutraalisti.** Älä vihjaile, kenen luulet tehneen sen (vaikka tietäisitkin).",
+      "tip3": "**Tarkkaile hiljaisia pelaajia.** Esitä heille kysymys, jos he eivät ole sanoneet mitään kierroksen aikana.",
+      "tip4": "**Tarkkaile hallitsevia pelaajia.** Ohjaa tilannetta hienovaraisesti: \"Kuunnellaan seuraavaksi jotakuta, jota emme ole vielä kuulleet.\"",
+      "tip5CharacterBased_murder": "**Murhaajan EI pidä tunnustaa liian aikaisin** – hänen loppulausuntonsa on kieltäytyminen, kuten kaikkien muidenkin. Todellinen tunnustus tulee vasta, jos etsivä nimeää hänet erikseen paljastuksen aikana – se on erillinen, myöhempi osio hänen hahmosivullaan (\"Paljastus – Sinun tunnustuksesi\"). Kannusta häntä pysymään rauhallisena loppulausuntojen ajan.",
+      "tip5CharacterBased_intrigue": "**Syyllisen EI pidä tunnustaa liian aikaisin** – hänen loppulausuntonsa on kieltäytyminen, kuten kaikkien muidenkin. Todellinen tunnustus tulee vasta, jos tutkija nimeää hänet erikseen paljastuksen aikana – se on erillinen, myöhempi osio hänen hahmosivullaan (\"Paljastus – Sinun tunnustuksesi\"). Kannusta häntä pysymään rauhallisena loppulausuntojen ajan.",
+      "tip5Detective_murder": "**Murhaajan EI pidä tunnustaa liian aikaisin** – hänen tulisi puolustautua kunnes hänet ajetaan nurkkaan. Kannusta häntä pysymään rauhallisena.",
+      "tip5Detective_intrigue": "**Syyllisen EI pidä tunnustaa liian aikaisin** – hänen tulisi puolustautua kunnes hänet ajetaan nurkkaan. Kannusta häntä pysymään rauhallisena.",
+      "tip6": "**Jokainen suojelee salaisuuttaan.** Jokaisella hahmolla on salaisuus, jolla on todellisia seurauksia, jos se paljastuu. Muistuta pelaajia varjelemaan sitä – pelaaja, joka vähättelee salaisuuttaan, vie jännityksen kaikilta muilta. Maineen puolustaminen on puolet pelistä.",
+      "tip7": "**Anna ryhmän liikkua.** Pienet keskusteluryhmät ja yksi iso piiri syytöksiä varten toimivat molemmat hyvin – älä pakota kaikkia pysymään samassa istuma-asetelmassa koko aikaa.",
+      "tip8": "**Improvisoi.** Jos pelaaja kysyy jotain, mitä ei ole käsikirjoitusvaihtoehdoissa, kannusta hahmon roolissa improvisointiin.",
+      "tip9": "**Nauti tunnelmasta.** Musiikki ja teemanmukainen naposteltava vievät pitkälle; mitään muuta ei tarvita."
+    }
+  },
+  "characterGuide": {
+    "fieldLabels": {
+      "characterName": "Hahmon nimi",
+      "description": "Kuvaus",
+      "background": "Tausta",
+      "relationships": "Suhteet",
+      "secret": "Salaisuus",
+      "introduction": "Esittely",
+      "rumors": "Huhut",
+      "round2Script": "Kierroksen 2 käsikirjoitus",
+      "round2Questions": "Kierroksen 2 kysymykset",
+      "round2Innocent": "Kierros 2 – Viaton",
+      "round2Guilty": "Kierros 2 – Syyllinen",
+      "round2Accomplice": "Kierros 2 – Rikoskumppani",
+      "round3Script": "Kierroksen 3 käsikirjoitus",
+      "round3Questions": "Kierroksen 3 kysymykset",
+      "round3Innocent": "Kierros 3 – Viaton",
+      "round3Guilty": "Kierros 3 – Syyllinen",
+      "round3Accomplice": "Kierros 3 – Rikoskumppani",
+      "round4Script": "Kierroksen 4 käsikirjoitus",
+      "round4Questions": "Kierroksen 4 kysymykset",
+      "round4Innocent": "Kierros 4 – Viaton",
+      "round4Guilty": "Kierros 4 – Syyllinen",
+      "round4Accomplice": "Kierros 4 – Rikoskumppani",
+      "accusations": "Syytökset",
+      "finalStatement": "Loppulausunto",
+      "finalInnocent": "Loppulausunto – Viaton",
+      "finalGuilty": "Loppulausunto – Syyllinen",
+      "finalAccomplice": "Loppulausunto – Rikoskumppani",
+      "revealConfessionGuilty": "Paljastus – Sinun tunnustuksesi",
+      "revealConfessionAccomplice": "Paljastus – Rikoskumppanin tunnustus"
+    },
+    "roundHeaders": {
+      "introduction": {
+        "title": "Kierros 1 – Esittelyt",
+        "instruction": "Kun vuorosi tulee, pidä esittelysi alla olevan tekstin mukaisesti. Kuuntele tarkasti myös muiden esittelyt – nyt kuulemasi yksityiskohdat merkitsevät myöhemmillä kierroksilla."
+      },
+      "rumors": {
+        "title": "Kierros 1 – Huhut",
+        "instruction": "Yhä osa kierrosta 1, heti esittelyjen jälkeen – ilman taukoa välissä. Jaa alla oleva huhu kaikille, jotka haluavat kuunnella, ja kiinnitä huomiota siihen, mitä kuulet muilta: sillä on merkitystä myöhemmillä kierroksilla."
+      },
+      "round2": {
+        "title": "Kierros 2 – Motiivit",
+        "instruction": "Nyt kysytään miksi. Käytä alla olevia kysymyksiäsi selvittääksesi, miksi muut olisivat halunneet uhrin pois tieltä – ja ole valmis vastaamaan omasta motiivistasi."
+      },
+      "round3": {
+        "title": "Kierros 3 – Tekotapa",
+        "instruction": "Fokus siirtyy siihen, miten se tehtiin. Painosta muita siitä, mitä he tiesivät tekotavasta, välineistä ja rikospaikasta."
+      },
+      "round4": {
+        "title": "Kierros 4 – Tilaisuus",
+        "instruction": "Missä kukin oli? Käytä todisteita alibien selvittämiseen – ja ole valmis selittämään omat liikkeesi."
+      },
+      "accusations": {
+        "title": "Syytökset – Osoita ulospäin",
+        "instruction": "Kun syytöskierros alkaa, syytä henkilöä, jota epäilet eniten, ja anna yksi perustelu todisteiden pohjalta. Säästä oma puolustuksesi seuraaviin loppulausuntoihin."
+      },
+      "finalStatement": {
+        "title": "Loppulausunnot – Sinun vuorosi puolustautua",
+        "instruction": "Kun kaikki ovat esittäneet syytöksensä, tämä on viimeinen sananvuorosi. Puolustaudu – tai jos olet syyllinen, tee tunnustuksesi."
+      },
+      "revealGuilty": {
+        "title": "Paljastus – Sinun tunnustuksesi",
+        "instruction": "Lue tämä VAIN, jos Etsivä nimeää sinut erikseen murhaajaksi Paljastuksen aikana, sen jälkeen kun jokainen pelaaja on jo antanut yllä olevan loppulausuntonsa. Tämä on erillinen, myöhempi hetki – älä lue sitä etuajassa."
+      },
+      "revealAccomplice": {
+        "title": "Paljastus – Rikoskumppanin tunnustus",
+        "instruction": "Lue tämä VAIN, jos Etsivä kutsuu sinut erikseen esiin rikoskumppanina Paljastuksen aikana, sen jälkeen kun murhaaja on jo tunnustanut. Tämä on erillinen, myöhempi hetki – älä lue sitä etuajassa."
+      },
+      "finalInnocent": {
+        "title": "Loppulausunnot – Sinun vuorosi puolustautua",
+        "instruction": "Kun kaikki ovat esittäneet syytöksensä, tämä on viimeinen sananvuorosi ennen Paljastusta. Puolustaudu ja pitäydy tarinassasi – olitpa viaton tai syyllinen, totuus ei paljastu tällä kierroksella."
+      }
+    },
+    "guardDirective": "**Vartioi tätä salaisuutta hinnalla millä hyvänsä.** Maineesi – ja ehkä myös vapautesi – riippuu siitä, että pidät sen piilossa. Kiellä, väistele äläkä koskaan paljasta sitä omasta tahdostasi. Vapaaehtoisesti paljastettu salaisuus vie jännityksen koko pöydältä.",
+    "characterNameEditingTip": "**Nimen vaihtaminen päivittää vain tämän kentän.** Se ei muuta nimeä missään muualla – kierrosten käsikirjoitukset, johtolangat ja isännän opas käyttävät edelleen alkuperäistä nimeä. Parhaiten sopii kaksoisnimen (esim. \"Clarabelle/Clarence\") jommankumman puolen valitsemiseen ennen ensimmäistä lukukertaa, ei myöhäiseksi korjaukseksi sen jälkeen kun olet jo aloittanut käsikirjoituksen tarkistamisen."
   }
 }

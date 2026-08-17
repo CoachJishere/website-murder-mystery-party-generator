@@ -1575,11 +1575,10 @@
   },
   "adaptation": {
     "card": {
-      "sectionIntro": "Meer manieren om je mysterie vorm te geven - dit groeit na verloop van tijd",
-      "title": "Herbezetting",
+      "title": "Personage verwijderen",
       "teaser": "Een gast kan niet komen? Verwijder of vervang diegene in het verhaal - vast tarief van $5, pas in één keer zoveel personages aan als nodig.",
       "cta": "Meer informatie",
-      "inProgressTitle": "Herbezetting bezig",
+      "inProgressTitle": "Bezig met bijwerken",
       "inProgressSummary": "{{done}} van {{total}} bijgewerkt",
       "inProgressNotice": "We e-mailen je zodra het klaar is - gebruik ondertussen gerust de rest van je mysterie.",
       "comingSoonTitle": "Hosttips & video's",
@@ -1587,10 +1586,10 @@
       "comingSoonBody": "Korte video's en snelle tips om je mysterie op de avond zelf te leiden."
     },
     "entryPoint": {
-      "notice": "Je kunt elk personage hieronder bewerken. Moet je iemand volledig verwijderen of vervangen? Gebruik Herbezetting (zie het tabblad Extra's) in plaats van opnieuw te genereren."
+      "notice": "Je kunt elk personage hieronder bewerken. Moet je iemand volledig verwijderen of vervangen? Gebruik Personage verwijderen (zie het tabblad Extra's) in plaats van opnieuw te genereren."
     },
     "explainer": {
-      "title": "Herbezetting",
+      "title": "Personage verwijderen",
       "subtitle": "Verwijder een personage uit je mysterie met één klik.",
       "characterStyleHeadline": "Hier hoef je waarschijnlijk niet voor te betalen.",
       "characterStyleBody": "Dit is een mysterie op basis van personages - er is geen vooraf vastgestelde dader, dus het ontbreken van een personage is gemakkelijk zelf en gratis te verbloemen. Zeg gewoon tegen je gasten iets als: \"X is ook verdacht, maar wordt apart ondervraagd - ga verder zonder hem\", of \"We hebben X al uitgesloten.\" Eventuele overgebleven geruchten over die persoon worden dan geen probleem meer.",
@@ -1618,7 +1617,7 @@
       "replacedByAuto": "wij kiezen de nieuwe {{role}}",
       "totalLabel": "Totaal: ${{total}}",
       "cancel": "Annuleren",
-      "cta": "Verwijderen - ${{total}}"
+      "cta": "Nu betalen"
     },
     "processing": {
       "title": "Je mysterie wordt bijgewerkt",
@@ -1635,9 +1634,266 @@
       "backToMystery": "Terug naar je mysterie"
     },
     "toasts": {
-      "createdNoCheckout": "Herbezettingsverzoek aangemaakt voor {{count}} personage(s) (staging-modus - geen betaling geconfigureerd).",
+      "createdNoCheckout": "Verzoek aangemaakt voor {{count}} personage(s) (staging-modus - geen betaling geconfigureerd).",
       "createFailed": "Kon dit verzoek niet starten. Probeer het opnieuw.",
-      "alreadyInProgress": "Voor een van deze personages loopt al een herbezettingsverzoek."
+      "alreadyInProgress": "Voor een van deze personages loopt al een verzoek."
     }
+  },
+  "hostGuide": {
+    "checklist": {
+      "heading": "Snelstartchecklist voor de Host",
+      "intro_murder": "Houd dit tijdens het spel open — het is je overzichtelijke bedieningspaneel, zeker als je ook de Detective speelt.",
+      "intro_intrigue": "Houd dit tijdens het spel open — het is je overzichtelijke bedieningspaneel, zeker als je ook de Onderzoeker speelt.",
+      "item1": "Iedereen heeft zijn personagepagina open (van tevoren digitaal verstuurd)",
+      "item2_murder": "Je hebt deze gids en de Detectivegids gelezen, en het geheim van elk personage doorgenomen zodat je weet wie wat verbergt",
+      "item2_intrigue": "Je hebt deze gids en de Onderzoekersgids gelezen, en het geheim van elk personage doorgenomen zodat je weet wie wat verbergt",
+      "item3": "Bewijskaarten klaar (geprint of op een scherm), één per ronde",
+      "item4SlipDraw_murder": "Briefjes klaargemaakt voor de trekking van de moordenaar",
+      "item4SlipDraw_murder_accomplice": "Briefjes klaargemaakt voor de trekking van moordenaar/medeplichtige",
+      "item4SlipDraw_intrigue": "Briefjes klaargemaakt voor de trekking van de dader",
+      "item4SlipDraw_intrigue_accomplice": "Briefjes klaargemaakt voor de trekking van dader/medeplichtige",
+      "item4Predetermined_murder": "Je weet wie de moordenaar is (zie de Detectivegids)",
+      "item4Predetermined_murder_accomplice": "Je weet wie de moordenaar en de medeplichtige zijn (zie de Detectivegids)",
+      "item4Predetermined_intrigue": "Je weet wie de dader is (zie de Onderzoekersgids)",
+      "item4Predetermined_intrigue_accomplice": "Je weet wie de dader en de medeplichtige zijn (zie de Onderzoekersgids)",
+      "item5": "Houd de verdachtenlijst (bovenaan de gids van elke speler) en het Speloverzicht binnen handbereik — je gebruikt ze om het verhaal weer op de rails te krijgen",
+      "roundOrderNote": "**Rondevolgorde in één oogopslag:** zie \"Het Spel Leiden\" hieronder voor de volledige stap-voor-stap uitleg."
+    },
+    "materials": {
+      "heading": "Materialen",
+      "universalLabel": "**Algemene benodigdheden:**",
+      "item1": "Personagegidsen — al digitaal naar elke gast verstuurd vóór het feest",
+      "item2": "Geprinte bewijskaarten (of getoond op een telefoon/scherm — jouw keuze)",
+      "item3_murder": "Detectivescript (detective-dialoog voor elke ronde, op het tabblad Detectivegids)",
+      "item3_intrigue": "Onderzoekersscript (onderzoekersdialoog voor elke ronde, op het tabblad Onderzoekersgids)",
+      "item4": "Timer of klok",
+      "item5": "Optioneel: themadecoratie, muziek, eten/drinken",
+      "slipDrawLabel": "**Voor de briefjestrekking:**",
+      "slipDrawItem1": "Bakje voor de briefjes (hoed, kom, sierdoosje)",
+      "slipDrawItem2_murder": "Briefjes voor het aanwijzen van de moordenaar",
+      "slipDrawItem2_murder_accomplice": "Briefjes voor het aanwijzen van de moordenaar (en de medeplichtige)",
+      "slipDrawItem2_intrigue": "Briefjes voor het aanwijzen van de dader",
+      "slipDrawItem2_intrigue_accomplice": "Briefjes voor het aanwijzen van de dader (en de medeplichtige)"
+    },
+    "prep": {
+      "heading": "Voorbereiding Vóór het Feest",
+      "beforeLabel": "**Een paar dagen van tevoren:**",
+      "item1_murder": "Lees deze hele hostgids en de Detectivegids",
+      "item1_intrigue": "Lees deze hele hostgids en de Onderzoekersgids",
+      "item2": "Stuur elke gast minstens 3 dagen voor het evenement zijn personagepagina (digitale link of pdf)",
+      "item3": "Moedig gasten aan om hun personage-introductie te lezen voordat ze aankomen — ze hoeven niets uit hun hoofd te leren, alleen ermee vertrouwd te zijn",
+      "item4": "Bevestig de gastenlijst en leg het aantal deelnemers vast",
+      "dayOfLabel": "**Op de dag zelf:**",
+      "slipDrawSetup_murder": "Maak de briefjestrekking klaar: knip {{playerCount}} kleine briefjes. Schrijf \"MOORDENAAR\" op één briefje. Laat de rest leeg (of schrijf \"Onschuldig\"). Vouw elk briefje dicht zodat de tekst niet zichtbaar is. Doe ze in je bakje.",
+      "slipDrawSetup_murder_accomplice": "Maak de briefjestrekking klaar: knip {{playerCount}} kleine briefjes. Schrijf \"MOORDENAAR\" op één briefje, \"MEDEPLICHTIGE\" op een ander. Laat de rest leeg (of schrijf \"Onschuldig\"). Vouw elk briefje dicht zodat de tekst niet zichtbaar is. Doe ze in je bakje.",
+      "slipDrawSetup_intrigue": "Maak de briefjestrekking klaar: knip {{playerCount}} kleine briefjes. Schrijf \"DADER\" op één briefje. Laat de rest leeg (of schrijf \"Onschuldig\"). Vouw elk briefje dicht zodat de tekst niet zichtbaar is. Doe ze in je bakje.",
+      "slipDrawSetup_intrigue_accomplice": "Maak de briefjestrekking klaar: knip {{playerCount}} kleine briefjes. Schrijf \"DADER\" op één briefje, \"MEDEPLICHTIGE\" op een ander. Laat de rest leeg (of schrijf \"Onschuldig\"). Vouw elk briefje dicht zodat de tekst niet zichtbaar is. Doe ze in je bakje.",
+      "item5": "Print de bewijskaarten (optioneel) — je kunt ze ook gewoon op een telefoon tonen of hardop voorlezen",
+      "item6": "Zorg voor sfeer als je wilt (themamuziek, gedimd licht, themasnacks) — niets hiervan is verplicht"
+    },
+    "guestChanges": {
+      "heading": "Omgaan met Last-Minute Wijzigingen in de Gastenlijst",
+      "intro": "Je cast van verdachten ligt vast — die is verweven met de plot, dus je kunt geen verdachte personages toevoegen of verwijderen. Maar gastenlijsten veranderen nu eenmaal, en het spel is zo gebouwd dat het dat kan opvangen.",
+      "moreLabel": "**Meer gasten dan personages (iemand extra wil meedoen):**",
+      "moreItem1_murder": "Laat ze meedoen als **mede-onderzoekers** in het team van de Detective — geen personagepagina nodig. Zoveel als je wilt.",
+      "moreItem1_intrigue": "Laat ze meedoen als **mede-onderzoekers** in het team van de Onderzoeker — geen personagepagina nodig. Zoveel als je wilt.",
+      "moreItem2": "Ze ondervragen elke ronde de verdachten, werken samen met de rest aan de aanwijzingen en het bewijs, en brengen hun zaak naar voren tijdens de beschuldigingsfase.",
+      "moreItem3_murder": "**Belangrijk:** mede-onderzoekers krijgen NIET het Detectivescript of deze hostgids — dat is jouw dossier en daarin staat wie de moordenaar is. Houd dit voor jezelf. Je mede-onderzoekers lossen het eerlijk op aan de hand van de aanwijzingen, net als de verdachten.",
+      "moreItem3_intrigue": "**Belangrijk:** mede-onderzoekers krijgen NIET het Onderzoekersscript of deze hostgids — dat is jouw dossier en daarin staat wie de dader is. Houd dit voor jezelf. Je mede-onderzoekers lossen het eerlijk op aan de hand van de aanwijzingen, net als de verdachten.",
+      "fewerLabel": "**Minder gasten dan personages (iemand haakt af):**",
+      "fewerItem1_murder": "Schrap nooit de moordenaar — de plot hangt ervan af dat deze meedoet.",
+      "fewerItem1_murder_accomplice": "Schrap nooit de moordenaar of de medeplichtige — de plot hangt ervan af dat zij meedoen.",
+      "fewerItem1_intrigue": "Schrap nooit de dader — de plot hangt ervan af dat deze meedoet.",
+      "fewerItem1_intrigue_accomplice": "Schrap nooit de dader of de medeplichtige — de plot hangt ervan af dat zij meedoen.",
+      "fewerItem2_murder": "Als je een verdachte wilt schrappen, kies dan een puur onschuldig personage. Verwerk de belangrijkste feiten in de briefing van een andere gast, of laat de Detective vermelden dat diegene \"niet beschikbaar is voor ondervraging\", zodat de aanwijzingen alsnog naar voren komen.",
+      "fewerItem2_intrigue": "Als je een verdachte wilt schrappen, kies dan een puur onschuldig personage. Verwerk de belangrijkste feiten in de briefing van een andere gast, of laat de Onderzoeker vermelden dat diegene \"niet beschikbaar is voor ondervraging\", zodat de aanwijzingen alsnog naar voren komen.",
+      "fewerItem3": "Als meerdere gasten afhaken, overweeg dan om het mysterie opnieuw te genereren voor het nieuwe aantal gasten — dat past het best."
+    },
+    "setupChoice": {
+      "heading_murder": "Keuze voor de Detective-opzet",
+      "heading_intrigue": "Keuze voor de Onderzoeker-opzet",
+      "intro_murder": "Je hebt twee manieren om de vertelling van de detective aan te pakken:",
+      "intro_intrigue": "Je hebt twee manieren om de vertelling van de onderzoeker aan te pakken:",
+      "option1Label_murder": "**Optie 1 — Host als Detective**",
+      "option1Label_intrigue": "**Optie 1 — Host als Onderzoeker**",
+      "option1Item1_murder": "Je speelt het hele spel het personage van de detective",
+      "option1Item1_intrigue": "Je speelt het hele spel het personage van de onderzoeker",
+      "option1Item2_murder": "Lees het detectivescript van elke ronde hardop voor terwijl het verhaal vordert",
+      "option1Item2_intrigue": "Lees het onderzoekersscript van elke ronde hardop voor terwijl het verhaal vordert",
+      "option1NoteCharacterBased_murder": "Bij mysteries op basis van personages doe je NIET mee als verdachte, dus je kunt vooraf bepalen wie de moordenaar is (de briefjestrekking overslaan) of toch de briefjestrekking gebruiken voor variatie.",
+      "option1NoteCharacterBased_intrigue": "Bij mysteries op basis van personages doe je NIET mee als verdachte, dus je kunt vooraf bepalen wie de dader is (de briefjestrekking overslaan) of toch de briefjestrekking gebruiken voor variatie.",
+      "option1NoteDetective_murder": "Bij mysteries in detectivestijl ligt de moordenaar al vast — je ziet wie het is in de Detectivegids. Beslis vóór het feest of je dit die speler privé vertelt, of het tijdens het spel laat blijken.",
+      "option1NoteDetective_intrigue": "Bij mysteries in detectivestijl ligt de dader al vast — je ziet wie het is in de Onderzoekersgids. Beslis vóór het feest of je dit die speler privé vertelt, of het tijdens het spel laat blijken.",
+      "option2Label_murder": "**Optie 2 — Audio-detective**",
+      "option2Label_intrigue": "**Optie 2 — Audio-onderzoeker**",
+      "option2Item1": "Je speelt zelf een van de verdachte personages (je doet mee aan het mysterie)",
+      "option2Item2_murder": "Genereer audio van het detectivescript met een gratis AI-tool:",
+      "option2Item2_intrigue": "Genereer audio van het onderzoekersscript met een gratis AI-tool:",
+      "ttsOption1": "[Google AI Studio Speech](https://aistudio.google.com/generate-speech) — plak het script, genereer TTS-audio",
+      "ttsOption2": "[Google NotebookLM](https://notebooklm.google.com) — plak het script, gebruik Audio Overview",
+      "ttsOption3": "Of een andere TTS-dienst (ElevenLabs, enz.)",
+      "option2Item3": "Sla de [regieaanwijzingen tussen haakjes] over bij het genereren van audio",
+      "option2Item4": "Speel de audio van elke ronde op het juiste moment af",
+      "option2Item5": "Houd geprinte back-upscripts klaar voor het geval er technische problemen zijn"
+    },
+    "runningGame": {
+      "heading": "Het Spel Leiden",
+      "timeShort": "In totaal ongeveer 1,5 uur",
+      "timeMedium": "In totaal ongeveer 2 uur",
+      "timeLong": "In totaal ongeveer 2 tot 2,5 uur",
+      "timeXlong": "In totaal ongeveer 3 uur",
+      "intro": "{{timeEstimate}} (voor {{playerCount}} spelers). Volg dit onderdeel van begin tot eind, in volgorde, zodra je gasten er zijn — dit is het echte script voor de avond. Alles hierboven bereid je van tevoren voor; dit is wat je doet zodra het begint.",
+      "step1Label": "Openingsverklaring — 2–3 min",
+      "step1Body_murder": "Breng de Openingsverklaring van de Detective: lees hem hardop voor, of speel de vooraf opgenomen audio af (afhankelijk van wat je hierboven koos). Te vinden in de Detectivegids.",
+      "step1Body_intrigue": "Breng de Openingsverklaring van de Onderzoeker: lees hem hardop voor, of speel de vooraf opgenomen audio af (afhankelijk van wat je hierboven koos). Te vinden in de Onderzoekersgids.",
+      "step2Label": "Ronde 1, Deel A — Introducties — ~{{introTime}} min voor jouw groep van {{playerCount}} (ongeveer 45 sec/speler)",
+      "step2Body": "Ga de groep rond: elke speler leest of improviseert de introductie van zijn personage.",
+      "step2LargeGroupNote": "**Vraag bij grotere groepen (15+) om het bij 2–3 zinnen te houden** — naam, rol, één zin over het slachtoffer — in plaats van de hele pagina voor te lezen. Bij 1 minuut per persoon duurt deze ronde bij 30 gasten al 30 minuten.",
+      "step3Label": "Ronde 1, Deel B — Geruchten — 10 min",
+      "step3Body": "Direct na de introducties, zonder pauze: elke speler deelt zijn gerucht(en) van zijn personagepagina met de rest van de groep. Iedereen moet minstens één gerucht gehoord hebben voordat je verdergaat.",
+      "step4SlipDrawLabel_murder": "Briefjestrekking — De Moordenaar Bepalen — 5 min",
+      "step4SlipDrawLabel_intrigue": "Briefjestrekking — De Dader Bepalen — 5 min",
+      "step4SlipDrawItem1": "Vraag de spelers om een neutraal gezicht te houden",
+      "step4SlipDrawItem2": "Laat het bakje met briefjes rondgaan — elke speler trekt in het geheim ÉÉN briefje en leest het stilletjes",
+      "step4SlipDrawItem3_murder": "Wie \"MOORDENAAR\" trok, is de moordenaar; iedereen anders is onschuldig",
+      "step4SlipDrawItem3_murder_accomplice": "Wie \"MOORDENAAR\" trok, is de moordenaar; wie \"MEDEPLICHTIGE\" trok, is de medeplichtige; iedereen anders is onschuldig",
+      "step4SlipDrawItem3_intrigue": "Wie \"DADER\" trok, is de dader; iedereen anders is onschuldig",
+      "step4SlipDrawItem3_intrigue_accomplice": "Wie \"DADER\" trok, is de dader; wie \"MEDEPLICHTIGE\" trok, is de medeplichtige; iedereen anders is onschuldig",
+      "step4SlipDrawItem4_murder": "De moordenaar gebruikt vanaf nu de **Schuldig**-onderdelen van zijn script; iedereen anders gebruikt **Onschuldig**",
+      "step4SlipDrawItem4_murder_accomplice": "De moordenaar en de medeplichtige gebruiken vanaf nu de **Schuldig / Medeplichtige**-onderdelen van hun script; iedereen anders gebruikt **Onschuldig**",
+      "step4SlipDrawItem4_intrigue": "De dader gebruikt vanaf nu de **Schuldig**-onderdelen van zijn script; iedereen anders gebruikt **Onschuldig**",
+      "step4SlipDrawItem4_intrigue_accomplice": "De dader en de medeplichtige gebruiken vanaf nu de **Schuldig / Medeplichtige**-onderdelen van hun script; iedereen anders gebruikt **Onschuldig**",
+      "step4SlipDrawItem5": "Onthul NIET wie welk briefje trok",
+      "step4SlipDrawItem6": "Ga verder naar Ronde 2",
+      "step4PredeterminedLabel_murder": "De Moordenaar Ligt Al Vast — geen actie nodig hier",
+      "step4PredeterminedLabel_intrigue": "De Dader Ligt Al Vast — geen actie nodig hier",
+      "step4PredeterminedBody_murder": "Bij mysteries in detectivestijl vervalt de briefjestrekking volledig. De moordenaar ligt al vast; zie de Detectivegids voor wie het is. Ga direct verder naar Ronde 2.",
+      "step4PredeterminedBody_intrigue": "Bij mysteries in detectivestijl vervalt de briefjestrekking volledig. De dader ligt al vast; zie de Onderzoekersgids voor wie het is. Ga direct verder naar Ronde 2.",
+      "beforeRound2Note_murder": "**Kondig dit aan vóór Ronde 2:** bij het geven van zijn eigen lezing mag de moordenaar misleiden, draaien, dingen weglaten en bij zijn dekmantel blijven — dat hoort bij het spel. Maar als een andere speler een directe vraag stelt, verzint hij geen gloednieuwe leugens ter plekke: hij wijkt uit, antwoordt selectief, of leidt de verdenking elders naartoe. Zo blijft het mysterie oplosbaar — het bewijs blijft waar, en de taak van je gasten is om te bepalen wiens *verhaal* ze geloven.",
+      "beforeRound2Note_intrigue": "**Kondig dit aan vóór Ronde 2:** bij het geven van zijn eigen lezing mag de dader misleiden, draaien, dingen weglaten en bij zijn dekmantel blijven — dat hoort bij het spel. Maar als een andere speler een directe vraag stelt, verzint hij geen gloednieuwe leugens ter plekke: hij wijkt uit, antwoordt selectief, of leidt de verdenking elders naartoe. Zo blijft het mysterie oplosbaar — het bewijs blijft waar, en de taak van je gasten is om te bepalen wiens *verhaal* ze geloven.",
+      "step5Label": "Ronde 2 — Motieven — 20 min",
+      "step5Item1_murder": "De Detective vertelt de ronde — lees hardop voor, of speel de audio af",
+      "step5Item1_intrigue": "De Onderzoeker vertelt de ronde — lees hardop voor, of speel de audio af",
+      "step5Item2": "Let halverwege op een aanwijzing tussen haakjes zoals *[Toon Bewijs Ronde 2]* — dat is jouw signaal om de kaart te onthullen. Niet vóór de ronde begint, niet direct na de opening: precies op dat moment",
+      "step5Item3_murder": "Zodra de detective terugtreedt, ondervragen spelers elkaar met hun opties voor Ronde 2",
+      "step5Item3_intrigue": "Zodra de onderzoeker terugtreedt, ondervragen spelers elkaar met hun opties voor Ronde 2",
+      "step6Label": "Ronde 3 — Methode — 20 min",
+      "step6Body": "Zelfde patroon als Ronde 2: vertelling → bewijsmoment → vragen.",
+      "step7Label": "Ronde 4 — Gelegenheid — 20 min",
+      "step7Body": "Weer hetzelfde patroon.",
+      "step8Label": "Beschuldigingen — 10 min",
+      "step8Body": "Ga de groep rond: elke speler beschuldigt *iemand anders* met één zin onderbouwing. Wijs naar buiten — bewaar je eigen verdediging voor de volgende stap. Een grote kring werkt hier goed — het bouwt spanning op en houdt de ruimte overzichtelijk.",
+      "step9Label": "Slotverklaringen — 10 min",
+      "step9BodyCharacterBased_murder": "Ga opnieuw de groep rond: elke speler verdedigt zichzelf. Nog steeds ontkennen, geen bekentenis — zelfs de moordenaar houdt hier vast aan zijn verhaal.",
+      "step9BodyCharacterBased_intrigue": "Ga opnieuw de groep rond: elke speler verdedigt zichzelf. Nog steeds ontkennen, geen bekentenis — zelfs de dader houdt hier vast aan zijn verhaal.",
+      "step9BodyDetective": "Ga opnieuw de groep rond: elke speler verdedigt zichzelf en doet een laatste pleidooi of bekentenis.",
+      "step10Label": "De Onthulling — 5–10 min",
+      "step10Body_murder": "De Detective noemt de naam van de moordenaar, die zijn bekentenis hardop voorleest.",
+      "step10Body_murder_accomplice": "De Detective noemt de naam van de moordenaar, die zijn bekentenis hardop voorleest. Daarna wendt de Detective zich tot de medeplichtige, die ook bekent — en **beiden** worden gearresteerd.",
+      "step10Body_intrigue": "De Onderzoeker noemt de naam van de dader, die zijn bekentenis hardop voorleest.",
+      "step10Body_intrigue_accomplice": "De Onderzoeker noemt de naam van de dader, die zijn bekentenis hardop voorleest. Daarna wendt de Onderzoeker zich tot de medeplichtige, die ook bekent — en **beiden** worden gearresteerd."
+    },
+    "keepingOnTrack": {
+      "heading": "Het Verhaal Op Koers Houden",
+      "intro": "Spelers zullen improviseren, hun eigen flair toevoegen en soms van het script afwijken — **dat is normaal en helemaal prima.** Een beetje chaos hoort bij het plezier, en je hoeft niet elke afwijking te corrigeren. Grijp alleen in als de draad écht kwijt is.",
+      "tool_murder": "Als het afdwaalt, is de Detective jouw middel om het terug te halen. Omdat de detective iedereen verdenkt, kun je altijd inbreken met een scherpe vraag:",
+      "tool_intrigue": "Als het afdwaalt, is de Onderzoeker jouw middel om het terug te halen. Omdat de onderzoeker iedereen verdenkt, kun je altijd inbreken met een scherpe vraag:",
+      "example1": "\"Wacht even — daarnet zei je dat je in de salon was. Hoe rijmt dat met wat we net hoorden?\"",
+      "example2": "\"Dat is opmerkelijk. Eerder vertelde je ons iets anders. Wat is het nu?\"",
+      "example3": "\"Laten we terugkeren naar de feiten. [Naam], waar was jij precies toen het gebeurde?\"",
+      "closing": "Houd het Speloverzicht en het geheim van elk personage bij de hand (je hebt ze doorgenomen in de checklist), zodat je de groep altijd weer kunt verankeren in wat er echt waar is."
+    },
+    "tips": {
+      "heading": "Tips voor de Host",
+      "tip1": "**Houd de vaart erin.** Als een ronde blijft hangen, vat samen en stel een vraag: \"Oké — op basis van wat we hebben gehoord, wie lijkt verdacht?\"",
+      "tip2": "**Lees bewijs neutraal voor.** Geef geen hints over wie jij denkt dat het gedaan heeft (zelfs als je het weet).",
+      "tip3": "**Let op stille spelers.** Stel hen een vraag als ze een hele ronde niets hebben gezegd.",
+      "tip4": "**Let op dominante spelers.** Stuur voorzichtig bij: \"Laten we iemand horen van wie we nog niets gehoord hebben.\"",
+      "tip5CharacterBased_murder": "**De moordenaar mag NIET te vroeg bekennen** — zijn Slotverklaring is een ontkenning, net als bij iedereen anders. De echte bekentenis komt pas als de detective hem specifiek noemt tijdens de Onthulling — dat is een apart, later onderdeel op zijn personagepagina (\"De Onthulling — Jouw Bekentenis\"). Moedig hem aan om tijdens de Slotverklaringen kalm te blijven.",
+      "tip5CharacterBased_intrigue": "**De dader mag NIET te vroeg bekennen** — zijn Slotverklaring is een ontkenning, net als bij iedereen anders. De echte bekentenis komt pas als de onderzoeker hem specifiek noemt tijdens de Onthulling — dat is een apart, later onderdeel op zijn personagepagina (\"De Onthulling — Jouw Bekentenis\"). Moedig hem aan om tijdens de Slotverklaringen kalm te blijven.",
+      "tip5Detective_murder": "**De moordenaar mag NIET te vroeg bekennen** — hij moet zichzelf verdedigen tot hij in het nauw wordt gedreven. Moedig hem aan om kalm te blijven.",
+      "tip5Detective_intrigue": "**De dader mag NIET te vroeg bekennen** — hij moet zichzelf verdedigen tot hij in het nauw wordt gedreven. Moedig hem aan om kalm te blijven.",
+      "tip6": "**Iedereen beschermt zijn geheim.** Elk personage heeft een geheim met echte gevolgen als het uitkomt. Herinner spelers eraan om het te bewaken — een speler die zijn geheim luchtig opvat, haalt de spanning uit het spel voor iedereen. Je reputatie verdedigen is de helft van het spel.",
+      "tip7": "**Laat de groep bewegen.** Kleine gespreksgroepjes en één grote kring voor de beschuldigingen werken allebei goed — dwing niemand om de hele tijd in dezelfde zitopstelling te blijven.",
+      "tip8": "**Improviseer.** Als een speler iets vraagt dat niet in zijn scriptopties staat, moedig dan improvisatie in het personage aan.",
+      "tip9": "**Speel met de sfeer.** Muziek en een themasnack doen al veel; verder is niets verplicht."
+    }
+  },
+  "characterGuide": {
+    "fieldLabels": {
+      "characterName": "Personagenaam",
+      "description": "Beschrijving",
+      "background": "Achtergrond",
+      "relationships": "Relaties",
+      "secret": "Geheim",
+      "introduction": "Introductie",
+      "rumors": "Geruchten",
+      "round2Script": "Script Ronde 2",
+      "round2Questions": "Vragen Ronde 2",
+      "round2Innocent": "Ronde 2 — Onschuldig",
+      "round2Guilty": "Ronde 2 — Schuldig",
+      "round2Accomplice": "Ronde 2 — Medeplichtige",
+      "round3Script": "Script Ronde 3",
+      "round3Questions": "Vragen Ronde 3",
+      "round3Innocent": "Ronde 3 — Onschuldig",
+      "round3Guilty": "Ronde 3 — Schuldig",
+      "round3Accomplice": "Ronde 3 — Medeplichtige",
+      "round4Script": "Script Ronde 4",
+      "round4Questions": "Vragen Ronde 4",
+      "round4Innocent": "Ronde 4 — Onschuldig",
+      "round4Guilty": "Ronde 4 — Schuldig",
+      "round4Accomplice": "Ronde 4 — Medeplichtige",
+      "accusations": "Beschuldigingen",
+      "finalStatement": "Slotverklaring",
+      "finalInnocent": "Slotverklaring — Onschuldig",
+      "finalGuilty": "Slotverklaring — Schuldig",
+      "finalAccomplice": "Slotverklaring — Medeplichtige",
+      "revealConfessionGuilty": "De Onthulling — Jouw Bekentenis",
+      "revealConfessionAccomplice": "De Onthulling — Bekentenis van de Medeplichtige"
+    },
+    "roundHeaders": {
+      "introduction": {
+        "title": "Ronde 1 — Introducties",
+        "instruction": "Als jij aan de beurt bent, breng dan je introductie hieronder. Luister goed naar die van de anderen — de details die je nu hoort, zijn belangrijk in latere rondes."
+      },
+      "rumors": {
+        "title": "Ronde 1 — Geruchten",
+        "instruction": "Nog steeds onderdeel van Ronde 1, direct na de introducties — geen pauze ertussen. Deel het gerucht hieronder met iedereen die wil luisteren, en let op wat je van anderen hoort: dat is belangrijk in latere rondes."
+      },
+      "round2": {
+        "title": "Ronde 2 — Motieven",
+        "instruction": "De vraag is nu waarom. Gebruik je vragen hieronder om te onderzoeken waarom anderen het slachtoffer weg wilden hebben — en wees klaar om je eigen motief te verantwoorden."
+      },
+      "round3": {
+        "title": "Ronde 3 — De Methode",
+        "instruction": "De focus verschuift naar hoe het gedaan is. Dring bij anderen aan op wat ze wisten over de methode, het middel en de plaats delict."
+      },
+      "round4": {
+        "title": "Ronde 4 — Gelegenheid",
+        "instruction": "Waar was iedereen? Gebruik het bewijs om alibi's vast te pinnen — en wees klaar om je eigen verblijfplaats te verantwoorden."
+      },
+      "accusations": {
+        "title": "Beschuldigingen — Wijs Naar Buiten",
+        "instruction": "Als de beschuldigingsronde begint, beschuldig dan de persoon die je het meest verdenkt en geef één reden op basis van het bewijs. Bewaar je eigen verdediging voor de slotverklaringen die daarna volgen."
+      },
+      "finalStatement": {
+        "title": "Slotverklaringen — Jouw Beurt om te Verdedigen",
+        "instruction": "Nadat iedereen beschuldigd heeft, is dit jouw laatste woord. Verdedig jezelf — of, als je schuldig bent, doe je bekentenis."
+      },
+      "revealGuilty": {
+        "title": "De Onthulling — Jouw Bekentenis",
+        "instruction": "Lees dit ALLEEN als de Detective jou specifiek als de moordenaar noemt tijdens De Onthulling, nadat elke speler hierboven al zijn Slotverklaring heeft gegeven. Dit is een apart, later moment — lees het niet te vroeg voor."
+      },
+      "revealAccomplice": {
+        "title": "De Onthulling — Bekentenis van de Medeplichtige",
+        "instruction": "Lees dit ALLEEN als de Detective jou specifiek aanwijst als de medeplichtige tijdens De Onthulling, nadat de moordenaar al bekend heeft. Dit is een apart, later moment — lees het niet te vroeg voor."
+      },
+      "finalInnocent": {
+        "title": "Slotverklaringen — Jouw Beurt om te Verdedigen",
+        "instruction": "Nadat iedereen beschuldigd heeft, is dit jouw laatste woord voor De Onthulling. Verdedig jezelf en houd vast aan je verhaal — of je nu onschuldig of schuldig bent, in deze ronde komt de waarheid nog niet aan het licht."
+      }
+    },
+    "guardDirective": "**Bewaak dit geheim koste wat het kost.** Je reputatie — en misschien je vrijheid — hangt af van of je het verborgen houdt. Ontken, wijk uit, en geef het nooit vrijwillig prijs. Een geheim dat zomaar wordt prijsgegeven, haalt de spanning weg voor de hele tafel.",
+    "characterNameEditingTip": "**Een naam wijzigen werkt alleen bij dit veld.** De naam verandert nergens anders — rondescripts, aanwijzingen en de hostgids blijven de oorspronkelijke naam gebruiken. Gebruik dit het best om vóór je eerste keer doorlezen te kiezen voor één kant van een dubbele naam (bijv. \"Clarabelle/Clarence\"), niet als late correctie nadat je het script al aan het doornemen bent."
   }
 }

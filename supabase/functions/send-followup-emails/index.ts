@@ -14,8 +14,13 @@ import { type Locale, normalizeLocale, pickByLocale, getUserLanguage } from "../
  *     with social proof if any guest left positive feedback.
  *   - invite_friends (+14d post-generation): light "share with friends"
  *     prompt, sent only to paid hosts who haven't unsubscribed.
+ *   - character_removal_announcement: one-time backfill, not a recurring
+ *     scheduled type. English only, no unsubscribe footer (it's a single
+ *     send, not a follow-up series) — see docs/adr/0078 and the 2026-08-16
+ *     announcement to the 33 buyers who purchased before the paid character
+ *     removal feature (ADR-0088) existed.
  *
- * Both honor conversations.unsubscribed_from_followups.
+ * All types honor conversations.unsubscribed_from_followups.
  */
 
 const TRUSTPILOT_REVIEW_URL = "https://ca.trustpilot.com/evaluate/mysterymaker.party";
@@ -418,6 +423,10 @@ serve(async (req) => {
           const shareUrl = buildShareUrl(email.user_id, "invite_friends");
           subject = t.subjectInviteFriends(mysteryTitle);
           htmlBody = buildInviteFriendsEmail(locale, t, hostName, mysteryTitle, shareUrl, email.conversation_id);
+        } else if (email.email_type === "character_removal_announcement") {
+          const ctaUrl = `https://www.mysterymaker.party/mystery/${email.conversation_id}`;
+          subject = `What to do if a guest can't make it to ${mysteryTitle}`;
+          htmlBody = buildCharacterRemovalAnnouncementEmail(hostName, mysteryTitle, ctaUrl);
         } else {
           // how_did_it_go (existing path)
           const { data: existingFeedback } = await supabase
@@ -675,6 +684,61 @@ function buildInviteFriendsEmail(
     <p style="color: rgba(245,240,232,0.3); font-size: 12px; text-align: center; margin: 28px 0 0 0; padding-top: 20px; border-top: 1px solid rgba(245,240,232,0.1);">
       <a href="${unsubUrl}" style="color: rgba(245,240,232,0.3); text-decoration: underline;">${t.unsub}</a>
     </p>
+  </div>
+
+  <div style="text-align: center; padding: 16px; font-size: 12px;">
+    <a href="https://www.mysterymaker.party" style="color: rgba(245,240,232,0.3); text-decoration: none;">mysterymaker.party</a>
+  </div>
+</body>
+</html>
+  `.trim();
+}
+
+// One-time backfill announcement, English only (all 33 recipients on the
+// 2026-08-16 send are 'en' locale — re-verify before reusing this for any
+// other list). No unsubscribe footer: this is a single send, not a
+// recurring follow-up series, so "unsubscribe from follow-up emails" isn't
+// applicable — conversations.unsubscribed_from_followups is still honored
+// at the caller level before this ever gets built.
+function buildCharacterRemovalAnnouncementEmail(
+  hostName: string,
+  mysteryTitle: string,
+  ctaUrl: string
+): string {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; background: #000000;">
+  <div style="background: #C81400; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
+    <img src="https://www.mysterymaker.party/email-assets/wordmark-cream.png" alt="Mystery Maker" width="232" height="40" style="display: block; max-width: 232px; height: auto; margin: 0 auto; border: 0; outline: none; text-decoration: none;" />
+  </div>
+
+  <div style="background: #111111; padding: 30px; border-radius: 0 0 8px 8px;">
+    <p style="font-size: 18px; margin-bottom: 8px; color: #F5F0E8;">Hi ${hostName},</p>
+
+    <p style="color: rgba(245,240,232,0.85); margin-bottom: 16px;">
+      You can already edit any character in <strong style="color: #F5F0E8;">${mysteryTitle}</strong>, but removing one entirely is more complex than a text edit. Their alibi, rumors, and evidence are woven into everyone else's material too.
+    </p>
+
+    <p style="color: rgba(245,240,232,0.85); margin-bottom: 12px;">
+      You can now use our <strong style="color: #F5F0E8;">Remove A Character</strong> feature:
+    </p>
+
+    <ul style="background: #000000; border-left: 4px solid #C81400; padding: 16px 16px 16px 36px; margin: 0 0 24px 0; border-radius: 4px; color: rgba(245,240,232,0.85);">
+      <li style="margin-bottom: 10px;">Remove a character from every character sheet, the detective script, and evidence cards, so nothing left behind mentions them</li>
+      <li style="margin-bottom: 10px;">Remove as many characters as you want for one flat fee of $5</li>
+      <li>Takes a few minutes to process, you'll get an email when it's done</li>
+    </ul>
+
+    <div style="text-align: center; margin: 28px 0;">
+      <a href="${ctaUrl}" style="display: inline-block; background: #C81400; color: #F5F0E8; padding: 14px 36px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px;">Remove a character from ${mysteryTitle} &rarr;</a>
+    </div>
   </div>
 
   <div style="text-align: center; padding: 16px; font-size: 12px;">

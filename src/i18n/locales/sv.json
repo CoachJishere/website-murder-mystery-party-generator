@@ -1575,11 +1575,10 @@
   },
   "adaptation": {
     "card": {
-      "sectionIntro": "Fler sätt att forma ditt mysterium - det här växer med tiden",
-      "title": "Ny rollbesättning",
+      "title": "Ta bort en karaktär",
       "teaser": "Kan en gäst inte komma? Ta bort eller ersätt personen i berättelsen - fast pris 5 $, fixa så många karaktärer du behöver på en gång.",
       "cta": "Läs mer",
-      "inProgressTitle": "Omcastning pågår",
+      "inProgressTitle": "Uppdatering pågår",
       "inProgressSummary": "{{done}} av {{total}} uppdaterade",
       "inProgressNotice": "Vi mejlar dig när det är klart - använd gärna resten av ditt mysterium under tiden.",
       "comingSoonTitle": "Värdtips & videor",
@@ -1587,10 +1586,10 @@
       "comingSoonBody": "Korta videor och snabba tips för att leda ditt mysterium på själva kvällen."
     },
     "entryPoint": {
-      "notice": "Du kan redigera varje karaktär nedan. Behöver du ta bort eller byta ut någon helt? Använd Ny rollbesättning (se fliken Extra) istället för att generera om."
+      "notice": "Du kan redigera varje karaktär nedan. Behöver du ta bort eller byta ut någon helt? Använd Ta bort en karaktär (se fliken Extra) istället för att generera om."
     },
     "explainer": {
-      "title": "Ny rollbesättning",
+      "title": "Ta bort en karaktär",
       "subtitle": "Ta bort en karaktär från ditt mysterium med ett klick.",
       "characterStyleHeadline": "Du behöver förmodligen inte betala för det här.",
       "characterStyleBody": "Det här är ett karaktärsbaserat mysterium - det finns ingen förutbestämd gärningsperson, så en saknad karaktärs frånvaro är lätt att förklara bort själv, gratis. Säg bara något till dina gäster som: \"X är också misstänkt, men förhörs separat - fortsätt utan personen\", eller \"Vi har redan uteslutit X.\" Eventuella kvarvarande rykten om personen blir då irrelevanta.",
@@ -1618,7 +1617,7 @@
       "replacedByAuto": "vi väljer den nya {{role}}",
       "totalLabel": "Totalt: ${{total}}",
       "cancel": "Avbryt",
-      "cta": "Ta bort - ${{total}}"
+      "cta": "Betala nu"
     },
     "processing": {
       "title": "Uppdaterar ditt mysterium",
@@ -1635,9 +1634,266 @@
       "backToMystery": "Tillbaka till ditt mysterium"
     },
     "toasts": {
-      "createdNoCheckout": "Omcastningsförfrågan skapad för {{count}} karaktär(er) (staging-läge - ingen betalning konfigurerad).",
+      "createdNoCheckout": "Förfrågan skapad för {{count}} karaktär(er) (staging-läge - ingen betalning konfigurerad).",
       "createFailed": "Kunde inte starta den förfrågan. Försök igen.",
-      "alreadyInProgress": "En av dessa karaktärer har redan en omcastningsförfrågan pågående."
+      "alreadyInProgress": "En av dessa karaktärer har redan en förfrågan pågående."
     }
+  },
+  "hostGuide": {
+    "checklist": {
+      "heading": "Värdens snabbstartschecklista",
+      "intro_murder": "Ha den här öppen under spelets gång — det är din överblickbara kontrollpanel, särskilt om du också spelar Detektiven.",
+      "intro_intrigue": "Ha den här öppen under spelets gång — det är din överblickbara kontrollpanel, särskilt om du också spelar Utredaren.",
+      "item1": "Alla har sin karaktärssida öppen (skickad digitalt före festen)",
+      "item2_murder": "Du har läst den här guiden och Detektivguiden, och skummat igenom varje karaktärs hemlighet så att du vet vem som döljer vad",
+      "item2_intrigue": "Du har läst den här guiden och Utredarguiden, och skummat igenom varje karaktärs hemlighet så att du vet vem som döljer vad",
+      "item3": "Beviskort redo (utskrivna eller på en skärm), ett per runda",
+      "item4SlipDraw_murder": "Lappar förberedda för mördarlottningen",
+      "item4SlipDraw_murder_accomplice": "Lappar förberedda för mördar-/medbrottslingslottningen",
+      "item4SlipDraw_intrigue": "Lappar förberedda för gärningspersonslottningen",
+      "item4SlipDraw_intrigue_accomplice": "Lappar förberedda för gärningspersons-/medbrottslingslottningen",
+      "item4Predetermined_murder": "Du vet vem mördaren är (se Detektivguiden)",
+      "item4Predetermined_murder_accomplice": "Du vet vem mördaren och medbrottslingen är (se Detektivguiden)",
+      "item4Predetermined_intrigue": "Du vet vem gärningspersonen är (se Utredarguiden)",
+      "item4Predetermined_intrigue_accomplice": "Du vet vem gärningspersonen och medbrottslingen är (se Utredarguiden)",
+      "item5": "Ha misstankelistan (högst upp i varje spelares guide) och spelöversikten inom räckhåll — du använder dem för att styra historien tillbaka på rätt spår",
+      "roundOrderNote": "**Rundordning i korthet:** se \"Att leda spelet\" nedan för den fullständiga steg-för-steg-guiden."
+    },
+    "materials": {
+      "heading": "Material",
+      "universalLabel": "**Allmänna saker:**",
+      "item1": "Karaktärsguider — redan skickade till varje gäst digitalt före festen",
+      "item2": "Utskrivna beviskort (eller visade på en mobil/skärm — du väljer)",
+      "item3_murder": "Detektivmanus (detektivens repliker för varje runda, i fliken Detektivguide)",
+      "item3_intrigue": "Utredarmanus (utredarens repliker för varje runda, i fliken Utredarguide)",
+      "item4": "Timer eller klocka",
+      "item5": "Valfritt: temadekor, musik, mat/dryck",
+      "slipDrawLabel": "**Till lottningen:**",
+      "slipDrawItem1": "Behållare för papperslappar (hatt, skål, dekorativ ask)",
+      "slipDrawItem2_murder": "Papperslappar för att utse mördaren",
+      "slipDrawItem2_murder_accomplice": "Papperslappar för att utse mördaren (och medbrottslingen)",
+      "slipDrawItem2_intrigue": "Papperslappar för att utse gärningspersonen",
+      "slipDrawItem2_intrigue_accomplice": "Papperslappar för att utse gärningspersonen (och medbrottslingen)"
+    },
+    "prep": {
+      "heading": "Förberedelser inför festen",
+      "beforeLabel": "**Några dagar innan:**",
+      "item1_murder": "Läs hela den här värdguiden och Detektivguiden",
+      "item1_intrigue": "Läs hela den här värdguiden och Utredarguiden",
+      "item2": "Skicka varje gäst deras karaktärssida (digital länk eller PDF) minst 3 dagar före festen",
+      "item3": "Uppmuntra gästerna att läsa sin karaktärsintroduktion innan de kommer — de behöver inte lära sig den utantill, bara känna till innehållet",
+      "item4": "Bekräfta gästlistan och fastställ vilka som kommer",
+      "dayOfLabel": "**Samma dag:**",
+      "slipDrawSetup_murder": "Förbered lottningen: klipp ut {{playerCount}} små papperslappar. Skriv \"MÖRDARE\" på en lapp. Lämna resten blanka (eller skriv \"Oskyldig\"). Vik ihop varje lapp så att texten inte syns. Lägg dem i din behållare.",
+      "slipDrawSetup_murder_accomplice": "Förbered lottningen: klipp ut {{playerCount}} små papperslappar. Skriv \"MÖRDARE\" på en lapp, \"MEDBROTTSLING\" på en annan. Lämna resten blanka (eller skriv \"Oskyldig\"). Vik ihop varje lapp så att texten inte syns. Lägg dem i din behållare.",
+      "slipDrawSetup_intrigue": "Förbered lottningen: klipp ut {{playerCount}} små papperslappar. Skriv \"GÄRNINGSPERSON\" på en lapp. Lämna resten blanka (eller skriv \"Oskyldig\"). Vik ihop varje lapp så att texten inte syns. Lägg dem i din behållare.",
+      "slipDrawSetup_intrigue_accomplice": "Förbered lottningen: klipp ut {{playerCount}} små papperslappar. Skriv \"GÄRNINGSPERSON\" på en lapp, \"MEDBROTTSLING\" på en annan. Lämna resten blanka (eller skriv \"Oskyldig\"). Vik ihop varje lapp så att texten inte syns. Lägg dem i din behållare.",
+      "item5": "Skriv ut beviskorten (valfritt) — du kan också bara visa dem på en mobil eller läsa upp dem",
+      "item6": "Skapa stämning om du vill (temamusik, dämpad belysning, temasnacks) — inget av detta är nödvändigt"
+    },
+    "guestChanges": {
+      "heading": "Hantera sena ändringar i gästlistan",
+      "intro": "Din rollbesättning av misstänkta är fast — den är inflätad i handlingen, så du kan inte lägga till eller ta bort misstänkta karaktärer. Men verkliga gästlistor ändras, och spelet är byggt för att hantera det.",
+      "moreLabel": "**Fler gäster än karaktärer (någon extra vill vara med):**",
+      "moreItem1_murder": "Ta med dem som **medutredare** i Detektivens team — ingen karaktärssida behövs. Hur många som helst.",
+      "moreItem1_intrigue": "Ta med dem som **medutredare** i Utredarens team — ingen karaktärssida behövs. Hur många som helst.",
+      "moreItem2": "De förhör de misstänkta varje runda, arbetar med ledtrådar och bevis tillsammans med alla andra, och lägger fram sitt fall i anklagelsefasen.",
+      "moreItem3_murder": "**Viktigt:** medutredare får INTE Detektivmanuset eller den här värdguiden — de är din utredningsakt och avslöjar vem mördaren är. Håll dem för dig själv. Dina medutredare löser mysteriet på ärligt vis utifrån ledtrådarna, precis som de misstänkta gör.",
+      "moreItem3_intrigue": "**Viktigt:** medutredare får INTE Utredarmanuset eller den här värdguiden — de är din utredningsakt och avslöjar vem gärningspersonen är. Håll dem för dig själv. Dina medutredare löser mysteriet på ärligt vis utifrån ledtrådarna, precis som de misstänkta gör.",
+      "fewerLabel": "**Färre gäster än karaktärer (någon hoppar av):**",
+      "fewerItem1_murder": "Ta aldrig bort mördaren — handlingen är beroende av att den personen är med i spelet.",
+      "fewerItem1_murder_accomplice": "Ta aldrig bort mördaren eller medbrottslingen — handlingen är beroende av att de är med i spelet.",
+      "fewerItem1_intrigue": "Ta aldrig bort gärningspersonen — handlingen är beroende av att den personen är med i spelet.",
+      "fewerItem1_intrigue_accomplice": "Ta aldrig bort gärningspersonen eller medbrottslingen — handlingen är beroende av att de är med i spelet.",
+      "fewerItem2_murder": "Om du behöver ta bort en misstänkt, välj en som är helt oskyldig. Antingen väver du in personens viktigaste fakta i en annan gästs underlag, eller så låter du Detektiven nämna att personen \"inte kan förhöras\" så att ledtrådarna ändå kommer fram.",
+      "fewerItem2_intrigue": "Om du behöver ta bort en misstänkt, välj en som är helt oskyldig. Antingen väver du in personens viktigaste fakta i en annan gästs underlag, eller så låter du Utredaren nämna att personen \"inte kan förhöras\" så att ledtrådarna ändå kommer fram.",
+      "fewerItem3": "Om flera gäster hoppar av, överväg att generera om mysteriet med det nya antalet gäster för bästa resultat."
+    },
+    "setupChoice": {
+      "heading_murder": "Val av detektivupplägg",
+      "heading_intrigue": "Val av utredarupplägg",
+      "intro_murder": "Du har två sätt att hantera detektivens berättarröst:",
+      "intro_intrigue": "Du har två sätt att hantera utredarens berättarröst:",
+      "option1Label_murder": "**Alternativ 1 — Värden som Detektiv**",
+      "option1Label_intrigue": "**Alternativ 1 — Värden som Utredare**",
+      "option1Item1_murder": "Du spelar detektivkaraktären genom hela spelet",
+      "option1Item1_intrigue": "Du spelar utredarkaraktären genom hela spelet",
+      "option1Item2_murder": "Läs upp varje rundas detektivmanus i takt med att handlingen fortskrider",
+      "option1Item2_intrigue": "Läs upp varje rundas utredarmanus i takt med att handlingen fortskrider",
+      "option1NoteCharacterBased_murder": "I karaktärsbaserade mysterier deltar du INTE som misstänkt, så du kan bestämma mördaren i förväg (hoppa över lottningen) eller ändå använda lottningen för variationens skull.",
+      "option1NoteCharacterBased_intrigue": "I karaktärsbaserade mysterier deltar du INTE som misstänkt, så du kan bestämma gärningspersonen i förväg (hoppa över lottningen) eller ändå använda lottningen för variationens skull.",
+      "option1NoteDetective_murder": "I mysterier med detektivstil är mördaren förutbestämd — du ser vem det är i Detektivguiden. Bestäm innan festen om du vill berätta det för den spelaren i förväg eller låta det avslöjas under spelets gång.",
+      "option1NoteDetective_intrigue": "I mysterier med detektivstil är gärningspersonen förutbestämd — du ser vem det är i Utredarguiden. Bestäm innan festen om du vill berätta det för den spelaren i förväg eller låta det avslöjas under spelets gång.",
+      "option2Label_murder": "**Alternativ 2 — Ljuddetektiv**",
+      "option2Label_intrigue": "**Alternativ 2 — Ljudutredare**",
+      "option2Item1": "Du spelar en av de misstänkta karaktärerna (du deltar i mysteriet)",
+      "option2Item2_murder": "Skapa ljud av detektivmanuset med ett gratis AI-verktyg:",
+      "option2Item2_intrigue": "Skapa ljud av utredarmanuset med ett gratis AI-verktyg:",
+      "ttsOption1": "[Google AI Studio Speech](https://aistudio.google.com/generate-speech) — klistra in manuset, generera talsyntesljud",
+      "ttsOption2": "[Google NotebookLM](https://notebooklm.google.com) — klistra in manuset, använd Audio Overview",
+      "ttsOption3": "Eller vilken annan talsyntestjänst som helst (ElevenLabs, med flera)",
+      "option2Item3": "Hoppa över [regianvisningar inom hakparenteser] när du genererar ljudet",
+      "option2Item4": "Spela upp varje rundas ljud vid rätt tillfälle",
+      "option2Item5": "Ha utskrivna reservmanus redo ifall tekniken strular"
+    },
+    "runningGame": {
+      "heading": "Att leda spelet",
+      "timeShort": "Cirka 1,5 timme totalt",
+      "timeMedium": "Cirka 2 timmar totalt",
+      "timeLong": "Cirka 2 till 2,5 timmar totalt",
+      "timeXlong": "Cirka 3 timmar totalt",
+      "intro": "{{timeEstimate}} (för {{playerCount}} spelare). Följ det här avsnittet rakt igenom, i ordning, när dina gäster har samlats — det är själva manuset för kvällen. Allt ovan är sådant du förbereder i förväg; det här är vad du gör när festen väl drar igång.",
+      "step1Label": "Inledande uttalande — 2–3 min",
+      "step1Body_murder": "Framför Detektivens inledande uttalande: läs upp det, eller spela upp det förinspelade ljudet (vilket du än valde ovan). Finns i Detektivguiden.",
+      "step1Body_intrigue": "Framför Utredarens inledande uttalande: läs upp det, eller spela upp det förinspelade ljudet (vilket du än valde ovan). Finns i Utredarguiden.",
+      "step2Label": "Runda 1, del A — Presentationer — ~{{introTime}} min för din grupp på {{playerCount}} (ungefär 45 sek/spelare)",
+      "step2Body": "Låt gruppen gå laget runt: varje spelare läser upp eller improviserar sin karaktärs presentation.",
+      "step2LargeGroupNote": "**För större grupper (15+), be spelarna hålla sig till 2–3 meningar** — namn, roll, en rad om offret — i stället för att läsa hela sidan. Med 1 minut var blir 30 gäster en 30 minuter lång runda bara för det.",
+      "step3Label": "Runda 1, del B — Rykten — 10 min",
+      "step3Body": "Direkt efter presentationerna, utan paus: varje spelare delar sina rykten från sin karaktärssida med resten av gruppen. Alla ska ha hört minst ett rykte innan ni går vidare.",
+      "step4SlipDrawLabel_murder": "Lottning — Utse mördaren — 5 min",
+      "step4SlipDrawLabel_intrigue": "Lottning — Utse gärningspersonen — 5 min",
+      "step4SlipDrawItem1": "Be spelarna hålla en oberörd min",
+      "step4SlipDrawItem2": "Skicka runt behållaren med lappar — varje spelare drar EN lapp i hemlighet och läser den tyst för sig själv",
+      "step4SlipDrawItem3_murder": "Den som drog \"MÖRDARE\" är mördaren; alla andra är oskyldiga",
+      "step4SlipDrawItem3_murder_accomplice": "Den som drog \"MÖRDARE\" är mördaren; den som drog \"MEDBROTTSLING\" är medbrottslingen; alla andra är oskyldiga",
+      "step4SlipDrawItem3_intrigue": "Den som drog \"GÄRNINGSPERSON\" är gärningspersonen; alla andra är oskyldiga",
+      "step4SlipDrawItem3_intrigue_accomplice": "Den som drog \"GÄRNINGSPERSON\" är gärningspersonen; den som drog \"MEDBROTTSLING\" är medbrottslingen; alla andra är oskyldiga",
+      "step4SlipDrawItem4_murder": "Mördaren ska nu använda sina manusavsnitt för **Skyldig**; alla andra använder **Oskyldig**",
+      "step4SlipDrawItem4_murder_accomplice": "Mördaren och medbrottslingen ska nu använda sina manusavsnitt för **Skyldig / Medbrottsling**; alla andra använder **Oskyldig**",
+      "step4SlipDrawItem4_intrigue": "Gärningspersonen ska nu använda sina manusavsnitt för **Skyldig**; alla andra använder **Oskyldig**",
+      "step4SlipDrawItem4_intrigue_accomplice": "Gärningspersonen och medbrottslingen ska nu använda sina manusavsnitt för **Skyldig / Medbrottsling**; alla andra använder **Oskyldig**",
+      "step4SlipDrawItem5": "Avslöja INTE vem som drog vilken lapp",
+      "step4SlipDrawItem6": "Fortsätt till Runda 2",
+      "step4PredeterminedLabel_murder": "Mördaren är redan bestämd — ingen åtgärd krävs här",
+      "step4PredeterminedLabel_intrigue": "Gärningspersonen är redan bestämd — ingen åtgärd krävs här",
+      "step4PredeterminedBody_murder": "Mysterier i detektivstil hoppar över lottningen helt. Mördaren är förutbestämd; se Detektivguiden för vem det är. Fortsätt direkt till Runda 2.",
+      "step4PredeterminedBody_intrigue": "Mysterier i detektivstil hoppar över lottningen helt. Gärningspersonen är förutbestämd; se Utredarguiden för vem det är. Fortsätt direkt till Runda 2.",
+      "beforeRound2Note_murder": "**Meddela det här före Runda 2:** när mördaren berättar sin egen version får personen vilseleda, vinkla, utelämna och hålla fast vid sin täckhistoria — det är själva spelet. Men när en annan spelare ställer en direkt fråga ska personen inte hitta på helt nya lögner på stående fot: hen avleder, svarar selektivt eller riktar misstankarna åt ett annat håll. Det håller mysteriet lösbart — bevisen förblir sanna, och dina gästers uppgift är att avgöra vems *berättelse* de tror på.",
+      "beforeRound2Note_intrigue": "**Meddela det här före Runda 2:** när gärningspersonen berättar sin egen version får personen vilseleda, vinkla, utelämna och hålla fast vid sin täckhistoria — det är själva spelet. Men när en annan spelare ställer en direkt fråga ska personen inte hitta på helt nya lögner på stående fot: hen avleder, svarar selektivt eller riktar misstankarna åt ett annat håll. Det håller mysteriet lösbart — bevisen förblir sanna, och dina gästers uppgift är att avgöra vems *berättelse* de tror på.",
+      "step5Label": "Runda 2 — Motiv — 20 min",
+      "step5Item1_murder": "Detektiven berättar rundan — läs upp, eller spela upp ljudet",
+      "step5Item1_intrigue": "Utredaren berättar rundan — läs upp, eller spela upp ljudet",
+      "step5Item2": "En bit in i rundan, håll utkik efter en signal inom hakparenteser som *[Presentera bevis för runda 2]* — det är din signal att avslöja kortet. Inte innan rundan börjar, inte direkt efter inledningen: exakt vid den signalen",
+      "step5Item3_murder": "När detektiven drar sig tillbaka förhör spelarna varandra med sina alternativ för Runda 2",
+      "step5Item3_intrigue": "När utredaren drar sig tillbaka förhör spelarna varandra med sina alternativ för Runda 2",
+      "step6Label": "Runda 3 — Metod — 20 min",
+      "step6Body": "Samma mönster som Runda 2: berättande → bevissignal → frågor.",
+      "step7Label": "Runda 4 — Tillfälle — 20 min",
+      "step7Body": "Samma mönster igen.",
+      "step8Label": "Anklagelser — 10 min",
+      "step8Body": "Låt gruppen gå laget runt: varje spelare anklagar *någon annan* med en mening som motivering. Peka utåt — spara ditt eget försvar till nästa steg. En stor ring fungerar bra här — det bygger upp pressen och håller ihop rummet.",
+      "step9Label": "Slutliga uttalanden — 10 min",
+      "step9BodyCharacterBased_murder": "Gå laget runt igen: varje spelare försvarar sig själv. Fortfarande förnekande, inte bekännelse — även mördaren håller fast vid sin historia här.",
+      "step9BodyCharacterBased_intrigue": "Gå laget runt igen: varje spelare försvarar sig själv. Fortfarande förnekande, inte bekännelse — även gärningspersonen håller fast vid sin historia här.",
+      "step9BodyDetective": "Gå laget runt igen: varje spelare försvarar sig själv och gör ett sista uttalande eller en bekännelse.",
+      "step10Label": "Avslöjandet — 5–10 min",
+      "step10Body_murder": "Detektiven namnger mördaren, som läser upp sin bekännelse.",
+      "step10Body_murder_accomplice": "Detektiven namnger mördaren, som läser upp sin bekännelse. Sedan vänder sig Detektiven till medbrottslingen, som också bekänner — och **båda** grips.",
+      "step10Body_intrigue": "Utredaren namnger gärningspersonen, som läser upp sin bekännelse.",
+      "step10Body_intrigue_accomplice": "Utredaren namnger gärningspersonen, som läser upp sin bekännelse. Sedan vänder sig Utredaren till medbrottslingen, som också bekänner — och **båda** grips."
+    },
+    "keepingOnTrack": {
+      "heading": "Håll historien på rätt spår",
+      "intro": "Spelarna kommer att improvisera, lägga till sin egen touch och ibland avvika från manuset — **det är normalt och helt okej.** Lite kaos är en del av det roliga, och du behöver inte rätta till varje avvikelse. Gå bara in när tråden verkligen har tappats.",
+      "tool_murder": "När det glider iväg är Detektiven ditt verktyg för att dra tillbaka det. Eftersom detektiven är misstänksam mot alla kan du alltid avbryta med en riktad fråga:",
+      "tool_intrigue": "När det glider iväg är Utredaren ditt verktyg för att dra tillbaka det. Eftersom utredaren är misstänksam mot alla kan du alltid avbryta med en riktad fråga:",
+      "example1": "\"Vänta — för en stund sedan sa du att du var i salongen. Hur går det ihop med det vi just hörde?\"",
+      "example2": "\"Det är märkligt. Tidigare berättade du något annat. Vilket gäller?\"",
+      "example3": "\"Låt oss återgå till fakta. [Namn], var exakt befann du dig när det hände?\"",
+      "closing": "Ha spelöversikten och varje karaktärs hemlighet nära till hands (du skummade igenom dem i checklistan) så att du alltid kan förankra gruppen i vad som faktiskt är sant."
+    },
+    "tips": {
+      "heading": "Tips för att leda spelet",
+      "tip1": "**Håll tempot uppe.** Om en runda drar ut på tiden, sammanfatta och puffa på: \"Okej — utifrån det vi har hört, vem verkar misstänkt?\"",
+      "tip2": "**Läs upp bevis neutralt.** Antyd inte vem du tror gjorde det (även om du vet).",
+      "tip3": "**Håll koll på tysta spelare.** Puffa på dem med en fråga om de inte har sagt något under en runda.",
+      "tip4": "**Håll koll på dominanta spelare.** Styr om försiktigt: \"Låt oss höra från någon vi inte har hört från än.\"",
+      "tip5CharacterBased_murder": "**Mördaren ska INTE bekänna för tidigt** — deras slutliga uttalande är ett förnekande precis som alla andras. Den riktiga bekännelsen kommer bara om detektiven specifikt pekar ut dem under Avslöjandet — det är ett separat, senare avsnitt på deras karaktärssida (\"Avslöjandet — Din bekännelse\"). Uppmuntra dem att spela lugnt genom de slutliga uttalandena.",
+      "tip5CharacterBased_intrigue": "**Gärningspersonen ska INTE bekänna för tidigt** — deras slutliga uttalande är ett förnekande precis som alla andras. Den riktiga bekännelsen kommer bara om utredaren specifikt pekar ut dem under Avslöjandet — det är ett separat, senare avsnitt på deras karaktärssida (\"Avslöjandet — Din bekännelse\"). Uppmuntra dem att spela lugnt genom de slutliga uttalandena.",
+      "tip5Detective_murder": "**Mördaren ska INTE bekänna för tidigt** — de ska försvara sig tills de blir trängda. Uppmuntra dem att spela lugnt.",
+      "tip5Detective_intrigue": "**Gärningspersonen ska INTE bekänna för tidigt** — de ska försvara sig tills de blir trängda. Uppmuntra dem att spela lugnt.",
+      "tip6": "**Alla skyddar sin hemlighet.** Varje karaktär har en hemlighet med verkliga konsekvenser om den kommer ut. Påminn spelarna om att vakta den — en spelare som struntar i sin hemlighet suger ut spänningen för alla andra. Att försvara sitt rykte är halva spelet.",
+      "tip7": "**Låt gruppen röra sig.** Både små samtalsklungor och en stor ring för anklagelserna fungerar bra — tvinga inte alla att sitta kvar i samma formation hela tiden.",
+      "tip8": "**Improvisera.** Om en spelare frågar något som inte finns bland manusalternativen, uppmuntra improvisation i karaktär.",
+      "tip9": "**Ha kul med stämningen.** Musik och ett temasnack räcker långt; inget annat krävs."
+    }
+  },
+  "characterGuide": {
+    "fieldLabels": {
+      "characterName": "Karaktärens namn",
+      "description": "Beskrivning",
+      "background": "Bakgrund",
+      "relationships": "Relationer",
+      "secret": "Hemlighet",
+      "introduction": "Introduktion",
+      "rumors": "Rykten",
+      "round2Script": "Runda 2-manus",
+      "round2Questions": "Runda 2-frågor",
+      "round2Innocent": "Runda 2 — Oskyldig",
+      "round2Guilty": "Runda 2 — Skyldig",
+      "round2Accomplice": "Runda 2 — Medbrottsling",
+      "round3Script": "Runda 3-manus",
+      "round3Questions": "Runda 3-frågor",
+      "round3Innocent": "Runda 3 — Oskyldig",
+      "round3Guilty": "Runda 3 — Skyldig",
+      "round3Accomplice": "Runda 3 — Medbrottsling",
+      "round4Script": "Runda 4-manus",
+      "round4Questions": "Runda 4-frågor",
+      "round4Innocent": "Runda 4 — Oskyldig",
+      "round4Guilty": "Runda 4 — Skyldig",
+      "round4Accomplice": "Runda 4 — Medbrottsling",
+      "accusations": "Anklagelser",
+      "finalStatement": "Slutligt uttalande",
+      "finalInnocent": "Slutligt uttalande — Oskyldig",
+      "finalGuilty": "Slutligt uttalande — Skyldig",
+      "finalAccomplice": "Slutligt uttalande — Medbrottsling",
+      "revealConfessionGuilty": "Avslöjandet — Din bekännelse",
+      "revealConfessionAccomplice": "Avslöjandet — Medbrottslingens bekännelse"
+    },
+    "roundHeaders": {
+      "introduction": {
+        "title": "Runda 1 — Presentationer",
+        "instruction": "När det är din tur, framför din introduktion nedan. Lyssna noga på allas andras — detaljerna du hör nu kommer att spela roll i senare rundor."
+      },
+      "rumors": {
+        "title": "Runda 1 — Rykten",
+        "instruction": "Fortfarande en del av Runda 1, direkt efter presentationerna — ingen paus emellan. Dela ryktet nedan med alla som vill lyssna, och var uppmärksam på vad du hör från andra: det kommer att spela roll i senare rundor."
+      },
+      "round2": {
+        "title": "Runda 2 — Motiv",
+        "instruction": "Frågan nu är varför. Använd dina frågor nedan för att utforska varför andra kan ha velat se offret borta — och var beredd att svara för ditt eget motiv."
+      },
+      "round3": {
+        "title": "Runda 3 — Metoden",
+        "instruction": "Fokus flyttas till hur det gjordes. Pressa andra på vad de visste om metoden, tillvägagångssättet och brottsplatsen."
+      },
+      "round4": {
+        "title": "Runda 4 — Tillfälle",
+        "instruction": "Var befann sig alla? Använd bevisen för att fastställa alibin — och var beredd att redogöra för var du själv befann dig."
+      },
+      "accusations": {
+        "title": "Anklagelser — Peka utåt",
+        "instruction": "När anklagelserundan börjar, anklaga den person du misstänker mest och ge ett skäl grundat i bevisen. Spara ditt eget försvar till de slutliga uttalandena som följer."
+      },
+      "finalStatement": {
+        "title": "Slutliga uttalanden — Din tur att försvara dig",
+        "instruction": "När alla har anklagat är det här ditt sista ord. Försvara dig själv — eller, om du är skyldig, gör din bekännelse."
+      },
+      "revealGuilty": {
+        "title": "Avslöjandet — Din bekännelse",
+        "instruction": "Läs det här ENDAST om Detektiven specifikt pekar ut dig som mördaren under Avslöjandet, efter att alla spelare redan har gett sitt slutliga uttalande ovan. Det här är ett separat, senare ögonblick — läs det inte i förväg."
+      },
+      "revealAccomplice": {
+        "title": "Avslöjandet — Medbrottslingens bekännelse",
+        "instruction": "Läs det här ENDAST om Detektiven specifikt kallar på dig som medbrottsling under Avslöjandet, efter att mördaren redan har bekänt. Det här är ett separat, senare ögonblick — läs det inte i förväg."
+      },
+      "finalInnocent": {
+        "title": "Slutliga uttalanden — Din tur att försvara dig",
+        "instruction": "När alla har anklagat är det här ditt sista ord innan Avslöjandet. Försvara dig själv och håll fast vid din historia — oavsett om du är oskyldig eller skyldig kommer sanningen inte fram i den här rundan."
+      }
+    },
+    "guardDirective": "**Skydda den här hemligheten till varje pris.** Ditt rykte — och kanske din frihet — beror på att den förblir dold. Neka, avled och avslöja den aldrig frivilligt. En hemlighet som lämnas ut frivilligt suger ut spänningen för hela bordet.",
+    "characterNameEditingTip": "**Att byta namn uppdaterar bara det här fältet.** Namnet ändras inte någon annanstans — rundmanus, ledtrådar och värdguiden använder fortfarande det ursprungliga namnet. Bäst att använda för att välja sida av ett dubbelnamn (t.ex. \"Clarabelle/Clarence\") innan din första genomläsning, inte som en sen rättelse efter att du redan börjat granska manuset."
   }
 }
