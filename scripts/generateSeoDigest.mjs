@@ -167,27 +167,50 @@ const REMINDERS = [
 4. Verdict: did the consolidation happen (homepage credited, custom page's head-term impressions faded)? Is the homepage head-term ranking improving? Is the remaining gap a copy problem or an authority problem? If authority, the fix is links to the homepage, not another rewrite. If the homepage still hasn't moved after this window, consider escalating the custom page from rel=canonical to a 301.`,
   },
   {
-    // First measurement of the Night of Mystery comparison post, published
+    // Second measurement of the Night of Mystery comparison post, published
     // 2026-07-22 in all 13 languages to intercept the buyer-intent query
     // "night of mystery reviews" (pre-publish site baseline: 21 impr/week at
     // position 9, 0 clicks — some OTHER page of ours was ranking for it).
-    // Window starts ~4 weeks post-publish; covers the Aug 17/24/31 sends.
-    start: '2026-08-17',
-    end: '2026-08-31',
-    title: 'Measure the Night of Mystery comparison post (published Jul 22)',
+    //
+    // RESULT 2026-08-17 (first measurement, ~4 weeks post-publish, ground-truth
+    // GSC/GA4 pull — full working notes: vault 00_INBOX/night-of-mystery-post-
+    // measurement-2026-08-17-mystery-maker.md): negative on every axis measured,
+    // though sample sizes are thin enough that this isn't yet conclusive.
+    // - Ranking page for "night of mystery reviews" is STILL the old generalist
+    //   page (/blog/best-murder-mystery-party-games-review/), not this post — and
+    //   that old page's position for the query got WORSE after this post launched
+    //   (pos ~8.9 pre-publish -> ~17.7 post-publish; 43 impr/3wk -> 7 impr/3.5wk).
+    // - Halo query set (review, alternative(s), vs, worth it) never materialized:
+    //   ~0 impressions in both pre- and post-publish windows.
+    // - The post itself: ~1 total search impression in ~3.5 weeks, ~1 GA4 session
+    //   (direct), 0 AI-referral sessions.
+    // - Indexation confirmed fine (URL Inspection: submitted+indexed, no crawl
+    //   issues) — ruled out as the explanation.
+    // - FAQPage schema present in raw HTML, but Rich Results inspection only
+    //   detects Breadcrumbs — no FAQ rich result being granted; undiagnosed
+    //   whether that's a validation issue or a "too new" gate.
+    // Window below re-opens ~8 weeks post-publish for a firmer read before any
+    // "not worth further investment" call — 4-week numbers are too small to trust
+    // alone, but the regression on the target query is a real signal, not just an
+    // absence of one.
+    start: '2026-09-14',
+    end: '2026-09-30',
+    title: 'Re-check the Night of Mystery comparison post — first read (Aug 17) was negative but thin-sample',
     body:
-      'On <strong>2026-07-22</strong> we published <strong>/blog/night-of-mystery-vs-custom-ai-murder-mystery-kit</strong> ' +
-      '(all 13 languages + FAQ schema + reciprocal link from the games-2026 roundup) to intercept the buyer-intent query ' +
-      '<strong>night of mystery reviews</strong> — which was surfacing at ~21 impressions/week at position 9 <em>before</em> ' +
-      'the post existed. Four-plus weeks of data have accumulated — paste the prompt below into a fresh chat for a ' +
-      'ground-truth read.',
-    prompt: `Measure whether the Night of Mystery comparison post is capturing its target query. Published 2026-07-22: /blog/night-of-mystery-vs-custom-ai-murder-mystery-kit (13 languages, FAQPage schema auto-generated, inbound link from /blog/best-murder-mystery-games-2026). Re-derive everything fresh from Google Search Console — assume problems, default to flagging; do not trust this note's numbers.
+      'First ground-truth measurement (2026-08-17, ~4 weeks post-publish) was negative on every axis: the target query ' +
+      '<strong>"night of mystery reviews"</strong> still ranks on the OLD generalist review page, not this post, and that ' +
+      'old page\'s position for the query got <em>worse</em> after this post launched (pos ~8.9 → ~17.7). The halo query ' +
+      'set never materialized, the post itself has ~1 total search impression and ~1 GA4 session since publish, and its ' +
+      'FAQPage schema (present in source) isn\'t earning a rich result. Sample sizes are too thin (7 impressions) to call ' +
+      'this final — paste the prompt below into a fresh chat now that ~8 weeks of data exist.',
+    prompt: `Re-check whether the Night of Mystery comparison post is capturing its target query, now that ~8 weeks of post-publish data exist. Published 2026-07-22: /blog/night-of-mystery-vs-custom-ai-murder-mystery-kit (13 languages, FAQPage schema in source, inbound link from /blog/best-murder-mystery-games-2026 confirmed present in live content). Re-derive everything fresh from Google Search Console/GA4 — assume problems, default to flagging; do not trust this note's numbers or the 2026-08-17 first-read numbers below, they are priors only.
 
-1. Site baseline to verify, then beat: pre-publish, "night of mystery reviews" ran ~21 impressions/week at position ~9 with 0 clicks — and the ranking URL was NOT this post (it didn't exist). First check which of our URLs ranks for the query now: if it's still an older page (e.g. the games-2026 roundup) instead of the comparison post, that's a relevance/cannibalization problem — flag it.
-2. Pull query-level data for "night of mystery reviews" plus the halo set: "night of mystery review", "night of mystery alternative(s)", "night of mystery vs", "is night of mystery worth it". Compare ~3 weeks pre-2026-07-22 vs all post-publish data: impressions, clicks, CTR, avg position, ranking page.
-3. Pull page-level data for /blog/night-of-mystery-vs-custom-ai-murder-mystery-kit (all queries): what else is it pulling in? Any AI-answer/LLM referral traffic (GA4 fetch-ai-referrals) attributable to it?
-4. Check the FAQ rich result: is the page's FAQPage schema being picked up (GSC enhancement report or a SERP spot-check for "Is Night of Mystery worth it?")?
-5. Verdicts and follow-ups: position stuck outside top 5 → propose more internal links from related comparison/roundup posts (generators-review, games-review) and check the 12 language variants are indexed. Ranking fine but CTR weak → propose a title/meta tweak (current title leads with the competitor brand — that's intentional for the query match; don't change it without data). Query volume collapsed → say so plainly; the intercept may not be worth further investment.`,
+0. PRIOR (2026-08-17, ~4 weeks post-publish, do not trust — re-derive): ranking page for "night of mystery reviews" was still /blog/best-murder-mystery-party-games-review/, not this post; that old page's position for the query worsened post-publish (~8.9 → ~17.7, 43 impr/3wk pre → 7 impr/3.5wk post); halo query set (review, alternative(s), vs, worth it) was ~0 impressions in both windows; the post itself had ~1 total search impression and ~1 GA4 session since publish; indexation confirmed fine via URL Inspection API; FAQPage schema present in raw HTML but Rich Results inspection only detected Breadcrumbs, no FAQ rich result granted.
+1. Site baseline to re-verify: which URL now ranks for "night of mystery reviews"? If still not this post, that's now a persistent relevance/cannibalization problem, not early-days noise — flag it plainly.
+2. Pull query-level data for "night of mystery reviews" plus the halo set: "night of mystery review", "night of mystery alternative(s)", "night of mystery vs", "is night of mystery worth it". Compare the full 8-week post-publish window against the original ~3-week pre-2026-07-22 baseline: impressions, clicks, CTR, avg position, ranking page.
+3. Pull page-level data for /blog/night-of-mystery-vs-custom-ai-murder-mystery-kit (all queries, use both the trailing-slash and non-trailing-slash URL to be safe): what's it pulling in now vs. the ~1-impression prior? Any AI-answer/LLM referral traffic (GA4 fetch-ai-referrals) attributable to it?
+4. Re-check the FAQ rich result via the URL Inspection API's richResultsResult.detectedItems (not just a raw grep for the schema) — is it still absent, or has it started appearing now that the page has more crawl history?
+5. Verdict: if the picture is still flat/negative at 8 weeks, treat this per the original decision framework — query volume that never materialized reads as "not worth further investment," and don't spend more effort on internal links to this specific post (it's indexed, linked, and in the sitemap already — discovery isn't the bottleneck). If it has turned around, say so plainly and identify what specifically moved.`,
   },
 ];
 

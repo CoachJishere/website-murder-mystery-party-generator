@@ -495,10 +495,17 @@ function SupportCTA() {
         </Link>
         <p className="mt-6 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
           Build a{" "}
-          <Link to="/custom-murder-mystery-party" className="underline" style={{ color: CREAM }}>
+          <Link to="/" className="underline" style={{ color: CREAM }}>
             custom murder mystery party
           </Link>{" "}
           tailored to your theme and guest list.
+        </p>
+        <p className="mt-2 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
+          Prefer to start free?{" "}
+          <Link to="/blog/free-murder-mystery-games-printable" className="underline" style={{ color: CREAM }}>
+            Browse our free murder mystery templates
+          </Link>
+          .
         </p>
       </motion.div>
     </section>

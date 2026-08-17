@@ -34366,9 +34366,9 @@
         "replacement": "So let me map out what actually exists, what the limitations are, and when it makes sense to stay free versus when you should invest—and don't forget that great [murder mystery party food ideas](/blog/murder-mystery-party-food-ideas-menu) can make even a budget game feel premium"
       },
       {
-        "target_page": "/custom-murder-mystery-party/",
+        "target_page": "/",
         "match_text": "or anyone wanting personalized characters",
-        "replacement": "or anyone wanting a fully [custom murder mystery party](/custom-murder-mystery-party/) built around their own theme and guest list"
+        "replacement": "or anyone wanting a fully [custom murder mystery party](/) built around their own theme and guest list"
       },
       {
         "target_slug": "best-murder-mystery-party-games-review",
@@ -71729,11 +71729,6 @@
       {
         "match_text": "A 10-page character backstory means nothing if the host",
         "replacement": "[A 10-page character backstory means nothing if the host](/blog/how-to-write-murder-mystery-characters)"
-      },
-      {
-        "target_page": "/custom-murder-mystery-party/",
-        "match_text": "does the solution hold up if guests cross-check it?",
-        "replacement": "does the solution hold up if guests cross-check it? The fastest way to hit all four is to [generate a custom murder mystery party](/custom-murder-mystery-party/) with a purpose-built tool."
       }
     ],
     "lang_insertions": {
@@ -135968,7 +135963,8 @@
       "murder-mystery-party-cleanup-guide",
       "murder-mystery-party-host-costume-guide",
       "murder-mystery-party-music-playlist-guide",
-      "murder-mystery-party-seating-arrangement-guide"
+      "murder-mystery-party-seating-arrangement-guide",
+      "free-murder-mystery-games-printable"
     ],
     "cluster": [
       "logistics"
@@ -135993,6 +135989,11 @@
       {
         "match_text": "Successful murder mystery scripts all",
         "replacement": "[Successful murder mystery scripts all](/blog/murder-mystery-party-seating-arrangement-guide)"
+      },
+      {
+        "target_slug": "free-murder-mystery-games-printable",
+        "match_text": "When you're building from scratch, a template gives you a checklist.",
+        "replacement": "When you're building from scratch, a template gives you a checklist—our [printable murder mystery template](/blog/free-murder-mystery-games-printable) is a solid starting point if you don't want to build the structure yourself."
       }
     ],
     "lang_insertions": {
