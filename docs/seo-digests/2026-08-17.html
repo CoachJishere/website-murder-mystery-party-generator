@@ -1,0 +1,52 @@
+<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:680px;margin:auto;color:#222;"><p style="color:#666;font-size:13px;">SEO/GEO digest — week ending 2026-08-17 · mysterymaker.party</p><div style="border:1px solid #d9b310;background:#fffbe6;border-radius:6px;padding:12px 14px;margin:0 0 18px;"><p style="margin:0 0 6px;font-weight:600;color:#7a5c00;">📌 Reminder — Measure the Night of Mystery comparison post (published Jul 22)</p><p style="margin:0 0 10px;font-size:14px;color:#444;">On <strong>2026-07-22</strong> we published <strong>/blog/night-of-mystery-vs-custom-ai-murder-mystery-kit</strong> (all 13 languages + FAQ schema + reciprocal link from the games-2026 roundup) to intercept the buyer-intent query <strong>night of mystery reviews</strong> — which was surfacing at ~21 impressions/week at position 9 <em>before</em> the post existed. Four-plus weeks of data have accumulated — paste the prompt below into a fresh chat for a ground-truth read.</p><pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;font-size:13px;margin:0;">Measure whether the Night of Mystery comparison post is capturing its target query. Published 2026-07-22: /blog/night-of-mystery-vs-custom-ai-murder-mystery-kit (13 languages, FAQPage schema auto-generated, inbound link from /blog/best-murder-mystery-games-2026). Re-derive everything fresh from Google Search Console — assume problems, default to flagging; do not trust this note's numbers.
+
+1. Site baseline to verify, then beat: pre-publish, "night of mystery reviews" ran ~21 impressions/week at position ~9 with 0 clicks — and the ranking URL was NOT this post (it didn't exist). First check which of our URLs ranks for the query now: if it's still an older page (e.g. the games-2026 roundup) instead of the comparison post, that's a relevance/cannibalization problem — flag it.
+2. Pull query-level data for "night of mystery reviews" plus the halo set: "night of mystery review", "night of mystery alternative(s)", "night of mystery vs", "is night of mystery worth it". Compare ~3 weeks pre-2026-07-22 vs all post-publish data: impressions, clicks, CTR, avg position, ranking page.
+3. Pull page-level data for /blog/night-of-mystery-vs-custom-ai-murder-mystery-kit (all queries): what else is it pulling in? Any AI-answer/LLM referral traffic (GA4 fetch-ai-referrals) attributable to it?
+4. Check the FAQ rich result: is the page's FAQPage schema being picked up (GSC enhancement report or a SERP spot-check for "Is Night of Mystery worth it?")?
+5. Verdicts and follow-ups: position stuck outside top 5 → propose more internal links from related comparison/roundup posts (generators-review, games-review) and check the 12 language variants are indexed. Ranking fine but CTR weak → propose a title/meta tweak (current title leads with the competitor brand — that's intentional for the query match; don't change it without data). Query volume collapsed → say so plainly; the intercept may not be worth further investment.</pre></div><h2>Scoreboard</h2>
+<table cellpadding="6" cellspacing="0" border="1" style="border-collapse:collapse;font-size:14px;">
+  <tr style="background:#f4f1ea;">
+    <th align="left">Metric</th><th align="right">This week</th><th align="right">Last week</th><th align="right">Δ</th>
+  </tr>
+  <tr><td>Organic clicks (GSC)</td><td align="right">107</td><td align="right">106</td><td align="right">+0.9%</td></tr>
+  <tr><td>Impressions (GSC)</td><td align="right">1,112</td><td align="right">1,176</td><td align="right">-5.4%</td></tr>
+  <tr><td>Avg position (GSC)</td><td align="right">11.6</td><td align="right">12.4</td><td align="right">+0.8 ✓</td></tr>
+  <tr><td>GA4 sessions</td><td align="right">938</td><td align="right">761</td><td align="right">+23.3%</td></tr>
+  <tr><td>AI-referral sessions</td><td align="right">13</td><td align="right">—</td><td align="right">1.4% share</td></tr>
+</table>
+<p>Search clicks are flat but positions improved and GA4 sessions jumped +23% — the traffic growth is coming through Organic Search (660 sessions) rather than a GSC-click spike, so the win is downstream engagement, not new query demand this week.</p>
+
+<h2>Insights</h2>
+<ul>
+  <li><strong>Free-printable cluster is the engine.</strong> /blog/free-murder-mystery-games-printable/ pulls 173 clicks at position 7 — it owns most of the "free printable" query family (several at position 1 with 50–75% CTR). This is the money page for top-of-funnel.</li>
+  <li><strong>"custom murder mystery party" under-clicks on the homepage.</strong> Query sits at position 6.9 (page 1) with 0 clicks vs ~4% expected (ctrGap -4) on rankingPage / — a legit page-1 copy signal, but see the ADR caveat below before rewriting.</li>
+  <li><strong>The "succession" quotes cluster is bot noise.</strong> Five quickWins items are permuted quoted-phrase fragments ("guide to" + "murder mystery" + "succession"), all suspiciousQueryShape:true, 70/31/27/26 impressions and 0 clicks each. Likely bot traffic, not a content opportunity — do not build a page for it.</li>
+  <li><strong>Character-ideas page bleeds impressions.</strong> /blog/murder-mystery-party-character-ideas/ has 628 impressions but only 3.5% CTR at position 7.8; "murder mystery character ideas" / "murder mystery characters ideas" are rising — a real page-1 CTR gap worth a copy look.</li>
+  <li><strong>"murder mystery template free" is a rising query with no home.</strong> 12 impressions (from 0) but stuck at position 22.5 — an authority/relevance gap the printable hub could capture with an internal link.</li>
+  <li><strong>Non-EN long tail is surging quietly.</strong> "meurtre et mystère gratuit à télécharger" (FR, 10 impressions from 0, pos 8.3) plus healthy FI/PT/FR blog pages — the 13-language footprint is compounding.</li>
+</ul>
+
+<h2>Action prompts</h2>
+
+<p><strong>1. Quick win — internal links to rank "murder mystery template free"</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">
+On mysterymaker.party, the query "murder mystery template free" ranks at position 22.5 (12 impressions, rising from 0) with no strong page targeting it. The best-fit target page is https://www.mysterymaker.party/blog/free-murder-mystery-games-printable/ (our highest-traffic page, pos 7). Add 1–2 internal links pointing to that page using descriptive anchor text built from the query, e.g. "free murder mystery templates" and "printable murder mystery template". Source the links from these high-authority pages: (a) the homepage https://www.mysterymaker.party/ and (b) https://www.mysterymaker.party/blog/murder-mystery-party-script-template-guide/. Goal: lift the target from page 3 toward page 1 for template-oriented free-printable queries. Do not rewrite any title or meta.
+</pre>
+
+<p><strong>2. Quick win — rewrite title/meta for character-ideas page (copy lever)</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">
+Page: https://www.mysterymaker.party/blog/murder-mystery-party-character-ideas/ ranks at position 7.8 with 628 impressions but only 3.5% CTR — under-clicking for a page-1 result. Rising queries feeding it: "murder mystery character ideas" and "murder mystery characters ideas". FIRST fetch the page and check whether these query phrases already appear in the title tag and H1. If they do NOT, rewrite the title tag to lead with the exact phrase (e.g. "Murder Mystery Character Ideas: 30+ Roles & Backstories") and rewrite the meta description to promise specific, ready-to-use characters and a clear reason to click. If the query is ALREADY in the title/H1, do NOT rewrite — instead report that the real lever is authority/internal links and stop. Goal: raise CTR toward the ~expected rate for position 7-8.
+</pre>
+
+<p><strong>3. Verify before acting — "custom murder mystery party" on homepage</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">
+The query "custom murder mystery party" ranks at position 6.9 on the homepage https://www.mysterymaker.party/ with a -4 CTR gap (0 clicks vs ~4% expected). NOTE the constraint: per ADR-0024 and ADR-0046, the homepage title/meta is a settled decision ("Custom Murder Mystery Party Kits in Minutes | Mystery Maker") and must NOT be rewritten or A/B-tested on the basis of a CTR gap alone. So do NOT touch the homepage title/meta. Instead, the lever for the homepage under-clicking on this branded/custom term is authority + internal links: add internal links to the homepage from high-authority blog pages (https://www.mysterymaker.party/blog/free-murder-mystery-games-printable/ and https://www.mysterymaker.party/blog/ai-murder-mystery-generator-complete-guide/) using anchor text "custom murder mystery party" and "create a custom murder mystery". Goal: strengthen the homepage's relevance/authority for this query without altering the settled title.
+</pre>
+
+<p><em>Note: the "succession" quoted-phrase quickWins cluster (5 items, all zero-click, suspiciousQueryShape) is treated as likely bot traffic and intentionally has no action prompt.</em></p>
+
+<h2>Site health</h2>
+<p>Dead internal links: 0 ✓</p>
+<p>Publish queue: 269 EN live, 153 drafts remaining (state as of this snapshot; watch for week-over-week drain).</p>
+<p>Next up by link-graph importance: murder-mystery-party-for-fathers-day-bbq-grill-up-some-dad-worthy-intrigue (2), murder-mystery-party-for-st-patricks-day-irish-intrigue-and-emerald-mysteries (2), whodunit-dinner-party-ideas (2), best-dinner-party-games-for-adults (2), best-murder-mystery-podcasts-for-inspiration (2).</p></div>
