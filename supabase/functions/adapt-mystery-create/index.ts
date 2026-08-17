@@ -7,7 +7,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14.17.0?target=denonext";
 
 /**
- * adapt-mystery-create — ADR-0036/0082/0088, "Recast".
+ * adapt-mystery-create — ADR-0036/0082/0088, "Remove a Character" (renamed
+ * from "Recast" — ADR-0091).
  *
  * STAGING ONLY. Validates that every requested character can be safely
  * removed, creates one `pending` mystery_adaptations row per character
@@ -27,7 +28,7 @@ import Stripe from "https://esm.sh/stripe@14.17.0?target=denonext";
  *     eligible, but flagged requiresReassignment — removing them means a
  *     different remaining character must take over that role (handled by
  *     adapt-mystery-apply's rewrite call, not here).
- *   - Only one Recast batch may be in flight per package at a time (owner
+ *   - Only one batch may be in flight per package at a time (owner
  *     decision) — rejected if ANY non-terminal (pending/paid/processing) row
  *     exists for this package_id, not just for the requested characters.
  *   - Removing every requested character can't drop the cast below
@@ -76,6 +77,19 @@ const ADAPTATION_PRICE_USD = 5.0;
 // is paired with it (fails loudly, not silently). Local functions.env for
 // this session's testing sets the override to the test price.
 const STRIPE_PRICE_ID = Deno.env.get("STRIPE_PRICE_ID") || "price_1U4h9wKgSd73ikMWh0U3P5r8"; // default: live, product prod_V4qrXB1FOwSi6Q
+
+// ADR-0092: Stripe's own default Checkout Session expiry is 24h — far too
+// long a lockout for a feature explicitly framed as a same-day, "guest just
+// cancelled" emergency tool. An abandoned session (closed tab, hit back,
+// changed their mind) leaves this batch's mystery_adaptations rows stuck at
+// 'pending' until the session actually expires and fires
+// checkout.session.expired (now handled in stripe-webhook/index.ts to
+// release them) — until then, adapt-mystery-create's "only one batch in
+// flight per package" guard above blocks the host from retrying at all. 60
+// minutes balances that against giving a real customer enough time to
+// actually complete a $5 checkout without rushing. Stripe requires this
+// between 30 minutes and 24 hours from creation.
+const CHECKOUT_EXPIRY_SECONDS = 60 * 60;
 
 // Duplicated from adapt-mystery-apply/index.ts's verify-step constant of the
 // same name — kept in sync by hand, not shared, matching this codebase's
@@ -236,7 +250,7 @@ serve(async (req) => {
       validated.push({ character, requiresReassignment, replacementCharacterId });
     }
 
-    // Package-wide, not just per-character: only one Recast batch may be in
+    // Package-wide, not just per-character: only one batch may be in
     // flight for a given package at a time (owner decision — simpler for the
     // host to reason about than tracking multiple concurrent batches, and it
     // shrinks the realistic surface for the cross-batch package-claim
@@ -316,8 +330,11 @@ serve(async (req) => {
           price: STRIPE_PRICE_ID,
         }],
         payment_intent_data: {
-          description: `Recast: ${characterNames}`,
+          description: `Remove a Character: ${characterNames}`,
         },
+        // See CHECKOUT_EXPIRY_SECONDS above — shortened from Stripe's 24h
+        // default so an abandoned checkout unblocks this package quickly.
+        expires_at: Math.floor(Date.now() / 1000) + CHECKOUT_EXPIRY_SECONDS,
         // __BATCH_ID__ is a placeholder the caller embeds (see
         // adaptationService.ts) because the frontend doesn't know this
         // batch's id until this call returns — substitute it now that we do.

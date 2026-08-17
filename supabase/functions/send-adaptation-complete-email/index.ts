@@ -2,7 +2,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 /**
- * send-adaptation-complete-email — "Recast" (ADR-0088). STAGING ONLY.
+ * send-adaptation-complete-email — "Remove a Character" (renamed from
+ * "Recast" — ADR-0091), ADR-0088. STAGING ONLY.
  *
  * Service-role only, fired-and-forgotten by adapt-mystery-apply's finally
  * block exactly once per batch, at the moment chain-dispatch determines
@@ -71,7 +72,7 @@ function buildEmailHtml(params: {
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; background: #000000;">
   <div style="background: #C81400; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
     <img src="https://www.mysterymaker.party/email-assets/wordmark-cream.png" alt="Mystery Maker" width="232" height="40" style="display: block; max-width: 232px; height: auto; margin: 0 auto 16px auto; border: 0; outline: none; text-decoration: none;" />
-    <h1 style="color: #F5F0E8; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">RECAST</h1>
+    <h1 style="color: #F5F0E8; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">REMOVE A CHARACTER</h1>
   </div>
 
   <div style="background: #111111; padding: 30px; border-radius: 0 0 8px 8px;">

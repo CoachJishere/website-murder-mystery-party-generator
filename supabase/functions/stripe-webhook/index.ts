@@ -260,7 +260,8 @@ async function handleColdCaseOrder(session: Stripe.Checkout.Session) {
   }
 }
 
-// ADR-0088: owner notification for Recast purchases, mirroring the existing
+// ADR-0088: owner notification for "Remove a Character" purchases (renamed
+// from "Recast" — ADR-0091), mirroring the existing
 // party-purchase and Cold Case notification emails above — fires at PURCHASE
 // time (not completion time; send-adaptation-complete-email already covers
 // completion, to the customer, separately). Fire-and-forgotten alongside the
@@ -278,7 +279,7 @@ async function sendAdaptationPurchaseNotification(params: {
 }) {
   const resendApiKey = Deno.env.get("RESEND_API_KEY");
   if (!resendApiKey) {
-    console.warn("[recast] RESEND_API_KEY not set — skipping purchase notification email");
+    console.warn("[adaptation] RESEND_API_KEY not set — skipping purchase notification email");
     return;
   }
   const { batchId, rows, amountTotalCents, currency, customerEmail, conversationId } = params;
@@ -301,11 +302,11 @@ async function sendAdaptationPurchaseNotification(params: {
       body: JSON.stringify({
         from: "Mystery Maker <noreply@mysterymaker.party>",
         to: ["support@mysterymaker.party"],
-        subject: `🎭 New Recast purchase (${currencyFormatted} ${amountFormatted})`,
+        subject: `🎭 New Remove-a-Character purchase (${currencyFormatted} ${amountFormatted})`,
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
             <div style="background: #7c3aed; color: white; padding: 20px; border-radius: 8px 8px 0 0;">
-              <h2 style="margin: 0;">New Recast Purchase</h2>
+              <h2 style="margin: 0;">New "Remove a Character" Purchase</h2>
             </div>
             <div style="background: #f9fafb; padding: 20px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb;">
               <table style="width: 100%; border-collapse: collapse;">
@@ -324,12 +325,12 @@ async function sendAdaptationPurchaseNotification(params: {
       }),
     });
     if (!resp.ok) {
-      console.error(`[recast] purchase notification email failed: ${resp.status} ${await resp.text()}`);
+      console.error(`[adaptation] purchase notification email failed: ${resp.status} ${await resp.text()}`);
     } else {
-      console.log(`[recast] purchase notification email sent for batch ${batchId}`);
+      console.log(`[adaptation] purchase notification email sent for batch ${batchId}`);
     }
   } catch (e) {
-    console.error("[recast] purchase notification email error:", e);
+    console.error("[adaptation] purchase notification email error:", e);
   }
 }
 
@@ -586,7 +587,34 @@ serve(async (req) => {
       case "checkout.session.expired": {
         const session = event.data.object as Stripe.Checkout.Session;
         console.log("Checkout session expired:", session.id);
-        // Optional: track abandoned checkouts
+
+        // ADR-0092: an abandoned adaptation checkout (closed tab, hit back,
+        // changed their mind) otherwise leaves its mystery_adaptations rows
+        // stuck at 'pending' forever -- nothing else ever moves them out of
+        // that status, which both permanently blocks the package's "only one
+        // batch in flight" guard (adapt-mystery-create) and makes the host's
+        // UI show a false "Update in progress" spinner for work that will
+        // never happen (GuestDropoutPanel's active-batch poll treats any
+        // pending/paid/processing row as in-flight). Release them here,
+        // mirroring checkout.session.completed's adaptation branch above --
+        // idempotent against Stripe's at-least-once delivery via the same
+        // .eq("status", "pending") guard.
+        const refId = session.client_reference_id;
+        if (refId?.startsWith("adaptation-batch:")) {
+          const batchId = refId.slice("adaptation-batch:".length);
+          const { data: releasedRows, error: releaseErr } = await supabase
+            .from("mystery_adaptations")
+            .update({ status: "failed", error_message: "checkout_expired" })
+            .eq("batch_id", batchId)
+            .eq("status", "pending")
+            .select("id, batch_sequence");
+
+          if (releaseErr) {
+            console.error("Failed to release expired adaptation batch:", releaseErr);
+          } else {
+            console.log(`Released ${releasedRows?.length ?? 0} adaptation row(s) for expired batch ${batchId}`);
+          }
+        }
         break;
       }
 

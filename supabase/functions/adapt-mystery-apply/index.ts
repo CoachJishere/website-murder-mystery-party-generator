@@ -2,7 +2,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 /**
- * adapt-mystery-apply — "Recast" (ADR-0036/0082/0088). STAGING ONLY.
+ * adapt-mystery-apply — "Remove a Character" (renamed from "Recast" —
+ * ADR-0091), ADR-0036/0082/0088. STAGING ONLY.
  *
  * Service-role only (called by stripe-webhook's adaptation branch, chained by
  * this function itself, and directly via curl for local testing — never
