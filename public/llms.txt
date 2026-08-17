@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 269 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 270 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -100,6 +100,7 @@ This index organizes 269 published guides by topic cluster. All guides are avail
 - [Why Clue-Themed Murder Mysteries Still Work as Party Format](https://www.mysterymaker.party/blog/murder-mystery-party-clue-board-game-theme): Clue board game murder mystery parties bring nostalgia and playability. Room-based formats, classic weapons and how to modernize the theme.
 - [Murder Mystery Party for Day of the Dead](https://www.mysterymaker.party/blog/murder-mystery-party-for-day-of-the-dead): Honor ancestors with Day of the Dead murder mystery parties featuring Mexican traditions and colorful cultural celebration.
 - [Murder Mystery Party for Easter Celebrations](https://www.mysterymaker.party/blog/murder-mystery-party-for-easter-celebrations-hunt-for-more-than-eggs): Hunt for more than eggs with Easter murder mystery parties featuring spring themes and family-friendly fun.
+- [Murder Mystery Party for Father's Day BBQ](https://www.mysterymaker.party/blog/murder-mystery-party-for-fathers-day-bbq-grill-up-some-dad-worthy-intrigue): Grill up excitement with Father's Day BBQ murder mystery parties honoring dads with outdoor family fun.
 - [Murder Mystery Party for Graduation Celebrations](https://www.mysterymaker.party/blog/murder-mystery-party-for-graduation-celebrations-academic-achievement-mysteries-with-educational-excellence): Graduate to murder with academic achievement murder mystery parties celebrating educational milestones and future success.
 - [Murder Mystery Party for Mardi Gras](https://www.mysterymaker.party/blog/murder-mystery-party-for-mardi-gras-carnival-crime-and-new-orleans-intrigue): Celebrate with chaos in Mardi Gras murder mystery parties featuring carnival atmosphere and New Orleans flair.
 - [Murder Mystery Party for Milestone Birthdays](https://www.mysterymaker.party/blog/murder-mystery-party-for-milestone-birthdays-celebrating-with-custom-crime): Celebrate big birthdays with custom murder mystery parties designed for 30th, 40th, 50th, and beyond milestones.
