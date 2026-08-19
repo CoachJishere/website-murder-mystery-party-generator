@@ -80,7 +80,7 @@ Root cause: the child scenario's per-character generation is split across multip
 
 Built as `temp-files/MM Live - Child (Unified)35-DetectiveAndIdentityTokenBudget.blueprint.json`, from the true head (`Child(Unified)34`). Diffed clean: only the 3 targeted `max_tokens` values plus `name` changed.
 
-**Not yet imported/tested.**
+**Imported (2026-08-19, confirmed by Jonathan).** Not independently re-verified against a live generation this session (no Make.com API access) — flagged if a detective-route or identity/intro truncation symptom resurfaces after this date, that would mean the import didn't take or the headroom wasn't enough.
 
 ## Addendum 2 (2026-08-19): title bug — separate, unrelated, also fixed
 
