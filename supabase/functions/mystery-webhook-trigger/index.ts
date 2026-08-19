@@ -49,6 +49,27 @@ interface ExtractedCharacter {
   description: string;
 }
 
+// profiles.language code -> full English name for the child scenario's Claude
+// prompt. Matches the 13 locales in src/i18n. Sent as a plain name (not the
+// raw code) so the prompt can say "write in {{language}}" without the model
+// having to interpret a bare code like "pt" or "zh-cn".
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English",
+  es: "Spanish",
+  fr: "French",
+  de: "German",
+  it: "Italian",
+  pt: "Portuguese",
+  nl: "Dutch",
+  da: "Danish",
+  sv: "Swedish",
+  fi: "Finnish",
+  ko: "Korean",
+  ja: "Japanese",
+  "zh-cn": "Chinese (Simplified)",
+};
+const DEFAULT_LANGUAGE_NAME = "English";
+
 // Build regex to match any locale's character list header
 // Pattern: ## <Header> (N PLAYERS) or ## <Header>
 const headerAlternatives = CHARACTER_LIST_HEADERS.map(h =>
@@ -651,11 +672,30 @@ serve(async (req) => {
 
     if (userId) {
       const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(userId);
-      
+
       if (authUser && authUser.user) {
         userEmail = authUser.user.email;
         userName = authUser.user.user_metadata?.name || authUser.user.email?.split('@')[0] || 'User';
       }
+    }
+
+    // Customer's language, resolved to a full name (see ADR-0093). Previously
+    // the child scenario's Claude prompt asked the model to DETECT the output
+    // language from master_context/conversationContent instead of being told
+    // explicitly — unreliable whenever that content contains foreign-flavored
+    // proper nouns or setting details (e.g. an English mystery set in a
+    // Spanish resort), which could pull individual character-generation calls
+    // into the wrong language despite the customer's actual language being
+    // English. Resolving and forwarding it explicitly here removes the
+    // guesswork from every downstream Claude call in the child scenario.
+    let languageName = DEFAULT_LANGUAGE_NAME;
+    if (userId) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("language")
+        .eq("id", userId)
+        .maybeSingle();
+      languageName = LANGUAGE_NAMES[profile?.language ?? ""] || DEFAULT_LANGUAGE_NAME;
     }
 
     // Build conversationContent for the parent's planning prompts. When the
@@ -964,6 +1004,7 @@ serve(async (req) => {
       userId,
       userEmail,
       userName,
+      language: languageName,
       conversationId,
       callback_domain: testMode ? "http://localhost:5173" : "https://www.mysterymaker.party",
       callback_url: testMode ? "http://localhost:5173/api/generation-complete" : "https://www.mysterymaker.party/api/generation-complete",
