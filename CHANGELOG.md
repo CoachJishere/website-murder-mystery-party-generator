@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-08-20
+
+### Fix: two live paid packages shipped with missing characters and empty round content; closed both gaps that let it happen ([ADR-0095](docs/adr/0095-bracketless-extracted-characters-third-parse-shape.md), [ADR-0096](docs/adr/0096-missing-round-content-blocking-defect.md))
+Flagged by the scheduled GitHub Actions health-check bot (ADR-0064's roster-mismatch detector): The Staged Suicide Details [approved=7, actual=10] and The Birthday Betrayal [approved=10, actual=9]. Both purchased 2026-08-19, both hours *after* the previous day's ADR-0094 fix shipped.
+
+**Bug 1 — bracketless `extracted_characters` (ADR-0095):** `package_expected_character_count()` (ADR-0094) handled two shapes of `extracted_characters` — a real JSON array, or a JSON string that's already a valid array once unquoted — but not a third, live shape: a bare comma-joined sequence of JSON objects with no enclosing `[ ]` at all. Both packages hit this exact shape, so the row-count guard never activated. Staged Suicide Details was missing 4 of 14 characters, including the predetermined killer (host-facing `detective_script` still correctly named him — generated from the complete original `master_context`, unaffected). Birthday Betrayal was missing 1 of 10, referenced by name in three other characters' `relationships` text.
+- Fixed `package_expected_character_count()` with a second parse attempt (wrap in `[ ]`, retry) before falling back to 0.
+- Manually remediated both packages: re-fired the 5 missing characters via the same `CHILD_WEBHOOK` `notify-generation-issue` already uses for auto-recovery (2 needed a second attempt).
+- **Follow-up sweep after applying**: 4 more hits. "Whispers From The Void" (known, intentional). "Death In The Spotlight" (unpaid, matches a known false-signal timestamp — not live). "Hearts In Hot Water" and "Blood In The Bougainvillea" (both real paid orders, several months old) flagged separately, not remediated in this pass — see ADR-0095 Consequences.
+
+**Bug 2 — missing round content, no detector anywhere (ADR-0096):** independently, one character per package (Han Yu, Casey/Cassidy Chen) had fully populated identity fields but all 7 round-script/final-statement fields empty. Investigated the token-budget theory from ADR-0093 first and ruled it out — checked the *live* Make.com scenario via its API and confirmed module 409 already runs at `max_tokens: 6000` (ADR-0093's fix is genuinely live, despite this file's own stale "not yet imported" note above — corrected). Execution logs show `status: success` for the relevant runs; not a crash, a silent content drop with no visibility at this session's API access level. Reading `package_completion_blocking_defects()` directly found the real gap: it checks 8 other defect classes but never round-script/final-statement completeness, and neither does any async detector.
+- Fixed both characters via `regenerate-child-content` (fields whitelisted, accept-or-revert gate; Han Yu needed one retry after the re-detect gate rejected the first attempt).
+- Added a `missing_round_content` defect class to `package_completion_blocking_defects()` — the one function already wired into all three completion gates — and widened `notify-generation-issue`'s existing auto-recovery detection to match, so future occurrences self-heal via the existing capped re-fire mechanism with zero new machinery.
+- **Historical sweep**: 21 packages / ~100 characters match, all real paid orders, all dated before the 2026-08-11 token-budget fix and none after — consistent with a pre-fix backlog never backfilled, not an ongoing pattern. Flagged separately, not remediated in this pass — real decision on scope/cost/customer communication needed first.
+- **Found an orphaned prior fix**: `get_empty_characters()` (migration `20260422125154`, four months old) already implements almost this exact check — but was never wired into any caller anywhere in the codebase or database. It shipped the same day as two of the worst-hit historical packages, ~5 hours before them. Left in place unused; not reused (different design, and the shared-function pattern this fix follows is more consistent with ADR-0049's precedent).
+- Both customers emailed once their packages were verified complete.
+
 ## 2026-08-19
 
 ### Fix: packages could silently ship "completed" while missing whole characters ([ADR-0094](docs/adr/0094-recovery-path-character-count-gate.md))

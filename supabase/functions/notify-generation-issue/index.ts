@@ -77,7 +77,7 @@ serve(async (req) => {
     // and needs_review_at for the self-heal grace period gate (ADR-0065).
     const { data: pkg } = await supabase
       .from("mystery_packages")
-      .select("id, title, generation_status, generation_started_at, extracted_characters, last_notified_at, needs_review_at, user_conversation")
+      .select("id, title, generation_status, generation_started_at, extracted_characters, last_notified_at, needs_review_at, user_conversation, mystery_style")
       .eq("conversation_id", conversation_id)
       .order("updated_at", { ascending: false })
       .limit(1)
@@ -127,7 +127,7 @@ serve(async (req) => {
       if (pkg.id) {
         const { data: chars } = await supabase
           .from("mystery_characters")
-          .select("character_name, character_role, description")
+          .select("character_name, character_role, description, round2_script, round3_script, round4_script, final_statement, round2_innocent, round3_innocent, round4_innocent, final_innocent, round2_guilty, round3_guilty, round4_guilty, final_guilty, round2_questions, round3_questions, round4_questions")
           .eq("package_id", pkg.id);
 
         if (chars) {
@@ -140,8 +140,27 @@ serve(async (req) => {
           // silently skips auto-recovery for it — found 2026-08-13 on a
           // package where all 8 characters got the sentinel and empty round
           // scripts, and none were offered for re-fire.
+          //
+          // ADR-0096: a character can have description/character_role fully
+          // populated and STILL be missing every round script and final
+          // statement — the round-content call group occasionally comes
+          // back and gets written as entirely empty while Make.com reports
+          // the run as successful. Mirrors package_completion_blocking_
+          // defects()'s missing_round_content check (same field list, same
+          // mystery_style branching, deliberately excluding the
+          // has_accomplice-conditional accomplice branch) so this webhook's
+          // existing re-fire (searchRows -> update in place) auto-heals the
+          // same defect class the DB gate now blocks completion on.
+          const missingRoundContent = (c: any) => {
+            const empty = (v: unknown) => !v || String(v).trim() === "";
+            const roundBranchEmpty = pkg.mystery_style === "character"
+              ? (empty(c.round2_innocent) || empty(c.round3_innocent) || empty(c.round4_innocent) || empty(c.final_innocent) ||
+                 empty(c.round2_guilty) || empty(c.round3_guilty) || empty(c.round4_guilty) || empty(c.final_guilty))
+              : (empty(c.round2_script) || empty(c.round3_script) || empty(c.round4_script) || empty(c.final_statement));
+            return roundBranchEmpty || empty(c.round2_questions) || empty(c.round3_questions) || empty(c.round4_questions);
+          };
           emptyCharacters = chars
-            .filter((c: any) => !c.description || !c.character_role || c.character_role === "invalid_role")
+            .filter((c: any) => !c.description || !c.character_role || c.character_role === "invalid_role" || missingRoundContent(c))
             .map((c: any) => c.character_name);
         }
       }

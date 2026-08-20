@@ -1,0 +1,54 @@
+# ADR-0095: `package_expected_character_count()` didn't handle a third `extracted_characters` shape (bracketless bare object sequence)
+
+- **Status:** Accepted — migration `20260820090645_fix_bracketless_extracted_characters_parse` applied to production
+- **Date:** 2026-08-20
+- **Related:** ADR-0094 (recovery-path character-count gate — the function this ADR patches), ADR-0093 (Ciaran Fox incident that originally surfaced the missing-character-row problem), ADR-0064 (roster-count-mismatch detector — the independent async safety net that caught these two incidents when the real-time path missed them)
+
+## Context
+
+Surfaced via the scheduled GitHub Actions health-check (`scripts/detect-roster-mismatches.mjs`, ADR-0064's check 12), which flagged two packages purchased **hours after ADR-0094 shipped** (2026-08-19 16:13 CEST):
+
+- **The Staged Suicide Details** (purchased 21:43 UTC) — 4 of 14 characters missing from `mystery_characters`, including the predetermined killer (Joey Donaldson). None of the 10 delivered characters had `character_role = 'murderer'`. Detective Sarah Chen's `final_statement` (the host-read reveal) named Joey Donaldson by name — a character the players were never given.
+- **The Birthday Betrayal** (purchased 23:42 UTC) — 1 of 10 characters missing (Riley/Rylan Foster), referenced by name in three other characters' `relationships` text.
+
+Neither package ever entered `needs_review` (`last_notified_at` and `needs_review_at` both `NULL` on both rows) — they went straight to `generation_status.status = 'completed'`. That means the real-time email path (`notify-generation-issue`) never had a reason to fire; the only thing that caught this was the independent, differently-sourced async detector, exactly the "compounding safety net" reasoning ADR-0094's Discussion used to justify keeping that detector rather than retiring it once the completion-gate fix shipped.
+
+Traced why ADR-0094's fix — shipped for exactly this class of bug — didn't catch either package: `package_expected_character_count()` handles two shapes of `extracted_characters` — a real `jsonb` array, or a `jsonb` string that is *already* a valid JSON array once unquoted. Verified directly via RPC against both packages' live `extracted_characters` values: both return `0` (unparseable). Both values are, in fact, a **third shape**: a `jsonb` string holding a **bare comma-joined sequence of JSON objects with no enclosing `[ ]` at all** — e.g. `{"name":"Meghan Brecken",...}, {"name":"Harry Lennox",...}, ...` rather than `[{"name":"Meghan Brecken",...}, {"name":"Harry Lennox",...}]`. Casting that text straight to `jsonb` raises a syntax error; the existing `EXCEPTION WHEN OTHERS` catches it and `_count` falls back to `0` — "unparseable, don't block" — so the ADR-0094 row-count guard never activates, on the original `validate_package_characters()` trigger and both recovery functions alike (all three call the one shared function, which is the point of ADR-0094's design — this fix only needs to touch one place).
+
+Not a one-off cosmetic difference: this is the actual live shape Make.com wrote for two real, back-to-back, hours-old paid orders. Whether it's the majority shape or a rarer variant alongside ADR-0094's originally-handled shape isn't established by this write-up — see Consequences.
+
+## Decision
+
+Give the string branch a second parse attempt before falling back to `0`: if direct cast fails, wrap the raw text in `[ ]` and retry. Still fails open (`0`, never blocks) if both attempts fail — same posture ADR-0094 already established, not a new risk.
+
+`CREATE OR REPLACE FUNCTION public.package_expected_character_count(...)` — same signature, same three callers (`validate_package_characters()`, `heal_completed_packages()`, `promote_complete_packages()`), no other function touched. Verified the wrapping approach against both incidents' actual raw `extracted_characters` values (`JSON.parse('[' + raw + ']')`) before writing the SQL — both parse cleanly into the expected 14- and 10-entry arrays.
+
+## Rationale
+
+- **One function, one fix, three callers get it for free** — same reasoning ADR-0094 already established for why this parser lives in exactly one place. No trigger or recovery function needed editing.
+- **Still fails open.** A `_pkg.extracted_characters` value this doesn't parse (a fourth future shape, or genuinely absent) still returns `0` and never blocks completion — this ADR narrows the "unparseable" bucket, it doesn't change what happens when something really is unparseable.
+- **Didn't touch `player_count`.** Same reasoning as ADR-0094 — guest headcount, not roster size, and conflating them reopens a false-positive class already closed once.
+
+## Alternatives Considered
+
+- **Fix it in Make.com** (write a real JSON array instead of a bracketless string in the first place). The actual root cause, and worth doing — this session's assumption of no Make.com API access (per ADR-0089/0093/0094) turned out to be stale; `MAKE_API_TOKEN` in `.env` does work (confirmed later the same session, see ADR-0096). Not pursued here anyway: identifying and changing the specific module/serialization step that drops the brackets is a separate, larger investigation than this read-side parse fix, and a blueprint change is a bigger-blast-radius action than patching one already-defensive SQL function. This SQL-side fix is live the moment the migration runs, and defensive parsing on the read side is warranted regardless of whether the write side is ever cleaned up — `extracted_characters` has now been observed in three different shapes from the same upstream system.
+- **Reject/normalize `extracted_characters` at write time** (a trigger or check constraint forcing it into a canonical array shape on INSERT/UPDATE). Rejected as out of scope for this incident: bigger surface area, touches a column written from multiple places (Make.com parent scenario, `mystery-webhook-trigger`), and doesn't change that *this specific* read-side function needs to keep failing open for genuinely unparseable input regardless.
+
+## Consequences
+
+- **Positive:** closes the specific gap that let two real, hours-old paid packages ship with missing characters (one missing the murderer entirely) without tripping the real-time completion gate. Both incidents were manually remediated (targeted per-character re-fire via the existing `CHILD_WEBHOOK` `notify-generation-issue` already uses) before this migration was written — see the auto_remediation_log entries logged 2026-08-20 for both package IDs.
+- **RESOLVED (2026-08-20): follow-up sweep run immediately after applying.** Compared `package_expected_character_count()` (now including this fix) against actual `mystery_characters` row count for every `completed` package. 4 hits beyond the two already fixed: "Whispers From The Void" (already known-owned, intentional guest-dropout, not a bug), "Death In The Spotlight" (`is_paid = false`, `updated_at` matches the exact bulk-JSON-normalization timestamp ADR-0094 already identified as a false signal — not a live issue), "Hearts In Hot Water" (real paid order, 6 months old, 0 of a claimed 56 characters, `master_context` completely empty — flagged separately, not remediated here; the safe repair tooling can't even run without `master_context`, and 56 is implausibly large next to every other package seen, so this needs manual triage before any action), and "Blood In The Bougainvillea" (real paid order, 5 months old, 7 of 8 characters, full `master_context`/`host_guide`/`detective_script` present — plausibly fixable the same way as the two live incidents, flagged for a separate decision on scope rather than bulk-actioned here).
+- **Not addressed — same scope boundary ADR-0094 drew:** why Make.com writes `extracted_characters` in three different shapes across different runs is not investigated here. Worth confirming against the actual blueprint logic if this keeps recurring.
+
+## Key files
+
+- `supabase/migrations/20260820090645_fix_bracketless_extracted_characters_parse.sql` — the fix
+- `supabase/migrations/20260819_close_recovery_path_character_count_gap.sql` — ADR-0094, the migration this one patches
+- `scripts/detect-roster-mismatches.mjs` — ADR-0064's independent async detector; unchanged; this is what actually caught both incidents
+- Remediated manually, before this migration: `mystery_characters`/`auto_remediation_log` for package `b5d04ea8-1e21-41b3-8e78-2f712506469f` (The Staged Suicide Details, 4 characters re-fired) and `5aebbb3c-6e91-445a-93c6-602d2fa90af3` (The Birthday Betrayal, 1 character re-fired)
+
+## Discussion
+
+The two incidents this ADR is built from are a clean natural experiment for ADR-0094's own Consequences section, which flagged (accurately) that `extracted_characters` "can itself be wrong or absent" as a pre-existing, accepted limitation. What actually happened is narrower and more actionable than "wrong or absent" suggested: it's a *third, well-defined, mechanically-reproducible shape*, not noise — the same bracket-dropping pattern hit two unrelated packages within two hours of each other. That's consistent with a specific Make.com module or JSON-serialization step, not per-package randomness, though confirming which one is out of scope here — this session's Make.com API access (see ADR-0096) turned out to be usable for reading the live blueprint, but identifying which exact module/step drops the brackets on the write side wasn't investigated.
+
+Worth naming directly: this is the second time in as many days a fix targeting "the recovery/completion-gate path" has shipped and been immediately falsified by a real order (ADR-0094 itself was a same-day response to ADR-0093's Ciaran Fox incident). Neither individual fix was wrong — each closed the specific gap it was built to close — but the pattern suggests `extracted_characters`'s shape-fragility is a deeper-seated property of the Make.com write path than any single read-side patch will fully close. The open sweep question in Consequences (how many other completed packages carry this same undetected gap right now) is the most load-bearing unresolved piece of this write-up.
