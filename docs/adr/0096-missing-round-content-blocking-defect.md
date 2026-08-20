@@ -47,7 +47,7 @@ Add a `missing_round_content` defect class to `package_completion_blocking_defec
 ## Consequences
 
 - **Positive:** the exact failure signature that let two real, hours-old paid packages ship with silently empty round content (despite identity fields being fine) now blocks completion and triggers the existing auto-recovery re-fire, going forward.
-- **Not addressed — deliberately, see Alternatives:** the ~100-character historical backlog across 21 real orders. Needs a separate decision on scope and approach.
+- **DECIDED (2026-08-20): no remediation for the historical backlog.** Checked precisely: 0 of the 21 affected packages fall within the last 30 days — the newest is 2026-04-22, four months old. Jonathan's call: a mystery party that old has almost certainly already been played, so fixing the content now wouldn't help the customer who received it, and no one has complained. Proactive outreach was considered and explicitly declined — the party already happened either way, and reaching out risks manufacturing a complaint that doesn't exist. This closes the historical-backlog question; nothing further planned unless a specific customer raises it.
 - **Not addressed — a real open question:** why Make.com's module 409 (or 509/513, historically) occasionally writes a character's round content as empty while reporting the run as successful, even with adequate token budget. This ADR closes the "ships undetected" gap, not the upstream cause.
 
 ## Key files
