@@ -138,7 +138,19 @@ Confirmed all 8 Claude-call modules (401/405/409/501/505/509/513/517) do correct
 
 **Not done this session:** did not push either change live via the API — this alters the production generation path for every customer, and the established workflow for this codebase is draft-here/import-by-Jonathan (ADR-0089's precedent), not an unreviewed live API write to a shared scenario. Once imported (Child first or together with Parent — same ordering caution as the original Decision section: importing Child alone before Parent is harmless, since `{{63.language}}` in Child just stays empty until Parent starts sending it; importing Parent's field without Child's isn't useful either, since Child still won't recognize it), Deano/Maureen/Tracey/Tommo's remaining broken fields should be worth one more re-fire attempt — this time with a real chance of `{{63.language}}` actually resolving.
 
-**Consequence for the "is it safe to tell the customer" question:** no. Even setting aside Ciaran's 3 still-broken characters, the underlying mechanism has been non-functional in production this whole time — any customer between 2026-08-19 and whenever this interface fix lands is at the same latent risk Ciaran hit, for any mystery whose setting leans into non-English flavor text.
+**Consequence for the "is it safe to tell the customer" question at the time:** no. Even setting aside Ciaran's 3 still-broken characters, the underlying mechanism had been non-functional in production this whole time.
+
+## Addendum 5 (2026-08-20): imported, verified, fully resolved
+
+Jonathan imported both `Child36` and `Parent56` into Make. Confirmed live via the API before touching anything further: both scenarios' `id` now resolve to the new names (`9061052` → `Child(Unified)36`, `9106101` → `Parent56`), both webhook interfaces now list `language`, both scenarios report `isActive: true, islinked: true`.
+
+Re-fired the 4 still-broken characters (Deano, Maureen, Tommo, Tracey). Result: **Maureen and Tommo came back fully clean on the first attempt under the fixed config** — both had been reproducibly broken 2-3 times before the interface fix, so this is real signal the fix works, not noise. Deano (accomplice-slip) and Tracey (innocent-slip) failed a *third and fourth* time respectively even with the interface fix confirmed live — ruling out the webhook-interface gap as their sole cause. Checked their `secret` content directly for unusual foreign-flavor density (the working theory for why some fields drift more than others): neither was notably Spanish-heavy, a plain English financial-secret backstory in both cases — so whatever made these two specifically sticky wasn't visible in their own row content. One more re-fire (5th/4th attempt) and both came back fully clean.
+
+**Final verification, full-content sweep across all 28 text fields on all 24 characters** (not just the round2/secret fields spot-checked earlier): `select count(*) filter (where txt ~* '## (RONDA|RODADA) [234]|SI ERES|SE VOC[ÊE] [ÉE]|SEU SEGREDO|TU SECRETO|SE SOU') from combined` → **0 of 24 characters have any remaining Spanish/Portuguese content, anywhere.** Ciaran's package is genuinely fully remediated as of this addendum — unlike Addendum 1's premature claim, this one is backed by a sweep of every relevant field, not just headers.
+
+**Status of the systemic fix:** live in production for all customers going forward. `{{63.language}}` now resolves correctly in both scenarios.
+
+**Open question, not fully explained:** why Deano/Tracey needed 4-5 attempts each even after the config-level root cause was fixed, while every other previously-broken character (Chantelle, Maureen, Tommo) converged on the first post-fix attempt. Not investigated further given it resolved anyway — flagged here in case the pattern recurs on a future customer, in which case it's worth capturing which specific characters/fields need repeat attempts before concluding a fix "didn't work."
 
 ## Key files
 

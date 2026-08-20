@@ -15,6 +15,13 @@ Ciaran emailed again: several character packs still had Spanish text. The 2026-0
 - Fix drafted, not yet imported: added `language` (type `text`) to both webhook interfaces. Built as `temp-files/MM Live - Child (Unified)36-WebhookLanguageField.blueprint.json` (from `Child35`) and `temp-files/MM Live - Parent56 (Webhook Language Field).blueprint.json` (from `Parent55`). Diffed clean against the live-pulled originals — exactly the one interface field plus each blueprint's `name` changed.
 - Did not push live via the API — this changes the production generation path for every customer; left as a drafted file for Jonathan to import, per this codebase's established workflow.
 - **Until this imports, it is not accurate to tell any customer their language issue is "fully sorted"** — the underlying mechanism has been non-functional in production this whole time, for any mystery whose setting leans into non-English flavor text.
+
+### Fix (addendum): imported, verified, Ciaran's package genuinely fully remediated
+Jonathan imported both `Child36` and `Parent56` into Make. Confirmed live via the API before doing anything further: both webhook interfaces now list `language`, both scenarios `isActive`/`islinked`.
+- Re-fired Deano/Maureen/Tommo/Tracey. Maureen and Tommo came back fully clean on the first attempt under the fixed config — both had been reproducibly broken 2-3 times before, so this is real evidence the fix works. Deano (accomplice-slip) and Tracey (innocent-slip) needed one more retry each even with the fix confirmed live before landing clean — checked their `secret` content for unusual foreign-flavor density as a possible explanation, found nothing notable; the reason those two specifically needed extra attempts is unexplained but they did resolve.
+- **Final verification, full sweep across all 28 text fields on all 24 characters** (not just the round2/secret fields spot-checked earlier): 0 of 24 have any remaining Spanish/Portuguese content anywhere. Unlike the 2026-08-19 "0 non-English" claim that started this whole re-investigation, this one is backed by every relevant field, not just headers.
+- **The systemic fix is now live in production for all customers going forward** — `{{63.language}}` resolves correctly in both scenarios.
+- Full trail in [ADR-0093](docs/adr/0093-explicit-language-parameter-for-child-generation.md)'s Addendum 5.
 - Full trail in [ADR-0093](docs/adr/0093-explicit-language-parameter-for-child-generation.md)'s Addendum 4.
 
 ### Fix: two live paid packages shipped with missing characters and empty round content; closed both gaps that let it happen ([ADR-0095](docs/adr/0095-bracketless-extracted-characters-third-parse-shape.md), [ADR-0096](docs/adr/0096-missing-round-content-blocking-defect.md))
