@@ -1,8 +1,10 @@
 # Site health status
 
-_Last checked: 2026-08-19 18:55 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-08-20 01:53 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
-## ✅ All checks passing
+## ⚠️ Problems found
+
+- 🔴 2 package(s) whose delivered character count doesn't match their approved concept snapshot: The Staged Suicide Details [approved=7, actual=10]; The Birthday Betrayal [approved=10, actual=9]
 
 | Check | Result |
 |---|---|
@@ -17,6 +19,6 @@ _Last checked: 2026-08-19 18:55 UTC (runs every 6 hours; see .github/workflows/h
 | Self-directed questions (30 days) | 0 |
 | Completed-but-empty packages (30 days) | 0 |
 | Structural defects — escalate only (30 days) | 0 |
-| Roster-count mismatches — escalate only (30 days) | 0 |
+| Roster-count mismatches — escalate only (30 days) | 2 |
 | Final-statement confession leaks — escalate only (30 days) | 0 |
 | Unconfessed detective-style culprits — escalate only (30 days) | 0 |
