@@ -66,6 +66,9 @@ serve(async (req) => {
     let characterCount = 0;
     let expectedCharacters = 0;
     let emptyCharacters: string[] = [];
+    // Names in extracted_characters with no mystery_characters row at all
+    // (as opposed to emptyCharacters: a row that exists but is incomplete).
+    let missingCharacters: string[] = [];
     // Map of character_name → description for auto-recovery webhook firing
     let charDescriptions: Record<string, string> = {};
     // Conversation-level metadata also needed for the webhook payload
@@ -194,6 +197,18 @@ serve(async (req) => {
             .filter((c: any) => !c.description || !c.character_role || c.character_role === "invalid_role" || missingRoundContent(c))
             .map((c: any) => c.character_name);
         }
+
+        // 2026-08-20: rows that never got created at all were invisible to every
+        // check above (they filter EXISTING rows) and so never got offered for
+        // auto-recovery -- a confirmed gap (ADR-0094's Consequences flagged this
+        // as deliberately deferred; The Staged Suicide Details/The Birthday
+        // Betrayal, both same day, are the incidents that made it worth closing).
+        // The same CHILD_WEBHOOK re-fire this function already uses handles
+        // creating a missing row exactly the same way it updates an existing
+        // one (searchRows finds nothing -> falls through to create), so this
+        // is name-matching + reuse, not a new recovery mechanism.
+        const existingNames = new Set((chars ?? []).map((c: any) => c.character_name));
+        missingCharacters = Object.keys(charDescriptions).filter((name) => !existingNames.has(name));
       }
     }
 
@@ -201,6 +216,12 @@ serve(async (req) => {
       ? `<tr>
           <td style="padding: 8px 0; color: #6b7280;">Empty Characters:</td>
           <td style="padding: 8px 0; color: #dc2626; font-weight: 600;">${emptyCharacters.join(", ")}</td>
+        </tr>`
+      : "";
+    const missingCharsHtml = missingCharacters.length > 0
+      ? `<tr>
+          <td style="padding: 8px 0; color: #6b7280;">Missing Characters (no row at all):</td>
+          <td style="padding: 8px 0; color: #dc2626; font-weight: 600;">${missingCharacters.join(", ")}</td>
         </tr>`
       : "";
 
@@ -249,12 +270,14 @@ serve(async (req) => {
       return (data ?? []).reduce((sum: number, r: { cost_usd: number }) => sum + Number(r.cost_usd || 0), 0);
     }
 
+    // Checks both defect classes so a character can't dodge the attempt cap by
+    // flipping between "row exists but empty" and "row missing" across retries.
     async function characterAttemptsUsed(packageId: string, charName: string): Promise<number> {
       const { data, error } = await supabase
         .from("auto_remediation_log")
         .select("action")
         .eq("package_id", packageId)
-        .eq("defect_class", "empty_character_content");
+        .in("defect_class", ["empty_character_content", "missing_character_row"]);
       if (error) throw new Error(`attempt-cap lookup failed: ${error.message}`);
       const expected = `regenerate_character:${charName}`;
       return (data ?? []).filter((r: { action: string }) => r.action === expected).length;
@@ -265,7 +288,13 @@ serve(async (req) => {
     const capped: string[] = [];
     let budgetRemaining = Math.max(0, DAILY_SPEND_CAP_USD - (await spentToday()));
 
-    for (const charName of emptyCharacters) {
+    // Missing rows go through the exact same recovery loop as empty ones —
+    // same webhook, same caps — only the logged defect_class differs, so the
+    // audit trail still shows which case each recovery actually was.
+    const missingNameSet = new Set(missingCharacters);
+    const recoveryTargets = [...emptyCharacters, ...missingCharacters];
+
+    for (const charName of recoveryTargets) {
       const description = charDescriptions[charName];
       if (!description) {
         skipped.push(charName); // can't recover without a description in master_context
@@ -322,7 +351,7 @@ serve(async (req) => {
           if (pkg?.id) {
             await supabase.from("auto_remediation_log").insert({
               package_id: pkg.id,
-              defect_class: "empty_character_content",
+              defect_class: missingNameSet.has(charName) ? "missing_character_row" : "empty_character_content",
               action: `regenerate_character:${charName}`,
               before_value: null,
               outcome: "escalated", // fire-and-forget; next sweep confirms fixed vs. still-broken
@@ -403,6 +432,7 @@ serve(async (req) => {
               <td style="padding: 8px 0;">${characterCount} generated / ${expectedCharacters} expected</td>
             </tr>
             ${emptyCharsHtml}
+            ${missingCharsHtml}
             ${recoveryHtml}
             <tr>
               <td style="padding: 8px 0; color: #6b7280;">Package Status:</td>
@@ -468,26 +498,28 @@ serve(async (req) => {
     }
 
     // Same idea as the worker grace period above, but for THIS function's own
-    // empty-character re-fire (2026-08-13, corrected 2026-08-14 -- see
-    // ADR-0085): don't page a human for a defect auto-recovery still has
-    // budget left to keep working on. Suppresses whenever empty characters
-    // are the ONLY issue (no structuralDefects also present -- something
-    // else being wrong should still alert immediately) AND nothing has
-    // landed in skipped/capped (a recovery attempt that couldn't even fire,
-    // or already exhausted its MAX_ATTEMPTS_PER_CHARACTER cap, is the actual
-    // "you need to look at this" signal). Deliberately does NOT alert merely
-    // for being a repeat attempt (used > 0) -- ADR-0081 originally treated a
-    // second try as a stronger signal of real trouble, but a same-day case
-    // (Death At The Velvet Lounge, character needed 2 of its 2 allowed
-    // attempts and still resolved cleanly with zero human action) showed
-    // that heuristic just adds noise for ordinary variance in how many tries
-    // a character needs. The cap itself already bounds the cost/time of
-    // waiting this out (max 2 attempts, $0.15 each), so suppressing all the
-    // way to the cap is safe. Mutually exclusive with workerMightFixThis by
-    // construction (that one requires structuralDefects.length > 0, this one
-    // requires it to be 0), so no ordering conflict between the two gates.
+    // empty/missing-character re-fire (2026-08-13, corrected 2026-08-14 -- see
+    // ADR-0085; extended 2026-08-20 to also cover missing rows, not just
+    // empty ones -- see the missingCharacters block above). Don't page a
+    // human for a defect auto-recovery still has budget left to keep working
+    // on. Suppresses whenever empty/missing characters are the ONLY issue
+    // (no structuralDefects also present -- something else being wrong
+    // should still alert immediately) AND nothing has landed in
+    // skipped/capped (a recovery attempt that couldn't even fire, or already
+    // exhausted its MAX_ATTEMPTS_PER_CHARACTER cap, is the actual "you need
+    // to look at this" signal). Deliberately does NOT alert merely for being
+    // a repeat attempt (used > 0) -- ADR-0081 originally treated a second try
+    // as a stronger signal of real trouble, but a same-day case (Death At
+    // The Velvet Lounge, character needed 2 of its 2 allowed attempts and
+    // still resolved cleanly with zero human action) showed that heuristic
+    // just adds noise for ordinary variance in how many tries a character
+    // needs. The cap itself already bounds the cost/time of waiting this out
+    // (max 2 attempts, $0.15 each), so suppressing all the way to the cap is
+    // safe. Mutually exclusive with workerMightFixThis by construction (that
+    // one requires structuralDefects.length > 0, this one requires it to be
+    // 0), so no ordering conflict between the two gates.
     const emptyCharacterRecoveryLooksClean =
-      emptyCharacters.length > 0 &&
+      recoveryTargets.length > 0 &&
       structuralDefects.length === 0 &&
       skipped.length === 0 &&
       capped.length === 0;
