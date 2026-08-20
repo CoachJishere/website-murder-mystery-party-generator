@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 272 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 273 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -194,6 +194,7 @@ This index organizes 272 published guides by topic cluster. All guides are avail
 
 ## By Format (Dinner, Cocktail, Virtual, Outdoor)
 
+- [12 Best Dinner Party Games for Adults](https://www.mysterymaker.party/blog/best-dinner-party-games-for-adults): The best dinner party games for adults, from murder mysteries to card games to conversation starters. 12 options tested and compared for groups of 6-16.
 - [Murder Mystery Brunch Party Guide](https://www.mysterymaker.party/blog/murder-mystery-brunch-party-guide): Host a morning murder mystery brunch. Learn timing, menu integration, lighter mystery tone, and strategies for women's social events and weekend hosting.
 - [Murder Mystery Camping Trip: The Immersive Overnight Format](https://www.mysterymaker.party/blog/murder-mystery-camping-trip-guide): Create an unforgettable murder mystery camping trip. Learn campfire mysteries, multi-night formats, flashlight hunts, spooky atmosphere, and outdoor logistics.
 - [Murder Mystery Cocktail Party Guide](https://www.mysterymaker.party/blog/murder-mystery-cocktail-party-guide): Host a murder mystery cocktail party with mingling-based mechanics, signature themed drinks, and practical bar setup ideas. Full adult format planning guide.
