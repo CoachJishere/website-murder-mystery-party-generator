@@ -94,9 +94,45 @@ Casing corrected in a follow-up update — the rest of this product's titles con
 
 Scanned all 137 other package titles (customers whose `profiles.language` isn't zh-cn/ja/ko) for any CJK characters: **zero matches**. This is a genuine 1-in-138 one-off, not a recurring pattern — the existing safeguard is working as designed; it just didn't catch this one token. Considered but did not build a defensive post-generation scan (flag CJK/unexpected-script characters in non-CJK-locale output) — the base rate doesn't currently justify it; noted here as a cheap option if it recurs.
 
+## Addendum 3 (2026-08-20): the "fully remediated" claim in Addendum 1 was wrong — verification only checked headers
+
+Ciaran emailed again: "quite a lot of the text is in spanish" across several character packs. Investigation found Addendum 1's "final sweep across all 24 of Ciaran's characters: 0 non-English, 0 bad headers, 0 incomplete rows" was a real check but an incomplete one — it verified the `## CHARACTER DESCRIPTION` header on all 24 rows, not the actual round-script/secret/slip content underneath. It never re-checked the **13 characters from the original 2026-08-18 run that Addendum 1 didn't touch at all** (it only re-fired the 8 missing + 2 known-Portuguese + Richie — 11 of 24, not "all 24" as the header-only sweep implied).
+
+Built a higher-precision full-content sweep this session: rather than accented characters alone (too noisy — flags legitimate French/Spanish-themed flavor text going back over a year of paid orders, e.g. "Death At Château Buzancy," a genuinely French-language customer order from 2025-08-12), searched for the template's own section headers translated into Spanish/Portuguese/French (`## RONDA 2`, `## RODADA 2`, `## SEU SEGREDO`, `**SI ERES**`, `**SE VOCÊ É**`) — strings with zero legitimate overlap with English or themed flavor text. Ran this across **every paid customer's package**, not just Ciaran's, to check whether this was systemic. Result: exactly one other hit, and it's a legitimate all-French mystery (customer's own concept chat and `game_overview` are consistently French throughout — not a defect). **This incident is contained to Ciaran's package.**
+
+Confirmed 13 of 24 of Ciaran's characters (all from the original 2026-08-18 run) had entire round-script/secret/slip fields in Spanish or Portuguese — e.g. Maureen/Maurice Briggs had `secret` entirely in Portuguese (`## SEU SEGREDO`) while `round2_innocent` was entirely in Spanish (`## RONDA 2: MOTIVOS`) on the same row, confirming this predates the explicit-language fix (Parent55/Child33, imported 2026-08-19, one day after this run).
+
+**Remediation:** re-fired all 13 via the same `CHILD_WEBHOOK` mechanism as Addendum 1, this time manually adding `"language": "English"` to the payload — `notify-generation-issue`'s default payload shape (which these prior remediations copied by hand) never included a `language` field at all, so without adding it by hand, the fix these characters most needed wouldn't have been applied. One of the 13 (Chantelle/Charlie Frost) silently no-showed on the first fire — webhook returned HTTP 200 but the row never updated after 5+ minutes; a single isolated retry fixed the no-show itself, confirmed by a fresh `updated_at`.
+
+**Result: 19 of 24 characters are now fully clean English.** 5 still have one or two fields (never more) in Spanish/Portuguese, scattered across different characters and different slip types — not concentrated in one module the way Addendum 1's `509` token-budget bug was:
+
+| Character | Field(s) still wrong |
+|---|---|
+| Chantelle/Charlie Frost | accomplice-slip only |
+| Deano/Deanna Harper | accomplice-slip only |
+| Maureen/Maurice Briggs | accomplice-slip only |
+| Tommo/Tamsin Clarke | innocent-slip only |
+| Tracey/Travis Bennett | innocent-slip AND guilty-slip |
+
+This scatter (no single module fails consistently; different slip types fail for different characters) reads as **residual per-call drift, not a module that's missing the explicit-language instruction outright** — if e.g. the accomplice-slip module (517) simply lacked the instruction, it should have failed for every character with an accomplice-slip field, not 3 of ~9. Chantelle's isolated retry is the cleanest single data point: identical payload, `language: "English"` explicitly set, and it still landed one specific field (accomplice-slip) in Spanish while the other three (innocent, guilty, secret) came back clean on the same call. Genuinely unresolved question for whoever looks at the live Make.com scenario next: whether `{{63.language}}` intermittently resolves empty (a Make binding/timing issue, not a prompt issue) or the explicit instruction is simply not 100% reliable at the model level despite being unambiguous. No Make.com API access this session to inspect the modules directly.
+
+**Also fixed, separately:** `notify-generation-issue/index.ts` (the auto-recovery function `sweep_stuck_needs_review_packages` fires every 10 minutes for any package sitting in `needs_review`) never sent a `language` field in its own `CHILD_WEBHOOK` payload — a gap that predates and is independent of this incident. Added the same `LANGUAGE_NAMES` map and `profiles.language` lookup as `mystery-webhook-trigger/index.ts`, now forwarding `language` on every auto-recovery re-fire. Without this, any future auto-healed character for any non-English-locale customer (or any English customer whose mystery is richly foreign-flavored, exactly like Ciaran's) would silently reproduce this whole defect class through the *automated* recovery path, even after this ADR's fix is fully live everywhere else. Deployed to production (`notify-generation-issue` v24) with `verify_jwt: true` preserved from the prior version.
+
+**Update:** retried all 5. Chantelle's second attempt came back fully clean (accomplice-slip fixed). The other 4 did not converge — **21 of 24 characters are now fully clean, 3 have a reproducible residual defect**, each confirmed on two consecutive independent re-fires with identical failures both times (ruling out ordinary per-call randomness for these three specifically):
+
+| Character | Symptom | Attempts |
+|---|---|---|
+| Deano/Deanna Harper | accomplice-slip in Spanish, both times | 2/2 |
+| Maureen/Maurice Briggs | accomplice-slip in Spanish, both times | 2/2 |
+| Tracey/Travis Bennett | innocent-slip AND guilty-slip in Spanish, both times | 2/2 |
+| Tommo/Tamsin Clarke | webhook returns HTTP 200 but never writes to the DB at all — a different failure mode, not a language problem | 3/3 no-show |
+
+Tommo's case in particular is not a language-instruction issue — the row's `updated_at` never changed across three separate fires, meaning the Make scenario execution either never ran, errored before the DB write step, or the `searchRows` match failed silently. Deano/Maureen's identical accomplice-slip failure on both attempts, and Tracey's identical dual-field failure on both attempts, together with Chantelle's earlier single-attempt case (3 of 4 fields correct, only accomplice-slip wrong on that call), keep pointing at the accomplice-slip and, less consistently, guilty/innocent-slip modules specifically — not a uniform per-character or per-call random failure. This needs a direct look at the live Make.com scenario (modules 509/513/517 and the webhook's `searchRows` matching) that this session can't do without API access. Left as-is — no further blind retries; diminishing returns once the same field fails identically twice.
+
 ## Key files
 
 - `supabase/functions/mystery-webhook-trigger/index.ts` — `LANGUAGE_NAMES` map, `profiles.language` lookup, `language` field added to `webhookPayload`
+- `supabase/functions/notify-generation-issue/index.ts` — same `LANGUAGE_NAMES` map + `profiles.language` lookup added 2026-08-20 (Addendum 3); `language` field added to its own `CHILD_WEBHOOK` auto-recovery payload, which never had one
 - `temp-files/MM Live - Parent55 (Explicit Language Parameter).blueprint.json` — current parent head, built on `Parent54`
 - `temp-files/MM Live - Child (Unified)33-ExplicitLanguageParameter.blueprint.json` — current child head, built on `Child(Unified)32`
 - `temp-files/MM Live - Child (Unified)31-CharacterContentLanguageMatch.blueprint.json` — the first (detection-based) attempt at this same defect class, superseded by this ADR's explicit-parameter design

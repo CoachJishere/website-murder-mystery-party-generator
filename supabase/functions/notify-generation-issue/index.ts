@@ -8,6 +8,24 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3000',
 ];
 
+// Mirrors mystery-webhook-trigger/index.ts's LANGUAGE_NAMES map (ADR-0093).
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English",
+  es: "Spanish",
+  fr: "French",
+  de: "German",
+  it: "Italian",
+  pt: "Portuguese",
+  nl: "Dutch",
+  da: "Danish",
+  sv: "Swedish",
+  fi: "Finnish",
+  ko: "Korean",
+  ja: "Japanese",
+  "zh-cn": "Chinese (Simplified)",
+};
+const DEFAULT_LANGUAGE_NAME = "English";
+
 function getCorsHeaders(req: Request) {
   const origin = req.headers.get('Origin') || '';
   const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -54,6 +72,13 @@ serve(async (req) => {
     let scriptType = "full";
     let hasAccomplice = "false";
     let mysteryType = "murder";
+    // ADR-0093 threaded an explicit `language` field through mystery-webhook-trigger
+    // -> Parent -> Child so the Child scenario's Claude calls stop guessing the
+    // output language from theme/flavor text. This function fires the same Child
+    // webhook directly for auto-recovery re-fires, so it needs the same field —
+    // otherwise every auto-healed character silently reproduces the ambiguity
+    // ADR-0093 closed for the original generation path.
+    let languageName = DEFAULT_LANGUAGE_NAME;
 
     // Get conversation + user info (also pulls fields needed for auto-recovery webhook payload)
     const { data: conversation } = await supabase
@@ -70,6 +95,12 @@ serve(async (req) => {
       if (conversation.user_id) {
         const { data: userData } = await supabase.auth.admin.getUserById(conversation.user_id);
         userEmail = userData?.user?.email || "Unknown";
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("language")
+          .eq("id", conversation.user_id)
+          .maybeSingle();
+        languageName = LANGUAGE_NAMES[profile?.language ?? ""] || DEFAULT_LANGUAGE_NAME;
       }
     }
 
@@ -282,6 +313,7 @@ serve(async (req) => {
             // identity fields successfully) -- this closes a confirmed
             // context gap regardless, cheaply and safely.
             conversationContent: pkg?.user_conversation ?? "",
+            language: languageName,
           }),
         });
         if (resp.ok) {
