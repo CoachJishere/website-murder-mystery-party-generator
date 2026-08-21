@@ -1128,6 +1128,7 @@
       "title": "Krimi-Mysterienpaket",
       "description": "Einmaliger Kauf, sofortiger Zugriff",
       "priceDescription": "Vollständiges Krimi-Mysterienpaket mit allen Charaktermaterialien, Hinweisen und Host-Anweisungen.",
+      "discountBadge": "{{percent}}% RABATT",
       "whatsIncluded": "Was ist enthalten:",
       "includes": [
         "Vollständige Charakterprofile für alle Verdächtigen",

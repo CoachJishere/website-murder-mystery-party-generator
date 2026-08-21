@@ -1150,6 +1150,7 @@
       "title": "Paquete de Misterio de Asesinato",
       "description": "Compra única, acceso instantáneo",
       "priceDescription": "Paquete completo de misterio de asesinato con todos los materiales de los personajes, pistas e instrucciones de organización.",
+      "discountBadge": "{{percent}}% DE DESCUENTO",
       "whatsIncluded": "Qué incluye:",
       "includes": [
         "Perfiles completos de personajes para todos los sospechosos",

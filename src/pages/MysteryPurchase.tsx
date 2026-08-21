@@ -38,6 +38,35 @@ interface ParsedMysteryDetails {
   evidence?: Evidence[];
 }
 
+// Stripe's hosted checkout page renders in whatever locale is passed via ?locale= -
+// otherwise it falls back to browser auto-detection, which can silently flip a
+// French/Spanish/etc. customer's checkout back to English right at the payment step.
+// https://docs.stripe.com/js/appendix/supported_locales
+const STRIPE_SUPPORTED_LOCALES = new Set([
+  'bg', 'cs', 'da', 'de', 'el', 'en', 'en-GB', 'es', 'es-419', 'et', 'fi', 'fil',
+  'fr', 'fr-CA', 'hr', 'hu', 'id', 'it', 'ja', 'ko', 'lt', 'lv', 'ms', 'mt', 'nb',
+  'nl', 'pl', 'pt', 'pt-BR', 'ro', 'ru', 'sk', 'sl', 'sv', 'th', 'tr', 'vi',
+  'zh', 'zh-HK', 'zh-TW',
+]);
+
+function getStripeLocale(i18nLanguage: string): string {
+  const normalized = i18nLanguage.toLowerCase().startsWith('zh')
+    ? 'zh'
+    : i18nLanguage.split('-')[0];
+  return STRIPE_SUPPORTED_LOCALES.has(normalized) ? normalized : 'auto';
+}
+
+// Actual charge stays USD (single fixed-price Stripe Payment Link) - this only
+// applies locale-correct number formatting (decimal/thousands separators), it
+// does not convert currency.
+function formatUsdPrice(value: number, locale: string): string {
+  try {
+    return new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' }).format(value);
+  } catch {
+    return `$${value.toFixed(2)}`;
+  }
+}
+
 const MysteryPurchase = () => {
   const { id } = useParams();
   const [processing, setProcessing] = useState(false);
@@ -47,7 +76,7 @@ const MysteryPurchase = () => {
   const { isAuthenticated, user } = useAuth();
   const isDevMode = import.meta.env.DEV || (window.location.hostname === 'localhost');
   const isMobile = useIsMobile();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isActive: hasDiscount, discountInfo, timeRemaining } = useWelcomeDiscount();
 
   // Enhanced extraction functions with better pattern matching
@@ -463,7 +492,7 @@ const MysteryPurchase = () => {
       }
 
       // Build Stripe checkout URL
-      let stripeUrl = `https://buy.stripe.com/dRm4gAgls6c47UccYV2Nq03?prefilled_email=${encodeURIComponent(user.email)}&client_reference_id=${id}&success_url=${encodeURIComponent(successUrl)}&cancel_url=${encodeURIComponent(cancelUrl)}`;
+      let stripeUrl = `https://buy.stripe.com/dRm4gAgls6c47UccYV2Nq03?prefilled_email=${encodeURIComponent(user.email)}&client_reference_id=${id}&success_url=${encodeURIComponent(successUrl)}&cancel_url=${encodeURIComponent(cancelUrl)}&locale=${getStripeLocale(i18n.language)}`;
 
       // Auto-apply welcome discount promo code if active. Re-check expiry at
       // click time: the countdown state only refreshes every 15s, and Stripe
@@ -598,17 +627,17 @@ const MysteryPurchase = () => {
                               "font-bold",
                               isMobile ? "text-xl" : "text-2xl"
                             )} style={{ color: '#C81400' }}>
-                              ${DISCOUNTED_PRICE.toFixed(2)}
+                              {formatUsdPrice(DISCOUNTED_PRICE, i18n.language)}
                             </div>
                             <div className={cn(
                               "line-through text-muted-foreground",
                               isMobile ? "text-base" : "text-lg"
                             )}>
-                              ${ORIGINAL_PRICE.toFixed(2)}
+                              {formatUsdPrice(ORIGINAL_PRICE, i18n.language)}
                             </div>
                             <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
                               style={{ backgroundColor: 'rgba(200, 20, 0, 0.15)', color: '#C81400' }}>
-                              {DISCOUNT_PERCENT}% OFF
+                              {t('purchase.package.discountBadge', { percent: DISCOUNT_PERCENT, defaultValue: '{{percent}}% OFF' })}
                             </span>
                           </div>
                           {timeRemaining && (
@@ -626,7 +655,7 @@ const MysteryPurchase = () => {
                           "font-bold mb-1",
                           isMobile ? "text-xl" : "text-2xl"
                         )}>
-                          $24.99
+                          {formatUsdPrice(ORIGINAL_PRICE, i18n.language)}
                         </div>
                       )}
                       <p className={cn(

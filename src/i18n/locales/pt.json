@@ -1161,6 +1161,7 @@
       "title": "Pacote de Mistério de Assassinato",
       "description": "Compra única, acesso instantâneo",
       "priceDescription": "Pacote completo de mistério de assassinato com todos os materiais de personagem, pistas e instruções de hospedagem.",
+      "discountBadge": "{{percent}}% DE DESCONTO",
       "whatsIncluded": "O que está incluído:",
       "includes": [
         "Perfis completos de personagens para todos os suspeitos",

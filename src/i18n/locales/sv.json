@@ -1116,6 +1116,7 @@
       "title": "Murder Mystery Package",
       "description": "One-time purchase, instant access",
       "priceDescription": "Complete murder mystery package with all character materials, clues, and hosting instructions.",
+      "discountBadge": "{{percent}}% RABATT",
       "whatsIncluded": "What's included:",
       "includes": [
         "Full character profiles for all suspects",

@@ -1116,6 +1116,7 @@
       "title": "살인 미스터리 패키지",
       "description": "일회성 구매, 즉시 액세스",
       "priceDescription": "모든 캐릭터 자료, 단서, 호스팅 지침이 포함된 완전한 살인 미스터리 패키지.",
+      "discountBadge": "{{percent}}% 할인",
       "whatsIncluded": "포함 사항:",
       "includes": [
         "모든 용의자의 완전한 캐릭터 프로필",

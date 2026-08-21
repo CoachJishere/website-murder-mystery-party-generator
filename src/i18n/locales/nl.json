@@ -1128,6 +1128,7 @@
       "title": "Moordmysterie Pakket",
       "description": "Eenmalige aankoop, directe toegang",
       "priceDescription": "Compleet moordmysteriepakket met alle personagematerialen, aanwijzingen en hostinginstructies.",
+      "discountBadge": "{{percent}}% KORTING",
       "whatsIncluded": "Wat is inbegrepen:",
       "includes": [
         "Volledige personageprofielen voor alle verdachten",

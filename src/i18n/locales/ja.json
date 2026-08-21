@@ -1116,6 +1116,7 @@
       "title": "殺人ミステリーパッケージ",
       "description": "一回限りの購入、即座のアクセス",
       "priceDescription": "すべてのキャラクター素材、手がかり、ホスティング指示を含む完全な殺人ミステリーパッケージ。",
+      "discountBadge": "{{percent}}%オフ",
       "whatsIncluded": "含まれるもの:",
       "includes": [
         "すべての容疑者の完全なキャラクタープロフィール",

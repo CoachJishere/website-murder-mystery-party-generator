@@ -1128,6 +1128,7 @@
       "title": "Murhamysteeripaketti",
       "description": "Kertaluonteinen osto, välitön pääsy",
       "priceDescription": "Täydellinen murhamysteeripaketti kaikilla hahmomateriaaleilla, vihjeillä ja isännöintiohjeilla.",
+      "discountBadge": "{{percent}}% ALENNUS",
       "whatsIncluded": "Mitä sisältyy:",
       "includes": [
         "Täydelliset hahmoprofiilit kaikille epäillyille",

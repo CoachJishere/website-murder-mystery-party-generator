@@ -1128,6 +1128,7 @@
       "title": "Pacchetto Mistero con Delitto",
       "description": "Acquisto una tantum, accesso immediato",
       "priceDescription": "Il pacchetto mistero con delitto completo con tutti i materiali dei personaggi, gli indizi e le istruzioni per l'organizzatore.",
+      "discountBadge": "{{percent}}% DI SCONTO",
       "whatsIncluded": "Cosa è incluso:",
       "includes": [
         "Profili completi dei personaggi per tutti i sospettati",

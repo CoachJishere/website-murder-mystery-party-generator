@@ -1151,6 +1151,7 @@
       "title": "Package mystère de meurtre",
       "description": "Achat unique, accès instantané",
       "priceDescription": "Le package complet du mystère de meurtre avec tous les matériaux de personnage, les indices et les instructions de l'hôte.",
+      "discountBadge": "{{percent}}% DE RÉDUCTION",
       "whatsIncluded": "Ce qui est inclus :",
       "includes": [
         "Profils de personnages complets pour tous les suspects",

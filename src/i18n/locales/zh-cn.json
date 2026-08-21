@@ -1161,6 +1161,7 @@
       "title": "谋杀悬疑包",
       "description": "一次性购买，即时访问",
       "priceDescription": "完整的谋杀悬疑包，包含所有角色材料、线索和主持说明。",
+      "discountBadge": "{{percent}}% 折扣",
       "whatsIncluded": "包含内容：",
       "includes": [
         "所有嫌疑犯的完整角色档案",
