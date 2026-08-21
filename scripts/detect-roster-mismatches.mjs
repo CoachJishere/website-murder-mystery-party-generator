@@ -101,12 +101,30 @@ async function main() {
       .eq('package_id', pkg.id);
     if (countErr) continue;
 
-    if (actualCount !== roster.length) {
+    // Incident 2026-08-21 (ADR-0098): a raw roster.length vs actualCount diff
+    // can't tell "a character is missing because of a bug" apart from "a
+    // customer paid to have it removed" via Remove a Character (ADR-0036/
+    // 0082/0088) -- confirmed live: this exact gap flagged a customer's
+    // correctly-reduced package as a mismatch, and a human response to that
+    // alert re-fired the 9 characters she'd paid $5 to remove, the day
+    // before her party. A 'verified' mystery_adaptations row means the
+    // removal completed and passed its own verify gate, so it's subtracted
+    // from the expected count here exactly like a legitimate generation.
+    const { count: verifiedRemovals } = await supabase
+      .from('mystery_adaptations')
+      .select('id', { count: 'exact', head: true })
+      .eq('package_id', pkg.id)
+      .eq('status', 'verified');
+    const expectedCount = roster.length - (verifiedRemovals ?? 0);
+
+    if (actualCount !== expectedCount) {
       mismatches.push({
         package_id: pkg.id,
         conversation_id: conv.id,
         title: conv.title,
         approved_roster_count: roster.length,
+        verified_removals: verifiedRemovals ?? 0,
+        expected_character_count: expectedCount,
         actual_character_count: actualCount ?? 0,
       });
     }
@@ -119,7 +137,8 @@ async function main() {
   } else {
     console.log(`${mismatches.length} package(s) with roster mismatches:`);
     for (const m of mismatches) {
-      console.log(`  - ${m.title} [${m.package_id}]: approved snapshot=${m.approved_roster_count} characters, actual=${m.actual_character_count}`);
+      const removalNote = m.verified_removals > 0 ? ` (${m.verified_removals} deliberately removed via paid purchase, already accounted for)` : "";
+      console.log(`  - ${m.title} [${m.package_id}]: approved snapshot=${m.approved_roster_count} characters, expected=${m.expected_character_count}${removalNote}, actual=${m.actual_character_count}`);
     }
   }
 }

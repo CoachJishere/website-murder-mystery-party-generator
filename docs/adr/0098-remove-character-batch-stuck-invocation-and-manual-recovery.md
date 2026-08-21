@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-20
-- **Related:** ADR-0091 (feature rename), ADR-0036/0082/0088 (original build, batching, murderer reassignment)
+- **Related:** ADR-0091 (feature rename), ADR-0036/0082/0088 (original build, batching, murderer reassignment), ADR-0064 (roster-mismatch detector), ADR-0097 (missing-character-row auto-recovery — the second system this addendum makes aware of deliberate removal)
 
 ## Context
 
@@ -89,3 +89,26 @@ Cleaned up all test data (conversation, package, 4 characters, adaptation row) �
 - `scripts/_incident-manual-remove-characters.mjs` — one-off manual recovery script (gitignored, deleted after use; logic captured in this ADR, not preserved as a file)
 - `mystery_adaptations` batch `336b5b8b-078f-4ffb-bb47-2a561d7ab675` — final state: 9/9 `verified`
 - `mystery_packages` `a0a985a9-2d2d-4176-a825-82ee6b2990be` — the affected package
+
+## Addendum 3 (2026-08-21): fixing Lyn's package surfaced a SECOND, live incident — the removal got silently undone by an unrelated health check
+
+Hours after Addenda 1/2 shipped, Lyn emailed again: "today in my dashboard only the mystery with 25 guests is available" — her party is tomorrow. Investigated her account directly (not from memory of the earlier fix): her package (same `a0a985a9-2d2d-4176-a825-82ee6b2990be`) had 25 `mystery_characters` rows, and all 9 characters she'd paid to remove were present again, with fresh `created_at` timestamps from *this morning* — not the originals.
+
+**Root cause: a completely different feature, not a regression in anything from Addenda 1/2.** This repo's roster-count-mismatch health check (`scripts/detect-roster-mismatches.mjs`, ADR-0064, runs every 6 hours via `.github/workflows/health-check.yml`) diffs each paid package's *originally approved* character count against its *current* `mystery_characters` row count, with zero awareness that "Remove a Character" (ADR-0036/0082/0088/0098) can legitimately shrink that count. It flagged Lyn's now-correct 16-character package as "16 of 25 approved characters" — a real-looking defect — and a Claude session responding to that health-check alert manually re-fired the 9 "missing" names at `CHILD_WEBHOOK`, regenerating exactly the 9 characters she'd paid to remove. Confirmed via direct inspection: `auto_remediation_log` has zero rows for this package, so the *automated* ADR-0097 recovery path did not fire — this was a human/agent acting in good faith on a detector that doesn't know `mystery_adaptations` exists.
+
+**Immediate fix:** deleted the 9 wrongly-regenerated rows (confirmed zero `character_assignments` pointed to any of them — none of Lyn's already-claimed guest links were at risk) and confirmed `mystery_packages`/`conversations.player_count` were untouched by the regeneration (only the character rows were re-inserted), so no other repair was needed. Also inserted an `acknowledged_health_alerts` row for this package/`roster_mismatch` as an immediate belt-and-suspenders suppression ahead of the code fix below.
+
+**Systemic fix — both places a name can look "missing" without being a bug now consult `mystery_adaptations`:**
+1. `scripts/detect-roster-mismatches.mjs` — expected count is now `approved_roster_count - verified_removal_count` (a `mystery_adaptations` count where `status = 'verified'`), not the raw approved count. Verified live against production: zero false positives across every paid/completed package in the last 30 days, including Lyn's (correctly reports no mismatch at 16).
+2. `supabase/functions/notify-generation-issue/index.ts` — the `missingCharacters` diff (ADR-0097's actual auto-fire trigger) now excludes any name with a `verified` `mystery_adaptations` row, exactly like an existing row. This is the more dangerous of the two paths (it fires `CHILD_WEBHOOK` with zero human review), and closing it protects against a *different* future trigger than today's actual incident (e.g. a Remove-a-Character package that later, coincidentally, enters `needs_review` for an unrelated reason). Also fixed the alert email's own "X generated / Y expected" line to subtract deliberate removals, so a human reading a *different* genuine alert on such a package is never shown a number that would tempt them into repeating today's mistake by hand.
+
+Both changes verified via `esbuild --bundle` / `node --check` before deploying; the roster-mismatch fix additionally verified with a real run against production data (see above). Deployed `notify-generation-issue` v26, `verify_jwt: true` preserved.
+
+**This closes the loop generally, not just for Lyn.** Both the human-facing detector that actually caused today's incident and the separate automated recovery path that could cause the same damage a different way are now both aware that "gone" can mean "customer paid for that," for any future Remove-a-Character purchase — not a one-off patch scoped to her package.
+
+## Key files (Addendum 3)
+
+- `scripts/detect-roster-mismatches.mjs` — expected-count now subtracts verified removals
+- `supabase/functions/notify-generation-issue/index.ts` — `missingCharacters` and the alert email's expected-count display now exclude verified removals; deployed v26
+- `acknowledged_health_alerts` — one row added for package `a0a985a9-2d2d-4176-a825-82ee6b2990be` / `roster_mismatch` (belt-and-suspenders, redundant with the code fix but left in place as a documented note)
+- 9 wrongly-regenerated `mystery_characters` rows deleted; package back to the correct 16, zero guest assignments affected

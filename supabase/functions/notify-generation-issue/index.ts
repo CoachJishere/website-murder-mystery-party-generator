@@ -69,6 +69,12 @@ serve(async (req) => {
     // Names in extracted_characters with no mystery_characters row at all
     // (as opposed to emptyCharacters: a row that exists but is incomplete).
     let missingCharacters: string[] = [];
+    // Count of characters deliberately removed via a verified "Remove a
+    // Character" purchase (ADR-0098) — subtracted from the displayed
+    // "expected" count so a human reading this email is never shown a
+    // mismatch that would tempt them into manually re-firing characters a
+    // customer paid to have removed, the way today's incident happened.
+    let deliberatelyRemovedCount = 0;
     // Map of character_name → description for auto-recovery webhook firing
     let charDescriptions: Record<string, string> = {};
     // Conversation-level metadata also needed for the webhook payload
@@ -208,7 +214,27 @@ serve(async (req) => {
         // one (searchRows finds nothing -> falls through to create), so this
         // is name-matching + reuse, not a new recovery mechanism.
         const existingNames = new Set((chars ?? []).map((c: any) => c.character_name));
-        missingCharacters = Object.keys(charDescriptions).filter((name) => !existingNames.has(name));
+
+        // Incident 2026-08-21 (ADR-0098): a name absent from mystery_characters
+        // isn't always a bug — "Remove a Character" (ADR-0036/0082/0088)
+        // deliberately deletes rows for customers who paid to shrink their
+        // cast, and this diff has no way to tell that apart from a genuine
+        // missing-row defect. Confirmed live: this exact gap silently
+        // regenerated 9 characters a customer had paid $5 to remove, the day
+        // before her party. mystery_adaptations is the source of truth for
+        // "gone on purpose" -- a 'verified' row means the removal completed
+        // and passed its own verify gate (see adapt-mystery-apply), so any
+        // name with one is excluded here exactly like an existingName.
+        const { data: removedAdaptations } = await supabase
+          .from("mystery_adaptations")
+          .select("character_name")
+          .eq("package_id", pkg.id)
+          .eq("status", "verified");
+        const deliberatelyRemovedNames = new Set((removedAdaptations ?? []).map((a: any) => a.character_name));
+        deliberatelyRemovedCount = deliberatelyRemovedNames.size;
+
+        missingCharacters = Object.keys(charDescriptions)
+          .filter((name) => !existingNames.has(name) && !deliberatelyRemovedNames.has(name));
       }
     }
 
@@ -429,7 +455,7 @@ serve(async (req) => {
             </tr>
             <tr>
               <td style="padding: 8px 0; color: #6b7280;">Characters:</td>
-              <td style="padding: 8px 0;">${characterCount} generated / ${expectedCharacters} expected</td>
+              <td style="padding: 8px 0;">${characterCount} generated / ${expectedCharacters - deliberatelyRemovedCount} expected${deliberatelyRemovedCount > 0 ? ` (${expectedCharacters} originally, ${deliberatelyRemovedCount} deliberately removed via paid purchase)` : ""}</td>
             </tr>
             ${emptyCharsHtml}
             ${missingCharsHtml}
