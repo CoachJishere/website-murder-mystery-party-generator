@@ -3,7 +3,9 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 /**
  * adapt-mystery-apply — "Remove a Character" (renamed from "Recast" —
- * ADR-0091), ADR-0036/0082/0088. STAGING ONLY.
+ * ADR-0091), ADR-0036/0082/0088/0098. Live in production since at least
+ * 2026-08-20 (processed a real cs_live_... charge) — the "STAGING ONLY"
+ * marker here was stale.
  *
  * Service-role only (called by stripe-webhook's adaptation branch, chained by
  * this function itself, and directly via curl for local testing — never
@@ -206,8 +208,16 @@ function nameVariants(fullName: string): string[] {
 }
 
 function buildVariantRegex(variants: string[]): RegExp {
+  // Word-boundary guarded (fix, incident 2026-08-20 / ADR-0098): without \b,
+  // a short bare-surname fallback (e.g. "Cross") matches as a raw substring
+  // inside unrelated words -- confirmed live against real customer content:
+  // "across department meetings" and "p-hacking across multiple studies"
+  // both matched variant "Cross" for removed character Dr. Finley/Fiona
+  // Cross. That's a silent false positive in substituteVariants (garbles an
+  // unrelated word) and a false verify failure in dropBlocksTargeting's
+  // caller, which rolls back an otherwise-correct removal.
   const sorted = [...variants].sort((a, b) => b.length - a.length);
-  return new RegExp(sorted.map(escapeRegex).join("|"), "gi");
+  return new RegExp(sorted.map((v) => `\\b${escapeRegex(v)}\\b`).join("|"), "gi");
 }
 
 // ---------------------------------------------------------------------------
@@ -330,6 +340,15 @@ const POLISH_CALL_COST_USD_ESTIMATE = 0.05;
 // "flat per-call, not metered" style, pending a real key to measure against.
 const REASSIGN_CALL_COST_USD_ESTIMATE = 0.35;
 
+// Incident 2026-08-20: an Anthropic call with no timeout hung indefinitely
+// mid-invocation, past the point the code's own try/catch/finally can ever
+// run — no error logged, no chain-dispatch, the whole batch silently
+// orphaned (a batch's only forward progress comes from this invocation
+// reaching finally). AbortSignal.timeout bounds every call here so a slow/
+// stalled response always resolves into the existing catch-and-degrade
+// (polish) or throw-and-chain-forward (reassign) paths instead of hanging.
+const ANTHROPIC_TIMEOUT_MS = 45_000;
+
 interface PolishTarget { id: string; field: string; before: string; current: string }
 interface PolishedField { id: string; field: string; text: string }
 interface PolishReviewItem { id: string; field: string; reason: string }
@@ -429,6 +448,7 @@ async function polishWithClaude(
       },
       messages: [{ role: "user", content: prompt }],
     }),
+    signal: AbortSignal.timeout(ANTHROPIC_TIMEOUT_MS),
   });
 
   if (!resp.ok) {
@@ -614,6 +634,7 @@ async function reassignWithClaude(params: {
       },
       messages: [{ role: "user", content: prompt }],
     }),
+    signal: AbortSignal.timeout(ANTHROPIC_TIMEOUT_MS),
   });
 
   if (!resp.ok) {
@@ -858,8 +879,30 @@ serve(async (req) => {
       for (const field of PROSE_JSONB_FIELDS) {
         const current = other[field];
         if (current == null) continue;
+        // Fix, incident 2026-08-20 / ADR-0098: `secrets` is actually a
+        // jsonb ARRAY holding one markdown string per character -- the
+        // same real shape `evidence_cards` already special-cases below --
+        // not a jsonb-wrapped plain string. Without this check every
+        // array-shaped secrets field was silently skipped here, then
+        // correctly (but avoidably) caught by the verify gate downstream,
+        // rolling back an otherwise-correct removal.
+        if (isSingleStringArray(current)) {
+          const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, other.id, field, substitutePool);
+          const { result, count } = substituteVariants(current[0], variantRegex, sub);
+          if (count > 0) changes.push({ field, before: current, after: [result, ...current.slice(1)], kind: "prose" });
+          continue;
+        }
         if (!isJsonbString(current)) {
           if (variantRegex.test(JSON.stringify(current))) needsReview.push(`${other.character_name}.${field} (non-string jsonb, references removed character — skipped, needs manual review)`);
+          // Fix, incident 2026-08-20 / ADR-0098: this was the only
+          // variantRegex.test() call in the file that didn't reset
+          // lastIndex afterward. variantRegex is global-flagged and reused
+          // across every later scan in this invocation (including verify)
+          // -- a stale lastIndex here could make a later .test() on a
+          // different string start mid-way through it and silently miss a
+          // real match, the worst failure mode (a stale reference passing
+          // verify undetected) rather than just an over-cautious rollback.
+          variantRegex.lastIndex = 0;
           continue;
         }
         const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, other.id, field, substitutePool);
