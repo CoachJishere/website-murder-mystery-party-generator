@@ -1,11 +1,8 @@
 # Site health status
 
-_Last checked: 2026-08-21 13:13 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-08-21 18:59 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
-## ⚠️ Problems found
-
-- 🔴 1 recent package(s) with model chain-of-thought or template artifacts in delivered text: Muerte En El Micrófono: Murder At The Costa Del Karaoke
-- 🔴 1 package(s) whose delivered character count doesn't match their approved concept snapshot: The Cognitive Dissonance Incident: A Murder At The Msu Psychology Department Picnic [approved=25, actual=16]
+## ✅ All checks passing
 
 | Check | Result |
 |---|---|
@@ -14,12 +11,12 @@ _Last checked: 2026-08-21 13:13 UTC (runs every 6 hours; see .github/workflows/h
 | needs_review packages (7 days) | 0 |
 | Paid packages missing evidence images | 0 |
 | Character identity conflicts (30 days) | 0 |
-| Meta-text / CoT artifacts (30 days) | 1 |
+| Meta-text / CoT artifacts (30 days) | 0 |
 | Wrong victim in overview (30 days) | 0 |
 | Slip-culprit leak (30 days) | 0 |
 | Self-directed questions (30 days) | 0 |
 | Completed-but-empty packages (30 days) | 0 |
 | Structural defects — escalate only (30 days) | 0 |
-| Roster-count mismatches — escalate only (30 days) | 1 |
+| Roster-count mismatches — escalate only (30 days) | 0 |
 | Final-statement confession leaks — escalate only (30 days) | 0 |
 | Unconfessed detective-style culprits — escalate only (30 days) | 0 |
