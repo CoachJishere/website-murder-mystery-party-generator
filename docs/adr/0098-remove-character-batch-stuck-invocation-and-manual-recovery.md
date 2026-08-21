@@ -60,9 +60,31 @@ Verified via `esbuild --bundle` (clean, no syntax errors) before deploying. Depl
 
 **Housekeeping found along the way:** the ADR's own filename tripped this repo's `*BATCH*.md` `.gitignore` rule (meant for scratch/working docs, case-insensitive match on macOS caught the word "batch" in the title) — the file existed on disk and was fully written, just silently untracked by git. Force-added it (`git add -f`); flagged to Jonathan that the pattern is broad enough to silently swallow any future ADR whose title happens to contain "batch" (a live word in this codebase — see ADR-0088's own "batching").
 
+## Addendum 2 (2026-08-21): the hang's actual root cause, confirmed live — superseding the wall-clock-kill theory
+
+With owner sign-off (~$0.05–$0.25 approved Anthropic spend), built a throwaway test package (4 characters, seeded directly via SQL, `conversations.is_test = true`) and a matching `mystery_adaptations` row, added temporary step-by-step timestamped logging to `adapt-mystery-apply`, deployed it, and invoked it directly.
+
+**Reproduced the hang on the very first attempt**, on trivial test content — this alone was informative: it isn't specific to the real customer's large/complex prose fields. The evidence, all confirmed directly:
+
+- Exactly **one** execution ever ran for that `adaptation_id` (one `execution_id` in `function_logs`, filtered by `function_id`).
+- That execution logged "invocation start," then "finally block entered" only **442ms** later, then a normal idle isolate `shutdown` ~3 minutes after that (unremarkable — just a warm isolate timing out from disuse, not evidence of anything hung).
+- `pg_stat_activity` showed **zero** active backend connections touching this data at any point after that — nothing was actually computing anything server-side.
+- Direct inspection of the test characters showed **no writes had happened at all** — the transform/write logic never ran.
+- Yet the `mystery_adaptations` row was genuinely `status: 'processing'`, with `processing_started_at` matching that single execution's own start timestamp to the millisecond.
+
+The only way to reconcile all five facts: the claim step's `UPDATE ... RETURNING` **committed in Postgres**, but its acknowledgement (the returned row) never made it back to the running code. The code's own view was `claimed: null` — indistinguishable, from inside the function, from "someone else already owns this row" — so it took the fast "not claimable" exit and abandoned a row it had, in fact, just written. This has nothing to do with a slow Anthropic call, a 150s platform wall-clock limit, or `AbortSignal` — that whole code path (and the `AbortSignal.timeout` fix from Addendum 1) is downstream of this and never runs. The earlier wall-clock theory was a reasonable inference from the *original* incident's timeline (hours, not milliseconds) but the live reproduction shows the actual failure is instantaneous, at the very first database call.
+
+**Fix, deployed:** after a null claim result, do one verification `SELECT` by id. If the row is already `processing`, has no `completed_at`, and its `processing_started_at` is not older than the moment this attempt started, that can only be explained by our own just-committed, lost-acknowledgement write (a genuinely different claimant — a real second invocation, or a stale TTL-expired row — could never produce a `processing_started_at` newer than when this attempt began). Treat that case as ownership and proceed instead of abandoning the row. Even in the theoretical worst case of two execution paths both reaching this recovery branch for the same row, the pre-existing package-level claim (`claim_package_for_adaptation`, ADR-0088) is a second, independent lock — at most one of them can actually write, the other harmlessly defers back to `'paid'`. No new data-corruption risk.
+
+**Verified the fix live**: reset the same test row past its TTL, re-invoked under the deployed fix. This time the invocation ran for **9.7 seconds** (a real Anthropic polish call, not a 442ms fast-exit) and reached genuine business logic — it hit an unrelated, expected failure (my test conversation's `player_count` was too low for `conversations_player_count_check`, a test-data gap, not a bug) — but critically, it failed **cleanly**: `status: 'failed'`, a clear `error_message`, no orphaning. That's the fix working as intended: real progress instead of silent abandonment.
+
+**Minor incidental finding, not fixed (out of scope):** the `catch` block sets `status: 'failed'` and `error_message` but never sets `completed_at` — a small audit-trail gap, harmless (the sweep only checks `status`), noted for whoever next touches this function.
+
+Cleaned up all test data (conversation, package, 4 characters, adaptation row) — zero remnants confirmed.
+
 ## Key files
 
-- `supabase/functions/adapt-mystery-apply/index.ts` — `AbortSignal.timeout`, word-boundary regex, `secrets` array-shape handling, and the `lastIndex` reset all deployed
+- `supabase/functions/adapt-mystery-apply/index.ts` — `AbortSignal.timeout`, word-boundary regex, `secrets` array-shape handling, the `lastIndex` reset, and the claim lost-acknowledgement recovery fix all deployed
 - `supabase/migrations/20260821_sweep_stuck_adaptation_batches.sql` — applied, cron job id 12, active
 - `scripts/_incident-manual-remove-characters.mjs` — one-off manual recovery script (gitignored, deleted after use; logic captured in this ADR, not preserved as a file)
 - `mystery_adaptations` batch `336b5b8b-078f-4ffb-bb47-2a561d7ab675` — final state: 9/9 `verified`

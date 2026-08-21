@@ -450,7 +450,6 @@ async function polishWithClaude(
     }),
     signal: AbortSignal.timeout(ANTHROPIC_TIMEOUT_MS),
   });
-
   if (!resp.ok) {
     const errText = await resp.text();
     throw new Error(`Anthropic API ${resp.status}: ${errText}`);
@@ -759,24 +758,48 @@ serve(async (req) => {
     // crashed after claiming but before finishing). Guards against both
     // double-invocation (a retried webhook dispatch) and a dead invocation
     // silently orphaning this row forever.
-    const ttlCutoff = new Date(Date.now() - CLAIM_TTL_MINUTES * 60_000).toISOString();
+    const claimAttemptStartedAt = new Date();
+    const ttlCutoff = new Date(claimAttemptStartedAt.getTime() - CLAIM_TTL_MINUTES * 60_000).toISOString();
     const { data: claimed, error: claimErr } = await supabase
       .from("mystery_adaptations")
-      .update({ status: "processing", processing_started_at: new Date().toISOString() })
+      .update({ status: "processing", processing_started_at: claimAttemptStartedAt.toISOString() })
       .eq("id", adaptation_id)
       .or(`status.eq.paid,and(status.eq.processing,processing_started_at.lt.${ttlCutoff})`)
       .select("*")
       .maybeSingle();
     if (claimErr) throw new Error(`claim failed: ${claimErr.message}`);
 
-    if (!claimed) {
-      const { data: current } = await supabase.from("mystery_adaptations").select("id, status").eq("id", adaptation_id).maybeSingle();
-      return new Response(JSON.stringify({
-        outcome: "noop", adaptation_id,
-        note: current ? `row is '${current.status}', not claimable — no-op (already processed, not yet paid, or another invocation currently owns it)` : "adaptation_id not found",
-      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    let adaptation: AdaptationRow;
+    if (claimed) {
+      adaptation = claimed as AdaptationRow;
+    } else {
+      // Incident 2026-08-20/21 (ADR-0098): reproduced live — the UPDATE
+      // above can commit in Postgres while its acknowledgement (the
+      // returned row) never makes it back to this code, so `claimed` reads
+      // null even though the write actually happened and this invocation
+      // really does own the row. Distinguishable from a genuinely different
+      // claimant (another real invocation, or a stale TTL-expired row)
+      // because THAT case can't produce a processing_started_at newer than
+      // the moment this attempt started — only our own just-committed,
+      // lost-acknowledgement write can. A tight recency window (well under
+      // CLAIM_TTL_MINUTES) keeps this from ever mistaking a truly separate
+      // claimant for our own lost ack.
+      const { data: current } = await supabase.from("mystery_adaptations").select("*").eq("id", adaptation_id).maybeSingle();
+      const recentSelfClaim = current
+        && current.status === "processing"
+        && current.completed_at == null
+        && current.processing_started_at != null
+        && new Date(current.processing_started_at) >= claimAttemptStartedAt;
+      if (recentSelfClaim) {
+        console.warn(`adapt-mystery-apply: claim UPDATE for ${adaptation_id} returned no acknowledgement but the row is already 'processing' as of this attempt — proceeding as the owner (lost-ack recovery, see ADR-0098)`);
+        adaptation = current as AdaptationRow;
+      } else {
+        return new Response(JSON.stringify({
+          outcome: "noop", adaptation_id,
+          note: current ? `row is '${current.status}', not claimable — no-op (already processed, not yet paid, or another invocation currently owns it)` : "adaptation_id not found",
+        }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
     }
-    const adaptation = claimed as AdaptationRow;
     packageIdForCleanup = adaptation.package_id;
     batchInfoForChain = { batchId: adaptation.batch_id, batchSequence: adaptation.batch_sequence };
 
