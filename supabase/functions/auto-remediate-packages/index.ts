@@ -475,20 +475,35 @@ export function retargetQuestions(
  * substantive content — e.g. an accusation "I believe [choose based on evidence]
  * is the murderer" — excising it leaves broken/gutted prose that the re-detect
  * gate CANNOT catch (a shorter, artifact-free field still passes the detector).
- * In that case we refuse (`safe: false`) so the handler escalates the package to
- * a human / regeneration instead of silently destroying paid content.
+ * In that case we refuse (`safe: false`) so the handler routes it to the
+ * character-scope delegation path below (ADR-0099) instead of silently
+ * destroying paid content.
  *
- * Only the three ADR-0047 patterns, only as bracketed spans. Chain-of-thought
- * the meta-text detector also flags ("let me reconsider") is never touched here —
- * it needs a rewrite, so it fails the gate and escalates, which is correct.
+ * All five bracketed ADR-0047/ADR-0099 patterns are attempted as clean spans
+ * first. Free-text chain-of-thought ("let me reconsider", "wait, i need to",
+ * etc. — ADR-0099) has no bracket to excise, so a match is always `safe:
+ * false`: never touched here, always routed to delegation/escalation, same as
+ * an embedded bracket artifact. Keep this in sync BY HAND with
+ * list_packages_with_meta_text_leak's marker regex (supabase/migrations/
+ * 20260810_add_is_test_flag_and_harden_health_check_detectors.sql) — the two
+ * drifting apart (only 3 of 13 alternatives recognized here) is exactly what
+ * silently broke delegation for prose leaks until ADR-0099.
  */
 const ARTIFACT_SPAN_RX = [
   /\[choose[^\]]*\]/gi,
   /\[closing paragraph[^\]]*\]/gi,
+  /\[insert[^\]]*\]/gi,
+  /\[if guilty[^\]]*\]/gi,
   /\[[^\]]*master_context[^\]]*\]/gi,
 ];
 /** Any surviving occurrence of these means the artifact wasn't cleanly removed. */
-const ARTIFACT_TOKEN_RX = /\[choose\b|\[closing paragraph\b|master_context/i;
+const ARTIFACT_TOKEN_RX = /\[choose\b|\[closing paragraph\b|\[insert\b|\[if guilty\b|master_context/i;
+/**
+ * Free-text chain-of-thought phrases (ADR-0099) — no bracket boundary, so
+ * never attempt a strip; any match is unconditionally unsafe.
+ */
+const PROSE_LEAK_RX =
+  /let me reconsider|let me reread|let me recalculate|let me look at this more carefully|i need to correct this|on second thought|as an ai language model|wait, i need to/i;
 
 export function stripArtifactLines(
   text: string,
@@ -498,6 +513,7 @@ export function stripArtifactLines(
   const outLines: string[] = [];
 
   for (const line of text.split("\n")) {
+    if (PROSE_LEAK_RX.test(line)) return { text, removed: [], safe: false };
     if (!ARTIFACT_TOKEN_RX.test(line)) {
       outLines.push(line);
       continue;
@@ -1144,9 +1160,10 @@ async function handleTemplateArtifacts(ctx: RunCtx, row: Record<string, unknown>
       }
     }
 
-    // Nothing matched our three authorised patterns and nothing was embedded
-    // either — the detector fired on chain-of-thought text instead, which
-    // needs a rewrite, not a deletion or a targeted regeneration.
+    // Nothing free-strippable and nothing recorded as unsafe-character-scope
+    // either — either the field is genuinely clean, or the leak is
+    // package-scope prose (regenerate-child-content can't write package
+    // fields, so that case still has no delegation path and escalates here).
     if (edits.length === 0) return null;
 
     return {
