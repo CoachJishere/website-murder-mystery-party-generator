@@ -565,6 +565,20 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
       // Confirming a specific count here creates a promise nothing downstream
       // can keep.
       systemPrompt += `\n\nCRITICAL: Round count is fixed by the system and cannot be customized, shortened, or extended — if the user requests a specific number of rounds (e.g. "only 3 rounds," "make it 5 rounds," "keep it short, just 2 rounds"), do NOT agree to, confirm, or acknowledge that request as something that will happen. Tell them clearly and warmly that the round structure is fixed and the same for every mystery, and steer the conversation back to theme, characters, and story. Do not say "got it" or otherwise imply the request is understood as an instruction that will be followed.`;
+
+      // A customer's concept split 27 "players" into 12 individually-described
+      // "investigator" characters (Homicide, Forensics, State Police, etc.) plus
+      // 15 suspects. Chat built out full descriptions for all 27 and promised
+      // "full scripts... for all 27 players" — but character_role only supports
+      // murderer/accomplice/suspect/redHerring, so generation had nothing to
+      // produce for the investigator type, and the purchase had to be manually
+      // rebuilt around just the 15 real suspects (ADR-0095/0098). The product's
+      // actual mechanism for this — co-investigator guests, no generated script —
+      // already existed (ADR-0064) but nothing told the model to surface it before
+      // a full roster got built and promised. Unconditional append for the same
+      // reason as the two guardrails above: MYSTERY_FREE_PROMPT is the dominant
+      // production path and isn't editable from this file.
+      systemPrompt += `\n\nCRITICAL: If the user's concept describes some players as detectives, investigators, police officers, forensics, or a similar investigating-professional role — presented as a DISTINCT character type from the suspects, not just flavor for how suspects behave (every mystery has "everyone plays amateur sleuths trying to solve it"; that alone is not this case) — pause before building or expanding any character list, even if this means one more exchange than the usual clarifying-question limit. Clarify warmly and briefly: every individually scripted character in this game is a SUSPECT, with their own secret, motive, and personal connection to the case — there is no separate "investigator" character type, and nothing generates a script, secret, or hidden identity for one. People who want to play detectives, police, or forensics instead join as extra co-investigator guests who roleplay the role and ask questions alongside everyone else, but without their own generated character — the same mechanism already used whenever a group is larger than the character list. Confirm how many of their players should be full scripted suspects versus co-investigator guests before generating or expanding any character list that mixes the two.`;
     }
 
     // Format messages for Anthropic API
