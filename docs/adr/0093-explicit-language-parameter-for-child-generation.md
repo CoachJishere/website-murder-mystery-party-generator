@@ -152,6 +152,16 @@ Re-fired the 4 still-broken characters (Deano, Maureen, Tommo, Tracey). Result: 
 
 **Open question, not fully explained:** why Deano/Tracey needed 4-5 attempts each even after the config-level root cause was fixed, while every other previously-broken character (Chantelle, Maureen, Tommo) converged on the first post-fix attempt. Not investigated further given it resolved anyway — flagged here in case the pattern recurs on a future customer, in which case it's worth capturing which specific characters/fields need repeat attempts before concluding a fix "didn't work."
 
+## Addendum 6 (2026-08-21): a different defect leaked into the same package via the remediation itself
+
+The scheduled health-check bot flagged "Muerte En El Micrófono" for `list_packages_with_meta_text_leak()` — unrelated to language, a different content-quality detector (ADR-0042/0053). Ran the exact detector query against the package directly rather than assuming false-alarm: genuine hit, source `character:Psychic Sandra/Sandro`.
+
+Located the exact text: `final_innocent` was cut off mid-sentence with raw model self-correction visible to the customer — *"Wait, I need to fix that last line — it should not contain a stray tag"* — the model started revising its own output and the response ended there, so the correction never actually happened. Sandra was one of the 13 characters re-fired during the original remediation (Addendum 1/3), so this is a side effect of that work, surfaced days later by the next scheduled sweep rather than caught immediately.
+
+**Why it wasn't caught at the time:** `validate_package_characters()` (the content-quality gate from ADR-0053) only runs once, triggered by `generation_completed_at` going `NULL -> NOT NULL` on first completion. A manual `CHILD_WEBHOOK` re-fire updates an already-`completed` row's fields directly without touching `generation_completed_at`, so the gate never re-fires and can't catch defects introduced by post-completion remediation. This is a real, general gap — any manual re-fire against a completed package (the standard recovery mechanism used throughout ADR-0089/0093/0095/0096) can silently reintroduce a content-quality defect the gate would have caught on a fresh generation. Not fixed here — flagged as a candidate for a future ADR if manual re-fires keep producing this (re-running the completion-gate defect checks, not just the round-count check, after any manual character re-fire would close it).
+
+Re-fired Sandra once more; verified via `final_innocent` length (1779 chars, no truncation) and the detector query returning zero rows for this package. Ciaran's package remains genuinely clean — full trail of both this and the missing-character incident on an unrelated package in the same digest is in CHANGELOG's 2026-08-21 entry.
+
 ## Key files
 
 - `supabase/functions/mystery-webhook-trigger/index.ts` — `LANGUAGE_NAMES` map, `profiles.language` lookup, `language` field added to `webhookPayload`
