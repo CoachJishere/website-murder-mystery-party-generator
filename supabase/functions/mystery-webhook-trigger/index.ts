@@ -524,10 +524,84 @@ serve(async (req) => {
     const isServiceCall = supabaseKey.length > 0 && authHeader === `Bearer ${supabaseKey}`;
     if (!conversation.is_paid && !isServiceCall) {
       console.warn(`[PaymentGate] Rejected generation for unpaid conversation ${conversationId}`);
+      await supabase.from("generation_attempts").insert({
+        conversation_id: conversationId, is_service_call: isServiceCall, outcome: "rejected_payment",
+      });
       return new Response(
         JSON.stringify({ success: false, error: "Payment required before package generation" }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    // GENERATION GUARD (ADR-0104): closes the post-purchase free-regeneration
+    // hole. Until now, the ONLY thing stopping a completed/in-progress package
+    // from being regenerated was the CLIENT-SIDE check in generateCompletePackage()
+    // (mysteryPackageService.ts) -- a plain read-then-branch, not atomic, and
+    // irrelevant to anyone calling this edge function directly (verify_jwt is
+    // disabled here; only is_paid was ever checked server-side). A customer
+    // holding their conversationId could re-trigger the full paid Make.com +
+    // Claude pipeline indefinitely, for free, forever.
+    //
+    // Service-role callers (isServiceCall, above) bypass both the rate limit
+    // and the claim below entirely -- this only closes the free self-serve
+    // path, not the recovery tooling used for legitimate remediation (e.g.
+    // Lyn's/Lydia's rebuilds, ADR-0098).
+    if (!isServiceCall) {
+      // Rate limit: independent of generation status, defense in depth in
+      // case claim_package_for_generation itself has a bug. Generous enough
+      // not to block a real double-click retry or a "generate, see an error,
+      // try again" cycle.
+      const RATE_LIMIT_WINDOW_MINUTES = 60;
+      const RATE_LIMIT_MAX_ATTEMPTS = 3;
+      const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60_000).toISOString();
+      const { count: recentAttempts } = await supabase
+        .from("generation_attempts")
+        .select("id", { count: "exact", head: true })
+        .eq("conversation_id", conversationId)
+        .eq("is_service_call", false)
+        .gte("attempted_at", windowStart);
+
+      if ((recentAttempts ?? 0) >= RATE_LIMIT_MAX_ATTEMPTS) {
+        console.warn(`[GenerationGuard] Rate limit hit for conversation ${conversationId}: ${recentAttempts} attempts in the last ${RATE_LIMIT_WINDOW_MINUTES}min`);
+        await supabase.from("generation_attempts").insert({
+          conversation_id: conversationId, is_service_call: false, outcome: "rejected_rate_limit",
+        });
+        return new Response(
+          JSON.stringify({ success: false, error: "Too many generation attempts for this mystery. Please contact support if you need help." }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Atomic claim: mirrors claim_package_for_remediation (20260802) and the
+      // lost-ack-hardened claim in adapt-mystery-apply (ADR-0098) -- a
+      // conditional UPDATE ... RETURNING under a row lock, so two concurrent
+      // callers (two tabs, a double-click, or a direct API call racing the
+      // UI) serialize instead of both passing a read-then-branch check.
+      const { data: claimed, error: claimErr } = await supabase
+        .rpc("claim_package_for_generation", { _conversation_id: conversationId, _ttl_minutes: 20 });
+      if (claimErr) {
+        console.error(`[GenerationGuard] Claim RPC failed for ${conversationId}: ${claimErr.message}`);
+        throw new Error(`Generation claim failed: ${claimErr.message}`);
+      }
+
+      if (!claimed) {
+        console.warn(`[GenerationGuard] Rejected duplicate generation for ${conversationId}: already completed or in progress`);
+        await supabase.from("generation_attempts").insert({
+          conversation_id: conversationId, is_service_call: false, outcome: "rejected_status",
+        });
+        return new Response(
+          JSON.stringify({ success: false, error: "This mystery has already been generated or is currently generating.", reason: "already_generated" }),
+          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      await supabase.from("generation_attempts").insert({
+        conversation_id: conversationId, is_service_call: false, outcome: "claimed",
+      });
+    } else {
+      await supabase.from("generation_attempts").insert({
+        conversation_id: conversationId, is_service_call: true, outcome: "claimed",
+      });
     }
 
     // Snapshot the approved concept message at generation time. The original
