@@ -209,4 +209,15 @@ All five deployed via `supabase functions deploy regenerate-child-content` (CLI,
 - `supabase/functions/regenerate-child-content/index.ts` — model, temperature, thinking, and max_tokens fixes; deployed via `supabase functions deploy` (CLI)
 - `mystery_characters` rows for Data/Diana Schmidt, Scale/Sara Vogel (full backfill, all fields) — package `07f8d3bb-0ddd-41cf-a470-b787630b4824`
 - `mystery_characters` rows for Victor Sterling (*Death At Ashworth Manor*), Riley/Rayne Chen (*Murder At The Moonlight Social Club*) — accusations normalized
-- Open follow-up, not built: a model-staleness detector for edge functions (see discussion above); `regenerate-parent-content`'s matching Haiku/temperature staleness
+- Open follow-up, not built: a model-staleness detector for edge functions (see discussion above)
+
+## Addendum 8 (2026-08-22): regenerate-parent-content had the same staleness — fixed same day, not deferred
+
+Jonathan asked to fix `regenerate-parent-content`'s matching staleness immediately rather than leave it for a fresh session, since the fix was already fully diagnosed (identical bugs, identical fix, identical deploy method just proven in Addendum 7) — a new tab would only re-derive context already in hand, not add independent value. Applied the same four changes: `MODEL` → `claude-sonnet-5`; dropped `temperature: 0.7`; added `thinking: { type: "disabled" }`; bumped per-field `max_tokens` (detective_script 3500→7000, game_overview 1500→3000, materials/evidence_cards 2000→4000 — same Haiku-calibrated-too-low pattern as Addendum 7). Deployed via `supabase functions deploy` (CLI).
+
+This function has no dry-run mode and no accept-or-revert re-detect gate (unlike `regenerate-child-content` — it's a simpler, single-package host-content-only regenerator per its own docstring, no cross-character risk), so didn't test against a real customer package. Found a leftover `is_test: true` package (`f0f0fa7a-8841-4189-94b1-b1c63719a816`, "TEST — Detective Final Statement Fix Verification") with a populated `master_context` and used that instead. Verified two fields live: `materials` (cheap, quick sanity check) and `detective_script` (the largest/most token-hungry field, the one most likely to still hit a budget ceiling) — both returned `status: "ok"`; `detective_script` came back 8180 characters, ending in a complete, well-formed sentence rather than a mid-word truncation.
+
+## Key files (Addendum 8)
+
+- `supabase/functions/regenerate-parent-content/index.ts` — model, temperature, thinking, and max_tokens fixes; deployed via `supabase functions deploy` (CLI)
+- Verified against test package `f0f0fa7a-8841-4189-94b1-b1c63719a816` (`materials`, `detective_script`), not a real customer package

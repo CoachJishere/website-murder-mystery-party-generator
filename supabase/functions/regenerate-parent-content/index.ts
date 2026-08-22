@@ -20,7 +20,14 @@ const supabase = createClient(
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || ""
 );
 
-const MODEL = "claude-haiku-4-5-20251001";
+// Updated 2026-08-22 (ADR-0098 Addendum 7): was hardcoded to Haiku, matching
+// a comment that predates ADR-0074's 2026-08-11 blanket Sonnet 5 upgrade —
+// same staleness regenerate-child-content had (fixed same day). Fixed here
+// alongside it rather than deferred, since the fix is identical and already
+// proven live: model, drop temperature (Sonnet 5 rejects it), add
+// thinking:disabled (its absence silently breaks Sonnet 5 responses), bump
+// max_tokens (Sonnet 5 is more verbose than Haiku for the same prompt).
+const MODEL = "claude-sonnet-5";
 const ANTHROPIC_VERSION = "2023-06-01";
 
 const PROMPTS: Record<string, string> = {
@@ -301,7 +308,7 @@ async function callClaude(prompt: string, apiKey: string, maxTokens: number): Pr
     body: JSON.stringify({
       model: MODEL,
       max_tokens: maxTokens,
-      temperature: 0.7,
+      thinking: { type: "disabled" },
       messages: [{ role: "user", content: prompt }],
     }),
   });
@@ -365,8 +372,9 @@ serve(async (req) => {
           .replace("{{TITLE}}", title)
           .replace("{{PLAYER_COUNT}}", String(playerCount));
 
-        // detective_script needs ~3000 tokens, evidence_cards ~1500, others smaller
-        const maxTokens = field === "detective_script" ? 3500 : field === "game_overview" ? 1500 : 2000;
+        // Bumped 2026-08-22 alongside the Sonnet 5 switch (was 3500/1500/2000
+        // — calibrated for Haiku; Sonnet 5 runs more verbose for the same prompt).
+        const maxTokens = field === "detective_script" ? 7000 : field === "game_overview" ? 3000 : 4000;
         const text = await callClaude(filled, apiKey, maxTokens);
         updates[DB_COLUMN_OF[field]] = text;
         results.push({ field, status: "ok", preview: text.slice(0, 120) });
