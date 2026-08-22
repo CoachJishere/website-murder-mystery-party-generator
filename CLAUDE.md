@@ -1,5 +1,18 @@
 # Murder Mystery Party Generator — Claude Code Instructions
 
+## Shorthand Commands
+
+- **"sweep"** = Run the New-Purchase Coherence Sweep (ADR-0103). Trigger: Jonathan pastes a purchase notification (conversation ID is the only field actually needed) into a fresh session and says "sweep" — no other setup required, this file is auto-loaded.
+  1. Resolve `package_id`/`mystery_style`/`player_count`/`has_accomplice`/language from the `conversation_id`.
+  2. Note whether the package predates or postdates the 2026-08-11 blanket Sonnet 5 upgrade (ADR-0074) — pre-upgrade gets extra scrutiny, but don't skip post-upgrade.
+  3. Run `list_packages_with_meta_text_leak` and `list_packages_with_victim_mismatch` scoped to this package — a clean result is a data point, not proof (both have known blind spots, see ADR-0103).
+  4. Manually cross-check the victim's name across `game_overview`, `detective_script`, and 3-4 characters' own background/relationships text. Any mismatch is high-severity by default.
+  5. Read the full `detective_script` for leaked brackets/placeholders, garbled sentences, and — for slip-style (`mystery_style = 'character'`) games — confirm any `[MURDERER NAME]`-style bracket is the legitimate host-fill-in convention, not a leak.
+  6. Spot-check 2-3 characters' full content (relationships, secrets, round scripts, accusations) for leaked authoring notes, self-directed questions, dangling references to removed characters, garbled text — **in the package's actual language**, not just English patterns.
+  7. Run `package_completion_blocking_defects()` for genuinely missing content.
+  8. Found something → fix it, re-verify, CHANGELOG entry + an addendum to **ADR-0103** (not ADR-0098 — different incident). Clean → report in chat only, no permanent document for a routine "nothing found."
+  - Full checklist detail and rationale: `docs/adr/0103-new-purchase-coherence-sweep-ritual.md`.
+
 ## Changelog
 
 After every meaningful code change, update `CHANGELOG.md` with a dated entry.
