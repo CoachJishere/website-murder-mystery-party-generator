@@ -50,6 +50,14 @@ jobs:
           # ADR-0088 "Recast": not a secret (a client-side boolean baked into the
           # bundle either way), so a literal value here rather than a repo secret.
           VITE_ENABLE_GUEST_DROPOUT_ADAPTATION: "true"
+          # ADR-0102: PostHog project tokens are write-only and explicitly documented
+          # by PostHog as "safe to use in public apps" — same non-secret reasoning as
+          # above, literal value rather than a repo secret. This was never set in this
+          # workflow at all (the site's actual deploy target), so PostHog never fired
+          # a single production event despite the client-side integration existing
+          # since 2026-04-24 — the Vercel project this repo is also linked to is not
+          # what serves mysterymaker.party.
+          VITE_POSTHOG_KEY: "phc_nWJE7Euc6KTzgYtMNgX4S4vzf6kWhzABgSerCznbD4D3"
         run: |
           echo "=== Build Environment ==="
           node --version
