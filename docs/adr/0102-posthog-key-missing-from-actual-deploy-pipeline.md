@@ -45,6 +45,15 @@ The Vercel project's `VITE_POSTHOG_KEY` (changed during ADR-0100) is left as-is 
 - **Not addressed:** whether the original PostHog project (from ADR-0100's investigation) still exists, was deleted, or is sitting untouched and empty. No longer actionable or worth pursuing.
 - **Verification:** confirmed via `curl -I https://mysterymaker.party` (returns `server: GitHub.com`) and reading `.github/workflows/deploy.yml` directly — not inferred. Did not yet verify the *next* real deploy actually fires an event end-to-end; that requires a push to `main` and a subsequent live visit, follow-up not yet done as of this ADR.
 
+## Addendum 1 (2026-08-22): verified end-to-end, live
+
+Pushed the `deploy.yml` fix to `main` (commit `e09193f`); the triggered GitHub Actions run (`32560113170`) completed successfully in 2m7s. Confirmed the fix actually took, not just that the workflow ran clean:
+
+- `curl https://www.mysterymaker.party/` → located the built JS bundle (`/assets/main-C-J5j1-a.js`) → `grep -o "phc_[a-zA-Z0-9]*"` found `phc_nWJE7Euc6KTzgYtMNgX4S4vzf6kWhzABgSerCznbD4D3` baked into the live production bundle, confirming the env var reached the actual build this time.
+- Sent one synthetic test event directly to `https://us.i.posthog.com/i/v0/e/` with that token → `{"status":"Ok"}`. Re-checked the project via the API 5 seconds later: `ingested_event` flipped from `false` to `true`.
+
+This closes the "not yet verified end-to-end" gap noted above. The pipeline is confirmed live, not just theoretically fixed — real visitor traffic will now populate this PostHog project going forward, unblocking the purchase-to-play timing analysis that started this whole investigation.
+
 ## Key files
 
 - `.github/workflows/deploy.yml` — added `VITE_POSTHOG_KEY` literal to the "Build project" step's env block
