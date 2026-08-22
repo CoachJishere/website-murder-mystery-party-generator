@@ -347,26 +347,19 @@ const REASSIGN_CALL_COST_USD_ESTIMATE = 0.35;
 // reaching finally). AbortSignal.timeout bounds every call here so a slow/
 // stalled response always resolves into the existing catch-and-degrade
 // (polish) or throw-and-chain-forward (reassign) paths instead of hanging.
-// Incident 2026-08-22 (same day as the reassign max_tokens fix below): this
-// call also truncated ("Unterminated string in JSON") on both of Eduardo's
-// real reassignment runs, at a consistent ~9,250-character offset under the
-// old max_tokens:4000 — same ~2.3 chars/token ratio as reassignWithClaude's
-// truncation, scaled to this call's smaller output schema. Non-blocking
-// (degrades to deterministic-only on any error, by design), so this was
-// never customer-visible, but it's the same class of bug. max_tokens
-// doubled to 8000 alongside it; timeout bumped proportionally.
-const ANTHROPIC_TIMEOUT_MS = 60_000;
-// reassignWithClaude specifically generates much more (3 round scripts, a
-// full confession, a full detective_script, full evidence_cards_text —
-// max_tokens 8000, the same size regenerate-child-content generates with NO
-// client-side timeout at all). Incident 2026-08-22: the shared 45s budget
-// above is sized for polishWithClaude's small targeted edits and made every
-// live murderer/accomplice reassignment fail with "Signal timed out" before
-// the call could finish — confirmed 100% reproducing (3 of 3 attempts same
-// day, real customer). Kept well under Supabase's edge function wall-clock
-// ceiling so a genuinely stalled call still resolves into the throw-and-
-// chain-forward path instead of hanging the batch.
-const REASSIGN_TIMEOUT_MS = 120_000;
+//
+// Incident 2026-08-22: both calls originally had their own separate,
+// separately-guessed timeout — a 45s one sized for polishWithClaude's small
+// targeted edits (too short once actually used for reassignWithClaude's much
+// bigger generation, every live reassignment died with "Signal timed out"),
+// and later a fixed max_tokens for each that both independently truncated
+// ("Unterminated string in JSON") on Eduardo's real live runs. Both calls now
+// flatly request the same safe max_tokens ceiling (see the 16000 comments at
+// each call site — Anthropic bills actual tokens generated, not the ceiling
+// requested, so there's no cost reason to size down for a smaller batch), so
+// one shared, generous timeout covers both rather than two constants that
+// have to be kept in sync by hand.
+const ANTHROPIC_CALL_TIMEOUT_MS = 120_000;
 
 interface PolishTarget { id: string; field: string; before: string; current: string }
 interface PolishedField { id: string; field: string; text: string }
@@ -454,7 +447,16 @@ async function polishWithClaude(
     },
     body: JSON.stringify({
       model: ANTHROPIC_MODEL,
-      max_tokens: 8000,
+      // Flat, not scaled to target size: Anthropic bills actual output
+      // tokens generated, not the max_tokens ceiling requested, so a smaller
+      // batch costs nothing extra by also requesting the full safe ceiling —
+      // there's no "smaller budget" case worth sizing down to, only a
+      // ceiling to stay under. 16000 is that ceiling (Anthropic's own
+      // guidance for a non-streaming call, which this raw fetch is).
+      // Incident 2026-08-22: this call truncated twice in production at
+      // max_tokens:4000 (~9,250-char offset), non-blocking both times
+      // (degrades to deterministic-only output by design) but same bug.
+      max_tokens: 16000,
       // Bounded rewrite task, no tools — disabled thinking keeps cost/latency
       // down. Allowed: disabling thinking requires effort <= "high", and
       // "medium" is well below that ceiling.
@@ -467,7 +469,7 @@ async function polishWithClaude(
       },
       messages: [{ role: "user", content: prompt }],
     }),
-    signal: AbortSignal.timeout(ANTHROPIC_TIMEOUT_MS),
+    signal: AbortSignal.timeout(ANTHROPIC_CALL_TIMEOUT_MS),
   });
   if (!resp.ok) {
     const errText = await resp.text();
@@ -634,6 +636,18 @@ async function reassignWithClaude(params: {
   if (params.candidates.length === 0) throw new Error("reassignWithClaude: no eligible remaining candidate to promote");
 
   const prompt = buildReassignPrompt(params);
+  // This call must reproduce the ENTIRE detective_script and
+  // evidence_cards_text verbatim (byte-for-byte reproduction is the whole
+  // point of the "only rewrite the naming sections" instruction) plus
+  // generate all the new promoted-character content, and Eduardo's real
+  // package already needed close to the full 16000-token non-streaming
+  // ceiling — a smaller package costs nothing extra by also requesting the
+  // max (Anthropic bills actual output tokens generated, not max_tokens
+  // requested), so there's no meaningful "smaller budget" case to size down
+  // to here, only a ceiling to size up against, and 16000 already IS that
+  // ceiling. A package that still doesn't fit needs the patch-based rewrite
+  // noted in the ADR-0088 addendum, not a higher number.
+  const maxTokens = 16000;
 
   const resp = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -644,25 +658,7 @@ async function reassignWithClaude(params: {
     },
     body: JSON.stringify({
       model: ANTHROPIC_MODEL,
-      // Incident 2026-08-22: 8000 was never validated against a real key
-      // (ADR-0088 shipped this call untested against live Anthropic — "no
-      // Anthropic key has been used anywhere in this feature yet"). It must
-      // hold the ENTIRE detective_script and evidence_cards_text verbatim
-      // (byte-for-byte reproduction is the whole point of the "only rewrite
-      // the naming sections" instruction) plus all the new content — for
-      // this real 16-character package that's ~9600 + ~1900 raw chars of
-      // markdown before a single new word is generated, and JSON-escaping
-      // every newline in that markdown inflates the wire size further. Both
-      // live attempts truncated ("Unterminated string in JSON") at a
-      // consistent ~19,000-character offset under the old 8000-token cap —
-      // 16000 is sized off that measurement with real headroom, not another
-      // guess. Non-streaming raw fetch (not the SDK) stays safe up to
-      // ~16000 output tokens per Anthropic's own guidance; a package still
-      // too large for this budget is exactly the case for a patch-based
-      // rewrite (send only the reveal section, not the full document) —
-      // worth building if this ceiling is ever hit again, not preemptively
-      // here.
-      max_tokens: 16000,
+      max_tokens: maxTokens,
       thinking: { type: "disabled" },
       output_config: {
         effort: "medium",
@@ -670,7 +666,7 @@ async function reassignWithClaude(params: {
       },
       messages: [{ role: "user", content: prompt }],
     }),
-    signal: AbortSignal.timeout(REASSIGN_TIMEOUT_MS),
+    signal: AbortSignal.timeout(ANTHROPIC_CALL_TIMEOUT_MS),
   });
 
   if (!resp.ok) {
