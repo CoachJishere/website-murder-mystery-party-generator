@@ -280,7 +280,8 @@ export default function GuestDropoutPreview() {
               </DialogHeader>
 
               <p className="text-sm" style={{ color: "rgba(245,240,232,0.6)" }}>
-                Remove a character from your mystery with the click of a button.
+                You can already edit any character here, but removing one entirely is more complex than
+                a text edit — their alibi, rumors, and evidence are woven into everyone else's material too.
               </p>
 
               {mysteryStyle === "character" && (
@@ -303,9 +304,8 @@ export default function GuestDropoutPreview() {
               <div className="flex items-start gap-3">
                 <Wand2 className="h-4 w-4 shrink-0 mt-0.5" style={{ color: "rgba(245,240,232,0.6)" }} />
                 <p className="text-sm" style={{ color: "rgba(245,240,232,0.75)" }}>
-                  Every character's story is woven into everyone else's — alibis, rumors, evidence. We
-                  update every character sheet, the detective script, and evidence cards so nothing left
-                  behind mentions someone who isn't there.
+                  We remove them from every character sheet, the detective script, and evidence cards, so
+                  nothing left behind mentions them.
                 </p>
               </div>
 

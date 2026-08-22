@@ -1592,11 +1592,11 @@
     },
     "explainer": {
       "title": "Remove a Character",
-      "subtitle": "Remove a character from your mystery with the click of a button.",
+      "subtitle": "You can already edit any character here, but removing one entirely is more complex than a text edit - their alibi, rumors, and evidence are woven into everyone else's material too.",
       "characterStyleHeadline": "You probably don't need to pay for this.",
       "characterStyleBody": "This is a character-based mystery - there's no predetermined culprit, so a missing character's absence is easy to paper over yourself, for free. Just tell your guests something like: \"X is also a suspect, but we're interviewing them separately - please carry on without them,\" or \"We've already ruled X out.\" Any leftover rumors about them become a non-issue.",
       "characterStyleContinue": "Still want it cleanly removed from every document? Continue below.",
-      "realEditBody": "Every character's story is woven into everyone else's - alibis, rumors, evidence. We update every character sheet, the detective script, and evidence cards so nothing left behind mentions someone who isn't there.",
+      "realEditBody": "We remove them from every character sheet, the detective script, and evidence cards, so nothing left behind mentions them.",
       "goodToKnowLabel": "Good to know",
       "irreversibleBody": "Once submitted, there's no way back.",
       "timingBody": "Best used as late as possible - ideally the day of the party. If another guest drops out after you've already submitted, you'll need to do it again (and pay again).",
