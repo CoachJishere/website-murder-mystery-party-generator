@@ -194,22 +194,66 @@ export async function generateCompletePackage(mysteryId: string, testMode = fals
     if (webhookError) {
       console.error("Edge Function error:", webhookError);
 
-      // Update status to failed
-      await supabase
-        .from("mystery_packages")
-        .update({
-          generation_status: {
-            status: 'failed',
-            progress: 0,
-            currentStep: 'Failed to trigger generation',
-            error: webhookError.message,
-            resumable: true
-          },
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", packageId);
+      // supabase.functions.invoke() throws FunctionsHttpError on any non-2xx
+      // response, discarding the status code and JSON body by default. Read
+      // both off the raw Response at error.context so a rate-limit (429) or
+      // already-in-progress (409) rejection isn't mislabeled as a resumable
+      // mid-pipeline failure (ADR-0104 Addendum, 2026-08-23).
+      let statusCode: number | undefined;
+      let reason: string | undefined;
+      let serverMessage: string | undefined;
+      try {
+        const ctx = (webhookError as any).context;
+        statusCode = ctx?.status;
+        if (ctx && typeof ctx.json === 'function') {
+          const body = await ctx.json();
+          reason = body?.reason;
+          serverMessage = body?.error;
+        }
+      } catch (parseErr) {
+        console.warn("Could not parse Edge Function error response body:", parseErr);
+      }
 
-      throw new Error(`Failed to trigger generation: ${webhookError.message}`);
+      const isRateLimited = statusCode === 429 || reason === 'rate_limited';
+      const isAlreadyGenerating = statusCode === 409 || reason === 'already_generated';
+
+      // A 409 means the atomic claim (ADR-0104) is held by WHOEVER actually won the
+      // race -- generation is genuinely in progress (or already completed) under that
+      // other call, not failed. Overwriting generation_status here would stomp the
+      // real status with a false "failed" for every losing caller, hiding genuine
+      // progress mid-run. Found live 2026-08-23: a customer's own repeated clicks
+      // while a legitimate service-role-triggered run was still active each 409'd and
+      // clobbered the row to 'failed', even though Make.com was still working.
+      // Leave the row untouched and just inform the caller; only a call that actually
+      // owns the run should ever write to generation_status.
+      if (!isAlreadyGenerating) {
+        await supabase
+          .from("mystery_packages")
+          .update({
+            generation_status: {
+              status: 'failed',
+              progress: 0,
+              currentStep: isRateLimited
+                ? 'Too many generation attempts in the last hour — please wait or contact support'
+                : 'Failed to trigger generation',
+              error: serverMessage || webhookError.message,
+              // Only a genuine mid-pipeline failure has saved progress to resume --
+              // a rate-limit rejection never started a new run, so "Resume
+              // Generation" framing would be misleading.
+              resumable: !isRateLimited
+            },
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", packageId);
+      }
+
+      if (isRateLimited) {
+        throw new Error("Too many generation attempts for this mystery in the last hour. Please wait a bit and try again, or contact support.");
+      }
+      if (isAlreadyGenerating) {
+        throw new Error("This mystery is already generating or has already been generated.");
+      }
+      throw new Error(`Failed to trigger generation: ${serverMessage || webhookError.message}`);
     }
 
     console.log("Edge Function response:", webhookResponse);

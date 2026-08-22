@@ -14,6 +14,8 @@ import { type Locale, normalizeLocale, pickByLocale, getUserLanguage } from "../
  *     with social proof if any guest left positive feedback.
  *   - invite_friends (+14d post-generation): light "share with friends"
  *     prompt, sent only to paid hosts who haven't unsubscribed.
+ *     ON HOLD as of 2026-08-17 (see the TEMPORARY HOLD block below) —
+ *     rows still get created, dispatch just parks them as 'held'.
  *   - character_removal_announcement: one-time backfill, not a recurring
  *     scheduled type. English only, no unsubscribe footer (it's a single
  *     send, not a follow-up series) — see docs/adr/0078 and the 2026-08-16
@@ -392,6 +394,16 @@ serve(async (req) => {
           continue;
         }
 
+        // TEMPORARY HOLD (2026-08-17, owner request): invite_friends felt
+        // too early at +14d post-generation. schedule_followup_emails()
+        // still creates new rows as normal, this just stops them from
+        // actually sending until the timing is revisited. To resume:
+        // delete this block and flip any 'held' rows back to 'pending'.
+        if (email.email_type === "invite_friends") {
+          await markHeld(supabase, email.id, "owner_requested_hold_2026-08-17");
+          continue;
+        }
+
         // invite_friends only goes to paid hosts (a free draft owner has
         // nothing meaningful to share yet).
         if (email.email_type === "invite_friends" && !convo.is_paid) {
@@ -509,6 +521,16 @@ async function markSkipped(supabase: any, emailId: string, reason: string) {
   await supabase
     .from("followup_emails")
     .update({ status: "skipped", skipped_reason: reason })
+    .eq("id", emailId);
+}
+
+// Distinct from markSkipped: 'held' means temporarily paused, not
+// permanently excluded — resuming is a status flip back to 'pending',
+// not a re-derivation of eligibility.
+async function markHeld(supabase: any, emailId: string, reason: string) {
+  await supabase
+    .from("followup_emails")
+    .update({ status: "held", skipped_reason: reason })
     .eq("id", emailId);
 }
 

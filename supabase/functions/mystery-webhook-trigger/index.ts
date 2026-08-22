@@ -551,6 +551,18 @@ serve(async (req) => {
       // case claim_package_for_generation itself has a bug. Generous enough
       // not to block a real double-click retry or a "generate, see an error,
       // try again" cycle.
+      //
+      // ADR-0104 Addendum (2026-08-23): only count outcome="claimed" attempts
+      // -- i.e. calls that actually won the atomic claim and kicked off a real
+      // (billable) generation run. Multi-tab/refresh races produce 409
+      // "rejected_status" responses that cost nothing and represent the SAME
+      // underlying attempt as whichever call won the claim, not a new one --
+      // counting them let 2-3 harmless race losses alone exhaust the whole
+      // budget before a single real attempt ran (see incident: conversation
+      // 1c87bdb3, 2026-08-22, esj@salgados.net -- 3 near-simultaneous 409s
+      // from what was almost certainly two tabs burned the limit in 22s, then
+      // 28 follow-up manual retries over 13min all hit 429 with zero real
+      // attempts ever having run).
       const RATE_LIMIT_WINDOW_MINUTES = 60;
       const RATE_LIMIT_MAX_ATTEMPTS = 3;
       const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60_000).toISOString();
@@ -559,15 +571,16 @@ serve(async (req) => {
         .select("id", { count: "exact", head: true })
         .eq("conversation_id", conversationId)
         .eq("is_service_call", false)
+        .eq("outcome", "claimed")
         .gte("attempted_at", windowStart);
 
       if ((recentAttempts ?? 0) >= RATE_LIMIT_MAX_ATTEMPTS) {
-        console.warn(`[GenerationGuard] Rate limit hit for conversation ${conversationId}: ${recentAttempts} attempts in the last ${RATE_LIMIT_WINDOW_MINUTES}min`);
+        console.warn(`[GenerationGuard] Rate limit hit for conversation ${conversationId}: ${recentAttempts} real attempts in the last ${RATE_LIMIT_WINDOW_MINUTES}min`);
         await supabase.from("generation_attempts").insert({
           conversation_id: conversationId, is_service_call: false, outcome: "rejected_rate_limit",
         });
         return new Response(
-          JSON.stringify({ success: false, error: "Too many generation attempts for this mystery. Please contact support if you need help." }),
+          JSON.stringify({ success: false, error: "Too many generation attempts for this mystery. Please contact support if you need help.", reason: "rate_limited" }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }

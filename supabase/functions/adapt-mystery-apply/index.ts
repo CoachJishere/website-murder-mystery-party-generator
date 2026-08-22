@@ -347,7 +347,26 @@ const REASSIGN_CALL_COST_USD_ESTIMATE = 0.35;
 // reaching finally). AbortSignal.timeout bounds every call here so a slow/
 // stalled response always resolves into the existing catch-and-degrade
 // (polish) or throw-and-chain-forward (reassign) paths instead of hanging.
-const ANTHROPIC_TIMEOUT_MS = 45_000;
+// Incident 2026-08-22 (same day as the reassign max_tokens fix below): this
+// call also truncated ("Unterminated string in JSON") on both of Eduardo's
+// real reassignment runs, at a consistent ~9,250-character offset under the
+// old max_tokens:4000 — same ~2.3 chars/token ratio as reassignWithClaude's
+// truncation, scaled to this call's smaller output schema. Non-blocking
+// (degrades to deterministic-only on any error, by design), so this was
+// never customer-visible, but it's the same class of bug. max_tokens
+// doubled to 8000 alongside it; timeout bumped proportionally.
+const ANTHROPIC_TIMEOUT_MS = 60_000;
+// reassignWithClaude specifically generates much more (3 round scripts, a
+// full confession, a full detective_script, full evidence_cards_text —
+// max_tokens 8000, the same size regenerate-child-content generates with NO
+// client-side timeout at all). Incident 2026-08-22: the shared 45s budget
+// above is sized for polishWithClaude's small targeted edits and made every
+// live murderer/accomplice reassignment fail with "Signal timed out" before
+// the call could finish — confirmed 100% reproducing (3 of 3 attempts same
+// day, real customer). Kept well under Supabase's edge function wall-clock
+// ceiling so a genuinely stalled call still resolves into the throw-and-
+// chain-forward path instead of hanging the batch.
+const REASSIGN_TIMEOUT_MS = 120_000;
 
 interface PolishTarget { id: string; field: string; before: string; current: string }
 interface PolishedField { id: string; field: string; text: string }
@@ -435,7 +454,7 @@ async function polishWithClaude(
     },
     body: JSON.stringify({
       model: ANTHROPIC_MODEL,
-      max_tokens: 4000,
+      max_tokens: 8000,
       // Bounded rewrite task, no tools — disabled thinking keeps cost/latency
       // down. Allowed: disabling thinking requires effort <= "high", and
       // "medium" is well below that ceiling.
@@ -625,7 +644,25 @@ async function reassignWithClaude(params: {
     },
     body: JSON.stringify({
       model: ANTHROPIC_MODEL,
-      max_tokens: 8000,
+      // Incident 2026-08-22: 8000 was never validated against a real key
+      // (ADR-0088 shipped this call untested against live Anthropic — "no
+      // Anthropic key has been used anywhere in this feature yet"). It must
+      // hold the ENTIRE detective_script and evidence_cards_text verbatim
+      // (byte-for-byte reproduction is the whole point of the "only rewrite
+      // the naming sections" instruction) plus all the new content — for
+      // this real 16-character package that's ~9600 + ~1900 raw chars of
+      // markdown before a single new word is generated, and JSON-escaping
+      // every newline in that markdown inflates the wire size further. Both
+      // live attempts truncated ("Unterminated string in JSON") at a
+      // consistent ~19,000-character offset under the old 8000-token cap —
+      // 16000 is sized off that measurement with real headroom, not another
+      // guess. Non-streaming raw fetch (not the SDK) stays safe up to
+      // ~16000 output tokens per Anthropic's own guidance; a package still
+      // too large for this budget is exactly the case for a patch-based
+      // rewrite (send only the reveal section, not the full document) —
+      // worth building if this ceiling is ever hit again, not preemptively
+      // here.
+      max_tokens: 16000,
       thinking: { type: "disabled" },
       output_config: {
         effort: "medium",
@@ -633,7 +670,7 @@ async function reassignWithClaude(params: {
       },
       messages: [{ role: "user", content: prompt }],
     }),
-    signal: AbortSignal.timeout(ANTHROPIC_TIMEOUT_MS),
+    signal: AbortSignal.timeout(REASSIGN_TIMEOUT_MS),
   });
 
   if (!resp.ok) {
@@ -1250,7 +1287,16 @@ serve(async (req) => {
       }
       const dsAfter = (pkgAfter as Record<string, unknown> | null)?.detective_script;
       const promotedName = promotedAfter?.character_name;
-      if (promotedName && typeof dsAfter === "string" && !dsAfter.includes(promotedName)) {
+      // Bug, incident 2026-08-22: character_name is a "Real Name -
+      // PlayerNickname" composite (e.g. "Fulgencio Villamar - MauSal").
+      // Claude's prose naturally writes the real name alone, never the
+      // literal " - Nickname" suffix, so a full-string .includes() here
+      // failed on every reassignment that reached this check at all,
+      // rolling back an otherwise-correct write. Check against the real-name
+      // portion instead (mirrors how every other prose field in this
+      // pipeline already treats the "Real Name - Nickname" split).
+      const promotedRealName = promotedName?.split(" - ")[0]?.trim();
+      if (promotedRealName && typeof dsAfter === "string" && !dsAfter.includes(promotedRealName)) {
         verifyIssues.push("detective_script does not mention the promoted character's name after reassignment");
       }
     }
