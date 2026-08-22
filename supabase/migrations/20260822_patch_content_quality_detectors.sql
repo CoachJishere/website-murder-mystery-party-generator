@@ -16,10 +16,14 @@
 -- silently followed. Validated against every completed package back to
 -- 2026-04-01 (see ADR-0098 Addendum 4 for the query): "not included in" and
 -- "per (the/content) rules" have zero legitimate hits anywhere in history —
--- every occurrence found was this exact leak. "[VICTIM" is also zero-FP: a
--- victim's identity is always fixed at generation time, so unlike the
--- murderer/accomplice in slip-style games there's no legitimate reason for a
--- victim name to ever be a fill-in-the-blank.
+-- every occurrence found was this exact leak. An earlier version of this
+-- patch also added "[VICTIM" on the theory that a victim's identity is
+-- always fixed at generation time so there's no legitimate fill-in-the-blank
+-- use — that theory was wrong: "[victim's name]" is a real template token in
+-- the round2/3/4_innocent/guilty/accomplice branching fields, not covered by
+-- this validation pass. Found and reverted same day (Addendum 6) — every
+-- real "[VICTIM...]" leak is independently caught by the two markers above,
+-- so "[victim" added false-positive risk for zero unique coverage.
 --
 -- Deliberately NOT added: "[murderer", "[suspect", "[accomplice name" —
 -- these looked like the same leak family at first, but Death At Hollowcrest
@@ -58,7 +62,18 @@ AS $fn$
     -- "accomplice Beat", caught live during validation (Camp Nightfall:
     -- Murder At Pinewood Lodge). Same bare-substring hazard already known
     -- from ADR-0098's "Cross"/"across" bug — word-boundary every new marker.
-    SELECT '(let me reconsider|let me reread|let me recalculate|let me look at this more carefully|i need to correct this|on second thought|master_context|as an ai language model|wait, i need to|\[closing paragraph|\[insert |\[choose |\[if guilty|per (the |content )?rules\b|not included in|\[victim|accomplice beat\M)'::text AS rx
+    -- Fixed same day (ADR-0098 Addendum 6), applied live rather than via a
+    -- new migration file at the time — reconciled here so this file matches
+    -- what's actually deployed. Two bugs: (1) "\b" in PostgreSQL's regex
+    -- flavor (ARE) means a literal BACKSPACE character, not a word boundary —
+    -- "\M" is correct — so the "per rules" marker never matched anything in
+    -- production. (2) "\[victim" false-matched the legitimate "[victim's
+    -- name]" template token used in the round2/3/4_innocent/guilty/
+    -- accomplice branching fields (not covered by the original validation
+    -- pass). Every real "[VICTIM...]" leak found is independently caught by
+    -- "per rules"/"not included in" in the same bracket, so "\[victim" added
+    -- false-positive risk with zero unique detection value — removed.
+    SELECT '(let me reconsider|let me reread|let me recalculate|let me look at this more carefully|i need to correct this|on second thought|master_context|as an ai language model|wait, i need to|\[closing paragraph|\[insert |\[choose |\[if guilty|per (the |content )?rules\M|not included in|accomplice beat\M)'::text AS rx
   ),
   hits AS (
     -- character-level narrative + host/player fields
@@ -103,7 +118,7 @@ AS $fn$
 $fn$;
 
 COMMENT ON FUNCTION public.list_packages_with_meta_text_leak(timestamptz) IS
-  'Completed packages whose delivered text contains model chain-of-thought or template artifacts (e.g. "the matrix shows", "[CLOSING PARAGRAPH ...]", "let me reconsider", "per the rules", "[VICTIM"). Crimson Tide incident 2026-07-25; extended 2026-08-22 after Lyn DiFranco audit (ADR-0098 Addendum 4). Read-only.';
+  'Completed packages whose delivered text contains model chain-of-thought or template artifacts (e.g. "the matrix shows", "[CLOSING PARAGRAPH ...]", "let me reconsider", "per the rules"). Crimson Tide incident 2026-07-25; extended 2026-08-22 after Lyn DiFranco audit (ADR-0098 Addendum 4); \b-vs-\M regex fix and "[victim" false-positive removed same day (Addendum 6). Read-only.';
 
 -- ---------------------------------------------------------------------------
 -- Patch 2: victim_mismatch's extraction regex required the victim's name to
