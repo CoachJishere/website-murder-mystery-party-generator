@@ -108,18 +108,32 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // Constants
 // ---------------------------------------------------------------------------
 
-const MODEL = "claude-haiku-4-5-20251001"; // matches regenerate-parent-content and the live Child blueprint (modules 401/405/409/501/...)
+// Updated 2026-08-22 (ADR-0098 Addendum 6): was hardcoded to Haiku, matching
+// a comment that predates ADR-0074's 2026-08-11 blanket Sonnet 5 upgrade —
+// the live Child blueprint has run on Sonnet 5 for every call since then,
+// this file just hadn't been updated to match. Caught live: a Haiku call
+// here reproduced a self_directed_questions defect (ADR-0042) on its first
+// real backfill attempt, the exact defect class ADR-0074 named Haiku for.
+// regenerate-parent-content (index.ts) has the same staleness — not fixed
+// here, flagged in the ADR as a follow-up.
+const MODEL = "claude-sonnet-5";
 const ANTHROPIC_VERSION = "2023-06-01";
-const MAX_TOKENS = 4000; // matches the Child blueprint's createAMessage modules
+// Was 4000 (calibrated for Haiku). Bumped 2026-08-22 alongside the Sonnet 5
+// switch — caught live: Sonnet 5 produces more verbose output than Haiku for
+// the same prompt, and a real call truncated mid-string ("Unterminated
+// string in JSON") at the 4000-token cap on a 5-field call group.
+const MAX_TOKENS = 8000;
 
 /**
  * Flat per-Claude-call cost estimate (USD), same style as auto-remediate-
  * packages's OVERVIEW_REGEN_COST_USD — an approximation for spend-cap
- * accounting, not a metered actual. Slightly higher than the parent-content
- * regenerator's $0.01 because these calls run at the full 4000-token budget the
- * live Child scenario uses (vs. 1500-3500 there).
+ * accounting, not a metered actual. Updated 2026-08-22 alongside the Sonnet 5
+ * model switch above — was calibrated to Haiku ($1/$5 per MTok) at $0.03/call;
+ * Sonnet 5 intro pricing ($2/$10 per MTok, through 2026-08-31) is roughly 3x,
+ * standard pricing ($3/$15) roughly 4-5x, so $0.10 stays a reasonable flat
+ * estimate at the full 4000-token budget these calls run at.
  */
-const CLAUDE_CALL_COST_USD = 0.03;
+const CLAUDE_CALL_COST_USD = 0.1;
 
 /**
  * Shared daily spend cap. This function writes to the SAME `auto_remediation_log`
@@ -769,9 +783,20 @@ async function callClaude(prompt: string, apiKey: string): Promise<{ text: strin
       "anthropic-version": ANTHROPIC_VERSION,
     },
     body: JSON.stringify({
+      // temperature: 0.7 removed 2026-08-22 alongside the Sonnet 5 switch —
+      // Sonnet 5 rejects any non-default sampling parameter with a 400
+      // (ADR-0074 already hit and fixed this exact landmine in the live
+      // Child/Parent blueprints; this file just hadn't been touched since).
+      //
+      // thinking: disabled added same day — caught live: without it, a real
+      // Sonnet 5 call returned content[0] as a non-text block, so
+      // `data.content?.[0]?.text` was undefined and every field failed with
+      // "No content in Anthropic response" (zero cost — fails before any
+      // write). adapt-mystery-apply already sets this exact flag for its own
+      // Sonnet 5 calls (ADR-0074); this file just hadn't matched it.
       model: MODEL,
       max_tokens: MAX_TOKENS,
-      temperature: 0.7,
+      thinking: { type: "disabled" },
       messages: [{ role: "user", content: prompt }],
     }),
   });
