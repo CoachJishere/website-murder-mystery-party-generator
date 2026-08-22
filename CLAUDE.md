@@ -55,6 +55,16 @@ Obsidian vault for this project: `/Users/jonathanmiller/Obsidian Vault/01_Projec
 - Claude Code conversation history is auto-extracted nightly to `00_INBOX/` via `~/scripts/claude-extract-sync.sh`
   — run "process inbox" in Claude to create summaries and file them
 
+## Model Upgrades — Check for Stale Hardcoded Models
+
+Whenever a Claude model upgrade decision is made (e.g. the ADR-0074 blanket Sonnet 5 upgrade), it's easy to update the primary generation pipeline (Make.com blueprints) and miss standalone edge functions that hand-implement their own Anthropic call with their own hardcoded model string — they have no automated sync with the blueprints they mirror. ADR-0098 Addenda 7/8 found two of these (`regenerate-child-content`, `regenerate-parent-content`) still on Haiku weeks after the blanket upgrade, each also missing the `temperature`/`thinking`/`max_tokens` adjustments Sonnet 5 requires.
+
+Before/after any model upgrade decision, run:
+```
+grep -rn "claude-haiku\|claude-sonnet\|claude-opus" supabase/functions/*/index.ts
+```
+Check every hit against the decision just made — deliberately-different models (e.g. a cheaper model for a narrow deterministic extraction task) are fine; anything that's just been forgotten isn't. This is a manual checklist, not automated tooling — deliberately kept that lightweight per the ADR-0098 discussion (the actual risk is bounded, doesn't warrant a shared-config refactor or a standing detector).
+
 ## Git Workflow
 
 - After committing, always push to the remote branch
