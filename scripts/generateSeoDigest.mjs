@@ -212,6 +212,48 @@ const REMINDERS = [
 4. Re-check the FAQ rich result via the URL Inspection API's richResultsResult.detectedItems (not just a raw grep for the schema) — is it still absent, or has it started appearing now that the page has more crawl history?
 5. Verdict: if the picture is still flat/negative at 8 weeks, treat this per the original decision framework — query volume that never materialized reads as "not worth further investment," and don't spend more effort on internal links to this specific post (it's indexed, linked, and in the sitemap already — discovery isn't the bottleneck). If it has turned around, say so plainly and identify what specifically moved.`,
   },
+  {
+    // Not an SEO item — riding along on this digest because it's the one
+    // recurring channel that reliably reaches Jonathan (scheduled routines
+    // don't). PostHog only started actually capturing production events on
+    // 2026-08-22 (ADR-0102) — before that, VITE_POSTHOG_KEY was never wired
+    // into the site's real GitHub Pages deploy pipeline at all, so
+    // posthog.init() silently no-op'd on every page load since the
+    // integration was first written 2026-04-24 (see ADR-0100, superseded).
+    // Anything timestamped before 2026-08-22 does not exist in PostHog.
+    //
+    // Two known ground-truth dates to spot-check the method against once
+    // there's enough real data (both from Jonathan directly, 2026-08-22):
+    // - Raleigh, "Camp Pine Shadow" — hosted Sat 2026-08-15. Predates the
+    //   fix by a week, so expect ZERO PostHog signal for this one; useful
+    //   as a null-check that the method doesn't hallucinate a play date
+    //   where there's no data, not as a positive example.
+    // - Lyn, "The Cognitive Dissonance Incident: A Murder At The MSU
+    //   Psychology Department Picnic" — she was sending links to her guests
+    //   the same day the fix went live (2026-08-22), so this one's a coin
+    //   flip depending on whether her guests opened pages before or after
+    //   the fix's deploy time that day.
+    start: '2026-10-06',
+    end: '2026-10-27',
+    title: 'Check whether there is enough PostHog data yet for the purchase-to-play timing analysis',
+    body:
+      'On <strong>2026-08-22</strong> (ADR-0102) we fixed PostHog actually capturing production events — before that, ' +
+      'the tracking code existed but the live GitHub Pages deploy never had the API key wired in, so it silently did ' +
+      'nothing since the integration was written back in April. It has now had 6-8 weeks to accumulate real ' +
+      '<code>package_tab_viewed</code>/pageview data. Paste the prompt below into a fresh chat to check whether ' +
+      'there is enough volume yet to attempt the purchase-to-play timing analysis (using character/Host Guide page ' +
+      'view clustering and dwell time as a proxy for when a mystery actually gets played, vs. purchase_date).',
+    prompt: `Check whether there is now enough PostHog data to attempt a "time from purchase to actual play" analysis for Mystery Maker, and if so, run a first pass.
+
+Context (re-derive from ground truth, do not trust this note's framing alone): PostHog only started genuinely capturing production events on 2026-08-22 (ADR-0102, docs/adr/0102-posthog-key-missing-from-actual-deploy-pipeline.md) — before that date, VITE_POSTHOG_KEY was never wired into the site's actual GitHub Pages deploy pipeline (.github/workflows/deploy.yml), so posthog.init() silently no-op'd on every page load despite the client-side integration existing since 2026-04-24 (ADR-0100, superseded — its "4 months of lost history" framing was probably never real history to begin with). PostHog project id 569867 ("Mystery Maker"), events fired from src/lib/posthog.ts / src/lib/analytics.ts: \`$pageview\` (every route change) and \`package_tab_viewed\` (tab_name, conversation_id when available).
+
+0. SAMPLE SIZE CHECK FIRST: query PostHog for the count of \`package_tab_viewed\` events with a non-null conversation_id, grouped by conversation_id, for events after 2026-08-22. How many distinct packages have ANY tab-view data at all? If it's a handful (under ~15-20), say so plainly and recommend waiting longer rather than drawing conclusions from too few packages — don't force a verdict out of thin data.
+1. THE ACTUAL METHOD, if there's enough volume: for each package with tab-view events, join to Supabase's mystery_packages.purchase_date (or conversations table, check both — see the round-script-formats and payment-protection memory notes for which table is authoritative). For each package, look at the FULL set of tab-view/pageview timestamps across ALL its characters (not just one), not just the first one. The actual play-night signal is: do multiple distinct characters' pages get opened within a tight time window (e.g. same 1-3 hour block) with meaningful dwell time between events (not just a bounce), as opposed to scattered single visits over days? That clustering is the "this is when they actually sat down and played" signal, distinct from "the host poked around once right after purchase." Compute, for packages where a clear cluster exists: (purchase_date) to (start of the clustered play session) as the lag, in days.
+2. SPOT-CHECK against two known ground-truth dates (both told to Jonathan directly on 2026-08-22, verify independently against the packages table rather than trusting this note):
+   - Raleigh, "Camp Pine Shadow" — hosted Sat 2026-08-15, a full week BEFORE the PostHog fix. Expect ZERO PostHog data for this package. If there IS data, something is wrong with the date assumption above — flag it, don't explain it away.
+   - Lyn, "The Cognitive Dissonance Incident: A Murder At The MSU Psychology Department Picnic" — guests were sent links same-day as the fix (2026-08-22). Check if there's a real, plausible clustered signal for this one; if the timing is too close to the fix's deploy time to tell, say so rather than forcing an answer.
+3. Verdict: is there a usable purchase-to-play average yet, even a rough one from a small n? If under ~15-20 packages with real data, recommend re-running this same check again in another 3-4 weeks rather than publishing a number from too small a sample.`,
+  },
 ];
 
 // Safety net: neutralise any literal HTML tags the model leaves inside <pre>
