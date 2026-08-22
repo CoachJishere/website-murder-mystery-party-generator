@@ -1577,7 +1577,7 @@
   "adaptation": {
     "card": {
       "title": "Fjern en karakter",
-      "teaser": "Kan en gæst ikke deltage? Fjern eller udskift vedkommende i historien - fast pris på $5, ret lige så mange karakterer, du har brug for, på én gang.",
+      "teaser": "Kan en gæst ikke deltage? Fjern vedkommende fra historien - fast pris på $5, ret lige så mange karakterer, du har brug for, på én gang.",
       "cta": "Læs mere",
       "inProgressTitle": "Opdatering i gang",
       "inProgressSummary": "{{done}} af {{total}} opdateret",
@@ -1587,15 +1587,15 @@
       "comingSoonBody": "Korte videoer og hurtige tips til at afvikle dit mysterie på selve aftenen."
     },
     "entryPoint": {
-      "notice": "Du kan redigere hver karakter nedenfor. Skal du fjerne eller udskifte nogen helt? Se Fjern en karakter under fanen Ekstra i stedet for at gendanne."
+      "notice": "Du kan redigere hver karakter nedenfor. Skal du fjerne nogen helt? Se Fjern en karakter under fanen Ekstra i stedet for at gendanne."
     },
     "explainer": {
       "title": "Fjern en karakter",
-      "subtitle": "Fjern en karakter fra dit mysterie med et enkelt klik.",
+      "subtitle": "Du kan allerede redigere enhver karakter her, men at fjerne en helt er mere komplekst end en tekstrettelse - deres alibi, rygter og beviser er flettet sammen med alle andres materiale.",
       "characterStyleHeadline": "Du behøver sandsynligvis ikke betale for dette.",
       "characterStyleBody": "Dette er et karakterbaseret mysterie - der er ingen forudbestemt gerningsmand, så en manglende karakters fravær er let at dække over selv, gratis. Sig bare noget til dine gæster som: \"X er også mistænkt, men bliver afhørt separat - fortsæt uden vedkommende\", eller \"Vi har allerede udelukket X.\" Eventuelle tiloversblevne rygter om personen bliver dermed irrelevante.",
       "characterStyleContinue": "Vil du alligevel have vedkommende fjernet helt fra alle dokumenter? Fortsæt nedenfor.",
-      "realEditBody": "Hver karakters historie er flettet sammen med alle andres - alibier, rygter, beviser. Vi opdaterer hvert karakterark, detektivmanuskriptet og bevis-kortene, så intet efterlades, der nævner nogen, der ikke længere er der.",
+      "realEditBody": "Vi fjerner dem fra hvert karakterark, detektivmanuskriptet og bevis-kortene, så intet efterlades, der nævner dem.",
       "goodToKnowLabel": "Godt at vide",
       "irreversibleBody": "Når det først er sendt, er der ingen vej tilbage.",
       "timingBody": "Bruges bedst så sent som muligt - helst selve dagen for festen. Hvis endnu en gæst melder afbud, efter du allerede har sendt det, skal du gøre det igen (og betale igen).",

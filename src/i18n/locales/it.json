@@ -1577,7 +1577,7 @@
   "adaptation": {
     "card": {
       "title": "Rimuovi un personaggio",
-      "teaser": "Un ospite non può venire? Rimuovilo o sostituiscilo nella storia - 5 $ fissi, sistema tutti i personaggi che ti servono in un'unica volta.",
+      "teaser": "Un ospite non può venire? Rimuovilo dalla storia - 5 $ fissi, sistema tutti i personaggi che ti servono in un'unica volta.",
       "cta": "Scopri di più",
       "inProgressTitle": "Aggiornamento in corso",
       "inProgressSummary": "{{done}} di {{total}} aggiornati",
@@ -1587,15 +1587,15 @@
       "comingSoonBody": "Brevi video e consigli rapidi per gestire il tuo mistero la sera dell'evento."
     },
     "entryPoint": {
-      "notice": "Puoi modificare ogni personaggio qui sotto. Devi rimuovere o sostituire qualcuno del tutto? Usa Rimuovi un personaggio (vedi la scheda Extra) invece di rigenerare."
+      "notice": "Puoi modificare ogni personaggio qui sotto. Devi rimuovere qualcuno del tutto? Usa Rimuovi un personaggio (vedi la scheda Extra) invece di rigenerare."
     },
     "explainer": {
       "title": "Rimuovi un personaggio",
-      "subtitle": "Rimuovi un personaggio dal tuo mistero con un clic.",
+      "subtitle": "Puoi già modificare qualsiasi personaggio qui, ma rimuoverne uno del tutto è più complesso di una semplice modifica al testo - il suo alibi, le voci e le prove sono intrecciati con il materiale di tutti gli altri.",
       "characterStyleHeadline": "Probabilmente non hai bisogno di pagare per questo.",
       "characterStyleBody": "Questo è un mistero basato sui personaggi - non c'è un colpevole predeterminato, quindi l'assenza di un personaggio è facile da coprire da solo, gratis. Basta dire ai tuoi ospiti qualcosa come: \"Anche X è sospettato, ma lo stiamo interrogando separatamente - continuate senza di lui\", oppure \"Abbiamo già escluso X\". Eventuali voci rimaste su quella persona diventano irrilevanti.",
       "characterStyleContinue": "Vuoi comunque che venga rimosso completamente da tutti i documenti? Continua qui sotto.",
-      "realEditBody": "La storia di ogni personaggio è intrecciata con quella degli altri - alibi, voci, prove. Aggiorniamo ogni scheda personaggio, lo script del detective e le carte prova, così non resta nulla che menzioni qualcuno che non c'è più.",
+      "realEditBody": "Lo rimuoviamo da ogni scheda personaggio, dallo script del detective e dalle carte prova, così non resta nulla che lo menzioni.",
       "goodToKnowLabel": "Da sapere",
       "irreversibleBody": "Una volta inviato, non si può tornare indietro.",
       "timingBody": "Meglio usarlo il più tardi possibile - idealmente il giorno stesso della festa. Se un altro ospite dà forfait dopo che hai già inviato la richiesta, dovrai rifarlo (e ripagare).",

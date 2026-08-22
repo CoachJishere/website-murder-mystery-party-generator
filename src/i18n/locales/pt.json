@@ -1577,7 +1577,7 @@
   "adaptation": {
     "card": {
       "title": "Remover uma personagem",
-      "teaser": "Um convidado não pode vir? Remova ou substitua ele na história - $5 fixo, ajuste quantos personagens precisar de uma vez.",
+      "teaser": "Um convidado não pode vir? Remova-o da história - $5 fixo, ajuste quantos personagens precisar de uma vez.",
       "cta": "Saiba mais",
       "inProgressTitle": "Atualização em curso",
       "inProgressSummary": "{{done}} de {{total}} atualizados",
@@ -1587,15 +1587,15 @@
       "comingSoonBody": "Vídeos curtos e dicas rápidas para conduzir seu mistério na noite do evento."
     },
     "entryPoint": {
-      "notice": "Você pode editar cada personagem abaixo. Precisa remover ou substituir alguém completamente? Use Remover uma personagem (veja a aba Extras) em vez de regenerar."
+      "notice": "Você pode editar cada personagem abaixo. Precisa remover alguém completamente? Use Remover uma personagem (veja a aba Extras) em vez de regenerar."
     },
     "explainer": {
       "title": "Remover uma personagem",
-      "subtitle": "Remova um personagem do seu mistério com um clique.",
+      "subtitle": "Você já pode editar qualquer personagem aqui, mas remover um por completo é mais complexo do que uma edição de texto - o álibi, os boatos e as evidências dessa pessoa também estão entrelaçados com o material de todos os outros.",
       "characterStyleHeadline": "Você provavelmente não precisa pagar por isso.",
       "characterStyleBody": "Este é um mistério baseado em personagens - não existe um culpado predeterminado, então a ausência de um personagem é fácil de contornar você mesmo, de graça. Basta dizer aos seus convidados algo como: \"X também é suspeito, mas está sendo interrogado separadamente - continuem sem ele\", ou \"Já descartamos X\". Qualquer boato solto sobre essa pessoa deixa de ser um problema.",
       "characterStyleContinue": "Mesmo assim quer que ele seja removido completamente de todos os documentos? Continue abaixo.",
-      "realEditBody": "A história de cada personagem está entrelaçada com a dos outros - álibis, boatos, evidências. Atualizamos cada ficha de personagem, o roteiro do detetive e as cartas de evidência para que nada mencione alguém que não está mais lá.",
+      "realEditBody": "Removemos essa pessoa de cada ficha de personagem, do roteiro do detetive e das cartas de evidência, para que nada a mencione.",
       "goodToKnowLabel": "Bom saber",
       "irreversibleBody": "Depois de enviado, não há como voltar atrás.",
       "timingBody": "Melhor usar o mais tarde possível - idealmente no próprio dia da festa. Se outro convidado desistir depois que você já enviou, será preciso fazer de novo (e pagar de novo).",

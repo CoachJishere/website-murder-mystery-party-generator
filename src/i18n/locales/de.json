@@ -1577,7 +1577,7 @@
   "adaptation": {
     "card": {
       "title": "Einen Charakter entfernen",
-      "teaser": "Ein Gast kann nicht kommen? Entferne oder ersetze ihn in der Geschichte - pauschal 5 $, beliebig viele Charaktere in einem Durchgang korrigieren.",
+      "teaser": "Ein Gast kann nicht kommen? Entferne ihn aus der Geschichte - pauschal 5 $, beliebig viele Charaktere in einem Durchgang korrigieren.",
       "cta": "Mehr erfahren",
       "inProgressTitle": "Aktualisierung läuft",
       "inProgressSummary": "{{done}} von {{total}} aktualisiert",
@@ -1587,15 +1587,15 @@
       "comingSoonBody": "Kurze Videos und schnelle Tipps, um dein Mysterium am Abend selbst zu leiten."
     },
     "entryPoint": {
-      "notice": "Du kannst jeden Charakter unten bearbeiten. Musst du jemanden komplett entfernen oder ersetzen? Nutze „Einen Charakter entfernen\" im Tab Extras, statt neu zu generieren."
+      "notice": "Du kannst jeden Charakter unten bearbeiten. Musst du jemanden komplett entfernen? Nutze „Einen Charakter entfernen\" im Tab Extras, statt neu zu generieren."
     },
     "explainer": {
       "title": "Einen Charakter entfernen",
-      "subtitle": "Entferne einen Charakter aus deinem Mysterium per Klick.",
+      "subtitle": "Du kannst hier bereits jeden Charakter bearbeiten, aber einen ganz zu entfernen ist komplexer als eine Textbearbeitung - sein Alibi, Gerüchte und Beweise sind mit dem Material aller anderen verwoben.",
       "characterStyleHeadline": "Dafür musst du wahrscheinlich nicht bezahlen.",
       "characterStyleBody": "Dies ist ein charakterbasiertes Mysterium - es gibt keinen vorbestimmten Täter, daher lässt sich das Fehlen eines Charakters leicht selbst und kostenlos überspielen. Sag deinen Gästen einfach etwas wie: \"X ist auch verdächtig, wird aber separat befragt - macht ohne ihn weiter\", oder \"Wir haben X bereits ausgeschlossen.\" Übrig gebliebene Gerüchte über diese Person werden dann irrelevant.",
       "characterStyleContinue": "Möchtest du ihn trotzdem sauber aus allen Dokumenten entfernen lassen? Weiter unten.",
-      "realEditBody": "Die Geschichte jedes Charakters ist mit allen anderen verwoben - Alibis, Gerüchte, Beweise. Wir aktualisieren jeden Charakterbogen, das Detektiv-Skript und die Beweiskarten, damit nichts mehr eine Person erwähnt, die nicht mehr dabei ist.",
+      "realEditBody": "Wir entfernen ihn aus jedem Charakterbogen, dem Detektiv-Skript und den Beweiskarten, damit nichts mehr zurückbleibt, das ihn erwähnt.",
       "goodToKnowLabel": "Gut zu wissen",
       "irreversibleBody": "Nach dem Absenden gibt es kein Zurück mehr.",
       "timingBody": "Am besten so spät wie möglich nutzen - idealerweise erst am Tag der Feier. Springt danach noch ein weiterer Gast ab, musst du es erneut machen (und erneut bezahlen).",

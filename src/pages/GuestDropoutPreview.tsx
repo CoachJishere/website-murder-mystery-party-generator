@@ -240,7 +240,7 @@ export default function GuestDropoutPreview() {
                   <h3 className="text-lg font-semibold">Remove a Character</h3>
                 </div>
                 <p className="text-sm" style={{ color: "rgba(245,240,232,0.6)" }}>
-                  A guest can't make it? Remove or replace them in the story — $5 flat, fix as many
+                  A guest can't make it? Remove them from the story — $5 flat, fix as many
                   characters as you need in one go.
                 </p>
                 <Button onClick={openDialog}>Learn more</Button>

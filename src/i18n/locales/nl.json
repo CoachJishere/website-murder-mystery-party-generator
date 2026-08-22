@@ -1577,7 +1577,7 @@
   "adaptation": {
     "card": {
       "title": "Personage verwijderen",
-      "teaser": "Een gast kan niet komen? Verwijder of vervang diegene in het verhaal - vast tarief van $5, pas in één keer zoveel personages aan als nodig.",
+      "teaser": "Een gast kan niet komen? Verwijder diegene uit het verhaal - vast tarief van $5, pas in één keer zoveel personages aan als nodig.",
       "cta": "Meer informatie",
       "inProgressTitle": "Bezig met bijwerken",
       "inProgressSummary": "{{done}} van {{total}} bijgewerkt",
@@ -1587,15 +1587,15 @@
       "comingSoonBody": "Korte video's en snelle tips om je mysterie op de avond zelf te leiden."
     },
     "entryPoint": {
-      "notice": "Je kunt elk personage hieronder bewerken. Moet je iemand volledig verwijderen of vervangen? Gebruik Personage verwijderen (zie het tabblad Extra's) in plaats van opnieuw te genereren."
+      "notice": "Je kunt elk personage hieronder bewerken. Moet je iemand volledig verwijderen? Gebruik Personage verwijderen (zie het tabblad Extra's) in plaats van opnieuw te genereren."
     },
     "explainer": {
       "title": "Personage verwijderen",
-      "subtitle": "Verwijder een personage uit je mysterie met één klik.",
+      "subtitle": "Je kunt hier al elk personage bewerken, maar een personage volledig verwijderen is complexer dan een tekstbewerking - het alibi, de geruchten en het bewijs van dat personage zijn ook verweven met het materiaal van alle anderen.",
       "characterStyleHeadline": "Hier hoef je waarschijnlijk niet voor te betalen.",
       "characterStyleBody": "Dit is een mysterie op basis van personages - er is geen vooraf vastgestelde dader, dus het ontbreken van een personage is gemakkelijk zelf en gratis te verbloemen. Zeg gewoon tegen je gasten iets als: \"X is ook verdacht, maar wordt apart ondervraagd - ga verder zonder hem\", of \"We hebben X al uitgesloten.\" Eventuele overgebleven geruchten over die persoon worden dan geen probleem meer.",
       "characterStyleContinue": "Toch liever dat het personage netjes uit alle documenten wordt verwijderd? Ga hieronder verder.",
-      "realEditBody": "Het verhaal van elk personage is verweven met dat van de anderen - alibi's, geruchten, bewijs. We werken elk personageblad, het detectivescript en de bewijskaarten bij, zodat er niets achterblijft dat iemand noemt die er niet meer bij is.",
+      "realEditBody": "We verwijderen het personage uit elk personageblad, het detectivescript en de bewijskaarten, zodat er niets achterblijft dat naar hen verwijst.",
       "goodToKnowLabel": "Goed om te weten",
       "irreversibleBody": "Eenmaal verzonden is er geen weg terug.",
       "timingBody": "Gebruik dit het beste zo laat mogelijk - idealiter pas op de dag van het feest zelf. Als er daarna nog een gast afzegt, moet je het opnieuw doen (en opnieuw betalen).",

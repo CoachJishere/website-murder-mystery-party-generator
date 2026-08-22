@@ -1577,7 +1577,7 @@
   "adaptation": {
     "card": {
       "title": "Ta bort en karaktär",
-      "teaser": "Kan en gäst inte komma? Ta bort eller ersätt personen i berättelsen - fast pris 5 $, fixa så många karaktärer du behöver på en gång.",
+      "teaser": "Kan en gäst inte komma? Ta bort personen från berättelsen - fast pris 5 $, fixa så många karaktärer du behöver på en gång.",
       "cta": "Läs mer",
       "inProgressTitle": "Uppdatering pågår",
       "inProgressSummary": "{{done}} av {{total}} uppdaterade",
@@ -1587,15 +1587,15 @@
       "comingSoonBody": "Korta videor och snabba tips för att leda ditt mysterium på själva kvällen."
     },
     "entryPoint": {
-      "notice": "Du kan redigera varje karaktär nedan. Behöver du ta bort eller byta ut någon helt? Använd Ta bort en karaktär (se fliken Extra) istället för att generera om."
+      "notice": "Du kan redigera varje karaktär nedan. Behöver du ta bort någon helt? Använd Ta bort en karaktär (se fliken Extra) istället för att generera om."
     },
     "explainer": {
       "title": "Ta bort en karaktär",
-      "subtitle": "Ta bort en karaktär från ditt mysterium med ett klick.",
+      "subtitle": "Du kan redan redigera vilken karaktär som helst här, men att ta bort en helt är mer komplicerat än en textredigering - dess alibi, rykten och bevis är också sammanflätade med alla andras material.",
       "characterStyleHeadline": "Du behöver förmodligen inte betala för det här.",
       "characterStyleBody": "Det här är ett karaktärsbaserat mysterium - det finns ingen förutbestämd gärningsperson, så en saknad karaktärs frånvaro är lätt att förklara bort själv, gratis. Säg bara något till dina gäster som: \"X är också misstänkt, men förhörs separat - fortsätt utan personen\", eller \"Vi har redan uteslutit X.\" Eventuella kvarvarande rykten om personen blir då irrelevanta.",
       "characterStyleContinue": "Vill du ändå ha personen helt borttagen från alla dokument? Fortsätt nedan.",
-      "realEditBody": "Varje karaktärs historia är sammanflätad med alla andras - alibin, rykten, bevis. Vi uppdaterar varje karaktärsblad, detektivmanuset och bevis-korten så att inget lämnas kvar som nämner någon som inte längre är med.",
+      "realEditBody": "Vi tar bort karaktären från varje karaktärsblad, detektivmanuset och bevis-korten, så att inget som lämnas kvar nämner personen.",
       "goodToKnowLabel": "Bra att veta",
       "irreversibleBody": "När det väl är skickat finns det ingen väg tillbaka.",
       "timingBody": "Använd det helst så sent som möjligt - helst själva festdagen. Hoppar ännu en gäst av efter att du redan skickat in det, måste du göra om det (och betala igen).",

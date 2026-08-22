@@ -1578,7 +1578,7 @@
   "adaptation": {
     "card": {
       "title": "Remove a Character",
-      "teaser": "A guest can't make it? Remove or replace them in the story - $5 flat, fix as many characters as you need in one go.",
+      "teaser": "A guest can't make it? Remove them from the story - $5 flat, fix as many characters as you need in one go.",
       "cta": "Learn more",
       "inProgressTitle": "Update in progress",
       "inProgressSummary": "{{done}} of {{total}} updated",
@@ -1588,7 +1588,7 @@
       "comingSoonBody": "Short videos and quick tips for running your mystery on the night."
     },
     "entryPoint": {
-      "notice": "You can edit every character below. Need to remove or replace someone entirely instead? See Remove a Character in the Extras tab instead of regenerating."
+      "notice": "You can edit every character below. Need to remove someone entirely instead? See Remove a Character in the Extras tab instead of regenerating."
     },
     "explainer": {
       "title": "Remove a Character",

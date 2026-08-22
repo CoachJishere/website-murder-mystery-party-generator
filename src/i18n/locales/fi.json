@@ -1577,7 +1577,7 @@
   "adaptation": {
     "card": {
       "title": "Poista hahmo",
-      "teaser": "Vieras ei pääse paikalle? Poista tai korvaa hänet tarinassa - kiinteä 5 $:n hinta, korjaa niin monta hahmoa kuin tarvitset kerralla.",
+      "teaser": "Vieras ei pääse paikalle? Poista hänet tarinasta - kiinteä 5 $:n hinta, korjaa niin monta hahmoa kuin tarvitset kerralla.",
       "cta": "Lue lisää",
       "inProgressTitle": "Päivitys käynnissä",
       "inProgressSummary": "{{done}}/{{total}} päivitetty",
@@ -1587,15 +1587,15 @@
       "comingSoonBody": "Lyhyitä videoita ja nopeita vinkkejä mysteerisi vetämiseen illan aikana."
     },
     "entryPoint": {
-      "notice": "Voit muokata kaikkia hahmoja alla. Täytyykö sinun poistaa tai vaihtaa joku kokonaan? Käytä Poista hahmo -toimintoa (katso Lisät-välilehti) uudelleengeneroinnin sijaan."
+      "notice": "Voit muokata kaikkia hahmoja alla. Täytyykö sinun poistaa joku kokonaan? Käytä Poista hahmo -toimintoa (katso Lisät-välilehti) uudelleengeneroinnin sijaan."
     },
     "explainer": {
       "title": "Poista hahmo",
-      "subtitle": "Poista hahmo mysteeristäsi yhdellä napin painalluksella.",
+      "subtitle": "Voit jo muokata mitä tahansa hahmoa täällä, mutta hahmon poistaminen kokonaan on monimutkaisempaa kuin tekstin muokkaaminen - hänen alibinsa, huhut ja todisteet kietoutuvat myös muiden materiaaliin.",
       "characterStyleHeadline": "Tästä ei todennäköisesti tarvitse maksaa.",
       "characterStyleBody": "Tämä on hahmopohjainen mysteeri - ennalta määrättyä syyllistä ei ole, joten puuttuvan hahmon poissaolon voi selittää itse, ilmaiseksi. Sano vieraillesi vaikka näin: \"X on myös epäilty, mutta häntä kuulustellaan erikseen - jatkakaa ilman häntä\", tai \"Olemme jo sulkeneet X:n pois.\" Jäljelle jääneet huhut hänestä eivät sen jälkeen ole ongelma.",
       "characterStyleContinue": "Haluatko silti, että hahmo poistetaan siististi kaikista dokumenteista? Jatka alta.",
-      "realEditBody": "Jokaisen hahmon tarina kietoutuu muiden tarinoihin - alibit, huhut, todisteet. Päivitämme jokaisen hahmoarkin, etsivän käsikirjoituksen ja todistekortit, jotta mikään ei enää mainitse ketään, joka ei ole enää mukana.",
+      "realEditBody": "Poistamme hänet jokaisesta hahmoarkista, etsivän käsikirjoituksesta ja todistekorteista, jotta mikään jäljelle jäävä ei enää mainitse häntä.",
       "goodToKnowLabel": "Hyvä tietää",
       "irreversibleBody": "Kun olet lähettänyt tämän, paluuta ei ole.",
       "timingBody": "Käytä tätä mieluiten mahdollisimman myöhään - ihanteellisesti vasta juhlapäivänä. Jos toinenkin vieras perääntyy sen jälkeen kun olet jo lähettänyt tämän, joudut tekemään sen uudelleen (ja maksamaan uudelleen).",

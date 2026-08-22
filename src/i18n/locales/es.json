@@ -1577,7 +1577,7 @@
   "adaptation": {
     "card": {
       "title": "Eliminar un personaje",
-      "teaser": "¿Un invitado no puede venir? Elimínalo o reemplázalo en la historia - 5 $ fijos, arregla tantos personajes como necesites de una vez.",
+      "teaser": "¿Un invitado no puede venir? Elimínalo de la historia - 5 $ fijos, arregla tantos personajes como necesites de una vez.",
       "cta": "Más información",
       "inProgressTitle": "Actualización en curso",
       "inProgressSummary": "{{done}} de {{total}} actualizados",
@@ -1587,15 +1587,15 @@
       "comingSoonBody": "Vídeos cortos y consejos rápidos para dirigir tu misterio la noche del evento."
     },
     "entryPoint": {
-      "notice": "Puedes editar cada personaje a continuación. ¿Necesitas eliminar o sustituir a alguien por completo? Usa Eliminar un personaje (pestaña Extras) en lugar de regenerar."
+      "notice": "Puedes editar cada personaje a continuación. ¿Necesitas eliminar a alguien por completo? Usa Eliminar un personaje (pestaña Extras) en lugar de regenerar."
     },
     "explainer": {
       "title": "Eliminar un personaje",
-      "subtitle": "Elimina un personaje de tu misterio con solo pulsar un botón.",
+      "subtitle": "Ya puedes editar cualquier personaje aquí, pero eliminar uno por completo es más complejo que una simple edición de texto - su coartada, los rumores y las pruebas están entrelazados con el material de todos los demás.",
       "characterStyleHeadline": "Probablemente no necesites pagar por esto.",
       "characterStyleBody": "Este es un misterio basado en personajes - no hay un culpable predeterminado, así que la ausencia de un personaje es fácil de disimular tú mismo, sin coste. Basta con decirles a tus invitados algo como: \"X también es sospechoso, pero lo estamos interrogando aparte - continuad sin él\", o \"Ya hemos descartado a X\". Cualquier rumor suelto sobre esa persona deja de ser un problema.",
       "characterStyleContinue": "¿Aun así quieres que se elimine por completo de todos los documentos? Continúa abajo.",
-      "realEditBody": "La historia de cada personaje está entrelazada con la de los demás - coartadas, rumores, pruebas. Actualizamos cada ficha de personaje, el guion del detective y las tarjetas de pruebas para que no quede nada que mencione a alguien que ya no está.",
+      "realEditBody": "Lo eliminamos de cada ficha de personaje, el guion del detective y las tarjetas de pruebas, para que no quede nada que lo mencione.",
       "goodToKnowLabel": "Bueno saberlo",
       "irreversibleBody": "Una vez enviado, no hay marcha atrás.",
       "timingBody": "Mejor usarlo lo más tarde posible - idealmente el mismo día de la fiesta. Si otro invitado cancela después de que ya lo hayas enviado, tendrás que hacerlo de nuevo (y pagar de nuevo).",

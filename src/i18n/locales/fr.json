@@ -1578,7 +1578,7 @@
   "adaptation": {
     "card": {
       "title": "Retirer un personnage",
-      "teaser": "Un invité ne peut pas venir ? Retirez-le ou remplacez-le dans l'histoire - 5 $ forfaitaires, corrigez autant de personnages que nécessaire en une seule fois.",
+      "teaser": "Un invité ne peut pas venir ? Retirez-le de l'histoire - 5 $ forfaitaires, corrigez autant de personnages que nécessaire en une seule fois.",
       "cta": "En savoir plus",
       "inProgressTitle": "Mise à jour en cours",
       "inProgressSummary": "{{done}} sur {{total}} mis à jour",
@@ -1588,15 +1588,15 @@
       "comingSoonBody": "De courtes vidéos et des astuces rapides pour animer votre mystère le soir venu."
     },
     "entryPoint": {
-      "notice": "Vous pouvez modifier chaque personnage ci-dessous. Besoin de supprimer ou remplacer quelqu'un complètement ? Utilisez Retirer un personnage (voir l'onglet Extras) plutôt que de tout régénérer."
+      "notice": "Vous pouvez modifier chaque personnage ci-dessous. Besoin de supprimer quelqu'un complètement ? Utilisez Retirer un personnage (voir l'onglet Extras) plutôt que de tout régénérer."
     },
     "explainer": {
       "title": "Retirer un personnage",
-      "subtitle": "Retirez un personnage de votre mystère en un clic.",
+      "subtitle": "Vous pouvez déjà modifier n'importe quel personnage ici, mais en retirer un complètement est plus complexe qu'une simple modification de texte - son alibi, les rumeurs et les indices qui le concernent sont mêlés au contenu de tous les autres personnages.",
       "characterStyleHeadline": "Vous n'avez probablement pas besoin de payer pour ça.",
       "characterStyleBody": "Ce mystère est basé sur les personnages - il n'y a pas de coupable prédéterminé, donc l'absence d'un personnage est facile à camoufler vous-même, gratuitement. Dites simplement à vos invités quelque chose comme : \"X est aussi suspect, mais on l'interroge séparément - continuez sans lui\", ou \"On a déjà écarté X\". Les rumeurs restantes à son sujet ne posent alors plus aucun problème.",
       "characterStyleContinue": "Vous voulez quand même qu'il soit proprement retiré de tous les documents ? Continuez ci-dessous.",
-      "realEditBody": "L'histoire de chaque personnage est liée à celle de tous les autres - alibis, rumeurs, indices. Nous mettons à jour chaque fiche de personnage, le scénario du détective et les cartes d'indices pour qu'il ne reste aucune mention de quelqu'un qui n'est plus là.",
+      "realEditBody": "Nous le retirons de chaque fiche de personnage, du scénario du détective et des cartes d'indices, afin qu'il ne reste aucune mention de lui.",
       "goodToKnowLabel": "Bon à savoir",
       "irreversibleBody": "Une fois envoyé, il n'y a pas de retour en arrière possible.",
       "timingBody": "À utiliser le plus tard possible - idéalement le jour même de la soirée. Si un autre invité se désiste après votre envoi, vous devrez recommencer (et payer à nouveau).",
