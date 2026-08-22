@@ -1,6 +1,6 @@
 # 0029 — Cold Case Files: second product line with async backend generation
 
-**Status:** Proposed (plan approved 2026-07-02; build gated on engine Phase 0 — see Consequences)
+**Status:** Built, launch **paused indefinitely** (owner decision 2026-07-05 — see amendment below; original: Proposed, plan approved 2026-07-02, build gated on engine Phase 0 — see Consequences)
 **Date:** 2026-07-02
 
 ## Context
@@ -260,6 +260,30 @@ Also shipped from the v2 queue:
   countdown ribbon's numbers already match (party price is also $24.99).
 - **Logged-in workbench**: /cold-case-files cuts everything below the hero for signed-in
   users (the party homepage pattern) — brief box + "your cases are in your dashboard" link.
+
+## Amendment — 2026-07-05 (launch paused indefinitely, reversibly)
+
+The owner decided to delay launch and focus on the core party product longer — no fixed
+return date, revisit whenever he chooses. This is a scope/timing decision, not a build
+problem: the storefront (landing, premise chat, gated trial, unified dashboard, checkout/
+webhook/delivery) is functionally complete on branch `feat/cold-case-files`.
+
+**Mechanism, verified rather than assumed:** three independent gates are already closed —
+(1) `COLD_CASE_PRICE_ID` is not set as a Supabase secret, so `create-cold-case-checkout`
+can never mint a real session; (2) no `VITE_COLD_CASE_PAYMENT_LINK` exists anywhere, so the
+old pre-chat page still live on `main` shows a disabled button, not a real link; (3) the Fly
+worker was never deployed (`flyctl` isn't installed on this machine), so nothing exists to
+generate or deliver a case even in the hypothetical of an orphaned order. All storefront
+code stays unmerged on `feat/cold-case-files`. No code was changed to produce this pause —
+it was already this way; the work here was verifying it and writing it down so a future
+session doesn't have to reconstruct the safety argument from scratch.
+
+The full runbook (`docs/cold-case-launch-runbook.md`) now carries a pause banner with the
+exact re-launch checklist in order. Re-launching later means, in order: merge the branch,
+re-verify the webhook hasn't drifted from this repo (drift was already found once, 2026-08-15
+— see the website repo's memory / vault `00_INBOX`), then the two remaining touchpoints
+(Stripe price + secret, Fly deploy), then the end-to-end proof — never skip straight to
+setting the price ID as a shortcut.
 
 ## Discussion
 

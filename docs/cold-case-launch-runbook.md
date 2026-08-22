@@ -1,5 +1,38 @@
 # Cold Case Files — Launch Runbook
 
+> ## ⏸ PAUSED — 2026-07-05 (owner decision: focus on the core party product longer)
+>
+> Launch is deliberately on hold, indefinitely, until Jonathan says otherwise. This is not
+> "not done yet" — it's a conscious delay of a finished build. Verified safe to leave paused
+> for as long as needed, via three independent, unrelated gates (checked 2026-07-05):
+>
+> 1. **`COLD_CASE_PRICE_ID` is not set** as a Supabase secret → `create-cold-case-checkout`
+>    returns `503 not_configured` → no real Stripe session can ever be created for a cold case.
+> 2. **No `VITE_COLD_CASE_PAYMENT_LINK`** anywhere (not in `.env`, not in the GitHub Actions
+>    workflow) → the old pre-chat page still sitting on `main` shows a disabled "Opening soon"
+>    button, not a live link.
+> 3. **The Fly worker was never deployed** (Touchpoint 2 below, never run — `flyctl` isn't
+>    even installed on this machine) → even in the hypothetical of an orphaned order row,
+>    nothing exists to generate or deliver a case.
+>
+> All storefront code (landing, premise chat, gated trial, unified dashboard, checkout/webhook/
+> delivery pages) lives on branch `feat/cold-case-files` — **not merged into `main`**. The
+> Supabase edge functions ARE deployed (that's normal — they're inert without the price ID) and
+> the DB tables/storage bucket exist (harmless, empty).
+>
+> **To flip the switch back on later, in order:**
+> 1. Decide the branch is ready → `git checkout main && git merge feat/cold-case-files` (or open
+>    a PR) → push → site deploys with the real landing.
+> 2. Re-verify anything that drifted — check `stripe-webhook` for the cold-case branch still
+>    matching this repo (there was drift found 2026-08-15, see the website repo's memory note
+>    `project_cold_case_branch.md` / vault `00_INBOX`) before trusting it blindly.
+> 3. Do Touchpoint 1 (Stripe price + `COLD_CASE_PRICE_ID` secret) below.
+> 4. Do Touchpoint 2 (Fly worker deploy) below.
+> 5. Run the end-to-end proof below with a real card before announcing anything.
+>
+> Until step 1 happens, nothing below is reachable by a real customer no matter what else
+> changes on `main` or in Supabase — this is genuinely a full stop, not a soft pause.
+
 Everything built 2026-07-03 (ADR-0029). What's LIVE, what needs **Jonathan** (two touchpoints),
 and the end-to-end test that proves the whole flow before real customers touch it.
 
