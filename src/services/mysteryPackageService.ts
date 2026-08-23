@@ -68,10 +68,17 @@ export async function generateCompletePackage(mysteryId: string, testMode = fals
   try {
     console.log("Starting package generation for conversation ID:", mysteryId);
 
-    // Prevent duplicate generation attempts
+    // Prevent duplicate generation attempts. Read-only first-line UX check --
+    // the server's atomic claim (claim_package_for_generation, ADR-0104) is the
+    // real enforcement. This must stay read-only: it used to also write
+    // generation_status='in_progress' to the DB before calling the edge
+    // function below, which meant the server's claim always saw a row this
+    // same call had *just* marked in_progress and rejected it with 409 on
+    // every attempt -- a guaranteed self-collision, not a race (ADR-0104
+    // Addendum 2, 2026-08-23).
     const { data: existingPackage, error: existingPackageErr } = await supabase
       .from("mystery_packages")
-      .select("generation_status, generation_started_at")
+      .select("id, generation_status, generation_started_at")
       .eq("conversation_id", mysteryId)
       .order('updated_at', { ascending: false })
       .limit(1)
@@ -87,6 +94,8 @@ export async function generateCompletePackage(mysteryId: string, testMode = fals
       return "already_in_progress";
     }
 
+    packageId = existingPackage?.id;
+
     // Get conversation data
     const { data: conversation, error: conversationError } = await supabase
       .from("conversations")
@@ -101,63 +110,10 @@ export async function generateCompletePackage(mysteryId: string, testMode = fals
 
     console.log(`Found conversation with ${conversation.messages?.length || 0} messages`);
 
-    // Create or update mystery_packages record with initial status
-    const { data: packageData, error: checkError } = await supabase
-      .from("mystery_packages")
-      .select("id")
-      .eq("conversation_id", mysteryId)
-      .order('updated_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (checkError && checkError.code !== 'PGRST116') {
-      console.error("Error checking for existing package:", checkError);
-      throw new Error("Failed to check existing package");
-    }
-    
-    const initialStatus: GenerationStatus = {
-      status: 'in_progress',
-      progress: 10,
-      currentStep: 'Sending to external generation service...',
-      sections: {
-        hostGuide: false,
-        characters: false,
-        clues: false,
-        inspectorScript: false,
-        characterMatrix: false,
-        solution: false
-      }
-    };
-    
-    if (packageData) {
-      packageId = packageData.id;
-      await supabase
-        .from("mystery_packages")
-        .update({
-          generation_status: initialStatus,
-          generation_started_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", packageId);
-    } else {
-      const { data: newPackage, error: createError } = await supabase
-        .from("mystery_packages")
-        .insert({
-          conversation_id: mysteryId,
-          generation_status: initialStatus,
-          generation_started_at: new Date().toISOString(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
-        .select("id")
-        .single();
-        
-      if (createError || !newPackage) {
-        console.error("Error creating package:", createError);
-        throw new Error("Failed to create package record");
-      }
-      packageId = newPackage.id;
-    }
+    // Note: no pre-write of generation_status here. claim_package_for_generation
+    // (called inside mystery-webhook-trigger below) is the sole writer of the
+    // 'in_progress' state -- it creates the mystery_packages row if none exists
+    // yet, or claims an existing one. packageId is resolved after the call below.
 
     // Prepare conversation content
     const conversationContent = conversation.messages
@@ -190,6 +146,20 @@ export async function generateCompletePackage(mysteryId: string, testMode = fals
         }
       }
     );
+
+    // Resolve packageId now if it wasn't already known -- a brand-new
+    // conversation has no row until claim_package_for_generation creates one
+    // inside the call above, win or lose.
+    if (!packageId) {
+      const { data: claimedPackage } = await supabase
+        .from("mystery_packages")
+        .select("id")
+        .eq("conversation_id", mysteryId)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      packageId = claimedPackage?.id;
+    }
 
     if (webhookError) {
       console.error("Edge Function error:", webhookError);
