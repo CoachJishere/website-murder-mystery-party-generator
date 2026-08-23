@@ -74,11 +74,27 @@ Also fixed a second, previously-unnoticed bug in the *original* (pre-Parent57) b
 
 **Key files touched by this addendum:** Make.com scenario `9106101`, blueprint updated in place from Parent56 → Parent57 (regression) → Parent58 (fix), via `PATCH /api/v2/scenarios/9106101`.
 
+## Addendum 2 (2026-08-23): removing the retry loop's sleep also removed the only thing that gave Child's async writes time to land
+
+A second real test ("The Lighthouse Keeper's Secret," conversation `b7cd578c-21ae-4ec0-9483-14d9b45e4ab3`) on Parent58 surfaced a genuine efficiency gap, distinct from the Parent57 regression. `145` (`http:ActionSendData`, firing the Child webhook) is fire-and-forget — it returns as soon as Make accepts the request, not when the Child scenario actually finishes. `146`'s 15-second sleep only staggers the 4 outgoing fires so they don't all hit the endpoint in the same instant; `4001` (`builtin:BasicAggregator`, misleadingly labeled "Wait for all child fires" in the designer) only aggregates the feeder loop's own iteration variables (`name`/`index`/`description`), not any actual completion signal from Child. Parent proceeds immediately into its own Claude calls (Detective Script, Evidence Cards, Image Prompts) and reaches the completeness check with no guarantee Child has actually finished — Child executions typically take 135-160s (observed up to 239s), and Parent's own intervening work doesn't reliably cover that.
+
+Confirmed directly: in this test, `generation_completed_at` was set at `21:09:29`, but the Child scenario log showed executions still running until `21:09:35` and `21:10:12` — Parent checked completeness *before* Child had even finished, not just before a trailing write landed. All 4 characters got flagged `missing_round_content`, `notify-generation-issue` fired recovery for all 4, and one (Absalom Reyes) turned out to have been fine the whole time — his content had simply not landed yet at check time. That's a real, avoidable cost: `notify-generation-issue`'s own accounting prices each character re-fire at `$0.15`; a systematically-early check means paying that on characters that didn't actually need it.
+
+The original blueprint's retry loop had a 5-minute sleep (`util:FunctionSleep`, module `304`) — but it was tied to the *retry*, not a standalone wait: it lived inside the loop that retried and only mattered because it delayed the *second* check long enough to usually absorb the same race. Removing the retry loop in Parent57/58 removed that incidental buffer along with the retry logic it was actually there to support.
+
+**Fix, Parent60:** added one `util:FunctionSleep` (90s) per branch, positioned once — after Parent's own intervening work (image generation, the last `supabase:upsertARecord` save) and immediately before the completeness check (`223`/`300`/`2436`/`2472`). Not tied to any loop or retry; fires exactly once per generation, same as everything else in the corrected design. 90s was sized off the observed gap (worst case in this test: check ran ~56s before the last Child execution actually finished) plus margin. Verified structurally before publishing: 100 modules (up from 96), all 4 sleeps confirmed in position between the image-save step and the completeness check, zero dangling references. Published in place via `PATCH /api/v2/scenarios/9106101` (same scenario, same webhook).
+
+**Not yet re-verified with a live run** — this addendum documents the fix as published; the next real or test generation will confirm whether 90s reliably closes the gap. The system was never *incorrect* here (the recovery budget always caught the genuine gaps), only inefficient — this closes a spend/efficiency gap, not a correctness one.
+
+**Key files touched by this addendum:** Make.com scenario `9106101`, blueprint updated in place Parent58 → Parent59 (unrelated victim-name fix, different session) → Parent60 (this fix).
+
 ## Key files
 
 - `supabase/migrations/20260823_ready_email_single_source_of_truth.sql` — new column, trigger function, trigger
 - `supabase/functions/send-mystery-ready-email/index.ts` — new edge function
-- Make.com scenario `9106101` ("MM Live - Parent56" → "Parent58 (Fix Missing Completion Write)", updated in place, same scenario ID/webhook throughout): removes routers `197`/`301`/`2437`/`2473` and their nested `BasicFeeder`/recheck sub-flows and the 12 embedded "ready" email HTTP modules; adds back a minimal completion-marking router per branch (see Addendum)
+- Make.com scenario `9106101` ("MM Live - Parent56" → ... → "Parent60 (Wait Before Completion Check)", updated in place, same scenario ID/webhook throughout): removes routers `197`/`301`/`2437`/`2473` and their nested `BasicFeeder`/recheck sub-flows and the 12 embedded "ready" email HTTP modules; adds back a minimal completion-marking router per branch (Parent58, see Addendum 1) plus a one-time 90s wait before the completeness check (Parent60, see Addendum 2)
 - `temp-files/MM Live - Parent57 (Remove Redundant Retry Loop).blueprint.json` — the regression, kept for the record per this repo's blueprint-versioning convention
-- `temp-files/MM Live - Parent58 (Fix Missing Completion Write).blueprint.json` — the fix, currently live
+- `temp-files/MM Live - Parent58 (Fix Missing Completion Write).blueprint.json` — the completion-write fix
+- `temp-files/MM Live - Parent60 (Wait Before Completion Check).blueprint.json` — the timing fix, currently live
 - Vault note `duplicate-ready-email-parent-router-bug-2026-08-23-mystery-maker.md` — the original investigation this ADR resolves
+- Vault note `parent-duplicate-package-row-bug-2026-08-23-mystery-maker.md` — a separate, unrelated latent bug found during re-testing, tracked but not fixed here
