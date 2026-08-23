@@ -471,6 +471,25 @@ serve(async (req) => {
         // Get customer email
         const customerEmail = session.customer_email || session.customer_details?.email;
 
+        // Merge (not overwrite) the confirmed Stripe amount/currency/payment_intent
+        // into mystery_data, so the client (PaymentSuccess.tsx) can read back the
+        // real charged amount for the Google Ads purchase conversion instead of
+        // guessing client-side which price tier (full vs. welcome-discount) applied.
+        const { data: existingConv } = await supabase
+          .from("conversations")
+          .select("mystery_data")
+          .eq("id", conversationId)
+          .single();
+
+        const mergedMysteryData = {
+          ...((existingConv?.mystery_data as Record<string, unknown>) || {}),
+          payment: {
+            amount_total: session.amount_total,
+            currency: session.currency,
+            payment_intent: session.payment_intent,
+          },
+        };
+
         // Update conversation in database
         const { data: conversation, error: updateError } = await supabase
           .from("conversations")
@@ -478,6 +497,7 @@ serve(async (req) => {
             is_paid: true,
             purchase_date: new Date().toISOString(),
             updated_at: new Date().toISOString(),
+            mystery_data: mergedMysteryData,
           })
           .eq("id", conversationId)
           .select("user_id")

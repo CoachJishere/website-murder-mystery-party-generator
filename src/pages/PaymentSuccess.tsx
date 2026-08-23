@@ -3,7 +3,13 @@ import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Loader2 } from "lucide-react";
-import { trackPurchaseComplete } from "@/lib/analytics";
+import { supabase } from "@/lib/supabase";
+
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -38,13 +44,45 @@ const PaymentSuccess = () => {
     return null;
   }, [searchParams]);
 
-  // Track purchase conversion exactly once
+  // Fire the Google Ads purchase conversion exactly once, using the real
+  // charged amount/currency/transaction_id the stripe-webhook function
+  // already persisted into mystery_data.payment (not a guessed/hardcoded
+  // value — this product has two real price points, full vs. the 7-day
+  // welcome discount). GA4's purchase event is already sent accurately
+  // server-side from the same webhook (Measurement Protocol), so it's
+  // deliberately not duplicated here client-side.
   const tracked = useRef(false);
   useEffect(() => {
-    if (conversationId && !tracked.current) {
-      tracked.current = true;
-      trackPurchaseComplete(conversationId);
-    }
+    if (!conversationId || tracked.current) return;
+    tracked.current = true;
+
+    (async () => {
+      const { data, error } = await supabase
+        .from("conversations")
+        .select("mystery_data")
+        .eq("id", conversationId)
+        .single();
+
+      if (error) {
+        console.error("PaymentSuccess - couldn't read payment data for Ads conversion:", error);
+        return;
+      }
+
+      const payment = (data?.mystery_data as { payment?: { amount_total?: number; currency?: string; payment_intent?: string } } | null)?.payment;
+      if (!payment?.amount_total || !payment?.currency || !payment?.payment_intent) {
+        console.warn("PaymentSuccess - payment data not yet available for Ads conversion (webhook may still be processing)");
+        return;
+      }
+
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "conversion", {
+          send_to: "AW-18406526278/MxMoCN_-yeYcEMaa9chE",
+          value: payment.amount_total / 100,
+          currency: payment.currency.toUpperCase(),
+          transaction_id: payment.payment_intent,
+        });
+      }
+    })();
   }, [conversationId]);
 
   useEffect(() => {

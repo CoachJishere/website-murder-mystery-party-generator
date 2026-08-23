@@ -105,22 +105,6 @@ export const trackBeginCheckout = (mysteryId: string, theme?: string) => {
   });
 };
 
-// Track purchase complete (user returns from Stripe successfully)
-export const trackPurchaseComplete = (mysteryId: string, theme?: string) => {
-  trackEvent('purchase', {
-    transaction_id: mysteryId,
-    currency: 'USD',
-    value: 24.99,
-    items: [{
-      item_id: mysteryId,
-      item_name: 'Murder Mystery Package',
-      item_category: theme || 'mystery',
-      price: 24.99,
-      quantity: 1,
-    }],
-  });
-};
-
 // Track package generation completed
 export const trackGenerationCompleted = (conversationId: string, params: Record<string, any> = {}) => {
   trackEvent('package_generation_completed', {
