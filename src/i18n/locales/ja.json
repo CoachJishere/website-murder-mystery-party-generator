@@ -335,7 +335,8 @@
       "privacy": "プライバシーポリシー",
       "blog": "ブログ",
       "customMystery": "カスタムマーダーミステリー",
-      "corporateEvents": "企業・オフィスイベント"
+      "corporateEvents": "企業・オフィスイベント",
+      "cookieSettings": "Cookie設定"
     },
     "copyright": "Mystery Maker, Inc. All rights reserved."
   },
@@ -1896,5 +1897,26 @@
     },
     "guardDirective": "**この秘密は何としてでも守りましょう。** あなたの評判 — そしておそらく自由も — それを隠し続けられるかどうかにかかっています。否定し、はぐらかし、決して自分から明かしてはいけません。秘密をあっさり明け渡してしまうと、テーブル全体の緊張感が損なわれます。",
     "characterNameEditingTip": "**名前の変更はこの項目だけに反映されます。** 他の場所（ラウンド台本、手がかり、ホストガイドなど）の名前は変更されず、元の名前のままになります。最初に台本を読み始める前に、二重名（例:「Clarabelle/Clarence」）のどちらか一方を選ぶ用途に向いており、台本を確認し始めた後の修正には向きません。"
+  },
+  "consent": {
+    "ariaLabel": "Cookieの同意",
+    "title": "お客様のプライバシーを尊重します",
+    "message": "当サイトの運営のためにCookieを使用しており、同意いただいた場合は分析や広告のためにも使用します。フッターの「Cookie設定」からいつでも選択を変更できます。",
+    "acceptAll": "すべて同意する",
+    "rejectAll": "すべて拒否する",
+    "customize": "カスタマイズ",
+    "save": "設定を保存",
+    "necessary": {
+      "label": "必須",
+      "description": "サイトの運営に必要です。常に有効です。"
+    },
+    "analytics": {
+      "label": "分析",
+      "description": "サイトの利用状況を把握するために役立ちます。"
+    },
+    "advertising": {
+      "label": "広告",
+      "description": "広告の測定とパーソナライズに使用されます。"
+    }
   }
 }

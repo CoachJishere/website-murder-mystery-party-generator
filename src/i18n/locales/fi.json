@@ -335,7 +335,8 @@
       "privacy": "Tietosuojakäytäntö",
       "blog": "Blogi",
       "customMystery": "Räätälöity murhamysteeri",
-      "corporateEvents": "Yritys- ja toimistotapahtumat"
+      "corporateEvents": "Yritys- ja toimistotapahtumat",
+      "cookieSettings": "Evästeasetukset"
     },
     "copyright": "Mystery Maker, Inc. Kaikki oikeudet pidätetään."
   },
@@ -1896,5 +1897,26 @@
     },
     "guardDirective": "**Vartioi tätä salaisuutta hinnalla millä hyvänsä.** Maineesi – ja ehkä myös vapautesi – riippuu siitä, että pidät sen piilossa. Kiellä, väistele äläkä koskaan paljasta sitä omasta tahdostasi. Vapaaehtoisesti paljastettu salaisuus vie jännityksen koko pöydältä.",
     "characterNameEditingTip": "**Nimen vaihtaminen päivittää vain tämän kentän.** Se ei muuta nimeä missään muualla – kierrosten käsikirjoitukset, johtolangat ja isännän opas käyttävät edelleen alkuperäistä nimeä. Parhaiten sopii kaksoisnimen (esim. \"Clarabelle/Clarence\") jommankumman puolen valitsemiseen ennen ensimmäistä lukukertaa, ei myöhäiseksi korjaukseksi sen jälkeen kun olet jo aloittanut käsikirjoituksen tarkistamisen."
+  },
+  "consent": {
+    "ariaLabel": "Evästesuostumus",
+    "title": "Arvostamme yksityisyyttäsi",
+    "message": "Käytämme evästeitä sivuston toimintaan ja, suostumuksellasi, analytiikkaan ja mainontaan. Voit muuttaa valintaasi milloin tahansa alatunnisteen \"Evästeasetukset\"-kohdasta.",
+    "acceptAll": "Hyväksy kaikki",
+    "rejectAll": "Hylkää kaikki",
+    "customize": "Mukauta",
+    "save": "Tallenna asetukset",
+    "necessary": {
+      "label": "Välttämättömät",
+      "description": "Sivuston toiminnan kannalta välttämättömiä. Aina käytössä."
+    },
+    "analytics": {
+      "label": "Analytiikka",
+      "description": "Auttavat meitä ymmärtämään sivuston käyttöä."
+    },
+    "advertising": {
+      "label": "Mainonta",
+      "description": "Käytetään mainonnan mittaamiseen ja kohdentamiseen."
+    }
   }
 }

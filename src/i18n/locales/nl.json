@@ -335,7 +335,8 @@
       "privacy": "Privacybeleid",
       "blog": "Blog",
       "customMystery": "Murder Mystery op Maat",
-      "corporateEvents": "Bedrijfs- en Kantoorevenementen"
+      "corporateEvents": "Bedrijfs- en Kantoorevenementen",
+      "cookieSettings": "Cookie-instellingen"
     },
     "copyright": "Mystery Maker, Inc. Alle rechten voorbehouden."
   },
@@ -1896,5 +1897,26 @@
     },
     "guardDirective": "**Bewaak dit geheim koste wat het kost.** Je reputatie — en misschien je vrijheid — hangt af van of je het verborgen houdt. Ontken, wijk uit, en geef het nooit vrijwillig prijs. Een geheim dat zomaar wordt prijsgegeven, haalt de spanning weg voor de hele tafel.",
     "characterNameEditingTip": "**Een naam wijzigen werkt alleen bij dit veld.** De naam verandert nergens anders — rondescripts, aanwijzingen en de hostgids blijven de oorspronkelijke naam gebruiken. Gebruik dit het best om vóór je eerste keer doorlezen te kiezen voor één kant van een dubbele naam (bijv. \"Clarabelle/Clarence\"), niet als late correctie nadat je het script al aan het doornemen bent."
+  },
+  "consent": {
+    "ariaLabel": "Cookietoestemming",
+    "title": "Wij hechten waarde aan uw privacy",
+    "message": "We gebruiken cookies om deze site te laten werken en, met uw toestemming, voor analyse en advertenties. U kunt uw keuze altijd wijzigen via \"Cookie-instellingen\" in de footer.",
+    "acceptAll": "Alles accepteren",
+    "rejectAll": "Alles weigeren",
+    "customize": "Aanpassen",
+    "save": "Voorkeuren opslaan",
+    "necessary": {
+      "label": "Noodzakelijk",
+      "description": "Vereist om de site te laten werken. Altijd actief."
+    },
+    "analytics": {
+      "label": "Analyse",
+      "description": "Helpt ons begrijpen hoe de site wordt gebruikt."
+    },
+    "advertising": {
+      "label": "Advertenties",
+      "description": "Worden gebruikt om advertenties te meten en te personaliseren."
+    }
   }
 }

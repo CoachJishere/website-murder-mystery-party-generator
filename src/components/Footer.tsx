@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from 'react-i18next';
+import { openConsentSettings } from "@/lib/consent";
 
 const Footer = () => {
   const { isAuthenticated } = useAuth();
@@ -84,6 +85,16 @@ const Footer = () => {
                 <Link to="/privacy" className="footer-link">
                   {t('footer.links.privacy')}
                 </Link>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={openConsentSettings}
+                  className="footer-link"
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit', textAlign: 'left' }}
+                >
+                  {t('footer.links.cookieSettings', 'Cookie Settings')}
+                </button>
               </li>
             </ul>
           </div>

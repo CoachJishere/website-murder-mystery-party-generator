@@ -335,7 +335,8 @@
       "privacy": "Informativa sulla Privacy",
       "blog": "Blog",
       "customMystery": "Mistero con Delitto Personalizzato",
-      "corporateEvents": "Eventi Aziendali e in Ufficio"
+      "corporateEvents": "Eventi Aziendali e in Ufficio",
+      "cookieSettings": "Impostazioni Cookie"
     },
     "copyright": "Mystery Maker, Inc. Tutti i diritti riservati."
   },
@@ -1896,5 +1897,26 @@
     },
     "guardDirective": "**Custodisci questo segreto a ogni costo.** La tua reputazione — e forse la tua libertà — dipendono dal tenerlo nascosto. Nega, devia e non svelarlo mai volontariamente. Un segreto consegnato spontaneamente toglie tensione a tutto il tavolo.",
     "characterNameEditingTip": "**Rinominare aggiorna solo questo campo.** Non cambierà il nome altrove — i copioni dei round, gli indizi e la guida per l'organizzatore useranno ancora il nome originale. Usalo meglio per scegliere una delle due varianti di un nome doppio (es. \"Clarabella/Clarenzo\") prima della tua prima lettura completa, non come correzione tardiva dopo aver già iniziato a rivedere il copione."
+  },
+  "consent": {
+    "ariaLabel": "Consenso ai cookie",
+    "title": "Rispettiamo la tua privacy",
+    "message": "Utilizziamo i cookie per far funzionare questo sito e, con il tuo consenso, per analisi e pubblicità. Puoi modificare la tua scelta in qualsiasi momento tramite \"Impostazioni Cookie\" nel footer.",
+    "acceptAll": "Accetta tutto",
+    "rejectAll": "Rifiuta tutto",
+    "customize": "Personalizza",
+    "save": "Salva preferenze",
+    "necessary": {
+      "label": "Necessari",
+      "description": "Necessari per il funzionamento del sito. Sempre attivi."
+    },
+    "analytics": {
+      "label": "Analisi",
+      "description": "Ci aiutano a capire come viene utilizzato il sito."
+    },
+    "advertising": {
+      "label": "Pubblicità",
+      "description": "Utilizzati per misurare e personalizzare gli annunci."
+    }
   }
 }

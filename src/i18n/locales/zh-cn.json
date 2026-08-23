@@ -335,7 +335,8 @@
       "privacy": "隐私政策",
       "blog": "博客",
       "customMystery": "定制谋杀之谜",
-      "corporateEvents": "企业与办公室活动"
+      "corporateEvents": "企业与办公室活动",
+      "cookieSettings": "Cookie 设置"
     },
     "copyright": "Mystery Maker, Inc. 保留所有权利。"
   },
@@ -1896,5 +1897,26 @@
     },
     "guardDirective": "**不惜一切代价守住这个秘密。**你的名誉——或许还有你的自由——都取决于能否把它藏好。否认、转移话题，绝不主动交代。一个轻易被交代出来的秘密会让全桌的紧张感荡然无存。",
     "characterNameEditingTip": "**重命名只会更新这一栏。**其他地方的名字不会随之改变——各轮剧本、线索和主持指南仍会使用原来的名字。这个功能最适合在你第一次通读之前，用来从双重名字（例如“Clarabelle/Clarence”）中选定一个，而不适合在你已经开始审阅剧本之后用来做后期修正。"
+  },
+  "consent": {
+    "ariaLabel": "Cookie 同意",
+    "title": "我们重视您的隐私",
+    "message": "我们使用 Cookie 来运行本网站，并在您同意的情况下用于分析和广告。您可以随时通过页脚的“Cookie 设置”更改您的选择。",
+    "acceptAll": "全部接受",
+    "rejectAll": "全部拒绝",
+    "customize": "自定义",
+    "save": "保存偏好设置",
+    "necessary": {
+      "label": "必要",
+      "description": "网站运行所必需，始终启用。"
+    },
+    "analytics": {
+      "label": "分析",
+      "description": "帮助我们了解网站的使用情况。"
+    },
+    "advertising": {
+      "label": "广告",
+      "description": "用于衡量和个性化广告。"
+    }
   }
 }

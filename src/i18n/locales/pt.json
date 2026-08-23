@@ -335,7 +335,8 @@
       "privacy": "Política de Privacidade",
       "blog": "Blog",
       "customMystery": "Murder Mystery Personalizado",
-      "corporateEvents": "Eventos Corporativos e de Escritório"
+      "corporateEvents": "Eventos Corporativos e de Escritório",
+      "cookieSettings": "Configurações de Cookies"
     },
     "copyright": "Mystery Maker, Inc. Todos os direitos reservados."
   },
@@ -1896,5 +1897,26 @@
     },
     "guardDirective": "**Guarda este segredo a todo o custo.** A tua reputação — e talvez a tua liberdade — depende de o manteres escondido. Nega, desvia o assunto e nunca o reveles de livre vontade. Um segredo entregue voluntariamente tira a tensão a toda a mesa.",
     "characterNameEditingTip": "**Renomear só atualiza este campo.** Não vai alterar o nome em mais lado nenhum — os guiões das rondas, as pistas e o guia do anfitrião continuarão a usar o nome original. É melhor usar isto para escolher um dos lados de um nome duplo (por exemplo, \"Clarabelle/Clarence\") antes da tua primeira leitura, e não como uma correção tardia depois de já teres começado a rever o guião."
+  },
+  "consent": {
+    "ariaLabel": "Consentimento de cookies",
+    "title": "Valorizamos a sua privacidade",
+    "message": "Utilizamos cookies para o funcionamento deste site e, com o seu consentimento, para análise e publicidade. Pode alterar a sua escolha a qualquer momento em \"Configurações de Cookies\" no rodapé.",
+    "acceptAll": "Aceitar tudo",
+    "rejectAll": "Rejeitar tudo",
+    "customize": "Personalizar",
+    "save": "Guardar preferências",
+    "necessary": {
+      "label": "Necessários",
+      "description": "Necessários para o funcionamento do site. Sempre ativos."
+    },
+    "analytics": {
+      "label": "Análise",
+      "description": "Ajudam-nos a compreender como o site é utilizado."
+    },
+    "advertising": {
+      "label": "Publicidade",
+      "description": "Utilizados para medir e personalizar anúncios."
+    }
   }
 }

@@ -335,7 +335,8 @@
       "privacy": "Datenschutzrichtlinie",
       "blog": "Blog",
       "customMystery": "Individuelles Krimi-Mysterium",
-      "corporateEvents": "Firmen- & Büro-Events"
+      "corporateEvents": "Firmen- & Büro-Events",
+      "cookieSettings": "Cookie-Einstellungen"
     },
     "copyright": "Mystery Maker, Inc. Alle Rechte vorbehalten."
   },
@@ -1896,5 +1897,26 @@
     },
     "guardDirective": "**Bewahre dieses Geheimnis um jeden Preis.** Dein Ruf — und vielleicht deine Freiheit — hängt davon ab, es geheim zu halten. Leugne, lenk ab und gib es niemals freiwillig preis. Ein Geheimnis, das freiwillig preisgegeben wird, nimmt der ganzen Tischrunde die Spannung.",
     "characterNameEditingTip": "**Das Umbenennen aktualisiert nur dieses Feld.** Der Name ändert sich nirgendwo sonst — Rundenskripte, Hinweise und die Gastgeberanleitung verwenden weiterhin den ursprünglichen Namen. Am besten geeignet, um dich vor deinem ersten Durchlesen für eine Seite eines Doppelnamens zu entscheiden (z. B. \"Clarabelle/Clarence\"), nicht als nachträgliche Korrektur, nachdem du schon mit der Durchsicht des Skripts begonnen hast."
+  },
+  "consent": {
+    "ariaLabel": "Cookie-Einwilligung",
+    "title": "Wir schätzen Ihre Privatsphäre",
+    "message": "Wir verwenden Cookies, um diese Website zu betreiben, und mit Ihrer Zustimmung für Analyse und Werbung. Sie können Ihre Wahl jederzeit über „Cookie-Einstellungen“ in der Fußzeile ändern.",
+    "acceptAll": "Alle akzeptieren",
+    "rejectAll": "Alle ablehnen",
+    "customize": "Anpassen",
+    "save": "Einstellungen speichern",
+    "necessary": {
+      "label": "Notwendig",
+      "description": "Für den Betrieb der Website erforderlich. Immer aktiv."
+    },
+    "analytics": {
+      "label": "Analyse",
+      "description": "Hilft uns zu verstehen, wie die Website genutzt wird."
+    },
+    "advertising": {
+      "label": "Werbung",
+      "description": "Wird verwendet, um Werbung zu messen und zu personalisieren."
+    }
   }
 }

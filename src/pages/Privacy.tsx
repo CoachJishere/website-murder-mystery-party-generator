@@ -2,6 +2,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Head from "@/components/Head";
+import { openConsentSettings } from "@/lib/consent";
 
 const Privacy = () => {
   return (
@@ -74,7 +75,26 @@ const Privacy = () => {
               <li>Right to withdraw consent.</li>
             </ul>
             
-            <h2>7. Contact Us</h2>
+            <h2>7. Cookies</h2>
+            <p>
+              We use cookies and similar technologies for three purposes: to run the site (strictly necessary,
+              always on), to understand how the site is used (analytics), and to measure and personalize
+              advertising. If you're visiting from the EEA, UK, or Switzerland, analytics and advertising
+              cookies are off by default until you choose to turn them on.
+            </p>
+            <p>
+              You can review and change your choice at any time via{" "}
+              <button
+                type="button"
+                onClick={openConsentSettings}
+                style={{ background: "none", border: "none", padding: 0, textDecoration: "underline", cursor: "pointer", font: "inherit", color: "inherit" }}
+              >
+                Cookie Settings
+              </button>
+              , also available in the footer of every page.
+            </p>
+
+            <h2>8. Contact Us</h2>
             <p>
               If you have any questions about this privacy policy or our privacy practices, please contact us at support@mysterymaker.party.
             </p>

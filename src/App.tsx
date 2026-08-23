@@ -14,6 +14,7 @@ import { initPostHog, capturePageView } from "@/lib/posthog";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { WelcomeDiscountRibbon } from "@/components/WelcomeDiscountRibbon";
 import { RecentSalesPopup } from "@/components/RecentSalesPopup";
+import { ConsentBanner } from "@/components/ConsentBanner";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
@@ -124,6 +125,7 @@ const AppRoutes = () => {
     <LoadingBoundary loading={loading}>
       <WelcomeDiscountRibbon />
       <RecentSalesPopup enabled={showRecentSalesPopup} />
+      <ConsentBanner />
       {isAuthenticated && <MobileBottomNav />}
       <Routes>
         <Route path="/" element={<Index />} />

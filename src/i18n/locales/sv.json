@@ -335,7 +335,8 @@
       "privacy": "Privacy Policy",
       "blog": "Blogg",
       "customMystery": "Skräddarsydd Murder Mystery",
-      "corporateEvents": "Företags- och Kontorsevent"
+      "corporateEvents": "Företags- och Kontorsevent",
+      "cookieSettings": "Cookie-inställningar"
     },
     "copyright": "Mystery Maker, Inc. All rights reserved."
   },
@@ -1896,5 +1897,26 @@
     },
     "guardDirective": "**Skydda den här hemligheten till varje pris.** Ditt rykte — och kanske din frihet — beror på att den förblir dold. Neka, avled och avslöja den aldrig frivilligt. En hemlighet som lämnas ut frivilligt suger ut spänningen för hela bordet.",
     "characterNameEditingTip": "**Att byta namn uppdaterar bara det här fältet.** Namnet ändras inte någon annanstans — rundmanus, ledtrådar och värdguiden använder fortfarande det ursprungliga namnet. Bäst att använda för att välja sida av ett dubbelnamn (t.ex. \"Clarabelle/Clarence\") innan din första genomläsning, inte som en sen rättelse efter att du redan börjat granska manuset."
+  },
+  "consent": {
+    "ariaLabel": "Cookiesamtycke",
+    "title": "Vi värnar om din integritet",
+    "message": "Vi använder cookies för att driva den här webbplatsen och, med ditt samtycke, för analys och annonsering. Du kan alltid ändra ditt val via \"Cookie-inställningar\" i sidfoten.",
+    "acceptAll": "Acceptera alla",
+    "rejectAll": "Avvisa alla",
+    "customize": "Anpassa",
+    "save": "Spara inställningar",
+    "necessary": {
+      "label": "Nödvändiga",
+      "description": "Krävs för att webbplatsen ska fungera. Alltid aktiva."
+    },
+    "analytics": {
+      "label": "Analys",
+      "description": "Hjälper oss att förstå hur webbplatsen används."
+    },
+    "advertising": {
+      "label": "Annonsering",
+      "description": "Används för att mäta och anpassa annonser."
+    }
   }
 }

@@ -87,7 +87,50 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
+
+      // Consent Mode v2 (ADR-0105). Defaults granted everywhere, EXCEPT the
+      // region list below (EEA + UK + CH), where they default denied until the
+      // visitor accepts via the on-site banner (src/components/ConsentBanner.tsx).
+      // The region match is Google's own IP-based detection, not ours -- do not
+      // add client-side geo-IP here, see the ADR. Must run before any
+      // gtag('config', ...) call below.
+      gtag('consent', 'default', {
+        'ad_storage': 'granted',
+        'ad_user_data': 'granted',
+        'ad_personalization': 'granted',
+        'analytics_storage': 'granted'
+      });
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied',
+        'region': ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH'],
+        'wait_for_update': 500
+      });
+
+      // Re-apply a previously saved choice (src/lib/consent.ts) immediately,
+      // so a returning visitor who already consented isn't denied again on
+      // every page load. Deliberately synchronous and inline rather than
+      // waiting for React to mount.
+      (function () {
+        try {
+          var saved = JSON.parse(window.localStorage.getItem('mm_consent_v1'));
+          if (saved && saved.analytics && saved.ads) {
+            gtag('consent', 'update', {
+              'analytics_storage': saved.analytics,
+              'ad_storage': saved.ads,
+              'ad_user_data': saved.ads,
+              'ad_personalization': saved.ads
+            });
+          }
+        } catch (e) {}
+      })();
+
       gtag('config', 'G-XGD48X4ZQS', { send_page_view: false });
+      // Google Ads (search_generator/corporate campaign, Aug 2026). Reuses the
+      // gtag.js loader above instead of loading a second copy of the library.
+      gtag('config', 'AW-18406526278');
     </script>
   </head>
 

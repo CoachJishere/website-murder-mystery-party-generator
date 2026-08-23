@@ -335,7 +335,8 @@
       "privacy": "Privacy Policy",
       "blog": "Blog",
       "customMystery": "Skræddersyet Murder Mystery",
-      "corporateEvents": "Firma- og Kontorevents"
+      "corporateEvents": "Firma- og Kontorevents",
+      "cookieSettings": "Cookie-indstillinger"
     },
     "copyright": "Mystery Maker, Inc. All rights reserved."
   },
@@ -1896,5 +1897,26 @@
     },
     "guardDirective": "**Vogt denne hemmelighed for enhver pris.** Dit ry — og måske din frihed — afhænger af, at den forbliver skjult. Benægt, aflede og giv den aldrig fra dig frivilligt. En hemmelighed, der bare gives væk, dræner spændingen for hele bordet.",
     "characterNameEditingTip": "**Omdøbning opdaterer kun dette felt.** Det ændrer ikke navnet andre steder — rundemanuskripter, spor og værtsguiden vil stadig bruge det oprindelige navn. Bruges bedst til at vælge én side af et dobbeltnavn (f.eks. \"Clarabelle/Clarence\") før din første gennemlæsning, ikke som en sen rettelse, når du allerede er gået i gang med at gennemgå manuskriptet."
+  },
+  "consent": {
+    "ariaLabel": "Cookiesamtykke",
+    "title": "Vi værdsætter dit privatliv",
+    "message": "Vi bruger cookies til at drive dette site og, med dit samtykke, til analyse og annoncering. Du kan altid ændre dit valg via \"Cookie-indstillinger\" i bunden af siden.",
+    "acceptAll": "Accepter alle",
+    "rejectAll": "Afvis alle",
+    "customize": "Tilpas",
+    "save": "Gem indstillinger",
+    "necessary": {
+      "label": "Nødvendige",
+      "description": "Nødvendige for at siden fungerer. Altid aktive."
+    },
+    "analytics": {
+      "label": "Analyse",
+      "description": "Hjælper os med at forstå, hvordan siden bruges."
+    },
+    "advertising": {
+      "label": "Annoncering",
+      "description": "Bruges til at måle og personalisere annoncer."
+    }
   }
 }

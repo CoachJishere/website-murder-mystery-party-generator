@@ -335,7 +335,8 @@
       "privacy": "Privacy Policy",
       "blog": "Blog",
       "customMystery": "Custom Murder Mystery",
-      "corporateEvents": "Corporate & Office Events"
+      "corporateEvents": "Corporate & Office Events",
+      "cookieSettings": "Cookie Settings"
     },
     "copyright": "Mystery Maker, Inc. All rights reserved."
   },
@@ -1896,6 +1897,27 @@
       "tip7": "**Let the group move.** Small clusters of conversation and one big circle for the accusations both work well — don't force everyone to stay in one seated formation the whole time.",
       "tip8": "**Improvise.** If a player asks something not in their script options, encourage in-character improvisation.",
       "tip9": "**Have fun with atmosphere.** Music and a themed snack go a long way; nothing else is required."
+    }
+  },
+  "consent": {
+    "ariaLabel": "Cookie consent",
+    "title": "We value your privacy",
+    "message": "We use cookies to run this site and, with your consent, for analytics and advertising. You can change your choice anytime via \"Cookie Settings\" in the footer.",
+    "acceptAll": "Accept All",
+    "rejectAll": "Reject All",
+    "customize": "Customize",
+    "save": "Save preferences",
+    "necessary": {
+      "label": "Necessary",
+      "description": "Required for the site to function. Always on."
+    },
+    "analytics": {
+      "label": "Analytics",
+      "description": "Helps us understand how the site is used."
+    },
+    "advertising": {
+      "label": "Advertising",
+      "description": "Used to measure and personalize ads."
     }
   }
 }

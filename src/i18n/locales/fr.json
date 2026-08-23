@@ -335,7 +335,8 @@
       "privacy": "Politique de confidentialité",
       "blog": "Blog",
       "customMystery": "Mystère personnalisé",
-      "corporateEvents": "Événements d'entreprise et de bureau"
+      "corporateEvents": "Événements d'entreprise et de bureau",
+      "cookieSettings": "Paramètres des cookies"
     },
     "copyright": "Mystery Maker, Inc. Tous droits réservés."
   },
@@ -1897,5 +1898,26 @@
     },
     "guardDirective": "**Gardez ce secret à tout prix.** Votre réputation — et peut-être votre liberté — dépend du fait de le garder caché. Niez, détournez, et ne le révélez jamais volontairement. Un secret livré trop facilement fait retomber la tension pour toute la tablée.",
     "characterNameEditingTip": "**Renommer ne met à jour que ce champ.** Cela ne changera pas le nom ailleurs — les scripts des tours, les indices et le guide de l'hôte utiliseront toujours le nom d'origine. À utiliser de préférence pour choisir une variante d'un nom double (par ex. \"Clarabelle/Clarence\") avant votre première lecture, pas comme correction tardive une fois que vous avez commencé à relire le script."
+  },
+  "consent": {
+    "ariaLabel": "Consentement aux cookies",
+    "title": "Nous respectons votre vie privée",
+    "message": "Nous utilisons des cookies pour faire fonctionner ce site et, avec votre consentement, à des fins d'analyse et de publicité. Vous pouvez modifier votre choix à tout moment via « Paramètres des cookies » dans le pied de page.",
+    "acceptAll": "Tout accepter",
+    "rejectAll": "Tout refuser",
+    "customize": "Personnaliser",
+    "save": "Enregistrer les préférences",
+    "necessary": {
+      "label": "Nécessaires",
+      "description": "Nécessaires au fonctionnement du site. Toujours activés."
+    },
+    "analytics": {
+      "label": "Analyse",
+      "description": "Nous aident à comprendre comment le site est utilisé."
+    },
+    "advertising": {
+      "label": "Publicité",
+      "description": "Utilisés pour mesurer et personnaliser les publicités."
+    }
   }
 }
