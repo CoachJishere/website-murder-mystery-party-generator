@@ -1,6 +1,6 @@
 # ADR-0106: Single source of truth for the "your mystery is ready" customer email
 
-- **Status:** Proposed
+- **Status:** Accepted — both halves shipped and verified end-to-end 2026-08-23
 - **Date:** 2026-08-23
 - **Related:** ADR-0103 (new-purchase coherence sweep — this is where the bug was found), ADR-0104 (atomic claim pattern this reuses), ADR-0098 (`claim_package_for_remediation` — the same pattern, third application)
 
@@ -58,9 +58,27 @@ There's also a real functional gap hiding in "just delete Parent's retry logic":
 
 Jonathan's read after the sweep found the duplicate email: rather than patch the symptom (Option A), he asked directly for the deeper fix once the tradeoff was laid out — accepting the larger, riskier blueprint change in exchange for actually removing the wasted spend and doubled runtime, not just the customer-visible symptom. The explicit call was: do Option B, but the DB-side pieces (which are safe and independently verifiable) proceed first, and the live Make.com scenario change gets shown for review before it's published — the ADR's staged rollout reflects that.
 
+## Addendum (2026-08-23): Parent57 shipped with a real regression, caught and fixed same session via the planned test run
+
+Parent57 removed routers `197`/`301`/`2437`/`2473` exactly as planned — but each of those routers' two branches did more than gate the retry/email: the "no empty characters" exit (modules `313`/`314` in the `Character-Murder` branch, and the equivalent pair in each of the other 3) also contained the *only* writes that ever marked a package `generation_status = 'completed'` and set `mystery_packages.generation_completed_at` / `conversations.is_completed`. Removing the whole router subtree removed those writes too, not just the retry-and-email logic layered on top of them. Parent57 was live for several minutes: any real generation running through it would have produced correct content but never been marked complete — stuck showing "in progress" indefinitely, with nothing (not even `heal_completed_packages()`/`promote_complete_packages()`, both of which require `generation_status->>'status' = 'needs_review'`, never reached) able to recover it.
+
+**Caught by:** the planned post-deploy test run itself — a 4-character test package stalled at `generation_status.progress = 90`, `"Verifying character content..."`, with `generation_completed_at` still null well after Make's own execution log showed the Parent and all 4 Child scenario runs had completed successfully. Confirmed via Make's blueprint export that the removed modules included the completion-writes, not just retry infrastructure.
+
+**Fixed:** published as `Parent58`, reusing the original routers' own filter conditions verbatim (`length(<empty-check>.data) = 0` / `> 0`, reused rather than re-derived) but with only two `supabase:upsertARecord` writes per branch and no retry, no email:
+- No empty characters → mark `mystery_packages` `completed` + `conversations` `is_completed`/`has_complete_package` (same fields the original `313`/`314` wrote).
+- Has empty characters → mark `mystery_packages` `needs_review` (the existing DB-side recovery pipeline — `notify-generation-issue`, `sweep_incomplete_packages`, `promote_complete_packages` — takes it from there, exactly as it already does today).
+
+Also fixed a second, previously-unnoticed bug in the *original* (pre-Parent57) blueprint while reading its structure to build this: the "still broken after retry" exit (`306.route1` → modules `310`/`311`/`312`) sent the customer the "ready" email and marked `conversations.is_completed = true` even when generation was confirmed still broken. Parent58's `needs_review` branch does neither.
+
+**Verified end-to-end, real spend, no manual workaround on the corrected path:** the test package's one genuine defect (round content blocked by Anthropic's content filter for a different character, unrelated to this bug — same failure class as Sylvie/Sylvain in the ADR-0104 addendum) was correctly routed to `needs_review`, recovered by `notify-generation-issue`, and promoted to `completed` by the existing 2-minute sweep cron — which correctly fired the new trigger exactly once (confirmed via `net._http_response`: one `"Ready email sent"` 200, no duplicates).
+
+**Key files touched by this addendum:** Make.com scenario `9106101`, blueprint updated in place from Parent56 → Parent57 (regression) → Parent58 (fix), via `PATCH /api/v2/scenarios/9106101`.
+
 ## Key files
 
-- `supabase/migrations/<timestamp>_ready_email_single_source_of_truth.sql` — new column, trigger function, trigger
+- `supabase/migrations/20260823_ready_email_single_source_of_truth.sql` — new column, trigger function, trigger
 - `supabase/functions/send-mystery-ready-email/index.ts` — new edge function
-- Make.com scenario `9106101` ("MM Live - Parent56") → new version `Parent57`: removes routers `197`/`301`/`2437`/`2473` and their nested `BasicFeeder`/recheck sub-flows, and the 12 embedded "ready" email HTTP modules
+- Make.com scenario `9106101` ("MM Live - Parent56" → "Parent58 (Fix Missing Completion Write)", updated in place, same scenario ID/webhook throughout): removes routers `197`/`301`/`2437`/`2473` and their nested `BasicFeeder`/recheck sub-flows and the 12 embedded "ready" email HTTP modules; adds back a minimal completion-marking router per branch (see Addendum)
+- `temp-files/MM Live - Parent57 (Remove Redundant Retry Loop).blueprint.json` — the regression, kept for the record per this repo's blueprint-versioning convention
+- `temp-files/MM Live - Parent58 (Fix Missing Completion Write).blueprint.json` — the fix, currently live
 - Vault note `duplicate-ready-email-parent-router-bug-2026-08-23-mystery-maker.md` — the original investigation this ADR resolves
