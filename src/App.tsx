@@ -26,7 +26,6 @@ import MysteryCreation from "./pages/MysteryCreation";
 import MysteryChatPage from "./pages/MysteryChat";
 import MysteryPurchase from "./pages/MysteryPurchase";
 import MysteryView from "./pages/MysteryView";
-import Showcase from "./pages/Showcase";
 import Privacy from "./pages/Privacy";
 import Support from "./pages/Support";
 import About from "./pages/About";
@@ -134,7 +133,12 @@ const AppRoutes = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/check-email" element={<CheckEmail />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/showcase" element={<Showcase />} />
+        {/* Was a fake mock-content demo page (placeholder authors, stock photos),
+            never real product content. Redirect instead of 404 for any existing
+            bookmarks/indexed links; kept in the GH Pages static-fallback list
+            below (scripts/generate-sitemap.mjs) so direct hits don't 404 before
+            the SPA router can take over and redirect client-side. */}
+        <Route path="/showcase" element={<Navigate to="/custom-murder-mystery-party" replace />} />
         <Route path="/contact" element={<Navigate to="/support" replace />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/custom-murder-mystery-party" element={<CustomMurderMysteryParty />} />

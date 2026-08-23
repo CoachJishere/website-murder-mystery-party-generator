@@ -82,7 +82,6 @@ async function generateSitemap() {
   // Root stays `/` (served at the apex, no slash to add).
   const staticPages = [
     { loc: '/', priority: '1.0', freq: 'weekly' },
-    { loc: '/showcase/', priority: '0.8', freq: 'weekly' },
     { loc: '/blog/', priority: '0.8', freq: 'daily' },
     { loc: '/support/', priority: '0.5', freq: 'monthly' },
     { loc: '/privacy/', priority: '0.3', freq: 'yearly' },

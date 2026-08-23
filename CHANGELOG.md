@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-08-23
+
+### Fix: removed `/showcase`, a fake mock-content page that was live and indexed
+Found while building sitelinks for a first Google Ads campaign. `/showcase` (priority 0.8 in `sitemap.xml`, submitted to GSC) rendered hardcoded placeholder mysteries with fake authors ("Jane Smith," "John Doe") and stock Unsplash photos, never real product content, likely an early dev scaffold that was never replaced or removed. Deleted `src/pages/Showcase.tsx` and its route; `/showcase` now redirects client-side to `/custom-murder-mystery-party` (`<Navigate replace>`) rather than 404ing, to handle any existing bookmarks or indexed links gracefully. Removed the `/showcase/` entry from `generate-sitemap.mjs`'s `staticPages` list so it stops being submitted as an indexable URL, but deliberately left `'showcase'` in the GH Pages static-fallback route list (line ~194) so a direct hit on the URL still boots the SPA router and redirects, instead of 404ing before React loads.
+
 ## 2026-08-22
 
 ### Fix: rate limiter counted harmless multi-tab race losses toward its budget, locking a paying customer out for an hour with zero content ([ADR-0104](docs/adr/0104-close-post-purchase-free-regeneration-hole.md) Addendum)
