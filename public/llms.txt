@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 276 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 277 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -310,6 +310,7 @@ This index organizes 276 published guides by topic cluster. All guides are avail
 - [Best Murder Mystery Generators Online: Honest Review](https://www.mysterymaker.party/blog/best-murder-mystery-generators-online-review): Honest review of online murder mystery generators including MysteryMaker, ChatGPT, and other AI tools. Compares quality, price, ease of use, and output.
 - [Best Murder Mystery Kits: A Buyer's Guide](https://www.mysterymaker.party/blog/best-murder-mystery-kits-buying-guide): Complete buyer's guide to murder mystery kits. Compares Night of Mystery, Shot in the Dark, Masters of Mystery, and more by price, quality, and group size.
 - [11 Best Murder Mystery Party Games (2026): Ranked by Size](https://www.mysterymaker.party/blog/best-murder-mystery-party-games-review): We tested the 11 best murder mystery party games for 2026 — an honest, no-fluff comparison to help you pick the right kit for your party size and budget.
+- [DIY Murder Mystery vs Store-Bought Kits](https://www.mysterymaker.party/blog/diy-murder-mystery-vs-store-bought-kits): DIY vs. pre-made mystery kits compared: time investment (40-80 hours), quality differences, and when each actually makes sense for your party.
 - [Food Critic Murder Mystery Themes](https://www.mysterymaker.party/blog/food-critic-murder-mystery-themes-culinary-reviews-restaurant-revenge): Murder mystery themes with food critic characters — savage reviews, kitchen feuds, and the kind of grudges that turn restaurants into crime scenes.
 - [Free vs Paid Murder Mystery Games: What Actually Matters](https://www.mysterymaker.party/blog/free-vs-paid-murder-mystery-games-comparison): Murder mystery games range from free printables to $55+ kits. Here's what changes with price and when each option makes sense for your party.
 - [Murder Mystery vs Escape Room Kits](https://www.mysterymaker.party/blog/murder-mystery-escape-room-kits-comparison): Compare murder mystery escape room kits vs. at-home escape rooms. Understand puzzle-focused vs. social deduction formats and pick the right format.
