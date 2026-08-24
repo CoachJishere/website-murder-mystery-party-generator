@@ -147,6 +147,15 @@ const REMINDERS = [
     // party" 14.5→13, "custom murder mystery game" 10.1→11.1 (slightly worse).
     // Small numbers, not proof yet — the point of this reminder window is to
     // re-run it once the full 30-day post-window exists for a firmer read.
+    //
+    // UPDATE 2026-08-24: action item 2 above (contextual homepage links from
+    // high-authority posts) partially actioned ahead of the window firing —
+    // `ai-generated-murder-mystery-vs-prewritten-kits` now links to `/` with
+    // anchor "custom murder mystery party" (cross_link_map.json + live
+    // Supabase write, see CHANGELOG same date). `free-murder-mystery-games-
+    // printable` already had a homepage link from earlier work. Still open:
+    // whether more posts should link the homepage, and the actual position
+    // read once this window's full post-data exists.
     start: '2026-08-24',
     end: '2026-09-21',
     title: 'Measure the ADR-0046 canonical consolidation — did the homepage take the "custom murder mystery" head terms?',
@@ -253,6 +262,34 @@ Context (re-derive from ground truth, do not trust this note's framing alone): P
    - Raleigh, "Camp Pine Shadow" — hosted Sat 2026-08-15, a full week BEFORE the PostHog fix. Expect ZERO PostHog data for this package. If there IS data, something is wrong with the date assumption above — flag it, don't explain it away.
    - Lyn, "The Cognitive Dissonance Incident: A Murder At The MSU Psychology Department Picnic" — guests were sent links same-day as the fix (2026-08-22). Check if there's a real, plausible clustered signal for this one; if the timing is too close to the fix's deploy time to tell, say so rather than forcing an answer.
 3. Verdict: is there a usable purchase-to-play average yet, even a rough one from a small n? If under ~15-20 packages with real data, recommend re-running this same check again in another 3-4 weeks rather than publishing a number from too small a sample.`,
+  },
+  {
+    // Found 2026-08-24 while acting on the digest's homepage-authority action
+    // prompt (verification step: "confirm the H1/above-fold copy already
+    // surfaces custom murder mystery party/game intent"). It doesn't: hero.title
+    // i18n key = "Create Murder Mystery Parties in Minutes" — no "custom" at
+    // all. hero.subtitle has "custom mysteries" but not the exact buyer phrase.
+    // Only home.seo.title (the <title>/meta, locked by ADR-0024/0046) carries
+    // "Custom Murder Mystery Party Kits in Minutes". The H1 itself was never
+    // part of that lock — it's open territory, just never flagged before.
+    // Deliberately NOT changed this session (out of scope for a links-only
+    // pass) — this is a decision for Jonathan, not an automatic action.
+    start: '2026-08-24',
+    end: '2026-09-21',
+    title: 'Homepage H1 does not contain "custom" — decide whether to update it',
+    body:
+      'Verifying the homepage-authority action prompt turned up a gap the digest assumed away: the H1 ' +
+      '(<code>hero.title</code>, "Create Murder Mystery Parties in Minutes") does not contain "custom" at all, and the ' +
+      'subtitle only has "custom mysteries" — not the exact "custom murder mystery party/game" buyer phrase. Only the ' +
+      '<code>&lt;title&gt;</code>/meta (locked by ADR-0024/0046) carries it. The H1 itself was never part of that lock. ' +
+      'Decide whether it is worth updating, or whether the meta + internal-link anchors already carry enough signal.',
+    prompt: `Decide whether Mystery Maker's homepage H1 should be updated to include "custom murder mystery party/game" buyer-intent language.
+
+Context (re-derive from ground truth, don't trust this note alone): the H1 lives at src/i18n/locales/en.json under hero.title = "Create Murder Mystery Parties in Minutes", rendered in src/components/Hero.tsx. The <title>/meta (home.seo.title/description) already carry "Custom Murder Mystery Party Kits in Minutes" and are locked per ADR-0024 and ADR-0046 §3 — do NOT propose changing those. The H1 was never part of that lock; it's a separate, open decision.
+
+1. Pull current GSC data for "custom murder mystery game" and "custom murder mystery party" on the homepage (page-level breakdown, same method as the ADR-0046 reminder above) — what's the current position/CTR?
+2. Weigh the case for changing the H1: would surfacing "custom" in the H1 plausibly help ranking/relevance on top of what the title/meta already do, or is that redundant once title/meta already lead with it? Consider whether an H1 change risks anything (brand voice, existing A/B assumptions, the "Create Murder Mystery Parties in Minutes" phrasing possibly targeting a different, broader intent than "custom").
+3. If a change looks worth it, propose exact new H1 copy (a few options) rather than assuming any one direction. If not, say so plainly and close this out — don't manufacture a change for its own sake.`,
   },
 ];
 
