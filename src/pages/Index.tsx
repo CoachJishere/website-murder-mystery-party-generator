@@ -507,6 +507,20 @@ function SupportCTA() {
           </Link>
           .
         </p>
+        <p className="mt-2 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
+          Planning something for the office?{" "}
+          <Link to="/blog/murder-mystery-party-for-corporate-events" className="underline" style={{ color: CREAM }}>
+            See our corporate murder mystery party guide
+          </Link>
+          .
+        </p>
+        <p className="mt-2 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
+          Writing your own from scratch?{" "}
+          <Link to="/blog/murder-mystery-party-script-template-guide" className="underline" style={{ color: CREAM }}>
+            Use our murder mystery template guide
+          </Link>
+          .
+        </p>
       </motion.div>
     </section>
   );

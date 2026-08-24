@@ -14635,6 +14635,11 @@
         "target_slug": "murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable",
         "match_text": "it's coming from custom, tailored events that create real narrative stakes around the specific lives and decisions of the people in the room.",
         "replacement": "it's coming from custom, tailored events that create real narrative stakes around the specific lives and decisions of the people in the room, whether for [birthday celebrations](/blog/murder-mystery-party-for-birthday-celebrations-make-their-special-day-unforgettable) or corporate retreats."
+      },
+      {
+        "target_page": "/office-murder-mystery-party/",
+        "match_text": "An office murder mystery party is one of the few team-building activities people don't roll their eyes at.",
+        "replacement": "An [office murder mystery party](/office-murder-mystery-party/) is one of the few team-building activities people don't roll their eyes at."
       }
     ],
     "lang_insertions": {
@@ -34333,7 +34338,8 @@
       "murder-mystery-party-printable-props-templates",
       "how-to-host-a-rockstar-murder-mystery-party-music-industry-mysteries-with-backstage-drama",
       "murder-mystery-party-decorations-ideas",
-      "murder-mystery-party-food-ideas-menu"
+      "murder-mystery-party-food-ideas-menu",
+      "murder-mystery-party-script-template-guide"
     ],
     "cluster": [
       "logistics",
@@ -34379,6 +34385,11 @@
         "target_slug": "best-murder-mystery-games-2026",
         "match_text": "that's where free printables stop and paid kits begin.",
         "replacement": "that's where free printables stop and paid kits begin — see our [ranked guide to the best murder mystery games in 2026](/blog/best-murder-mystery-games-2026) for the paid options worth buying."
+      },
+      {
+        "target_slug": "murder-mystery-party-script-template-guide",
+        "match_text": "Websites like Generic Games and hobby community forums offer templates where you fill in blanks: character names, motives, clues, victim. This is really free and really flexible because you're building something custom.",
+        "replacement": "Websites like Generic Games and hobby community forums offer templates where you fill in blanks: character names, motives, clues, victim — see our [murder mystery template](/blog/murder-mystery-party-script-template-guide) breakdown if you want a structured starting point. This is really free and really flexible because you're building something custom."
       }
     ],
     "lang_insertions": {
@@ -71319,6 +71330,11 @@
       {
         "match_text": "are real. These kits have",
         "replacement": "[are real. These kits have](/blog/murder-mystery-escape-room-kits-comparison)"
+      },
+      {
+        "target_page": "/",
+        "match_text": "An AI murder mystery generator takes your specifications and creates a custom party from scratch.",
+        "replacement": "An AI murder mystery generator takes your specifications and creates a [custom murder mystery party](/) from scratch."
       }
     ],
     "lang_insertions": {
@@ -135994,6 +136010,11 @@
         "target_slug": "free-murder-mystery-games-printable",
         "match_text": "When you're building from scratch, a template gives you a checklist.",
         "replacement": "When you're building from scratch, a template gives you a checklist—our [printable murder mystery template](/blog/free-murder-mystery-games-printable) is a solid starting point if you don't want to build the structure yourself."
+      },
+      {
+        "target_page": "/mystery/create",
+        "match_text": "You track progress instead of writing in circles.\n\n## FAQ",
+        "replacement": "You track progress instead of writing in circles.\n\n## Want a Murder Mystery Template Without Building One Yourself?\n\nEverything above — character guides, host guide, clue cards, timeline, solution document — is the same structure MysteryMaker builds automatically. Instead of assembling a murder mystery template by hand, [generate one built around your actual guest list](/mystery/create): real names, a theme you pick, and all five components already linked together. It's the same checklist, just filled in for you.\n\n## FAQ"
       }
     ],
     "lang_insertions": {

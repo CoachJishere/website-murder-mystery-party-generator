@@ -1,6 +1,24 @@
 # Changelog
 
-## 2026-08-23
+## 2026-08-24
+
+### SEO: internal-link authority pass from the weekly digest's 3 action prompts (corporate page, homepage, template-guide page)
+
+Acted on 3 of the weekly SEO/GEO digest's action prompts (week ending 2026-08-24): the corporate/office page (417 impressions, pos 18.5, near-zero CTR — an authority problem per the digest, not a copy one), the homepage's custom-* buyer queries (locked title/meta per ADR-0024/0046, so links not copy), and the rising "murder mystery template" query (14 impressions, +14 WoW, pos 7.6).
+
+Verified against live content before touching anything (one suggested link — `ai-murder-mystery-generator-complete-guide` → homepage — already existed from earlier work; skipped re-adding it). Also found the digest's assumption wrong in one place: the homepage H1 ("Create Murder Mystery Parties in Minutes") does not contain "custom" at all — only the locked `<title>`/meta does. Left the H1 untouched (out of scope for this pass, flagged for Jonathan).
+
+Shipped 4 link insertions + 1 new on-page section, applied durably via `cross_link_map.json` (new `insertions` entries, `target_page` field per the ADR-0023 landing-page convention) and mirrored live to `blog_posts.content` via a surgical Supabase `UPDATE` (not a full `backfill-crosslinks` run — matches the ADR-0023 precedent of a version-controlled durable source plus a small-blast-radius immediate write):
+- `murder-mystery-party-for-corporate-events`: self-links its own first-sentence "office murder mystery party" mention → `/office-murder-mystery-party/` (pos 48.2, was getting zero internal links).
+- `ai-generated-murder-mystery-vs-prewritten-kits` → homepage (`/`), anchor "custom murder mystery party" (this post had no homepage link at all).
+- `free-murder-mystery-games-printable` → `murder-mystery-party-script-template-guide`, anchor "murder mystery template".
+- New section on `murder-mystery-party-script-template-guide` ("Want a Murder Mystery Template Without Building One Yourself?"), targeting the bare "murder mystery template" phrase (the page's own H1/intro didn't use it) and linking to `/mystery/create`.
+- Homepage (`src/pages/Index.tsx`, support section): added 2 new outbound lines to the corporate post and template-guide post, matching the existing "Browse our free murder mystery templates" line's style.
+
+Deliberately skipped one digest-suggested link (`free-murder-mystery-games-printable` → corporate post): that post never mentions offices, teams, or corporate contexts anywhere, and forcing an unrelated sentence in to carry the link would have been worse than not linking — Jonathan confirmed skip over drafting new unrelated copy.
+
+Not done: the German "krimidinner 30 personen" and rising "corporate murder mystery" query watch items, and the ADR-0046 canonical-consolidation re-measurement (`node scripts/backfillSeoHistory.mjs jul2026_custom_page_canonicalization`) — both flagged in the same digest but out of scope for this pass; re-check in next week's digest.
+
 
 ### Improvement: drafted the pipeline-level fix for the victim dual-name defect below — decide the victim's name once, at generation time ([ADR-0107](docs/adr/0107-victim-single-name-decided-at-generation.md))
 
