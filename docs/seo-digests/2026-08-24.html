@@ -1,0 +1,63 @@
+<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:680px;margin:auto;color:#222;"><p style="color:#666;font-size:13px;">SEO/GEO digest — week ending 2026-08-24 · mysterymaker.party</p><div style="border:1px solid #d9b310;background:#fffbe6;border-radius:6px;padding:12px 14px;margin:0 0 18px;"><p style="margin:0 0 6px;font-weight:600;color:#7a5c00;">📌 Reminder — Measure the ADR-0046 canonical consolidation — did the homepage take the "custom murder mystery" head terms?</p><p style="margin:0 0 10px;font-size:14px;color:#444;">On <strong>2026-07-27</strong> (ADR-0046) we <strong>canonicaled the EN /custom-murder-mystery-party page to the homepage</strong> and reverted its keyword-stuffing, because the homepage already owns the head terms (<strong>custom murder mystery game</strong> homepage pos 9.6 vs custom pos 50.5; <strong>custom murder mystery party</strong> homepage pos 13.9 vs custom pos 66.7) and the custom page earned ~1 click / 90 days. A first thin-window automated read on 2026-08-14 (only 11 of the wanted 30 post-days available) was cautiously positive — avg position 12→11.6 — but too small to trust yet. Paste the prompt below into a fresh chat once this window has more data behind it.</p><pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;font-size:13px;margin:0;">Measure whether the 2026-07-27 ADR-0046 consolidation worked: we set rel=canonical from the EN /custom-murder-mystery-party page to the homepage and reverted its keyword-stuffing, to consolidate the "custom murder mystery party/game" intent onto the homepage (which already ranks and converts for it). Re-derive everything fresh; assume problems, default to flagging; do NOT trust this note's numbers, including the ones from the 2026-08-14 thin-window run below.
+
+0. RUN THE AUTOMATED BACKFILL FIRST: `node scripts/backfillSeoHistory.mjs jul2026_custom_page_canonicalization` (needs SUPABASE_URL/SUPABASE_SERVICE_KEY env vars, see script header). It pulls a fresh pre/post GSC read for the 3 named queries + GA4 AI-referral traffic, normalizes for window length (don't trust raw click/impression sums if it logs a THIN warning — use the printed per-day rates), and persists the result to `seo_performance_snapshots` (source='backfill', intervention_name='jul2026_custom_page_canonicalization'). A first thin-window run on 2026-08-14 (11 of 30 wanted post-days) came back: avg position 12→11.6 ("custom murder mystery" 6.3→2.7, "custom murder mystery party" 14.5→13, "custom murder mystery game" 10.1→11.1 slightly worse), clicks/day and impressions/day both up. Treat that as a prior, not a conclusion — this run should have a much fuller post-window.
+1. HEAD TERMS — homepage vs custom page. Queries: "custom murder mystery game" and "custom murder mystery party". Pull the page-level breakdown (dimensions ['page'] filtered to each query) for the homepage https://www.mysterymaker.party/ and https://www.mysterymaker.party/custom-murder-mystery-party/ . Baseline (28d ending 2026-07-26): game → homepage pos 9.6 / custom pos 50.5; party → homepage pos 13.9 / custom pos 66.7. Compare vs the latest window: did the homepage's position improve, and did the custom page's impressions on these terms FALL (the sign the canonical consolidated)? If the custom page is still accruing impressions/ranking for them, the canonical may not be honored — check GSC's URL Inspection / canonical report and flag it.
+2. Separate the two questions. (a) Consolidation: is Google crediting the homepage, not the custom page? (b) Homepage progress: did it break into the top 5, or is it stuck at ~9-14? If stuck, the lever is AUTHORITY/LINKS, not copy — do NOT recommend a homepage title/meta rewrite (the title already leads with "Custom Murder Mystery Party Kits" and must keep the "| Mystery Maker" brand suffix per ADR-0024). Propose 1-2 contextual internal links to the HOMEPAGE using "custom murder mystery game/party" anchor text from high-authority related posts (e.g. /blog/free-murder-mystery-games-printable/), added to cross_link_map.json AND applied to the live EN blog_posts.content (ADR-0026 protects it from re-sync).
+3. GUARDRAIL — non-EN cluster. We deliberately left hreflang emission untouched (EN is x-default/hub of the 13-lang cluster; repointing it would edit the 12 non-EN pages and risk the Italian ranking). Re-pull the Italian corporate query (the ADR-0020/0040 money query, baseline ~pos 3) and confirm it did NOT drop. If it wobbled, that's hreflang-cluster fallout — flag it and consider whether the EN canonical needs a cleaner hreflang design.
+4. Verdict: did the consolidation happen (homepage credited, custom page's head-term impressions faded)? Is the homepage head-term ranking improving? Is the remaining gap a copy problem or an authority problem? If authority, the fix is links to the homepage, not another rewrite. If the homepage still hasn't moved after this window, consider escalating the custom page from rel=canonical to a 301.</pre></div><h2>Scoreboard</h2>
+<table cellpadding="6" cellspacing="0" border="1" style="border-collapse:collapse;font-size:14px;">
+  <tr style="background:#f4f1ea;">
+    <th align="left">Metric</th><th align="right">This week</th><th align="right">Last week</th><th align="right">Δ</th>
+  </tr>
+  <tr><td>Organic clicks (GSC)</td><td align="right">120</td><td align="right">127</td><td align="right">−5.5%</td></tr>
+  <tr><td>Impressions (GSC)</td><td align="right">1,080</td><td align="right">1,276</td><td align="right">−15.4%</td></tr>
+  <tr><td>Avg position (GSC)</td><td align="right">10.8</td><td align="right">11.4</td><td align="right">+0.6 (better)</td></tr>
+  <tr><td>GA4 sessions</td><td align="right">1,190</td><td align="right">935</td><td align="right">+27.3%</td></tr>
+  <tr><td>AI-referral sessions</td><td align="right">31</td><td align="right">—</td><td align="right">2.6% share</td></tr>
+</table>
+<p>GSC impressions/clicks dipped slightly and position improved — but GA4 sessions jumped +27%, so total demand is up even as the sampled GSC window softened; organic search still drives the bulk (749 sessions).</p>
+
+<h2>Insights</h2>
+<ul>
+  <li><strong>Homepage under-clicks its high-value buyer queries.</strong> "custom murder mystery game" (pos 3.1, 51 impressions) and "custom murder mystery party" (pos 2.6, 49 impressions) both convert at just 2% CTR vs ~11% expected — a ~9pt gap on page 1. These are the money queries and the homepage is the ranking page.</li>
+  <li><strong>The free-printables blog post is the workhorse.</strong> /blog/free-murder-mystery-games-printable/ pulls 205 clicks at pos 6.3 — nearly half of all traffic. Its top queries ("murder mystery printable free" 72.7% CTR at pos 1.2) are already saturated; upside is holding rank, not chasing more CTR.</li>
+  <li><strong>Corporate/office intent is ranking but stranded.</strong> /blog/murder-mystery-party-for-corporate-events/ shows 417 impressions at pos 18.5 (0.7% CTR) and /office-murder-mystery-party/ sits at pos 48.2 — both page 2/3 with strong impression volume and near-zero clicks. "corporate murder mystery" is rising (13 impressions, +10). This is an authority/link problem, not a copy one.</li>
+  <li><strong>German long-tail surfacing.</strong> "krimidinner 30 personen" (15 impressions, pos 15.9, +15 growth, non-en) — a large-guest-count German query newly appearing. Worth watching; not yet actionable at pos 15.9.</li>
+  <li><strong>"murder mystery template" rising</strong> (14 impressions, +14, pos 7.6, 28.6% CTR) — a template-intent query with room to climb from bottom of page 1.</li>
+  <li><strong>AI-referral is real but small:</strong> 31 sessions, 82% from ChatGPT (25, with 17 engaged). Healthy engagement signal; keep informational blog content clean and citable.</li>
+</ul>
+
+<h2>Action prompts</h2>
+
+<p><strong>1. Quick win — internal links to lift corporate page off page 2</strong> (lever: links)</p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Target page: https://www.mysterymaker.party/blog/murder-mystery-party-for-corporate-events/ — it ranks position 18.5 for "corporate murder mystery" (rising query, 13 impressions) with 417 impressions but near-zero CTR because it's stuck on page 2. Its CTR is normal for that rank, so the fix is authority via internal links, NOT a title/meta rewrite.
+
+Add contextual internal links pointing to this corporate-events page from these two high-authority pages:
+1. https://www.mysterymaker.party/blog/free-murder-mystery-games-printable/ (our top-traffic post, pos 6.3)
+2. https://www.mysterymaker.party/ (homepage)
+
+Use descriptive, query-matched anchor text such as "corporate murder mystery party" and "murder mystery for corporate events". Place the links in genuinely relevant sentences (e.g. where team/group play or office events are mentioned). Goal: raise the corporate page from page 2 toward page 1 to convert its existing impression volume into clicks. Also add a link from the corporate blog post to the money page /office-murder-mystery-party/ using anchor "office murder mystery party" to pass authority to that page (currently pos 48.2).</pre>
+
+<p><strong>2. Moderate — rewrite homepage? No. Verify first, then push authority</strong> (lever: copy → likely authority)</p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">The homepage (https://www.mysterymaker.party/) ranks pos 2.6–3.1 for "custom murder mystery party" and "custom murder mystery game" but only gets 2% CTR (expected ~11%). The snapshot flags this as a copy lever — BUT per ADR-0024 and ADR-0046 §3 the homepage title/meta is a settled decision (already leads with "Custom Murder Mystery Party Kits in Minutes" + "| Mystery Maker" suffix) and must NOT be rewritten or A/B-tested.
+
+So do NOT touch the homepage title/meta. Instead:
+1. Fetch https://www.mysterymaker.party/ and confirm the H1/above-the-fold copy already surfaces "custom murder mystery party" and "custom murder mystery game" intent. Report what you find.
+2. Because the copy lever is closed by ADR, treat this as an authority/internal-link opportunity: add internal links to the homepage using anchor text "custom murder mystery party" and "custom murder mystery game" from 2 relevant blog posts (e.g. /blog/ai-murder-mystery-generator-complete-guide/ and /blog/ai-generated-murder-mystery-vs-prewritten-kits/).
+
+Goal: strengthen the homepage's ranking/appeal for the custom-* buyer queries without altering the locked title/meta.</pre>
+
+<p><strong>3. Quick win — capture rising "murder mystery template" query</strong> (lever: content/links)</p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">"murder mystery template" is a newly rising query (14 impressions, +14 WoW, position 7.6, 28.6% CTR) — bottom of page 1 with headroom. The most relevant existing page is https://www.mysterymaker.party/blog/murder-mystery-party-script-template-guide/ (pos 9.6).
+
+Do this:
+1. Fetch the script-template-guide post and confirm "murder mystery template" appears in the H1/intro and that the page clearly serves template-download/template-creation intent.
+2. Add internal links to it from /blog/free-murder-mystery-games-printable/ and the homepage using anchor "murder mystery template".
+3. If the page does NOT already target the bare "murder mystery template" phrase, add a short section answering it directly and link out to the generator/create flow.
+
+Goal: push this page from pos ~7.6–9.6 into the top 5 for a rising template-intent query. Do not rewrite the homepage title/meta.</pre>
+
+<h2>Site health</h2>
+<p>Dead internal links: 0 ✓</p>
+<p>Publish queue: 276 live, 146 drafts remaining (drafts continue to drain via the daily cron).</p>
+<p>Next up by link-graph importance: diy-murder-mystery-vs-store-bought-kits (2), fun-things-to-do-at-a-dinner-party (2), haunted-murder-mystery-for-halloween-party (2), how-to-get-reluctant-guests-excited-about-murder-mystery (2), how-to-handle-drunk-guests-murder-mystery (2).</p></div>
