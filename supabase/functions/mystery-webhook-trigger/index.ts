@@ -210,6 +210,55 @@ function findLatestConceptMessage(messages: any[]): any | null {
 }
 
 /**
+ * ADR-0110: a message whose roster starts numbering above 1 (e.g. "17. **Name** -
+ * ...") is a CONTINUATION the customer explicitly asked for after an earlier reply
+ * got cut off mid-list (LLM output limit), not a standalone or replacement cast.
+ * Untreated, `findLatestConceptMessage` picks it as "the" approved message on its
+ * own and every downstream extractor only ever sees its tail (e.g. 6 of 22).
+ *
+ * Splice the continuation's content onto the end of the immediately preceding
+ * assistant message so every extraction path below sees one complete roster.
+ * Real rosters we generate always start at "1." - a message starting higher is
+ * never a legitimate from-scratch cast, so this is a safe structural signal, same
+ * principle as `isPlaceholderCharacterName` and ADR-0057's "structure not wording."
+ */
+function firstCharacterNumber(content: string): number | null {
+  for (const line of (content || '').split('\n')) {
+    const m = line.trim().match(/^(\d+)\.\s+(?:\*\*.+?\*\*|[A-Za-z])/);
+    if (m) return parseInt(m[1], 10);
+  }
+  return null;
+}
+
+function mergeRosterContinuations(messages: any[]): any[] {
+  const sorted = [...(messages ?? [])].sort((a, b) =>
+    new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime());
+
+  // Anchor to the nearest PRIOR roster-bearing message, not merely the nearest
+  // prior assistant message - an intervening non-roster reply (e.g. "continuing
+  // below:") between a truncated list and its continuation must not break the
+  // chain. A merged message becomes the new anchor for any further continuation,
+  // so a roster split across 3+ messages chains correctly.
+  let prevRosterIndex = -1;
+  const merged = sorted.map((m) => ({ ...m }));
+
+  for (let i = 0; i < merged.length; i++) {
+    const m = merged[i];
+    if (!(m.role === 'assistant' || m.is_ai)) continue;
+
+    const firstNum = firstCharacterNumber(m.content || '');
+    if (firstNum !== null && firstNum > 1 && prevRosterIndex !== -1) {
+      merged[i].content = `${merged[prevRosterIndex].content || ''}\n\n${m.content || ''}`;
+    }
+    if (extractRosterFromMessage(merged[i].content || '').length >= MIN_ROSTER_SIZE) {
+      prevRosterIndex = i;
+    }
+  }
+
+  return merged;
+}
+
+/**
  * ADR-0069: does a LATER message that independently parses into a cast propose
  * a meaningfully different roster than the current snapshot? `findLatestConceptMessage`
  * already guarantees the later message is itself a clean, structurally complete roster
@@ -240,7 +289,11 @@ function rosterDiffersMeaningfully(
 // If approvedMessageId is provided, extracts ONLY from that message (the concept
 // snapshot the user explicitly approved at purchase time).
 // Otherwise, falls back to the latest assistant message that proposes a cast.
-function extractCharactersFromMessages(messages: any[], approvedMessageId?: string | null): ExtractedCharacter[] | null {
+function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: string | null): ExtractedCharacter[] | null {
+
+  // ADR-0110: fold any roster-continuation reply into the message it continues
+  // before any extraction path runs (including the approvedMessageId lookup below).
+  const messages = mergeRosterContinuations(rawMessages);
 
   const assistantMessages = messages
     .filter((m: any) => m.role === 'assistant' || m.is_ai);

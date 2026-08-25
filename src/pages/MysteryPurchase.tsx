@@ -247,7 +247,69 @@ const MysteryPurchase = () => {
 
     return characters;
   };
-  
+
+  // ADR-0110 (client mirror): mystery-webhook-trigger hit and fixed this exact
+  // failure shape server-side. This preview page runs its own independent parser
+  // (see the scanWholeMessageForRoster comment above — kept in sync with the
+  // server's ADR-0057 predicate only by convention, not by sharing code), so the
+  // same fix has to be applied here separately.
+  //
+  // A message whose roster starts numbering above 1 (e.g. "17. **Name** - ...")
+  // is a continuation of an earlier reply that got cut off mid-list (LLM output
+  // limit), not a standalone or replacement cast. Real rosters always start at
+  // "1.", so this is a safe structural signal.
+  const firstCharacterNumber = (content: string): number | null => {
+    for (const line of content.split('\n')) {
+      const m = line.trim().match(/^(\d+)\.\s+(?:\*\*.+?\*\*|[A-Za-z])/);
+      if (m) return parseInt(m[1], 10);
+    }
+    return null;
+  };
+
+  // Whole-message, header-agnostic scan for consecutive bold "N. **Name** - Desc"
+  // lines — the same logic as the `scanWholeMessageForRoster` closure inside
+  // `parseCharacters`, exposed standalone here because merged continuation content
+  // can contain a "## Character List..." header mid-string, which would
+  // prematurely terminate `parseCharacters`'s section-scoped regex (it stops at
+  // the next "##" no matter what it is). A pure line scan doesn't care about
+  // headers at all, so it survives a merge cleanly.
+  const scanForRoster = (content: string): Character[] => {
+    const found: Character[] = [];
+    let batch: Character[] = [];
+    const flush = () => { if (batch.length >= 4) found.push(...batch); batch = []; };
+    for (const line of content.split('\n')) {
+      const trimmed = line.trim();
+      const match = trimmed.match(/^(?:\d+\.|\*|-)?\s*\*\*([^*]+)\*\*\s*[-–—:]\s*(.+)/);
+      if (match) {
+        batch.push({ name: match[1].trim(), description: match[2].trim() });
+      } else if (batch.length > 0 && trimmed !== '') {
+        flush();
+      }
+    }
+    flush();
+    return found;
+  };
+
+  // Fold a continuation message's content onto the nearest PRIOR message that
+  // itself carries a parseable roster, so a list split across a truncated reply
+  // and its continuation reads as one complete cast. `msgsAscending` must be
+  // chronological (oldest first) — a merged message becomes the new anchor for
+  // any further continuation, so a roster split across 3+ messages chains.
+  const mergeRosterContinuations = (msgsAscending: any[]): any[] => {
+    let prevRosterIndex = -1;
+    const merged = msgsAscending.map((m) => ({ ...m }));
+    for (let i = 0; i < merged.length; i++) {
+      const firstNum = firstCharacterNumber(merged[i].content || '');
+      if (firstNum !== null && firstNum > 1 && prevRosterIndex !== -1) {
+        merged[i] = { ...merged[i], content: `${merged[prevRosterIndex].content || ''}\n\n${merged[i].content || ''}` };
+      }
+      if (scanForRoster(merged[i].content || '').length >= 4) {
+        prevRosterIndex = i;
+      }
+    }
+    return merged;
+  };
+
   const parseEvidence = (content: string): Evidence[] => {
     const evidence: Evidence[] = [];
     
@@ -383,9 +445,26 @@ const MysteryPurchase = () => {
           }
 
           if (detailedMessage) {
-            // Use the most recent complete concept message for characters
-            // (not all messages — older revisions may have replaced characters)
-            const characters = parseCharacters(detailedMessage.content);
+            // Characters: selected independently from `detailedMessage` above
+            // (ADR-0110 client mirror). Requiring the SAME message to carry both
+            // a Premise header and a Character List header meant a message that
+            // legitimately holds the fullest, most-recent roster — a continuation
+            // reply, or a plain-text confirmation list with no "##" headers at
+            // all — could never win the selection, silently falling back to a
+            // stale, truncated earlier draft instead. Nikki Barnett, 2026-08-25:
+            // approved a 22-character cast across 3 later messages (a rename, a
+            // continuation, a confirmation); this loop kept picking her original
+            // 16-character truncated reply because it was the only one bundling
+            // both headers together.
+            const aiMessagesAscending = [...aiMessages].reverse();
+            const mergedForRoster = mergeRosterContinuations(aiMessagesAscending);
+            let latestRosterMsg: typeof detailedMessage | null = null;
+            for (const m of mergedForRoster) {
+              if (scanForRoster(m.content || '').length >= 4) latestRosterMsg = m;
+            }
+            const characters = latestRosterMsg
+              ? scanForRoster(latestRosterMsg.content || '')
+              : parseCharacters(detailedMessage.content);
 
             const details: ParsedMysteryDetails = {
               premise: extractPremise(detailedMessage.content),
