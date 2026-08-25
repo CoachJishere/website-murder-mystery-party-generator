@@ -1,6 +1,17 @@
 # Changelog
 
-## 2026-08-24
+## 2026-08-25
+
+### Fix: purchase preview wrongly said "not ready" for a concept whose roster was split into "###" subsections
+
+Customer (Jaclyn, 30-player "Operation: Thirty & Murdery," 5 masterminds + 24 manipulated guests) reported the chat said her concept was locked in and ready, but clicking Generate showed "not ready." Root cause was purely client-side, in `parseCharacters()` (`src/pages/MysteryPurchase.tsx`): the section-terminator regex `(?=##|$)` used to find the end of the `## Character List` section matches `##` as a *substring*, so it stopped at the very first `### The Five Masterminds` subheading — exactly where her roster began, since her plot naturally split the cast into "masterminds" vs "innocents" subsections. `characterSection` came out effectively empty, `parsedDetails.characters.length` was 0, and the ADR-0044 "don't take payment for a mystery that doesn't exist" guard fired, blocking purchase entirely. No `mystery_packages` row existed for this conversation — she was blocked before ever reaching backend generation.
+
+This is the same paired-predicate-drift shape as ADR-0055/56/57: `mystery-webhook-trigger`'s `extractRosterFromMessage()` (the real post-purchase extraction gate) was *already* hardened to tolerate `###` subheadings between roster entries, but that fix was never ported to this client-side preview twin, so the two disagreed on whether her concept was complete.
+
+Fixed by extracting the existing header-agnostic whole-message scanner (already used when no header matches at all) into a shared `scanWholeMessageForRoster()` helper, and falling back to it whenever the header-scoped patterns find zero characters — not just when no header was found. Verified against a reconstruction of her actual message content (30 numbered `**Name** – description` entries split across two `###` subsections): before the fix, `characterSection` extracted to a blank string and 0 characters parsed; after the fix, all entries parse correctly. Verified no regression against a normal flat (no-subsection) roster. No backend/edge-function changes — this was purely a client-side parser gap.
+
+Not yet investigated: her concept message is also byte-identical across all 3 generations at exactly 8162 characters, truncated mid-sentence on character #30 with no closing sections — likely a `max_tokens` ceiling on the concept-chat completion call for large (30-player) rosters. Didn't block this incident (the parser failed before reaching that point) but worth a follow-up if a customer's roster itself comes back incomplete rather than just unparseable.
+
 
 ### SEO: internal-link authority pass from the weekly digest's 3 action prompts (corporate page, homepage, template-guide page)
 

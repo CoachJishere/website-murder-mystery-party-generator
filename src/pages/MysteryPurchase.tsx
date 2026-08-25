@@ -138,17 +138,21 @@ const MysteryPurchase = () => {
       }
     }
 
-    // Header-agnostic fallback: the AI writes this header in the customer's own
-    // language ("Lista de Personagens", "Personnages", ...), so an English-only
-    // header match misses it entirely for non-English concepts. Rather than
-    // chasing every locale's wording (mystery-webhook-trigger hit this same trap
-    // before ADR-0057), scan the whole message for a run of 4+ consecutive
-    // numbered/bold "Name - description" lines - the roster's shape, not its
-    // heading text.
-    if (!characterSection) {
+    // Header-agnostic fallback: scans the WHOLE message for a run of 4+ consecutive
+    // numbered/bold "Name - description" lines - the roster's shape, not its heading
+    // text. This is used both when no header matched at all, and (see below) when a
+    // header matched but the roster turned out to live inside "###" subsections
+    // (e.g. "### The Masterminds" / "### The Innocents"), which the section-terminator
+    // regex above treats as the end of the section since "##" is a substring of "###" -
+    // starving `characterSection` down to nothing even though the roster is right there.
+    // Also covers non-English headers ("Lista de Personagens", "Personnages", ...) that
+    // an English-only header match misses entirely (mystery-webhook-trigger hit this
+    // trap before ADR-0057).
+    const scanWholeMessageForRoster = (): Character[] => {
+      const found: Character[] = [];
       let batch: Character[] = [];
       const flush = () => {
-        if (batch.length >= 4) characters.push(...batch);
+        if (batch.length >= 4) found.push(...batch);
         batch = [];
       };
       for (const line of content.split('\n')) {
@@ -161,7 +165,11 @@ const MysteryPurchase = () => {
         }
       }
       flush();
-      return characters;
+      return found;
+    };
+
+    if (!characterSection) {
+      return scanWholeMessageForRoster();
     }
 
     // Pattern 1: Character with description after colon/dash
@@ -193,6 +201,17 @@ const MysteryPurchase = () => {
           name: cleanName,
           description: cleanDescription
         });
+      }
+    }
+
+    // If the section-scoped patterns found nothing, the roster may live inside "###"
+    // subsections that the section-terminator regex above mistook for the end of the
+    // list (see scanWholeMessageForRoster comment). Try the whole-message scan before
+    // falling back to name-only/placeholder-description matches.
+    if (characters.length === 0) {
+      const wholeMessageMatches = scanWholeMessageForRoster();
+      if (wholeMessageMatches.length > 0) {
+        characters.push(...wholeMessageMatches);
       }
     }
 
