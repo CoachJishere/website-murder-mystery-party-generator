@@ -1,6 +1,6 @@
 # ADR-0108: `validate_package_characters()` must re-fire on every transition into `completed`, not just the first `generation_completed_at` write
 
-- **Status:** Proposed
+- **Status:** Accepted — implemented and verified live 2026-08-25
 - **Date:** 2026-08-25
 - **Related:** ADR-0094 (built the row-count guard this ADR extends — and whose Discussion section explicitly considered and rejected the fix proposed here), ADR-0095 (bracketless `extracted_characters` parse fix — verified still working correctly, not the cause of this incident), ADR-0103 Addendum 2 (the sweep that surfaced this incident)
 
@@ -39,7 +39,7 @@ END IF;
 
 `OLD.generation_status->>'status' = 'completed'` in the skip condition specifically prevents infinite re-validation churn on a package that's *already* correctly completed and gets touched by something unrelated (e.g. a later field edit) — the guard only ever re-runs on an actual transition **into** `completed`, not on every subsequent write to an already-completed row.
 
-Also add a matching client-side check as cheap defense-in-depth: `MysteryView.tsx`'s reveal gate and `MysteryPackageTabView.tsx` currently only check `characters.length > 0` (the ADR-0043 invariant), never `characters.length` against the expected count. Extending that check closes the customer-facing side of this gap even in the window before any server-side fix takes effect, and protects against any *future* unknown write path this ADR's fix doesn't anticipate either.
+**Client-side mirror check — proposed, then deliberately NOT built after reading the actual client code.** The original draft of this ADR proposed also adding a `characters.length` vs expected-count check in `MysteryView.tsx`'s reveal gate, as defense-in-depth. Reading the gate's own code before building it changed that: the comment directly above it (`src/pages/MysteryView.tsx` ~line 1276-1283) states outright that `'completed'` is treated as *"trusted-clean (ADR-0049/0053 gate guarantee)"* and reveals immediately, by design — the client deliberately does not re-derive or duplicate server-side completion validation, it trusts the guarantee the server-side gate makes. Adding a second, client-side copy of the same count-check logic would be exactly the "one concept, two predicates, in two files, updated one at a time" shape this codebase has been burned by multiple times before (ADR-0055/56/57) — the two copies would inevitably drift, and the fix for that drift is documented in this project's own accumulated experience as "delete the second predicate," not "keep both in sync by discipline." Skipped. The server-side fix above is sufficient on its own: a Postgres `BEFORE UPDATE` trigger fires on every `UPDATE` to the row regardless of which system performs it (Make.com, a cron, an edge function, raw SQL) — there is no code path left that reaches `'completed'` without passing through it, so there is no gap left for a client-side check to catch that the server-side one wouldn't already have caught first.
 
 ## Rationale
 
@@ -56,18 +56,18 @@ Also add a matching client-side check as cheap defense-in-depth: `MysteryView.ts
 ## Consequences
 
 - **Positive:** any future write to `mystery_packages` that sets `generation_status` to `completed` — from Make.com, a cron, a manual fix, or a system not yet built — gets the same row-count/structural-defect validation the very first completion attempt gets. Closes the class of gap, not just this instance.
-- **Not yet done — this ADR is Proposed, not built.** No migration has been written or applied. Pending review before implementation.
+- **Implemented and verified live** (`supabase/migrations/20260825_completion_trigger_revalidate_on_every_write.sql`): deployed via `apply_migration`, confirmed the live function definition contains the new condition (`pg_get_functiondef`), and verified behavior with a fully isolated `BEGIN...ROLLBACK` test — inserted a throwaway test conversation/package/character (1 of 2 expected characters present), simulated a rogue direct write setting `generation_status = 'completed'`, confirmed the trigger correctly intercepted it and downgraded back to `needs_review` with `actualCharacters: 1, expectedCharacters: 2` — then rolled back, zero footprint on real data.
+- **Client-side mirror check considered and deliberately not built** — see Decision above. The reveal gate's own existing comment documents "trust the server's completed guarantee" as the deliberate design; duplicating the check client-side would reintroduce the exact paired-predicate-drift shape this codebase has hit before. The now-broadened server-side trigger is comprehensive enough (fires on every `UPDATE`, from any caller) that there's no remaining gap for a client-side copy to catch.
 - **Not addressed here:** the actual Make.com blueprint module performing the unconditional write is still unconfirmed and unfixed at the source — this ADR's fix makes it harmless (Postgres re-validates and downgrades back to `needs_review` if it's still wrong) but doesn't stop Make.com from doing the wasted/redundant write itself. Worth a follow-up to actually locate it in the live Child blueprint (via the Make API) if the same pattern recurs or if reducing wasted Make.com operations becomes worth the manual-import cost.
 - **Not addressed here:** Cypress/Celine Beaumont's `round2_guilty`/`round3_guilty`/`round4_guilty`/`final_guilty` content is still empty after two auto-recovery attempts (cap exhausted) — see ADR-0103 Addendum 2. Low practical impact for this specific package (the detective_script fix in that addendum means her guilty branch is never used), but the underlying "why did this branch specifically fail twice" question is still open.
-- **Client-side mirror check not yet built either** — `MysteryView.tsx`/`MysteryPackageTabView.tsx` still only check `characters.length > 0`, not against an expected count. Proposed above, not implemented.
 
 ## Key files
 
+- `supabase/migrations/20260825_completion_trigger_revalidate_on_every_write.sql` — this ADR's fix, deployed live
 - `supabase/migrations/20260819_close_recovery_path_character_count_gap.sql` — ADR-0094, the guard this ADR's fix complements (not replaces)
 - `supabase/migrations/20260820090645_fix_bracketless_extracted_characters_parse.sql` — ADR-0095, verified still working correctly against this incident's actual data
-- `supabase/migrations/20260820092046_add_missing_round_content_blocking_defect.sql` — current live definition of `package_completion_blocking_defects()`, unchanged by this proposal
-- `src/pages/MysteryView.tsx` — reveal gate (`characters.length > 0` check, line ~1284-1288 as of this writing) — proposed client-side mirror check target
-- `src/components/MysteryPackageTabView.tsx` — character list rendering, proposed client-side mirror check target
+- `supabase/migrations/20260820092046_add_missing_round_content_blocking_defect.sql` — current live definition of `package_completion_blocking_defects()`, unchanged by this fix
+- `src/pages/MysteryView.tsx` — reveal gate (`characters.length > 0` check, ~line 1284-1288) and its "trusted-clean" comment (~line 1276-1283) that informed the decision not to add a client-side mirror check
 - `docs/adr/0103-new-purchase-coherence-sweep-ritual.md` Addendum 2 — the incident this ADR traces back to
 
 ## Discussion
