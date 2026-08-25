@@ -1,8 +1,10 @@
 # Site health status
 
-_Last checked: 2026-08-25 07:11 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-08-25 13:14 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
-## ✅ All checks passing
+## ⚠️ Problems found
+
+- 🔴 1 package(s) whose delivered character count doesn't match their approved concept snapshot: Operation: Thirty & Murdery [approved=30, actual=29]
 
 | Check | Result |
 |---|---|
@@ -17,6 +19,6 @@ _Last checked: 2026-08-25 07:11 UTC (runs every 6 hours; see .github/workflows/h
 | Self-directed questions (30 days) | 0 |
 | Completed-but-empty packages (30 days) | 0 |
 | Structural defects — escalate only (30 days) | 0 |
-| Roster-count mismatches — escalate only (30 days) | 0 |
+| Roster-count mismatches — escalate only (30 days) | 1 |
 | Final-statement confession leaks — escalate only (30 days) | 0 |
 | Unconfessed detective-style culprits — escalate only (30 days) | 0 |
