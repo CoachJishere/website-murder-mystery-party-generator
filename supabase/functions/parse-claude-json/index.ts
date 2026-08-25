@@ -58,6 +58,59 @@ function escapeControlCharsInStrings(s: string): string {
 }
 
 /**
+ * Last-resort recovery for a response where Claude's turn ended cleanly
+ * ("stop_reason": "end_turn", NOT a max_tokens truncation) but it never
+ * closed the JSON string/object it was still inside — confirmed via a real
+ * incident (2026-08-25, "Cypress/Celine Beaumont", ADR-0103 Addendum 2):
+ * Claude wrote a complete, coherent 5-field confession, stopped right after
+ * finishing its last sentence, and simply omitted the closing `"` and `}`,
+ * despite the prompt explicitly instructing it to verify both are present.
+ * Every field from a call like this comes back empty under the all-or-
+ * nothing parse below, even though the content itself was fine.
+ *
+ * Deliberately conservative: only recovers when the cutoff looks CLEAN — the
+ * still-open string's trailing text ends on sentence-ending punctuation
+ * (. ! ?), not mid-word/mid-sentence. A genuine max_tokens truncation almost
+ * never lands on a clean sentence boundary; silently "closing" that would
+ * ship a visibly truncated sentence instead of correctly falling through to
+ * the empty-field path (which the missing-content detectors and existing
+ * auto-recovery loop already handle safely). If the cutoff doesn't look
+ * clean — or the text isn't mid-string at all, meaning the failure is some
+ * other shape — this returns null and changes nothing.
+ */
+function attemptCleanTrailingCutoffRecovery(s: string): string | null {
+  let inString = false;
+  let escaped = false;
+  const stack: string[] = [];
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (inString) {
+      if (escaped) { escaped = false; continue; }
+      if (ch === '\\') { escaped = true; continue; }
+      if (ch === '"') { inString = false; continue; }
+      continue;
+    }
+    if (ch === '"') { inString = true; continue; }
+    if (ch === '{' || ch === '[') { stack.push(ch); continue; }
+    if (ch === '}' || ch === ']') { stack.pop(); continue; }
+  }
+
+  // Not mid-string at EOF, or mid-escape-sequence at EOF: nothing this stage
+  // can safely do — the failure is some other shape.
+  if (!inString || escaped) return null;
+
+  // Require a clean sentence-ending cutoff, not a mid-word/mid-sentence one.
+  const trailing = s.trimEnd();
+  if (!/[.!?]$/.test(trailing)) return null;
+
+  let repaired = trailing + '"';
+  for (let i = stack.length - 1; i >= 0; i--) {
+    repaired += stack[i] === '{' ? '}' : ']';
+  }
+  return repaired;
+}
+
+/**
  * Parse a Claude text response that's *supposed* to be JSON but may contain
  * common malformations:
  *   - leading/trailing ```json or ``` code fences
@@ -129,15 +182,32 @@ function parseClaudeJson(text: string): { data?: any; error?: string; sanitized?
   // Stage 6: strip trailing commas before } or ] (lenient JSON5-ish). Some models
   // produce these out of habit.
   let s4 = s3.replace(/,(\s*[}\]])/g, '$1');
+  let lastError: Error;
   try {
     return { data: JSON.parse(s4), sanitized: s4 };
   } catch (e) {
-    // Give up but include best-effort sanitized text and the parse error
-    return {
-      error: `JSON parse failed after all sanitization stages: ${(e as Error).message}`,
-      sanitized: s4,
-    };
+    lastError = e as Error;
   }
+
+  // Stage 7: last-resort recovery for a clean trailing cutoff — see
+  // attemptCleanTrailingCutoffRecovery for the exact incident and the
+  // conservative "must end on . ! or ?" guard that keeps this from masking
+  // a genuine max_tokens truncation.
+  const recovered = attemptCleanTrailingCutoffRecovery(s4);
+  if (recovered) {
+    try {
+      return { data: JSON.parse(recovered), sanitized: recovered };
+    } catch {
+      // fall through to give up below, reporting stage 6's error (the
+      // recovery attempt was speculative and its own failure is not the
+      // interesting one to surface)
+    }
+  }
+
+  return {
+    error: `JSON parse failed after all sanitization stages: ${lastError.message}`,
+    sanitized: s4,
+  };
 }
 
 serve(async (req) => {
