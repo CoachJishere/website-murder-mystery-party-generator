@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-08-27
+
+### Fix: generation-issue alert always fired for missing_round_content even when the same-run auto-recovery was about to fix it cleanly ([ADR-0111](docs/adr/0111-suppress-alert-for-self-recovered-missing-round-content.md))
+
+Sweep of "Smells Like Murder: A Grunge Era Conspiracy" (`43af40e9-6e16-45ff-9eac-ef012f44c97f`) found two characters flagged with empty round content (ADR-0096) had already fully self-healed via `notify-generation-issue`'s own auto-recovery re-fire by the time the sweep ran — all content present, package `completed`, zero defects. Jonathan asked why he still got the alert email if it fixed itself. Root cause: `missing_round_content` is written into `generation_status.structuralDefects` by the DB completion trigger AND independently re-detected by this function's own `emptyCharacters` check — so the existing "recovery looks clean" suppression (which required `structuralDefects.length === 0`) could never fire for this defect class, since that array was never empty when this was the trigger. Fixed by excluding `missing_round_content.*` entries from that check specifically — any other structural defect (`meta_text_leak`, `victim_mismatch`, etc.) still forces an immediate alert. Deployed (`notify-generation-issue` v27, `verify_jwt` preserved as `true`).
+
 ## 2026-08-25
 
 ### Fix: the pre-purchase preview page ran its own independent character parser with the same failure shape, and its own separate root cause ([ADR-0110](docs/adr/0110-roster-continuation-message-merge.md) Addendum 1)

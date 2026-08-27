@@ -544,9 +544,25 @@ serve(async (req) => {
     // safe. Mutually exclusive with workerMightFixThis by construction (that
     // one requires structuralDefects.length > 0, this one requires it to be
     // 0), so no ordering conflict between the two gates.
+    // 2026-08-27: missing_round_content (ADR-0096) is written into
+    // generation_status.structuralDefects by the DB completion trigger AND
+    // independently re-detected as an emptyCharacters case a few lines above
+    // (missingRoundContent() feeds both). That made structuralDefects.length
+    // === 0 always false whenever this defect class was the trigger, so the
+    // "recovery looks clean" suppression below could never fire for it —
+    // every missing_round_content incident emailed immediately regardless of
+    // whether the re-fire just launched above was about to fix it cleanly
+    // (confirmed live: Smells Like Murder self-healed within the 3-minute
+    // window, alert had already gone out). Strip missing_round_content
+    // entries before the emptiness check since they're the exact defect this
+    // function's own recovery loop just attempted — any OTHER structuralDefect
+    // (meta_text_leak, victim_mismatch, etc.) still forces an immediate alert.
+    const structuralDefectsNotSelfRecovered = structuralDefects.filter(
+      (d) => !d.startsWith("missing_round_content.")
+    );
     const emptyCharacterRecoveryLooksClean =
       recoveryTargets.length > 0 &&
-      structuralDefects.length === 0 &&
+      structuralDefectsNotSelfRecovered.length === 0 &&
       skipped.length === 0 &&
       capped.length === 0;
     readyToAlert = readyToAlert && !emptyCharacterRecoveryLooksClean;
