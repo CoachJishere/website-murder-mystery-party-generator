@@ -116,6 +116,18 @@ This ADR's own "Not yet exercised" line turned out to matter: Eduardo Salgado (e
 
 **Key files touched by this addendum:** `supabase/functions/adapt-mystery-apply/index.ts` (all 3 fixes, redeployed 2026-08-22).
 
+## Addendum (2026-08-28): verify step never got the sibling-batch exclusion — false-positive rollback on a real 4-character batch
+
+Found via the "sweep"-style check on rsappel17@gmail.com's "Remove a Character" purchase (batch `689f1b40-3f8d-46ea-bf3b-16efb14cbbd7`, package `eb0f3f1d-c404-49bb-8c7c-6daa135faa15`, "De Bittere Verjaardag: Moord In Villa Limoncello"): a $5 batch removing 4 characters (Daan/Dana De Vries, Dr. Sasha/Sascha Kowalski, Jules/Julia Bergman, Parker/Petra Lindholm) only completed 3. Sasha's removal (`batch_sequence=1`) rolled back with `"Jules/Julia Bergman.rumors still references removed character; ...round2_questions...; Parker/Petra Lindholm.rumors...; ...round2_questions..."` — even though Jules and Parker were themselves being deleted later in the very same batch (`batch_sequence=2,3`).
+
+Root cause: this ADR's own "sibling-batch exclusion" (`siblingIds`, computed at `index.ts:880-887`) only fed the transform step's "other characters to scan/rewrite" set. Its stated rationale — "not a correctness requirement, that sibling's own later pass would re-scrub whatever this pass writes into their fields" — is true for a *rewrite* pass but doesn't hold for a *deletion*: Jules's and Parker's own passes never rewrite their own soon-to-be-deleted content, they just delete the row. Nothing was ever going to scrub Sasha's name out of their `rumors`/`round2_questions` before Sasha's own verify step ran its blanket scan over every still-existing row (`index.ts:1203-1221`, unfiltered `remainingRows`). Verify saw two characters that hadn't been deleted *yet* still mentioning Sasha and rolled back an otherwise-correct removal — a paired-predicate-drift bug (transform-time exclusion vs. verify-time scan, same shape as ADR-0111 and prior incidents in this codebase's history).
+
+**Fix:** verify now scans a `scanRows` set filtered by the same `siblingIds` exclusion already computed for the transform step, instead of the raw `remainingRows`. The headcount check, murderer-count check, and reassignment `promotedAfter` lookup deliberately keep using unfiltered `remainingRows` — those need true current DB state, since the sibling row hasn't actually been deleted at that point in the chain, only scheduled to be. Deployed via `supabase functions deploy adapt-mystery-apply` (CLI, verified by the deploy command's own success response, not just a git push).
+
+**Customer resolution:** manually inserted a new single-row, `$0`, pre-`'paid'` `mystery_adaptations` row for Sasha's removal (no second charge — she was part of the original paid batch) and invoked `adapt-mystery-apply` directly against it. Verified clean on the retry (`Jules`/`Parker` were now actually gone, so the false-positive couldn't recur): `status: 'verified'`, 12 characters' content touched, zero verify issues. Package now sits at 14 characters / `player_count: 14`, exactly 1 murderer, roster clean. Customer follow-up email drafted, not yet sent (Jonathan to review/send).
+
+**Key files touched by this addendum:** `supabase/functions/adapt-mystery-apply/index.ts` (verify-loop scan set, redeployed 2026-08-28).
+
 ## Key files
 
 - `supabase/migrations/20260814_mystery_adaptations_batching.sql`

@@ -1205,7 +1205,16 @@ serve(async (req) => {
     if (remainingErr) throw new Error(`post-write verify read failed: ${remainingErr.message}`);
     const remainingRows = (remaining ?? []) as CharacterRow[];
 
-    for (const row of remainingRows) {
+    // Same sibling-batch exclusion as the transform step above (ADR-0088):
+    // a non-terminal sibling row in this batch will delete this character
+    // moments from now, so stale references in ITS content are moot by the
+    // time the batch finishes and must not fail this row's verification.
+    // Headcount/murderer/reassignment checks below intentionally keep using
+    // the unfiltered remainingRows -- those need the true current DB state,
+    // since the sibling hasn't actually been deleted yet.
+    const scanRows = remainingRows.filter((row) => !siblingIds.has(row.id));
+
+    for (const row of scanRows) {
       for (const field of [...LIST_FIELDS, ...PROSE_CHARACTER_FIELDS]) {
         const v = row[field];
         if (typeof v === "string" && variantRegex.test(v)) verifyIssues.push(`${row.character_name}.${field} still references removed character`);

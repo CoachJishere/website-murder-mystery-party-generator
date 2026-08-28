@@ -1,6 +1,15 @@
 # Changelog
 
+## 2026-08-28
+
+### Fix: Remove-a-Character verify step never got the sibling-batch exclusion, causing a false-positive rollback ([ADR-0088](docs/adr/0088-guest-dropout-multi-character-and-reassignment.md) Addendum)
+
+New-purchase sweep on rsappel17@gmail.com's 4-character "Remove a Character" batch found only 3 of 4 removals completed — Dr. Sasha/Sascha Kowalski's removal rolled back with "still references removed character," even though the only characters still mentioning her (Jules/Julia Bergman, Parker/Petra Lindholm) were themselves scheduled for deletion later in the same batch. Root cause: the transform step's existing sibling-batch exclusion (ADR-0088) skips rewriting a sibling's content since "that sibling's own later pass would re-scrub" it — true for a rewrite, not for a deletion, since a sibling being *removed* never rewrites its own content at all. The verify step's blanket reference scan never got the same exclusion, so it flagged soon-to-be-deleted siblings' stale content as a real problem. Fixed by scanning a `siblingIds`-filtered set in verify (the headcount/murderer-count/reassignment checks correctly keep using the unfiltered set, since those need true current DB state). Deployed `adapt-mystery-apply` via CLI. Manually completed the customer's stuck removal with a $0 follow-up adaptation row (no second charge, she was part of the original paid batch) — verified clean on retry. Package now 14 characters, `player_count` consistent, roster clean.
+
 ## 2026-08-27
+
+### Fix: send-mystery-ready-email dropped the "reply for feedback" ask
+Owner asked whether the "Your Mystery is Ready! We'd Love Your Feedback" email (ADR-0106, live since 2026-08-23) had actually gotten any replies. Couldn't verify directly (feedback landed via reply to `support@mysterymaker.party`, no inbox access from this session), but the investigation surfaced two things worth acting on regardless: only 6 sends existed total (too small a sample to judge the ask on performance), and the app's two *structured* one-click feedback mechanisms elsewhere (`mystery_feedback`, `guest_feedback`) have also only logged 2 responses each, ever, since March/June respectively — so this wasn't a case of one email underperforming a working system, feedback collection is weak everywhere in this app regardless of mechanism. Separately, reply-to-email is real friction, and the ask itself conflated "how was signing up" with "how was the mystery" (a question that already has a home at Day+14/21, post-party, via those same two tables). Dropped the feedback paragraph and trimmed the subject to just "Your Mystery is Ready!" — the email's job is now only the ready notification. Deployed `send-mystery-ready-email` v2, `verify_jwt` preserved as `true`. Not a data-driven kill (sample too small to justify one) — a scope-creep and mechanism-friction fix.
 
 ### Fix: generation-issue alert always fired for missing_round_content even when the same-run auto-recovery was about to fix it cleanly ([ADR-0111](docs/adr/0111-suppress-alert-for-self-recovered-missing-round-content.md))
 

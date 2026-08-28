@@ -2,7 +2,9 @@
 
 ## Shorthand Commands
 
-- **"sweep"** = Run the New-Purchase Coherence Sweep (ADR-0103). Trigger: Jonathan pastes a purchase notification (conversation ID is the only field actually needed) into a fresh session and says "sweep" — no other setup required, this file is auto-loaded.
+- **"sweep"** = Run a coherence sweep on a pasted purchase notification. Trigger: Jonathan pastes a purchase notification into a fresh session and says "sweep" — no other setup required, this file is auto-loaded. Branch on the notification's header/fields:
+
+  **"New Purchase!" (a new mystery)** → New-Purchase Coherence Sweep (ADR-0103). Conversation ID is the only field actually needed.
   1. Resolve `package_id`/`mystery_style`/`player_count`/`has_accomplice`/language from the `conversation_id`.
   2. Note whether the package predates or postdates the 2026-08-11 blanket Sonnet 5 upgrade (ADR-0074) — pre-upgrade gets extra scrutiny, but don't skip post-upgrade.
   3. Run `list_packages_with_meta_text_leak`, `list_packages_with_victim_mismatch`, and `list_packages_with_unresolved_victim_name` scoped to this package — a clean result is a data point, not proof (all three have known blind spots, see ADR-0103; the third checks whether `master_context`'s victim name still contains "/" — a real regression only if the package predates ADR-0107's fix or the fix wasn't actually imported yet, since ADR-0107 deliberately didn't rewrite `master_context` on already-fixed historical packages).
@@ -12,6 +14,13 @@
   7. Run `package_completion_blocking_defects()` for genuinely missing content.
   8. Found something → fix it, re-verify, CHANGELOG entry + an addendum to **ADR-0103** (not ADR-0098 — different incident). Clean → report in chat only, no permanent document for a routine "nothing found."
   - Full checklist detail and rationale: `docs/adr/0103-new-purchase-coherence-sweep-ritual.md`.
+
+  **"New 'Remove a Character' Purchase" (has a Batch ID field)** → Adaptation Batch Completion Sweep. Batch ID is the only field actually needed. No automated alert exists for this path (ADR-0088 deliberately deferred a cron here — paid packages, needs explicit sign-off before automating), so this manual sweep is currently the only thing that catches a partial batch failure.
+  1. Query `mystery_adaptations` for every row with this `batch_id`, ordered by `batch_sequence`. Every row should be `status = 'verified'`. Any `'rolled_back'` or `'failed'` row is a real problem — the batch's own chain-dispatch guarantees it won't get stuck, but "didn't crash" isn't the same as "customer got what they paid for."
+  2. For any non-`'verified'` row, read `error_message` and root-cause it before just retrying blindly — a rollback can be a false positive in the verify logic (like the 2026-08-28 sibling-batch-exclusion gap, ADR-0088 addendum) or a genuine unscrubbed content leak; only the former is safe to retry as-is.
+  3. Cross-check current package state against what the customer actually paid for: character count in `mystery_characters` + `conversations.player_count` should both reflect every requested removal/reassignment actually landing, not just what the batch's own rows claim.
+  4. If a row is stuck non-terminal, root cause fixed, and safe to retry: complete it directly — a new `$0`, pre-`'paid'` single-row `mystery_adaptations` batch + a direct call to `adapt-mystery-apply`, no second charge (the customer already paid for this as part of the original batch). Confirm zero verify issues on the retry.
+  5. Found something → fix it, re-verify, CHANGELOG entry + an addendum to **ADR-0088** (the ADR that owns this feature's batching/verify design). Clean → report in chat only, no permanent document for a routine "nothing found."
 
 ## Changelog
 
