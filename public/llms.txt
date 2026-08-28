@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 280 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 281 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -223,6 +223,7 @@ This index organizes 280 published guides by topic cluster. All guides are avail
 - [How to Create Murder Mystery Suspect Profiles](https://www.mysterymaker.party/blog/how-to-create-murder-mystery-suspect-profiles): Murder mystery suspects need motive, opportunity, and depth. Here's how to write suspects that feel real and create a compelling investigation.
 - [How to Create Red Herrings for Murder Mysteries](https://www.mysterymaker.party/blog/how-to-create-red-herrings-murder-mystery): Design effective murder mystery red herrings that mislead without frustrating. Types, quantities, and techniques for balancing misdirection with solvability.
 - [Getting Reluctant Guests Excited About Mystery](https://www.mysterymaker.party/blog/how-to-get-reluctant-guests-excited-about-murder-mystery): Overcome resistance to murder mystery parties. Marketing tips for getting skeptical guests excited about attending.
+- [How to Handle Drunk Guests at a Murder Mystery](https://www.mysterymaker.party/blog/how-to-handle-drunk-guests-murder-mystery): Practical strategies for managing intoxicated guests at murder mystery parties without killing the fun or the evening.
 - [How to Write a Murder Mystery: From Plot to Playable Game](https://www.mysterymaker.party/blog/how-to-write-a-murder-mystery): Learn how to write a murder mystery game or story. Step-by-step guide covering plot, characters, clues, and testing.
 - [How to Write Murder Mystery Backstories](https://www.mysterymaker.party/blog/how-to-write-murder-mystery-backstories): Backstory creates the foundation for believable suspects and compelling motives. Here's how to construct layered character histories that drive the mystery.
 - [How to Write Murder Mystery Characters](https://www.mysterymaker.party/blog/how-to-write-murder-mystery-characters): Learn how to create murder mystery characters with layered motives, secrets, alibis, and relationships. Includes a character template with worked examples.
