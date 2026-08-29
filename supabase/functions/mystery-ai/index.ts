@@ -549,6 +549,17 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
         systemPrompt += `\n\nNote: This has been a wonderfully detailed conversation! When it feels natural, warmly encourage the user that their concept is very well-developed and suggest hitting 'Generate Mystery' to bring it to life. But continue helping if they want to keep refining — don't block or pressure them.`;
       }
 
+      // languageDirective is only embedded inline in the fallback templates above —
+      // applyDatabasePrompt() (the MYSTERY_FREE_PROMPT secret, the dominant production
+      // path) never sees it, so language correctness there depended entirely on the
+      // model inferring the right language from context with no explicit instruction.
+      // Confirmed live: two identical English-language requests down this exact branch
+      // returned English once and Spanish once. Appending unconditionally, same
+      // rationale as the CRITICAL guardrails below — the secret can't be edited from
+      // this file, so this is the only place the instruction can't be silently lost.
+      // Harmless duplicate on the inline-template paths, which already include it.
+      systemPrompt += `\n\n${languageDirective}`;
+
       // Applied unconditionally regardless of which branch above set systemPrompt
       // (inline template or the MYSTERY_FREE_PROMPT secret via applyDatabasePrompt) —
       // a customer received a concept promising 3 "optional characters for 16-18
@@ -565,6 +576,18 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
       // Confirming a specific count here creates a promise nothing downstream
       // can keep.
       systemPrompt += `\n\nCRITICAL: Round count is fixed by the system and cannot be customized, shortened, or extended — if the user requests a specific number of rounds (e.g. "only 3 rounds," "make it 5 rounds," "keep it short, just 2 rounds"), do NOT agree to, confirm, or acknowledge that request as something that will happen. Tell them clearly and warmly that the round structure is fixed and the same for every mystery, and steer the conversation back to theme, characters, and story. Do not say "got it" or otherwise imply the request is understood as an instruction that will be followed.`;
+
+      // A customer wanted the murder/theft to happen live, in real time, after
+      // guests had already arrived (e.g. two sealed "envelope" outcomes revealed
+      // during play) — but every mystery here is structured the opposite way:
+      // the crime has already happened before the game starts, guests arrive
+      // to find themselves suspects/investigators, and the rounds are about
+      // uncovering what already occurred, not watching it unfold live. We told
+      // her this could be faked by how the host narrates it, but the underlying
+      // package structure can't actually deliver a live/branching reveal. No
+      // guardrail existed anywhere (chat, FAQ) to catch this before a customer
+      // builds a concept around it.
+      systemPrompt += `\n\nCRITICAL: The crime (murder, theft, disappearance) has ALREADY HAPPENED before the game begins — guests arrive to find themselves suspects and/or investigators piecing together something that already occurred. This structure cannot be changed to a "live" or "real-time" crime that happens during the party, a reveal that branches based on choices made after guests arrive, or multiple possible outcomes decided in the moment (e.g. sealed envelopes opened live, guests voting on what happens next). If a user describes a concept like this, do NOT agree to, confirm, or acknowledge it as something that will happen. Tell them clearly and warmly that the crime is always already in the past when the game starts, and steer them toward designing a rich backstory and timeline for what already happened instead — that's where this kind of drama belongs.`;
 
       // A customer's concept split 27 "players" into 12 individually-described
       // "investigator" characters (Homicide, Forensics, State Police, etc.) plus
@@ -595,8 +618,14 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
+        model: 'claude-sonnet-5',
         max_tokens: 2000,
+        // Sonnet 5 removed temperature/top_p/top_k (400 if sent) and runs
+        // adaptive thinking by default unless explicitly disabled. This is a
+        // fast conversational concept chat with strict format instructions,
+        // not a reasoning task, so thinking is turned off to keep latency/cost
+        // and response shape matching the prior sonnet-4-5 behavior.
+        thinking: { type: 'disabled' },
         // Automatic prompt caching: caches the system prompt + growing
         // conversation history so each follow-up turn reads the prefix from
         // cache (~90% cheaper, faster TTFT) instead of reprocessing it. The
@@ -605,11 +634,10 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
         // refinement phase); branch changes to systemPrompt cost one miss.
         cache_control: { type: 'ephemeral' },
         system: systemPrompt,
-        messages: anthropicMessages,
-        temperature: 0.7
+        messages: anthropicMessages
       })
     });
-    
+
     if (!anthropicResponse.ok) {
       const errorText = await anthropicResponse.text();
       console.error(`Anthropic API error ${anthropicResponse.status}: ${errorText}`);
@@ -617,7 +645,10 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
     }
 
     const data = await anthropicResponse.json();
-    const assistantMessage = data.content?.[0]?.text;
+    // Find the text block explicitly rather than assuming content[0] — with
+    // thinking enabled (even briefly, or if the disabled flag above is ever
+    // removed) a thinking block can precede the text block in content[].
+    const assistantMessage = data.content?.find((b: { type: string }) => b.type === 'text')?.text;
     if (!assistantMessage) {
       throw new Error('No content in response from Anthropic API');
     }
