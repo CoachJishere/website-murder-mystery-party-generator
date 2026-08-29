@@ -192,6 +192,30 @@ function nameVariants(fullName: string): string[] {
     const [, before, altToken, rest] = slashMatch;
     variants.add(`${before}${rest}`.trim());
     variants.add(`${altToken}${rest}`.trim());
+    // Bare dual-first-name shorthand (e.g. "Jules/Julia" with no surname) —
+    // found live 2026-08-28 (ADR-0103 Addendum 4): this generator's own prose
+    // constantly refers to a dual-gender-named character by first names alone,
+    // dropping the surname entirely ("I was dancing with Jules/Julia...",
+    // "Real motives exist elsewhere: ... Dr. Sasha/Sascha losing patent...").
+    // Every one of that sweep's residual mentions used exactly this form,
+    // which neither of the two variants above (each paired with the surname)
+    // nor the bare-surname fallback below ever matches — a removal's own
+    // scrub AND its verify step (same regex) both silently missed it.
+    variants.add(`${before}/${altToken}`.trim());
+  }
+
+  // "Real Name - PlayerNickname" composite (ADR-0088's incident 2026-08-22
+  // note, e.g. "Fulgencio Villamar - MauSal") — bare-real-name variant.
+  // Found live 2026-08-28 (ADR-0103 Addendum 4, package `c28e31f6...`,
+  // non-English): in-game dialogue always addresses the character by their
+  // real name alone ("**A Aniceto de Monteverde:**"), never with the
+  // internal nickname suffix attached, so without this the full literal
+  // string is the ONLY variant that could ever match — and it never appears
+  // verbatim anywhere in generated prose. 37 undropped question/rumor blocks
+  // across every remaining character in that package resulted.
+  const dashMatch = trimmed.match(/^(.+?)\s+-\s+\S+$/);
+  if (dashMatch) {
+    variants.add(dashMatch[1].trim());
   }
 
   // Bare-surname fallback (the precedent note refers to "Pemberton" alone in
@@ -252,11 +276,23 @@ async function pickSubstitute(
 
 /** Drops any blank-line-separated block whose "To/About <Name>:" question
  *  target or "**Name** - " relationship subject matches a removed-character
- *  variant. Header-only blocks (no name-block shape) are always kept. */
+ *  variant. Header-only blocks (no name-block shape) are always kept.
+ *
+ *  The name-shape match deliberately does NOT require the literal English
+ *  words "To"/"About" before the name (fix, incident 2026-08-28, ADR-0103
+ *  Addendum 4): this generator ships in 13 languages, and a Spanish package's
+ *  "**A Nombre:**" ("To Name:") blocks never matched the old
+ *  `(?:To|About)\s+` requirement, so `target` was always null and every
+ *  question/rumor block was unconditionally kept — 37 blocks across every
+ *  remaining character in one real package still addressed two removed
+ *  characters by name. Capturing everything inside `**...**:**` regardless
+ *  of a leading keyword works in every language this function is used for,
+ *  since the fuzzy `target.includes(v) || v.includes(target)` variant check
+ *  below already tolerates the keyword being part of the captured text. */
 function dropBlocksTargeting(text: string, variants: string[]): { result: string; droppedCount: number } {
   if (!text) return { result: text, droppedCount: 0 };
   const blocks = text.split(/\n\s*\n/);
-  const nameShape = /^(?:\d+\.\s*)?\*\*(?:To|About)\s+([^:*]+):\*\*|^\*\*([^*]+)\*\*\s*-/;
+  const nameShape = /^(?:\d+\.\s*)?\*\*([^:*]+):\*\*|^\*\*([^*]+)\*\*\s*-/;
   const variantsLower = variants.map((v) => v.toLowerCase());
   let dropped = 0;
   const kept = blocks.filter((block) => {

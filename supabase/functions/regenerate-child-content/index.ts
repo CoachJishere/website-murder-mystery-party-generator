@@ -208,6 +208,7 @@ You are an expert mystery designer regenerating specific fields of one character
 function contentCoherenceRules(style: MysteryStyle): string {
   const base = `<content_coherence_rules>
 These rules apply to every field you generate:
+- LANGUAGE: This function has no explicit language parameter — write every field in the SAME language as the master context and this character's established fields (background/relationships/secret) below. If those are in a language other than English, your entire output must be too, including brief instructional asides (e.g. an accusations-phase reminder line) — never leave a sentence half-translated or a short aside in English while the surrounding field is in another language. (ADR-0112 addendum, 2026-08-29: this function is a separate re-implementation of per-character generation that never got an explicit language signal the way the main pipeline's mystery-webhook-trigger now has; this rule closes the same gap here at zero extra cost, using context already in this prompt, rather than adding another detection call.)
 - CHARACTER IDENTITY: Write every field strictly as THIS character (the Character name above). NEVER claim another character's identity, kinship, or relationship to the victim (e.g. calling the victim 'my brother' when the master context assigns that relationship to a different character). NEVER give this character another character's secret, alibi, or guilty knowledge - in particular, the murderer's storyline and evidence trail must never bleed into any other character's scripts. Before writing any line where this character states their relationship to the victim, verify it against this character's OWN ESTABLISHED FIELDS (below) and the master context.
 - TIMING: When a character refers to time, use approximate, event-relative phrasing ('just before nine', 'as the ceremony was about to begin', 'shortly after dinner') rather than exact clock times. Only give an exact minute if it is a deliberate clue AND you give the character a concrete reason they would remember that exact moment (they checked a watch, heard a clock chime). Do not build player-facing recall around minute-precise timelines.
 - QUESTIONS: Every question in a character's 'questions to ask' list must be directed at a DIFFERENT, LIVING character. NEVER generate a question this character asks of themselves, and NEVER address a question to the victim (the victim is dead and not a player).
@@ -813,6 +814,38 @@ async function callClaude(prompt: string, apiKey: string): Promise<{ text: strin
   return { text: text.trim(), costUsd: CLAUDE_CALL_COST_USD };
 }
 
+/** Escape raw control-character bytes (literal newline/tab/CR) that appear
+ *  inside a JSON string literal, leaving everything outside strings untouched.
+ *  Ported from parse-claude-json/index.ts (2026-08-29, ADR-0103 Addendum 5
+ *  follow-up): this file has its own independent JSON parse/repair pass that
+ *  never got this fix — found live testing regenerate-child-content directly,
+ *  where a multi-paragraph field (introduction) reliably failed with "Bad
+ *  control character in string literal" on the very first and second real
+ *  calls, because Claude sometimes emits a literal newline inside a string
+ *  value instead of the escaped \n the JSON spec requires. The existing
+ *  repair pass here only handled apostrophe/quote slips, not this. */
+function escapeControlCharsInStrings(s: string): string {
+  let out = "";
+  let inString = false;
+  let escaped = false;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (inString) {
+      if (escaped) { out += ch; escaped = false; continue; }
+      if (ch === "\\") { out += ch; escaped = true; continue; }
+      if (ch === '"') { inString = false; out += ch; continue; }
+      if (ch === "\n") { out += "\\n"; continue; }
+      if (ch === "\r") { out += "\\r"; continue; }
+      if (ch === "\t") { out += "\\t"; continue; }
+      out += ch;
+    } else {
+      if (ch === '"') inString = true;
+      out += ch;
+    }
+  }
+  return out;
+}
+
 /** Parse Claude's JSON response, with the same repair pass the rest of the
  *  pipeline needs for occasional apostrophe/quote slips (see
  *  critical_json_rules above — this is the backstop for when the model
@@ -822,10 +855,10 @@ function parseJsonResponse(raw: string): Record<string, string> {
   try {
     return JSON.parse(stripped);
   } catch {
-    // Repair pass: invalid backslash-escaped apostrophes, and doubled
-    // trailing apostrophes — the two failure modes critical_json_rules calls
-    // out by name.
-    const repaired = stripped.replace(/\\'/g, "'").replace(/''/g, "'");
+    // Repair pass: invalid backslash-escaped apostrophes, doubled trailing
+    // apostrophes (the two failure modes critical_json_rules calls out by
+    // name), and raw control characters inside string values.
+    const repaired = escapeControlCharsInStrings(stripped.replace(/\\'/g, "'").replace(/''/g, "'"));
     return JSON.parse(repaired);
   }
 }

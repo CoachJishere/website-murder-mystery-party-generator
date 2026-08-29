@@ -232,6 +232,16 @@ These scripts can be delivered in two ways:
 CRITICAL: Output ONLY the markdown above with all bracketed sections filled in. NO JSON. Include the accomplice beat ONLY when the master_context defines an accomplice. Never instruct players to stand up or physically reposition themselves — assume a seated group throughout.
 </output_instructions>`,
 
+  // The "*[...]*" bracket around the one-line host instruction below matters:
+  // it's the only stage-direction-shaped aside in this whole prompt that also
+  // needs to survive into non-English output verbatim (like the detective_script
+  // prompt's many "*[Read this when...]*" directions do). Found live 2026-08-28
+  // (ADR-0103 Addendum 4): this line used to be plain "*text*" with no brackets,
+  // the one instructional aside in the file that didn't match the bracketed
+  // convention — and it was the one that leaked a half-translated English/Dutch
+  // mix into a real customer's evidence_cards ("Each card pairs met een
+  // forensisch beeld"). Matching the same bracket shape used successfully
+  // elsewhere in this file fixes it without inventing a new instruction.
   evidence_cards: `<role>
 You are an expert mystery party game designer. Generate ONLY the Evidence Cards — nothing else. Output PLAIN MARKDOWN, NOT JSON.
 </role>
@@ -253,7 +263,7 @@ Output a single markdown document with EXACTLY THREE evidence cards (one per rou
 
 ## EVIDENCE CARDS
 
-*Display these one per round during the game. Each card pairs with one forensic image.*
+*[Display these one per round during the game. Each card pairs with one forensic image.]*
 
 ## EVIDENCE: ROUND 2
 
@@ -367,7 +377,21 @@ serve(async (req) => {
     for (const field of targetFields) {
       try {
         const promptTemplate = PROMPTS[field];
-        const filled = promptTemplate
+        // ADR-0112 addendum (2026-08-29): this function has never had an
+        // explicit language instruction — it relies entirely on the model
+        // continuing in whatever language master_context is written in,
+        // which is reliable for long-form narrative but wasn't enough to
+        // stop evidence_cards' one hardcoded English aside from leaking
+        // half-translated into real non-English output (see the bracket fix
+        // applied to that prompt above). Making the rule explicit, grounded
+        // in the master_context text already in this prompt, costs nothing
+        // extra (no new API call) and closes the same class of gap for any
+        // other short aside/label that might not be shaped as obviously
+        // translatable prose.
+        const languageRule = `\n\n<language_consistency>
+Write all customer-facing prose in the same language as the master_context above — narrative text, descriptions, and any instructional aside NOT wrapped in the "*[...]*" bracket convention. Do not partially translate a sentence or leave stray English words in prose that should be fully translated. The ONLY exception: text wrapped in "*[...]*" (e.g. "*[Read this when guests are gathered...]*") is a host-only stage direction and stays in English regardless of master_context's language, matching the convention already used for those directions throughout this document.
+</language_consistency>`;
+        const filled = (promptTemplate + languageRule)
           .replace("{{MASTER_CONTEXT}}", masterContextStr)
           .replace("{{TITLE}}", title)
           .replace("{{PLAYER_COUNT}}", String(playerCount));

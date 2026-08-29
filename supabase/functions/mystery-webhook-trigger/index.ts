@@ -70,6 +70,59 @@ const LANGUAGE_NAMES: Record<string, string> = {
 };
 const DEFAULT_LANGUAGE_NAME = "English";
 
+// ADR-0112: detect the customer's actual language from their conversation
+// text, rather than trusting profiles.language (an account-level UI setting
+// that can diverge from what a specific conversation was written in - e.g. a
+// customer browsing the English site who writes their concept in Dutch, and
+// whose profile still reads "en"). Parent generation never had this problem
+// because it just continues in whatever language conversationContent is
+// written in - a cheap Haiku classification against that same text is a lot
+// more reliable than a pure character-set heuristic (mystery-ai's
+// detectLocale() only catches languages with distinctive diacritics; plain
+// Dutch text often has none).
+async function detectConversationLanguage(conversationContent: string): Promise<string | null> {
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) {
+    console.warn("No ANTHROPIC_API_KEY set, skipping conversation language detection");
+    return null;
+  }
+
+  // A sample is plenty for language ID; sending the full (sometimes 100KB+)
+  // conversationContent would add cost/latency for no accuracy gain.
+  const sample = conversationContent.slice(0, 3000);
+  const supportedCodes = Object.keys(LANGUAGE_NAMES);
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 10,
+        temperature: 0,
+        system: `You are a strict language classifier. Identify the dominant natural language of the given conversation text. Output ONLY one of these exact codes, nothing else: ${supportedCodes.join(", ")}. If genuinely ambiguous or too short to tell, output "unknown".`,
+        messages: [{ role: "user", content: sample }],
+      }),
+    });
+
+    if (!response.ok) {
+      console.error(`Language detection API returned ${response.status}`);
+      return null;
+    }
+
+    const result = await response.json();
+    const code = (result.content?.[0]?.text || "").trim().toLowerCase();
+    return supportedCodes.includes(code) ? code : null;
+  } catch (error) {
+    console.error("Language detection failed:", error);
+    return null;
+  }
+}
+
 // Build regex to match any locale's character list header
 // Pattern: ## <Header> (N PLAYERS) or ## <Header>
 const headerAlternatives = CHARACTER_LIST_HEADERS.map(h =>
@@ -819,25 +872,6 @@ serve(async (req) => {
       }
     }
 
-    // Customer's language, resolved to a full name (see ADR-0093). Previously
-    // the child scenario's Claude prompt asked the model to DETECT the output
-    // language from master_context/conversationContent instead of being told
-    // explicitly — unreliable whenever that content contains foreign-flavored
-    // proper nouns or setting details (e.g. an English mystery set in a
-    // Spanish resort), which could pull individual character-generation calls
-    // into the wrong language despite the customer's actual language being
-    // English. Resolving and forwarding it explicitly here removes the
-    // guesswork from every downstream Claude call in the child scenario.
-    let languageName = DEFAULT_LANGUAGE_NAME;
-    if (userId) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("language")
-        .eq("id", userId)
-        .maybeSingle();
-      languageName = LANGUAGE_NAMES[profile?.language ?? ""] || DEFAULT_LANGUAGE_NAME;
-    }
-
     // Build conversationContent for the parent's planning prompts. When the
     // user has an approved concept message (set above or earlier), we send
     // ONLY that one message — not the full chat — so the planning prompt
@@ -928,6 +962,35 @@ serve(async (req) => {
           console.log(`[ConversationContent] Sending full conversation (${conversationContent.length} chars, no approved snapshot found)`);
         }
       }
+    }
+
+    // Customer's language, resolved to a full name for the child scenario
+    // (see ADR-0093 for why this must be explicit rather than inferred
+    // per-call by the child scenario's own Claude calls). ADR-0112: primary
+    // signal is now the conversation's own detected language, not
+    // profiles.language — an account-level UI setting that can legitimately
+    // diverge from what the customer actually typed in this conversation
+    // (see detectConversationLanguage above). profiles.language is now only
+    // the fallback for when detection is inconclusive (e.g. too little text
+    // to classify, or no ANTHROPIC_API_KEY set).
+    const detectedLocale = conversationContent
+      ? await detectConversationLanguage(conversationContent)
+      : null;
+
+    let languageName: string;
+    if (detectedLocale) {
+      languageName = LANGUAGE_NAMES[detectedLocale];
+      console.log(`[Language] Detected "${detectedLocale}" from conversationContent`);
+    } else if (userId) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("language")
+        .eq("id", userId)
+        .maybeSingle();
+      languageName = LANGUAGE_NAMES[profile?.language ?? ""] || DEFAULT_LANGUAGE_NAME;
+      console.log(`[Language] Detection inconclusive, falling back to profiles.language ("${profile?.language}") -> ${languageName}`);
+    } else {
+      languageName = DEFAULT_LANGUAGE_NAME;
     }
 
     // Extract character names before sending to Make.com.
