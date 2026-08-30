@@ -1,6 +1,6 @@
 # ADR-0114: generic `send-custom-email` function so Claude can send ad hoc emails on explicit request
 
-- **Status:** Accepted — implemented and verified live 2026-08-30
+- **Status:** Superseded — reversed and removed same day, see Addendum below
 - **Date:** 2026-08-30
 - **Related:** none directly, but follows the same Resend/sender pattern already established by `send-mystery-ready-email`, `send-welcome-email`, `send-host-email`, etc.
 
@@ -47,7 +47,9 @@ Added a new edge function, `send-custom-email`, that accepts `{ to, subject, bod
 
 Later the same day, mid-incident (the Staša package-generation race condition, see ADR-0115), Jonathan said he'd changed his mind: he doesn't want branded/automated emails sent to customers on his behalf, even via an explicit per-send go-ahead. He copy/pastes plain, regular emails himself, almost always, because he doesn't want customer-facing messages carrying the brand shell — the thing this ADR's Rationale section treated as a feature (visual consistency with other transactional emails) is exactly what he doesn't want for ad hoc customer contact.
 
-**Decision:** `send-custom-email` stays deployed (no destructive action taken without being asked) but is not to be used for customer-facing sends going forward. When asked to draft a customer email, produce plain text for Jonathan to copy/paste, not an HTML draft routed through this function. Whether to formally deprecate/remove the function itself is still open — not decided here, flagged for Jonathan.
+**Decision:** `send-custom-email` stays deployed (no destructive action taken without being asked) but is not to be used for customer-facing sends going forward. When asked to draft a customer email, produce plain text for Jonathan to copy/paste, not an HTML draft routed through this function.
+
+**Follow-up (same day):** Jonathan confirmed removal. Deleted the deployed edge function (`supabase functions delete send-custom-email`) and the local source directory. This ADR's Status is superseded by this removal — the capability no longer exists.
 
 This ADR's original Decision/Rationale/Consequences sections are left unedited above as the accurate record of same-day intent; this addendum is the correction, not a rewrite of history.
 
