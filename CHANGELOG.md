@@ -2,6 +2,12 @@
 
 ## 2026-08-30
 
+### Fix: `character_role` was flagged as required unconditionally — it's actually an era convention, not a defect (ADR-0113 update)
+
+Auditing the 13-package historical manual tier before touching anything found `character_role IS NULL` (inherited unconditionally from the original 2-field check) was a false-positive driver: 100% null for every package created before Dec 2025, phasing out through Feb 2026, 0% null from March 2026 on — confirmed zero packages anywhere have a mix of null/non-null within one package. Fixed with the same partial-vs-uniform-null distinction added to today's sweep checklist: only a defect when null on some-but-not-all characters in a package that's already established the convention. Verified live with two isolated rollback tests (uniform-null clean, mixed-role still correctly flags the one gap). Deployed.
+
+### Fix: backfilled 5 of the 20 historical content-gap packages, $0 cost, after checking each against prior incident history ([ADR-0113](docs/adr/0113-completion-gate-check-all-character-fields.md) update)
+
 ### Fix: backfilled 5 of the 20 historical content-gap packages, $0 cost, after checking each against prior incident history ([ADR-0113](docs/adr/0113-completion-gate-check-all-character-fields.md) update)
 
 Jonathan asked to scope the 20-package historical backfill by age (recent → automated, 3+ months → manual/case-by-case) rather than treat all 20 the same. Checking each age-eligible candidate against CHANGELOG/ADR history first found 2 that weren't safe to touch blindly: `Operation: Thirty & Murdery` is the ADR-0108 Cypress/Celine Beaumont case, already root-caused and *deliberately* left unbackfilled (her guilty branch is never dealt to a player under the current role assignment); `Death At The Birthday Bash` has prior customer-contact history that needs checking before any new fix. Excluded both.
