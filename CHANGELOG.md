@@ -2,6 +2,14 @@
 
 ## 2026-08-30
 
+### Fix: backfilled 5 of the 20 historical content-gap packages, $0 cost, after checking each against prior incident history ([ADR-0113](docs/adr/0113-completion-gate-check-all-character-fields.md) update)
+
+Jonathan asked to scope the 20-package historical backfill by age (recent → automated, 3+ months → manual/case-by-case) rather than treat all 20 the same. Checking each age-eligible candidate against CHANGELOG/ADR history first found 2 that weren't safe to touch blindly: `Operation: Thirty & Murdery` is the ADR-0108 Cypress/Celine Beaumont case, already root-caused and *deliberately* left unbackfilled (her guilty branch is never dealt to a player under the current role assignment); `Death At The Birthday Bash` has prior customer-contact history that needs checking before any new fix. Excluded both.
+
+The remaining 5 all turned out to affect exactly one character and a small, related field group — small enough to hand-write matching sibling format/voice (same zero-cost approach as Grant/Gracie), no `regenerate-child-content` needed: `Veneno En La Medianoche` (Spanish, accomplice branches — ran the scoped detectors first given the non-English history), `Sunset Songs: The Stolen Spotlight` (a residual gap from the already-documented ADR-0086/0087 incident, not new), `Death At The Velvet Viper` and `Death At The Lani Ohana Luau` (both detective-style — confirmed `accusations` is identical boilerplate across every non-culprit character in two independent packages, not a bug, just a gap where that boilerplate should have been and wasn't), `Behind The Mask: Death At The Gilded Circle` (branching-style, needed the full deflection-tips format). All 5 re-verified clean. Remaining 15 untouched.
+
+### Fix: found and partly fixed a dead-code column swallowing real secret content ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 7)
+
 ### Fix: found and partly fixed a dead-code column swallowing real secret content, plus updated the sweep ritual with the methodology gap that found it ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 7)
 
 Jonathan asked whether today's earlier sweep miss (Grant/Gracie's `rumors`) was systemic. It was — the manual completeness check was built from a remembered field list rather than the actual `information_schema.columns` output. Checking whether ADR-0113's trigger fix had the same flaw found it did (never checked `_pointform` variants, `quick_reference`, `reveal_confession_*`, `round{N}_questions`), and auditing those surfaced a real bug: `mystery_characters.secrets` (plural) feeds a component (`CharacterDetailView.tsx`) that's never imported anywhere in the live app, while both real customer-facing views read `secret` (singular). 39 characters corpus-wide have content stuck in the dead column, invisible to every customer.
