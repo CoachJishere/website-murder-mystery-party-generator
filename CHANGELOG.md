@@ -2,6 +2,16 @@
 
 ## 2026-08-30
 
+### UX: reversed same-day decision — no more automated branded customer emails ([ADR-0114](docs/adr/0114-generic-ad-hoc-email-capability.md) Addendum)
+
+Jonathan changed his mind on `send-custom-email` (built earlier today): he doesn't want Claude sending branded emails to customers on his behalf, even with an explicit per-send go-ahead. He copy/pastes plain, regular emails himself. The function stays deployed but customer emails are now drafted as plain text for him to send, not routed through it.
+
+### Fix: `package_id` race condition on first-ever generation — stuck package, orphan duplicate rows ([ADR-0115](docs/adr/0115-package-id-race-condition-on-first-generation.md))
+
+A customer's package generation was never triggered client-side (she likely never landed on `/mystery/{id}` after paying — 4th time this has happened in 10 months out of 150 orders, not systemic). Manually retriggering exposed a real bug: `mystery-webhook-trigger` never passed `package_id` to Make.com, which had to re-derive it via its own search — a search that can race the just-committed row insert on a brand-new package. Lost that race and: the evidence-images call 400'd loudly, and two separate "early save" steps silently INSERTed orphan duplicate `mystery_packages` rows instead of updating the real one (a Supabase upsert with a blank id just inserts).
+
+Fixed at the source: `mystery-webhook-trigger` now looks up and passes `packageId` explicitly (deployed v133); the Make.com Parent blueprint (`9106101`) had all 29 references to the old race-prone search replaced with the new explicit field, published as `Parent62 (Package ID Race Fix)`. Customer's package manually completed (content was already clean — full coherence sweep passed) and the orphan rows deleted. One known narrow residual left open: a service-role call on a conversation with zero prior generation attempts still gets no id (internal/recovery-only path, not customer-reachable, pre-existing). Also flagged but deliberately not built: no existing healing cron catches a package stuck at `in_progress` forever (all require `completed`/`needs_review` first) — open follow-up.
+
 ### Fix: corrected a "small gap" misread on the 13-package manual tier, fixed 1, surfaced 2 new findings needing direction ([ADR-0113](docs/adr/0113-completion-gate-check-all-character-fields.md) update)
 
 Continuing into the age-deferred manual tier: re-running the proper combined check found `Murder At The TLC Reunion` fully clean (false positive from the character_role fix plus its mixed content-model cast). Of the remaining 12, most turned out to NOT be narrow field gaps as initially assumed — 6 packages (5 all created the same day, 2025-12-02, plus a `Death At The Birthday Bash` confirmed via package ID to be a different package than the already-documented Speakeasy Soirée case) each have one or more entirely blank characters, matching a known prior failure shape (`CHANGELOG.md`'s "White Lotus" entry — a Make.com child scenario call failing with no retry, fixed there by re-firing the recovery webhook directly, not hand-writing).

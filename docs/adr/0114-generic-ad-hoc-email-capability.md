@@ -42,3 +42,13 @@ Added a new edge function, `send-custom-email`, that accepts `{ to, subject, bod
 
 - `supabase/functions/send-custom-email/index.ts` — this ADR's implementation
 - `supabase/functions/send-mystery-ready-email/index.ts` — the sender/brand-shell pattern this follows
+
+## Addendum (2026-08-30, same day): reversed — Jonathan doesn't want this used
+
+Later the same day, mid-incident (the Staša package-generation race condition, see ADR-0115), Jonathan said he'd changed his mind: he doesn't want branded/automated emails sent to customers on his behalf, even via an explicit per-send go-ahead. He copy/pastes plain, regular emails himself, almost always, because he doesn't want customer-facing messages carrying the brand shell — the thing this ADR's Rationale section treated as a feature (visual consistency with other transactional emails) is exactly what he doesn't want for ad hoc customer contact.
+
+**Decision:** `send-custom-email` stays deployed (no destructive action taken without being asked) but is not to be used for customer-facing sends going forward. When asked to draft a customer email, produce plain text for Jonathan to copy/paste, not an HTML draft routed through this function. Whether to formally deprecate/remove the function itself is still open — not decided here, flagged for Jonathan.
+
+This ADR's original Decision/Rationale/Consequences sections are left unedited above as the accurate record of same-day intent; this addendum is the correction, not a rewrite of history.
+
+See also: memory note `feedback_no_automated_resend_customer_emails` (session-level behavioral guidance for future conversations); ADR-0115 for the incident this reversal happened during.

@@ -723,6 +723,25 @@ serve(async (req) => {
       });
     }
 
+    // claim_package_for_generation only returns a boolean (did the claim succeed),
+    // never the row's id -- so until now Make.com had no choice but to re-derive
+    // the package id itself (a supabase:searchRows on conversation_id, module 46
+    // in the Parent blueprint). For a brand-new package that search can race the
+    // INSERT the claim above just committed: Staša's order (2026-08-30) lost that
+    // race, leaving every downstream write in that Make.com run with an empty
+    // package_id -- the evidence-images call 400'd loudly, and two "early save"
+    // upserts with a blank id silently INSERTed orphan mystery_packages rows
+    // instead of updating the real one. Passing the real id through explicitly
+    // removes the race instead of papering over it.
+    const { data: packageRow } = await supabase
+      .from("mystery_packages")
+      .select("id")
+      .eq("conversation_id", conversationId)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    const packageId = packageRow?.id ?? null;
+
     // Snapshot the approved concept message at generation time. The original
     // chat-creation path (MysteryChatCreator) wrote this column, but the live
     // /mystery/chat path doesn't — so for every real customer the column was
@@ -1209,6 +1228,7 @@ serve(async (req) => {
       userName,
       language: languageName,
       conversationId,
+      packageId,
       callback_domain: testMode ? "http://localhost:5173" : "https://www.mysterymaker.party",
       callback_url: testMode ? "http://localhost:5173/api/generation-complete" : "https://www.mysterymaker.party/api/generation-complete",
       environment: testMode ? "development" : "production",
