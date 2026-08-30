@@ -2,6 +2,10 @@
 
 ## 2026-08-30
 
+### Feature: generic ad hoc email capability so Claude can send emails directly, on request ([ADR-0114](docs/adr/0114-generic-ad-hoc-email-capability.md))
+
+Jonathan asked for a faster path than drafting an email and copy/pasting it himself. Added `send-custom-email`, a new edge function accepting `{to, subject, bodyHtml}`, reusing the same Resend account, sender identity (`support@mysterymaker.party`), and brand shell every other transactional email in this codebase already uses. `verify_jwt: true` (the codebase default, matches every other internal function's security posture), not wired into any trigger/cron — every send is a direct, explicit invocation. Deployed and smoke-tested live (real email sent to Jonathan's own address, not a customer, confirming the full Supabase-to-Resend-to-inbox path). This is a mechanism, not standing permission — still draft and get a go-ahead per send, same as any other customer-facing action.
+
 ### Fix: completion gate only checked 2 of ~24 character content fields — expanded, verified, deployed ([ADR-0113](docs/adr/0113-completion-gate-check-all-character-fields.md))
 
 Follow-up to the Casa Ferrel `accusations` fix earlier today: `validate_package_characters()`'s "empty character" check only looked at `description`/`character_role`, missing `accusations`, `secret`, `rumors`, `relationships`, and all the round2-4/final content fields. Corpus sweep found 31 packages with the gap; 11 were false positives (non-accomplice packages flagged only on unused accomplice-branch fields — caught before shipping by a direct question about whether that even matters). Real count: **20 paid packages**, dating back to 2025-08-14.
@@ -11,8 +15,6 @@ Expanded the check to the full field set, accepting either of the two legitimate
 **Found a second real gap on Casa Ferrel while verifying the fix**: testing the new check against the already-"fixed" package showed it still wasn't clean — Grant/Gracie Whitfield was also missing `rumors`, missed by the earlier manual spot-check sweep. Backfilled the same way (matching sibling format, grounded in real secrets of the two characters with zero rumors about them anywhere in the package plus one established rival). Re-verified: package now fully clean under the new check.
 
 **Deliberately deferred**: backfilling the 20 historical paid packages. That requires `regenerate-child-content` (real Anthropic API spend) and its own cost estimate + go-ahead per the standing paid-API rule — not done in this pass, tracked as an explicit follow-up in the ADR rather than silently dropped.
-
-## 2026-08-30
 
 ### Fix: New-Purchase sweep found a character with no accusations content at all, missed by every automated detector ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) addendum)
 
