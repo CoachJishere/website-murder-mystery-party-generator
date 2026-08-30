@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-30
+
+### Fix: New-Purchase sweep found a character with no accusations content at all, missed by every automated detector ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) addendum)
+
+Ran the ADR-0103 coherence sweep on "Casa Ferrel" (package `704cfef9-eb77-424c-abab-8e12652c3735`, 9-player slip-style with accomplice). All three scoped detectors (`list_packages_with_meta_text_leak`, `list_packages_with_victim_mismatch`, `list_packages_with_unresolved_victim_name`) came back clean, and `package_completion_blocking_defects()` returned null — but a manual per-character completeness check found Grant/Gracie Whitfield had `accusations` and `accusations_pointform` both `NULL`, while all 8 other characters had both populated. `package_completion_blocking_defects()` operates at the package/row level and doesn't check per-character column completeness, so this genuinely can't be caught by the existing automated checks — same detector-blind-spot pattern ADR-0103 already documents for the other three checks.
+
+Backfilled both fields directly via SQL, matching the "IF YOU DREW THE GUILTY/CULPRIT SLIP — DEFLECTION TIPS" format and voice used by the other 8 characters, grounded in Grant/Gracie's existing background/secret/rivals content (political consultant, Porto photo leverage, ally Otto/Odette, rivals Ren/Fiona and Iris/Ivan) and their existing Round 2-4 guilty-branch scripts. Re-verified: all 9 characters now have both fields populated. No detector/code change made — this was a one-off content gap in a single package, not a systemic generation bug, so no pipeline fix was warranted.
+
 ## 2026-08-29
 
 ### Fix: verified the full non-English-generation fix set live, found and fixed one more real bug along the way ([ADR-0112](docs/adr/0112-child-generation-language-should-follow-the-conversation-not-the-account.md) addendum)

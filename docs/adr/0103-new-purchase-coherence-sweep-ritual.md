@@ -117,6 +117,16 @@ Root cause of the composite-name gap: this product also uses a second removed-ch
 
 **Not done:** proactively contacting `esj@salgados.net` about the 6 days their package was live with these defects — Jonathan's call, not made here. A corpus sweep only covers `status = 'verified'` rows; `adapt-mystery-create` (the create-time player-count adjustment path, separate from `adapt-mystery-apply`) was not checked and may have its own instance of either bug if it shares any of this code.
 
+## Addendum 6 (2026-08-30): a character with zero accusations content, invisible to `package_completion_blocking_defects()`
+
+Sweep on "Casa Ferrel" (`704cfef9-eb77-424c-abab-8e12652c3735`, 9-player slip-style with accomplice, English, generated same-day post-Sonnet-5-upgrade). All three scoped detectors and `package_completion_blocking_defects()` came back clean. A manual per-character completeness pass (checking every content column across all 9 `mystery_characters` rows, not just spot-checking 2-3) found Grant/Gracie Whitfield's `accusations` and `accusations_pointform` both `NULL`, while all 8 other characters had both populated — meaning that character, if drawn, would have had no deflection-tip guidance for the Accusations round.
+
+Root cause of the detector blind spot: `package_completion_blocking_defects()` operates at the package level and was never designed to validate per-character column completeness across all 9 rows individually — the same category of gap already documented for the other three scoped detectors in the main body of this ADR, just on a different table/column shape. No corpus-wide sweep was run to check whether other packages have the same single-character gap on this or other columns; this is the first confirmed instance.
+
+**Fixed:** backfilled both fields directly via SQL, written to match the "IF YOU DREW THE GUILTY/CULPRIT SLIP — DEFLECTION TIPS" format and voice already established by the other 8 characters, grounded in Grant/Gracie's own background/secret (political consultant, Porto photograph leverage), established allies/rivals (Otto/Odette ally; Ren/Fiona and Iris/Ivan rivals), and their existing Round 2-4 guilty-branch scripts (bar-cart proximity, unaccounted ~20 minutes after the toast). Re-verified: all 9 characters now have both fields populated. No detector or pipeline code was changed — treated as a one-off content gap in a single package rather than a systemic bug, since this is the first occurrence and the mechanism that dropped it is unknown.
+
+**Not done:** no corpus-wide sweep for other packages with the same per-character null-content shape; no new automated detector for per-character content completeness.
+
 ## Key files
 
 - `CLAUDE.md` — the `sweep` shorthand command definition
