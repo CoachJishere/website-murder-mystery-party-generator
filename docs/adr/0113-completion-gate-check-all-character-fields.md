@@ -77,6 +77,25 @@ Everything else (`introduction`, `background`, `secret`, `rumors`, `relationship
 
   Not done: root-causing the Dec 2025 batch incident, any fix to Lucky Crown's duplicates, any fix to the 4 large-gap packages. All flagged for Jonathan's direction on the right recovery mechanism (existing re-fire webhook vs. `regenerate-child-content` vs. manual) before spending anything.
 
+- **Update (2026-08-30): closed, no further action.** Built a cost estimate for the remaining 10 content-gap packages (46 calls / ~$3.25-5.10 for the 6 blank-character packages, 41 calls / ~$3.40-5.25 for the 4 large partial-gap packages — grounded in two real per-call cost anchors from this codebase's own history: ~$0.15/call for a full identity-group regeneration per ADR-0086/0087's Sunset Songs recovery, ~$0.02-0.05/call for narrower single-group passes per ADR-0103 Addendum 5). Total ~$7-10, up to ~$13 with retry overhead.
+
+  Jonathan's response, after seeing the dates laid out (130-333 days old — every one of these parties has almost certainly already happened): close all of it, no further investigation, no spend. At this age, real customer value from backfilling is close to zero regardless of what the cost estimate says — the point of a completion gate is to catch a gap before or shortly after delivery, not to retroactively perfect content for an event that's long over. This matches the same reasoning already applied to the Cypress case (ADR-0108) and the Speakeasy Birthday Bash case (ADR-0075/0098): a known, understood gap that isn't worth acting on, documented rather than silently dropped.
+
+  **Final disposition of the full 31-package corpus finding from this ADR's original scope:** 5 packages backfilled same-day at $0 (see above), 1 more ($0, Future Cyber Punk) during the manual-tier pass, 11 excluded as false positives (non-accomplice packages flagged only on unused accomplice-branch fields) or resolved by the character_role fix, 2 already-decided historical cases left untouched (Cypress, Speakeasy Birthday Bash), and these final 10 (plus `The Last Call At The Lucky Crown`'s 5 orphaned duplicate rows, left in place — stale but harmless, not worth a data migration for content this old) closed here as accepted, unfixed history. No suppression table needed (unlike the Speakeasy Birthday Bash case's `acknowledged_health_alerts` row) since this ADR's check is a one-time completion-gate trigger, not a recurring poll — these packages simply won't be re-evaluated unless something else touches their `generation_status` again.
+
+  **List, for the record (package title — created — days old at close):**
+  - The Harvest Of Lies — 2025-12-02 — 271d — 1 blank character
+  - Trapped By The Storm — 2025-12-02 — 271d — 2 blank characters
+  - Blood In The Vines — 2025-12-02 — 271d — 1 blank character
+  - Deadly Vintage — 2025-12-02 — 271d — 2 blank characters
+  - A Winter Harvest Of Lies — 2025-12-02 — 271d — 3 blank characters
+  - Death At The Birthday Bash (`74f91eb8...`) — 2026-01-12 — 230d — 1 blank character
+  - The Last Call At The Lucky Crown — 2025-10-01 — 333d — 5 orphaned duplicate rows
+  - The Dark Side Of DevOps — 2025-10-23 — 311d — 9 characters missing accomplice branches
+  - Blood And Bouquet — 2025-11-27 — 276d — 9 characters missing accomplice branches
+  - Blood In The Bougainvillea — 2026-03-26 — 157d — 6 characters missing `relationships`
+  - Death On The Dance Floor — 2026-04-22 — 130d — 17 characters missing `relationships`
+
 - **Not done:** no check for whether `package_completion_blocking_defects()` (the separate structural-defect check, unchanged by this ADR) has any similar blind spots — out of scope here, flagged as a reasonable future audit target given this ADR just found the sibling function had one.
 
 ## Key files

@@ -2,6 +2,12 @@
 
 ## 2026-08-30
 
+### Closed: remaining 10 historical content-gap packages + Lucky Crown's duplicate rows — no further action, documented ([ADR-0113](docs/adr/0113-completion-gate-check-all-character-fields.md) update)
+
+Built a cost estimate for the last 10 packages from the original 31-package corpus scan (~$7-10, up to ~$13 with retries — 87 `regenerate-child-content` calls across 6 blank-character packages and 4 large partial-gap packages). Laying out the actual dates changed the call: every one of these packages is 130-333 days old, meaning the parties have almost certainly already happened. Jonathan's decision: close all of it, no spend, no further investigation — real customer value from backfilling content for an event that's long over is close to zero, same reasoning already applied to the Cypress (ADR-0108) and Speakeasy Birthday Bash (ADR-0075/0098) cases. `The Last Call At The Lucky Crown`'s 5 orphaned duplicate character rows are left in place too — stale but harmless.
+
+This closes out the full 31-package corpus this ADR's completeness check surfaced: 6 fixed at $0 (5 same-day + Future Cyber Punk), 11 resolved as false positives, 2 already-decided historical cases untouched, 10 + Lucky Crown closed here as accepted history. Full package list with dates in the ADR.
+
 ### UX: reversed same-day decision — no more automated branded customer emails ([ADR-0114](docs/adr/0114-generic-ad-hoc-email-capability.md) Addendum)
 
 Jonathan changed his mind on `send-custom-email` (built earlier today): he doesn't want Claude sending branded emails to customers on his behalf, even with an explicit per-send go-ahead. He copy/pastes plain, regular emails himself. The function stays deployed but customer emails are now drafted as plain text for him to send, not routed through it.
