@@ -2,6 +2,12 @@
 
 ## 2026-08-30
 
+### Fix: corrected a "small gap" misread on the 13-package manual tier, fixed 1, surfaced 2 new findings needing direction ([ADR-0113](docs/adr/0113-completion-gate-check-all-character-fields.md) update)
+
+Continuing into the age-deferred manual tier: re-running the proper combined check found `Murder At The TLC Reunion` fully clean (false positive from the character_role fix plus its mixed content-model cast). Of the remaining 12, most turned out to NOT be narrow field gaps as initially assumed — 6 packages (5 all created the same day, 2025-12-02, plus a `Death At The Birthday Bash` confirmed via package ID to be a different package than the already-documented Speakeasy Soirée case) each have one or more entirely blank characters, matching a known prior failure shape (`CHANGELOG.md`'s "White Lotus" entry — a Make.com child scenario call failing with no retry, fixed there by re-firing the recovery webhook directly, not hand-writing).
+
+Only `Future Cyber Punk - 15 Players` (Rebel Operative Theta, 3 accomplice-response fields) was genuinely small — fixed by hand, $0, re-verified clean. Two new findings, neither touched: `The Last Call At The Lucky Crown` has 5 orphaned duplicate character rows (a data-integrity question, not a content gap), and 4 packages (`Death On The Dance Floor`, `Blood And Bouquet`, `The Dark Side Of Devops`, `Blood In The Bougainvillea`) have real large gaps (6-17 characters each) too big for zero-cost hand-writing. Flagged for Jonathan's direction rather than guessed at.
+
 ### Fix: `character_role` was flagged as required unconditionally — it's actually an era convention, not a defect (ADR-0113 update)
 
 Auditing the 13-package historical manual tier before touching anything found `character_role IS NULL` (inherited unconditionally from the original 2-field check) was a false-positive driver: 100% null for every package created before Dec 2025, phasing out through Feb 2026, 0% null from March 2026 on — confirmed zero packages anywhere have a mix of null/non-null within one package. Fixed with the same partial-vs-uniform-null distinction added to today's sweep checklist: only a defect when null on some-but-not-all characters in a package that's already established the convention. Verified live with two isolated rollback tests (uniform-null clean, mixed-role still correctly flags the one gap). Deployed.
