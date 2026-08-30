@@ -127,6 +127,8 @@ Root cause of the detector blind spot: `package_completion_blocking_defects()` o
 
 **Not done:** no corpus-wide sweep for other packages with the same per-character null-content shape; no new automated detector for per-character content completeness.
 
+**Update (same day):** both gaps closed properly. See [ADR-0113](0113-completion-gate-check-all-character-fields.md) — expanded `validate_package_characters()` to check the full field set instead of just `description`/`character_role`, closing the detector blind spot named above. Testing that fix against this already-"fixed" package found a *second* gap the manual sweep had missed: Grant/Gracie Whitfield was also missing `rumors`. Backfilled the same way; package now fully clean under the new systematic check.
+
 ## Key files
 
 - `CLAUDE.md` — the `sweep` shorthand command definition

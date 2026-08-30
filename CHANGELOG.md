@@ -2,6 +2,18 @@
 
 ## 2026-08-30
 
+### Fix: completion gate only checked 2 of ~24 character content fields — expanded, verified, deployed ([ADR-0113](docs/adr/0113-completion-gate-check-all-character-fields.md))
+
+Follow-up to the Casa Ferrel `accusations` fix earlier today: `validate_package_characters()`'s "empty character" check only looked at `description`/`character_role`, missing `accusations`, `secret`, `rumors`, `relationships`, and all the round2-4/final content fields. Corpus sweep found 31 packages with the gap; 11 were false positives (non-accomplice packages flagged only on unused accomplice-branch fields — caught before shipping by a direct question about whether that even matters). Real count: **20 paid packages**, dating back to 2025-08-14.
+
+Expanded the check to the full field set, accepting either of the two legitimate content shapes per round (branching `innocent`/`guilty`/`accomplice` vs. single `round{N}_script`) since `mystery_style` doesn't cleanly predict which one a package uses (checked directly — real overlap both ways), and only requiring accomplice-branch fields when `conversations.has_accomplice = true`. Verified the new WHERE clause read-only against real data (Casa Ferrel, 2 known-broken packages, a 40-package recent sample — 36 clean/4 flagged, a sane rate) before deploying, then verified live trigger behavior with an isolated `BEGIN...ROLLBACK` test (correctly downgraded a simulated completion write, correctly named the one incomplete test character, zero footprint after rollback). Deployed via migration.
+
+**Found a second real gap on Casa Ferrel while verifying the fix**: testing the new check against the already-"fixed" package showed it still wasn't clean — Grant/Gracie Whitfield was also missing `rumors`, missed by the earlier manual spot-check sweep. Backfilled the same way (matching sibling format, grounded in real secrets of the two characters with zero rumors about them anywhere in the package plus one established rival). Re-verified: package now fully clean under the new check.
+
+**Deliberately deferred**: backfilling the 20 historical paid packages. That requires `regenerate-child-content` (real Anthropic API spend) and its own cost estimate + go-ahead per the standing paid-API rule — not done in this pass, tracked as an explicit follow-up in the ADR rather than silently dropped.
+
+## 2026-08-30
+
 ### Fix: New-Purchase sweep found a character with no accusations content at all, missed by every automated detector ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) addendum)
 
 Ran the ADR-0103 coherence sweep on "Casa Ferrel" (package `704cfef9-eb77-424c-abab-8e12652c3735`, 9-player slip-style with accomplice). All three scoped detectors (`list_packages_with_meta_text_leak`, `list_packages_with_victim_mismatch`, `list_packages_with_unresolved_victim_name`) came back clean, and `package_completion_blocking_defects()` returned null — but a manual per-character completeness check found Grant/Gracie Whitfield had `accusations` and `accusations_pointform` both `NULL`, while all 8 other characters had both populated. `package_completion_blocking_defects()` operates at the package/row level and doesn't check per-character column completeness, so this genuinely can't be caught by the existing automated checks — same detector-blind-spot pattern ADR-0103 already documents for the other three checks.
