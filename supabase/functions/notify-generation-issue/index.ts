@@ -298,16 +298,43 @@ serve(async (req) => {
 
     // Checks both defect classes so a character can't dodge the attempt cap by
     // flipping between "row exists but empty" and "row missing" across retries.
-    async function characterAttemptsUsed(packageId: string, charName: string): Promise<number> {
+    // Also returns the most recent attempt's timestamp — see
+    // RECENT_ATTEMPT_GRACE_MS below for why that matters.
+    async function characterAttemptInfo(
+      packageId: string,
+      charName: string
+    ): Promise<{ count: number; mostRecentAt: number | null }> {
       const { data, error } = await supabase
         .from("auto_remediation_log")
-        .select("action")
+        .select("action, created_at")
         .eq("package_id", packageId)
         .in("defect_class", ["empty_character_content", "missing_character_row"]);
       if (error) throw new Error(`attempt-cap lookup failed: ${error.message}`);
       const expected = `regenerate_character:${charName}`;
-      return (data ?? []).filter((r: { action: string }) => r.action === expected).length;
+      const matches = (data ?? []).filter((r: { action: string }) => r.action === expected);
+      const mostRecentAt = matches.length
+        ? Math.max(...matches.map((r: { created_at: string }) => new Date(r.created_at).getTime()))
+        : null;
+      return { count: matches.length, mostRecentAt };
     }
+
+    // 2026-08-31: two DB-trigger invocations of this function firing seconds
+    // apart (Make.com's parallel child executions each independently
+    // re-validating completion on their own write, ADR-0108) can dispatch
+    // both of MAX_ATTEMPTS_PER_CHARACTER's attempts for the same character
+    // within ~10 seconds — then a THIRD invocation, running before either
+    // attempt has had time to actually finish, sees "2 attempts used" and
+    // declares the character permanently capped/alert-worthy, even though
+    // the in-flight attempt is seconds from succeeding on its own. Confirmed
+    // live: Hannah Winter's package, "Juniper/Julian Hale" — attempts logged
+    // 15:49:55 and 15:50:04, character completed cleanly at 15:50:28 (a
+    // normal ~30s regeneration), alert had already fired by then declaring
+    // it would "not retry itself." A character whose most recent dispatched
+    // attempt is still within this window is treated as still-recovering,
+    // not capped, mirroring every other grace period already in this file
+    // (ADR-0065/0081/0111) instead of judging outcome before the async work
+    // it triggered has had a chance to land.
+    const RECENT_ATTEMPT_GRACE_MS = 90 * 1000;
 
     const recovered: string[] = [];
     const skipped: string[] = [];
@@ -328,7 +355,14 @@ serve(async (req) => {
       }
 
       if (pkg?.id) {
-        const attemptsUsed = await characterAttemptsUsed(pkg.id, charName);
+        const { count: attemptsUsed, mostRecentAt } = await characterAttemptInfo(pkg.id, charName);
+        if (mostRecentAt !== null && Date.now() - mostRecentAt < RECENT_ATTEMPT_GRACE_MS) {
+          // A very recent attempt may still be in flight. Don't fire another
+          // one (would race it) and don't count this as capped/alert-worthy
+          // yet — just leave it out of every bucket for this invocation so
+          // the "recovery looks clean" suppression isn't blocked by it.
+          continue;
+        }
         if (attemptsUsed >= MAX_ATTEMPTS_PER_CHARACTER) {
           capped.push(charName);
           continue;
