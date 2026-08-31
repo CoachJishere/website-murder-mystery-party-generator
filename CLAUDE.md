@@ -89,5 +89,9 @@ Check every hit against the decision just made — deliberately-different models
 
 ## Git Workflow
 
-- After committing, always push to the remote branch
+- **Commit (and push) after every meaningful change, without waiting to be asked first.** This project-level rule overrides the global "commit and push only when I ask" default from `~/.claude/CLAUDE.md`.
+  *(why: Jonathan's call, 2026-08-31 — "I can't think of a time where I didn't want to commit a change that I made." Scoped to this project only; the global default still applies elsewhere, including Sync/Pulse's stricter one-trunk-plus-PR workflow where auto-committing to `main` would be wrong.)*
+  - "Meaningful change" = the same bar as the Changelog rule above: a real code/config/doc change worth its own CHANGELOG entry, not every intermediate edit mid-task. Commit once the change is complete and verified (type-checked/tested/deployed as applicable), not line-by-line.
+  - Still applies: stage only the files for the change actually made (never a blanket `git add -A`), never force-push, never skip hooks, never touch destructive git ops without asking — this rule is about not waiting for permission to commit, not a license for less careful git hygiene.
+  - Still commit as a separate, focused commit per logical change (not one giant end-of-session commit) — matches this project's existing pattern of one commit per fix/ADR-addendum.
 - Write concise commit messages that explain the "why" not the "what"
