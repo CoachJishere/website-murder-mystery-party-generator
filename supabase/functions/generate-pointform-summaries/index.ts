@@ -32,12 +32,20 @@ const ROLE_VARIANT_FIELDS = [
   'round3_innocent', 'round3_guilty', 'round3_accomplice',
   'round4_innocent', 'round4_guilty', 'round4_accomplice',
   'final_innocent',  'final_guilty',  'final_accomplice',
-  // ADR-0065: the guilty/accomplice confession, read only during The Reveal —
-  // distinct from final_guilty/final_accomplice, which are now Final-Statements-round
-  // denials. No innocent counterpart: innocent characters are never called on to confess.
-  'reveal_confession_guilty', 'reveal_confession_accomplice',
 ] as const;
-const SOURCE_FIELDS = [...SHARED_FIELDS, ...UNIFIED_FIELDS, ...ROLE_VARIANT_FIELDS] as const;
+// ADR-0065: the guilty/accomplice confession, read only during The Reveal — distinct from
+// final_guilty/final_accomplice, which are now Final-Statements-round denials. No innocent
+// counterpart: innocent characters are never called on to confess.
+// Summarized in a separate Sonnet 5 call (see REVEAL_MODEL below) — on Haiku 4.5 this field
+// was silently dropped from the batch JSON response ~93% of the time across 13 live packages
+// (found during the 2026-08-31 coherence sweep on "The Workshop Of St. Nick"), the same
+// confession-content instruction-following gap ADR-0074 found and fixed for a sibling call.
+const REVEAL_FIELDS = ['reveal_confession_guilty', 'reveal_confession_accomplice'] as const;
+const MAIN_FIELDS = [...SHARED_FIELDS, ...UNIFIED_FIELDS, ...ROLE_VARIANT_FIELDS] as const;
+const SOURCE_FIELDS = [...MAIN_FIELDS, ...REVEAL_FIELDS] as const;
+
+const MAIN_MODEL = 'claude-haiku-4-5-20251001';
+const REVEAL_MODEL = 'claude-sonnet-5';
 
 type SourceField = typeof SOURCE_FIELDS[number];
 
@@ -73,7 +81,38 @@ Example output for a character with mixed populated fields:
 
 Use SINGLE QUOTES for any quoted text within bullet content. Never include unescaped double quotes inside string values — they break JSON parsing.`;
 
-function buildUserPrompt(character: Record<string, any>): { prompt: string; populatedFields: SourceField[] } {
+/** Escape raw control-character bytes (literal newline/tab/CR) that appear inside a JSON
+ *  string literal, leaving everything outside strings untouched. Ported from
+ *  regenerate-child-content/index.ts (ADR-0103 Addendum 5 lineage) — the bullet-point output
+ *  here is exactly the shape that trips this: multiple bullets joined by \n inside one JSON
+ *  string value, and Sonnet 5 (now used for REVEAL_FIELDS) occasionally emits a literal
+ *  newline there instead of the escaped \n the JSON spec requires. */
+function escapeControlCharsInStrings(s: string): string {
+  let out = "";
+  let inString = false;
+  let escaped = false;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (inString) {
+      if (escaped) { out += ch; escaped = false; continue; }
+      if (ch === "\\") { out += ch; escaped = true; continue; }
+      if (ch === '"') { inString = false; out += ch; continue; }
+      if (ch === "\n") { out += "\\n"; continue; }
+      if (ch === "\r") { out += "\\r"; continue; }
+      if (ch === "\t") { out += "\\t"; continue; }
+      out += ch;
+    } else {
+      if (ch === '"') inString = true;
+      out += ch;
+    }
+  }
+  return out;
+}
+
+function buildUserPrompt(
+  character: Record<string, any>,
+  fields: readonly SourceField[],
+): { prompt: string; populatedFields: SourceField[] } {
   const populatedFields: SourceField[] = [];
   const blocks: string[] = [
     `CHARACTER: ${character.character_name}`,
@@ -83,7 +122,7 @@ function buildUserPrompt(character: Record<string, any>): { prompt: string; popu
     'Return one JSON key per field listed below, named "<field>_pointform".',
     '',
   ];
-  for (const field of SOURCE_FIELDS) {
+  for (const field of fields) {
     const val = character[field];
     if (val && String(val).trim()) {
       populatedFields.push(field);
@@ -96,14 +135,24 @@ function buildUserPrompt(character: Record<string, any>): { prompt: string; popu
   return { prompt: blocks.join('\n'), populatedFields };
 }
 
-async function summarizeCharacter(character: Record<string, any>, apiKey: string) {
-  const { prompt: userPrompt, populatedFields } = buildUserPrompt(character);
+async function summarizeFields(
+  character: Record<string, any>,
+  apiKey: string,
+  fields: readonly SourceField[],
+  model: string,
+): Promise<Record<string, string | null>> {
+  const { prompt: userPrompt, populatedFields } = buildUserPrompt(character, fields);
 
   // No populated fields → nothing to summarize. Return empty update.
   if (populatedFields.length === 0) {
     return {};
   }
 
+  // Sonnet 5 rejects any non-default sampling parameter (e.g. temperature) with a 400,
+  // and needs thinking explicitly disabled or content[0] comes back as a non-text block
+  // (data.content?.[0]?.text undefined) — ADR-0074 landmine, already hit and fixed in
+  // regenerate-child-content/index.ts for the same reason.
+  const isSonnet = model.startsWith('claude-sonnet') || model.startsWith('claude-opus');
   const resp = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -112,9 +161,9 @@ async function summarizeCharacter(character: Record<string, any>, apiKey: string
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model,
       max_tokens: 4000,
-      temperature: 0.5,
+      ...(isSonnet ? { thinking: { type: 'disabled' } } : { temperature: 0.5 }),
       system: SUMMARIZER_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],
     }),
@@ -133,8 +182,12 @@ async function summarizeCharacter(character: Record<string, any>, apiKey: string
   let parsed: Record<string, string | null>;
   try {
     parsed = JSON.parse(cleaned);
-  } catch (e) {
-    throw new Error(`Failed to parse summarizer JSON for ${character.character_name}: ${e.message}\n--- raw ---\n${text.slice(0, 500)}`);
+  } catch {
+    try {
+      parsed = JSON.parse(escapeControlCharsInStrings(cleaned));
+    } catch (e) {
+      throw new Error(`Failed to parse summarizer JSON for ${character.character_name}: ${e.message}\n--- raw ---\n${text.slice(0, 500)}`);
+    }
   }
 
   // Only write pointform columns for fields that were actually populated in the input.
@@ -146,6 +199,17 @@ async function summarizeCharacter(character: Record<string, any>, apiKey: string
     update[key] = parsed[key] ?? null;
   }
   return update;
+}
+
+async function summarizeCharacter(character: Record<string, any>, apiKey: string) {
+  // Two calls: the bulk of the fields on Haiku, and the Reveal confession fields on Sonnet 5
+  // (see REVEAL_FIELDS comment — Haiku silently drops confession-content bullets often enough
+  // that it needs the stronger model, mirroring ADR-0074's fix for the sibling generation call).
+  const [mainUpdate, revealUpdate] = await Promise.all([
+    summarizeFields(character, apiKey, MAIN_FIELDS, MAIN_MODEL),
+    summarizeFields(character, apiKey, REVEAL_FIELDS, REVEAL_MODEL),
+  ]);
+  return { ...mainUpdate, ...revealUpdate };
 }
 
 serve(async (req) => {

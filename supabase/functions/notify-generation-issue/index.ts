@@ -560,8 +560,26 @@ serve(async (req) => {
     const structuralDefectsNotSelfRecovered = structuralDefects.filter(
       (d) => !d.startsWith("missing_round_content.")
     );
+    // 2026-08-31 (ADR-0103 Addendum 8 lineage): `recoveryTargets.length > 0` requires
+    // characters to still be empty/missing AT THIS CALL — but this function gets
+    // invoked multiple times in quick succession as characters trickle in (confirmed
+    // live: The Workshop Of St. Nick got 3 calls in under 4 minutes; the first two,
+    // still mid-recovery, correctly self-suppressed, but the third fired 2 minutes
+    // AFTER generation had already fully completed with all 10 characters clean,
+    // because by then recoveryTargets was empty — there was nothing left to recover,
+    // so the "recovery looks clean" branch couldn't match and the alert fell through
+    // to its default of sending). Finishing cleanly was making this MORE likely to
+    // page a human, not less — the same inversion ADR-0111 already fixed for
+    // missing_round_content, just not extended to this defect class. isFullyComplete
+    // covers the case recoveryTargets can't see: nothing is empty/missing right now
+    // AND the package itself is marked completed, so there's no more recovery left
+    // to be "in progress" — the best possible outcome, not an alert-worthy one.
+    const isFullyComplete =
+      pkg?.generation_status?.status === "completed" &&
+      emptyCharacters.length === 0 &&
+      missingCharacters.length === 0;
     const emptyCharacterRecoveryLooksClean =
-      recoveryTargets.length > 0 &&
+      (recoveryTargets.length > 0 || isFullyComplete) &&
       structuralDefectsNotSelfRecovered.length === 0 &&
       skipped.length === 0 &&
       capped.length === 0;
