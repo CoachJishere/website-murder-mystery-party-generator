@@ -53,3 +53,28 @@ The instinct during recovery was to white-glove Jenny — generate it for her so
 - `src/components/MysteryChatCreator.tsx` — `handleGenerateMystery` (:169) routes chat → purchase; unchanged (guard deliberately not placed here — see Alternatives).
 - `src/services/mysteryPackageService.ts` — `generateCompletePackage` (entry gate + `needs_more_info` sentinel, ADR-0043).
 - Related: [ADR-0043](0043-gate-generation-on-concept-completeness.md) — the generation-side gate + completion invariant + detector this flow fix complements.
+
+## Addendum (2026-08-31): theme-suggestion bullets false-matched as a character roster, paid for zero concept
+
+The "Watch" note above anticipated `parseCharacters` **over-blocking** (a regression that fails safe). It didn't anticipate the opposite: the parser **false-matching** unrelated content as a roster and **under-blocking** — which is exactly what happened.
+
+**Incident:** Hannah Winter (`ebb3aa77-7b27-4c6d-8e12-98abd2cb0b6c`, $19.99, 10 players) sent one message, received the assistant's standard theme-clarifying reply, and purchased ~2.5 minutes later — before ever picking a theme. `conversations.title` never left its placeholder (`"Mystery - 10 Players"`); `mystery_packages` ended up `needs_more_info` / `concept_incomplete` (ADR-0043 correctly refused generation) with zero characters.
+
+**Root cause:** the assistant's clarifying reply includes an illustrative bullet list of theme options:
+
+```
+- **1920s Speakeasy** – bootleggers, jazz singers, mob bosses
+- **Space Station** – crew, scientists, a mysterious malfunction
+- **Tropical Resort** – wealthy guests, scandal in paradise
+- **Victorian Manor** – aristocrats, secrets behind closed doors
+```
+
+`scanForRoster`/`scanWholeMessageForRoster`'s header-agnostic fallback (added for the "###" subsection and non-English-header cases, see the code comment above) is pure shape-matching: any 4+ consecutive `**Bold** – text` lines pass, with no check that the content is actually about characters. These four theme examples matched perfectly, parsed as four "characters" (`1920s Speakeasy`, `Space Station`, ...), satisfied `parsedDetails.characters.length > 0`, and the guard in this ADR let real Stripe checkout through with zero concept designed. The generation-side gate (ADR-0043) caught it after the fact because it requires an actual `CHARACTER LIST`-style header (multi-locale) — it has no shape-only fallback, so it isn't exposed to this false positive.
+
+**Blast radius check:** of 154 historical paid conversations, only 5 ever kept a placeholder title (never got a real one) — this one, plus 4 from Oct–Nov 2025. Spot-checked one of the older four: different mechanism (the chat API errored out 4 times in a row, never produced real content — not this parsing bug). So this exact false-positive is newly identified, not a long-running leak, but "customer reaches checkout with zero concept" as a class has slipped through at least twice via different bugs in ~10 months.
+
+**Fix (`src/pages/MysteryPurchase.tsx`):** `scanForRoster` and `scanWholeMessageForRoster` now take the conversation's `player_count` and only trust a shape-only match when its size is plausible for the game actually being built (`isPlausibleRosterSize`): unchanged behavior (still just needs the pre-existing 4-line floor) for `player_count <= 8`, but for larger games requires the match to be at least half the requested roster. A bare 4-item match for a 10-player game no longer passes. Threaded through both call sites (`mergeRosterContinuations`'s continuation-anchor detection and the final `latestRosterMsg` selection/extraction) so an implausible match can't win either as an anchor or as the final result.
+
+**Known residual gap, accepted deliberately:** for `player_count <= 8`, size alone can't distinguish a real small roster from this exact false-positive shape (both can legitimately be 4 items) — closing that fully would need content-based signals (e.g. "is this describing a person or a setting"), which risks the same English-only trap ADR-0057/ADR-0073 already hit once (`CHARACTER_LIST_HEADERS` needs 13-locale coverage; a bespoke content classifier would need the same). Not built, given this is the first observed instance of this specific pattern and the existing floor already worked correctly for every other historical case. Revisit if it recurs at a small player count.
+
+**Customer resolution:** Hannah's conversation and `is_paid` flag are untouched — she can return to the same chat (no route currently guards it) and finish choosing a theme; the purchase page already treats her as paid (`mystery.is_purchased`) so returning to `/mystery/purchase/:id` won't re-charge. Separately noted: `MysteryView.tsx` (the page a paid customer actually lands on) has no link back to `/mystery/chat/:id` at all — only the pre-purchase page does. A customer in this exact state has no in-app way to discover she needs to go back to chat; not fixed here, flagged for follow-up.

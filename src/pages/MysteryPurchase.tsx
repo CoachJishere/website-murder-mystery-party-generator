@@ -38,6 +38,21 @@ interface ParsedMysteryDetails {
   evidence?: Evidence[];
 }
 
+// The header-agnostic roster scanners below (scanForRoster / scanWholeMessageForRoster)
+// only check SHAPE — 4+ consecutive "**Bold** – text" lines — with no requirement that
+// the content is actually a character list. That shape is common enough to false-match
+// other bulleted content, e.g. the assistant's own theme-suggestion examples
+// ("- **1920s Speakeasy** – bootleggers, jazz singers, mob bosses" x4), which let a
+// customer reach real checkout with zero concept designed (Hannah Winter, 2026-08-31,
+// ADR-0044 addendum). A shape match stuck at the bare 4-line floor is far more credible
+// as a real (if partial) cast when it's in the right ballpark for what this game asked
+// for than when it's a fraction of a much larger requested roster.
+const isPlausibleRosterSize = (count: number, playerCount: number): boolean => {
+  if (count < 4) return false;
+  if (!playerCount || playerCount <= 8) return true;
+  return count >= playerCount * 0.5;
+};
+
 // Stripe's hosted checkout page renders in whatever locale is passed via ?locale= -
 // otherwise it falls back to browser auto-detection, which can silently flip a
 // French/Spanish/etc. customer's checkout back to English right at the payment step.
@@ -120,7 +135,7 @@ const MysteryPurchase = () => {
     return '';
   };
 
-  const parseCharacters = (content: string): Character[] => {
+  const parseCharacters = (content: string, playerCount: number): Character[] => {
     const characters: Character[] = [];
     
     // Try to find character sections with case-insensitive matching
@@ -165,7 +180,7 @@ const MysteryPurchase = () => {
         }
       }
       flush();
-      return found;
+      return isPlausibleRosterSize(found.length, playerCount) ? found : [];
     };
 
     if (!characterSection) {
@@ -273,7 +288,7 @@ const MysteryPurchase = () => {
   // prematurely terminate `parseCharacters`'s section-scoped regex (it stops at
   // the next "##" no matter what it is). A pure line scan doesn't care about
   // headers at all, so it survives a merge cleanly.
-  const scanForRoster = (content: string): Character[] => {
+  const scanForRoster = (content: string, playerCount: number): Character[] => {
     const found: Character[] = [];
     let batch: Character[] = [];
     const flush = () => { if (batch.length >= 4) found.push(...batch); batch = []; };
@@ -287,7 +302,7 @@ const MysteryPurchase = () => {
       }
     }
     flush();
-    return found;
+    return isPlausibleRosterSize(found.length, playerCount) ? found : [];
   };
 
   // Fold a continuation message's content onto the nearest PRIOR message that
@@ -295,7 +310,7 @@ const MysteryPurchase = () => {
   // and its continuation reads as one complete cast. `msgsAscending` must be
   // chronological (oldest first) — a merged message becomes the new anchor for
   // any further continuation, so a roster split across 3+ messages chains.
-  const mergeRosterContinuations = (msgsAscending: any[]): any[] => {
+  const mergeRosterContinuations = (msgsAscending: any[], playerCount: number): any[] => {
     let prevRosterIndex = -1;
     const merged = msgsAscending.map((m) => ({ ...m }));
     for (let i = 0; i < merged.length; i++) {
@@ -303,7 +318,7 @@ const MysteryPurchase = () => {
       if (firstNum !== null && firstNum > 1 && prevRosterIndex !== -1) {
         merged[i] = { ...merged[i], content: `${merged[prevRosterIndex].content || ''}\n\n${merged[i].content || ''}` };
       }
-      if (scanForRoster(merged[i].content || '').length >= 4) {
+      if (scanForRoster(merged[i].content || '', playerCount).length >= 4) {
         prevRosterIndex = i;
       }
     }
@@ -457,14 +472,15 @@ const MysteryPurchase = () => {
             // 16-character truncated reply because it was the only one bundling
             // both headers together.
             const aiMessagesAscending = [...aiMessages].reverse();
-            const mergedForRoster = mergeRosterContinuations(aiMessagesAscending);
+            const playerCount = conversation.player_count || 0;
+            const mergedForRoster = mergeRosterContinuations(aiMessagesAscending, playerCount);
             let latestRosterMsg: typeof detailedMessage | null = null;
             for (const m of mergedForRoster) {
-              if (scanForRoster(m.content || '').length >= 4) latestRosterMsg = m;
+              if (scanForRoster(m.content || '', playerCount).length >= 4) latestRosterMsg = m;
             }
             const characters = latestRosterMsg
-              ? scanForRoster(latestRosterMsg.content || '')
-              : parseCharacters(detailedMessage.content);
+              ? scanForRoster(latestRosterMsg.content || '', playerCount)
+              : parseCharacters(detailedMessage.content, playerCount);
 
             const details: ParsedMysteryDetails = {
               premise: extractPremise(detailedMessage.content),
