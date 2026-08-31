@@ -1,8 +1,10 @@
 # Site health status
 
-_Last checked: 2026-08-31 14:00 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-08-31 22:54 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
-## ✅ All checks passing
+## ⚠️ Problems found
+
+- 🔴 1 detective-style package(s) whose Final Statements round doesn't actually reveal the solution: The Person Who Died Wasn't A Stranger [murderer_denies: Ivy/Ivo Castellan]
 
 | Check | Result |
 |---|---|
@@ -19,4 +21,4 @@ _Last checked: 2026-08-31 14:00 UTC (runs every 6 hours; see .github/workflows/h
 | Structural defects — escalate only (30 days) | 0 |
 | Roster-count mismatches — escalate only (30 days) | 0 |
 | Final-statement confession leaks — escalate only (30 days) | 0 |
-| Unconfessed detective-style culprits — escalate only (30 days) | 0 |
+| Unconfessed detective-style culprits — escalate only (30 days) | 1 |
