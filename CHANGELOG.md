@@ -2,6 +2,12 @@
 
 ## 2026-08-31
 
+### Fix: "Your Mystery is Ready" email could fire before generation actually finished — trigger-ordering bug ([ADR-0106](docs/adr/0106-single-source-of-truth-ready-notification.md) Addendum 3)
+
+Found on Hannah Winter's second mystery: the ready email went out ~95 seconds before the package's last character was actually created. Traced via `pg_trigger`: `trg_notify_package_ready` and `trg_validate_package_characters` (ADR-0108's completion revalidation) are both same-phase BEFORE triggers on `mystery_packages`, and Postgres fires same-phase triggers alphabetically by name — "notify" sorts before "validate," so the ready-email trigger read `generation_status` and fired the email *before* the validation trigger got a chance to correct an attempted-but-invalid "completed" write back to `needs_review`. No customer impact this time (real completion followed well before anyone would click through), but the gap has no upper bound in principle.
+
+Fixed with a pure rename — `ALTER TRIGGER trg_notify_package_ready ON mystery_packages RENAME TO trg_z_notify_package_ready`, no logic change — so it now runs after validation has had its say. Applied directly via the Supabase Management API (same method as the notify-generation-issue cooldown migration above, using the CLI's keychain-stored access token). Verified new trigger order via `pg_trigger`.
+
 ### Fix: added a per-package cooldown to `notify-generation-issue`, closing the root cause behind this week's 3 false-alarm bugs ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 11)
 
 Follow-up to Addendum 9, which flagged but didn't fix why this function keeps getting invoked multiple times within seconds of itself for the same package (multiple Make.com child executions each re-validating completion via the ADR-0108 trigger, each dispatching its own recovery re-fire with no awareness of a near-simultaneous sibling doing the same). Recapped the mechanism for Jonathan; he decided it was worth fixing at the source and approved it.
