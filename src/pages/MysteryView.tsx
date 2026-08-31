@@ -1324,39 +1324,57 @@ const MysteryView = () => {
               )}>
                 <CardHeader className={cn(isMobile && "p-4 pb-3")}>
                   <CardTitle className={cn(isMobile && "text-lg")}>
-                    {t("mysteryView.generateCard.title")}
+                    {generationStatus?.status === 'needs_more_info'
+                      ? t("mysteryView.generateCard.needsMoreInfoTitle", { defaultValue: "Finish Designing Your Mystery" })
+                      : t("mysteryView.generateCard.title")}
                   </CardTitle>
                   <CardDescription className={cn(isMobile && "text-sm")}>
-                    {t("mysteryView.generateCard.description")}
+                    {generationStatus?.status === 'needs_more_info'
+                      ? t("mysteryView.generateCard.needsMoreInfoDescription", { defaultValue: "Your mystery concept isn't finished yet — head back to the chat to pick a theme and cast before generating." })
+                      : t("mysteryView.generateCard.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className={cn(isMobile && "p-4 pt-0")}>
-                  <Button
-                    onClick={handleGeneratePackage}
-                    disabled={generating}
-                    className={cn(
-                      "w-full sm:w-auto",
-                      isMobile && "w-full text-sm h-11"
-                    )}
-                  >
-                    {generating ? (
-                      <>
-                        <RefreshCw className={cn(
-                          "mr-2 animate-spin",
-                          isMobile ? "h-3 w-3" : "h-4 w-4"
-                        )} />
-                        {t("mysteryView.generateCard.starting")}
-                      </>
-                    ) : (
-                      t("mysteryView.generateCard.button")
-                    )}
-                  </Button>
-                  <p className={cn(
-                    "text-sm text-muted-foreground mt-3",
-                    isMobile && "text-xs mt-2"
-                  )}>
-                    {t("mysteryView.generateCard.eta", { time: getEstimatedTime(mystery?.player_count || 6) })}
-                  </p>
+                  {generationStatus?.status === 'needs_more_info' ? (
+                    <Button
+                      onClick={() => navigate(`/mystery/chat/${id}`)}
+                      className={cn(
+                        "w-full sm:w-auto",
+                        isMobile && "w-full text-sm h-11"
+                      )}
+                    >
+                      {t("mysteryView.buttons.continueDesigning", { defaultValue: "Continue Designing" })}
+                    </Button>
+                  ) : (
+                    <>
+                      <Button
+                        onClick={handleGeneratePackage}
+                        disabled={generating}
+                        className={cn(
+                          "w-full sm:w-auto",
+                          isMobile && "w-full text-sm h-11"
+                        )}
+                      >
+                        {generating ? (
+                          <>
+                            <RefreshCw className={cn(
+                              "mr-2 animate-spin",
+                              isMobile ? "h-3 w-3" : "h-4 w-4"
+                            )} />
+                            {t("mysteryView.generateCard.starting")}
+                          </>
+                        ) : (
+                          t("mysteryView.generateCard.button")
+                        )}
+                      </Button>
+                      <p className={cn(
+                        "text-sm text-muted-foreground mt-3",
+                        isMobile && "text-xs mt-2"
+                      )}>
+                        {t("mysteryView.generateCard.eta", { time: getEstimatedTime(mystery?.player_count || 6) })}
+                      </p>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             )
