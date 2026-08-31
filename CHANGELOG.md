@@ -2,6 +2,12 @@
 
 ## 2026-08-31
 
+### Fix: added a per-package cooldown to `notify-generation-issue`, closing the root cause behind this week's 3 false-alarm bugs ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 11)
+
+Follow-up to Addendum 9, which flagged but didn't fix why this function keeps getting invoked multiple times within seconds of itself for the same package (multiple Make.com child executions each re-validating completion via the ADR-0108 trigger, each dispatching its own recovery re-fire with no awareness of a near-simultaneous sibling doing the same). Recapped the mechanism for Jonathan; he decided it was worth fixing at the source and approved it.
+
+New `mystery_packages.notify_last_run_at` column; the function now checks it first thing and skips the entire run (no character check, no recovery dispatch) if another invocation processed the same package within the last 20 seconds — comfortably covers both overlap gaps observed this week (12s, 9s). Applied the migration directly via the Supabase Management API (using the CLI's own keychain-stored access token) since `supabase db push` hit the same migration-history drift noted in the `adapt-mystery-apply` incident. Deployed v30, `verify_jwt` preserved. Live-tested safely against an already-healthy package: two back-to-back calls, first ran normally (nothing to fix, no spend), second correctly returned `skipped: cooldown`.
+
 ### Fix: `notify-generation-issue` alerted on a "capped" character that was actually still in flight — 3rd false-alarm class this week ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 9)
 
 Second alert on the same Hannah Winter sweep: "Auto-Recovery Capped... will not retry itself" for a missing character on her second mystery, but by the time it was checked, the package had finished cleanly with that exact character fully populated. `auto_remediation_log` showed why: two recovery attempts were dispatched 9 seconds apart, both still well within the ~30s a real character regeneration takes, and a third invocation of this function ran in that window, counted 2 attempts already logged, and declared the character permanently capped before either attempt had a chance to land. Third distinct false-alarm bug found in this exact function this week (after ADR-0111's and this ADR's own Addendum 8), each a different suppression condition failing to account for recovery work still genuinely in progress.

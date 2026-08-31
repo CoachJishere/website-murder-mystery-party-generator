@@ -114,16 +114,51 @@ serve(async (req) => {
     }
 
     // Get package info — also pulls last_notified_at for the email cooldown gate,
-    // and needs_review_at for the self-heal grace period gate (ADR-0065).
+    // needs_review_at for the self-heal grace period gate (ADR-0065), and
+    // notify_last_run_at for the invocation-overlap cooldown below.
     const { data: pkg } = await supabase
       .from("mystery_packages")
-      .select("id, title, generation_status, generation_started_at, extracted_characters, last_notified_at, needs_review_at, user_conversation, mystery_style")
+      .select("id, title, generation_status, generation_started_at, extracted_characters, last_notified_at, needs_review_at, user_conversation, mystery_style, notify_last_run_at")
       .eq("conversation_id", conversation_id)
       .order("updated_at", { ascending: false })
       .limit(1)
       .maybeSingle();
 
     if (pkg) {
+      // 2026-08-31 (ADR-0103 Addendum 9): this function can be invoked multiple
+      // times within seconds of each other for the same package — multiple
+      // Make.com child-scenario executions each independently re-validating
+      // completion via the ADR-0108 "revalidate on every write" trigger. Each
+      // invocation that finds something missing also dispatches its own
+      // recovery re-fire, with no memory of a near-simultaneous sibling
+      // invocation having just done the same thing — the root cause behind
+      // three separate false-alarm bugs this week (ADR-0111, this ADR's
+      // Addenda 8-9), corroborated independently by duplicate-insert errors
+      // in the Make.com Child scenario's own Incomplete Executions queue for
+      // the exact same race. Rather than continue patching each new way the
+      // overlap gets misjudged, skip the entire run when another invocation
+      // already processed this package within COOLDOWN_MS — nothing is
+      // permanently missed, a genuinely unresolved problem is caught by the
+      // next invocation (or the 10-minute sweep crons that already backstop
+      // this regardless), just delayed by seconds on the rare overlap.
+      // 20s comfortably covers every overlap gap observed so far (12s, 9s).
+      const NOTIFY_COOLDOWN_MS = 20_000;
+      const lastRunAt = pkg.notify_last_run_at ? new Date(pkg.notify_last_run_at).getTime() : null;
+      if (lastRunAt !== null && Date.now() - lastRunAt < NOTIFY_COOLDOWN_MS) {
+        console.log(`[Cooldown] Skipping — another invocation processed package ${pkg.id} ${Date.now() - lastRunAt}ms ago`);
+        return new Response(
+          JSON.stringify({
+            success: true,
+            skipped: "cooldown",
+            message: "Another invocation processed this package within the last 20s; skipping to avoid a redundant recovery dispatch.",
+          }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      // Mark as early as possible, before any recovery work below, so a
+      // near-simultaneous sibling invocation sees this and skips too.
+      await supabase.from("mystery_packages").update({ notify_last_run_at: new Date().toISOString() }).eq("id", pkg.id);
+
       mysteryTitle = pkg.title || mysteryTitle;
       packageStatus = JSON.stringify(pkg.generation_status);
       generationStarted = pkg.generation_started_at
