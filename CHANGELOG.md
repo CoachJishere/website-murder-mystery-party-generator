@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-08-31
+
+### Fix: concept-chat "Generate Mystery" reminder was decaying to silence in long conversations ([ADR-0117](docs/adr/0117-concept-chat-mandatory-generate-cta-reminder.md))
+
+Found while building a P&L/CAC analysis, not a bug hunt: reading the 3 longest non-paying August conversations (84, 68, 48 messages) directly from `messages` showed the "hit Generate Mystery" reminder — a soft "mention"/"remind" instruction in `contentBoundaries` — clusters early in each conversation, then goes silent for dozens of turns, including in one case right after the assistant's own "ENHANCED FINAL VERSION" moment. None of the three users ever paid, in this or any other conversation. A pre-existing 100+ message soft nudge never fired for any of them (all three under 100 messages).
+
+Changed the instruction from soft ("mention what the package includes") to mandatory ("every single response... no exceptions... message 2 and message 50 alike"). `contentBoundaries` is appended unconditionally across every refinement-mode branch, including `MYSTERY_FREE_PROMPT` (the dominant production path), so the one edit covers all of them. Verified live before shipping: 2 real Anthropic API calls (~$0.10 total, explicit go-ahead obtained first) reproducing the exact failure shapes found in the transcripts (a 34-turn bare-"continue" loop; a post-"final version" one-more-tweak request) — both now close with the CTA. Deployed `mystery-ai` v175.
+
+Deliberately doesn't address a second pattern found in the same transcripts: "The Vanishing Vintage" reached a finished concept, was told explicitly what buying unlocks, and still didn't convert — that's payment/commitment hesitation, not a missing reminder, and open as a separate question (likely needs a checkout-side look once Stripe API access is connected). Also deliberately rejected a hard message-count paywall as a fix — the longest non-paying sessions were also the highest-intent ones (real specific events, real names/dates), so gating on message count would punish the best prospects, not filter out low-intent browsing.
+
 ## 2026-08-30
 
 ### Feature: detect packages stuck at `in_progress` forever ([ADR-0116](docs/adr/0116-detect-packages-stuck-in-progress-forever.md))
