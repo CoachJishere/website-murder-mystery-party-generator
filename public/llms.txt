@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 284 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 285 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -226,6 +226,7 @@ This index organizes 284 published guides by topic cluster. All guides are avail
 - [How to Handle Drunk Guests at a Murder Mystery](https://www.mysterymaker.party/blog/how-to-handle-drunk-guests-murder-mystery): Practical strategies for managing intoxicated guests at murder mystery parties without killing the fun or the evening.
 - [How to Introduce Murder Mystery Rules to Guests](https://www.mysterymaker.party/blog/how-to-introduce-murder-mystery-rules-to-guests): Master the first 15 minutes of a murder mystery party: how to explain rules clearly, get everyone in character, and avoid information overload.
 - [How to Plan a Murder Mystery Party in a Week](https://www.mysterymaker.party/blog/how-to-plan-murder-mystery-party-in-one-week): One-week murder mystery planning guide. Day-by-day timeline. What to prioritize. Complete mystery in 7 days.
+- [How to Plan a Murder Mystery Party in 24-48 Hours](https://www.mysterymaker.party/blog/how-to-plan-murder-mystery-party-last-minute): Last minute murder mystery party in 24-48 hours. Quick solutions, minimal prep. AI generator speeds up planning.
 - [How to Write a Murder Mystery: From Plot to Playable Game](https://www.mysterymaker.party/blog/how-to-write-a-murder-mystery): Learn how to write a murder mystery game or story. Step-by-step guide covering plot, characters, clues, and testing.
 - [How to Write Murder Mystery Backstories](https://www.mysterymaker.party/blog/how-to-write-murder-mystery-backstories): Backstory creates the foundation for believable suspects and compelling motives. Here's how to construct layered character histories that drive the mystery.
 - [How to Write Murder Mystery Characters](https://www.mysterymaker.party/blog/how-to-write-murder-mystery-characters): Learn how to create murder mystery characters with layered motives, secrets, alibis, and relationships. Includes a character template with worked examples.
