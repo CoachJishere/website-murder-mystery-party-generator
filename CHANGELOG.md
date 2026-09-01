@@ -2,6 +2,16 @@
 
 ## 2026-09-01
 
+### Investigation: Italian corporate-query impression collapse closed out — demand-side, not caused by us
+
+Followed up the 2026-08-31 finding (money query "miglior intrattenimento murder mystery per eventi aziendali", ADR-0020/0040, ~85-90% impression collapse since 2026-07-08). Ran down all open questions:
+- All 3 competing `/it/` pages lost the query simultaneously (not just the one the 2026-07-06 de-cannibalization link pointed to) — rules out that edit backfiring, since a redirect-of-signal would show one page gaining at the others' expense, not all three cratering together.
+- Whole `/it/` site traffic did NOT drop over the same window — it actually rose the week of 2026-07-06 to 07-12 and has stayed healthy since. Rules out a site-wide Italian indexing/technical problem.
+- Pulled every `/it/` query in the post-window (36 distinct rows) — no shorter/rephrased corporate-event variant is picking up any real volume; the top queries are all unrelated content (zombie-apocalypse post, small-group "cena con delitto" queries).
+- Position held ~1.8-2.0 whenever the query still fires — this is a volume story, not a ranking story.
+
+**Verdict:** real-world search demand for this exact 8-word phrase dried up externally; nothing on our end to fix. Vault note marked resolved, no standing follow-up.
+
 ### Improvement: shipped this week's 3 SEO/GEO digest action prompts (corporate-events title/meta rewrite + 2 internal-link pushes)
 
 Executed the 2026-08-31 digest's 3 action prompts as-specified, no changes to the diagnosed lever/target for any of them:
