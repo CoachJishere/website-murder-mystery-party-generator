@@ -521,6 +521,13 @@ function SupportCTA() {
           </Link>
           .
         </p>
+        <p className="mt-2 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
+          Need help casting the cast?{" "}
+          <Link to="/blog/murder-mystery-party-character-ideas" className="underline" style={{ color: CREAM }}>
+            Explore murder mystery party character ideas
+          </Link>
+          .
+        </p>
       </motion.div>
     </section>
   );

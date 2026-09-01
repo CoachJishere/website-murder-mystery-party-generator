@@ -156,6 +156,26 @@ const REMINDERS = [
     // printable` already had a homepage link from earlier work. Still open:
     // whether more posts should link the homepage, and the actual position
     // read once this window's full post-data exists.
+    //
+    // RESULT 2026-08-31 (fuller window, 28 of 30 wanted post-days — still
+    // THIN but close): avg position across the 3 named queries 12 → 6.6
+    // (vs. the 2026-08-14 thin read's 12 → 11.6). All three individually
+    // improved: "custom murder mystery game" 10.1→6.5, "custom murder
+    // mystery party" 14.5→7.2, "custom murder mystery" 6.3→2.9. Went beyond
+    // the script's named-query totals and pulled GSC page-level breakdowns
+    // (homepage vs. the custom page) directly: for "party" the consolidation
+    // signal is clean (homepage 13.9→6.8, custom page's impressions fell
+    // 111→58). For "game" it's mixed — homepage improved (9.5→6.5) but the
+    // custom page's impressions did NOT fall (78→80, plus its first click)
+    // — the canonical isn't fully suppressing this term's signal yet. Both
+    // head terms are now in the 6-7 position band, real progress toward top
+    // 5. Italian guardrail query unaffected by this ADR specifically (~pos
+    // 2 held), though a real separate ~85-90% impression collapse on that
+    // query was found starting 2026-07-08 (predates this ADR by 3 weeks) —
+    // filed as its own open item, see CHANGELOG/vault 2026-08-31. Homepage H1
+    // reminder below: Jonathan's call was to leave it as-is. Worth one more
+    // read once a true full 30-day window exists, mainly to see if the
+    // "game" query's partial consolidation is just crawl lag or persistent.
     start: '2026-08-24',
     end: '2026-09-21',
     title: 'Measure the ADR-0046 canonical consolidation — did the homepage take the "custom murder mystery" head terms?',
@@ -274,8 +294,15 @@ Context (re-derive from ground truth, do not trust this note's framing alone): P
     // part of that lock — it's open territory, just never flagged before.
     // Deliberately NOT changed this session (out of scope for a links-only
     // pass) — this is a decision for Jonathan, not an automatic action.
+    //
+    // DECIDED 2026-08-31: leave it as-is, re-check later. Title/meta already
+    // carries "custom murder mystery party" and it's working — the homepage
+    // gained 5+ ranking positions on both head terms in the 5 weeks since
+    // ADR-0046 without touching the H1 (see the ADR-0046 reminder's RESULT
+    // above). Revisit only if that progress stalls. Reminder closed — not
+    // re-showing.
     start: '2026-08-24',
-    end: '2026-09-21',
+    end: '2026-08-24',
     title: 'Homepage H1 does not contain "custom" — decide whether to update it',
     body:
       'Verifying the homepage-authority action prompt turned up a gap the digest assumed away: the H1 ' +

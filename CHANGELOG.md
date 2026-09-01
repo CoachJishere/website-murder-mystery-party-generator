@@ -2,6 +2,16 @@
 
 ## 2026-09-01
 
+### Improvement: shipped this week's 3 SEO/GEO digest action prompts (corporate-events title/meta rewrite + 2 internal-link pushes)
+
+Executed the 2026-08-31 digest's 3 action prompts as-specified, no changes to the diagnosed lever/target for any of them:
+
+1. **Corporate-events title/meta rewrite.** Confirmed first (per the prompt's own instruction) that "corporate murder mystery party" was NOT literally present in the page's title/H1 (they share one `title` DB column, rendered as both by `BlogPost.tsx`) — it read "Corporate & Office Murder Mystery Party..." which breaks the exact phrase. Rewrote `blog_posts.title`/`meta_description` for `murder-mystery-party-for-corporate-events` (en) to lead with the exact phrase and name the office/team-building use case + printable-in-minutes benefit, applied directly via SQL (ADR-0026 protects published rows from the xlsx sync, this is the established pattern).
+2. **Internal links to the character-ideas post** (surging "murder mystery characters/roles" query cluster, page 2, CTR already normal for the rank): added from `free-murder-mystery-games-printable` (live `blog_posts.content`, idempotent guarded `replace()`) and from the homepage (`src/pages/Index.tsx` — added a 4th related-link paragraph matching the existing 3-link pattern; needs a deploy to go live).
+3. **Internal links to the script-template guide** (467 impressions, buried at pos 17.8): the free-printable-hub → script-template-guide link already existed live (verified, not re-added). Added the missing second link, character-ideas post → script-template-guide, in live `blog_posts.content`.
+
+`cross_link_map.json` updated to match both new insertions (source-of-truth convention). Not yet deployed: the `Index.tsx` homepage link change needs a build/deploy to take effect; the two `blog_posts.content` edits and the title/meta rewrite are live immediately (DB-rendered).
+
 ### Fix: health-check alert on "The Person Who Died Wasn't A Stranger" was a false positive — acknowledged ([ADR-0070](docs/adr/0070-detective-style-culprit-final-statement-unreliable-confession.md) Update)
 
 Scheduled health check flagged the murderer (Ivy/Ivo Castellan) as `murderer_denies` — a detective-style package whose Final Statements round supposedly doesn't reveal the solution. Read the full `final_statement`: it's a genuine, detailed confession (cuts the wire, strikes the victim with the sconce, forges the victim's handwriting, full motive). The denial regex tripped on the literal substring `"not me."` embedded in *"...needed it to look like Wren was the one demanding the truth, not me."* — about disguising who forged a note, not about denying the murder. Same false-positive class ADR-0070 already documented twice (Death At The Velvet Rose, Ghosts Of The Past).
@@ -15,6 +25,23 @@ Acknowledged via `acknowledged_health_alerts` (`supabase/migrations/20260901_ack
 Found on Hannah Winter's second mystery: the ready email went out ~95 seconds before the package's last character was actually created. Traced via `pg_trigger`: `trg_notify_package_ready` and `trg_validate_package_characters` (ADR-0108's completion revalidation) are both same-phase BEFORE triggers on `mystery_packages`, and Postgres fires same-phase triggers alphabetically by name — "notify" sorts before "validate," so the ready-email trigger read `generation_status` and fired the email *before* the validation trigger got a chance to correct an attempted-but-invalid "completed" write back to `needs_review`. No customer impact this time (real completion followed well before anyone would click through), but the gap has no upper bound in principle.
 
 Fixed with a pure rename — `ALTER TRIGGER trg_notify_package_ready ON mystery_packages RENAME TO trg_z_notify_package_ready`, no logic change — so it now runs after validation has had its say. Applied directly via the Supabase Management API (same method as the notify-generation-issue cooldown migration above, using the CLI's keychain-stored access token). Verified new trigger order via `pg_trigger`.
+
+### Improvement: ADR-0046 canonical consolidation re-measured with a fuller post-window — homepage is winning, but the custom page isn't fully honoring the canonical on one of the two head terms
+
+Re-ran `node scripts/backfillSeoHistory.mjs jul2026_custom_page_canonicalization` (the 2026-08-14 run was a thin 11-of-30-day read). This run had 28 of 30 wanted post-days (still flagged THIN by the script, close enough to trust directionally): avg position across the 3 named queries **12 → 6.6** (vs. the thin-window's 12 → 11.6), all three individually improved — "custom murder mystery game" 10.1→6.5, "custom murder mystery party" 14.5→7.2, "custom murder mystery" 6.3→2.9. Clicks/day and impressions/day both up.
+
+Went further than the automated script (which only checks named-query totals, not page-level attribution) and pulled GSC page-level breakdowns (dimensions=['page'], filtered per query) for homepage vs. `/custom-murder-mystery-party/` directly, baseline (28d ending 2026-07-26) vs. latest (2026-08-01 to 2026-08-28):
+- **"custom murder mystery party"**: consolidation signal is clean — homepage pos 13.9→6.8, custom page's impressions fell 111→58 (position stayed buried, 66.6→60.8, noise-level).
+- **"custom murder mystery game"**: mixed — homepage pos 9.5→6.5 (real improvement), but the custom page's impressions did **not** fall (78→80) and it picked up its first click (0→1) in the latest window. The canonical isn't fully suppressing this term's signal to the old URL yet.
+- Both head terms are now in the 6-7 position band — real progress toward top 5, not stuck at baseline. Homepage's next lever is still authority/links per ADR-0046's original diagnosis, not copy.
+
+Also ran the guardrail check (Italian corporate query, ADR-0020/0040 money query, baseline ~pos 3): position is unaffected (~pos 1.8-2.0 when it shows), so no hreflang-cluster fallout from ADR-0046 specifically. But found a real, separate regression while checking it — see vault note below.
+
+**Decision on the paired reminder** ("Homepage H1 doesn't contain 'custom' — decide whether to update it"): Jonathan's call — leave the H1 as-is and re-check later. Title/meta already carries the phrase and is working (5+ position spots gained in 5 weeks without touching the H1); revisit only if progress stalls.
+
+Updated both `REMINDERS` entries in `scripts/generateSeoDigest.mjs` in place with this result (per existing convention) rather than adding new ones.
+
+**Not done / flagged for follow-up:** the "custom murder mystery game" partial-consolidation gap above — worth another read once a true full 30-day window exists, to see if it's just crawl lag or a persistent split. Vault note filed: `00_INBOX/italian-corporate-query-impression-collapse-2026-08-31-mystery-maker.md` — the Italian corporate query's impression volume cratered ~85-90% (37 impr/28d → 4 impr/51d) starting 2026-07-08, three weeks before ADR-0046 shipped (so not caused by it), coinciding suspiciously with a 2026-07-06 in-body de-cannibalization link edit to the same page (CHANGELOG same date). Position held (~pos 2), only volume collapsed. Not root-caused this session — flagging for the next SEO pass since it's the money query for the whole Italian corporate segment.
 
 ### Fix: added a per-package cooldown to `notify-generation-issue`, closing the root cause behind this week's 3 false-alarm bugs ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 11)
 
