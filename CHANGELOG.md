@@ -2,6 +2,12 @@
 
 ## 2026-09-01
 
+### Fix: New-purchase sweep found and fixed a self-directed-question header bug + a missing accomplice branch on "Elementary, My Dear Cadaver" ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 12)
+
+Sweep on package `98857ef0-71d5-48a1-8c04-09be5092169c` (12-player slip-style, has_accomplice). Found two real defects: (1) Columbolumbo Kane's `round2_questions` had a malformed self-referential header (`**To Columbolumbo Kane's own suspicion, directed at Ellery Quince-idink:**` instead of `**To Ellery Quince-idink:**`) — fixed via direct string replace; (2) Dr. Jamie Whatsit was missing all 10 accomplice-branch fields (`round2/3/4_accomplice`, `final_accomplice`, `reveal_confession_accomplice`, plus `_pointform` twins) while all 11 other characters had them populated — hand-written directly in his established voice (`regenerate-child-content` doesn't support `reveal_confession_accomplice`/`_pointform` fields, so the standard paid repair path couldn't have closed this fully anyway).
+
+Also traced why `generation_status` showed "2 characters" missing when only 1 actually was: the completion trigger fired at 20:40:11, before a second character's row finished writing at 20:42:10 — a transient race that self-resolved before this sweep ran, leaving a stale (over-cautious) snapshot. Re-verified `package_completion_blocking_defects()` returns `null` and live empty-character count is `0`; flipped `generation_status` back to `completed`, which re-triggered validation for real and passed cleanly.
+
 ### Investigation: Italian corporate-query impression collapse closed out — demand-side, not caused by us
 
 Followed up the 2026-08-31 finding (money query "miglior intrattenimento murder mystery per eventi aziendali", ADR-0020/0040, ~85-90% impression collapse since 2026-07-08). Ran down all open questions:
