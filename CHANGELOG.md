@@ -2,6 +2,16 @@
 
 ## 2026-09-01
 
+### Fix: `sweep_incomplete_packages()` was catching packages mid-generation, dispatching real recovery spend on characters that were simply still being written ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 14)
+
+Follow-up to Addendum 12's "Elementary, My Dear Cadaver" sweep. Jonathan asked whether that package's generation-issue alert had been warranted; digging into `auto_remediation_log` found a second, bigger problem the original sweep missed: at 20:38:03 — 2 minutes before the package's actual `generation_completed_at` — six characters got flagged empty and had recovery-regeneration webhooks dispatched (real spend, $0.15/character logged), even though all six were fully populated moments later once generation finished naturally.
+
+Root cause: `sweep_incomplete_packages()` (cron `sweep_incomplete_packages_2min`, every 2 minutes) matches any package with `generation_status.status = 'completed'` or `generation_completed_at IS NOT NULL` — but Make.com's child scenario writes that status as an early/interim signal before every character row is actually done. Checked the last 14 days of `auto_remediation_log`: **9 other packages** show the identical pre-completion gap (~1:40–3:47) — a recurring, corpus-wide race, not a one-off.
+
+**Fixed:** added a quiet-period gate — the sweep now skips a package if any of its characters were written to within the last 3 minutes (`supabase/migrations/20260901_sweep_incomplete_packages_quiet_period_gate.sql`, deployed directly). Mirrors the existing `RECENT_ATTEMPT_GRACE_MS` pattern in `notify-generation-issue`. Genuinely stuck packages still get caught on a later pass — nothing is permanently missed.
+
+Also surfaced: fixing "Elementary, My Dear Cadaver" re-triggered the real "Your Mystery is Ready" customer email as a side effect of the status write (correct now that the package is actually complete, but worth flagging as a side effect rather than a deliberate send).
+
 ### Fix: German-language sweep found inconsistent formal/informal address ("Sie" vs "du") across character scripts on "Tod Auf Der Alm 3000" — root cause traced to a gap in the generation prompt ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 13)
 
 New-purchase sweep on package `1773bfb5-93a3-4313-865e-4b40f35d9a13` (first German-language sale, 4-player slip-style). All three automated detectors and the victim-name cross-check were clean, but manual read-through of all 4 characters' round/final headers found each one internally inconsistent on formal ("Sie") vs informal ("du") address:
