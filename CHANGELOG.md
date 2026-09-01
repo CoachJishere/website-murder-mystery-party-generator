@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-01
+
+### Fix: health-check alert on "The Person Who Died Wasn't A Stranger" was a false positive — acknowledged ([ADR-0070](docs/adr/0070-detective-style-culprit-final-statement-unreliable-confession.md) Update)
+
+Scheduled health check flagged the murderer (Ivy/Ivo Castellan) as `murderer_denies` — a detective-style package whose Final Statements round supposedly doesn't reveal the solution. Read the full `final_statement`: it's a genuine, detailed confession (cuts the wire, strikes the victim with the sconce, forges the victim's handwriting, full motive). The denial regex tripped on the literal substring `"not me."` embedded in *"...needed it to look like Wren was the one demanding the truth, not me."* — about disguising who forged a note, not about denying the murder. Same false-positive class ADR-0070 already documented twice (Death At The Velvet Rose, Ghosts Of The Past).
+
+Acknowledged via `acknowledged_health_alerts` (`supabase/migrations/20260901_acknowledge_person_who_died_wasnt_stranger_fp.sql`) so it stops re-alerting every 6 hours for the rest of its 30-day window. No content patch, no detector change — content is correct as delivered.
+
 ## 2026-08-31
 
 ### Fix: "Your Mystery is Ready" email could fire before generation actually finished — trigger-ordering bug ([ADR-0106](docs/adr/0106-single-source-of-truth-ready-notification.md) Addendum 3)

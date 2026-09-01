@@ -110,3 +110,14 @@ The scheduled health check flagged 2 packages: "The Case Of The Stolen Golden Fl
 **Key files, this update:**
 - `supabase/migrations/20260812_unconfessed_culprit_honor_acknowledged_alerts.sql` — acknowledgment-honoring `CREATE OR REPLACE`, 2 new acknowledgment rows
 - Hand-patch applied directly via SQL `UPDATE` to `mystery_characters.final_statement` for Marina Splash (package `33671764-71f9-488a-bed7-9afc712b0051`)
+
+## Update 2026-09-01: third instance of the same false-positive class, acknowledged
+
+The scheduled health check flagged "The Person Who Died Wasn't A Stranger" (`murderer_denies`, Ivy/Ivo Castellan, package `504d973c-c92c-498c-986d-1d4f36ef7b2e`), repeating identically across five consecutive 6-hourly runs in the GitHub issue thread (the package was created 2026-08-31, so within the detector's window and not yet triaged).
+
+Read in full: Ivy/Ivo's `final_statement` is a genuine, unambiguous, detailed confession — cuts the wire from the utility closet, strikes Bear with the sconce after the fall, forges Wren's handwriting using kept letters, and lays out the full seven-year motive. Isolated the exact regex hit with a direct SQL check rather than eyeballing it: the denial pattern matched the literal substring `"not me."` inside *"...I forged the line in Wren's hand... because some part of me needed it to look like Wren was the one demanding the truth, not me."* — about disguising who forged the note, not about denying the killing. None of the confession-keyword exclusions happen to appear verbatim (no "I killed," "I confess," etc. — the prose describes the act without those exact tokens). Same false-positive class as Death At The Velvet Rose (2026-08-08) and Ghosts Of The Past (2026-08-12): a denial-shaped clause embedded inside a real confession, three instances now across a keyword heuristic that was always expected to have this failure mode (see Rationale above).
+
+Acknowledged via `supabase/migrations/20260901_acknowledge_person_who_died_wasnt_stranger_fp.sql` — no content patch needed, no detector/regex change (chasing this specific substring with more keyword exclusions is the same losing battle this ADR already declined to fight in its Rationale section). Consistent with the acknowledgment mechanism built 2026-08-12: without it, this would have kept re-alerting every 6 hours for the rest of its 30-day window.
+
+**Key files, this update:**
+- `supabase/migrations/20260901_acknowledge_person_who_died_wasnt_stranger_fp.sql` — new acknowledgment row, no function change
