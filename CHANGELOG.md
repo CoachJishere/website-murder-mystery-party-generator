@@ -2,7 +2,18 @@
 
 ## 2026-09-01
 
-### Fix: New-purchase sweep found and fixed a self-directed-question header bug + a missing accomplice branch on "Elementary, My Dear Cadaver" ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 12)
+### Fix: German-language sweep found inconsistent formal/informal address ("Sie" vs "du") across character scripts on "Tod Auf Der Alm 3000" — root cause traced to a gap in the generation prompt ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 13)
+
+New-purchase sweep on package `1773bfb5-93a3-4313-865e-4b40f35d9a13` (first German-language sale, 4-player slip-style). All three automated detectors and the victim-name cross-check were clean, but manual read-through of all 4 characters' round/final headers found each one internally inconsistent on formal ("Sie") vs informal ("du") address:
+
+- **Stern**: introduction used formal "Sie", but every round/final branch-selection header ("WENN DU SCHULDIG BIST" etc.) used informal "du".
+- **Vance**: introduction and all innocent-branch headers used formal "Sie", but every guilty-branch header used informal "du".
+- **Glitch**: the Round 1 header itself was a literal unresolved placeholder — "IHRE/DEINE VORSTELLUNG" — plus relationships/secret headers had the same "Ihre/Deine" duplication, and innocent-branch headers used a third, unrelated pattern ("WENN ICH UNSCHULDIG BIN" — first person).
+- **Frost**: fully consistent informal "du" throughout — the only character with no mismatch.
+
+Body prose was confirmed first-person throughout for all characters (no direct "du"/"Sie" address in the monologues themselves), so only the branch-selection header labels needed fixing — no rewrite of character voice. Patched via direct SQL: Stern converted to formal "Sie" throughout (matching their intro), Vance's guilty-branch headers converted to formal "Sie" (matching their intro/innocent branch), Glitch's placeholder headers resolved to informal "du" (matching their intro), Frost left untouched.
+
+**Root cause**: the Make.com child blueprint's language directive ("Write ALL output in {{63.language}}... translate these into {{63.language}} rather than reproducing the English template text verbatim") has no instruction to keep a consistent grammatical register for languages with a formal/informal distinction (German Sie/du, and the same class of ambiguity exists for French tu/vous, Spanish tú/usted, Portuguese tu/você, Italian tu/lei, Dutch je/u) — each field is apparently translated somewhat independently, so the model picks a register per-field rather than per-character. Spot-checked one genuine French package (clean, consistent "vous" throughout) and one genuine Portuguese package (a different, older, separate English-header-leak bug from February, predating several already-fixed language issues) — inconclusive on how widespread this specific register-consistency gap is beyond German. No automated detector covers this class of bug. Prompt hardening (explicit register-consistency instruction) proposed to Jonathan as a follow-up, not yet drafted into a blueprint version.
 
 Sweep on package `98857ef0-71d5-48a1-8c04-09be5092169c` (12-player slip-style, has_accomplice). Found two real defects: (1) Columbolumbo Kane's `round2_questions` had a malformed self-referential header (`**To Columbolumbo Kane's own suspicion, directed at Ellery Quince-idink:**` instead of `**To Ellery Quince-idink:**`) — fixed via direct string replace; (2) Dr. Jamie Whatsit was missing all 10 accomplice-branch fields (`round2/3/4_accomplice`, `final_accomplice`, `reveal_confession_accomplice`, plus `_pointform` twins) while all 11 other characters had them populated — hand-written directly in his established voice (`regenerate-child-content` doesn't support `reveal_confession_accomplice`/`_pointform` fields, so the standard paid repair path couldn't have closed this fully anyway).
 
