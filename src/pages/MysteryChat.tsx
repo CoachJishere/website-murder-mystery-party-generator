@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import { supabase } from "@/lib/supabase";
 import MysteryChat from "@/components/MysteryChat";
-import { extractTitleFromMessages } from "@/utils/titleExtraction";
+import { extractTitleWithConfidence } from "@/utils/titleExtraction";
 import { useAuth } from "@/context/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -88,9 +88,18 @@ const MysteryChatPage = () => {
             // If this is an AI message, try to extract a title and update the conversation.
             // Only update when there's no real title yet — once a proper title is set,
             // later AI messages (help text, recaps, etc.) shouldn't overwrite it.
+            //
+            // Exception: a "# TITLE" heading match (isHeaderMatch) always wins. Titles are
+            // extracted per-message as messages stream in, and an earlier message can contain
+            // a bold 2-3 word phrase (a roster line, a clarifying question) that passes the
+            // low-confidence bold-text fallback before the real "# TITLE" heading shows up in
+            // a later message. Without this, that early guess ("The Sheriff", "The Empire")
+            // permanently locks out the real title once it arrives, because by then the field
+            // is no longer a placeholder. A header match is only ever produced by the model's
+            // actual title line, so it's safe to let it overwrite a lower-confidence guess.
             if (message.is_ai) {
-                const extractedTitle = extractTitleFromMessages([message]);
-                if (extractedTitle) {
+                const extracted = extractTitleWithConfidence([message]);
+                if (extracted) {
                     const { data: existing } = await supabase
                         .from("conversations")
                         .select("title")
@@ -106,10 +115,10 @@ const MysteryChatPage = () => {
                         currentTitle.toLowerCase().startsWith("untitled") ||
                         currentTitle.toLowerCase().startsWith("new mystery") ||
                         isRawThemeTitle;
-                    if (isPlaceholder) {
+                    if (isPlaceholder || extracted.isHeaderMatch) {
                         await supabase
                             .from("conversations")
-                            .update({ title: extractedTitle })
+                            .update({ title: extracted.title })
                             .eq("id", id);
                     }
                 }

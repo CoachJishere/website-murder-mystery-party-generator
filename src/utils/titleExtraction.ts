@@ -1,4 +1,13 @@
-export const extractTitleFromMessages = (messages: any[]) => {
+export interface TitleExtractionResult {
+  title: string;
+  // True only for the "# TITLE" heading pattern (FIRST PASS) — the one signal reliable
+  // enough that a later match should be allowed to overwrite an already-set title.
+  isHeaderMatch: boolean;
+}
+
+// Returns the extracted title plus which pass matched it, so callers can tell a
+// high-confidence "# TITLE" heading apart from a low-confidence bold-text guess.
+export const extractTitleWithConfidence = (messages: any[]): TitleExtractionResult | null => {
   if (!messages || messages.length === 0) return null;
 
   const filteredMessages = messages.filter(message => {
@@ -36,7 +45,7 @@ export const extractTitleFromMessages = (messages: any[]) => {
           .trim();
         // Validate it looks like a title (not a section header like "Questions" or "Character 1")
         if (title && /[A-Za-z]/.test(title) && !isLikelySectionHeader(title)) {
-          return formatTitle(title);
+          return { title: formatTitle(title), isHeaderMatch: true };
         }
       }
     }
@@ -51,7 +60,7 @@ export const extractTitleFromMessages = (messages: any[]) => {
       if (titleMatch && titleMatch[1] && titleMatch[1].trim()) {
         const title = titleMatch[1].trim();
         if (!isLikelySectionHeader(title)) {
-          return formatTitle(title);
+          return { title: formatTitle(title), isHeaderMatch: false };
         }
       }
     }
@@ -68,13 +77,18 @@ export const extractTitleFromMessages = (messages: any[]) => {
       if (boldMatch && boldMatch[1] && boldMatch[1].trim()) {
         const title = boldMatch[1].trim();
         if (!isLikelySectionHeader(title) && looksLikeTitle(title)) {
-          return formatTitle(title);
+          return { title: formatTitle(title), isHeaderMatch: false };
         }
       }
     }
   }
 
   return null;
+};
+
+// Backward-compatible string-only wrapper for callers that don't need match confidence.
+export const extractTitleFromMessages = (messages: any[]): string | null => {
+  return extractTitleWithConfidence(messages)?.title ?? null;
 };
 
 // Check if text is likely a section header rather than a mystery title
