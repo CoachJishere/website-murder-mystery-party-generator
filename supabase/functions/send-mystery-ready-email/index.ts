@@ -6,6 +6,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // guarantees exactly one call per package (BEFORE trigger, atomic claim via
 // ready_email_sent_at). This function does not need its own dedup -- if it's
 // running, the trigger has already decided this is the one legitimate send.
+//
+// 2026-08-27: dropped the "reply for feedback" ask (was in the subject and
+// a closing paragraph). Only 6 sends existed at the time so this wasn't a
+// data-driven kill, it was a mechanism problem -- reply-to-email is the
+// highest-friction way to ask, and it was conflating "how was signing up"
+// with "how was the mystery" (a question that belongs at Day+14/21, after
+// the party, where it already lives via mystery_feedback/guest_feedback).
+// This email's job is just the ready notification now.
 
 const ALLOWED_ORIGINS = [
   'https://www.mysterymaker.party',
@@ -99,9 +107,6 @@ serve(async (req) => {
               View Your Mystery
             </a>
           </div>
-          <p style="color: rgba(245,240,232,0.7); font-size: 15px; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(245,240,232,0.1); line-height: 1.6;">
-            <strong style="color: #F5F0E8;">We'd love your feedback!</strong> Reply to this email and let us know how the generation experience was, and anything we can improve.
-          </p>
         </div>
         <div style="text-align: center; padding: 20px; color: rgba(245,240,232,0.35); font-size: 12px;">
           <a href="https://www.mysterymaker.party" style="color: rgba(245,240,232,0.5); text-decoration: none;">mysterymaker.party</a>
@@ -119,7 +124,7 @@ serve(async (req) => {
       body: JSON.stringify({
         from: "Mystery Maker <support@mysterymaker.party>",
         to: [userEmail],
-        subject: "Your Mystery is Ready! We'd Love Your Feedback",
+        subject: "Your Mystery is Ready!",
         html,
       }),
     });
