@@ -2,6 +2,12 @@
 
 ## 2026-09-02
 
+### Fix: refunded order still showing as a live sale on the homepage popup — stale `is_paid` flag ([ADR-0044](docs/adr/0044-purchase-flow-guards-no-blind-payment-no-double-charge.md) Addendum update)
+
+Jonathan asked to make sure an old "Mystery - 10 Players" purchase (the placeholder-title incident from ADR-0044's Addendum — customer paid before ever picking a theme) wasn't showing on the homepage's recent-sales popup. It was: `conversations.is_paid` was still `true` for that conversation, and `get_recent_public_sales` requires only `is_paid = true` + a non-null `title`/`purchase_date` — no check for whether the "sale" is still real.
+
+Turned out the ADR-0044 addendum's original resolution plan (customer resumes the same chat) never happened — Jonathan refunded that order directly and she repurchased fresh instead (her documented "second mystery"), so `is_paid` was never updated to reflect the refund. Fixed by setting `is_paid = false` on that one conversation to match reality; confirmed it dropped out of `get_recent_public_sales`. Scoped to this one row — there's no general refund→`is_paid` sync in this codebase, so a future refund needs the same manual check unless that gets built.
+
 ### Fix: two same-day purchases got wrong `conversations.title` ("The Sheriff", "The Empire") from a title-extraction race; data corrected, race fixed ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 16)
 
 Sweep on "The Empire" purchase, flagged because its title looked generic compared to normal evocative titles, and a same-day purchase ("The Sheriff") had the same shape. Root cause: `extractTitleFromMessages` (`src/utils/titleExtraction.ts`) writes a title per-message as the concept chat streams, with a low-confidence fallback pass that grabs any bold 2-word phrase starting with "The "/"A ". In both purchases an early message's bold phrase (a roster line, a clarifying question) won the race and locked in before the real `# TITLE` heading arrived in a later message — and a May 2026 guard meant to stop a *different* bug (a stray bold label overwriting an already-correct title) then blocked the real heading from ever overwriting the wrong guess. Real titles were "Dead Man's Hand: A Golden Gulch Mystery" and "Bloodline: The Last Check-In" — both confirmed by reading each conversation's actual `approved_concept_message_id` content.
