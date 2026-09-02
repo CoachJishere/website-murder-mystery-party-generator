@@ -2,6 +2,14 @@
 
 ## 2026-09-02
 
+### Docs: committed an orphaned ADR-0078 draft, corrected its stale ADR-0036 gating claim, closed out the corporate/office translation follow-up
+
+Housekeeping pass on uncommitted files sitting in the working tree: `docs/adr/0078-post-purchase-sequence-scheduling-and-video-hosting.md`, `docs/email-lifecycle-audit.md`, and `docs/post-purchase-sequence-design.md` were complete, well-formed drafts from 2026-08-12 (correctly numbered — ADR-0078 slots into the real gap between the already-committed ADR-0077 and ADR-0079) that had simply never been committed.
+
+Before committing, found their central premise was stale: both docs gate the proposed "Day+2-3 guest-dropout-intro" email on ADR-0036 (guest-dropout adaptation) shipping, calling it `Status: Proposed, not built`. It shipped 3 days after they were written — launched live 2026-08-15 as "Recast," renamed "Remove a Character" (ADR-0091), with a real UI entry point (`src/components/GuestDropoutPanel.tsx`) and real paid usage. ADR-0036's own header still says `Status: Proposed` (stale metadata on that ADR, separate issue, not fixed here). Added dated "Update" notes to all three docs marking the gate cleared, without editing the original decision text — preserves each as an accurate historical record while keeping the current-state read honest. Committed all three as-is otherwise; still genuinely `Status: Proposed` / no code written, now unblocked pending the owner's go-ahead.
+
+Also chased down the 2026-06-15 vault follow-up note this ADR references (`temp-files/corporate-office-rewrite/`, gitignored scratch work): queried `blog_posts` directly and confirmed all 12 non-EN translations it was tracking as an open task are done (`updated_at` 2026-07-01+, German title spot-checked against the temp-files draft — exact match) — closed out in the vault note. One real item from that note is still open (HowTo JSON-LD schema doesn't key on non-English `## Step N` headings), left open, was always marked optional/non-blocking.
+
 ### Fix: refunded order still showing as a live sale on the homepage popup — stale `is_paid` flag ([ADR-0044](docs/adr/0044-purchase-flow-guards-no-blind-payment-no-double-charge.md) Addendum update)
 
 Jonathan asked to make sure an old "Mystery - 10 Players" purchase (the placeholder-title incident from ADR-0044's Addendum — customer paid before ever picking a theme) wasn't showing on the homepage's recent-sales popup. It was: `conversations.is_paid` was still `true` for that conversation, and `get_recent_public_sales` requires only `is_paid = true` + a non-null `title`/`purchase_date` — no check for whether the "sale" is still real.
