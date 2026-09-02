@@ -262,6 +262,8 @@ Jonathan asked to fix all three open items from Addendum 12/14 rather than leave
 
 **Also from this pass — a corpus-wide check for Dr. Jamie Whatsit's specific defect shape (a genuinely missing accomplice branch, not a race), separate from item 1/2 above:** found exactly 2 packages corpus-wide with this pattern — "Blood And Bouquet: A Christmas Conspiracy In The Mountains" (18 players, completed 2025-12-01, 9 characters affected) and "IMG.LY Holiday Murder Mystery - 49 Players" (32 players, completed 2025-10-27, 9 characters affected). Both predate the current pipeline by months and were almost certainly already played at their respective events — unlike Dr. Jamie Whatsit's isolated single-character gap, roughly half the cast is affected in both, suggesting an old large-cast generation limitation rather than the same bug. Matches this project's established age-gated-backfill precedent (see Addendum 7's `secret`/`secrets` discussion): held for Jonathan's explicit call rather than backfilled automatically, since these are old, already-delivered packages with no clear customer benefit to touching now.
 
+**Decision (2026-09-02):** Jonathan's call — leave both packages as-is, no backfill. Closed, not just deferred.
+
 ## Key files
 
 - `CLAUDE.md` — the `sweep` shorthand command definition
