@@ -159,6 +159,45 @@ serve(async (req) => {
       // near-simultaneous sibling invocation sees this and skips too.
       await supabase.from("mystery_packages").update({ notify_last_run_at: new Date().toISOString() }).eq("id", pkg.id);
 
+      // ADR-0103: this function is called from two places that
+      // can both race a still-in-flight generation — sweep_incomplete_packages
+      // (now gated at the source with its own 3-minute quiet period) and,
+      // more fundamentally, the ADR-0108 completion trigger itself, which
+      // fires synchronously the moment Make.com's child scenario writes
+      // generation_status='completed', even when that write races the
+      // scenario's own trailing mystery_characters UPDATEs for the last one
+      // or two characters. The trigger's needs_review verdict is accurate for
+      // that exact commit-time snapshot, but dispatching a real recovery
+      // webhook (and an alert email) for a character that's seconds from
+      // finishing on its own is pure waste — confirmed live on "Elementary,
+      // My Dear Cadaver" (98857ef0-...), where a character's row kept
+      // updating for almost 2 minutes after generation_status claimed
+      // 'completed'. Mirrors the sweep's own fix: if ANY character row for
+      // this package was written to in the last 3 minutes, the generation is
+      // still active — skip the whole cycle (alert + recovery dispatch) and
+      // let the next invocation (10-minute sweep_stuck_needs_review_packages,
+      // or another completion-trigger fire) re-check once things quiet down.
+      const WRITE_QUIET_PERIOD_MS = 3 * 60 * 1000;
+      const { data: recentWrite } = await supabase
+        .from("mystery_characters")
+        .select("updated_at")
+        .eq("package_id", pkg.id)
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const lastCharWriteAt = recentWrite?.updated_at ? new Date(recentWrite.updated_at).getTime() : null;
+      if (lastCharWriteAt !== null && Date.now() - lastCharWriteAt < WRITE_QUIET_PERIOD_MS) {
+        console.log(`[Quiet period] Skipping — package ${pkg.id} had a character write ${Date.now() - lastCharWriteAt}ms ago, still likely mid-generation`);
+        return new Response(
+          JSON.stringify({
+            success: true,
+            skipped: "still_generating",
+            message: "A character row for this package was written to within the last 3 minutes; skipping to avoid dispatching recovery on a race.",
+          }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
       mysteryTitle = pkg.title || mysteryTitle;
       packageStatus = JSON.stringify(pkg.generation_status);
       generationStarted = pkg.generation_started_at

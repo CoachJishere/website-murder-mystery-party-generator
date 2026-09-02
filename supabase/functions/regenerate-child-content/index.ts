@@ -181,6 +181,7 @@ const CHR_TEXT_FIELDS = [
   "round3_innocent", "round3_guilty", "round3_accomplice",
   "round4_innocent", "round4_guilty", "round4_accomplice",
   "final_innocent", "final_guilty", "final_accomplice",
+  "reveal_confession_guilty", "reveal_confession_accomplice",
 ];
 /** Only `relationships` has a Child-prompt generation equivalent. `secrets`
  *  (plural, jsonb) is in the DB whitelist but the Child scenario never
@@ -381,9 +382,32 @@ const GROUP_ROUNDS_ACCOMPLICE: PromptGroup = {
   schemaFooter: `These are the ACCOMPLICE-SLIP scripts (what the player says if they draw the accomplice slip — they helped the murderer).`,
 };
 
+// ADR-0103: "THE REVEAL — YOUR CONFESSION" beat — a distinct field from
+// final_guilty/final_accomplice (the closing statement during Final
+// Statements) read only once the murderer/accomplice slip-holder is
+// revealed at the end of the game. Character-style only; no detective-style
+// equivalent exists (that style's single final_statement already carries
+// the confession for a predetermined murderer). Added after the "Elementary,
+// My Dear Cadaver" sweep found this function had no way to repair either
+// field even though both are real customer-facing content
+// (src/interfaces/mystery.ts, src/lib/characterGuideCopy.ts) — previously
+// this whole beat was unrecoverable through the standard tool.
+const GROUP_REVEAL_CONFESSION: PromptGroup = {
+  key: "reveal_confession",
+  style: "character",
+  fields: ["reveal_confession_guilty", "reveal_confession_accomplice"],
+  anchorHints: ["final_guilty", "final_accomplice"],
+  schema: `{
+  "revealConfessionGuilty": "## THE REVEAL — YOUR CONFESSION\\n\\n[3-4 paragraph first-person confession, read aloud once this character is revealed as the murderer — motive, method, and timing laid out plainly, no more deflecting]",
+  "revealConfessionAccomplice": "## THE REVEAL — YOUR CONFESSION\\n\\n[3-4 paragraph first-person confession, read aloud once this character is revealed as the accomplice — what they knew, what they did to help or cover for the murderer, and why]"
+}`,
+  schemaFooter: `These are read aloud once at THE REVEAL, after the murderer/accomplice slip-holder is named — distinct from final_guilty/final_accomplice (shown below as anchor context), which are read earlier during Final Statements while the character is still deflecting. This is the moment all pretense drops.`,
+};
+
 const ALL_GROUPS: PromptGroup[] = [
   GROUP_IDENTITY, GROUP_SOCIAL_DETECTIVE, GROUP_SOCIAL_CHARACTER,
   GROUP_ROUNDS_DETECTIVE, GROUP_ROUNDS_INNOCENT, GROUP_ROUNDS_GUILTY, GROUP_ROUNDS_ACCOMPLICE,
+  GROUP_REVEAL_CONFESSION,
 ];
 
 /** DB field name -> the JSON key Claude emits for it (Child prompts use camelCase). */
@@ -399,6 +423,7 @@ const DB_TO_JSON_KEY: Record<string, string> = {
   final_guilty: "finalGuilty",
   round2_accomplice: "round2Accomplice", round3_accomplice: "round3Accomplice", round4_accomplice: "round4Accomplice",
   final_accomplice: "finalAccomplice",
+  reveal_confession_guilty: "revealConfessionGuilty", reveal_confession_accomplice: "revealConfessionAccomplice",
 };
 
 /** Groups applicable to a package's style, in a stable order. */
