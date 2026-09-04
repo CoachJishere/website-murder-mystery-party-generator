@@ -1,6 +1,6 @@
 # ADR-0118: Make.com parent scenario fabricated 4 of 11 characters instead of using the extracted, customer-approved roster
 
-- **Status:** Accepted (customer package hand-fixed; root cause is outside this repo, not yet fixed)
+- **Status:** Accepted — customer package hand-fixed; root cause found and fixed same day (see Addendum below). **The title and body below are the original, INCORRECT theory** (blamed Make.com) reached before the deeper investigation — kept verbatim per this project's ADR immutability rule. Read the Addendum first for what was actually true.
 - **Date:** 2026-09-04
 - **Related:** ADR-0068/0057/0110/0069/0059 (roster extraction hardening — confirmed NOT the cause here), ADR-0009 (concept chat is ground truth, not the `additional_details` form field), `project_round_count_not_configurable` memory (a related but distinct known gap: `additional_details` never reaching `mystery-webhook-trigger` at all)
 
@@ -70,3 +70,45 @@ The investigation went through several false leads before landing on the real ca
 4. `mystery_packages.extracted_characters` — checked almost as an afterthought — turned out to contain the smoking gun (the "Moss-covered beast" corruption), which is the strongest evidence of exactly where the fabrication happens (a Make.com LLM step, not this repo's deterministic extraction).
 
 Jonathan's framing throughout was right to insist on this order: get the customer correctly sorted first using the tool that's actually needed (not whichever tool was assumed at the start — this feature was called "Recast" until ADR-0091 renamed it to "Remove a Character" on 2026-08-17, and regardless of name it turned out to be the wrong tool shape for this repair), then treat the systemic Make.com investigation as separate follow-up work rather than blocking the customer fix on it.
+
+## Addendum 1 (2026-09-04, same day): the real root cause was in THIS repo, not Make.com — found, fixed, deployed
+
+Jonathan asked to address the systemic issue using the actual latest Make.com blueprint (`temp-files/MM Live - Parent62 (Package ID Race Fix).blueprint.json`) and Make API access. Tracing `extracted_characters` through the blueprint showed it's a **webhook input field** — `mystery_webhook-trigger`'s own payload — not something Make.com's parent scenario computes independently. That ruled out the entire premise of the original ADR above and pointed the investigation back into this repo.
+
+### The real mechanism (two compounding bugs, both in `mystery-webhook-trigger/index.ts`)
+
+**Bug 1 — the roster-detection regex has no concept of "character."** `extractRosterFromMessage()` matches any 4+ consecutive `N. **Bold Text** – description` lines. The AI uses that exact formatting for any multi-option list, not just character rosters. In this conversation, after the customer approved the real 11-character roster (message `6c8f583a...`, 12:14:50), a later reply proposing "wine glass" murder-method options was formatted identically:
+
+> "**Direction options:** 1. **Holloway's Compound** – ... 2. **Ashgrave's Old Craft** – ... 3. **Cleopatra's Ancient Knowledge** – ... 4. **A Shared Clue, Not a Single Culprit** – ..." (plus a 5th accidental match, "**My suggestion**: ...", confirmed only once actually tested against the real message)
+
+This parsed as a structurally-valid "5-character roster" — fake names like "Holloway's Compound" — even though it's a list of narrative options, not people.
+
+**Bug 2 — that false match actively corrupted the approved snapshot.** This repo already had a fix (ADR-0069) that re-captures `approved_concept_message_id` whenever a later message "independently parses into a cast," specifically to handle customers who revise their roster after approving it. That logic saw the wine-glass message's fake 5-item match, compared its count (5) to the real snapshot's count (11), concluded the customer had revised down to 5 characters, and **overwrote `approved_concept_message_id` to point at the wine-glass message** — discarding the correct 11-person snapshot.
+
+From there the existing pipeline behaved exactly as designed, just against corrupted input: regex-on-the-approved-message correctly found only the 5 garbage entries, a downstream check noticed 5 was too few for `player_count=11`, and triggered the Claude fallback (`extractCharactersWithClaude`). That fallback's own message-selection is pure recency within an 8,000-character budget — which pulled in three more short, later refinement replies (also just discussing murder-method details) that consumed the entire budget before reaching back far enough to include the actual roster message. Claude, given ~7 real names mentioned in passing across that limited window plus an explicit "expected count: 11," filled the remaining 4 slots with plausible-sounding fabrications — exactly the defect the customer reported.
+
+The "escalated" `auto_remediation_log` entries chased earlier in this ADR were a red herring in the other direction: `notify-generation-issue` logs `outcome: "escalated"` on every dispatch unconditionally (it means "sent, pending," not "gave up") — the content appearing shortly after an "escalated" row is the normal async flow, not a hidden second attempt. Retracted from "secondary bug" to "not a bug" — no code change was needed there.
+
+### The fix (deployed, `mystery-webhook-trigger` v134)
+
+Added `isPlausibleRosterCount(count, playerCount)` — treats a structurally-valid roster match as suspect if its size is wildly inconsistent with `conversations.player_count` (tolerance: `playerCount - 2` to `playerCount + 3`, mirroring the tolerance already used elsewhere in this file). This is a corroborating structural signal, not a wording-based gate — consistent with this file's stated principle ("header wording is model output and will keep drifting; the parse either finds a cast or it doesn't").
+
+Applied at three points, all in `mystery-webhook-trigger/index.ts`:
+1. `findLatestConceptMessage()` now takes `playerCount` and prefers the latest message whose parsed count is plausible, falling back to plain "latest structural match" only if no plausible candidate exists (used by both the initial snapshot capture and the ADR-0069 drift re-capture check).
+2. `extractCharactersFromMessages()`'s approved-message branch now requires plausibility before accepting a parse outright, and properly falls through to scanning the rest of the conversation (previously it left `latestMessageWithList` pointed at the rejected message, so the "fall-through" comment didn't actually reach other messages — fixed as part of this change). The secondary batch-extraction pass's "later message always overwrites" logic got the same plausibility guard.
+3. `extractCharactersWithClaude()` now guarantees the best plausible roster message survives its recency-budget trim regardless of shorter, later messages competing for space, and its prompt now explicitly instructs the model not to fabricate characters to hit the expected count ("a hint, not a requirement").
+
+### Verification (no live Anthropic spend — pure deterministic logic)
+
+Extracted the exact post-fix functions into a standalone harness (`node --experimental-strip-types`) and ran them against this conversation's real message content (fetched from the DB):
+- Confirmed the bug reproduces exactly as diagnosed when the fix's `playerCount` argument is omitted (5 fake characters returned, including "My suggestion").
+- With the fix, `extractCharactersFromMessages(messages, approvedMessageId=<wine-glass-id>, playerCount=11)` correctly recovers the real 11-character roster **despite** the still-corrupted `approved_concept_message_id` in the DB — i.e. the fix is robust against data already poisoned by the bug, not just future occurrences.
+- Regression check: a synthetic legitimate revision (12→10 players, ADR-0069's original Blackthorn Wedding scenario) still selects the correct revised roster with the fix applied, and still falls back to "latest wins" when `playerCount` is unavailable — the new plausibility check doesn't reintroduce ADR-0069's original bug.
+- `node --check` confirmed no syntax errors in the deployed file. Deployed as `mystery-webhook-trigger` v134 (`verify_jwt: false` preserved); pulled the deployed source back and diffed against the local file — byte-identical except one benign Unicode-escape-vs-literal-character re-serialization in a regex literal (same characters, different source notation).
+
+### Consequences (superseding the original ADR's Consequences section)
+
+- The root cause is fixed and deployed, not merely diagnosed. Future orders where a later message coincidentally matches the roster-detection pattern (any numbered/bulleted list of options) will no longer have that override a real, count-plausible roster.
+- Shaun's specific package was hand-fixed as described in the original Decision section above; this fix does not retroactively repair any other historical packages that might have hit the same failure shape. No sweep for other affected packages was run this session — the same "search all `mystery_characters` for names absent from the source transcript" method described in the original Consequences section remains the way to check, and remains un-automated.
+- `conversations.approved_concept_message_id` for Shaun's conversation (`bf336652-...`) was NOT corrected back to the real roster message — it's now a moot/cosmetic staleness only, since (a) the package itself was already hand-fixed and won't be regenerated, and (b) the deployed fix means any *future* re-generation call would correctly recover the real roster despite the stale pointer anyway (this was directly verified in the test above). Worth fixing for data hygiene if this conversation is ever touched again, not urgent.
+- The candidate "character name absent from source transcript" detector flagged as a follow-up in the original ADR is still not built — this fix prevents the specific mechanism that caused it here, but isn't a general-purpose detector for the broader defect class.

@@ -245,21 +245,56 @@ function extractRosterFromMessage(content: string): ExtractedCharacter[] {
 }
 
 /**
+ * Is this parsed count plausible as an actual character roster for this mystery?
+ * `extractRosterFromMessage`'s structural pattern (4+ consecutive "N. **Bold** -
+ * text" lines) has no concept of "character" at all - it matches ANY numbered,
+ * bolded, dash-separated list, including things like a reply offering 4 "murder
+ * method direction options" in exactly that format. player_count is an
+ * independent signal (set from the customer's own chat/form, unrelated to this
+ * regex) that a coincidental false-positive match is very unlikely to satisfy,
+ * so it's used here as a corroborating check rather than a wording-based gate -
+ * consistent with this file's existing principle of structural, not textual,
+ * validation. Falls open (treats any count as plausible) when playerCount is
+ * unknown, since there's no basis to judge against.
+ *
+ * Tolerance mirrors the existing `playerCount - 2` floor used elsewhere in this
+ * file (allows for e.g. an inspector role trimmed from the played cast) with a
+ * small ceiling for a modest few extra background characters.
+ */
+function isPlausibleRosterCount(count: number, playerCount?: number | null): boolean {
+  if (!playerCount || playerCount <= 0) return true;
+  return count >= playerCount - 2 && count <= playerCount + 3;
+}
+
+/**
  * Latest assistant message that actually proposes a cast - the concept the user is
  * approving when they pay. Chronological, last wins, so a post-revision draft beats
  * an earlier one. Returns null when no message parses into a roster.
+ *
+ * When `playerCount` is provided, prefers the latest message whose parsed roster
+ * count is also plausible against it (see `isPlausibleRosterCount`) over a more
+ * recent structural match that isn't - this is what stops a later reply that
+ * merely LOOKS like a roster (e.g. a numbered list of narrative options) from
+ * displacing the real one. Falls back to the plain "latest structural match"
+ * behavior if no plausible-count candidate exists, so a real roster is still
+ * returned when player_count itself is stale or wrong, rather than nothing.
  */
-function findLatestConceptMessage(messages: any[]): any | null {
+function findLatestConceptMessage(messages: any[], playerCount?: number | null): any | null {
   const assistant = (messages ?? [])
     .filter((m: any) => m.role === 'assistant' || m.is_ai)
     .sort((a: any, b: any) =>
       new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime());
 
   let latest: any = null;
+  let latestPlausible: any = null;
   for (const m of assistant) {
-    if (extractRosterFromMessage(m.content || '').length >= MIN_ROSTER_SIZE) latest = m;
+    const count = extractRosterFromMessage(m.content || '').length;
+    if (count >= MIN_ROSTER_SIZE) {
+      latest = m;
+      if (isPlausibleRosterCount(count, playerCount)) latestPlausible = m;
+    }
   }
-  return latest;
+  return latestPlausible ?? latest;
 }
 
 /**
@@ -342,7 +377,7 @@ function rosterDiffersMeaningfully(
 // If approvedMessageId is provided, extracts ONLY from that message (the concept
 // snapshot the user explicitly approved at purchase time).
 // Otherwise, falls back to the latest assistant message that proposes a cast.
-function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: string | null): ExtractedCharacter[] | null {
+function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: string | null, playerCount?: number | null): ExtractedCharacter[] | null {
 
   // ADR-0110: fold any roster-continuation reply into the message it continues
   // before any extraction path runs (including the approvedMessageId lookup below).
@@ -365,11 +400,21 @@ function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: s
       // done — no header-shape guessing, no fall-through to a scan of other messages
       // that could resurrect a draft the user moved away from.
       const roster = extractRosterFromMessage(latestMessageWithList.content || '');
-      if (roster.length >= MIN_ROSTER_SIZE && roster.length <= 35) {
+      if (roster.length >= MIN_ROSTER_SIZE && roster.length <= 35 && isPlausibleRosterCount(roster.length, playerCount)) {
         console.log(`[CharExtract] Roster from approved message: ${roster.length} characters: ${roster.map(c => c.name).join(', ')}`);
         return roster;
       }
-      console.warn(`[CharExtract] Approved message parsed to ${roster.length} characters (need ${MIN_ROSTER_SIZE}-35) — falling through to legacy scan`);
+      // A structural match that's the wrong size for this mystery (e.g. a later
+      // reply's "4 direction options" numbered list matching the same "N. **Bold**
+      // - text" shape as a real roster) is treated as NOT a roster, not accepted
+      // outright — fall through to the broader scan below rather than trusting a
+      // parse that's implausible against player_count.
+      console.warn(`[CharExtract] Approved message parsed to ${roster.length} characters (need ${MIN_ROSTER_SIZE}-35, plausible vs player_count=${playerCount ?? 'unknown'}) — falling through to legacy scan`);
+      // Actually fall through: don't leave latestMessageWithList pointed at a
+      // message we just decided isn't a real roster, or the header/secondary
+      // passes below would just re-parse the same wrong message instead of
+      // scanning the rest of the conversation for the real one.
+      latestMessageWithList = null;
     } else {
       console.warn(`[CharExtract] approved_concept_message_id ${approvedMessageId} not found in messages, falling back to latest`);
     }
@@ -378,7 +423,7 @@ function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: s
   // Fallback for conversations with no usable snapshot: latest message that parses
   // into a cast. Same predicate as the snapshot chooser, so the two cannot disagree.
   if (!latestMessageWithList) {
-    latestMessageWithList = findLatestConceptMessage(messages);
+    latestMessageWithList = findLatestConceptMessage(messages, playerCount);
   }
 
   const charMap = new Map<string, ExtractedCharacter>();
@@ -433,9 +478,16 @@ function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: s
   console.log(`[CharExtract] Primary pattern insufficient, trying secondary (consecutive bold lines)...`);
   // Secondary pattern: 4+ consecutive **Name** - Description lines (no section header).
   // Iterate messages chronologically; LATER messages with a valid batch overwrite
-  // earlier ones, so we always use the most recent character list.
+  // earlier ones, so we normally use the most recent character list. But a later
+  // message can match this same numbered/bold/dash shape without being a roster
+  // at all (e.g. a "here are 4 direction options" reply) — an unconditional
+  // overwrite would let that displace a real earlier roster found in the same
+  // scan. Track a plausibility-checked overwrite candidate separately and prefer
+  // it; only fall back to the plain "latest wins" candidate if no batch in the
+  // whole conversation is plausible against player_count.
   const boldCharRegex = /^\*\*(.+?)\*\*(?:\s*\*?\([^)]*\)\*?)?\s*[-–—:]\s*(.+)/;
   let secondaryMap = new Map<string, ExtractedCharacter>();
+  let secondaryMapPlausible = new Map<string, ExtractedCharacter>();
 
   for (const msg of assistantMessages) {
     const content = msg.content || '';
@@ -477,7 +529,14 @@ function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: s
     // If this message had a valid batch, REPLACE secondaryMap (overwrite older)
     if (messageMap.size >= 4) {
       secondaryMap = messageMap;
+      if (isPlausibleRosterCount(messageMap.size, playerCount)) {
+        secondaryMapPlausible = messageMap;
+      }
     }
+  }
+
+  if (secondaryMapPlausible.size >= 4) {
+    secondaryMap = secondaryMapPlausible;
   }
 
   if (secondaryMap.size >= 4 && secondaryMap.size <= 35) {
@@ -510,30 +569,51 @@ async function extractCharactersWithClaude(
   // real final message was reached at all - the fallback silently extracted from
   // stale earlier drafts instead. Dropping OLDER drafts first when the budget is
   // tight means the most recent (most likely approved/final) content always survives.
+  //
+  // ADR-0118: pure recency has its own failure mode - a real roster message can
+  // itself get starved out by several SHORTER, LATER, non-roster replies (e.g.
+  // narrowing down a murder-method detail) that structurally happen to contain
+  // bold text too and simply eat the budget first. Guarantee the best plausible
+  // roster message (same structural+player_count check used everywhere else in
+  // this file) survives regardless of the recency window, and only spend the
+  // remaining budget on trailing context after that.
+  const bestRosterMessage = findLatestConceptMessage(messages, playerCount);
+
   const relevantMessages = (messages as any[])
-    .filter((m: any) => (m.role === 'assistant' || m.is_ai) && (m.content || '').includes('**'))
+    .filter((m: any) =>
+      (m.role === 'assistant' || m.is_ai) &&
+      (m.content || '').includes('**') &&
+      m.id !== bestRosterMessage?.id)
     .sort((a: any, b: any) =>
       new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime());
 
-  if (relevantMessages.length === 0) return null;
-
   const CONTENT_BUDGET = 8000;
-  const kept: string[] = [];
   let usedChars = 0;
+  const kept: string[] = [];
+
+  if (bestRosterMessage?.content) {
+    const rosterContent: string = bestRosterMessage.content;
+    kept.push(rosterContent.substring(0, CONTENT_BUDGET));
+    usedChars = Math.min(rosterContent.length, CONTENT_BUDGET);
+  }
+
+  if (relevantMessages.length === 0 && kept.length === 0) return null;
+
+  const trailing: string[] = [];
   for (let i = relevantMessages.length - 1; i >= 0; i--) {
     const content: string = relevantMessages[i].content || '';
     if (usedChars + content.length > CONTENT_BUDGET) {
-      if (kept.length === 0) {
+      if (trailing.length === 0 && kept.length === 0) {
         // Even the single most recent message alone exceeds the budget - keep it,
         // truncated, rather than send nothing.
-        kept.unshift(content.substring(0, CONTENT_BUDGET));
+        trailing.unshift(content.substring(0, CONTENT_BUDGET));
       }
       break;
     }
-    kept.unshift(content);
+    trailing.unshift(content);
     usedChars += content.length;
   }
-  const relevantContent = kept.join('\n\n---\n\n');
+  const relevantContent = [...kept, ...trailing].join('\n\n---\n\n');
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -547,10 +627,10 @@ async function extractCharactersWithClaude(
         model: "claude-haiku-4-5-20251001",
         max_tokens: 2000,
         temperature: 0,
-        system: "You are a strict JSON extraction tool. Output ONLY a valid JSON array of objects with 'name' and 'description' fields. Extract the playable character names and descriptions. Never continue the story. Never output anything except the JSON array.",
+        system: "You are a strict JSON extraction tool. Output ONLY a valid JSON array of objects with 'name' and 'description' fields. Extract the playable character names and descriptions. Never continue the story. Never output anything except the JSON array. CRITICAL: only include a character if their name is explicitly present in the provided content. The 'expected count' is a hint about how many characters SHOULD be findable, not a target to hit - if the content only names fewer than that, output only those. NEVER invent, guess, or fabricate an additional character to make the count match.",
         messages: [{
           role: "user",
-          content: `Extract ALL playable character names and their one-line descriptions from this mystery content. Output ONLY a JSON array like: [{"name":"Character Name","description":"Their description"}]\n\nExpected count: ${playerCount || 'unknown'}\n\n${relevantContent}`
+          content: `Extract ALL playable character names and their one-line descriptions from this mystery content. Output ONLY a JSON array like: [{"name":"Character Name","description":"Their description"}]\n\nExpected count: ${playerCount || 'unknown'} (a hint, not a requirement - if you can only find fewer names explicitly stated in the content below, output only those; do not invent characters to reach this number)\n\n${relevantContent}`
         }],
       }),
     });
@@ -765,7 +845,7 @@ serve(async (req) => {
     // output and will keep drifting; `extractRosterFromMessage` is the same parser that
     // will later read this message, so chooser and reader cannot disagree.
     if (!conversation.approved_concept_message_id && conversation.messages) {
-      const candidate = findLatestConceptMessage(conversation.messages as any[]);
+      const candidate = findLatestConceptMessage(conversation.messages as any[], conversation.player_count);
       // Only snapshot real DB ids, not client-generated msg- placeholders
       if (candidate?.id && !String(candidate.id).startsWith('msg-') && candidate.id !== 'initial-message') {
         const { error: snapErr } = await supabase
@@ -806,7 +886,7 @@ serve(async (req) => {
     if (conversation.approved_concept_message_id && conversation.messages) {
       const currentSnapshotMsg = (conversation.messages as any[])
         .find((m: any) => m.id === conversation.approved_concept_message_id);
-      const latestConceptMsg = findLatestConceptMessage(conversation.messages as any[]);
+      const latestConceptMsg = findLatestConceptMessage(conversation.messages as any[], conversation.player_count);
 
       if (
         currentSnapshotMsg && latestConceptMsg &&
@@ -1018,7 +1098,8 @@ serve(async (req) => {
     // they may have explicitly removed.
     let extractedCharacters = extractCharactersFromMessages(
       conversation.messages,
-      conversation.approved_concept_message_id
+      conversation.approved_concept_message_id,
+      conversation.player_count
     );
     let extractionMethod = extractedCharacters ? 'regex' : 'none';
 
