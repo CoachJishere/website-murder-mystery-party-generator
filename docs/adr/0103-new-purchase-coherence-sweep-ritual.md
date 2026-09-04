@@ -334,6 +334,8 @@ Not deployed because applying it means duplicating the live Make.com scenario in
 
 **Not done:** the unpaid 9-accomplice outlier ("Death In The Spotlight") wasn't investigated further — never purchased, so no customer impact, and 9 tagged characters suggests a distinct enough failure mode from today's 2-character pattern that it likely doesn't share the same root cause. No corpus-wide check for other `character_role` mistagging shapes unrelated to `accomplice` (e.g., a `redHerring` narratively behaving like a `suspect`) — out of scope for this addendum, which was specifically triggered by the accomplice-count query.
 
+**Decision (2026-09-04, with Jonathan): validate v63 against the next real `has_accomplice=true` purchase instead of a synthetic test run.** Jonathan imported `Parent63` into Make.com but explicitly chose not to run a paid test generation now. This only actually validates the fix if `Parent63` is the scenario the production webhook is pointed at — not yet confirmed in this session. Follow-up for whoever runs the next `sweep` on an accomplice-enabled purchase: explicitly re-run the Addendum 19 corpus query (`character_role='accomplice'` count > 1) scoped to that package as part of the standard checklist, so the fix gets a real confirm/deny rather than being caught only if it happens to recur.
+
 ## Key files
 
 - `CLAUDE.md` — the `sweep` shorthand command definition
