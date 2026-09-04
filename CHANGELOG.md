@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-04
+
+### Fix: Make.com generation fabricated 4 of 11 characters on a paid order, ignoring the customer's approved roster ([ADR-0118](docs/adr/0118-make-parent-scenario-fabricates-characters-ignoring-extracted-roster.md))
+
+Customer (Shaun, "The Hollingsworth Estate," conversation `bf336652-6bff-40de-83ca-836e24470c4e`) emailed that his hunter character had been "changed to a priest." DB investigation found the actual defect was larger: 4 of 11 delivered characters (a priest, a lab assistant, and two duplicate "ambitious vampire" characters) were fabricated identities appearing nowhere in the conversation's 79 messages — not just the one the customer noticed. The other 7 characters were already correctly cross-referencing the 4 missing correct identities (Adrienne Fairweather, William Gray, Cole Voss, Everett Moss) by name in their rumors and round-questions, meaning players would have hit a dead end asking a question addressed to a character that didn't exist in their set.
+
+Root cause traced to `mystery_packages.extracted_characters` — populated by Make.com's parent scenario, which fabricated a fresh cast instead of treating the extracted roster/transcript as authoritative (smoking-gun evidence: its "Werewolf" description read "Moss-covered beast," a corruption of guest surname "Moss" into a physical description). Confirmed this repo's own roster-extraction code (hardened by ADR-0068/0057/0110/0069/0059) was NOT the cause. Neither the "Remove a Character" feature (removal-only) nor `regenerate-child-content`/`regenerate-parent-content` (can't rewrite `character_name`/`character_role`) could do an in-place identity swap, so the 4 characters' full content (background, secret, relationships, all round branches, final statement, confession) was hand-written to match the customer's approved concept and the other 7 characters' existing cross-references, then applied directly via SQL. `extracted_characters` corrected so future auto-recovery doesn't re-propagate the fabrication. Verified clean: `package_completion_blocking_defects()` null, no meta-leak/victim-mismatch flags, no residual references to the old fabricated names. Scope-checked across all packages — isolated to this one order, not an active mass-defect. The actual Make.com blueprint bug remains unfixed (outside this repo, no tool access this session) — flagged as open follow-up.
+
 ## 2026-09-02
 
 ### Docs: committed an orphaned ADR-0078 draft, corrected its stale ADR-0036 gating claim, closed out the corporate/office translation follow-up
