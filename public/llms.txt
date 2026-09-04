@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 287 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 288 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -255,6 +255,7 @@ This index organizes 287 published guides by topic cluster. All guides are avail
 - [Murder Mystery Party Name Tags & Badges](https://www.mysterymaker.party/blog/murder-mystery-party-name-tags-badges-ideas): Murder mystery character name tags and badge ideas. DIY designs by theme (Victorian, noir, 1920s), materials, Canva templates, and printing tips.
 - [Murder Mystery Party Photography Tips](https://www.mysterymaker.party/blog/murder-mystery-party-photography-tips): Capture the best moments of your murder mystery party. Photography tips, lighting strategies, candid shots, social media posting, and privacy considerations.
 - [Murder Mystery Party Printable Props & Templates](https://www.mysterymaker.party/blog/murder-mystery-party-printable-props-templates): Printable murder mystery props: character sheets, evidence cards, clue envelopes, case files. DIY templates and design tips for immersive games.
+- [Murder Mystery Party RSVP Management Tips](https://www.mysterymaker.party/blog/murder-mystery-party-rsvp-management-tips): Master murder mystery RSVP management. Character assignment, plus-one handling, waitlist strategies, and digital tools for guest coordination.
 - [Murder Mystery Party Script Template](https://www.mysterymaker.party/blog/murder-mystery-party-script-template-guide): Murder mystery script template guide: essential components like character guides, host guides, clue cards, timeline, and solution documentation.
 - [Murder Mystery Party Seating Arrangement](https://www.mysterymaker.party/blog/murder-mystery-party-seating-arrangement-guide): Strategic seating arrangements for murder mystery parties. How to seat suspects near each other, manage friend groups, and maximize clue exchange.
 - [Murder Mystery Party With Costumes: Complete Guide](https://www.mysterymaker.party/blog/murder-mystery-party-with-costumes-guide): Complete costume guide for murder mystery parties. DIY and purchased options by theme, coordination, and sourcing strategies.
