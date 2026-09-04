@@ -2,6 +2,14 @@
 
 ## 2026-09-04
 
+### Feature: new detector for fabricated/absent characters, swept all paid packages — isolated incident confirmed, one unrelated finding surfaced ([ADR-0118](docs/adr/0118-make-parent-scenario-fabricates-characters-ignoring-extracted-roster.md) Addendum 2)
+
+Built `list_packages_with_characters_absent_from_conversation()` (matches the existing `list_packages_with_X()` sweep-ritual convention) to catch the Hollingsworth Estate failure shape going forward: flags a character whose name doesn't appear anywhere in its own conversation's transcript.
+
+First run (ungated) produced 4 false positives, all from theme-only-brief conversations where the customer never proposed specific names at all (so the AI inventing every name is correct behavior) — confirmed by checking `approved_concept_message_id IS NULL` on all 3 non-Hollingsworth flags, and cross-checked one against its actual delivered character count (exact match to `player_count`, confirming it shipped correctly). Gated the detector on `approved_concept_message_id IS NOT NULL` — only meaningful to check "did the customer's stated roster survive" when they actually stated one — which eliminated all 3 false positives.
+
+Swept all 81 paid conversations with a snapshot: **zero matches to the ADR-0118 defect shape beyond the already-fixed Hollingsworth Estate package** — confirms this was genuinely isolated, not an active pattern. The sweep did surface one real but unrelated bug: "Tod Auf Der Alm 3000" has a character row named "Marina" whose own background text introduces them as "Captain Robin/Robina Frost" — a name-drift issue (content vs. column disagree), not a fabrication. Reported for a separate decision, not fixed here.
+
 ### Fix: root-caused and fixed the actual systemic bug behind the fabricated-characters incident — it was in this repo, not Make.com ([ADR-0118](docs/adr/0118-make-parent-scenario-fabricates-characters-ignoring-extracted-roster.md) Addendum 1)
 
 Same-day follow-up to the fabricated-characters fix below. Tracing the real Make.com blueprint (`temp-files/MM Live - Parent62`) showed `extracted_characters` is a webhook *input* field, not something Make.com computes — ruling out the original theory entirely and pointing back into `mystery-webhook-trigger/index.ts`.
