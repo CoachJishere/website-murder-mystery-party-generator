@@ -2,6 +2,10 @@
 
 ## 2026-09-04
 
+### Fix: closed the last "meta-text leak" false positive — detector now shows 0 packages flagged corpus-wide ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 20)
+
+The 2 remaining `[choose ` hits left over after today's earlier fixes turned out to be another false positive, this time in the *original* pre-Addendum-18 marker: `Death At Villa Amore` and `Before The Nikah` both matched on `[choose a name or leave blank for host to personalise]` in the detective's opening statement — the documented legitimate host-fill-in convention, not a leak. Confirmed corpus-wide that no other package matches `\[choose ` with anything else, so excluding this exact phrase (migration `meta_text_leak_detector_exclude_legitimate_choose_a_name_placeholder`) costs zero real detection coverage. This also resolves the "5-package meta-text/CoT leak alert... deferred pending a remediation-approach decision" note below — that backlog is now fully remediated, detector confirms 0 flags.
+
 ### Fix: health check re-flagged The Hollingsworth Estate's legitimate archetype/true-name cast design as a structural defect — excluded the package, not generalized ([ADR-0118](docs/adr/0118-make-parent-scenario-fabricates-characters-ignoring-extracted-roster.md) Addendum 3)
 
 The scheduled health check (issue #3) flagged this package under check 11 (`name_background_mismatch`: Werewolf → background says "Julian Harwell"; Zombie → background says "Wren Sorrel"). Not a new bug — this is the same package from ADR-0118's fabricated-character fix, and the archetype-display-name/true-name-in-background pattern was already confirmed correct (customer's own approved concept-chat design), not corrupted. Excluded this package's `package_id` from check 11 in `.github/workflows/health-check.yml`, mirroring the existing Bollinger exclusion pattern in check 5, rather than teaching the detector a general archetype-name heuristic — one occurrence isn't enough evidence to generalize, and a looser matcher risks missing a real future identity-corruption defect.
