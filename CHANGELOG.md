@@ -2,6 +2,12 @@
 
 ## 2026-09-04
 
+### Fix: caught my own detector's false positives, fixed 9 more paid packages leaking "relationship matrix" text, drafted a targeted prompt guard ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 20)
+
+Follow-up to Addendum 18. Before trusting the "16 packages flagged" count, checked it — the bare `relationship matrix` term also matches two legitimate contexts (the `rumors` field's standard host-instruction text, and one literal in-story prop). Rescoped the regex to the character-narrative fields only; real count dropped to 11, 2 of which are an unrelated pre-existing `[choose ` match, not today's pattern.
+
+Also answered whether "relationship matrix" is a removable old artifact (it isn't — it's Section 2 of the live master-context planning prompt, and the current Child blueprint already has two anti-leak guards naming it, they just don't cover the specific "character has zero hostile relationships/allies" edge case that caused every confirmed leak). Fixed the remaining 9 real paid packages (2026-05-07 through 2026-08-30) across 3 leak shapes: reworded empty-relationship fallbacks, deleted residual self-listed-as-own-ally lines (same bug class as the Aug 16 fix), deleted unfilled template placeholders. Drafted `MM Live - Child (Unified)37-EmptyRelationshipFallbackGuard.blueprint.json` adding a positive instruction for the empty case to all 8 AI-call modules — not yet imported into Make.com, needs Jonathan's import plus a follow-up sweep to confirm it actually works before this is resolved.
+
 ### Fix: corpus check on the "accomplice trio" bug — 3 paid packages found, root-caused to a Make.com prompt gap, 2 mistagged characters fixed, blueprint fix drafted not deployed ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 19)
 
 Follow-up to Addendum 17. Corpus query (`character_role='accomplice'` count > 1 per package) found 4 packages total, 3 paid: Lethal Mutations (Addendum 17, already fixed), Sunset Songs Scandal (32p), and The Cognitive Dissonance Incident (16p). The latter two are a different symptom of the same root cause than Lethal Mutations: their `detective_script` reveals were already correct (the 2nd "accomplice" — Sienna Strobe, Dr. Jordan Blackwood — never actually helped plan or execute the murder), but `character_role='accomplice'` also drives `isReassignRole()` in `GuestDropoutPanel.tsx` (ADR-0088's Remove-a-Character feature), so the mistag risked incorrectly triggering full murderer/accomplice plot-reassignment if a host ever dropped that guest.
