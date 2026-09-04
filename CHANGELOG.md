@@ -2,6 +2,12 @@
 
 ## 2026-09-04
 
+### Fix: paid package's detective-script reveal left a confessed conspirator unarrested — new "accomplice trio" bug class, no detector covers it ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 17)
+
+New-purchase sweep of "Lethal Mutations: Death At The Helix Institute" (conversation `11610ef0-bade-4a88-926f-679c381a03ef`, package `6958982f-1a3c-4f4a-bd20-3cc68866cc70`). All 3 automated detectors and `package_completion_blocking_defects()` came back clean, and no `notify-generation-issue` alert fired — correctly, since this isn't a data-completeness or leaked-text defect. `master_context`'s own story bible deliberately designed a three-person conspiracy (murderer + an "accomplice trio" of two accomplices, Dr. Marlowe/Marlo Fenn and Nikolai/Nikki Petrov, both correctly `character_role='accomplice'` with full, self-consistent content, including Nikolai/Nikki's `final_statement` explicitly confessing to serving as lookout) — but `master_context`'s `accompliceDetails` field is singular and only captured Marlowe/Marlo, so `detective_script`'s climactic REVEAL named and arrested only two of the three conspirators, leaving a self-confessed co-conspirator unaddressed at the end of the game.
+
+Fixed by hand: edited `detective_script`'s REVEAL section (SQL `UPDATE`, verified before/after) to add a confrontation beat for Nikolai Petrov grounded in the roster's own elimination-reason detail, and updated the arrest line to cover all three. Also fixed one unrelated grammar slip in `game_overview` ("A investor" → "An investor"). Grepped `host_guide`/`evidence_cards`/`hosting_tips` for other singular-accomplice references (none) and all 11 characters for leaked brackets/placeholders (clean). Not determined whether this recurs elsewhere — no corpus-wide check run; flagged as the trigger to decide between another one-off patch or teaching the reveal-generation step to read the roster's plural `role` field if it surfaces again.
+
 ### Feature: new detector for fabricated/absent characters, swept all paid packages — isolated incident confirmed, one unrelated finding surfaced ([ADR-0118](docs/adr/0118-make-parent-scenario-fabricates-characters-ignoring-extracted-roster.md) Addendum 2)
 
 Built `list_packages_with_characters_absent_from_conversation()` (matches the existing `list_packages_with_X()` sweep-ritual convention) to catch the Hollingsworth Estate failure shape going forward: flags a character whose name doesn't appear anywhere in its own conversation's transcript.
