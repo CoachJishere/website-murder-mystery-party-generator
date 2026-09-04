@@ -308,6 +308,32 @@ Sweep of "Murder At The Golden Feather Awards" (conversation `97115032-8948-4810
 
 **Not determined — and not something to decide solo:** whether/when to remediate the other 15 paid packages now flagged by the extended detector, and whether the frequency once fully counted justifies the prompt-level fix discussed above. Both are follow-up decisions for Jonathan, not resolved by this addendum — this addendum only covers the current order plus the detector extension.
 
+## Addendum 19 (2026-09-04): corpus check on Addendum 17's "accomplice trio" bug — 3 real paid hits, root-caused to a specific gap in `MM Live - Parent62`'s prompt, blueprint fix drafted (not deployed)
+
+Follow-up to Addendum 17. Jonathan asked whether the "accomplice trio" bug had been addressed systemically. Ran the corpus check Addendum 17 deferred: every `mystery_packages` row joined to `mystery_characters` grouped by package, filtered to `count(*) filter (where character_role = 'accomplice') > 1`.
+
+**4 packages corpus-wide, 3 paid.** One unpaid outlier ("Death In The Spotlight," 25 players, `is_paid=false`, generated 2026-04-21) has **9** `accomplice`-tagged characters — a different, older failure shape, deprioritized since it was never purchased or played. The 3 paid hits, checked individually:
+
+| Package | Extra `accomplice`-tagged character | Actual narrative role |
+|---|---|---|
+| Lethal Mutations (Addendum 17, fixed) | Nikolai/Nikki Petrov | Genuine co-conspirator — planned the murder, served as lookout, confesses to it in `final_statement` |
+| Sunset Songs Scandal (32p, purchased 2026-08-14) | Sienna Strobe | Innocent bystander who merely overheard a suspicious comment — no involvement in the crime |
+| The Cognitive Dissonance Incident (16p, purchased 2026-07-27) | Dr. Jordan/Jules Blackwood | Institutionally complicit enabler (buried misconduct complaints) — `final_statement` explicitly states "I didn't kill Morgan," never claims to have helped plan or execute it |
+
+**This split matters: it's one root cause producing two different symptoms, not one bug.** For Lethal Mutations, the reveal was actually wrong (a real conspirator went unarrested). For the other two, the reveal was already correct — Sienna and Jordan shouldn't be arrested, because they didn't do it. Confirmed both packages' `detective_script` reveals only ever named the murderer + the one formally-selected accomplice, matching this. The actual defect in those two is the `character_role` tag itself: `character_role === 'accomplice'` also drives `isReassignRole()` in `GuestDropoutPanel.tsx` (ADR-0088's Remove-a-Character feature) — a mistagged character would incorrectly trigger the heavyweight murderer/accomplice plot-reassignment flow if a host ever removed that guest, corrupting a package that was otherwise fine.
+
+**Root-caused in the live blueprint (`temp-files/MM Live - Parent62 (Package ID Race Fix).blueprint.json`), read locally, nothing edited in Make.com.** Confirmed this repo's own code never writes `character_role` — it's set entirely by the Make.com parent scenario and this repo just persists whatever it sends (`grep -rln character_role` across `src/` and `supabase/functions/` turns up only downstream *readers*: `GuestDropoutPanel.tsx`, `adaptationService.ts`, `CharacterAccess.tsx`, none of them writers). Found the gap in Part 2's prompt: `motiveDistribution[]` (the per-character roster) assigns each character `"role": "[murderer/accomplice/redHerring/suspect]"` — free choice among 4 values per character, with **no constraint tying `accomplice` to the single character named in Part 1's `accompliceSelection`**, and Part 1's `<accomplice_handling>` block never explicitly forbids describing a second character as a co-conspirator. `has_accomplice` on the customer-facing form is a plain boolean (confirmed with Jonathan — the product has never offered multiple accomplices as an option), so any second `accomplice` tag is purely the model freelancing a richer conspiracy in Part 1's murderer-selection writeup and then carrying that framing into Part 2's roster — consistent across all 3 real hits, just landing with different narrative weight (full conspirator vs. mere enabler) depending on how far the model took it.
+
+**Fixed the two live mistags directly** — `character_role` on Sienna Strobe (package `64d63a5d-041f-4814-aadb-25cf22acc4b7`) and Dr. Jordan/Jules Blackwood (package `a0a985a9-2d2d-4176-a825-82ee6b2990be`) changed from `accomplice` to `suspect` (SQL `UPDATE`, matches their actual narrative role, closes the Remove-a-Character mistrigger risk). No `detective_script` changes needed for either — those were already correct.
+
+**Blueprint prompt fix drafted, deliberately NOT deployed.** Two text edits proposed for `MM Live - Parent62`'s Part 1 and Part 2 system prompts:
+- Part 1 `<accomplice_handling>`: add "There is EXACTLY ONE accomplice, always. Do not develop any other character as a co-conspirator, lookout, or knowing participant in planning or executing the murder... A character can be written as morally complicit... WITHOUT making them a co-conspirator in the murder itself."
+- Part 2 `motiveDistribution[].role`: constrain the field description so `'accomplice'` may only be assigned to the exact character named in `accompliceSelection.character`, with `'suspect'`/`'redHerring'` as the explicit fallback for complicity-flavored characters.
+
+Not deployed because applying it means duplicating the live Make.com scenario into a new numbered version (this project's established never-edit-in-place convention — Parent49 through Parent62, each a new duplicate) and a real test generation to verify, which costs live Anthropic spend requiring its own explicit go-ahead. Jonathan reviewed and accepted the diff; the Make.com duplication and test run are still his to schedule.
+
+**Not done:** the unpaid 9-accomplice outlier ("Death In The Spotlight") wasn't investigated further — never purchased, so no customer impact, and 9 tagged characters suggests a distinct enough failure mode from today's 2-character pattern that it likely doesn't share the same root cause. No corpus-wide check for other `character_role` mistagging shapes unrelated to `accomplice` (e.g., a `redHerring` narratively behaving like a `suspect`) — out of scope for this addendum, which was specifically triggered by the accomplice-count query.
+
 ## Key files
 
 - `CLAUDE.md` — the `sweep` shorthand command definition
@@ -319,4 +345,5 @@ Sweep of "Murder At The Golden Feather Awards" (conversation `97115032-8948-4810
 - `src/pages/MysteryChat.tsx` — per-message title write now lets a `# TITLE` heading match overwrite a non-placeholder title (Addendum 16); `src/pages/MysteryView.tsx`'s separate title-write effect still has its own stale predicate, not fixed under this addendum
 - `src/components/RecentSalesPopup.tsx` / `src/hooks/useRecentSalesPopup.ts` — homepage widget that displays `conversations.title` raw via `get_recent_public_sales` RPC, zero validation (Addendum 16)
 - `list_packages_with_meta_text_leak()` (DB function) — marker regex extended to catch "relationship matrix" / "cast dynamics" / "self-reference" style leaks (Addendum 18); 16 packages (15 paid) now flagged corpus-wide, remediation not yet scheduled
+- `temp-files/MM Live - Parent62 (Package ID Race Fix).blueprint.json` — live parent generation blueprint; Part 1 `<accomplice_handling>` and Part 2 `motiveDistribution[].role` have a drafted-but-undeployed fix for the multi-accomplice mistagging bug (Addendum 19); next deploy should duplicate into a new numbered version, never edit in place
 - This ADR — the checklist itself, and the home for future addenda when a sweep finds and fixes something
