@@ -2,6 +2,16 @@
 
 ## 2026-09-04
 
+### Fix: health check re-flagged The Hollingsworth Estate's legitimate archetype/true-name cast design as a structural defect — excluded the package, not generalized ([ADR-0118](docs/adr/0118-make-parent-scenario-fabricates-characters-ignoring-extracted-roster.md) Addendum 3)
+
+The scheduled health check (issue #3) flagged this package under check 11 (`name_background_mismatch`: Werewolf → background says "Julian Harwell"; Zombie → background says "Wren Sorrel"). Not a new bug — this is the same package from ADR-0118's fabricated-character fix, and the archetype-display-name/true-name-in-background pattern was already confirmed correct (customer's own approved concept-chat design), not corrupted. Excluded this package's `package_id` from check 11 in `.github/workflows/health-check.yml`, mirroring the existing Bollinger exclusion pattern in check 5, rather than teaching the detector a general archetype-name heuristic — one occurrence isn't enough evidence to generalize, and a looser matcher risks missing a real future identity-corruption defect.
+
+Also confirmed the same run's 5-package "meta-text/CoT leak" alert is expected, not new — it's the widened-regex backlog from Addendum 18 surfacing on schedule, already deferred pending a remediation-approach decision.
+
+### Chore: imported the empty-relationship prompt guard blueprint (v37) into Make.com ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 20)
+
+Jonathan imported `MM Live - Child (Unified)37-EmptyRelationshipFallbackGuard.blueprint.json` into Make.com. Not yet confirmed (no Make.com API access this session) that the production webhook's active scenario is actually v37 rather than a prior version, and not yet validated against a real generation — next sweep on a relevant purchase should explicitly re-run `list_packages_with_meta_text_leak()` to get a real confirm/deny.
+
 ### Fix: caught my own detector's false positives, fixed 9 more paid packages leaking "relationship matrix" text, drafted a targeted prompt guard ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 20)
 
 Follow-up to Addendum 18. Before trusting the "16 packages flagged" count, checked it — the bare `relationship matrix` term also matches two legitimate contexts (the `rumors` field's standard host-instruction text, and one literal in-story prop). Rescoped the regex to the character-narrative fields only; real count dropped to 11, 2 of which are an unrelated pre-existing `[choose ` match, not today's pattern.

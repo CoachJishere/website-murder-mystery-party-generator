@@ -257,15 +257,21 @@ jobs:
           # you cannot invent the correct role, choose between two murderers, or
           # un-cross-wire a cast. Regeneration is the only remedy, so this alert
           # is deliberately outside the auto-remediation worker's fix set.
+          # The Hollingsworth Estate (27a5d467…) is excluded explicitly, same as
+          # the Bollinger exclusion in check 5: its customer-approved concept
+          # deliberately names characters by monster archetype (Werewolf, Zombie,
+          # Ghost) while `background` carries their true name underneath — verified
+          # correct-not-corrupted in ADR-0118, and the detector has no way to tell
+          # a real name_background_mismatch apart from this one customer's design.
           STRUCT=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_structural_defects" \
             -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
           if [ "$STRUCT" = "QUERY_FAILED" ]; then
             PROBLEMS="${PROBLEMS}- 🟠 Could not run the structural-defect detector (Supabase API error)\n"
             STRUCT_COUNT="?"
           else
-            STRUCT_COUNT=$(echo "$STRUCT" | jq 'length')
+            STRUCT_COUNT=$(echo "$STRUCT" | jq '[.[] | select(.package_id != "27a5d467-dc9f-4b10-b03a-8d0c4668e025")] | length')
             if [ "$STRUCT_COUNT" -gt 0 ]; then
-              PROBLEMS="${PROBLEMS}- 🔴 ${STRUCT_COUNT} package(s) with structural defects — NOT auto-fixable, needs regeneration: $(echo "$STRUCT" | jq -r '[.[] | "\(.title) [paid=\(.is_paid)] \(.defects | join(" | "))"] | join("; ")')\n"
+              PROBLEMS="${PROBLEMS}- 🔴 ${STRUCT_COUNT} package(s) with structural defects — NOT auto-fixable, needs regeneration: $(echo "$STRUCT" | jq -r '[.[] | select(.package_id != "27a5d467-dc9f-4b10-b03a-8d0c4668e025") | "\(.title) [paid=\(.is_paid)] \(.defects | join(" | "))"] | join("; ")')\n"
             fi
           fi
 
