@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-05
+
+### Fix: paid customer's confirmed roster reduction never took effect — a same-day regression, not the old ADR-0069 gap ([ADR-0069](docs/adr/0069-stale-approved-concept-snapshot-after-later-revision.md) Addendum 1)
+
+Customer (Raegen Schott, "Murder At The Golden Feather Awards," conversation `97115032-8948-4810-a8ca-3a09c9a30ea1`) emailed: she'd removed "Monty/Mona Magpie" from her roster in chat before purchasing (confirmed twice), but her delivered package still had 22 characters including Mona Magpie. A standalone node harness (real message content, zero Anthropic spend) proved `rosterDiffersMeaningfully`'s re-capture logic itself works correctly — the actual bug is a same-day regression: `isPlausibleRosterCount()` (added hours earlier the same day, commit `3d6b694`/v134, to fix a *different* false-positive bug) rejected the customer's legitimate final 21-person roster as "implausible" because `player_count` (a form-only value, never updated by chat-based edits) was still 24, outside the `playerCount - 2` tolerance floor. `findLatestConceptMessage` fell back to the stale 22-person snapshot, and the re-capture never fired.
+
+Fixed the customer's package directly via the existing "Remove a Character" pipeline (`adapt-mystery-apply`), as a $0 pre-paid single-row batch since this was our bug: verified outcome, 21 characters, `player_count` auto-corrected, zero residual references, all detectors clean. Checked exposure: only 3 packages have generated since the 3d6b694 deploy; the other 2 (Lethal Mutations, Dirty Martini) never had a late roster-count change in their chats, so this specific failure mode had no opportunity to trigger for them. The actual regression in `isPlausibleRosterCount`'s tolerance window is **not yet fixed** — 3 candidate directions written up in the ADR, deliberately left as a decision for Jonathan rather than a same-day third patch to a function that's already been touched twice today.
+
 ## 2026-09-04
 
 ### Fix: closed the last "meta-text leak" false positive — detector now shows 0 packages flagged corpus-wide ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 20)
