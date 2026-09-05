@@ -2,6 +2,12 @@
 
 ## 2026-09-05
 
+### Fix: `has_accomplice` flag corrected + auto-synced; root-caused an orphaned template bracket leaking into 11 paid packages' reveal ([ADR-0120](docs/adr/0120-orphaned-accomplice-stage-direction-leaks-into-reveal.md))
+
+Sweeping "The Oath And The Poisoned Cup" found `conversations.has_accomplice = false` despite a correctly-built accomplice storyline the customer explicitly requested in chat. Fixed directly, then added an auto-sync to the existing `validate_package_characters()` completion trigger (migration `20260905183501_sync_has_accomplice_from_actual_characters.sql`) so `has_accomplice` self-corrects from the real character roster on every future completion — tested end-to-end on a live package.
+
+Checking the historical corpus in the opposite direction (`has_accomplice=true`, no accomplice character) found 30 packages, far too many to be the same narrow bug. Root cause: the Make.com Parent blueprint's `detective_script` REVEAL prompt has two separate mechanisms for the accomplice confession beat — a correctly-worded conditional instruction, and a second, leftover, always-present line styled like a legitimate stage direction (`*[If there is an accomplice: the accomplice (player) reads their confession aloud.]*`) that the model frequently copies verbatim into player-facing text even with no accomplice, leaking an unresolved bracket into the reveal a host reads aloud at the climax. Confirmed in 11 paid packages, 2026-04-22 through 2026-09-04. Drafted (not imported) `Parent64`, deleting the orphaned line across all 4 routes that carry it — verified as a clean, minimal diff against Parent63. Historical remediation of the 11 packages' delivered content is not yet decided — flagged for a per-package `sweep`-style pass rather than a bulk script, since a blind mechanical fix risks being wrong per-package.
+
 ### Fix: welcome discount could go unseen by fast-converting customers due to a signup-to-purchase-page race ([ADR-0119](docs/adr/0119-welcome-discount-race-condition-and-checkout-visibility.md))
 
 A sweep of the last two weeks' full-price ($24.99) purchases (requested to understand the sales cycle for customers who "missed" the 20%-off welcome discount) found the opposite of the assumed pattern: 5 of 8 full-price purchases were same-session buyers (36 min-17 hrs after signup) who still had a genuinely valid, unredeemed promo code at purchase time — confirmed directly against Stripe (`active: true`, `times_redeemed: 0`). Only 3 of 8 were genuinely slow deciders (15-24 days) with an actually-expired code.
