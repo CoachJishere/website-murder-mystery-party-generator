@@ -45,11 +45,11 @@ assert.ok(start > 0 && end > start, 'could not locate the pure prelude');
 const { transformSync } = await import('esbuild');
 const js = transformSync(
   src.slice(start, end) +
-    '\nexport { extractRosterFromMessage, findLatestConceptMessage, rosterDiffersMeaningfully, MIN_ROSTER_SIZE };',
+    '\nexport { extractRosterFromMessage, findLatestConceptMessage, rosterDiffersMeaningfully, isPlausibleRosterCandidate, rosterOverlapFraction, MIN_ROSTER_SIZE };',
   { loader: 'ts', format: 'esm' },
 ).code;
 
-const { extractRosterFromMessage, findLatestConceptMessage, rosterDiffersMeaningfully } = await import(
+const { extractRosterFromMessage, findLatestConceptMessage, rosterDiffersMeaningfully, isPlausibleRosterCandidate, rosterOverlapFraction } = await import(
   'data:text/javascript;base64,' + Buffer.from(js).toString('base64')
 );
 
@@ -252,6 +252,78 @@ check('ADR-0069: a later PROSE-only revision (no restated roster) is not flagged
   const laterProseOnly = extractRosterFromMessage('Let\'s change it to Victorian era, with witty banter and clever wordplay — full absurd comedic tone, and let\'s rename the institution away from Morehouse.');
   assert.strictEqual(laterProseOnly.length, 0);
   assert.ok(!rosterDiffersMeaningfully(snapshotRoster, laterProseOnly));
+});
+
+// ADR-0069 Addendum 1 (2026-09-05): "Murder At The Golden Feather Awards"
+// (97115032-...) — customer removed one character from a 22-person roster via chat
+// alone ("can we get rid of the magpie") without ever touching the player_count form
+// field, which stayed at its original value of 24. isPlausibleRosterCount(21, 24)
+// rejects the real final roster as implausible (21 < 24-2), so pre-fix,
+// findLatestConceptMessage fell back to the stale 22-person snapshot and the
+// customer's confirmed edit never took effect. isPlausibleRosterCandidate's
+// snapshot-overlap signal is what closes this gap.
+const goldenFeatherSnapshot = roster([
+  'Cyrus/Cybil Cassowary', 'Carter/Coraline Cock-of-the-Rock', 'Percy/Persephone Peacock', 'Oliver/Olive Owl',
+  'Dashiell/Delia Duck', 'Polly/Paolo Parrot', 'Hedwig/Harlan Hummingbird', 'Vinny/Violet Vulture',
+  'Percival/Patricia Penguin', 'Baxter/Bianca Blue-footed Booby', 'Duke/Duchess Dove', 'Monty/Mona Magpie',
+  'Preston/Priscilla Prairie Chicken', 'Wally/Wanda Woodpecker', 'Ozzy/Opal Ostrich', 'Sebastian/Seraphina Swallow',
+  'Carla/Carlos Cardinal', 'Hugo/Henrietta House Finch', 'Sunny/Solomon Summer Tanager', 'Tucker/Tilly Tufted Titmouse',
+  'Blake/Blaire Blue Jay', 'Willa/Wren Carolina Wren',
+]);
+const goldenFeatherRevised = roster([
+  'Cyrus/Cybil Cassowary', 'Carter/Coraline Cock-of-the-Rock', 'Percy/Persephone Peacock', 'Oliver/Olive Owl',
+  'Dashiell/Delia Duck', 'Polly/Paolo Parrot', 'Hedwig/Harlan Hummingbird', 'Vinny/Violet Vulture',
+  'Percival/Patricia Penguin', 'Baxter/Bianca Blue-footed Booby', 'Duke/Duchess Dove',
+  'Preston/Priscilla Prairie Chicken', 'Wally/Wanda Woodpecker', 'Ozzy/Opal Ostrich', 'Sebastian/Seraphina Swallow',
+  'Carla/Carlos Cardinal', 'Hugo/Henrietta House Finch', 'Sunny/Solomon Summer Tanager', 'Tucker/Tilly Tufted Titmouse',
+  'Blake/Blaire Blue Jay', 'Willa/Wren Carolina Wren',
+]);
+
+check('ADR-0069 Addendum 1: a legitimate roster trim survives a stale player_count when it overlaps the current snapshot', () => {
+  const snapshotRoster = extractRosterFromMessage(`## Character List (22 players)\n\n${goldenFeatherSnapshot}`);
+  const revisedRoster = extractRosterFromMessage(`## Character List (21 players)\n\n${goldenFeatherRevised}`);
+  assert.strictEqual(snapshotRoster.length, 22);
+  assert.strictEqual(revisedRoster.length, 21);
+  // player_count stuck at the original 24 — pre-fix, this alone made 21 "implausible"
+  assert.ok(!isPlausibleRosterCandidate(revisedRoster, 24), 'sanity check: player_count alone should still find this implausible');
+  assert.ok(
+    isPlausibleRosterCandidate(revisedRoster, 24, snapshotRoster),
+    'high overlap with the current snapshot should make it plausible despite the stale player_count',
+  );
+});
+
+check('ADR-0069 Addendum 1: findLatestConceptMessage picks the real trimmed roster, not the stale snapshot, given a reference roster', () => {
+  const goldenFeatherMsgs = [
+    { id: 'snapshot', role: 'assistant', content: `## Character List (22 players)\n\n${goldenFeatherSnapshot}`, created_at: '2026-09-03T07:08:23Z' },
+    { id: 'u-later', role: 'user', content: "can we get rid f the magpie so there's only 21 characters now", created_at: '2026-09-04T19:44:14Z' },
+    { id: 'a-later', role: 'assistant', content: `## Character List (21 players)\n\n${goldenFeatherRevised}`, created_at: '2026-09-04T19:44:31Z' },
+  ];
+  const snapshotRoster = extractRosterFromMessage(goldenFeatherMsgs[0].content);
+  // player_count = 24, the stale original value — this is the exact regression shape
+  const latest = findLatestConceptMessage(goldenFeatherMsgs, 24, snapshotRoster);
+  assert.strictEqual(latest.id, 'a-later', 'must pick the customer\'s real 21-person revision, not fall back to the stale 22-person snapshot');
+});
+
+check('ADR-0069 Addendum 1: a fake structural match with near-zero overlap is still rejected even with a reference roster (ADR-0118 regression guard)', () => {
+  // "The Hollingsworth Estate" (bf336652-...) false positive: a later reply listing
+  // murder-method direction options happens to embed real character surnames inside
+  // unrelated phrases ("Holloway's Compound"), which must NOT count as a name match —
+  // rosterOverlapFraction uses normalized EXACT equality, not substring, for exactly
+  // this reason.
+  const hollingsworthSnapshot = roster([
+    'Adrienne Fairweather', 'William Gray', 'Cole Voss', 'Everett Moss', 'Cleopatra',
+    'Cornelius Ashgrave', 'Dr. Victor Holloway', 'Raven', 'Julian Harwell', 'Marcus Sinclair', 'Wren Sorrel',
+  ]);
+  const hollingsworthFakeReply = roster([
+    "Holloway's Compound", "Ashgrave's Old Craft", "Cleopatra's Ancient Knowledge",
+    'A Shared Clue, Not a Single Culprit', 'My suggestion',
+  ]);
+  const snapshotRoster = extractRosterFromMessage(`## Character List (11 players)\n\n${hollingsworthSnapshot}`);
+  const fakeRoster = extractRosterFromMessage(`## Direction Options\n\n${hollingsworthFakeReply}`);
+  assert.strictEqual(snapshotRoster.length, 11);
+  assert.strictEqual(fakeRoster.length, 5);
+  assert.strictEqual(rosterOverlapFraction(fakeRoster, snapshotRoster), 0, 'surname-embedding phrases must not count as a name match');
+  assert.ok(!isPlausibleRosterCandidate(fakeRoster, 11, snapshotRoster), 'zero overlap plus implausible count must still be rejected');
 });
 
 console.log(`\n${passed} checks passed.`);

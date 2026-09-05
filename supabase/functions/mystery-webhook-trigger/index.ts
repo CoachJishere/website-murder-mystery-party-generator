@@ -267,19 +267,58 @@ function isPlausibleRosterCount(count: number, playerCount?: number | null): boo
 }
 
 /**
+ * ADR-0069 Addendum 1 (2026-09-05): is this candidate roster trustworthy, either by
+ * player_count plausibility OR by being a clear revision of a known-good reference
+ * roster (e.g. the current approved snapshot)?
+ *
+ * `player_count` alone regressed same-day: it's a form-captured value that chat-only
+ * edits never update, so a customer who legitimately trims their roster by more than
+ * `isPlausibleRosterCount`'s tolerance (e.g. removing one of 24 characters across
+ * several chat turns, form never touched) gets their real final roster rejected as
+ * "implausible" and the stale snapshot wins by default - reopening the exact gap
+ * ADR-0069 fixed, via a different mechanism (Golden Feather Awards, 2026-09-05).
+ *
+ * A high name-overlap with a reference roster (the customer's own prior approved
+ * cast) is a second, independent signal that survives a stale player_count: a real
+ * revision keeps most of the same names, while ADR-0118's original false-positive
+ * ("Holloway's Compound", "Ashgrave's Old Craft" - a murder-method options list, not
+ * a cast) shares essentially none, exact-match, with the real roster it was
+ * momentarily confused for. `referenceRoster` is optional and only supplied where a
+ * trustworthy prior roster actually exists (the re-capture check) - first-capture,
+ * where there is no prior roster to compare against, is unaffected and keeps relying
+ * on player_count alone, exactly as before this addendum.
+ */
+function isPlausibleRosterCandidate(
+  candidateRoster: ExtractedCharacter[],
+  playerCount?: number | null,
+  referenceRoster?: ExtractedCharacter[],
+): boolean {
+  if (isPlausibleRosterCount(candidateRoster.length, playerCount)) return true;
+  if (referenceRoster && referenceRoster.length > 0) {
+    return rosterOverlapFraction(candidateRoster, referenceRoster) >= 0.5;
+  }
+  return false;
+}
+
+/**
  * Latest assistant message that actually proposes a cast - the concept the user is
  * approving when they pay. Chronological, last wins, so a post-revision draft beats
  * an earlier one. Returns null when no message parses into a roster.
  *
- * When `playerCount` is provided, prefers the latest message whose parsed roster
- * count is also plausible against it (see `isPlausibleRosterCount`) over a more
- * recent structural match that isn't - this is what stops a later reply that
+ * When `playerCount` (and/or `referenceRoster`) is provided, prefers the latest
+ * message whose parsed roster is plausible per `isPlausibleRosterCandidate` over a
+ * more recent structural match that isn't - this is what stops a later reply that
  * merely LOOKS like a roster (e.g. a numbered list of narrative options) from
  * displacing the real one. Falls back to the plain "latest structural match"
- * behavior if no plausible-count candidate exists, so a real roster is still
- * returned when player_count itself is stale or wrong, rather than nothing.
+ * behavior if no plausible candidate exists, so a real roster is still returned
+ * when player_count itself is stale or wrong and no reference roster is available,
+ * rather than nothing.
  */
-function findLatestConceptMessage(messages: any[], playerCount?: number | null): any | null {
+function findLatestConceptMessage(
+  messages: any[],
+  playerCount?: number | null,
+  referenceRoster?: ExtractedCharacter[],
+): any | null {
   const assistant = (messages ?? [])
     .filter((m: any) => m.role === 'assistant' || m.is_ai)
     .sort((a: any, b: any) =>
@@ -288,10 +327,10 @@ function findLatestConceptMessage(messages: any[], playerCount?: number | null):
   let latest: any = null;
   let latestPlausible: any = null;
   for (const m of assistant) {
-    const count = extractRosterFromMessage(m.content || '').length;
-    if (count >= MIN_ROSTER_SIZE) {
+    const roster = extractRosterFromMessage(m.content || '');
+    if (roster.length >= MIN_ROSTER_SIZE) {
       latest = m;
-      if (isPlausibleRosterCount(count, playerCount)) latestPlausible = m;
+      if (isPlausibleRosterCandidate(roster, playerCount, referenceRoster)) latestPlausible = m;
     }
   }
   return latestPlausible ?? latest;
@@ -347,6 +386,25 @@ function mergeRosterContinuations(messages: any[]): any[] {
 }
 
 /**
+ * What fraction of these two rosters' names match, by normalized exact name (not
+ * substring/fuzzy) - shared by `rosterDiffersMeaningfully` and
+ * `isPlausibleRosterCandidate` below so both use one definition of "the same cast."
+ * Exact-match is deliberate: ADR-0118's fake "roster" ("Holloway's Compound",
+ * "Ashgrave's Old Craft") embeds real character surnames inside unrelated phrases,
+ * which would substring-match and defeat the whole point of this check. Normalized
+ * exact equality only credits an actual restated character name.
+ */
+function rosterOverlapFraction(a: ExtractedCharacter[], b: ExtractedCharacter[]): number {
+  if (a.length === 0 || b.length === 0) return 0;
+  const normalize = (n: string) => n.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const aNames = new Set(a.map((c) => normalize(c.name)));
+  const bNames = new Set(b.map((c) => normalize(c.name)));
+  let shared = 0;
+  for (const n of aNames) if (bNames.has(n)) shared++;
+  return shared / Math.max(aNames.size, bNames.size, 1);
+}
+
+/**
  * ADR-0069: does a LATER message that independently parses into a cast propose
  * a meaningfully different roster than the current snapshot? `findLatestConceptMessage`
  * already guarantees the later message is itself a clean, structurally complete roster
@@ -363,14 +421,7 @@ function rosterDiffersMeaningfully(
 ): boolean {
   if (latestRoster.length === 0) return false;
   if (snapshotRoster.length !== latestRoster.length) return true;
-
-  const normalize = (n: string) => n.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const snapshotNames = new Set(snapshotRoster.map((c) => normalize(c.name)));
-  const latestNames = new Set(latestRoster.map((c) => normalize(c.name)));
-  let shared = 0;
-  for (const n of latestNames) if (snapshotNames.has(n)) shared++;
-  const overlap = shared / Math.max(snapshotNames.size, latestNames.size, 1);
-  return overlap < 0.5;
+  return rosterOverlapFraction(snapshotRoster, latestRoster) < 0.5;
 }
 
 // Primary extraction: regex-based (free, deterministic, <1ms)
@@ -400,20 +451,27 @@ function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: s
       // done — no header-shape guessing, no fall-through to a scan of other messages
       // that could resurrect a draft the user moved away from.
       const roster = extractRosterFromMessage(latestMessageWithList.content || '');
-      if (roster.length >= MIN_ROSTER_SIZE && roster.length <= 35 && isPlausibleRosterCount(roster.length, playerCount)) {
+      if (roster.length >= MIN_ROSTER_SIZE && roster.length <= 35) {
+        // ADR-0069 Addendum 1 (2026-09-05): deliberately NOT re-checking
+        // isPlausibleRosterCount here. That check was added same-day (3d6b694) as
+        // defense-in-depth against a corrupted `approved_concept_message_id` — but
+        // it duplicated a decision already made, more reliably, at the point the
+        // pointer was actually SET (capture/re-capture, both hardened with
+        // isPlausibleRosterCandidate's snapshot-overlap signal, see above). Re-
+        // litigating it here with player_count alone regressed: a legitimate large
+        // roster trim (customer removes several characters purely via chat,
+        // player_count never updated) got its own just-validated approved message
+        // rejected as "implausible" and silently fell through to a legacy scan of
+        // the wrong content (Golden Feather Awards, 2026-09-05). Trust the pointer
+        // once chosen — this mirrors this function's pre-3d6b694 behavior.
         console.log(`[CharExtract] Roster from approved message: ${roster.length} characters: ${roster.map(c => c.name).join(', ')}`);
         return roster;
       }
-      // A structural match that's the wrong size for this mystery (e.g. a later
-      // reply's "4 direction options" numbered list matching the same "N. **Bold**
-      // - text" shape as a real roster) is treated as NOT a roster, not accepted
-      // outright — fall through to the broader scan below rather than trusting a
-      // parse that's implausible against player_count.
-      console.warn(`[CharExtract] Approved message parsed to ${roster.length} characters (need ${MIN_ROSTER_SIZE}-35, plausible vs player_count=${playerCount ?? 'unknown'}) — falling through to legacy scan`);
-      // Actually fall through: don't leave latestMessageWithList pointed at a
-      // message we just decided isn't a real roster, or the header/secondary
-      // passes below would just re-parse the same wrong message instead of
-      // scanning the rest of the conversation for the real one.
+      console.warn(`[CharExtract] Approved message parsed to ${roster.length} characters (need ${MIN_ROSTER_SIZE}-35) — falling through to legacy scan`);
+      // Don't leave latestMessageWithList pointed at a message we just decided
+      // isn't a real roster, or the header/secondary passes below would just
+      // re-parse the same wrong message instead of scanning the rest of the
+      // conversation for the real one.
       latestMessageWithList = null;
     } else {
       console.warn(`[CharExtract] approved_concept_message_id ${approvedMessageId} not found in messages, falling back to latest`);
@@ -886,14 +944,23 @@ serve(async (req) => {
     if (conversation.approved_concept_message_id && conversation.messages) {
       const currentSnapshotMsg = (conversation.messages as any[])
         .find((m: any) => m.id === conversation.approved_concept_message_id);
-      const latestConceptMsg = findLatestConceptMessage(conversation.messages as any[], conversation.player_count);
+      // Computed before the candidate search (not after) so it can be passed in as
+      // the reference roster for isPlausibleRosterCandidate's overlap check (ADR-0069
+      // Addendum 1) - a candidate sharing most of ITS names is trusted even when its
+      // count fails the player_count tolerance, which is what a legitimate large
+      // roster trim needs, since player_count itself can be stale at this point.
+      const snapshotRoster = currentSnapshotMsg
+        ? extractRosterFromMessage(currentSnapshotMsg.content || '')
+        : [];
+      const latestConceptMsg = findLatestConceptMessage(
+        conversation.messages as any[], conversation.player_count, snapshotRoster,
+      );
 
       if (
         currentSnapshotMsg && latestConceptMsg &&
         latestConceptMsg.id !== currentSnapshotMsg.id &&
         new Date(latestConceptMsg.created_at).getTime() > new Date(currentSnapshotMsg.created_at).getTime()
       ) {
-        const snapshotRoster = extractRosterFromMessage(currentSnapshotMsg.content || '');
         const latestRoster = extractRosterFromMessage(latestConceptMsg.content || '');
 
         if (rosterDiffersMeaningfully(snapshotRoster, latestRoster)) {
