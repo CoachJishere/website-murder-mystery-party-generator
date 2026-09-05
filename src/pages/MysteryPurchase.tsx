@@ -593,7 +593,7 @@ const MysteryPurchase = () => {
       toast.info(t("purchase.toasts.redirectingToCheckout"), { duration: 2000 });
 
       // Track checkout initiation
-      trackBeginCheckout(id, mystery?.theme || undefined);
+      trackBeginCheckout(id, mystery?.theme || undefined, hasDiscount);
 
       // Construct URLs
       const baseUrl = window.location.origin;

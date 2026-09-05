@@ -16,7 +16,21 @@ export function useWelcomeDiscount() {
       return;
     }
 
-    const fetchDiscount = async () => {
+    // generate-welcome-discount (SignUp.tsx) is invoked non-blocking right after
+    // signup, with no retry of its own. A customer who reaches this page fast
+    // enough can beat that write to `profiles` - without a retry here, this
+    // hook's one-shot fetch finds no promo code, never re-checks, and the
+    // customer sees full price for the rest of the session even after the row
+    // is populated moments later. The generation call normally completes in
+    // well under a second, so a handful of short retries covers the race
+    // without meaningfully delaying page render for customers who never had a
+    // welcome discount at all (id-verified 2026-09-05 sweep: 5 of 8 full-price
+    // purchases in a 2-week window were same-session buyers with a still-valid,
+    // unredeemed promo code sitting unused in `profiles`).
+    let cancelled = false;
+    const RETRY_DELAYS_MS = [500, 1000, 2000, 3000];
+
+    const fetchDiscount = async (attempt = 0): Promise<void> => {
       try {
         // Fetch promo info and purchase status in parallel
         const [profileResult, purchaseResult] = await Promise.all([
@@ -33,6 +47,8 @@ export function useWelcomeDiscount() {
             .limit(1),
         ]);
 
+        if (cancelled) return;
+
         if (purchaseResult.data && purchaseResult.data.length > 0) {
           setHasPurchased(true);
           setLoading(false);
@@ -48,15 +64,24 @@ export function useWelcomeDiscount() {
             });
             setTimeRemaining(getTimeRemaining(profile.welcome_promo_expires_at));
           }
+          setLoading(false);
+          return;
         }
+
+        if (attempt < RETRY_DELAYS_MS.length) {
+          setTimeout(() => fetchDiscount(attempt + 1), RETRY_DELAYS_MS[attempt]);
+          return;
+        }
+
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching welcome discount:", error);
-      } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchDiscount();
+    return () => { cancelled = true; };
   }, [isAuthenticated, user?.id]);
 
   // Update countdown every 15s — at 60s a customer could click "buy" up to a

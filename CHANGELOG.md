@@ -2,6 +2,12 @@
 
 ## 2026-09-05
 
+### Fix: welcome discount could go unseen by fast-converting customers due to a signup-to-purchase-page race ([ADR-0119](docs/adr/0119-welcome-discount-race-condition-and-checkout-visibility.md))
+
+A sweep of the last two weeks' full-price ($24.99) purchases (requested to understand the sales cycle for customers who "missed" the 20%-off welcome discount) found the opposite of the assumed pattern: 5 of 8 full-price purchases were same-session buyers (36 min-17 hrs after signup) who still had a genuinely valid, unredeemed promo code at purchase time — confirmed directly against Stripe (`active: true`, `times_redeemed: 0`). Only 3 of 8 were genuinely slow deciders (15-24 days) with an actually-expired code.
+
+Root cause for the fast-converter group: `SignUp.tsx` fires `generate-welcome-discount` non-blocking right after signup, and `useWelcomeDiscount.ts` fetched `profiles.welcome_promo_code` exactly once on mount with no retry — a customer whose purchase-page load raced ahead of that async write saw full price with no discount UI at all for the rest of that session, even after the DB row populated moments later. Added a short retry (500ms/1s/2s/3s backoff) to `useWelcomeDiscount.ts` to close the race, and added a `has_discount` field to the `begin_checkout` analytics event (`analytics.ts`, `MysteryPurchase.tsx`) so any future full-price purchase can be checked directly instead of reconstructed from `profiles`/Stripe after the fact.
+
 ### Fix: closed the same-day `isPlausibleRosterCount` regression — deployed and verified against both real incidents ([ADR-0069](docs/adr/0069-stale-approved-concept-snapshot-after-later-revision.md) Addendum 2)
 
 Follow-up to Addendum 1's open regression. The discriminating signal turned out to be name overlap with the current approved snapshot, not roster count vs. `player_count`: ADR-0118's original false-positive ("Holloway's Compound," a murder-method-options list) shares zero exact character names with the real roster it got confused for, while a legitimate revision like Mona Magpie's removal shares 95% of its names with the snapshot it's revising.

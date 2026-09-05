@@ -91,15 +91,21 @@ export const trackPurchasePageView = (mysteryId: string, theme?: string) => {
 };
 
 // Track checkout initiated (user clicks "Complete Purchase")
-export const trackBeginCheckout = (mysteryId: string, theme?: string) => {
+// `hasDiscount` records whether the welcome discount was actually offered to
+// this customer at click time, so a full-price purchase can later be told
+// apart from "discount was never surfaced" vs "customer had it and didn't use
+// it" without re-deriving profiles/Stripe state by hand (see useWelcomeDiscount.ts).
+export const trackBeginCheckout = (mysteryId: string, theme?: string, hasDiscount?: boolean) => {
+  const price = hasDiscount ? 19.99 : 24.99;
   trackEvent('begin_checkout', {
     currency: 'USD',
-    value: 24.99,
+    value: price,
+    has_discount: !!hasDiscount,
     items: [{
       item_id: mysteryId,
       item_name: 'Murder Mystery Package',
       item_category: theme || 'mystery',
-      price: 24.99,
+      price,
       quantity: 1,
     }],
   });
