@@ -1,6 +1,6 @@
 # ADR-0120: an orphaned, always-present accomplice-confession stage direction leaks into `detective_script`'s reveal when there is no accomplice
 
-- **Status:** Root cause found and fix drafted; not yet imported into Make.com. Historical remediation not yet decided.
+- **Status:** `Parent64` imported and live. All 10 confirmed-real historical packages remediated. `Parent65` (a follow-up fix for `character`-style mysteries specifically) drafted, not yet imported. See Addendum 1.
 - **Date:** 2026-09-05
 - **Related:** ADR-0103 Addendum 19 (a *different* accomplice-tagging bug found the same week — role over-assignment, not this template leak), the Make.com blueprint historically named "Parent49 (Accomplice-Beat Silent-Omission)" (introduced the correct mechanism this ADR's fix relies on, but left the buggy one behind), ADR-0069 Addendum 1/2 (the `has_accomplice`/`player_count` staleness investigation that led here)
 
@@ -68,8 +68,38 @@ This line predates the Make.com blueprint historically named "Parent49 (Accompli
 - `supabase/migrations/20260905183501_sync_has_accomplice_from_actual_characters.sql` — `has_accomplice` auto-sync, live
 - `supabase/functions/mystery-webhook-trigger/index.ts` — confirmed `has_accomplice` is read-only here, never written (not the sync site; the trigger above is)
 - Fixed directly: `conversations` row for `a3c58f9a-368e-4fca-ab32-3b87e37925bd`
-- Not yet remediated: the 11 packages listed above in Context
+- Remediated: the 10 confirmed-real packages listed in Addendum 1
 
 ## Discussion
 
 This was found by refusing to accept "has_accomplice is probably just a stale flag, not a big deal" at face value — checking the opposite direction of the mismatch (flag says true, no character exists) rather than stopping once the narrow, already-understood direction (flag says false, character exists) was fixed. The volume (30 mismatches) was the signal that something structural was wrong, not a handful of one-off chat-decision-never-synced cases; reading even one of the 30's actual delivered content is what turned "a data hygiene footnote" into "a customer-facing defect that's been live for four months."
+
+## Addendum 1 (2026-09-05, same day): `Parent64` imported, corrected the affected count to 10 (one false positive), found `mystery_style='character'` needs its own fix, all 10 remediated, `Parent65` drafted
+
+Jonathan imported `Parent64` and asked to work through the historical packages one by one. Doing that surfaced two corrections to the Context above.
+
+**The corpus-wide search pattern (`ilike '%[if%accomplice%'`) had a false positive.** "Death At The Deadwood Saloon" doesn't actually have the leaked bracket at all — the loose `LIKE` pattern matched an unrelated `accomplice` mention in an earlier, legitimate card-collection instruction, several paragraphs before any bracket. Re-ran the check with a proper anchored regex (`\[if[^\]]{0,80}accomplice[^\]]{0,120}\]`) against all 11 originally-flagged packages: **10 are real, 1 is not.**
+
+**`mystery_style='character'` mysteries are not a variant of the same bug — they're a different design the original fix didn't account for.** Found the actual Make.com Part 1 spec: *"NO FIXED CULPRIT: the murderer is selected by slip-draw at the table... If accomplice mechanism exists, murderer privately tells their designated accomplice partner."* For this style, `master_context` never defines a specific accomplice (or murderer) by design — identity is decided live at the table, not at generation time. This matches the exact caveat already documented in this project's own `sweep` checklist about legitimate `[MURDERER NAME]`-style host-fill-in brackets for slip-style games, which this investigation should have applied from the start.
+
+Reading all 7 `character`-style, `has_accomplice=true` packages individually (not just the one sampled in Context) showed real variety in how well each historical prompt version handled this: some already fully and correctly named the accomplice in prose; two used clean, deliberate `[ACCOMPLICE NAME]`-style host-fill-in placeholders (legitimate, not touched); one ("Operation: Thirty & Murdery") already had a well-written host instruction ("host: reveal the player who drew the ACCOMPLICE slip...") sitting right before the *same* orphaned trailing bracket found everywhere else. Across all of them, the one common, genuine defect was the same trailing bracket this ADR already identified — just following very different lead-in text depending on which prompt version generated each one.
+
+**Fix applied per package: made the trailing bracket declarative instead of deleting it outright**, since `has_accomplice=true` is already confirmed for every one of these specific orders — `*[If there is an accomplice: the accomplice (player) reads their confession aloud.]*` → `*[The accomplice (player) reads their confession aloud.]*`. This exactly mirrors the convention this same prompt already uses successfully for the murderer's own confession cue two lines earlier (no name printed there either — the host says it live, since the murderer's identity is also drawn, not fixed). Verified clean (`package_completion_blocking_defects()`, `list_packages_with_meta_text_leak()`) on all 10:
+
+| Package | Fix applied |
+|---|---|
+| The Enchanted Family Reunion Murder (detective, `accompliceSelection.character: null`) | Removed the entire unresolved conditional block (an older, more extensive leak — included a literal never-filled `[Name the accomplice]` placeholder) |
+| The Case Of The Stolen Golden Flamingo (detective, real accomplice already correctly named in prose) | Deleted the redundant trailing bracket only |
+| Murder In Paradise: Death At Coral Cove Resort (character, `has_accomplice=false`) | Deleted the bracket — no accomplice mechanism exists for this order at all |
+| Blood, Dust & Dead Man's Hand (character, `has_accomplice=false`, older wording variant) | Deleted the bracket (`[If there was an accomplice, add that beat here...]` variant) |
+| The Final Cut, The Workshop Of St. Nick, Elementary My Dear Cadaver, Casa Ferrel, Love Island Season 8 Reunion, Operation: Thirty & Murdery (all character, `has_accomplice=true`) | Made the trailing bracket declarative, matching the murderer's own cue convention |
+
+**One unrelated pre-existing defect surfaced during verification, not fixed here:** "Operation: Thirty & Murdery" independently flags `missing_round_content.Cypress/Celine Beaumont` via `package_completion_blocking_defects()` — unrelated to the accomplice fix (this package is the same "Jaclyn's 30-player package" incident ADR-0108 investigated for a different structural gap). Not remediated in this pass; flagged for a separate follow-up.
+
+**Drafted `Parent65`, not yet imported:** `Parent64`'s blanket deletion is correct and sufficient for Detective Style (routes 0/2), where the ACCOMPLICE BEAT instruction already writes a complete, self-contained confession invitation naming a real character. But it reproduces the same gap for Character Based (routes 1/3) going forward: that instruction's own conditional check ("does master_context define an accomplice") is a Detective-Style-only concept that never applies to slip-draw mysteries, so its generated paragraph can only ever gesture vaguely at "naming the accomplice" without naming anyone — and after Parent64's deletion, nothing follows it at all, the same dead-end just found and hand-fixed in the 6 historical packages above. `Parent65` rewrites the ACCOMPLICE BEAT instruction for routes 1/3 only (routes 0/2 confirmed byte-identical, untouched) to check `hasAccomplice` instead of `master_context`, and to fold the declarative confession cue into its own generated output — closing the two-mechanisms-answering-one-question shape that caused the original bug, rather than reproducing it. Verified: valid JSON, diff against `Parent64` shows exactly the 2 intended route changes and nothing else.
+
+## Key files (Addendum 1)
+
+- `temp-files/MM Live - Parent65 (Character Style Accomplice Beat Fix).blueprint.json` / `temp-files/build-parent-v65.py` — drafted fix for `character`-style routes, not yet imported
+- Remediated directly: `mystery_packages.detective_script` for the 10 packages in the table above
+- Not remediated, separate issue: "Operation: Thirty & Murdery" (`b8428a57-1c2b-4bf1-881c-98c8436be6a9`) `missing_round_content.Cypress/Celine Beaumont`
