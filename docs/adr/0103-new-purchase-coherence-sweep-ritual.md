@@ -371,6 +371,19 @@ A manual sweep (triggered by a request to investigate `package_completion_blocki
 
 **Left open, matching the original scope decision:** `reveal_confession_guilty` (prose) and `reveal_confession_guilty_pointform` are still `NULL` — the fifth field from the same original Addendum 3 failure, but not checked by `package_completion_blocking_defects()`'s `missing_round_content` class (which only covers round2/3/4/final, not the reveal-confession beat) and outside the scope of what was approved for this spend. Per Addendum 2's original reasoning, this only matters if Recast/reassignment is ever used to make her the murderer — still true today, since `character_role` is unchanged (`suspect`). Flagged here rather than silently left for the next sweep to rediscover from scratch.
 
+## Addendum 22 (2026-09-06): closed Addendum 21's remaining open item — `reveal_confession_guilty` backfilled, Cypress/Celine Beaumont now 100% complete
+
+Follow-up requested the same way as Addendum 21: sign-off first, then execute. Got explicit approval for a second, separate ~$0.10 Anthropic spend (a distinct call group from Addendum 21's — `regenerate-child-content`'s `GROUP_REVEAL_CONFESSION`, not `GROUP_ROUNDS_GUILTY`) before touching anything.
+
+**Fixed:**
+1. Dry-ran `regenerate-child-content` with `fields: ["reveal_confession_guilty"]` first — confirmed the plan (1 target, group `reveal_confession`, exactly the 1 requested field, $0.10 estimate) and, critically, that requesting only `reveal_confession_guilty` does NOT pull in her already-correct `reveal_confession_accomplice` (the group's `fieldsToGenerate` is filtered to the intersection of the group's fields and the caller's requested fields — confirmed in code before relying on it, same mechanism verified in Addendum 21 for `GROUP_ROUNDS_GUILTY`).
+2. Ran the real call — generated cleanly on the first attempt, actual cost $0.10. Confirmed via direct read afterward that `reveal_confession_accomplice` (1548 chars) was untouched.
+3. Content reads coherently against her established guilty branch: same $310,000 unpaid-commission motive, the same tour-schedule opportunity, the same borrowed-vial/champagne-tray/orchid-scent method from `round2_guilty`/`round3_guilty`/`round4_guilty` — this is expected, since the prompt group's `anchorHints` show `final_guilty`/`final_accomplice` as coherence anchors when generating this field.
+4. Hand-wrote `reveal_confession_guilty_pointform` (zero additional cost), matching the sibling-character format (7 bullets, confession-toned, grounded in the newly-generated prose) rather than calling `generate-pointform-summaries` — same reasoning as Addendum 21 point 4.
+5. Re-verified: `package_completion_blocking_defects()` still returns `NULL`. Directly confirmed all 12 of this character's round/reveal fields (4 guilty prose + 4 guilty pointform + reveal_confession_guilty + pointform + reveal_confession_accomplice + pointform) are non-null. Cypress/Celine Beaumont is now the only one of the 33 characters in this package that's been individually field-by-field verified complete, rather than just clean-by-detector.
+
+**Nothing left open on this character.** Both fields the original 2026-08-25 incident zeroed out are now fully backfilled across two separate, individually-approved spends ($0.20 total for this character's complete repair, plus the original $0.15 x 2 escalated-but-unapplied attempts on 2026-08-25).
+
 ## Key files
 
 - `CLAUDE.md` — the `sweep` shorthand command definition
