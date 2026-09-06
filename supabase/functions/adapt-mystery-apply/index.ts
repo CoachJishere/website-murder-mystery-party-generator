@@ -366,15 +366,17 @@ function absentParagraph(characterName: string): string {
 // ---------------------------------------------------------------------------
 
 const ANTHROPIC_MODEL = "claude-sonnet-5";
-// Sonnet 5 introductory pricing through 2026-08-31 ($2/$10 per MTok vs the
-// standard $3/$15) — flat per-call estimate in the same style as
-// regenerate-child-content's CLAUDE_CALL_COST_USD, not metered actual spend.
-// One call, ~10-15 short fields in and out, well under 4000 output tokens.
-const POLISH_CALL_COST_USD_ESTIMATE = 0.05;
+// One call, ~10-15 short fields in and out, well under 4000 output tokens —
+// flat per-call estimate in the same style as regenerate-child-content's
+// CLAUDE_CALL_COST_USD, not metered actual spend. Updated 2026-09-06: Sonnet
+// 5's introductory pricing ($2/$10 per MTok) expired 2026-08-31; both
+// estimates below are rescaled ×1.5 to the standard rate ($3/$15) in effect
+// since.
+const POLISH_CALL_COST_USD_ESTIMATE = 0.075;
 // The reassignment call is a much bigger generation (new round scripts, a
 // full confession, two package-level rewrites) — rough estimate, same
 // "flat per-call, not metered" style, pending a real key to measure against.
-const REASSIGN_CALL_COST_USD_ESTIMATE = 0.35;
+const REASSIGN_CALL_COST_USD_ESTIMATE = 0.525;
 
 // Incident 2026-08-20: an Anthropic call with no timeout hung indefinitely
 // mid-invocation, past the point the code's own try/catch/finally can ever
