@@ -384,6 +384,20 @@ Follow-up requested the same way as Addendum 21: sign-off first, then execute. G
 
 **Nothing left open on this character.** Both fields the original 2026-08-25 incident zeroed out are now fully backfilled across two separate, individually-approved spends ($0.20 total for this character's complete repair, plus the original $0.15 x 2 escalated-but-unapplied attempts on 2026-08-25).
 
+## Addendum 23 (2026-09-06): corpus-wide check — the Cypress/Celine bug shape is confirmed a genuine one-off, zero other live instances
+
+Follow-up requested to Addendum 21/22's own open item ("no corpus-wide check for other characters with the same single-character guilty-branch gap"). Ran a direct SQL query, not `package_completion_blocking_defects()`, scoped to the EXACT signature of this incident — a character where `round{N}_innocent IS NOT NULL AND round{N}_guilty IS NULL` (or the `final_` equivalent) — across every character in every package in the live database (169 packages, 87 `mystery_style='character'`):
+
+```sql
+-- per-character gap flags, then aggregate: packages with >=1 gapped character
+-- AND >=1 character with both innocent+guilty populated (proves it's a
+-- per-character anomaly, not a package-wide model mismatch)
+```
+
+**Result: zero rows.** No character, in any live package, currently has an innocent branch populated with a null guilty branch while any sibling character in the same package has both populated. Before this session's fix, Cypress/Celine Beaumont's row was exactly this shape (confirmed directly in Addendum 21/22's own investigation); now that it's repaired, this query returns nothing at all. **This confirms the 2026-08-25 `parse-claude-json` bug's damage was contained to the single incident already known and now fully repaired — not a wider silent-failure pattern.**
+
+**Found something adjacent, deliberately NOT investigated further (Jonathan's call, scoped out this session):** the broader `package_completion_blocking_defects()` scan used to build the query above surfaced ~32 packages with SOME defect flagged (self_directed_question, meta_text_leak, identity_conflict, and a `missing_round_content` shape on several old packages). Spot-checked one — "Death On The Dance Floor" — and confirmed it's a *different* shape entirely: `round2_script` populated, `round2_innocent`/`round2_guilty`/`round2_questions` all null, i.e. an old single-script-model character mistagged/generated under `mystery_style='character'`. This exactly matches the historical corpus ADR-0096's own migration comment already named and sized (`Death On The Dance Floor` "17/18" characters affected, `Death At The Deadwood Saloon` "9/9" — both counts match this scan precisely) — a known, pre-existing, already-priced-in gap, not a new discovery from this session. **Left untriaged**, along with the rest of the ~32-package list — a real but separate investigation from what this addendum was scoped to answer.
+
 ## Key files
 
 - `CLAUDE.md` — the `sweep` shorthand command definition

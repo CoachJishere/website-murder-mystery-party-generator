@@ -2,6 +2,10 @@
 
 ## 2026-09-06
 
+### Improvement: corpus-wide check confirms the Cypress/Celine guilty-branch bug was a genuine one-off ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 23)
+
+Follow-up to Addendum 21/22: queried every character in every live package (169 packages) for the exact bug signature — an innocent branch populated with a null guilty branch while a sibling character has both. Zero matches. Confirms the 2026-08-25 `parse-claude-json` failure's damage was contained to the single already-fixed incident, not a wider silent pattern. The broader detector scan used to build the query surfaced ~32 packages with unrelated/pre-existing defects (self_directed_question, meta_text_leak, a known ADR-0096 single-script-model mismatch on old packages) — deliberately left untriaged, out of scope for this check.
+
 ### Fix: backfilled Cypress/Celine Beaumont's remaining `reveal_confession_guilty` field, closing out ADR-0103 Addendum 21 ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 22)
 
 Follow-up to yesterday's fix: `reveal_confession_guilty` (the reveal-moment confession, distinct from `final_guilty`) was the fifth field zeroed out by the original 2026-08-25 `parse-claude-json` formatting failure, but wasn't covered by `package_completion_blocking_defects()`'s `missing_round_content` check and was explicitly left open pending separate sign-off. Got approval for a second, separate ~$0.10 spend, dry-ran `regenerate-child-content`'s `reveal_confession` call group to confirm it wouldn't touch her already-correct `reveal_confession_accomplice`, then ran it — generated cleanly, actual cost $0.10. Hand-wrote `reveal_confession_guilty_pointform` to match the established format. Re-verified: `package_completion_blocking_defects()` still clean, and this character now has every one of her round/reveal fields individually confirmed non-null — the only character in this 33-character package checked at that granularity.
