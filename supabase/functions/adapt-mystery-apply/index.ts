@@ -926,7 +926,7 @@ serve(async (req) => {
 
     const { data: pkg, error: pkgErr } = await supabase
       .from("mystery_packages")
-      .select("id, mystery_style, detective_script, game_overview, host_guide, materials, timeline, hosting_tips, preparation_instructions, evidence_cards")
+      .select("id, mystery_style, detective_script, game_overview, host_guide, materials, timeline, hosting_tips, preparation_instructions, evidence_cards, master_context")
       .eq("id", adaptation.package_id).maybeSingle();
     if (pkgErr || !pkg) throw new Error(`package lookup failed: ${pkgErr?.message ?? "not found"}`);
 
@@ -1050,6 +1050,37 @@ serve(async (req) => {
         const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", "detective_script", substitutePool);
         const { result } = substituteVariants(current, variantRegex, sub);
         packageChanges.push({ field: "detective_script", before: current, after: result, kind: "prose" });
+      }
+    }
+
+    // master_context: substitution pass only — deliberately excluded from
+    // the polish pass below (kind: "list", not "prose") since this is an
+    // internal planning artifact, never shown to a customer, not something
+    // an LLM "smoothing" pass is the right tool for. Fix, ADR-0088 addendum
+    // 2026-09-06: this field previously wasn't touched by any removal at
+    // all, and it's re-read live by regenerate-child-content (which builds
+    // its rumor/accusation-targeting prompt off master_context.
+    // relationshipMatrix) and regenerate-parent-content — a future health-
+    // check or manual field fix on this package could pick a name straight
+    // out of a stale relationship matrix or misdirectionTargets list and
+    // regenerate fresh content that reintroduces a removed character by
+    // name, with no existing detector shaped to catch that class of leak.
+    // master_context is actually several JSON objects concatenated back to
+    // back (`}{`, no separator) plus embedded markdown tables — not one
+    // parseable document — so this reuses the exact same word-level
+    // substitution already proven safe on every other field here rather
+    // than attempting to parse and edit its structure (e.g. dropping a
+    // relationship-matrix column cleanly). This can leave a markdown table
+    // with two columns for the same substitute name — a cosmetic artifact
+    // in a field no customer ever sees — but it guarantees the removed
+    // character's name doesn't survive anywhere in it, which is the actual
+    // risk being closed.
+    {
+      const current = pkg.master_context;
+      if (typeof current === "string" && current) {
+        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", "master_context", substitutePool);
+        const { result, count } = substituteVariants(current, variantRegex, sub);
+        if (count > 0) packageChanges.push({ field: "master_context", before: current, after: result, kind: "list" });
       }
     }
 
@@ -1287,7 +1318,7 @@ serve(async (req) => {
     }
     const { data: pkgAfter } = await supabase
       .from("mystery_packages")
-      .select("detective_script, game_overview, host_guide, materials, timeline, hosting_tips, preparation_instructions, evidence_cards")
+      .select("detective_script, game_overview, host_guide, materials, timeline, hosting_tips, preparation_instructions, evidence_cards, master_context")
       .eq("id", adaptation.package_id).maybeSingle();
     for (const field of PACKAGE_PROSE_FIELDS) {
       const v = (pkgAfter as Record<string, unknown> | null)?.[field];
@@ -1297,6 +1328,15 @@ serve(async (req) => {
     for (const field of PACKAGE_JSONB_FIELDS) {
       const v = (pkgAfter as Record<string, unknown> | null)?.[field];
       if (jsonbValueMatches(v, variantRegex)) verifyIssues.push(`package.${field} still references removed character`);
+    }
+    // master_context (ADR-0088 addendum, 2026-09-06): same leak scan as the
+    // PACKAGE_PROSE_FIELDS above, kept separate since master_context isn't
+    // in that list (it deliberately skips the polish pass — see the
+    // transform-step comment).
+    {
+      const v = (pkgAfter as Record<string, unknown> | null)?.master_context;
+      if (typeof v === "string" && variantRegex.test(v)) verifyIssues.push("package.master_context still references removed character");
+      variantRegex.lastIndex = 0;
     }
     // detective_script deliberately keeps ONE mention of the removed
     // character, inside the templated absent/cleared note appended above
