@@ -2,6 +2,12 @@
 
 ## 2026-09-06
 
+### Fix: closed both deferred `master_context` items — backfilled 3 stale packages, hardened `regenerate-child-content`'s verify gate against removed-character leaks ([ADR-0088](docs/adr/0088-guest-dropout-multi-character-and-reassignment.md) Addendum, 2026-09-06)
+
+Follow-up to the fix below. Re-examined why the backfill and the `regenerate-child-content` gate hardening were deferred: `auto-remediate-packages` runs on a cron every 4 hours across the whole package corpus with no exclusion for these 3 packages, so the exposure re-rolls automatically, not just "if something unusual happens." Did both today given how cheap they were relative to that.
+
+Backfilled `master_context` on all 3 already-stale packages via a one-off Node script (deleted after use) that ports the exact same substitution logic from `adapt-mystery-apply` — zero Anthropic calls, dry-run verified before writing, independently re-verified via fresh SQL after. Hardened `regenerate-child-content`'s own re-detect gate with a 5th check alongside its existing 4 detector classes: scans every field a call is about to write against the actual list of characters ever removed from that package (`mystery_adaptations` where `status='verified'`), reverting on any hit — the more robust fix, since it catches this class of leak regardless of source, not just the `master_context` pathway. Verified locally with synthetic test cases (zero API calls) before deploying. Both deployed via the Supabase CLI, confirmed live.
+
 ### Fix: `adapt-mystery-apply` never touched `master_context`, letting removed characters' names survive in a field two other pipelines re-read live ([ADR-0088](docs/adr/0088-guest-dropout-multi-character-and-reassignment.md) Addendum, 2026-09-06)
 
 Follow-up to today's earlier ADR-0088 addendum (the polish-pass host-note bug). Investigating whether the reassignment path shares that bug found no evidence it does — the one real historical reassignment case (Eduardo Salgado's package) still has both host notes intact after two sequential LLM rewrites, and the verify-gate hardening already shipped today covers that path regardless.

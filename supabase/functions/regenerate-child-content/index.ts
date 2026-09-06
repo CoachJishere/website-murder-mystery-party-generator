@@ -470,6 +470,114 @@ async function loadPackage(packageId: string): Promise<PackageRow> {
   return data as PackageRow;
 }
 
+// ---------------------------------------------------------------------------
+// Removed-character leak check (ADR-0088 addendum, 2026-09-06) — this
+// function is re-read live by any package that's ever had a character
+// removed via adapt-mystery-apply (which feeds master_context.
+// relationshipMatrix into this file's own prompt, see buildPrompt below).
+// That matrix can go stale the moment a removal happens, so a regeneration
+// here could pick a REMOVED character as a rumor/accusation target straight
+// out of stale context, even with an accurate `cast` roster sitting right
+// next to it in the same prompt. None of this function's existing 4
+// detector classes are shaped to catch "names someone who no longer
+// exists" — they're all leak-shaped (contamination between two LIVE
+// characters), not absence-shaped. This closes that gap the same way
+// adapt-mystery-apply's own verify gate does: a bounded, precise scan
+// against the actual list of characters removed from THIS package, not a
+// generic "any unrecognized name" heuristic that would false-positive on
+// ordinary prose.
+// nameVariants/buildVariantRegex ported verbatim from
+// supabase/functions/adapt-mystery-apply/index.ts — not shared/imported,
+// matching this codebase's existing "small helpers are duplicated per
+// function, not centralized" convention (see that file's own header for
+// why: two edge functions independently evolving their own copy is safer
+// here than a shared module that couples their deploys).
+// ---------------------------------------------------------------------------
+
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function nameVariants(fullName: string): string[] {
+  const variants = new Set<string>();
+  const trimmed = fullName.trim();
+  variants.add(trimmed);
+
+  const slashMatch = trimmed.match(/^(.*?)\/(\S+)( .*)$/);
+  if (slashMatch) {
+    const [, before, altToken, rest] = slashMatch;
+    variants.add(`${before}${rest}`.trim());
+    variants.add(`${altToken}${rest}`.trim());
+    variants.add(`${before}/${altToken}`.trim());
+  }
+
+  const dashMatch = trimmed.match(/^(.+?)\s+-\s+\S+$/);
+  if (dashMatch) variants.add(dashMatch[1].trim());
+
+  const tokens = trimmed.replace("/", " ").split(/\s+/).filter(Boolean);
+  const surname = tokens[tokens.length - 1];
+  if (surname && surname.length >= 4) variants.add(surname);
+
+  return [...variants].filter((v) => v.length >= 3);
+}
+
+function buildVariantRegex(variants: string[]): RegExp {
+  const sorted = [...variants].sort((a, b) => b.length - a.length);
+  return new RegExp(sorted.map((v) => `\\b${escapeRegex(v)}\\b`).join("|"), "gi");
+}
+
+interface RemovedCharacter { name: string; regex: RegExp }
+
+/** Every character ever removed from this package via a verified adaptation
+ *  — the bounded, known-bad-name list this check scans fresh generations
+ *  against. Empty for the overwhelming majority of packages (no adaptation
+ *  history), so this is a no-op query-and-skip for them, not fixed overhead
+ *  that assumes every package needs it. */
+async function loadRemovedCharacters(packageId: string): Promise<RemovedCharacter[]> {
+  const { data, error } = await supabase
+    .from("mystery_adaptations")
+    .select("character_name")
+    .eq("package_id", packageId)
+    .eq("status", "verified");
+  if (error) throw new Error(`removed-character lookup failed: ${error.message}`);
+  const names = new Set((data ?? []).map((r) => r.character_name as string));
+  return [...names].map((name) => ({ name, regex: buildVariantRegex(nameVariants(name)) }));
+}
+
+/** Scans newly-written field values for any removed character's name. Takes
+ *  the AFTER values specifically (not the detector RPCs, which only see
+ *  committed DB state) so this check runs against exactly what this call is
+ *  about to accept, before it's too late to revert.
+ *
+ *  Known false-positive source, same one adapt-mystery-apply's own
+ *  bare-surname fallback already accepts: `\bLyle\b` matches inside a
+ *  hyphenated compound like "Lyle-brand" (the hyphen is a non-word
+ *  boundary). That codebase's own comment calls this an acceptable
+ *  trade-off there because a false positive just means an extra harmless
+ *  substitution; here a false positive means an extra REVERT + escalation
+ *  instead of a silent accept — never a corrupted write, never worse than
+ *  the existing 4 detector classes' own false-positive risk in this same
+ *  gate. Tightening the bare-surname threshold specifically for this check
+ *  would diverge from "same variants as the primary removal path" for no
+ *  demonstrated real collision yet — matching this codebase's existing
+ *  pattern of guarding a specific name only once it's actually hit live
+ *  (see "Cross"/"across", ADR-0098) rather than pre-guessing every
+ *  possible one. */
+function removedCharacterLeaksIn(
+  afterValues: { character_id: string; character_name: string; field: string; value: string }[],
+  removed: RemovedCharacter[],
+): string[] {
+  if (removed.length === 0) return [];
+  const hits: string[] = [];
+  for (const av of afterValues) {
+    for (const rc of removed) {
+      if (rc.regex.test(av.value)) hits.push(`${av.character_name}.${av.field} names removed character "${rc.name}"`);
+      rc.regex.lastIndex = 0;
+    }
+  }
+  return hits;
+}
+
 async function loadConversation(conversationId: string): Promise<{ has_accomplice: boolean | null; mystery_type: string | null }> {
   const { data } = await supabase
     .from("conversations")
@@ -1007,6 +1115,10 @@ serve(async (req) => {
     // --- Generate + write (capturing before-values for revert) ---
     const results: FieldResult[] = [];
     const beforeValues: { character_id: string; field: string; value: string }[] = [];
+    // Mirrors beforeValues, but the NEW value — needed by the removed-
+    // character leak check below, which must scan what's about to be
+    // accepted, not what's already committed.
+    const afterValues: { character_id: string; character_name: string; field: string; value: string }[] = [];
     let actualCost = 0;
     let hadError = false;
 
@@ -1071,7 +1183,9 @@ serve(async (req) => {
               continue;
             }
             beforeValues.push({ character_id: character.id, field, value: currentValue });
-            await writeField(character.id, field, value.trim());
+            const trimmedValue = value.trim();
+            await writeField(character.id, field, trimmedValue);
+            afterValues.push({ character_id: character.id, character_name: character.character_name, field, value: trimmedValue });
             results.push({ character_id: character.id, character_name: character.character_name, field, status: "generated" });
           } catch (e) {
             hadError = true;
@@ -1105,8 +1219,16 @@ serve(async (req) => {
     const after = await detectorState(package_id);
     const stillFlagged = stillImplicatesTouched(after, touchedNames);
     const regressed = regressions(before, after);
+    // ADR-0088 addendum, 2026-09-06: none of the 4 detector classes above
+    // are shaped to catch a regeneration naming a character removed from
+    // this package (via adapt-mystery-apply) — see loadRemovedCharacters'
+    // comment for why that's a real, not hypothetical, risk on any package
+    // with adaptation history. Cheap query, no-op for the overwhelming
+    // majority of packages that have never had a removal.
+    const removedCharacters = await loadRemovedCharacters(package_id);
+    const removedCharacterLeaks = removedCharacterLeaksIn(afterValues, removedCharacters);
 
-    if (stillFlagged.length > 0 || regressed.length > 0) {
+    if (stillFlagged.length > 0 || regressed.length > 0 || removedCharacterLeaks.length > 0) {
       await revertAll();
       await logRow({
         package_id, defect_class: defect_class_hint ?? "child_content_regen",
@@ -1115,7 +1237,7 @@ serve(async (req) => {
       });
       return new Response(JSON.stringify({
         package_id, outcome: "escalated" as Outcome, results,
-        still_flagged: stillFlagged, regressions: regressed,
+        still_flagged: stillFlagged, regressions: regressed, removed_character_leaks: removedCharacterLeaks,
         note: "re-detect gate rejected the fix — all writes reverted byte-for-byte; needs a human or another pass (e.g. more claimant characters than MAX_TARGET_CHARACTERS allowed in one call)",
       }), { headers: { "Content-Type": "application/json" } });
     }
