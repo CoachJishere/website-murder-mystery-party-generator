@@ -1039,15 +1039,15 @@ serve(async (req) => {
         if (count > 0) packageChanges.push({ field, before: current, after: result, kind: "prose" });
       }
     }
-    // detective_script: substitution pass for stray mentions PLUS an
-    // unconditional "absent, cleared" paragraph append (see file header).
+    // detective_script: substitution pass for stray mentions. The
+    // unconditional "absent, cleared" paragraph append happens AFTER the
+    // polish pass below, not here — see that comment for why.
     {
       const current = pkg.detective_script;
       if (typeof current === "string" && current) {
         const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", "detective_script", substitutePool);
         const { result } = substituteVariants(current, variantRegex, sub);
-        const withNote = result + absentParagraph(adaptation.character_name);
-        packageChanges.push({ field: "detective_script", before: current, after: withNote, kind: "prose" });
+        packageChanges.push({ field: "detective_script", before: current, after: result, kind: "prose" });
       }
     }
 
@@ -1099,6 +1099,25 @@ serve(async (req) => {
         // polish-pass error. Logged for visibility, not surfaced as a failure.
         console.error("polishWithClaude failed, continuing with deterministic-only output:", (e as Error).message);
         needsReview.push(`prose-smoothing pass errored (${(e as Error).message}) — deterministic-only output used`);
+      }
+    }
+
+    // Unconditional "absent, cleared" paragraph append (see file header) —
+    // done AFTER polish, never before. Incident 2026-09-06 (ADR-0088
+    // Addendum): when this append ran BEFORE polish, the note was part of
+    // the "current" text handed to Claude for smoothing, and on 2 of 7
+    // removals in one real batch Claude judged the tacked-on disclaimer as
+    // reading awkwardly and silently dropped it while rewriting the field —
+    // a case polishWithClaude's own hard rule ("never mention the removed
+    // character") does nothing to prevent, since dropping the note doesn't
+    // mention anyone. The verify gate only scans for stray leaks, not for
+    // the note's presence, so this passed as "verified" with the disclaimer
+    // silently missing. Appending here means polish never sees the note at
+    // all, so it structurally cannot remove it.
+    {
+      const target = packageChanges.find((c) => c.field === "detective_script");
+      if (target && typeof target.after === "string") {
+        target.after = target.after + absentParagraph(adaptation.character_name);
       }
     }
 
@@ -1286,9 +1305,15 @@ serve(async (req) => {
       const v = (pkgAfter as Record<string, unknown> | null)?.detective_script;
       if (typeof v === "string") {
         const note = absentParagraph(adaptation.character_name);
-        const withoutNote = v.endsWith(note) ? v.slice(0, -note.length) : v;
+        const hasNote = v.endsWith(note);
+        const withoutNote = hasNote ? v.slice(0, -note.length) : v;
         if (variantRegex.test(withoutNote)) verifyIssues.push("package.detective_script still references removed character outside the absent-note");
         variantRegex.lastIndex = 0;
+        // The note is appended unconditionally, after polish, specifically so it
+        // can never be dropped (see the append site) — if it's missing here,
+        // something upstream broke that guarantee, and this row should revert
+        // rather than ship a script the host was never told this character is gone.
+        if (!hasNote) verifyIssues.push("package.detective_script is missing the absent-character host note");
       }
     }
 

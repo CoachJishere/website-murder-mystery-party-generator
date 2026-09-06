@@ -128,6 +128,24 @@ Root cause: this ADR's own "sibling-batch exclusion" (`siblingIds`, computed at 
 
 **Key files touched by this addendum:** `supabase/functions/adapt-mystery-apply/index.ts` (verify-loop scan set, redeployed 2026-08-28).
 
+## Addendum (2026-09-06): polish pass silently dropped 2 of 7 host-disclaimer notes in one real batch — "verified" but incomplete
+
+Found via the "sweep"-style check on sierradestiny07@gmail.com's "Remove a Character" purchase (batch `6fe2c27a-f8ed-4093-861c-8b5807e63852`, package `987c1728-6af1-4a23-8316-07953c76ed4a`, "Camp Blood Reunion: The Final Summer"): a $5 batch removing 7 characters at once (Alexa Brennan, Eddie Russo, Francesca Delgado, Jesse Martinez, Jordan Lyle, Morgan Reeves, Teresa Flynn — all suspects/red herrings, no reassignment involved). All 7 `mystery_adaptations` rows reported `status: 'verified'`, headcount was correct (20 → 13, matching `conversations.player_count`), and no removed character's name leaked anywhere in the surviving 13 characters' content. But `detective_script` only carried the templated "Note (host only): X could not attend..." disclaimer for 5 of the 7 removed characters — Eddie Russo (`batch_sequence=1`) and Morgan Reeves (`batch_sequence=5`) were missing theirs, with no verify issue ever raised.
+
+**Root cause:** `absentParagraph()` was appended to `detective_script` as part of the deterministic transform step, *before* the ADR-0082 polish pass ran — meaning the note was included in the "current" text handed to Claude for smoothing on every subsequent invocation in the batch. `polishWithClaude`'s own hard rule ("never mention the removed character's name") does nothing to protect the note, since Claude can drop the *entire tacked-on paragraph* while smoothing without ever mentioning anyone by name — and on 2 of the 7 invocations, that's exactly what it did, apparently judging the abrupt disclaimer as reading awkwardly right after a dramatic reveal. The surviving 5 notes appeared in exact `batch_sequence` order (0, 2, 3, 4, 6), confirming the drops were per-invocation, not a batch-wide failure.
+
+This passed verify because the check at that point only ever scanned for *leaked references* (`v.endsWith(note) ? v.slice(0, -note.length) : v`, then regex-scan the remainder) — it never asserted the note was actually *present*. A field with the note silently missing looks identical to a field that was scrubbed cleanly, from that check's point of view.
+
+**Fix:** moved the `absentParagraph()` append to run *after* the polish pass (and after the try/catch that surrounds it), so polish's `targets` array never includes the note in the first place — it structurally cannot see or remove something that hasn't been appended yet. Also hardened the verify gate itself: added an explicit `if (!hasNote) verifyIssues.push(...)` check, so if anything upstream (this fix, a future refactor, or the reassignment path's separate "copy everything else through unchanged" LLM rewrite of `detective_script`) ever drops the note again, the row reverts instead of shipping silently incomplete content. The reassignment path itself was not touched — no confirmed instance of it dropping the note, and per this project's convention of not generalizing a fix from a single occurrence, the verify-gate hardening is the appropriate blast-radius-limited backstop for that path rather than a speculative rewrite.
+
+Deployed via `supabase functions deploy adapt-mystery-apply` (CLI, from disk) — pulled the deployed source back via `get_edge_function` and confirmed both changes present, `verify_jwt: true` preserved, version 16.
+
+**Customer resolution:** appended the 2 missing notes directly to the package's `detective_script` via SQL (matching the exact template text/formatting of the other 5) — no re-run of the pipeline needed since the underlying removal itself was already complete and correct, only the host-facing disclaimer was missing. Verified: all 7 removed characters now have their note, zero stray references anywhere in the package.
+
+**Separately noted, not fixed:** this same package's `master_context` (an internal planning field, not customer-facing) still lists 2 of the 7 removed characters in its `misdirectionTargets` array and all 20 original names in its relationship-matrix header row — stale, but low-risk since `master_context` isn't re-read by anything customer-facing today. Flagged here rather than fixed, matching this ADR's existing pattern of not fixing every discovered staleness in the same pass as the actionable bug.
+
+**Key files touched by this addendum:** `supabase/functions/adapt-mystery-apply/index.ts` (note-append moved after polish, verify-gate hardened, redeployed 2026-09-06, version 16).
+
 ## Key files
 
 - `supabase/migrations/20260814_mystery_adaptations_batching.sql`

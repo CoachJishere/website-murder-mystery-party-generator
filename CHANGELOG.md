@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-06
+
+### Fix: ADR-0082 polish pass could silently drop the "character removed" host disclaimer from `detective_script` — verify gate never checked for its presence ([ADR-0088](docs/adr/0088-guest-dropout-multi-character-and-reassignment.md) Addendum, 2026-09-06)
+
+Sweep of a 7-character "Remove a Character" batch (sierradestiny07@gmail.com, "Camp Blood Reunion: The Final Summer") found all 7 rows `verified` and no leaked references anywhere, but only 5 of 7 removed characters had their templated "Note (host only): X could not attend..." disclaimer in `detective_script` — Eddie Russo and Morgan Reeves were missing theirs. Root cause: the note was appended *before* the Claude Sonnet 5 polish pass ran, so on 2 of 7 invocations Claude judged the tacked-on paragraph as reading awkwardly and dropped it while "smoothing" — undetected because verify only scanned for leaked name references, never asserted the note's presence.
+
+Fixed `supabase/functions/adapt-mystery-apply/index.ts`: the note now appends *after* polish (so polish never sees it and can't remove it), and verify now explicitly checks the note is present, reverting the row if not. Redeployed via the Supabase CLI directly from disk, confirmed live (version 16, `verify_jwt: true` preserved). Backfilled the 2 missing notes directly on the customer's package via SQL — the underlying removal was already correct, only the disclaimer was missing.
+
 ## 2026-09-05
 
 ### Fix: backfilled Cypress/Celine Beaumont's missing guilty-branch content on "Operation: Thirty & Murdery" ([ADR-0103](docs/adr/0103-new-purchase-coherence-sweep-ritual.md) Addendum 21)
