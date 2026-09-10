@@ -44,12 +44,19 @@ const REVEAL_FIELDS = ['reveal_confession_guilty', 'reveal_confession_accomplice
 const MAIN_FIELDS = [...SHARED_FIELDS, ...UNIFIED_FIELDS, ...ROLE_VARIANT_FIELDS] as const;
 const SOURCE_FIELDS = [...MAIN_FIELDS, ...REVEAL_FIELDS] as const;
 
-const MAIN_MODEL = 'claude-haiku-4-5-20251001';
+// Was claude-haiku-4-5-20251001 until the 2026-09-10 coherence sweep on "La Voix Brisée Du
+// Palais Garnier" (ADR-0103 addendum): even with the language-preservation instruction added
+// to SUMMARIZER_SYSTEM_PROMPT below, Haiku still produced English pointform bullets for 2 of 7
+// characters across 4 consecutive retries on a French source package — the same instruction-
+// following gap already documented for REVEAL_FIELDS above, now also hitting MAIN_FIELDS.
+const MAIN_MODEL = 'claude-sonnet-5';
 const REVEAL_MODEL = 'claude-sonnet-5';
 
 type SourceField = typeof SOURCE_FIELDS[number];
 
 const SUMMARIZER_SYSTEM_PROMPT = `You are summarizing character-guide fields from a murder mystery party game into point-form bullets. The host or player chose to see "both" formats — they will read the detailed prose AND your bullets together. Your bullets are tactical reminders, not a replacement for the prose.
+
+Write your bullets in the SAME LANGUAGE as the source field text. Do not translate to English — if the source prose is in French, German, Spanish, etc., your bullets must be in that same language. This applies independently to every field and every character; never default to English just because the instructions above are in English.
 
 For each input field that has content, produce 4-7 bullets:
 - Each bullet starts with "- " (markdown bullet)
@@ -202,9 +209,9 @@ async function summarizeFields(
 }
 
 async function summarizeCharacter(character: Record<string, any>, apiKey: string) {
-  // Two calls: the bulk of the fields on Haiku, and the Reveal confession fields on Sonnet 5
-  // (see REVEAL_FIELDS comment — Haiku silently drops confession-content bullets often enough
-  // that it needs the stronger model, mirroring ADR-0074's fix for the sibling generation call).
+  // Two calls, both on Sonnet 5 now (see MAIN_MODEL/REVEAL_FIELDS comments above) — kept as
+  // separate calls rather than merged since MAIN_FIELDS and REVEAL_FIELDS still have distinct
+  // prompt shapes and failure histories worth debugging independently if either regresses again.
   const [mainUpdate, revealUpdate] = await Promise.all([
     summarizeFields(character, apiKey, MAIN_FIELDS, MAIN_MODEL),
     summarizeFields(character, apiKey, REVEAL_FIELDS, REVEAL_MODEL),
