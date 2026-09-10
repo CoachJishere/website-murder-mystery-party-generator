@@ -1,9 +1,10 @@
 # Site health status
 
-_Last checked: 2026-09-10 16:29 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-09-10 20:55 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ⚠️ Problems found
 
+- 🟠 1 package(s) flagged needs_review in the last 7 days: fc756bcc-b56e-428b-8f47-bb2b73a97493
 - 🔴 1 package(s) whose delivered character count doesn't match their approved concept snapshot: Terminus 13 [approved=14, actual=15]
 - 🔴 1 package(s) whose approved concept message looks truncated, with a matching shortfall in delivered characters: Terminus 13 [header=28, delivered=15]
 
@@ -11,7 +12,7 @@ _Last checked: 2026-09-10 16:29 UTC (runs every 6 hours; see .github/workflows/h
 |---|---|
 | Website (www.mysterymaker.party) | HTTP 200 |
 | Generations stuck > 2h | 0 |
-| needs_review packages (7 days) | 0 |
+| needs_review packages (7 days) | 1 |
 | Paid packages missing evidence images | 0 |
 | Character identity conflicts (30 days) | 0 |
 | Meta-text / CoT artifacts (30 days) | 0 |
