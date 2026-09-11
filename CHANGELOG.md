@@ -2,6 +2,15 @@
 
 ## 2026-09-11
 
+### Feature: Terminus 13's roster completed from 15 to 28 characters — customer-requested, ADR-0103 Addendum 43
+Angie Smedley confirmed she wants the full 28-character cast she designed (the scope question left open by Addendum 37, 2026-09-10). No existing tool creates new characters on a completed package — `regenerate-child-content` only repairs existing rows, `adapt-mystery-apply` only removes. Built a one-off script (`scripts/complete-terminus13-roster.mjs`, not committed) reusing the actual production prompt logic copied from `regenerate-child-content/index.ts`, rather than improvising new prompts, so the 13 new characters match the existing 15's voice and format.
+
+Confirmed first that `game_overview`/`detective_script`/`evidence_cards`/`materials` don't reference the character count numerically, so growing the cast needed no changes there. Named 13 new suspects across the concept's original faction plan (Civilians, Remembered, and two renamed-from-"Unknown Operatives" outsiders, since that faction's original accomplice-mechanic plan was already superseded by what actually generated). Deliberately did not resurrect the customer's original "tunnel doors" subplot, since it was never part of the actual delivered game_overview/detective_script and reviving it now would create a new inconsistency rather than fix one.
+
+Validated on one character before running the full batch. Hit the same recurring JSON-escaping issue `regenerate-child-content`'s own comments document (occasional leaked thinking-text eating into the token budget) twice mid-batch — fixed by raising the token cap and adding a retry loop; the script's idempotent resume logic meant no completed work was lost across two restarts.
+
+Verified before calling it done, not just trusted the exit code: 28 characters (was 15), exactly 1 murderer + 1 accomplice unchanged, zero incomplete rows, the full 13-detector suite used throughout ADR-0103 all clean, grepped every field for leaked thinking-tags/JSON artifacts (zero hits), manually read 4 of the 13 characters in full including both that needed retries. Total cost ~$3.75-4.00, in line with the estimate given before starting.
+
 ### Fix: new bug class found via sweep — accomplice-branch scripts written in the wrong grammatical person, plus two self-referential name leaks — fixed (ADR-0103 Addendum 42)
 Routine 3-purchase sweep. "The Seeker's Last Stand" and "Badge Of Dishonor" were both clean. "The Multiverse Gala: Who Silenced The Rebel?" (`mystery_style='character'`, `has_accomplice=true`, 13 characters) passed the peer-existence check but a manual read surfaced a new defect shape: Arthur's guilty branch was written in second person and his entire accomplice branch (5 fields) in third-person narration instead of first-person player dialogue; Chamber/Chantal's accomplice branch (5 fields) had the same third-person problem. Separately, Korra's and Sakuta/Sakura's `reveal_confession_accomplice` referred to their own name in the third person — each character's own confession described them protecting themselves — and Sakuta's borrowed Hiroko's "astral arms" ability, which isn't his.
 
