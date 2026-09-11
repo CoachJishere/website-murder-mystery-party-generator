@@ -169,7 +169,12 @@ async function summarizeFields(
     },
     body: JSON.stringify({
       model,
-      max_tokens: 4000,
+      // Was 4000 until 3 characters in "Veneno En La Medianoche" (very long source
+      // prose — 30-34K chars each, character-style role-variant fields) hit the
+      // ceiling mid-string, producing unparseable truncated JSON (2026-09-10). Same
+      // never-tuned-cap shape as the Terminus 13 incident elsewhere in this repo —
+      // raising it costs nothing unless a reply actually needs the tokens.
+      max_tokens: 8000,
       ...(isSonnet ? { thinking: { type: 'disabled' } } : { temperature: 0.5 }),
       system: SUMMARIZER_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],

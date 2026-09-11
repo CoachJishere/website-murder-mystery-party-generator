@@ -113,6 +113,23 @@ const NSFW_RETRY_SAFETY_TOLERANCE = 5;
 /** One Claude Haiku game_overview regeneration (~1.5k output tokens). */
 const OVERVIEW_REGEN_COST_USD = 0.01;
 
+/**
+ * One character's pointform regeneration: two Sonnet 5 calls (MAIN_FIELDS +
+ * REVEAL_FIELDS, see generate-pointform-summaries/index.ts), each with up to
+ * 8000 output tokens. A conservative per-character estimate for the spend
+ * cap — this class moved off Haiku onto Sonnet 5 (ADR-0103 Addendum 40) so
+ * it costs meaningfully more than the other Haiku-era per-character fixes.
+ */
+const POINTFORM_REGEN_COST_USD = 0.05;
+
+/**
+ * generate-pointform-summaries processes characters serially in one request
+ * and the gateway enforces a 150s idle timeout — observed live to silently
+ * truncate a batch of 10-12 characters mid-run (ADR-0103 Addendum 40). Call
+ * it in batches no larger than this from handlePointformLanguageMismatch.
+ */
+const POINTFORM_BATCH_SIZE = 4;
+
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -127,7 +144,8 @@ type DefectClass =
   | "game_overview_victim_mismatch"
   | "identity_contamination"
   | "slip_culprit_leak"
-  | "missing_role_branch_content";
+  | "missing_role_branch_content"
+  | "pointform_language_mismatch";
 
 /**
  * ADR-0061: the delegated meta_text_leak fallback (character-scope artifacts
@@ -149,6 +167,7 @@ const DETECTOR_RPC: Record<DefectClass, string> = {
   identity_contamination: "list_packages_with_identity_conflicts",
   slip_culprit_leak: "list_packages_with_slip_culprit_leak",
   missing_role_branch_content: "list_packages_with_missing_role_branch_content",
+  pointform_language_mismatch: "list_packages_with_pointform_language_mismatch",
 };
 
 // ---------------------------------------------------------------------------
@@ -1255,6 +1274,81 @@ async function handleVictimMismatch(ctx: RunCtx, row: Record<string, unknown>): 
   });
 }
 
+/**
+ * ADR-0103 Addendum 40 (2026-09-10): generate-pointform-summaries occasionally
+ * drifts *_pointform bullet summaries to English even though the source prose
+ * is correctly in another language. list_packages_with_pointform_language_mismatch
+ * returns one row per flagged character, not one per package (same shape as
+ * missing_role_branch_content) — but this class needs the opposite fan-out:
+ * a single language-drift incident tends to hit most/all characters in a
+ * package at once (33 characters across 4 packages, at bug discovery), and
+ * the 2-attempt-per-package-per-defect-class cap is a package-level budget,
+ * not a per-character one. Calling runGatedAttempt once per row would burn
+ * the whole cap on the first 2 of, say, 12 flagged characters and escalate
+ * the other 10 untouched. So the caller (serve(), below) groups rows by
+ * package_id first and this function receives the FULL list of that
+ * package's flagged character names in one call — one runGatedAttempt, one
+ * attempt-cap slot, covering every character.
+ */
+async function handlePointformLanguageMismatch(
+  ctx: RunCtx,
+  packageId: string,
+  characterNames: string[],
+): Promise<void> {
+  if (characterNames.length === 0) return;
+
+  await runGatedAttempt(ctx, packageId, "pointform_language_mismatch", async () => {
+    const { data: chars, error } = await supabase
+      .from("mystery_characters")
+      .select("id, character_name")
+      .eq("package_id", packageId)
+      .in("character_name", characterNames);
+    if (error) throw new Error(`character lookup failed: ${error.message}`);
+    const ids = (chars ?? []).map((c) => c.id as string);
+    if (ids.length === 0) return null;
+
+    return {
+      action: `regenerate_pointform:${ids.length}_characters`,
+      costUsd: POINTFORM_REGEN_COST_USD * ids.length,
+      apply: async () => {
+        // No single prior value to capture — see revert() below.
+        const failedNames: string[] = [];
+        for (let i = 0; i < ids.length; i += POINTFORM_BATCH_SIZE) {
+          const batchIds = ids.slice(i, i + POINTFORM_BATCH_SIZE);
+          const { ok, json } = await invokeFunctionJson("generate-pointform-summaries", {
+            packageId,
+            characterIds: batchIds,
+          });
+          const batchResults = (ok && Array.isArray(json?.results) ? json!.results : []) as Array<{
+            character_name: string;
+            status: string;
+          }>;
+          const okNames = new Set(batchResults.filter((r) => r.status === "ok").map((r) => r.character_name));
+          for (const c of (chars ?? []).filter((c) => batchIds.includes(c.id as string))) {
+            if (!okNames.has(c.character_name as string)) failedNames.push(c.character_name as string);
+          }
+        }
+        if (failedNames.length === ids.length) {
+          throw new Error(`generate-pointform-summaries failed for all ${ids.length} characters`);
+        }
+        return {
+          beforeValue: null,
+          note: `${ids.length - failedNames.length}/${ids.length} regenerated${
+            failedNames.length ? `, failed: ${failedNames.join(", ")}` : ""
+          }`,
+        };
+      },
+      // Not feasible and not desirable: there's no single "before" text worth
+      // restoring (the prior pointform content was already wrong — English
+      // when it should have matched the character's own prose language), and
+      // a partially-successful batch leaves the fixed characters fixed. The
+      // re-detect gate in runGatedAttempt still catches a fix that didn't
+      // fully take and escalates it, per the class's normal contract.
+      revert: async () => false,
+    };
+  });
+}
+
 async function handleMissingImages(ctx: RunCtx, row: Record<string, unknown>): Promise<void> {
   const packageId = row.package_id as string;
   const missingRounds = (row.missing_rounds as string[]) ?? [];
@@ -1465,6 +1559,26 @@ serve(async (req) => {
     if (shouldRun("missing_images")) {
       for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.missing_images, sinceIso))) {
         await handleMissingImages(ctx, row);
+      }
+    }
+
+    // 7. Pointform language mismatch — paid (Sonnet 5). Grouped by package_id
+    //    before dispatch (see handlePointformLanguageMismatch's doc comment) so
+    //    one incident affecting many characters in the same package spends one
+    //    attempt-cap slot, not one per character.
+    if (shouldRun("pointform_language_mismatch")) {
+      const rows = await filterNeedsReview(await callDetector(DETECTOR_RPC.pointform_language_mismatch, sinceIso));
+      const byPackage = new Map<string, string[]>();
+      for (const row of rows) {
+        const pid = row.package_id as string;
+        const name = row.character_name as string;
+        if (!pid || !name) continue;
+        const list = byPackage.get(pid) ?? [];
+        list.push(name);
+        byPackage.set(pid, list);
+      }
+      for (const [packageId, characterNames] of byPackage) {
+        await handlePointformLanguageMismatch(ctx, packageId, characterNames);
       }
     }
 
