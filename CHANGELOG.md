@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-11
+
+### Fix: oversized conversation transcript silently no-op'd Make.com character regeneration, causing repeated paid re-fires with no progress — fixed, package repaired (ADR-0097 Addendum)
+Jonathan flagged that a purchase (`fc756bcc-b56e-428b-8f47-bb2b73a97493`, "Glamour, Gier Und Ein Glas Champagner") kept re-triggering the Make.com child scenario, costing money with no result. Root cause: `notify-generation-issue`'s auto-recovery re-fire sends the customer's full `user_conversation` transcript as `conversationContent`; this customer's was ~180,000 characters, and the oversized payload made the Make scenario execution report success (HTTP 200, status 1) while silently writing nothing — 7 operations/~47s instead of the normal 19 operations/~100s a real character generation takes. 2 automatic attempts and a same-shaped manual retry all failed identically for the same 3 of 8 characters; a retry with a ~15,000-char name-windowed excerpt of the same transcript succeeded immediately for all 3.
+
+Added `buildConversationExcerpt()` to `supabase/functions/notify-generation-issue/index.ts` (deployed v33) so every future re-fire sends a bounded, character-relevant excerpt instead of the raw transcript, regardless of how long a customer's conversation was. Package repaired: all 8 characters generated, `package_completion_blocking_defects()` clean, `generation_status` promoted to `completed`. Kept the existing 2-attempt-then-pause cap as-is — it worked correctly (bounded the runaway spend without needing manual intervention to stop); the fix was the payload size, not the retry policy. Deploy note: an initial deploy attempt accidentally shipped placeholder text instead of the real file for ~1-2 minutes; confirmed via `net._http_response` that zero real invocations hit it before it was corrected.
+
 ## 2026-09-10
 
 ### Feature: pointform language mismatch is now a permanent blocking-defect + self-heal class — packages are held from customers until fixed, no manual sweep needed

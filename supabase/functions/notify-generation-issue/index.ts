@@ -26,6 +26,55 @@ const LANGUAGE_NAMES: Record<string, string> = {
 };
 const DEFAULT_LANGUAGE_NAME = "English";
 
+/**
+ * ADR-0097 Addendum (2026-09-11): the re-fire payload below sends this as
+ * `conversationContent` since it has no access to mystery-webhook-trigger's
+ * per-character `characterChatExcerpts` (never persisted — see the comment at
+ * the call site). For most packages the full `user_conversation` transcript
+ * is small enough that sending it whole was harmless. Confirmed live on "Die
+ * „Night of Stars"-Gala" (fc756bcc-...): an unusually long transcript
+ * (~180,000 chars) made the CHILD_WEBHOOK scenario execution complete
+ * "successfully" (status 1) while silently writing NOTHING — 7 operations
+ * and ~47s instead of the normal 19 operations/~100s a real character
+ * generation takes, for 3 of 8 characters, across 2 automatic attempts AND
+ * a same-shaped manual retry (3 failures for 3 tries). A retry with a
+ * name-windowed excerpt of the same transcript (~15,000 chars: the opening
+ * for scenario/theme context, plus ±1,200 chars around every mention of the
+ * target character's name) succeeded on the first attempt for all 3.
+ *
+ * This does NOT reconstruct mystery-webhook-trigger's real per-character
+ * excerpt (that logic is alias-regex extraction that lives only there) —
+ * it's a bounded, character-relevant substitute that keeps the payload small
+ * regardless of how long the source conversation is, so a re-fire's success
+ * doesn't depend on how chatty a particular customer's session was.
+ */
+const CONVERSATION_EXCERPT_OPENING_CHARS = 3000;
+const CONVERSATION_EXCERPT_WINDOW_CHARS = 1200;
+const CONVERSATION_EXCERPT_MAX_CHARS = 14000;
+const CONVERSATION_EXCERPT_MAX_MATCHES = 8;
+
+function buildConversationExcerpt(fullConversation: string, characterName: string): string {
+  if (!fullConversation) return "";
+  if (fullConversation.length <= CONVERSATION_EXCERPT_MAX_CHARS) return fullConversation;
+
+  let excerpt = fullConversation.slice(0, CONVERSATION_EXCERPT_OPENING_CHARS);
+  let cursor = 0;
+  let matches = 0;
+  while (matches < CONVERSATION_EXCERPT_MAX_MATCHES && excerpt.length < CONVERSATION_EXCERPT_MAX_CHARS) {
+    const relPos = fullConversation.indexOf(characterName, cursor);
+    if (relPos === -1) break;
+    const windowStart = Math.max(0, relPos - CONVERSATION_EXCERPT_WINDOW_CHARS);
+    const windowEnd = Math.min(
+      fullConversation.length,
+      relPos + characterName.length + CONVERSATION_EXCERPT_WINDOW_CHARS,
+    );
+    excerpt += "\n---\n" + fullConversation.slice(windowStart, windowEnd);
+    cursor = relPos + characterName.length;
+    matches++;
+  }
+  return excerpt;
+}
+
 function getCorsHeaders(req: Request) {
   const origin = req.headers.get('Origin') || '';
   const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -475,7 +524,12 @@ serve(async (req) => {
             // re-fire payload, missing both fields, still populated
             // identity fields successfully) -- this closes a confirmed
             // context gap regardless, cheaply and safely.
-            conversationContent: pkg?.user_conversation ?? "",
+            //
+            // ADR-0097 Addendum (2026-09-11): windowed to this character's
+            // own name rather than sent raw -- see buildConversationExcerpt's
+            // comment for the incident that made this necessary (an oversized
+            // transcript made the scenario silently no-op instead of erroring).
+            conversationContent: buildConversationExcerpt(pkg?.user_conversation ?? "", charName),
             language: languageName,
           }),
         });
