@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-12
+
+### Fix: acknowledged an expected roster-mismatch alert on Terminus 13 (ADR-0103 Addendum 44)
+The health-check flagged Terminus 13 again the day after its roster was completed: `approved=14, actual=28`. Not a regression — the "approved" count is the same permanently-truncated concept message from Addendum 37 (fixing the roster added real content, it didn't touch that stale snapshot text), while 28 is the correctly-completed, customer-confirmed roster from Addendum 43. Acknowledged via `acknowledged_health_alerts` (same mechanism already used for the "Death At The Velvet Viper" stale-draft case) so it stops re-firing. Verified live: re-ran the detector script, Terminus 13 no longer appears.
+
 ## 2026-09-11
 
 ### Feature: Terminus 13's roster completed from 15 to 28 characters — customer-requested, ADR-0103 Addendum 43

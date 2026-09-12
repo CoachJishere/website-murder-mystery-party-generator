@@ -713,3 +713,12 @@ Addendum 37 (2026-09-10) fixed Terminus 13's one broken character name but delib
 ### Key files (Addendum 43)
 - `scripts/complete-terminus13-roster.mjs` — one-off completion script, not committed (gitignored, `*.mjs` blanket rule, deliberately not added to the allowlist since this is single-use)
 - `mystery_characters` — 13 new rows for `package_id = 'e86e0bee-560e-435b-910a-5e636e0421bc'`
+
+## Addendum 44 (2026-09-12): acknowledged the Terminus 13 roster-mismatch alert — expected, not a recurrence
+
+The health-check's roster-count-mismatch detector (check 12, ADR-0064) fired again on Terminus 13 the day after Addendum 43 shipped: `approved=14, actual=28`. Not a new bug or a regression — `approved` (14) is still the same permanently-truncated concept-approval message from Addendum 37 (fixing the roster meant adding real character content, not editing the stale snapshot text itself, so its parsed count can never move), while `actual` (28) is now the correctly-completed roster the customer confirmed she wanted. The detector has no way to know a mismatch it's designed to catch has since been deliberately, correctly resolved by a human decision outside its own field of view — exactly the "escalate-only, human judgment required" case this detector was built for (see its own header comment: "a mismatch means the delivered cast doesn't match what the customer approved — not something to guess-fix automatically").
+
+Acknowledged via `acknowledged_health_alerts` (`detector = 'roster_mismatch'`, `package_id = 'e86e0bee-560e-435b-910a-5e636e0421bc'`), the same mechanism `scripts/detect-roster-mismatches.mjs` already checks before flagging (used previously for "Death At The Velvet Viper"'s stale-draft case). Verified live: re-ran the detector script post-acknowledgment — Terminus 13 no longer appears; the one remaining hit ("Whispers From The Void," 10 approved/9 actual) is the unrelated, already-documented ADR-0036 intentional-removal case from a prior incident, untouched.
+
+### Key files (Addendum 44)
+- `acknowledged_health_alerts` — new row for `package_id = 'e86e0bee-560e-435b-910a-5e636e0421bc'`, `detector = 'roster_mismatch'`
