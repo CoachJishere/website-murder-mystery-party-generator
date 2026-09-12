@@ -2,6 +2,11 @@
 
 ## 2026-09-12
 
+### Feature: wired narration_person_mismatch into automatic self-heal, and fixed the Make.com blueprint too (ADR-0103 Addendum 45 update)
+Finished both items left open from the fix below. Added `narration_person_mismatch` as an 8th delegated defect class in `auto-remediate-packages` (same per-character precise-field-list shape as `missing_role_branch_content`), extended `regenerate-child-content`'s `DefectHint` type to match, deployed both, and added the class to the 5-minute held-only sweep's cron job — a held package with this defect now self-heals automatically instead of needing a manual call. Verified via `dry_run` (0 considered, correctly — the 10-character backfill already cleared every live instance).
+
+Also applied the identical `GRAMMATICAL PERSON` + "in first person" fix directly to the latest Make.com Child blueprint mirror (`temp-files/MM Live - Child (Unified)40-GrammaticalPersonFix.blueprint.json`) via script, since Make MCP access wasn't needed — Jonathan uploads it to Make.com directly. Added local migration files for the DB-side changes applied live earlier today.
+
 ### Fix: root-caused and shipped a permanent detector for the Addendum 42 grammatical-person bug; found and repaired 10 more live characters across 5 more packages (ADR-0103 Addendum 45)
 Follow-up to yesterday's one-off content fix (Addendum 42): found the actual prompt gap that plausibly caused it — `regenerate-child-content`'s guilty/accomplice/innocent bracket templates never said "in first person" the way the base `round2Script` template did — and fixed it at the source (deployed v18 via Supabase CLI after an MCP-tool deploy attempt corrupted a nested backtick during hand-transcription). Added an explicit `GRAMMATICAL PERSON` rule plus per-field reinforcement, including the exact self-reference failure mode as a worked example.
 

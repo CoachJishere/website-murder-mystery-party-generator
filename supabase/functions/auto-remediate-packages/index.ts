@@ -32,6 +32,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
  *                                   call per character with that character's
  *                                   own precise missing-field list (ADR-0103
  *                                   Addendum 36)
+ *   narration_person_mismatch       DELEGATE to regenerate-child-content, same
+ *                                   per-character precise-field-list shape as
+ *                                   missing_role_branch_content (ADR-0103
+ *                                   Addendum 45)
  *
  * ADR-0061 (2026-08-02): identity_contamination and slip_culprit_leak used to
  * be escalate-only ("child-generated, judgment-heavy, no safe deterministic
@@ -145,7 +149,8 @@ type DefectClass =
   | "identity_contamination"
   | "slip_culprit_leak"
   | "missing_role_branch_content"
-  | "pointform_language_mismatch";
+  | "pointform_language_mismatch"
+  | "narration_person_mismatch";
 
 /**
  * ADR-0061: the delegated meta_text_leak fallback (character-scope artifacts
@@ -168,6 +173,7 @@ const DETECTOR_RPC: Record<DefectClass, string> = {
   slip_culprit_leak: "list_packages_with_slip_culprit_leak",
   missing_role_branch_content: "list_packages_with_missing_role_branch_content",
   pointform_language_mismatch: "list_packages_with_pointform_language_mismatch",
+  narration_person_mismatch: "list_packages_with_narration_person_mismatch",
 };
 
 // ---------------------------------------------------------------------------
@@ -857,7 +863,7 @@ const DELEGATE_DEFAULT_FIELDS: Record<"identity_contamination" | "slip_culprit_l
 
 async function delegateToRegenerator(
   ctx: RunCtx,
-  hint: "identity_contamination" | "slip_culprit_leak" | "meta_text_leak" | "missing_role_branch_content",
+  hint: "identity_contamination" | "slip_culprit_leak" | "meta_text_leak" | "missing_role_branch_content" | "narration_person_mismatch",
   packageId: string,
   characterNames: string[],
   fields: string[],
@@ -1100,6 +1106,21 @@ async function handleMissingRoleBranchContent(ctx: RunCtx, row: Record<string, u
   const fields = (row.fields as string[]) ?? [];
   if (!characterName || fields.length === 0) return;
   await delegateToRegenerator(ctx, "missing_role_branch_content", packageId, [characterName], fields);
+}
+
+/** ADR-0103 Addendum 45: narration_person_mismatch — same delegation shape as
+ *  missing_role_branch_content directly above (one row per character, that
+ *  character's own detector row already names the exact broken fields, no
+ *  DELEGATE_DEFAULT_FIELDS entry needed, no auto-widening needed). The fix
+ *  itself is a plain regenerate-child-content call — its prompt now enforces
+ *  first person (see the same addendum), so a regenerated field should not
+ *  reintroduce the defect it's being called to repair. */
+async function handleNarrationPersonMismatch(ctx: RunCtx, row: Record<string, unknown>): Promise<void> {
+  const packageId = row.package_id as string;
+  const characterName = row.character_name as string;
+  const fields = (row.fields as string[]) ?? [];
+  if (!characterName || fields.length === 0) return;
+  await delegateToRegenerator(ctx, "narration_person_mismatch", packageId, [characterName], fields);
 }
 
 const PACKAGE_ARTIFACT_FIELDS = [
@@ -1545,6 +1566,16 @@ serve(async (req) => {
     if (shouldRun("missing_role_branch_content")) {
       for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.missing_role_branch_content, sinceIso))) {
         await handleMissingRoleBranchContent(ctx, row);
+      }
+    }
+
+    // 4c. narration_person_mismatch — delegated to regenerate-child-content
+    //    (ADR-0103 Addendum 45; previously alert-only via the completion gate
+    //    only, no self-heal). Same per-character precise-field-list shape as
+    //    missing_role_branch_content above.
+    if (shouldRun("narration_person_mismatch")) {
+      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.narration_person_mismatch, sinceIso))) {
+        await handleNarrationPersonMismatch(ctx, row);
       }
     }
 

@@ -163,15 +163,17 @@ const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
 type MysteryStyle = "detective" | "character";
-// "missing_role_branch_content" (ADR-0103 Addendum 36) deliberately does NOT
-// get its own branch in autoExpand/effectiveFieldsFor below — both already
+// "missing_role_branch_content" (ADR-0103 Addendum 36) and
+// "narration_person_mismatch" (ADR-0103 Addendum 45) deliberately do NOT get
+// their own branch in autoExpand/effectiveFieldsFor below — both already
 // no-op (pass the caller's `fields` through unchanged) for any hint they
 // don't explicitly handle, which is exactly right here: the caller
-// (auto-remediate-packages, via list_packages_with_missing_role_branch_content)
-// already computed the precise missing-field list for this exact character,
-// so no widening is needed. Only added to this type so the hint's name is
-// typed and gets written to auto_remediation_log correctly.
-type DefectHint = "identity_contamination" | "slip_culprit_leak" | "meta_text_leak" | "missing_role_branch_content";
+// (auto-remediate-packages, via list_packages_with_missing_role_branch_content
+// / list_packages_with_narration_person_mismatch) already computed the
+// precise field list for this exact character, so no widening is needed.
+// Only added to this type so the hint's name is typed and gets written to
+// auto_remediation_log correctly.
+type DefectHint = "identity_contamination" | "slip_culprit_leak" | "meta_text_leak" | "missing_role_branch_content" | "narration_person_mismatch";
 type Outcome = "fixed" | "escalated" | "failed" | "planned" | "noop";
 
 // ---------------------------------------------------------------------------
