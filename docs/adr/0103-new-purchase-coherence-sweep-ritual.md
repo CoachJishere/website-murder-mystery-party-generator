@@ -722,3 +722,45 @@ Acknowledged via `acknowledged_health_alerts` (`detector = 'roster_mismatch'`, `
 
 ### Key files (Addendum 44)
 - `acknowledged_health_alerts` — new row for `package_id = 'e86e0bee-560e-435b-910a-5e636e0421bc'`, `detector = 'roster_mismatch'`
+
+## Addendum 45 (2026-09-12): Addendum 42's bug class — root cause fixed at the source, a real detector shipped after the naive version proved unreliable, and 10 more live characters (5 packages) found and repaired
+
+Jonathan asked, after Addendum 42, for the grammatical-person/self-reference bug class to get a real fix that prevents recurrence — not just a one-off content patch — plus a broader look at what else this product needs to ship "as close to perfect as possible" on the first try. Three things came out of that ask, in order.
+
+**1. Root cause found and fixed at the source.** `regenerate-child-content/index.ts` (the self-heal/repair mirror of the Make.com Child blueprint) turned out to have the exact gap that plausibly explains the drift: the `round2Script`/`finalStatement` bracket templates explicitly said "in first person," but the parallel `round2Guilty`/`round2Accomplice`/etc. bracket templates never did — an inconsistency in the prompt itself, not random model variance. Added an explicit `GRAMMATICAL PERSON` rule to `contentCoherenceRules()` (fires on every field, every call) plus "in first person" reinforcement to every individual guilty/innocent/accomplice/reveal-confession bracket template and schema footer, including an explicit worked example of the self-reference failure mode. Deployed via `supabase functions deploy regenerate-child-content` (CLI, not the MCP tool — a hand-transcription of the ~75KB file into the MCP deploy tool's inline `content` field dropped escape characters around a nested backtick and broke the bundle; the CLI deploys straight from disk and has no such risk). Verified live via `get_edge_function` (v18, contains the new rule). **Not done:** the Make.com blueprint itself (the PRIMARY generation path for brand-new packages) has the identical gap and needs the same instruction added directly in Make.com — this session has no Make MCP access (auth rejected), so that side is unfixed and is Jonathan's to carry over.
+
+**2. A real detector, after the naive version failed twice.** First attempt ("does this field contain the character's own name 2+ times") false-positived on ~90% of its own hits when tested against the live corpus: some `character_name` values are role labels ("The Leader," "Sales/Simon Keller"), and — more importantly — third-person narration with quoted dialogue turned out to be a **legitimate, widely-used style** across dozens of unrelated packages (a screenplay convention: stage-direction beat + quoted first-person line, e.g. `Joe's shoulders drop... 'Okay,' he says. 'I did it.'`), not inherently a bug. The real signal, confirmed by finding an independent, unrelated instance of the Addendum 42 bug shape (Molly, "The Jealous Niece" — her `round2_innocent`/`round3_innocent` are correctly first-person, her `round2_guilty`/`round3_guilty` are pure third-person narration with zero quotable dialogue) is **inconsistency within one character**: their own confirmed-first-person baseline branch (`*_innocent` or `*_script`/`final_statement`) proves they write in first person, but a sibling branch opens with `[OwnName]+narrator-verb` AND contains zero actual quoted dialogue tag (nothing a player could perform as their own line). A "second person" sub-check (starts with "You"/"Your") was tried and dropped — rhetorical openers like "You want the truth? Fine. I..." are common, legitimate first-person text and produced ~75% false positives on manual sampling.
+
+Shipped as a new `narration_person_mismatch` class inside `package_completion_blocking_defects()` (holds future packages with this defect, same mechanism as every other class in that function) plus `list_packages_with_narration_person_mismatch()` for the `auto-remediate-packages` delegation loop (not yet wired into that worker this session — flagged below). Tuned and corpus-verified with zero known false positives at these thresholds.
+
+**Performance note:** the list function initially timed out at the full-corpus default scope even at a 2-minute `statement_timeout` — isolating each sub-expression showed every individual piece was fast, but the combined query wasn't being planned the way its parts suggested. Fixed by forcing `MATERIALIZED` on every CTE and pushing the package-scope filter (`pkg`) ahead of the expensive per-field regex work via a `WHERE package_id IN (SELECT ...)` semi-join, rather than joining `pkg` only at the very end. Runs in well under a second post-fix.
+
+**3. Historical backfill: 10 more characters, 5 more live paid packages, all pre-existing and unrelated to the Multiverse Gala package Addendum 42 fixed.** The corrected detector (validated against manual review of every hit) found:
+
+| Package | Character(s) | Fields |
+|---|---|---|
+| Blood Tide: The Cove Of Broken Oaths | The Tide Witch, Salt/Sallow Bramwick | round3_guilty |
+| Elementary, My Dear Cadaver | Columbolumbo Kane | round2_accomplice |
+| Elementary, My Dear Cadaver | Vera Noir-ish | round4_accomplice, final_accomplice |
+| Elementary, My Dear Cadaver | Sherlock Bones / Shirlee Bones | round2/3/4_accomplice |
+| The Final Cut | Anna | round3/4_accomplice |
+| The Final Cut | Lily | round3_accomplice |
+| The Gods Must Be Gossiping | Apollo/Apollina | round4_accomplice, reveal_confession_accomplice |
+| The Gods Must Be Gossiping | Dionysus/Dionysia | round3/4_accomplice, reveal_confession_accomplice |
+| The Gods Must Be Gossiping | Hephaestus/Hestia | round3/4_accomplice |
+| The Jealous Niece | Molly | round2/3_guilty, reveal_confession_guilty |
+
+(Joe Rice, "The Jealous Niece," was an initial false-positive on the *first*, less-precise detector pass — his `reveal_confession_guilty` opens with narration but contains a real quoted confession, "'Okay,' he says softly. 'Okay. I did it.'" — correctly excluded once the dialogue-tag check was added; a useful confirmation the refined signal is actually more precise than the manual eyeball read that first flagged it.)
+
+Repaired all 10 characters live via the now-fixed `regenerate-child-content` (real Anthropic spend, ~$1.30 total per the function's own flat-rate cost accounting — an approved, already-in-production repair tool, not a fresh ask under the no-paid-API-without-permission rule). Every call returned `outcome: "fixed"`; re-ran both `list_packages_with_narration_person_mismatch()` (empty) and `package_completion_blocking_defects()` per package (all `null`) to confirm.
+
+**On the broader "as close to perfect as possible" ask:** this session's answer is procedural, not a new document — `north_star.md` is a business-context file for external context, not a QA/prevention playbook, so nothing was added there. The standing principle going forward (see `CLAUDE.md` update, same commit): when a sweep finds a bug that traces to a genuinely fixable prompt/instruction gap (a missing "write in first person" is a clear example — cheap, deterministic, no new ongoing cost), fix the prompt source AND build the detector in the same session rather than waiting for a second occurrence. The existing 2+-occurrence bar (Addendum 31) stays the default for the *other* kind of bug this checklist already flags — genuine semantic-contradiction defects (secret inversion, the CLAUDE.md-documented class) that would need something like an LLM-judge to catch reliably, where a wrong build really would be premature infrastructure. This addendum is the concrete precedent for telling the two apart.
+
+**Not done:** the Make.com blueprint fix (above). `narration_person_mismatch` not yet wired into `auto-remediate-packages`'s self-heal loop (the detector exists and the completion gate blocks on it, but a *held* package with this defect currently needs a manual `regenerate-child-content` call the way this session just did it, not an automatic one on the 5-/30-minute sweep cadence). No sweep of packages older than the corpus this detector's default `_since` covers (`2026-04-01`).
+
+### Key files (Addendum 45)
+- `supabase/functions/regenerate-child-content/index.ts` — `GRAMMATICAL PERSON` rule added to `contentCoherenceRules()`; "in first person" added to every guilty/innocent/accomplice/reveal-confession bracket template and schema footer; deployed v18 via Supabase CLI
+- `package_completion_blocking_defects()` (DB function) — new `narration_person_mismatch` defect class
+- `list_packages_with_narration_person_mismatch()` (DB function, new) — `auto-remediate-packages` delegation-loop counterpart, not yet wired in
+- Repaired live via `regenerate-child-content`: 10 characters across `mystery_packages.id` = `f40984b1-8b95-4df0-b589-5e75b81e4127` ("Blood Tide"), `98857ef0-71d5-48a1-8c04-09be5092169c` ("Elementary, My Dear Cadaver"), `11d3667b-6ec4-4da6-9a8c-14b1c07da33e` ("The Final Cut"), `ea610d24-c7c8-4c87-a842-59d64ffeabfb` ("The Gods Must Be Gossiping"), `d31f69d2-aaf6-46d4-a930-c759d670e635` ("The Jealous Niece")
+
