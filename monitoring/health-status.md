@@ -1,10 +1,8 @@
 # Site health status
 
-_Last checked: 2026-09-12 04:41 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-09-12 10:53 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
-## ⚠️ Problems found
-
-- 🔴 1 package(s) whose delivered character count doesn't match their approved concept snapshot: Terminus 13 [approved=14, actual=28]
+## ✅ All checks passing
 
 | Check | Result |
 |---|---|
@@ -19,7 +17,7 @@ _Last checked: 2026-09-12 04:41 UTC (runs every 6 hours; see .github/workflows/h
 | Self-directed questions (30 days) | 0 |
 | Completed-but-empty packages (30 days) | 0 |
 | Structural defects — escalate only (30 days) | 0 |
-| Roster-count mismatches — escalate only (30 days) | 1 |
+| Roster-count mismatches — escalate only (30 days) | 0 |
 | Final-statement confession leaks — escalate only (30 days) | 0 |
 | Unconfessed detective-style culprits — escalate only (30 days) | 0 |
 | Truncated concept messages — escalate only (30 days) | 0 |
