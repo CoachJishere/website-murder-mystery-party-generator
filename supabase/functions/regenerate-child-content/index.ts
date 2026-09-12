@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { buildConversationExcerpt } from "../_shared/conversation-excerpt.ts";
 
 /**
  * regenerate-child-content — ADR-0051 layer 3: the child-content regenerator.
@@ -222,6 +223,7 @@ These rules apply to every field you generate:
 - TIMING: When a character refers to time, use approximate, event-relative phrasing ('just before nine', 'as the ceremony was about to begin', 'shortly after dinner') rather than exact clock times. Only give an exact minute if it is a deliberate clue AND you give the character a concrete reason they would remember that exact moment (they checked a watch, heard a clock chime). Do not build player-facing recall around minute-precise timelines.
 - QUESTIONS: Every question in a character's 'questions to ask' list must be directed at a DIFFERENT, LIVING character. NEVER generate a question this character asks of themselves, and NEVER address a question to the victim (the victim is dead and not a player).
 - ACCOMPLICE COHERENCE (only when this character's role is accomplice): their consistent goal is to PROTECT the murderer. They deflect suspicion away from the murderer and toward other suspects. NEVER script the accomplice to accuse, incriminate, or turn on the murderer in any round.
+- GRAMMATICAL PERSON: Every round script, final statement, and confession field (guilty, innocent, accomplice, and reveal_confession branches alike) is delivered ALOUD BY THIS CHARACTER, AS this character, to the other players. Write it entirely in FIRST PERSON ("I", "my", "me") from the first word to the last. NEVER write it in second person ("You don't bother denying...") or third-person narration ("Arthur spreads his hands... he says..."). NEVER reference this character's own name or full name anywhere inside their own script/statement/confession field — a person speaking about themselves does not say their own name to refer to themselves ("what Korra had done" inside Korra's own confession, or "I let Sakuta/Sakura carry his own fear" inside Sakuta/Sakura's own confession, are both wrong). If another character's name needs to appear (e.g. naming who they're protecting, or who they suspect), use that OTHER character's name freely — the rule is only about never naming the SPEAKER.
 - BLACKMAIL / SECRET LOGIC: If a secret is being used to blackmail this character, that secret must still be genuinely hidden from the public — the harm is what WOULD happen if exposed. NEVER write that the same fact was already discovered or made public AND is still being used as active blackmail leverage.
 - SECRET STAKES: Every secret must spell out the concrete consequences the character faces if exposed (ruin, arrest, loss of position, social destruction), and make clear this character will go to great lengths to keep it hidden.
 - REAL-WORLD-SENSITIVE HARM THEMES: Do not write any character's secret, backstory, motive, or rumor around sexual assault, human trafficking, or the sexual exploitation/predation of minors or young women - whether this character is the perpetrator, an enabler, or someone who witnessed such harm and stayed silent about it. This applies regardless of the character's role (suspect, murderer, accomplice, victim). Other dark or adult themes (fraud, violence, addiction, affairs, blackmail over non-sexual misconduct) remain in scope and do not need to be softened.`;
@@ -353,12 +355,12 @@ const GROUP_ROUNDS_INNOCENT: PromptGroup = {
   ],
   schema: `{
   "round2Questions": "## ROUND 2: MOTIVES\\n\\n### QUESTIONS TO ASK\\n\\n1. **To [Cast Name]:** '[question]'\\n\\n2. **To [Cast Name]:** '...'\\n\\n3. **To [Cast Name]:** '...'",
-  "round2Innocent": "## ROUND 2: MOTIVES\\n\\n**IF YOU'RE INNOCENT**\\n\\n[3-4 paragraph prose script — admit motive but deny acting on it; show what an innocent person with this motive would say]",
+  "round2Innocent": "## ROUND 2: MOTIVES\\n\\n**IF YOU'RE INNOCENT**\\n\\n[3-4 paragraph prose script in first person — admit motive but deny acting on it; show what an innocent person with this motive would say]",
   "round3Questions": "## ROUND 3: METHOD\\n\\n### QUESTIONS TO ASK\\n\\n[same format as r2; target 3 DIFFERENT characters than r2]",
-  "round3Innocent": "## ROUND 3: METHOD\\n\\n**IF YOU'RE INNOCENT**\\n\\n[3-4 paragraph prose script]",
+  "round3Innocent": "## ROUND 3: METHOD\\n\\n**IF YOU'RE INNOCENT**\\n\\n[3-4 paragraph prose script in first person]",
   "round4Questions": "## ROUND 4: OPPORTUNITY\\n\\n### QUESTIONS TO ASK\\n\\n[same format; target 3 DIFFERENT characters than r2/r3]",
-  "round4Innocent": "## ROUND 4: OPPORTUNITY\\n\\n**IF YOU'RE INNOCENT**\\n\\n[3-4 paragraph prose script — alibi/whereabouts]",
-  "finalInnocent": "## FINAL STATEMENT\\n\\n**IF YOU'RE INNOCENT**\\n\\n[3-4 paragraph emotional defense, theory about who really did it]"
+  "round4Innocent": "## ROUND 4: OPPORTUNITY\\n\\n**IF YOU'RE INNOCENT**\\n\\n[3-4 paragraph prose script in first person — alibi/whereabouts]",
+  "finalInnocent": "## FINAL STATEMENT\\n\\n**IF YOU'RE INNOCENT**\\n\\n[3-4 paragraph emotional defense in first person, theory about who really did it]"
 }`,
 };
 
@@ -368,12 +370,12 @@ const GROUP_ROUNDS_GUILTY: PromptGroup = {
   fields: ["round2_guilty", "round3_guilty", "round4_guilty", "final_guilty"],
   anchorHints: ["round2_innocent", "round3_innocent", "round4_innocent", "final_innocent"],
   schema: `{
-  "round2Guilty": "## ROUND 2: MOTIVES\\n\\n**IF YOU'RE GUILTY**\\n\\n[3-4 paragraph prose script — admit motive openly but redirect; subtle deflection]",
-  "round3Guilty": "## ROUND 3: METHOD\\n\\n**IF YOU'RE GUILTY**\\n\\n[3-4 paragraph prose script — admit knowledge but deny using it]",
-  "round4Guilty": "## ROUND 4: OPPORTUNITY\\n\\n**IF YOU'RE GUILTY**\\n\\n[3-4 paragraph prose script — fabricate alibi convincingly]",
-  "finalGuilty": "## FINAL STATEMENT\\n\\n**IF YOU'RE GUILTY**\\n\\n[3-4 paragraph confession revealing motive, method, timing — the dramatic reveal moment]"
+  "round2Guilty": "## ROUND 2: MOTIVES\\n\\n**IF YOU'RE GUILTY**\\n\\n[3-4 paragraph prose script in first person — admit motive openly but redirect; subtle deflection]",
+  "round3Guilty": "## ROUND 3: METHOD\\n\\n**IF YOU'RE GUILTY**\\n\\n[3-4 paragraph prose script in first person — admit knowledge but deny using it]",
+  "round4Guilty": "## ROUND 4: OPPORTUNITY\\n\\n**IF YOU'RE GUILTY**\\n\\n[3-4 paragraph prose script in first person — fabricate alibi convincingly]",
+  "finalGuilty": "## FINAL STATEMENT\\n\\n**IF YOU'RE GUILTY**\\n\\n[3-4 paragraph confession in first person, revealing motive, method, timing — the dramatic reveal moment]"
 }`,
-  schemaFooter: `These are the GUILTY-SLIP scripts (what the player says if they draw the guilty slip — they are the murderer). Scripts should be 85-90% similar to the innocent scripts already on file for this character (shown below as anchor context): admit motive/knowledge/opportunity but DENY committing murder.`,
+  schemaFooter: `These are the GUILTY-SLIP scripts (what the player says if they draw the guilty slip — they are the murderer). Scripts should be 85-90% similar to the innocent scripts already on file for this character (shown below as anchor context): admit motive/knowledge/opportunity but DENY committing murder. Every one of these 4 fields must be first person throughout — see GRAMMATICAL PERSON above; do not let the "IF YOU'RE GUILTY" framing tempt you into writing this as narration ABOUT the character instead of dialogue BY them.`,
 };
 
 const GROUP_ROUNDS_ACCOMPLICE: PromptGroup = {
@@ -382,12 +384,12 @@ const GROUP_ROUNDS_ACCOMPLICE: PromptGroup = {
   fields: ["round2_accomplice", "round3_accomplice", "round4_accomplice", "final_accomplice"],
   anchorHints: ["round2_innocent", "round3_innocent", "round4_innocent", "final_innocent"],
   schema: `{
-  "round2Accomplice": "## ROUND 2: MOTIVES\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph prose script — protect the murderer; redirect suspicion to others]",
-  "round3Accomplice": "## ROUND 3: METHOD\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph prose script]",
-  "round4Accomplice": "## ROUND 4: OPPORTUNITY\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph prose script]",
-  "finalAccomplice": "## FINAL STATEMENT\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph statement — reveal accomplice role only at the very end if at all; primarily defend the murderer]"
+  "round2Accomplice": "## ROUND 2: MOTIVES\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph prose script in first person — protect the murderer; redirect suspicion to others]",
+  "round3Accomplice": "## ROUND 3: METHOD\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph prose script in first person]",
+  "round4Accomplice": "## ROUND 4: OPPORTUNITY\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph prose script in first person]",
+  "finalAccomplice": "## FINAL STATEMENT\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph statement in first person — reveal accomplice role only at the very end if at all; primarily defend the murderer]"
 }`,
-  schemaFooter: `These are the ACCOMPLICE-SLIP scripts (what the player says if they draw the accomplice slip — they helped the murderer).`,
+  schemaFooter: `These are the ACCOMPLICE-SLIP scripts (what the player says if they draw the accomplice slip — they helped the murderer). Every one of these 4 fields must be first person throughout — see GRAMMATICAL PERSON above; do not let the "IF YOU'RE THE ACCOMPLICE" framing tempt you into writing this as narration ABOUT the character instead of dialogue BY them, and never name this character inside their own field when describing what they knew or who they protected.`,
 };
 
 // ADR-0103: "THE REVEAL — YOUR CONFESSION" beat — a distinct field from
@@ -409,7 +411,7 @@ const GROUP_REVEAL_CONFESSION: PromptGroup = {
   "revealConfessionGuilty": "## THE REVEAL — YOUR CONFESSION\\n\\n[3-4 paragraph first-person confession, read aloud once this character is revealed as the murderer — motive, method, and timing laid out plainly, no more deflecting]",
   "revealConfessionAccomplice": "## THE REVEAL — YOUR CONFESSION\\n\\n[3-4 paragraph first-person confession, read aloud once this character is revealed as the accomplice — what they knew, what they did to help or cover for the murderer, and why]"
 }`,
-  schemaFooter: `These are read aloud once at THE REVEAL, after the murderer/accomplice slip-holder is named — distinct from final_guilty/final_accomplice (shown below as anchor context), which are read earlier during Final Statements while the character is still deflecting. This is the moment all pretense drops.`,
+  schemaFooter: `These are read aloud once at THE REVEAL, after the murderer/accomplice slip-holder is named — distinct from final_guilty/final_accomplice (shown below as anchor context), which are read earlier during Final Statements while the character is still deflecting. This is the moment all pretense drops. Both fields must stay first person and must NEVER name this character (the speaker) inside their own confession — e.g. do not write "what Korra had done" inside Korra's own reveal_confession_accomplice; if you don't yet know which OTHER character this one protected/was protected by, keep it generic ("the person I was protecting", "someone I trust") rather than inventing or reusing a name that doesn't belong in this field.`,
 };
 
 const ALL_GROUPS: PromptGroup[] = [
@@ -1146,7 +1148,13 @@ serve(async (req) => {
         try {
           const prompt = buildPrompt({
             style, group, fieldsToGenerate, masterContext: masterContextStr, character,
-            seedDescription, conversationContent: pkg.user_conversation ?? "",
+            // ADR-0097 Addendum (2026-09-12): windowed to this character's own
+            // name rather than sent raw -- see _shared/conversation-excerpt.ts.
+            // Doesn't share notify-generation-issue's silent-failure shape
+            // (errors here are caught and logged, Sonnet 5's context window
+            // easily fits a raw 180K-char transcript) -- this closes an
+            // unnecessary token-cost/prompt-dilution gap, not a correctness bug.
+            seedDescription, conversationContent: buildConversationExcerpt(pkg.user_conversation ?? "", character.character_name),
             hasAccomplice: has_accomplice, mysteryType: mystery_type, cast,
           });
           const { text, costUsd } = await callClaude(prompt, apiKey);
