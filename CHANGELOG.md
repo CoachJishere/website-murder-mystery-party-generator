@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-13
+
+### Fix: concept-chat's 10,000-character message cap was silently killing customer conversations (ADR-0122)
+Investigated a support email from Deborah Phillips ("Your Program Keeps Crashing"). Traced her actual conversation in the database: she pasted a 22,042-character block of old planning notes into concept chat, and the AI never replied again — three follow-up messages from her all went unanswered. Root cause: `mystery-ai`'s per-message length validation rejected anything over 10,000 characters with a bare HTTP 400, the frontend then retried the same doomed message 3 more times, and the only feedback was a toast that vanished with nothing written into the persisted chat — so from her side the conversation just went dead with no explanation.
+
+Raised the cap to 50,000 characters (well within what Sonnet 5 handles for this conversational use case, and covers Deb's paste with room to spare), gave the rejection a specific message and a `MESSAGE_TOO_LONG` code, and fixed `MysteryChat.tsx` to read the Edge Function's actual error body (previously only a generic "non-2xx status code" string was ever seen), skip retrying a deterministic validation failure, and persist a real chat-bubble explanation instead of a toast — wiring up `chat.errors.aiUnavailable`, a translation key that already existed in all 13 locales but was never referenced in code. Deployed via CLI (v177), verified live.
+
+Follow-up same day: the model itself had no idea any limit existed, so when Deb asked "can I paste my notes in sections?" it said "sure, go ahead" with no caveat — setting her up for the exact failure above. Added a system-prompt instruction so the model now proactively mentions the ~50,000-character limit and suggests splitting long pastes before a customer sends one, not just after it fails. Deployed v178, verified live.
+
+Her paste itself was never lost — it saved to the database even though the AI never replied to it — so no data recovery was needed; she can resume the same conversation directly.
+
 ## 2026-09-12
 
 ### Feature: wired narration_person_mismatch into automatic self-heal, and fixed the Make.com blueprint too (ADR-0103 Addendum 45 update)

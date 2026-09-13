@@ -152,10 +152,22 @@ serve(async (req) => {
       throw new Error('Messages array is required');
     }
 
-    // Input validation: cap individual message length
+    // Input validation: cap individual message length. Raised from 10,000
+    // (2026-09-13, ADR-0103 addendum): a customer pasting a 22K-character
+    // block of old planning notes hit the old cap and got a bare HTTP 400
+    // with no client-side handling for it — the chat just went silent (see
+    // the retry/surfacing fix in MysteryChat.tsx for the other half of this).
+    // 50,000 is well within what Sonnet 5 handles in a single turn and covers
+    // large backstory/timeline pastes; still bounded to keep a single message
+    // from blowing out cost or context on a paste that's actually pathological.
+    const MAX_MESSAGE_LENGTH = 50000;
     for (const msg of messages) {
-      if (msg.content && msg.content.length > 10000) {
-        return new Response(JSON.stringify({ error: 'Message too long' }), {
+      if (msg.content && msg.content.length > MAX_MESSAGE_LENGTH) {
+        return new Response(JSON.stringify({
+          error: `That message is too long to process (${msg.content.length.toLocaleString()} characters — the limit is ${MAX_MESSAGE_LENGTH.toLocaleString()}). Try splitting it into smaller sections and sending them one at a time.`,
+          code: 'MESSAGE_TOO_LONG',
+          maxLength: MAX_MESSAGE_LENGTH
+        }), {
           status: 400, headers: responseHeaders
         });
       }
@@ -602,6 +614,19 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
       // reason as the two guardrails above: MYSTERY_FREE_PROMPT is the dominant
       // production path and isn't editable from this file.
       systemPrompt += `\n\nCRITICAL: If the user's concept describes some players as detectives, investigators, police officers, forensics, or a similar investigating-professional role — presented as a DISTINCT character type from the suspects, not just flavor for how suspects behave (every mystery has "everyone plays amateur sleuths trying to solve it"; that alone is not this case) — pause before building or expanding any character list, even if this means one more exchange than the usual clarifying-question limit. Clarify warmly and briefly: every individually scripted character in this game is a SUSPECT, with their own secret, motive, and personal connection to the case — there is no separate "investigator" character type, and nothing generates a script, secret, or hidden identity for one. People who want to play detectives, police, or forensics instead join as extra co-investigator guests who roleplay the role and ask questions alongside everyone else, but without their own generated character — the same mechanism already used whenever a group is larger than the character list. Confirm how many of their players should be full scripted suspects versus co-investigator guests before generating or expanding any character list that mixes the two.`;
+
+      // ADR-0122 (2026-09-13): a customer asked "can I paste my old notes in
+      // sections?", the model cheerfully said yes with no idea a per-message
+      // limit existed, and her very next paste (22K characters, over the old
+      // 10K cap) got silently rejected — the chat just went dead with nothing
+      // explaining why. The technical cap is now far more generous (50,000
+      // chars/message, matching MAX_MESSAGE_LENGTH above) and a rejection is
+      // now shown to the user instead of vanishing, but the model itself
+      // still has no reason to manage a customer's expectations before they
+      // paste something huge. This tells it to set that expectation up front
+      // instead of just saying "sure, go ahead" to an open-ended offer to
+      // paste a large document.
+      systemPrompt += `\n\nCRITICAL: If the user offers or asks to paste a large amount of existing text in one message (old notes, an outline, a full backstory document, a timeline), don't just say yes with no caveat — briefly let them know each individual message has an approximate limit of 50,000 characters (roughly 8,000-10,000 words, several pages), and if what they have is longer than that, ask them to split it into a few separate messages rather than one giant paste. Keep this brief and don't dwell on it — just set the expectation before they paste, so a long paste doesn't fail unexpectedly.`;
     }
 
     // Format messages for Anthropic API
