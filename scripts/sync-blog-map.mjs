@@ -13,6 +13,16 @@
  *
  * Usage:
  *   node scripts/sync-blog-map.mjs
+ *
+ * By default, Step 2 (overwriting already-published rows from xlsx) is skipped
+ * entirely — the live DB is canonical for published content (ADR-0026). To force
+ * it, first dry-run with SYNC_OVERWRITE_PUBLISHED=true alone: it computes and
+ * prints how many rows would actually change (a full corpus-wide check on
+ * 2026-09-14 found xlsx had drifted on 70% of titles / 99% of content by then —
+ * expected, not a bug, but large enough that this flag alone used to be
+ * dangerous). It refuses to write anything until you re-run with
+ * SYNC_OVERWRITE_PUBLISHED=true SYNC_OVERWRITE_CONFIRM_COUNT=<N> matching the
+ * printed count, proving you actually looked at the diff first.
  */
 
 import { createClient } from './_supabase-node.mjs';
@@ -60,6 +70,30 @@ function estimateReadingTime(content) {
 
 // Brand-leak sanitizer + Last-updated auto-bump live in
 // ./_brand-sanitizer.mjs (shared with scripts/clean-blog-map.mjs).
+
+// Bulk-fetches every published post's current live content, keyed by
+// "slug|language", so the SYNC_OVERWRITE_PUBLISHED safety check can diff
+// against it without one query per row.
+async function fetchLiveContentMap(supabase) {
+  const map = new Map();
+  const pageSize = 500;
+  let from = 0;
+  while (true) {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('slug, language, title, content, meta_description, meta_keywords')
+      .eq('status', 'published')
+      .range(from, from + pageSize - 1);
+    if (error) throw error;
+    if (!data || data.length === 0) break;
+    for (const row of data) {
+      map.set(`${row.slug}|${row.language}`, row);
+    }
+    if (data.length < pageSize) break;
+    from += pageSize;
+  }
+  return map;
+}
 
 async function main() {
   const xlsxPath = join(__dirname, '..', 'blog_map.xlsx');
@@ -143,9 +177,54 @@ async function main() {
     console.log(`\n⏭️  Skipping ${publishedRows.length} published rows — live DB is source of truth (ADR-0026).`);
     console.log('    To force-push xlsx onto published posts, re-run with SYNC_OVERWRITE_PUBLISHED=true.');
   } else {
-    console.log(`\n✏️  SYNC_OVERWRITE_PUBLISHED=true — overwriting ${publishedRows.length} published rows with xlsx content...`);
-    // Process in batches of 1 row at a time (content is too large for bulk upsert)
+    // SAFETY CHECK (added 2026-09-14): a corpus-wide drift check found xlsx had
+    // silently drifted from live Supabase on 70% of titles and 99% of content
+    // (by content length) across the whole published corpus — the fully-realized,
+    // expected result of ADR-0026's "xlsx seeds drafts, DB is canonical once
+    // published" model, since nothing ever writes live edits back into xlsx.
+    // SYNC_OVERWRITE_PUBLISHED alone used to be enough to fire a full-corpus
+    // overwrite with no visibility into how much it would actually change. This
+    // forces a dry-run-then-confirm two-step: compute the real diff count first,
+    // then require the operator to pass that exact count back to prove they saw
+    // it before anything is written.
+    console.log(`\n🔎 SYNC_OVERWRITE_PUBLISHED=true — computing live diff before writing anything...`);
+    const liveMap = await fetchLiveContentMap(supabase);
+    const changed = [];
+    const unchanged = [];
     for (const record of publishedRows) {
+      const live = liveMap.get(`${record.slug}|${record.language}`);
+      const isSame =
+        live &&
+        live.title === record.title &&
+        live.content === record.content &&
+        live.meta_description === record.meta_description &&
+        live.meta_keywords === record.meta_keywords;
+      (isSame ? unchanged : changed).push(record);
+    }
+
+    console.log(`  ${changed.length} of ${publishedRows.length} published rows would actually change.`);
+    console.log(`  ${unchanged.length} are already identical (no-op).`);
+    if (changed.length > 0) {
+      console.log(`  First ${Math.min(20, changed.length)} that would change:`);
+      changed.slice(0, 20).forEach((r) => console.log(`    ${r.slug} (${r.language})`));
+      if (changed.length > 20) console.log(`    ... and ${changed.length - 20} more`);
+    }
+
+    const confirmRaw = process.env.SYNC_OVERWRITE_CONFIRM_COUNT;
+    const confirmCount = confirmRaw !== undefined ? Number(confirmRaw) : NaN;
+    if (confirmCount !== changed.length) {
+      console.error(
+        `\n🛑 Refusing to write. This run would change ${changed.length} rows, but ` +
+          `SYNC_OVERWRITE_CONFIRM_COUNT=${confirmRaw ?? '(not set)'}. Review the list above, ` +
+          `then re-run with SYNC_OVERWRITE_PUBLISHED=true SYNC_OVERWRITE_CONFIRM_COUNT=${changed.length} ` +
+          `to confirm you've actually looked at what this would overwrite.`
+      );
+      process.exit(1);
+    }
+
+    console.log(`\n✏️  Confirmed — overwriting ${changed.length} published rows with xlsx content (${unchanged.length} no-ops skipped)...`);
+    // Process one row at a time (content is too large for bulk upsert)
+    for (const record of changed) {
       const { error } = await supabase
         .from('blog_posts')
         .update({
@@ -165,7 +244,7 @@ async function main() {
       } else {
         updateCount++;
         if (updateCount % 100 === 0) {
-          console.log(`  Updated ${updateCount}/${publishedRows.length}...`);
+          console.log(`  Updated ${updateCount}/${changed.length}...`);
         }
       }
     }
