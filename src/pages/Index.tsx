@@ -494,11 +494,7 @@ function SupportCTA() {
           {t("support.button")}
         </Link>
         <p className="mt-6 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
-          Build a{" "}
-          <Link to="/" className="underline" style={{ color: CREAM }}>
-            custom murder mystery party
-          </Link>{" "}
-          tailored to your theme and guest list.
+          Build a custom murder mystery party tailored to your theme and guest list.
         </p>
         <p className="mt-2 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
           Prefer to start free?{" "}
