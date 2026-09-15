@@ -185,7 +185,13 @@ serve(async (req) => {
         `)
         .eq("is_sent", true)
         .is("feedback_email_sent_at", null)
-        .lt("sent_at", new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString());
+        .lt("sent_at", new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString())
+        // Guests assigned without an email on file (e.g. handed out in person /
+        // via QR code rather than emailed) can never receive this — excluding
+        // them here stops a guaranteed-fail Resend call being retried forever
+        // every single cron run (found 2026-09-15: 83 such rows retried daily
+        // with a 422 "Invalid `to` field", growing since at least 2026-09-11).
+        .neq("guest_email", "");
 
       if (error) throw error;
       assignments = data || [];

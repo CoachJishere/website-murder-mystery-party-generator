@@ -2,6 +2,11 @@
 
 ## 2026-09-15
 
+### Fix: `send-guest-feedback-email`'s daily batch retried the same ~83 guaranteed-fail sends forever
+Found while checking Stripe health for an unrelated sales investigation — noticed a batch of ~65 `422 Invalid \`to\` field` Resend failures in the logs, unrelated to checkout. Traced it: the batch query (`is_sent = true`, no feedback email sent yet, 14+ days since sent) never filtered out `character_assignments` rows with an empty `guest_email` — guests whose character was handed out without ever capturing an email (in person, via QR code, etc.) can never receive this email, but nothing stopped them from being selected every single day. Confirmed via SQL: 83 such rows currently eligible, 100% of the batch's current pool, growing since at least 2026-09-11 with zero chance of ever succeeding (`feedback_email_sent_at` never gets set on failure, so they're retried on every future run too). The feature does work for guests with a real email — 207 already sent successfully.
+
+Added `.neq("guest_email", "")` to the batch query so these rows are excluded going forward. Deployed via CLI (v13), verified live content matches. No backfill needed — the query filter alone stops the wasted retries permanently, and the previously-failing rows are just correctly no-ops now with no email on file to send to.
+
 ### Fix: purchase preview page showed raw i18n key `purchase.preview.scriptType.pointForm` instead of translated text
 Jonathan spotted the literal key string on the purchase-preview page for a point-form mystery ("The Gilded Cage"). Root cause: `MysteryPreviewCard.tsx` looks up `purchase.preview.scriptType.${mystery.script_type}`, where `script_type` is `'full' | 'pointForm' | 'both'` — but every locale file's `scriptType` translation block had the third key named `summary` instead of `pointForm`, so the lookup missed and i18next fell back to printing the raw key. Renamed `summary` → `pointForm` in the `purchase.preview.scriptType` block across all 13 locale files (`en`, `es`, `fr`, `de`, `it`, `pt`, `nl`, `da`, `sv`, `fi`, `ko`, `ja`, `zh-cn`), text unchanged — a pure key rename. Bug affected every language, not just English.
 
