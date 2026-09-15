@@ -1172,7 +1172,7 @@
       "scriptType": {
         "full": "Fullständiga manus",
         "both": "Fullständiga + sammanfattade manus",
-        "summary": "Sammanfattade manus"
+        "pointForm": "Sammanfattade manus"
       },
       "hasAccomplice": "Inkluderar medbrottsling",
       "charactersFinalNote": "Det här är din slutgiltiga rollbesättning - antalet karaktärer låses vid köpet. Du kan byta namn på enskilda karaktärer efteråt, men ett namnbyte uppdaterar bara karaktärslistan, inte resten av manuset."

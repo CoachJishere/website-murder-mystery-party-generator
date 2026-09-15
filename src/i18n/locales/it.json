@@ -1184,7 +1184,7 @@
       "scriptType": {
         "full": "Script completi",
         "both": "Script completi + riassunti",
-        "summary": "Script riassunti"
+        "pointForm": "Script riassunti"
       },
       "hasAccomplice": "Include complice",
       "charactersFinalNote": "Questo è il tuo cast definitivo - il numero di personaggi viene fissato al momento dell'acquisto. Puoi rinominare i singoli personaggi in seguito, ma rinominarli aggiorna solo l'elenco dei personaggi, non il resto dello script."

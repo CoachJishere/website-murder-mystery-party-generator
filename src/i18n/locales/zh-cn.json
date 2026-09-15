@@ -1217,7 +1217,7 @@
       "scriptType": {
         "full": "完整剧本",
         "both": "完整 + 摘要剧本",
-        "summary": "摘要剧本"
+        "pointForm": "摘要剧本"
       },
       "hasAccomplice": "包含同谋",
       "charactersFinalNote": "这就是你的最终角色阵容 - 角色数量在购买时即被锁定。之后你可以重命名单个角色，但重命名只会更新角色列表，不会更新剧本的其他部分。"

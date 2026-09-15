@@ -1207,7 +1207,7 @@
       "scriptType": {
         "full": "Scripts complets",
         "both": "Scripts complets + résumés",
-        "summary": "Scripts résumés"
+        "pointForm": "Scripts résumés"
       },
       "hasAccomplice": "Avec complice",
       "charactersFinalNote": "Voici votre distribution finale - le nombre de personnages est fixé au moment de l'achat. Vous pouvez renommer des personnages individuellement par la suite, mais un changement de nom ne met à jour que la liste des personnages, pas le reste du scénario."

@@ -1206,7 +1206,7 @@
       "scriptType": {
         "full": "Guiones completos",
         "both": "Guiones completos + resumidos",
-        "summary": "Guiones resumidos"
+        "pointForm": "Guiones resumidos"
       },
       "hasAccomplice": "Incluye cómplice",
       "charactersFinalNote": "Este es tu reparto final - el número de personajes queda fijado en el momento de la compra. Puedes renombrar personajes individuales después, pero un cambio de nombre solo actualiza la lista de personajes, no el resto del guion."

@@ -1184,7 +1184,7 @@
       "scriptType": {
         "full": "Täydet käsikirjoitukset",
         "both": "Täydet + tiivistetyt käsikirjoitukset",
-        "summary": "Tiivistetyt käsikirjoitukset"
+        "pointForm": "Tiivistetyt käsikirjoitukset"
       },
       "hasAccomplice": "Sisältää rikoskumppanin",
       "charactersFinalNote": "Tämä on lopullinen hahmokokoonpanosi - hahmojen määrä lukittuu ostohetkellä. Voit nimetä yksittäisiä hahmoja uudelleen jälkikäteen, mutta uudelleennimeäminen päivittää vain hahmolistan, ei muuta käsikirjoitusta."

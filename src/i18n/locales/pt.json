@@ -1217,7 +1217,7 @@
       "scriptType": {
         "full": "Scripts completos",
         "both": "Scripts completos + resumidos",
-        "summary": "Scripts resumidos"
+        "pointForm": "Scripts resumidos"
       },
       "hasAccomplice": "Inclui cúmplice",
       "charactersFinalNote": "Este é o seu elenco final - o número de personagens fica definido na compra. Você pode renomear personagens individualmente depois, mas isso só atualiza a lista de personagens, não o resto do roteiro."

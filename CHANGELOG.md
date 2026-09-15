@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-15
+
+### Fix: purchase preview page showed raw i18n key `purchase.preview.scriptType.pointForm` instead of translated text
+Jonathan spotted the literal key string on the purchase-preview page for a point-form mystery ("The Gilded Cage"). Root cause: `MysteryPreviewCard.tsx` looks up `purchase.preview.scriptType.${mystery.script_type}`, where `script_type` is `'full' | 'pointForm' | 'both'` — but every locale file's `scriptType` translation block had the third key named `summary` instead of `pointForm`, so the lookup missed and i18next fell back to printing the raw key. Renamed `summary` → `pointForm` in the `purchase.preview.scriptType` block across all 13 locale files (`en`, `es`, `fr`, `de`, `it`, `pt`, `nl`, `da`, `sv`, `fi`, `ko`, `ja`, `zh-cn`), text unchanged — a pure key rename. Bug affected every language, not just English.
+
 ## 2026-09-14
 
 ### Fix: `sync-blog-map.mjs`'s `SYNC_OVERWRITE_PUBLISHED` escape hatch had no visibility into what it would actually change

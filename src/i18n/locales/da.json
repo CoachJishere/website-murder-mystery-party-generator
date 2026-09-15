@@ -1172,7 +1172,7 @@
       "scriptType": {
         "full": "Fulde manuskripter",
         "both": "Fulde + opsummerede manuskripter",
-        "summary": "Opsummerede manuskripter"
+        "pointForm": "Opsummerede manuskripter"
       },
       "hasAccomplice": "Inkluderer medskyldig",
       "charactersFinalNote": "Dette er din endelige rollebesætning - antallet af karakterer fastlåses ved købet. Du kan omdøbe enkelte karakterer bagefter, men en omdøbning opdaterer kun karakterlisten, ikke resten af manuskriptet."

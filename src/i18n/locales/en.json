@@ -1174,7 +1174,7 @@
       "scriptType": {
         "full": "Full scripts",
         "both": "Full + summary scripts",
-        "summary": "Summary scripts"
+        "pointForm": "Summary scripts"
       },
       "hasAccomplice": "Includes accomplice"
     },
