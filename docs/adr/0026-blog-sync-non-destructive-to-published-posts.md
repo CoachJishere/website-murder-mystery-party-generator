@@ -62,3 +62,13 @@ This codifies: **`blog_map.xlsx` seeds new drafts; the live DB is canonical for 
 ## Discussion
 
 The tempting move was the comprehensive one — reconcile all 420 drifted slugs back into the workbook so the two sources match. The session showed why that's the wrong instinct: the "drift" looked like a 420-row emergency but was mostly expected pipeline output (injected crosslinks + transforms), and even a perfect backfill re-drifts the moment the next DB edit lands. The durable fix isn't synchronizing two sources of truth — it's **demoting one of them**. Once the DB is canonical for published posts, the workbook only needs to be right for *drafts that haven't shipped yet*, which is exactly what it's good at. The flag preserves the old behaviour for the rare intentional reseed, so nothing is lost and the change is fully reversible.
+
+## Addendum (2026-09-14) — the flag itself was still a blast-radius-blind footgun
+
+A corpus-wide re-check (triggered by finding `murder-mystery-party-character-ideas`'s xlsx row had a stale, unrelated title/meta while acting on the weekly SEO digest) confirmed this ADR's original diagnosis has fully played out: **209/300 (70%) published EN titles and 297/300 (99%) by content length now differ** between xlsx and live Supabase. This is the expected, by-design result of this ADR's own model, not a new incident — flagging it here only because the *scale* changes the risk calculus on the escape hatch below.
+
+`SYNC_OVERWRITE_PUBLISHED=true` alone was still enough to fire the full Step 2 overwrite with **zero preview** of what it would actually change, despite Consequences above calling it "a deliberate, reviewed action" — there was no way to actually review anything before it ran. With drift this total, a well-intentioned reseed for some unrelated reason (e.g. "I just want to push this one xlsx fix live") would have silently reverted ~200+ posts of accumulated SEO/voice/GEO work in one pass.
+
+**Fix:** `scripts/sync-blog-map.mjs` now computes a real diff (rows that would actually change vs. already-identical no-ops) before writing anything, prints the count and the first 20 affected slugs, and refuses to proceed unless re-run with `SYNC_OVERWRITE_CONFIRM_COUNT=<N>` matching that count exactly — a dry-run-then-confirm two-step, CI-compatible (no interactive prompt needed). Default (unset) behavior — skip published rows — is unchanged; this only hardens the override path this ADR already gated. The one historical sync run (2026-04-03) predates this guard entirely, so nothing has exercised either the original flag or this addendum's confirm-count check against real data yet.
+
+Full trail: CHANGELOG 2026-09-14, vault `01_Projects/Mystery-Maker/changelog.md` same date.
