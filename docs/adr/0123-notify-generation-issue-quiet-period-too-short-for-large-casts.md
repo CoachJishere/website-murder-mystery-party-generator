@@ -1,6 +1,6 @@
-# ADR-0123: `notify-generation-issue`'s 3-minute quiet-period gate is too short for large/`both`-script-type casts — proposal, not yet accepted
+# ADR-0123: `notify-generation-issue`'s 3-minute quiet-period gate is too short for large/`both`-script-type casts
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-16
 - **Related:** ADR-0103 Addendum 47 (the incident that surfaced this), ADR-0097 (per-character generation time / conversation-excerpt windowing), ADR-0086 (the $10/day shared spend cap), ADR-0081/0065/0111 (the other grace-period gates already in this function)
 
@@ -14,9 +14,9 @@ In short: the alert was largely self-inflicted. It misread an actively-progressi
 
 Separately (and not blocking this ADR): 3 of the 7 flagged characters (Adriano Nacife, Verônica, Paulo César) turned out to be genuinely, reproducibly broken — not just delayed — and needed a manual re-fire outside the capped bookkeeping to resolve (see ADR-0103 Addendum 47's Resolution note). That the alert also happened to catch 3 real failures inside a mostly-false-positive run is itself informative: a better-tuned quiet-period gate should reduce false alerts without making genuine failures on large casts invisible for longer.
 
-## Decision (proposed — not yet implemented)
+## Decision
 
-Replace the flat `WRITE_QUIET_PERIOD_MS = 3 * 60 * 1000` with a threshold that scales with the package's own expected workload, using data this function already fetches (`expectedCharacters` from `extracted_characters`, `scriptType` from `conversations`).
+Replace the flat `WRITE_QUIET_PERIOD_MS = 3 * 60 * 1000` with a threshold that scales with the package's own expected workload, using data this function already fetches (`expectedCharacters` from `extracted_characters`, `scriptType` from `conversations`). Implemented as Option A below, with Jonathan's go-ahead to ship the recommended constants as a first approximation rather than blocking on corpus measurement first (open question 1).
 
 ## Options considered
 
@@ -50,9 +50,15 @@ Estimate `totalEstimateMs = expectedCharacters * 100s * (scriptType === 'both' ?
 - Genuine failures on large packages will, by construction, take slightly longer to alert (bounded by the chosen ceiling) — an explicit, deliberate tradeoff: fewer false positives in exchange for slightly slower detection of true positives, matching every other grace period already in this file.
 - No change to small/typical-size packages' existing alert timing (the floor keeps today's 3-minute behavior for them).
 
-## Key files (if adopted)
+## Implementation (2026-09-16)
 
-- `supabase/functions/notify-generation-issue/index.ts` — replace the flat `WRITE_QUIET_PERIOD_MS` constant (line ~205 area) with the scaled calculation described above; needs `expectedCharacters` and `scriptType`, both already fetched earlier in the function.
+Shipped as Option A. `expectedCharacters` parsing was moved ahead of the quiet-period check (it previously ran after, so the gate could never see cast size in time to use it) — no behavior change to the parsing itself, just reordered. `WRITE_QUIET_PERIOD_MS` is now computed as `clamp(3min, (3min + max(0, expectedCharacters - 8) * 30s) * (scriptType === 'both' ? 1.5 : 1), 15min)`. Verified against known cases before deploying: 17-character `both` (this incident) → 11.25 min, comfortably covering the observed 5.5-minute gap; a typical 6-character `full` package → 3 min (floor preserved, no behavior change for small packages); a 30-character `both` max-size package → hits the 15-min ceiling. Both the skip-log line and the returned `message` now report the actual computed threshold and the inputs that produced it, so a future incident's logs show the reasoning instead of a bare "3 minutes" that no longer matches reality. Deployed via Supabase CLI (v35, verified live via `get_edge_function`).
+
+**Not done / left as follow-up:** the Make.com blueprint (`Parent`/`Child` scenarios) was not touched — this fix is entirely inside `notify-generation-issue`, which is a Supabase-side re-fire mechanism independent of the primary generation blueprints, so no blueprint mirror update was needed. The per-character/multiplier constants remain a first approximation (open question 1) — not validated against other large-cast packages' actual write-gap shapes; revisit if this over- or under-fires. The Make.com MCP connection in this session failed to authenticate (401), so Make.com's own operations/credit balance could not be checked directly as part of this investigation — worth reconnecting separately if visibility into that is wanted going forward.
+
+## Key files
+
+- `supabase/functions/notify-generation-issue/index.ts` — `WRITE_QUIET_PERIOD_MS` replaced with the scaled calculation; `expectedCharacters` parsing moved earlier in the function so it's available in time; deployed via Supabase CLI
 
 ## Links
 

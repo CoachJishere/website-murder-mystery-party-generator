@@ -165,45 +165,6 @@ serve(async (req) => {
       // near-simultaneous sibling invocation sees this and skips too.
       await supabase.from("mystery_packages").update({ notify_last_run_at: new Date().toISOString() }).eq("id", pkg.id);
 
-      // ADR-0103: this function is called from two places that
-      // can both race a still-in-flight generation — sweep_incomplete_packages
-      // (now gated at the source with its own 3-minute quiet period) and,
-      // more fundamentally, the ADR-0108 completion trigger itself, which
-      // fires synchronously the moment Make.com's child scenario writes
-      // generation_status='completed', even when that write races the
-      // scenario's own trailing mystery_characters UPDATEs for the last one
-      // or two characters. The trigger's needs_review verdict is accurate for
-      // that exact commit-time snapshot, but dispatching a real recovery
-      // webhook (and an alert email) for a character that's seconds from
-      // finishing on its own is pure waste — confirmed live on "Elementary,
-      // My Dear Cadaver" (98857ef0-...), where a character's row kept
-      // updating for almost 2 minutes after generation_status claimed
-      // 'completed'. Mirrors the sweep's own fix: if ANY character row for
-      // this package was written to in the last 3 minutes, the generation is
-      // still active — skip the whole cycle (alert + recovery dispatch) and
-      // let the next invocation (10-minute sweep_stuck_needs_review_packages,
-      // or another completion-trigger fire) re-check once things quiet down.
-      const WRITE_QUIET_PERIOD_MS = 3 * 60 * 1000;
-      const { data: recentWrite } = await supabase
-        .from("mystery_characters")
-        .select("updated_at")
-        .eq("package_id", pkg.id)
-        .order("updated_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      const lastCharWriteAt = recentWrite?.updated_at ? new Date(recentWrite.updated_at).getTime() : null;
-      if (lastCharWriteAt !== null && Date.now() - lastCharWriteAt < WRITE_QUIET_PERIOD_MS) {
-        console.log(`[Quiet period] Skipping — package ${pkg.id} had a character write ${Date.now() - lastCharWriteAt}ms ago, still likely mid-generation`);
-        return new Response(
-          JSON.stringify({
-            success: true,
-            skipped: "still_generating",
-            message: "A character row for this package was written to within the last 3 minutes; skipping to avoid dispatching recovery on a race.",
-          }),
-          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-
       mysteryTitle = pkg.title || mysteryTitle;
       packageStatus = JSON.stringify(pkg.generation_status);
       generationStarted = pkg.generation_started_at
@@ -214,6 +175,11 @@ serve(async (req) => {
       // auto-recovery. The mystery_packages.extracted_characters JSONB is
       // sometimes stored as a STRING containing comma-separated `{...}, {...}`
       // (no outer brackets), which makes a straight JSON.parse fail.
+      //
+      // Moved ahead of the quiet-period check below (ADR-0123) so
+      // expectedCharacters is known in time to scale that check's threshold —
+      // it used to run after, so the quiet-period gate could only ever see a
+      // flat constant, never how big this particular package's cast is.
       if (pkg.extracted_characters) {
         const raw = typeof pkg.extracted_characters === "string"
           ? pkg.extracted_characters
@@ -241,6 +207,72 @@ serve(async (req) => {
           // Last-resort fallback for the count when even the wrapped parse fails
           expectedCharacters = (raw.match(/"name"\s*:/g) || []).length;
         }
+      }
+
+      // ADR-0103: this function is called from two places that
+      // can both race a still-in-flight generation — sweep_incomplete_packages
+      // (now gated at the source with its own quiet period) and,
+      // more fundamentally, the ADR-0108 completion trigger itself, which
+      // fires synchronously the moment Make.com's child scenario writes
+      // generation_status='completed', even when that write races the
+      // scenario's own trailing mystery_characters UPDATEs for the last one
+      // or two characters. The trigger's needs_review verdict is accurate for
+      // that exact commit-time snapshot, but dispatching a real recovery
+      // webhook (and an alert email) for a character that's seconds from
+      // finishing on its own is pure waste — confirmed live on "Elementary,
+      // My Dear Cadaver" (98857ef0-...), where a character's row kept
+      // updating for almost 2 minutes after generation_status claimed
+      // 'completed'. Mirrors the sweep's own fix: if ANY character row for
+      // this package was written to within the quiet period, the generation
+      // is still active — skip the whole cycle (alert + recovery dispatch)
+      // and let the next invocation (10-minute sweep_stuck_needs_review_packages,
+      // or another completion-trigger fire) re-check once things quiet down.
+      //
+      // ADR-0123 (2026-09-16): a flat 3-minute threshold here false-alarmed on
+      // "Festa Fatal" (17 characters, script_type='both') — that package had a
+      // genuine ~5.5-minute gap mid-generation with zero character writes
+      // (confirmed live: 12:28:21 -> 12:33:55), just how Make.com's Child
+      // scenario paces a large cast, not a stall. The false alert fired its
+      // own redundant regenerate_character re-fire webhooks for nearly the
+      // whole cast, racing the real generation and burning the per-character
+      // 2-attempt cap for several characters that would otherwise have
+      // finished cleanly on their own. Scale the threshold by the package's
+      // own expected workload instead of a one-size-fits-all constant: 30s of
+      // extra grace per character above a floor of 8, x1.5 for script_type
+      // 'both' (roughly doubles per-character content), floored at the
+      // original 3 minutes so small/typical packages keep today's fast alert
+      // timing, ceilinged at 15 minutes so a very large package's gate can't
+      // become effectively infinite. These constants are back-calculated from
+      // this one incident, not a measured corpus — expect to retune if this
+      // over- or under-fires on other large-cast packages.
+      const BASE_QUIET_PERIOD_MS = 3 * 60 * 1000;
+      const MAX_QUIET_PERIOD_MS = 15 * 60 * 1000;
+      const PER_CHARACTER_GRACE_MS = 30 * 1000;
+      const CHARACTER_GRACE_FLOOR = 8;
+      const BOTH_SCRIPT_TYPE_MULTIPLIER = 1.5;
+      const extraCharacters = Math.max(0, expectedCharacters - CHARACTER_GRACE_FLOOR);
+      const scaledQuietPeriodMs =
+        (BASE_QUIET_PERIOD_MS + extraCharacters * PER_CHARACTER_GRACE_MS) *
+        (scriptType === "both" ? BOTH_SCRIPT_TYPE_MULTIPLIER : 1);
+      const WRITE_QUIET_PERIOD_MS = Math.min(MAX_QUIET_PERIOD_MS, Math.max(BASE_QUIET_PERIOD_MS, scaledQuietPeriodMs));
+      const { data: recentWrite } = await supabase
+        .from("mystery_characters")
+        .select("updated_at")
+        .eq("package_id", pkg.id)
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const lastCharWriteAt = recentWrite?.updated_at ? new Date(recentWrite.updated_at).getTime() : null;
+      if (lastCharWriteAt !== null && Date.now() - lastCharWriteAt < WRITE_QUIET_PERIOD_MS) {
+        console.log(`[Quiet period] Skipping — package ${pkg.id} had a character write ${Date.now() - lastCharWriteAt}ms ago, still likely mid-generation (quiet period ${Math.round(WRITE_QUIET_PERIOD_MS / 1000)}s for ${expectedCharacters} expected characters, scriptType=${scriptType})`);
+        return new Response(
+          JSON.stringify({
+            success: true,
+            skipped: "still_generating",
+            message: `A character row for this package was written to within the last ${Math.round(WRITE_QUIET_PERIOD_MS / 1000)}s (scaled for ${expectedCharacters} expected characters, scriptType=${scriptType}); skipping to avoid dispatching recovery on a race.`,
+          }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       }
 
       // Check for empty characters
