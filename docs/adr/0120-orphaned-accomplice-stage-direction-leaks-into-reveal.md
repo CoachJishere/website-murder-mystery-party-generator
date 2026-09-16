@@ -1,8 +1,8 @@
 # ADR-0120: an orphaned, always-present accomplice-confession stage direction leaks into `detective_script`'s reveal when there is no accomplice
 
-- **Status:** `Parent64` imported and live. All 10 confirmed-real historical packages remediated. `Parent65` (a follow-up fix for `character`-style mysteries specifically) drafted, not yet imported. See Addendum 1.
+- **Status:** `Parent64` imported and live. All 10 confirmed-real historical packages remediated. `Parent65` confirmed live as of 2026-09-16 (its wording is present in a same-day purchase's `detective_script` — see Addendum 3; never explicitly logged as imported, so this is inferred from output, not a Jonathan confirmation). `Parent66` (unrelated follow-up: fixes the REVEAL section's confession-invitation wording, not this ADR's bracket-leak bug) drafted, not yet imported. See Addendum 3.
 - **Date:** 2026-09-05
-- **Related:** ADR-0103 Addendum 19 (a *different* accomplice-tagging bug found the same week — role over-assignment, not this template leak), the Make.com blueprint historically named "Parent49 (Accomplice-Beat Silent-Omission)" (introduced the correct mechanism this ADR's fix relies on, but left the buggy one behind), ADR-0069 Addendum 1/2 (the `has_accomplice`/`player_count` staleness investigation that led here)
+- **Related:** ADR-0103 Addendum 19 (a *different* accomplice-tagging bug found the same week — role over-assignment, not this template leak), the Make.com blueprint historically named "Parent49 (Accomplice-Beat Silent-Omission)" (introduced the correct mechanism this ADR's fix relies on, but left the buggy one behind), ADR-0069 Addendum 1/2 (the `has_accomplice`/`player_count` staleness investigation that led here), ADR-0070 (established that detective-style `final_statement` already *is* the confession — the finding Addendum 3's fix is built on), ADR-0103 Addendum 46 (the coherence sweep that found Addendum 3's bug)
 
 ## Context
 
@@ -122,3 +122,40 @@ Part of a broader audit (ADR-0103 Addendum 38) of items deferred under the old "
 
 - Remediated directly: `mystery_packages.detective_script` for "Operation: Thirty & Murdery" (`b8428a57-1c2b-4bf1-881c-98c8436be6a9`) — the second, previously-missed bracket
 - Flagged, not remediated: 7 packages with `detective_script IS NULL` (5 also missing `game_overview`/`host_guide`) — see vault note above
+
+## Addendum 3 (2026-09-16): a different, adjacent bug in the same REVEAL/ACCOMPLICE BEAT prompt region — the confession-invitation wording itself is wrong for fixed-culprit routes, not just leak-prone
+
+Found during an ADR-0103 New-Purchase Coherence Sweep on "Thirty And Murdery" (`98b52035-9424-4178-ab39-7eaa106fe86f`, conversation `75456a00-2157-45cf-b65e-7c64ea852172`, $24.99, purchased 2026-09-16, 30 players, `mystery_style='detective'`, `has_accomplice=true`) — see ADR-0103 Addendum 46 for the sweep itself. This is **not** a recurrence of this ADR's bracket-leak bug (the package's `detective_script` was clean, no leaked bracket, and correctly named both the murderer and accomplice) — it's a different, previously-undiscovered defect one layer up, in the same prompt module this ADR already owns.
+
+**The bug:** `mystery_characters.reveal_confession_guilty` / `reveal_confession_accomplice` (prose and pointform) are empty for the murderer and accomplice on this package, matching ADR-0070's already-documented finding that detective-style `final_statement` — not a separate reveal-round field — carries the actual confession. Confirmed this generalizes, not just for the murderer (ADR-0070's original scope) but the accomplice too: sampled the 15 most recent paid `mystery_style='detective'`, `has_accomplice=true` packages (60-day window) and found `final_statement` is a full, first-person confession for the accomplice in 15/15, `reveal_confession_accomplice` empty in all 15 — no exceptions. Separately sampled 50 recent paid detective-style packages for the murderer's fields: 49/50 empty (the 1 apparent exception turned out to have no `character_role='murderer'` row at all — a different, unrelated defect, not investigated further here).
+
+None of this is itself a new bug — it's ADR-0070's finding, confirmed to also cover the accomplice, and it means every detective-style package's actual gameplay is fine (the confession genuinely exists, in `final_statement`, delivered one round earlier than the REVEAL). **The real bug is that this ADR's own prompt module — the fixed-culprit routes' `## THE REVEAL` section, right next to the bracket this ADR already fixed — is written as if a separate confession exists to invite:**
+
+```
+[2-3 short paragraphs announcing whether the room got it right, naming the actual murderer,
+and inviting them to confess. ... ~120-180 words.]
+
+*[The murderer (player) reads their confession aloud.]*
+
+[ACCOMPLICE BEAT — conditional. ... where the detective turns to the room —
+"But you did not act alone, did you?" — names the accomplice and invites
+their confession. ...]
+```
+
+Both bracket cues ask the host to have the player "read their confession aloud" and both prose instructions say "inviting them to confess" — describing content that, per the finding above, is never actually generated or stored for this style. In practice this is likely low-harm (hosts probably just treat it as "say your piece again" or let the moment flow from what was already said in Final Statements — no customer complaint has surfaced this, same as ADR-0070's confession-content bug sitting live for 4+ months before being noticed), but the host-facing script is telling hosts to expect something their character materials don't contain.
+
+**Scoped correctly to only the routes that need it.** This prompt module has 4 routes in the live `Parent65` blueprint (same file this ADR's Addendum 1 drafted): routes 0/2 (fixed-culprit — "Detective"/"murderer" wording and "Investigator"/"culprit" wording respectively) and routes 1/3 (`character`-style slip-draw — "NO FIXED CULPRIT... decided live at the table by slip-draw"). Read all 4 before touching anything: **routes 1/3 are already correct** — for slip-style mysteries, `final_statement` is explicitly instructed to stay a denial ("even the guilty player sticks to their story here; the real confession is saved for The Reveal"), so their "reads their confession aloud" cue points at real, freshly-generated content (this is exactly the `reveal_confession_guilty`/`reveal_confession_accomplice` "Character-based" field pairing already noted in `generate-pointform-summaries/index.ts`'s own field categorization — confirms by a second, independent code path that those fields are correctly scoped to `character`-style only). Only routes 0/2 needed the fix.
+
+**Fix, per Jonathan's direction:** reworded routes 0/2's `## THE REVEAL` section so the paragraph instruction builds to naming the murderer/culprit directly (optionally via a "will the real murderer/culprit please step forward" beat) instead of "inviting them to confess," and the stage-direction cue now reads `*[The detective names the murderer directly, addressing them by name.]*` instead of `*[...reads their confession aloud.]*`. The accomplice beat now opens with "But that's not all…" (Jonathan's suggested line, replacing "But you did not act alone, did you?") and calls the accomplice out by name rather than inviting fresh dialogue — both paragraphs now explicitly instruct the model not to prompt a new confession, since one already happened in Final Statements. Routes 1/3 untouched (confirmed correct above).
+
+**Bonus fix, found while rewriting the exact same block:** route 2 (Investigator/culprit wording) had never actually swapped its ACCOMPLICE BEAT paragraph's terminology — it still said "the murderer's confession" and "the detective turns" even though every other line in that route correctly uses "culprit"/"investigator." Brought into line as part of the same edit (mirrors the terminology pattern already established for the rest of route 2, not a new design decision).
+
+**Built `MM Live - Parent66 (Fixed-Culprit Reveal Wording Fix).blueprint.json`**, based on `Parent65` (confirmed current head — see Status line above). Verified: exactly 2 of 56,443 lines changed (the routes-0-and-2 prompt strings; routes 1/3 at their own line numbers confirmed byte-identical), valid JSON, decoded and read back the changed sections in full to confirm no formatting artifacts. **Not yet imported** — this session has no Make.com API access (MCP connection auth failed); Jonathan to import.
+
+**Not done, deliberately out of scope for this addendum:** historical remediation of already-generated `detective_script` text for existing fixed-culprit packages (the "inviting them to confess" wording is already sitting in every prior detective-style customer's delivered materials). Given the likely-low-harm read above and the volume (order of magnitude similar to ADR-0070's ~15-package finding, times however many detective-style purchases predate this fix), recommend deciding this the same way ADR-0120's own Decision section deferred its historical-remediation question — a per-package judgment call, not a blind bulk rewrite — rather than defaulting to either extreme here.
+
+## Key files (Addendum 3)
+
+- `temp-files/MM Live - Parent66 (Fixed-Culprit Reveal Wording Fix).blueprint.json` — drafted fix, not yet imported, based on `Parent65`
+- Fixed, historical remediation deferred (see above): the "inviting them to confess" wording pattern in every prior fixed-culprit package's delivered `detective_script`
+- Not touched, confirmed correct: routes 1/3 (`character`-style slip-draw) of the same prompt module

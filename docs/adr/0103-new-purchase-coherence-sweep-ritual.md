@@ -774,3 +774,12 @@ Repaired all 10 characters live via the now-fixed `regenerate-child-content` (re
 - `temp-files/MM Live - Child (Unified)40-GrammaticalPersonFix.blueprint.json` (gitignored, not committed) — the same prompt fix applied to the latest Make.com Child blueprint mirror, for Jonathan to upload directly
 - Repaired live via `regenerate-child-content`: 10 characters across `mystery_packages.id` = `f40984b1-8b95-4df0-b589-5e75b81e4127` ("Blood Tide"), `98857ef0-71d5-48a1-8c04-09be5092169c` ("Elementary, My Dear Cadaver"), `11d3667b-6ec4-4da6-9a8c-14b1c07da33e` ("The Final Cut"), `ea610d24-c7c8-4c87-a842-59d64ffeabfb` ("The Gods Must Be Gossiping"), `d31f69d2-aaf6-46d4-a930-c759d670e635` ("The Jealous Niece")
 
+## Addendum 46 (2026-09-16): "Thirty And Murdery" sweep — package clean, but surfaced a prompt-wording bug in the REVEAL section (fixed under ADR-0120, not here)
+
+New-Purchase sweep on "Thirty And Murdery" (`98b52035-9424-4178-ab39-7eaa106fe86f`, conversation `75456a00-2157-45cf-b65e-7c64ea852172`, $24.99, `jaclynfelver@gmail.com`, purchased 2026-09-16, `mystery_style='detective'`, `pointForm`, 30 players, `has_accomplice=true`, `en`, post-ADR-0074). **The package itself is clean**: all three standard detectors (meta-text leak, victim mismatch, unresolved victim name) clean, `package_completion_blocking_defects()` clean, `narration_person_mismatch` clean, victim name consistent across `game_overview`/`master_context`/`detective_script`/character content, full `detective_script` read with no leaked brackets or garbled text, murderer/accomplice/3 more suspects' backgrounds/secrets/relationships spot-checked with no inversions or leaks. No fix needed on this specific package.
+
+While verifying the `detective_script`'s "[The murderer (player) reads their confession aloud.]" cue against the actual character data, found that `reveal_confession_guilty`/`reveal_confession_accomplice` are empty for both roles — traced this to a real, separate bug in the Parent blueprint's REVEAL-section prompt wording (not a defect in this package), root-caused and fixed as **ADR-0120 Addendum 3** rather than here, since it's the same prompt module (`## THE REVEAL` / `ACCOMPLICE BEAT`) that ADR already owns. Full detail, the corpus-wide verification (50 packages for the murderer, 15 for the accomplice), and the fix (`Parent66`, not yet imported) live there — not duplicated in this entry.
+
+### Key files (Addendum 46)
+- No changes to this package — see ADR-0120 Addendum 3 for the actual fix and its files
+

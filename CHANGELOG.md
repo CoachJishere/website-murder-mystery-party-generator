@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-16
+
+### Fix: detective-style REVEAL script told hosts to have the murderer/accomplice "read their confession aloud" — content that doesn't exist for this format
+Found during a New-Purchase Coherence Sweep on "Thirty And Murdery" (ADR-0103 Addendum 46) — the package itself was clean, but the `detective_script`'s "[The murderer (player) reads their confession aloud.]" cue pointed at `reveal_confession_guilty`/`reveal_confession_accomplice`, which are empty by design for `mystery_style='detective'` (confirmed via ADR-0070: the real confession is already in `final_statement`, delivered a round earlier). Verified this is a systemic prompt-wording bug, not a per-package defect: 49/50 recent paid detective-style packages have this pattern for the murderer, 15/15 for the accomplice. Root-caused to the Parent blueprint's `## THE REVEAL` prompt (routes 0/2 — fixed-culprit; routes 1/3, `character`-style slip-draw, confirmed already correct and untouched). Reworded so the detective/investigator now names the murderer/culprit directly (optionally via a "will the real murderer please step forward" beat) and segues to the accomplice with "But that's not all…", rather than inviting a confession that was never going to arrive. Built `temp-files/MM Live - Parent66 (Fixed-Culprit Reveal Wording Fix).blueprint.json` off the current head (`Parent65`) — verified exactly 2 of 56,443 lines changed, valid JSON. Full writeup: ADR-0120 Addendum 3 (same prompt module ADR-0120 already owns). **Not yet imported into Make.com** — Jonathan to import. Historical remediation of already-delivered packages' `detective_script` text deliberately deferred, not decided here.
+
 ## 2026-09-15
 
 ### Fix: `send-guest-feedback-email`'s daily batch retried the same ~83 guaranteed-fail sends forever
