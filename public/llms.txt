@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 302 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 303 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -230,6 +230,7 @@ This index organizes 302 published guides by topic cluster. All guides are avail
 - [ChatGPT Murder Mystery Prompts: What Works](https://www.mysterymaker.party/blog/chatgpt-murder-mystery-prompts-guide): Best ChatGPT prompts for creating murder mystery parties, with examples and honest advice on what works and when to use a dedicated generator.
 - [Country Club Murder Mystery Party Guide](https://www.mysterymaker.party/blog/country-club-murder-mystery-party-guide-tee-off-into-trouble-and-social-intrigue): Tee off into trouble with exclusive country club murder mystery parties featuring members, staff, and social climbing.
 - [How Long Should a Murder Mystery Party Last?](https://www.mysterymaker.party/blog/how-long-should-murder-mystery-party-last): Most run 2-4 hours. The right length depends on group size, format, and how much room you want clues to breathe — not just how long people will sit.
+- [How Many People for a Murder Mystery Party?](https://www.mysterymaker.party/blog/how-many-people-do-you-need-murder-mystery): Can you run a murder mystery with 4 people? What's the ideal group size? Here's what actually works.
 - [How to Create Murder Mystery Clues Step by Step](https://www.mysterymaker.party/blog/how-to-create-murder-mystery-clues-step-by-step): Step-by-step guide to creating murder mystery clues. Covers physical, verbal, and document clue types with difficulty calibration and testing methods.
 - [How to Create a Murder Mystery Evidence Timeline](https://www.mysterymaker.party/blog/how-to-create-murder-mystery-evidence-timeline): A chronological evidence trail makes a murder mystery work. Here's how to design one that holds together, with red herrings and investigative flow.
 - [How to Create Murder Mystery Suspect Profiles](https://www.mysterymaker.party/blog/how-to-create-murder-mystery-suspect-profiles): Murder mystery suspects need motive, opportunity, and depth. Here's how to write suspects that feel real and create a compelling investigation.
