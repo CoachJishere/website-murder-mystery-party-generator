@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-17
+
+### Fix: supporting character's own materials disagreed on her title on "Dead On Arrival: The Blackwood Victory"
+Found during a New-Purchase Coherence Sweep (ADR-0103 Addendum 48) on package `e2c2027c-bbe8-4345-a438-4841d2a52360` (10 players, `character`, `has_accomplice=true`, English). The package uses the documented dual-name convention on a supporting character's title (`character_name = "Deacon/Reverend Evangeline White"`), which resolves correctly almost everywhere — as the literal dual form in structural headers, and as a single resolved title ("Reverend") in her own `introduction` and one peer's relationship prose. Her own `description` field was the one outlier, calling her "Deacon Evangeline White" — same character, two of her own fields, two different titles. Low severity (cosmetic, no plot impact) but a genuine same-character-disagrees-with-itself bug, same family as prior secret-inversion and numeric-contamination findings, just on a name/title. Fixed via direct `UPDATE` (confirmed exactly one occurrence before writing, re-verified after). All 4 standard SQL detectors and `package_completion_blocking_defects()` were clean on this package; no detector built — first occurrence of this specific shape, below this project's 2+-occurrence bar for semantic defects.
+
 ## 2026-09-16
 
 ### Fix: `notify-generation-issue`'s stuck-detection threshold was a flat 3 minutes regardless of cast size (ADR-0123)
