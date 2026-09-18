@@ -38,35 +38,6 @@ interface ParsedMysteryDetails {
   evidence?: Evidence[];
 }
 
-// The header-agnostic roster scanners below (scanForRoster / scanWholeMessageForRoster)
-// only check SHAPE — 4+ consecutive "**Bold** – text" lines — with no requirement that
-// the content is actually a character list. That shape is common enough to false-match
-// other bulleted content, e.g. the assistant's own theme-suggestion examples
-// ("- **1920s Speakeasy** – bootleggers, jazz singers, mob bosses" x4), which let a
-// customer reach real checkout with zero concept designed (Hannah Winter, 2026-08-31,
-// ADR-0044 addendum). A shape match stuck at the bare 4-line floor is far more credible
-// as a real (if partial) cast when it's in the right ballpark for what this game asked
-// for than when it's a fraction of a much larger requested roster.
-const isPlausibleRosterSize = (count: number, playerCount: number): boolean => {
-  if (count < 4) return false;
-  if (!playerCount || playerCount <= 8) return true;
-  return count >= playerCount * 0.5;
-};
-
-// A bare bold sub-group label with no trailing dash/description (e.g.
-// "**Amsler-Familie:**", "**Personal der Hütte:**") is not itself a character
-// line, but the whole-message roster scanners below treat ANY non-matching
-// line as a batch break - so a roster grouped into named family/staff
-// sub-sections with fewer than 4 members each (a 2-person family, then a
-// 1-person family) silently loses those members: each sub-batch flushes
-// below the 4-line keep threshold before the next header ever arrives.
-// Skipping these label-only lines (instead of breaking the batch on them)
-// lets a grouped roster accumulate as one continuous run. Laetitia von
-// Daniels, 2026-09-18: a 20-character cast split into 5 named family/friend/
-// staff groups (sizes 2, 1, 4, 8, 5) came back as 17 on this preview page -
-// the two smallest groups (3 characters) were dropped.
-const isGroupHeaderLine = (line: string): boolean => /^\*\*[^*]+\*\*:?\s*$/.test(line);
-
 // Stripe's hosted checkout page renders in whatever locale is passed via ?locale= -
 // otherwise it falls back to browser auto-detection, which can silently flip a
 // French/Spanish/etc. customer's checkout back to English right at the payment step.
@@ -101,6 +72,7 @@ const MysteryPurchase = () => {
   const [processing, setProcessing] = useState(false);
   const [mystery, setMystery] = useState<Mystery | null>(null);
   const [parsedDetails, setParsedDetails] = useState<ParsedMysteryDetails | null>(null);
+  const [charactersLoadError, setCharactersLoadError] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
   const isDevMode = import.meta.env.DEV || (window.location.hostname === 'localhost');
@@ -147,196 +119,6 @@ const MysteryPurchase = () => {
     }
     
     return '';
-  };
-
-  const parseCharacters = (content: string, playerCount: number): Character[] => {
-    const characters: Character[] = [];
-    
-    // Try to find character sections with case-insensitive matching
-    const characterSectionsPatterns = [
-      /(?:##?\s*(?:CHARACTER LIST|Characters|CHARACTERS|CHARACTER|SUSPECTS))([\s\S]*?)(?=##|$)/i,
-      /(?:##?\s*(?:[A-Z\s]+ - CHARACTER GUIDE))([\s\S]*?)(?=##|$)/i
-    ];
-    
-    let characterSection = '';
-    for (const pattern of characterSectionsPatterns) {
-      const match = content.match(pattern);
-      if (match?.[1]) {
-        characterSection = match[1];
-        break;
-      }
-    }
-
-    // Header-agnostic fallback: scans the WHOLE message for a run of 4+ consecutive
-    // numbered/bold "Name - description" lines - the roster's shape, not its heading
-    // text. This is used both when no header matched at all, and (see below) when a
-    // header matched but the roster turned out to live inside "###" subsections
-    // (e.g. "### The Masterminds" / "### The Innocents"), which the section-terminator
-    // regex above treats as the end of the section since "##" is a substring of "###" -
-    // starving `characterSection` down to nothing even though the roster is right there.
-    // Also covers non-English headers ("Lista de Personagens", "Personnages", ...) that
-    // an English-only header match misses entirely (mystery-webhook-trigger hit this
-    // trap before ADR-0057).
-    const scanWholeMessageForRoster = (): Character[] => {
-      const found: Character[] = [];
-      let batch: Character[] = [];
-      const flush = () => {
-        if (batch.length >= 4) found.push(...batch);
-        batch = [];
-      };
-      for (const line of content.split('\n')) {
-        const trimmed = line.trim();
-        const match = trimmed.match(/^(?:\d+\.|\*|-)?\s*\*\*([^*]+)\*\*\s*[-–—:]\s*(.+)/);
-        if (match) {
-          batch.push({ name: match[1].trim(), description: match[2].trim() });
-        } else if (batch.length > 0 && trimmed !== '' && !isGroupHeaderLine(trimmed)) {
-          flush();
-        }
-      }
-      flush();
-      return isPlausibleRosterSize(found.length, playerCount) ? found : [];
-    };
-
-    if (!characterSection) {
-      return scanWholeMessageForRoster();
-    }
-
-    // Pattern 1: Character with description after colon/dash
-    const formatOneMatches = Array.from(characterSection.matchAll(/(?:\d+\.|\*|\-)\s*\*\*([^*]+)\*\*\s*[-–:]\s*([^#\n]+)/g));
-    
-    // Pattern 2: Character name in bold followed by description
-    const formatTwoMatches = Array.from(characterSection.matchAll(/\*\*([^*]+)\*\*\s*[-–:]\s*([^#\n]+)/g));
-    
-    // Pattern 3: Character name as header followed by description
-    const formatThreeMatches = Array.from(content.matchAll(/##?\s*([A-Z\s]+)\s*-\s*CHARACTER GUIDE\s*\n+(?:CHARACTER DESCRIPTION\s*\n+)?([\s\S]*?)(?=YOUR BACKGROUND|YOUR RELATIONSHIPS|##|$)/ig));
-
-    // Use the most populated set of matches
-    let allMatches = [];
-    if (formatOneMatches.length >= formatTwoMatches.length && formatOneMatches.length >= formatThreeMatches.length) {
-      allMatches = formatOneMatches;
-    } else if (formatTwoMatches.length >= formatOneMatches.length && formatTwoMatches.length >= formatThreeMatches.length) {
-      allMatches = formatTwoMatches;
-    } else {
-      allMatches = formatThreeMatches;
-    }
-    
-    for (const match of allMatches) {
-      const [_, name, description] = match;
-      if (name && description) {
-        const cleanName = name.trim().replace(/^\d+\.\s*/, '');
-        let cleanDescription = description.trim();
-        
-        characters.push({
-          name: cleanName,
-          description: cleanDescription
-        });
-      }
-    }
-
-    // If the section-scoped patterns found nothing, the roster may live inside "###"
-    // subsections that the section-terminator regex above mistook for the end of the
-    // list (see scanWholeMessageForRoster comment). Try the whole-message scan before
-    // falling back to name-only/placeholder-description matches.
-    if (characters.length === 0) {
-      const wholeMessageMatches = scanWholeMessageForRoster();
-      if (wholeMessageMatches.length > 0) {
-        characters.push(...wholeMessageMatches);
-      }
-    }
-
-    // If we still don't have characters, try another approach for character names only
-    if (characters.length === 0) {
-      const nameOnlyMatches = characterSection.match(/\*\*([^*]+)\*\*/g);
-      if (nameOnlyMatches) {
-        nameOnlyMatches.forEach(match => {
-          const name = match.replace(/\*\*/g, '').trim();
-          if (name) {
-            characters.push({
-              name,
-              description: t("purchase.preview.characterPlaceholder")
-            });
-          }
-        });
-      }
-      
-      // Last resort: look for character names as headers
-      if (characters.length === 0) {
-        const headerMatches = Array.from(content.matchAll(/##\s*([A-Z][A-Z\s]+[A-Z])\s*(?:-|–)/g));
-        headerMatches.forEach(match => {
-          const name = match[1].trim();
-          if (name && name.length > 2 && !name.match(/EVIDENCE CARD|HOST GUIDE/i)) {
-            characters.push({
-              name,
-              description: t("purchase.preview.characterPlaceholderFull")
-            });
-          }
-        });
-      }
-    }
-
-    return characters;
-  };
-
-  // ADR-0110 (client mirror): mystery-webhook-trigger hit and fixed this exact
-  // failure shape server-side. This preview page runs its own independent parser
-  // (see the scanWholeMessageForRoster comment above — kept in sync with the
-  // server's ADR-0057 predicate only by convention, not by sharing code), so the
-  // same fix has to be applied here separately.
-  //
-  // A message whose roster starts numbering above 1 (e.g. "17. **Name** - ...")
-  // is a continuation of an earlier reply that got cut off mid-list (LLM output
-  // limit), not a standalone or replacement cast. Real rosters always start at
-  // "1.", so this is a safe structural signal.
-  const firstCharacterNumber = (content: string): number | null => {
-    for (const line of content.split('\n')) {
-      const m = line.trim().match(/^(\d+)\.\s+(?:\*\*.+?\*\*|[A-Za-z])/);
-      if (m) return parseInt(m[1], 10);
-    }
-    return null;
-  };
-
-  // Whole-message, header-agnostic scan for consecutive bold "N. **Name** - Desc"
-  // lines — the same logic as the `scanWholeMessageForRoster` closure inside
-  // `parseCharacters`, exposed standalone here because merged continuation content
-  // can contain a "## Character List..." header mid-string, which would
-  // prematurely terminate `parseCharacters`'s section-scoped regex (it stops at
-  // the next "##" no matter what it is). A pure line scan doesn't care about
-  // headers at all, so it survives a merge cleanly.
-  const scanForRoster = (content: string, playerCount: number): Character[] => {
-    const found: Character[] = [];
-    let batch: Character[] = [];
-    const flush = () => { if (batch.length >= 4) found.push(...batch); batch = []; };
-    for (const line of content.split('\n')) {
-      const trimmed = line.trim();
-      const match = trimmed.match(/^(?:\d+\.|\*|-)?\s*\*\*([^*]+)\*\*\s*[-–—:]\s*(.+)/);
-      if (match) {
-        batch.push({ name: match[1].trim(), description: match[2].trim() });
-      } else if (batch.length > 0 && trimmed !== '' && !isGroupHeaderLine(trimmed)) {
-        flush();
-      }
-    }
-    flush();
-    return isPlausibleRosterSize(found.length, playerCount) ? found : [];
-  };
-
-  // Fold a continuation message's content onto the nearest PRIOR message that
-  // itself carries a parseable roster, so a list split across a truncated reply
-  // and its continuation reads as one complete cast. `msgsAscending` must be
-  // chronological (oldest first) — a merged message becomes the new anchor for
-  // any further continuation, so a roster split across 3+ messages chains.
-  const mergeRosterContinuations = (msgsAscending: any[], playerCount: number): any[] => {
-    let prevRosterIndex = -1;
-    const merged = msgsAscending.map((m) => ({ ...m }));
-    for (let i = 0; i < merged.length; i++) {
-      const firstNum = firstCharacterNumber(merged[i].content || '');
-      if (firstNum !== null && firstNum > 1 && prevRosterIndex !== -1) {
-        merged[i] = { ...merged[i], content: `${merged[prevRosterIndex].content || ''}\n\n${merged[i].content || ''}` };
-      }
-      if (scanForRoster(merged[i].content || '', playerCount).length >= 4) {
-        prevRosterIndex = i;
-      }
-    }
-    return merged;
   };
 
   const parseEvidence = (content: string): Evidence[] => {
@@ -474,37 +256,40 @@ const MysteryPurchase = () => {
           }
 
           if (detailedMessage) {
-            // Characters: selected independently from `detailedMessage` above
-            // (ADR-0110 client mirror). Requiring the SAME message to carry both
-            // a Premise header and a Character List header meant a message that
-            // legitimately holds the fullest, most-recent roster — a continuation
-            // reply, or a plain-text confirmation list with no "##" headers at
-            // all — could never win the selection, silently falling back to a
-            // stale, truncated earlier draft instead. Nikki Barnett, 2026-08-25:
-            // approved a 22-character cast across 3 later messages (a rename, a
-            // continuation, a confirmation); this loop kept picking her original
-            // 16-character truncated reply because it was the only one bundling
-            // both headers together.
-            const aiMessagesAscending = [...aiMessages].reverse();
-            const playerCount = conversation.player_count || 0;
-            const mergedForRoster = mergeRosterContinuations(aiMessagesAscending, playerCount);
-            let latestRosterMsg: typeof detailedMessage | null = null;
-            for (const m of mergedForRoster) {
-              if (scanForRoster(m.content || '', playerCount).length >= 4) latestRosterMsg = m;
-            }
-            const characters = latestRosterMsg
-              ? scanForRoster(latestRosterMsg.content || '', playerCount)
-              : parseCharacters(detailedMessage.content, playerCount);
-
             const details: ParsedMysteryDetails = {
               premise: extractPremise(detailedMessage.content),
               overview: extractGameOverview(detailedMessage.content),
-              characters,
+              characters: [],
               evidence: parseEvidence(detailedMessage.content)
             };
 
             setParsedDetails(details);
             console.log("Extracted details from latest concept:", details);
+          }
+
+          // ADR-0125: the roster (count + names) comes from the same
+          // extraction `mystery-webhook-trigger` uses for real generation,
+          // via `extract-concept-roster`, instead of a second client-side
+          // parser. That second parser drifted from the server three times
+          // (ADR-0044 addendum, ADR-0110 Addenda 1-2), always by showing a
+          // WRONG count with full apparent confidence rather than failing
+          // visibly - see ADR-0125's Discussion for why this call fails
+          // loudly (a distinct "couldn't load" notice) instead of quietly
+          // rendering an empty or partial list as if it were complete.
+          const { data: rosterData, error: rosterFnError } = await supabase.functions.invoke(
+            'extract-concept-roster',
+            { body: { conversationId: id } }
+          );
+          if (rosterFnError) {
+            console.error("Error fetching roster preview:", rosterFnError);
+            setCharactersLoadError(true);
+          } else {
+            setParsedDetails(prev => ({
+              premise: prev?.premise ?? '',
+              overview: prev?.overview,
+              evidence: prev?.evidence,
+              characters: rosterData?.characters ?? [],
+            }));
           }
         }
       } catch (error) {
@@ -718,9 +503,10 @@ const MysteryPurchase = () => {
               ? "grid-cols-1 space-y-4" 
               : "grid-cols-1 md:grid-cols-2 gap-8"
           )}>
-            <MysteryPreviewCard 
-              mystery={mystery} 
-              parsedDetails={parsedDetails} 
+            <MysteryPreviewCard
+              mystery={mystery}
+              parsedDetails={parsedDetails}
+              charactersLoadError={charactersLoadError}
             />
 
             <div className="space-y-4 sm:space-y-6">

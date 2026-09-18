@@ -300,6 +300,9 @@ verify_jwt = false
 [functions.generate-chatbot-token]
 verify_jwt = false
 
+[functions.extract-concept-roster]
+verify_jwt = false
+
 [functions.mystery-webhook-trigger]
 verify_jwt = false
 

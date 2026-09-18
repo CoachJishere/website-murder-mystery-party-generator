@@ -1176,7 +1176,8 @@
         "both": "Full + summary scripts",
         "pointForm": "Summary scripts"
       },
-      "hasAccomplice": "Includes accomplice"
+      "hasAccomplice": "Includes accomplice",
+      "charactersLoadError": "We couldn't load your character preview right now, but your concept is saved — it's safe to click \"Generate Mystery\"."
     },
     "fullyEditableLabel": "Fully editable:",
     "fullyEditableNote": "Don't worry — you can edit all character scripts, host guide content, and evidence cards after your mystery is generated.",

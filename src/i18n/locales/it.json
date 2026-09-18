@@ -1187,7 +1187,8 @@
         "pointForm": "Script riassunti"
       },
       "hasAccomplice": "Include complice",
-      "charactersFinalNote": "Questo è il tuo cast definitivo - il numero di personaggi viene fissato al momento dell'acquisto. Puoi rinominare i singoli personaggi in seguito, ma rinominarli aggiorna solo l'elenco dei personaggi, non il resto dello script."
+      "charactersFinalNote": "Questo è il tuo cast definitivo - il numero di personaggi viene fissato al momento dell'acquisto. Puoi rinominare i singoli personaggi in seguito, ma rinominarli aggiorna solo l'elenco dei personaggi, non il resto dello script.",
+      "charactersLoadError": "Al momento non siamo riusciti a caricare l'anteprima dei personaggi, ma il tuo concept è salvato. Puoi cliccare su \"Genera mistero\" senza problemi."
     },
     "fullyEditableLabel": "Completamente modificabile:",
     "fullyEditableNote": "Non preoccuparti — potrai modificare tutti i copioni dei personaggi, i contenuti della guida del conduttore e le carte degli indizi dopo aver generato il tuo mistero.",

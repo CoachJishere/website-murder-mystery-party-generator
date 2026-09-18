@@ -1210,7 +1210,8 @@
         "pointForm": "Scripts résumés"
       },
       "hasAccomplice": "Avec complice",
-      "charactersFinalNote": "Voici votre distribution finale - le nombre de personnages est fixé au moment de l'achat. Vous pouvez renommer des personnages individuellement par la suite, mais un changement de nom ne met à jour que la liste des personnages, pas le reste du scénario."
+      "charactersFinalNote": "Voici votre distribution finale - le nombre de personnages est fixé au moment de l'achat. Vous pouvez renommer des personnages individuellement par la suite, mais un changement de nom ne met à jour que la liste des personnages, pas le reste du scénario.",
+      "charactersLoadError": "Nous n'avons pas pu charger l'aperçu de vos personnages pour le moment, mais votre concept est enregistré. Vous pouvez cliquer sur \"Générer le mystère\" en toute sécurité."
     },
     "fullyEditableLabel": "Entièrement modifiable :",
     "fullyEditableNote": "Pas d'inquiétude — vous pourrez modifier tous les scripts de personnages, le contenu du guide d'animation et les cartes d'indices après la génération de votre mystère.",

@@ -1187,7 +1187,8 @@
         "pointForm": "Tiivistetyt käsikirjoitukset"
       },
       "hasAccomplice": "Sisältää rikoskumppanin",
-      "charactersFinalNote": "Tämä on lopullinen hahmokokoonpanosi - hahmojen määrä lukittuu ostohetkellä. Voit nimetä yksittäisiä hahmoja uudelleen jälkikäteen, mutta uudelleennimeäminen päivittää vain hahmolistan, ei muuta käsikirjoitusta."
+      "charactersFinalNote": "Tämä on lopullinen hahmokokoonpanosi - hahmojen määrä lukittuu ostohetkellä. Voit nimetä yksittäisiä hahmoja uudelleen jälkikäteen, mutta uudelleennimeäminen päivittää vain hahmolistan, ei muuta käsikirjoitusta.",
+      "charactersLoadError": "Emme juuri nyt pystyneet lataamaan hahmojen esikatselua, mutta konseptisi on tallennettu. Voit turvallisesti napsauttaa \"Luo mysteeri\"."
     },
     "fullyEditableLabel": "Täysin muokattavissa:",
     "fullyEditableNote": "Älä huoli — voit muokata kaikkia hahmokäsikirjoituksia, isäntäoppaan sisältöä ja todistekortteja sen jälkeen kun mysteerisi on luotu.",

@@ -1220,7 +1220,8 @@
         "pointForm": "Scripts resumidos"
       },
       "hasAccomplice": "Inclui cúmplice",
-      "charactersFinalNote": "Este é o seu elenco final - o número de personagens fica definido na compra. Você pode renomear personagens individualmente depois, mas isso só atualiza a lista de personagens, não o resto do roteiro."
+      "charactersFinalNote": "Este é o seu elenco final - o número de personagens fica definido na compra. Você pode renomear personagens individualmente depois, mas isso só atualiza a lista de personagens, não o resto do roteiro.",
+      "charactersLoadError": "No momento não foi possível carregar a pré-visualização dos personagens, mas o seu conceito está guardado. Pode clicar em \"Gerar mistério\" com segurança."
     },
     "fullyEditableLabel": "Totalmente editável:",
     "fullyEditableNote": "Não te preocupes — podes editar todos os guiões dos personagens, o conteúdo do guia do anfitrião e as cartas de provas depois de gerares o teu mistério.",

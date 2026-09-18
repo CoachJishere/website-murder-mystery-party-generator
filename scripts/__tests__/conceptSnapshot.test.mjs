@@ -36,16 +36,25 @@ assert.ok(
 
 // --- load the real functions ------------------------------------------------------
 // Exercise the SHIPPED regexes and parser rather than a copy that can drift out of
-// sync. Take the pure prelude (constants + the two selection functions, stopping
-// before anything that touches Deno/Supabase) and transpile it with esbuild.
-const start = src.indexOf('const CHARACTER_LIST_HEADERS');
-const end = src.indexOf('// Primary extraction: regex-based');
-assert.ok(start > 0 && end > start, 'could not locate the pure prelude');
+// sync. ADR-0125: the extraction primitives (extractRosterFromMessage,
+// findLatestConceptMessage, isPlausibleRosterCandidate, rosterOverlapFraction,
+// MIN_ROSTER_SIZE) now live in their own file, shared with `extract-concept-roster`
+// — imported directly here instead of marker-sliced out of mystery-webhook-trigger.
+// `rosterDiffersMeaningfully` stayed local to mystery-webhook-trigger (it's specific
+// to the approved-snapshot re-capture decision, not shared elsewhere), so it's still
+// pulled out by marker, transpiled together with the shared module so its bare
+// reference to `rosterOverlapFraction` resolves in scope.
+const SHARED_SRC_PATH = new URL('../../supabase/functions/_shared/rosterExtraction.ts', import.meta.url);
+const sharedSrc = readFileSync(SHARED_SRC_PATH, 'utf8');
+
+const rdmStart = src.indexOf('function rosterDiffersMeaningfully');
+const rdmEnd = src.indexOf('function extractCharactersFromMessages');
+assert.ok(rdmStart > 0 && rdmEnd > rdmStart, 'could not locate rosterDiffersMeaningfully');
 
 const { transformSync } = await import('esbuild');
 const js = transformSync(
-  src.slice(start, end) +
-    '\nexport { extractRosterFromMessage, findLatestConceptMessage, rosterDiffersMeaningfully, isPlausibleRosterCandidate, rosterOverlapFraction, MIN_ROSTER_SIZE };',
+  sharedSrc + '\n' + src.slice(rdmStart, rdmEnd) +
+    '\nexport { rosterDiffersMeaningfully };',
   { loader: 'ts', format: 'esm' },
 ).code;
 

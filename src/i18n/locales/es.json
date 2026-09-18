@@ -1209,7 +1209,8 @@
         "pointForm": "Guiones resumidos"
       },
       "hasAccomplice": "Incluye cómplice",
-      "charactersFinalNote": "Este es tu reparto final - el número de personajes queda fijado en el momento de la compra. Puedes renombrar personajes individuales después, pero un cambio de nombre solo actualiza la lista de personajes, no el resto del guion."
+      "charactersFinalNote": "Este es tu reparto final - el número de personajes queda fijado en el momento de la compra. Puedes renombrar personajes individuales después, pero un cambio de nombre solo actualiza la lista de personajes, no el resto del guion.",
+      "charactersLoadError": "No pudimos cargar la vista previa de tus personajes en este momento, pero tu concepto está guardado. Puedes hacer clic en \"Generar misterio\" sin problema."
     },
     "fullyEditableLabel": "Totalmente editable:",
     "fullyEditableNote": "No te preocupes — puedes editar todos los guiones de los personajes, el contenido de la guía del anfitrión y las cartas de pruebas después de generar tu misterio.",

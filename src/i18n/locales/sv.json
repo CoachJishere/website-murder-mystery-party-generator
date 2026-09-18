@@ -1175,7 +1175,8 @@
         "pointForm": "Sammanfattade manus"
       },
       "hasAccomplice": "Inkluderar medbrottsling",
-      "charactersFinalNote": "Det här är din slutgiltiga rollbesättning - antalet karaktärer låses vid köpet. Du kan byta namn på enskilda karaktärer efteråt, men ett namnbyte uppdaterar bara karaktärslistan, inte resten av manuset."
+      "charactersFinalNote": "Det här är din slutgiltiga rollbesättning - antalet karaktärer låses vid köpet. Du kan byta namn på enskilda karaktärer efteråt, men ett namnbyte uppdaterar bara karaktärslistan, inte resten av manuset.",
+      "charactersLoadError": "Vi kunde inte läsa in din karaktärsförhandsvisning just nu, men ditt koncept är sparat. Du kan tryggt klicka på \"Generera mysterium\"."
     },
     "fullyEditableLabel": "Helt redigerbar:",
     "fullyEditableNote": "Oroa dig inte — du kan redigera alla karaktärsmanus, värdguideinnehåll och bevis-kort efter att ditt mysterium har genererats.",

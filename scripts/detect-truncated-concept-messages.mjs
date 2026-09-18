@@ -43,6 +43,12 @@
  * as scripts/detect-roster-mismatches.mjs: transpile the real source with
  * esbuild and run it, never a hand-copy (ADR-0057 discipline).
  *
+ * ADR-0125: this used to slice the prelude out of
+ * `mystery-webhook-trigger/index.ts` by two fragile text markers. Both
+ * extractors now live in `supabase/functions/_shared/rosterExtraction.ts`,
+ * shared by `mystery-webhook-trigger` and `extract-concept-roster` — this
+ * script imports that file directly instead.
+ *
  * Usage:
  *   SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/detect-truncated-concept-messages.mjs [--since=ISO_DATE] [--json]
  */
@@ -63,18 +69,9 @@ const sinceArg = process.argv.find((a) => a.startsWith('--since='));
 const since = sinceArg ? sinceArg.split('=')[1] : new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
 
 // Load the SHIPPED extractors, not a copy.
-const SRC_PATH = new URL('../supabase/functions/mystery-webhook-trigger/index.ts', import.meta.url);
+const SRC_PATH = new URL('../supabase/functions/_shared/rosterExtraction.ts', import.meta.url);
 const src = readFileSync(SRC_PATH, 'utf8');
-const start = src.indexOf('const CHARACTER_LIST_HEADERS');
-const end = src.indexOf('// Primary extraction: regex-based');
-if (start < 0 || end < start) {
-  console.error('Could not locate extractRosterFromMessage/extractStatedRosterCount prelude in mystery-webhook-trigger/index.ts — source shape changed, update this script.');
-  process.exit(1);
-}
-const js = transformSync(
-  src.slice(start, end) + '\nexport { extractRosterFromMessage, extractStatedRosterCount };',
-  { loader: 'ts', format: 'esm' },
-).code;
+const js = transformSync(src, { loader: 'ts', format: 'esm' }).code;
 const { extractRosterFromMessage, extractStatedRosterCount } = await import(
   'data:text/javascript;base64,' + Buffer.from(js).toString('base64')
 );

@@ -19,9 +19,15 @@ interface MysteryPreviewCardProps {
     premise?: string;
     characters?: Array<{ name: string; description?: string }>;
   };
+  // ADR-0125: true when the extract-concept-roster call failed (network/edge
+  // function error), as distinct from a genuinely empty roster. Shown as its
+  // own notice rather than falling into the generic "we couldn't detect your
+  // character list, go back and check your concept" warning below, which
+  // would incorrectly suggest the concept itself is the problem.
+  charactersLoadError?: boolean;
 }
 
-const MysteryPreviewCard = ({ mystery, parsedDetails }: MysteryPreviewCardProps) => {
+const MysteryPreviewCard = ({ mystery, parsedDetails, charactersLoadError }: MysteryPreviewCardProps) => {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   
@@ -139,6 +145,15 @@ const MysteryPreviewCard = ({ mystery, parsedDetails }: MysteryPreviewCardProps)
               isMobile ? "text-xs" : "text-xs"
             )}>
               {t('purchase.preview.charactersFinalNote')}
+            </p>
+          </div>
+        ) : charactersLoadError ? (
+          <div className={cn(
+            "bg-amber-50 border border-amber-200 rounded-md p-3",
+            isMobile ? "text-xs" : "text-sm"
+          )}>
+            <p className="text-amber-700">
+              {t('purchase.preview.charactersLoadError')}
             </p>
           </div>
         ) : parsedDetails?.premise && (

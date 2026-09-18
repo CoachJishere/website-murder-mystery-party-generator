@@ -1187,7 +1187,8 @@
         "pointForm": "Zusammenfassungen"
       },
       "hasAccomplice": "Mit Komplize",
-      "charactersFinalNote": "Das ist deine endgültige Besetzung - die Anzahl der Charaktere wird beim Kauf festgelegt. Du kannst einzelne Charaktere danach umbenennen, aber eine Umbenennung aktualisiert nur die Charakterliste, nicht den Rest des Skripts."
+      "charactersFinalNote": "Das ist deine endgültige Besetzung - die Anzahl der Charaktere wird beim Kauf festgelegt. Du kannst einzelne Charaktere danach umbenennen, aber eine Umbenennung aktualisiert nur die Charakterliste, nicht den Rest des Skripts.",
+      "charactersLoadError": "Wir konnten deine Charaktervorschau gerade nicht laden, aber dein Konzept ist gespeichert - du kannst bedenkenlos auf \"Mysterium generieren\" klicken."
     },
     "fullyEditableLabel": "Vollständig bearbeitbar:",
     "fullyEditableNote": "Keine Sorge — du kannst nach der Generierung deines Krimis alle Charakterskripte, Inhalte des Hostleitfadens und Beweiskarten bearbeiten.",

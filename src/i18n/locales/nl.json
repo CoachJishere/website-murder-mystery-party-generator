@@ -1187,7 +1187,8 @@
         "pointForm": "Samengevatte scripts"
       },
       "hasAccomplice": "Inclusief medeplichtige",
-      "charactersFinalNote": "Dit is je definitieve cast - het aantal personages ligt vast vanaf het moment van aankoop. Je kunt losse personages achteraf hernoemen, maar een naamswijziging werkt alleen door in de personagelijst, niet in de rest van het script."
+      "charactersFinalNote": "Dit is je definitieve cast - het aantal personages ligt vast vanaf het moment van aankoop. Je kunt losse personages achteraf hernoemen, maar een naamswijziging werkt alleen door in de personagelijst, niet in de rest van het script.",
+      "charactersLoadError": "We konden je personage-voorbeeld nu niet laden, maar je concept is opgeslagen. Je kunt gerust op \"Mysterie genereren\" klikken."
     },
     "fullyEditableLabel": "Volledig bewerkbaar:",
     "fullyEditableNote": "Geen zorgen — je kunt alle personageteksten, gastheergidsinhoud en bewijskaarten bewerken nadat je mysterie is gegenereerd.",

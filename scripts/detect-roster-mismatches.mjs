@@ -3,14 +3,20 @@
  * Roster-count-mismatch detector (ADR-0064, follow-up to ADR-0063).
  *
  * Re-parses each paid, completed package's approved concept snapshot with the
- * SHIPPED extractRosterFromMessage — same technique as
- * scripts/__tests__/conceptSnapshot.test.mjs: transpile the real source with
- * esbuild and run it, never a hand-copy (ADR-0057 discipline) — and compares
- * the roster size to the actual mystery_characters row count for that
- * package. A mismatch means either the extractor drifted from what actually
- * got generated, or the pipeline dropped/added characters after extraction.
- * This is the safety net for the exact bug ADR-0063 fixed: catches it (or any
- * future variant) even if a future prompt/parser change reintroduces it.
+ * SHIPPED extractRosterFromMessage — transpiles the real
+ * `supabase/functions/_shared/rosterExtraction.ts` with esbuild and runs it,
+ * never a hand-copy (ADR-0057 discipline) — and compares the roster size to
+ * the actual mystery_characters row count for that package. A mismatch means
+ * either the extractor drifted from what actually got generated, or the
+ * pipeline dropped/added characters after extraction. This is the safety net
+ * for the exact bug ADR-0063 fixed: catches it (or any future variant) even
+ * if a future prompt/parser change reintroduces it.
+ *
+ * ADR-0125: this used to slice `extractRosterFromMessage`'s prelude out of
+ * `mystery-webhook-trigger/index.ts` by two fragile text markers (a shape
+ * this whole ADR moved away from). The extraction logic now lives in its own
+ * file, shared by both `mystery-webhook-trigger` and `extract-concept-roster`
+ * — so this script just imports that file directly, no marker-slicing.
  *
  * Usage:
  *   SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/detect-roster-mismatches.mjs [--since=ISO_DATE] [--json]
@@ -32,18 +38,9 @@ const sinceArg = process.argv.find((a) => a.startsWith('--since='));
 const since = sinceArg ? sinceArg.split('=')[1] : new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
 
 // Load the SHIPPED extractor, not a copy.
-const SRC_PATH = new URL('../supabase/functions/mystery-webhook-trigger/index.ts', import.meta.url);
+const SRC_PATH = new URL('../supabase/functions/_shared/rosterExtraction.ts', import.meta.url);
 const src = readFileSync(SRC_PATH, 'utf8');
-const start = src.indexOf('const CHARACTER_LIST_HEADERS');
-const end = src.indexOf('// Primary extraction: regex-based');
-if (start < 0 || end < start) {
-  console.error('Could not locate extractRosterFromMessage prelude in mystery-webhook-trigger/index.ts — source shape changed, update this script.');
-  process.exit(1);
-}
-const js = transformSync(
-  src.slice(start, end) + '\nexport { extractRosterFromMessage };',
-  { loader: 'ts', format: 'esm' },
-).code;
+const js = transformSync(src, { loader: 'ts', format: 'esm' }).code;
 const { extractRosterFromMessage } = await import(
   'data:text/javascript;base64,' + Buffer.from(js).toString('base64')
 );

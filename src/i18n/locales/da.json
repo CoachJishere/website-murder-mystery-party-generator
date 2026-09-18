@@ -1175,7 +1175,8 @@
         "pointForm": "Opsummerede manuskripter"
       },
       "hasAccomplice": "Inkluderer medskyldig",
-      "charactersFinalNote": "Dette er din endelige rollebesætning - antallet af karakterer fastlåses ved købet. Du kan omdøbe enkelte karakterer bagefter, men en omdøbning opdaterer kun karakterlisten, ikke resten af manuskriptet."
+      "charactersFinalNote": "Dette er din endelige rollebesætning - antallet af karakterer fastlåses ved købet. Du kan omdøbe enkelte karakterer bagefter, men en omdøbning opdaterer kun karakterlisten, ikke resten af manuskriptet.",
+      "charactersLoadError": "Vi kunne ikke indlæse din karakterforhåndsvisning lige nu, men dit koncept er gemt. Du kan roligt klikke på \"Generér mysterium\"."
     },
     "fullyEditableLabel": "Fuldt redigerbar:",
     "fullyEditableNote": "Bare rolig — du kan redigere alle karakter-manuskripter, værtsguide-indhold og beviskort efter dit mysterium er genereret.",
