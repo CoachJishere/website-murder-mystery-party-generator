@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-18
+
+### Fix: Child webhook URL was hardcoded in this public repo, with no auth on the Make.com side (ADR-0124)
+Second occurrence of the "MM Live - Child (Unified)40" null-input incident (first: 2026-09-16, 20 failed inserts; this time: 2026-09-17 21:42-21:46 UTC, 9 failed inserts) — same scenario, same stale April row (`ab2c5dcf-769e-49fb-a03b-fd0a22cb74a1`, confirmed untouched both times), same `character_name` NOT NULL signature. Jonathan flagged a real order 62 minutes earlier as a possible cause; ruled out — that package's own generation had already fully completed 40 minutes before the failures started. Investigating further found the real mechanism: `CHILD_WEBHOOK` was hardcoded as a plaintext literal in `supabase/functions/notify-generation-issue/index.ts`, and this repo is public on GitHub — anyone can read the URL directly, and the receiving Make.com scenario has no auth check at all, which fully explains both incidents as external hits (and explains why each failed row's freelanced character content is completely unrelated to any real package: little to no real context reaches Claude on these hits). Moved `CHILD_WEBHOOK` to `Deno.env.get("CHILD_WEBHOOK_URL")`, mirroring the sibling Parent webhook's existing `WEBHOOK_URL` env-var pattern; set the Supabase secret to the current value first so the legitimate recovery path is unaffected; deployed (v37), verified ACTIVE. **Not fully closed yet** — the leaked URL is permanently visible in this repo's git history regardless of the code fix, so the gap only actually closes once the webhook is regenerated in Make.com's UI (Jonathan) and the secret is updated to match; a shared-secret auth check in the Make.com scenario itself is a further recommended, undone step.
+
 ## 2026-09-17
 
 ### Fix: supporting character's own materials disagreed on her title on "Dead On Arrival: The Blackwood Victory"
