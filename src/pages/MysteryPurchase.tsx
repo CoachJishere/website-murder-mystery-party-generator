@@ -53,6 +53,20 @@ const isPlausibleRosterSize = (count: number, playerCount: number): boolean => {
   return count >= playerCount * 0.5;
 };
 
+// A bare bold sub-group label with no trailing dash/description (e.g.
+// "**Amsler-Familie:**", "**Personal der Hütte:**") is not itself a character
+// line, but the whole-message roster scanners below treat ANY non-matching
+// line as a batch break - so a roster grouped into named family/staff
+// sub-sections with fewer than 4 members each (a 2-person family, then a
+// 1-person family) silently loses those members: each sub-batch flushes
+// below the 4-line keep threshold before the next header ever arrives.
+// Skipping these label-only lines (instead of breaking the batch on them)
+// lets a grouped roster accumulate as one continuous run. Laetitia von
+// Daniels, 2026-09-18: a 20-character cast split into 5 named family/friend/
+// staff groups (sizes 2, 1, 4, 8, 5) came back as 17 on this preview page -
+// the two smallest groups (3 characters) were dropped.
+const isGroupHeaderLine = (line: string): boolean => /^\*\*[^*]+\*\*:?\s*$/.test(line);
+
 // Stripe's hosted checkout page renders in whatever locale is passed via ?locale= -
 // otherwise it falls back to browser auto-detection, which can silently flip a
 // French/Spanish/etc. customer's checkout back to English right at the payment step.
@@ -175,7 +189,7 @@ const MysteryPurchase = () => {
         const match = trimmed.match(/^(?:\d+\.|\*|-)?\s*\*\*([^*]+)\*\*\s*[-–—:]\s*(.+)/);
         if (match) {
           batch.push({ name: match[1].trim(), description: match[2].trim() });
-        } else if (batch.length > 0 && trimmed !== '') {
+        } else if (batch.length > 0 && trimmed !== '' && !isGroupHeaderLine(trimmed)) {
           flush();
         }
       }
@@ -297,7 +311,7 @@ const MysteryPurchase = () => {
       const match = trimmed.match(/^(?:\d+\.|\*|-)?\s*\*\*([^*]+)\*\*\s*[-–—:]\s*(.+)/);
       if (match) {
         batch.push({ name: match[1].trim(), description: match[2].trim() });
-      } else if (batch.length > 0 && trimmed !== '') {
+      } else if (batch.length > 0 && trimmed !== '' && !isGroupHeaderLine(trimmed)) {
         flush();
       }
     }
