@@ -388,7 +388,14 @@ serve(async (req) => {
     // already bounds any one character's worst case ($0.30), so the daily
     // ceiling was the binding constraint on multi-incident days, not runaway
     // spend on a single broken character.
-    const CHILD_WEBHOOK = "https://hook.eu2.make.com/3l26wasbsjzh5396np25qoyv8g82u6j3";
+    // 2026-09-18: moved off a hardcoded literal (ADR-0103 recurrence
+    // investigation) -- this file is tracked in a PUBLIC GitHub repo, so the
+    // old hardcoded URL was readable by anyone and had no auth check on the
+    // Make.com side. Two "Input was null" incidents on the receiving
+    // scenario (2026-09-16, 2026-09-17) are consistent with external hits
+    // on that exposed URL. Mirrors the sibling Parent webhook, which already
+    // reads WEBHOOK_URL from an env var rather than hardcoding it.
+    const CHILD_WEBHOOK = Deno.env.get("CHILD_WEBHOOK_URL") || "";
     const MAX_ATTEMPTS_PER_CHARACTER = 2;
     const DAILY_SPEND_CAP_USD = 10.0;
     // Estimate only (not a measured figure like the Haiku/Replicate costs in
