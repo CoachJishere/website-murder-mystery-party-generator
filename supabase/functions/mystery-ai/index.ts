@@ -1,5 +1,10 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import {
+  extractRosterFromMessage,
+  findLatestConceptMessage,
+  mergeRosterContinuations,
+} from "../_shared/rosterExtraction.ts";
 
 type Locale = 'en' | 'es' | 'fr' | 'de' | 'ko' | 'ja' | 'zh-cn' | 'nl' | 'da' | 'sv' | 'fi' | 'it' | 'pt';
 
@@ -585,6 +590,29 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
       // here means the guardrail can't be silently lost if the external prompt is
       // edited later without this file changing too.
       systemPrompt += `\n\nCRITICAL: List EXACTLY the established player count of characters — never propose "optional," "bonus," or scalable extra characters for a larger group ("15 core + 3 optional for 16-18 players" or similar). Every character you list will be generated and included; there is no mechanism to add characters after the fact. If the user might end up with more guests than characters, do not solve it by offering additional characters — that is handled separately by inviting extra guests as co-investigators, not by expanding the cast.`;
+
+      // ADR-0126: 50 is the actual technical ceiling this tool can generate (DB
+      // constraint + extraction plausibility band), not just the 4-35 advertised
+      // by the setup form. Customers routinely and legitimately negotiate a
+      // roster above 35 through natural conversation (a real wedding went
+      // 32 -> 38, several corporate events have run 34-50) with no guardrail
+      // ever telling the model there's a limit at all — it will keep agreeing
+      // indefinitely. The 35 number above is the form's advertised default, not
+      // a wall; this is the actual wall, and it has to be enforced here because
+      // roster growth happens through open-ended chat turns, not through the
+      // one-time numeric gate the "4 to 35" guidance covers.
+      // playerCount above is the STRING extracted from the initial "how many
+      // players" numeric gate (or a "6" default) — not a reliable expected
+      // count to bias the roster search against here, so pass null: falls
+      // open per findLatestConceptMessage's own contract, which is what we
+      // want when checking for a roster that may have organically grown well
+      // past whatever number was first mentioned.
+      const mergedForRosterCount = mergeRosterContinuations(messages);
+      const latestRosterMessage = findLatestConceptMessage(mergedForRosterCount, null);
+      const currentRosterCount = latestRosterMessage
+        ? extractRosterFromMessage(latestRosterMessage.content || '').length
+        : 0;
+      systemPrompt += `\n\nCRITICAL: 50 is the absolute maximum number of individually scripted characters this tool can generate for a single mystery, regardless of what the user's real guest list looks like. This is a hard technical limit, not a suggestion — unlike the 35-player default above, there is no room to negotiate past it. If the character list you're building or revising would reach 50, do not add more: tell the user warmly but clearly that 50 is the maximum this tool supports for one mystery, and that any additional guests should join as extra co-investigators (the same mechanism already used whenever a group is larger than the character list) rather than getting their own scripted character. The current character list stands at ${currentRosterCount} ${currentRosterCount === 1 ? 'character' : 'characters'} as far as this conversation has established.`;
 
       // A customer explicitly asked for "only 3 rounds total," the chat
       // acknowledged it, and generation produced 4 rounds anyway — round
