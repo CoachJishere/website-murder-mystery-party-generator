@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-19
+
+### Fix: Terminus 13 customer feedback — 2 characters' Remembered identity clarified (ADR-0103 Addendum 49)
+A week after Addendum 43 completed the roster, the customer emailed that she only found 2 "Remembered" characters and asked for at least 3 more. Traced live rather than assumed: 5 of the 13 added characters were already seeded as Remembered, but only 2 of 28 characters have "Remembered" literally in their title — the other 5's identity was established in their own text instead. 4 of those 5 (Achebe, Cole, Winthrop, Sato) already state it clearly in their own `description` (Achebe/Cole lead with it), so this was mostly a visibility gap, not missing content. One real exception: Renner's `background` clearly says "Renner became Remembered," but `description`/`introduction` had drifted into ambiguous "works among the Remembered" phrasing that reads as an ally, not a member — an internal inconsistency, fixed by aligning those two fields with what `background` already established.
+
+Considered and rejected renaming the 5 characters' titles to match the "The Newly/First Remembered, X" convention — checked cross-references first and found all 5 are named by title dozens of times across 10+ other characters' fields; a rename would mean rewriting every reference, a large bulk edit for a problem the description-level fix already solves. Sato's introduction deliberately omits her Remembered status (her character concept is built around concealing it, matching her `secret` field) — left untouched and explained rather than "fixed." Hand-edited Renner's description/introduction and added one sentence to Winthrop's introduction (no Anthropic call); re-verified clean against `list_packages_with_meta_text_leak()` and the narration-person detector. Net: 6 characters now clearly identifiable as Remembered, satisfying "at least 3 more."
+
 ## 2026-09-18
 
 ### Improvement: consolidated roster extraction into one shared implementation, closing out the recurring client/server drift (ADR-0125)
