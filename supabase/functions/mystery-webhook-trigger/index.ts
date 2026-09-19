@@ -4,6 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
   type ExtractedCharacter,
   MIN_ROSTER_SIZE,
+  MAX_ROSTER_SIZE,
   extractRosterFromMessage,
   isPlausibleRosterCandidate,
   findLatestConceptMessage,
@@ -157,7 +158,7 @@ function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: s
       // done — no header-shape guessing, no fall-through to a scan of other messages
       // that could resurrect a draft the user moved away from.
       const roster = extractRosterFromMessage(latestMessageWithList.content || '');
-      if (roster.length >= MIN_ROSTER_SIZE && roster.length <= 35) {
+      if (roster.length >= MIN_ROSTER_SIZE && roster.length <= MAX_ROSTER_SIZE) {
         // ADR-0069 Addendum 1 (2026-09-05): deliberately NOT re-checking
         // isPlausibleRosterCount here. That check was added same-day (3d6b694) as
         // defense-in-depth against a corrupted `approved_concept_message_id` — but
@@ -173,7 +174,7 @@ function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: s
         console.log(`[CharExtract] Roster from approved message: ${roster.length} characters: ${roster.map(c => c.name).join(', ')}`);
         return roster;
       }
-      console.warn(`[CharExtract] Approved message parsed to ${roster.length} characters (need ${MIN_ROSTER_SIZE}-35) — falling through to legacy scan`);
+      console.warn(`[CharExtract] Approved message parsed to ${roster.length} characters (need ${MIN_ROSTER_SIZE}-${MAX_ROSTER_SIZE}) — falling through to legacy scan`);
       // Don't leave latestMessageWithList pointed at a message we just decided
       // isn't a real roster, or the header/secondary passes below would just
       // re-parse the same wrong message instead of scanning the rest of the
@@ -204,7 +205,7 @@ function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: s
   // it WRONG. One call, one source of truth.
   if (latestMessageWithList) {
     const roster = extractRosterFromMessage(latestMessageWithList.content || '');
-    if (roster.length >= MIN_ROSTER_SIZE && roster.length <= 35) {
+    if (roster.length >= MIN_ROSTER_SIZE && roster.length <= MAX_ROSTER_SIZE) {
       console.log(`[CharExtract] Roster from latest concept message: ${roster.length} characters: ${roster.map(c => c.name).join(', ')}`);
       return roster;
     }

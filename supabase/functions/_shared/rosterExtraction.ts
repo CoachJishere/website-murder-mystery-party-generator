@@ -64,6 +64,16 @@ export const boldCharRegex = /^\*\*(.+?)\*\*(?:\s*\*?\([^)]*\)\*?)?\s*[-–—:]
 /** A message proposing fewer names than this isn't a cast. */
 export const MIN_ROSTER_SIZE = 4;
 
+/**
+ * A message proposing more names than this isn't a cast either — it's the
+ * technical backend safety ceiling (ADR-0126), separate from the 35-player
+ * cap shown in the setup form and chat copy. Customers who negotiate a
+ * roster past 35 during concept chat (a real case went 32 -> 38) still need
+ * that larger roster to be recognized as plausible here, or extraction
+ * falls through to a fragile legacy scan / wasteful Claude fallback.
+ */
+export const MAX_ROSTER_SIZE = 50;
+
 // A bare bold sub-group label with no trailing dash/description (e.g.
 // "**Amsler-Familie:**", "**Personal der Hütte:**") is not itself a character
 // line, but the batch path below treats ANY non-matching line as a batch

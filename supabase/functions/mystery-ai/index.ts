@@ -268,10 +268,15 @@ Write the ENTIRE response in ${languageName}. This includes every heading, every
 
       // --- Detect player count in conversation ---
       // Explicit: "8 players", "for 12 people", "10 of us"
+      // Range is 4-35 to match the customer-facing cap below (ADR-0126) — this
+      // previously capped at 32 (`3[0-2]`), silently failing to recognize an
+      // explicitly-stated count of 33-35 as "explicit" even though the
+      // standalone-response and invalid-count checks a few lines down already
+      // correctly bounded at 35.
       const hasExplicitPlayerCount =
-        /\b([4-9]|[12][0-9]|3[0-2])\s*(players?|people|guests?|folks|friends?|명|人|joueurs?|Spieler|jugadores|giocatori|spelers|spillere|spelare|pelaajaa?|jogadores?)\b/i.test(conversationText) ||
-        /\bfor\s+([4-9]|[12][0-9]|3[0-2])\b/i.test(conversationText) ||
-        /\b([4-9]|[12][0-9]|3[0-2])\s+(of us|of them)\b/i.test(conversationText);
+        /\b([4-9]|[12][0-9]|3[0-5])\s*(players?|people|guests?|folks|friends?|명|人|joueurs?|Spieler|jugadores|giocatori|spelers|spillere|spelare|pelaajaa?|jogadores?)\b/i.test(conversationText) ||
+        /\bfor\s+([4-9]|[12][0-9]|3[0-5])\b/i.test(conversationText) ||
+        /\b([4-9]|[12][0-9]|3[0-5])\s+(of us|of them)\b/i.test(conversationText);
 
       // Standalone number response after AI asked about player count
       const aiAskedAboutPlayers = messages.some(msg =>
@@ -289,8 +294,8 @@ Write the ENTIRE response in ${languageName}. This includes every heading, every
         (parseInt(standaloneNumberMatch[1]) < 4 || parseInt(standaloneNumberMatch[1]) > 35);
 
       // Extract player count number for use in prompts
-      const playerCountMatch = conversationText.match(/\b([4-9]|[12][0-9]|3[0-2])\s*(players?|people|guests?|folks|friends?|명|人|joueurs?|Spieler|jugadores|giocatori|spelers|spillere|spelare|pelaajaa?|jogadores?)\b/i) ||
-        conversationText.match(/\bfor\s+([4-9]|[12][0-9]|3[0-2])\b/i);
+      const playerCountMatch = conversationText.match(/\b([4-9]|[12][0-9]|3[0-5])\s*(players?|people|guests?|folks|friends?|명|人|joueurs?|Spieler|jugadores|giocatori|spelers|spillere|spelare|pelaajaa?|jogadores?)\b/i) ||
+        conversationText.match(/\bfor\s+([4-9]|[12][0-9]|3[0-5])\b/i);
       const playerCount = playerCountMatch ? playerCountMatch[1] :
         (hasStandaloneResponse ? standaloneNumberMatch![1] : "6");
 
