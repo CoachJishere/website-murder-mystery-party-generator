@@ -62,3 +62,15 @@ The durable root-cause fix lives on the Make.com side and is **deferred** to a s
 - `supabase/functions/store-evidence-images/index.ts` — upload/merge function used by both Make and manual recovery (tolerates partial sets)
 - `sweep_incomplete_packages()` / `heal_completed_packages()` — existing monitoring sweep + healer (unchanged; the heal/sweep interaction is the bug context)
 - Vault: `00_INBOX/make-image-scenario-redesign-2026-06-08-mystery-maker.md` — deferred Make redesign spec
+
+## Addendum 1 (2026-09-19): Grace period against the now-existing auto-remediation cron
+
+This ADR's Consequences section said images were "detection only" with no auto-recovery. That changed at some point after this ADR shipped: `auto-remediate-packages` (pg_cron, every 30 min at `:13`/`:43`) now has a `missing_images` class that calls `generate-evidence-images` automatically — the "recommended next step" this ADR flagged. Nobody updated this ADR when that landed, which is how the gap below went unnoticed.
+
+**The gap:** `list_packages_missing_evidence_images()` had no grace period, unlike every other time-windowed check in `health-check.yml` (check 3's 10-minute `needs_review` hold, checks 5-15's 30-day rolling windows). The health check (GitHub Action, nominally every 6h at `:17`) and the remediation cron (`:13`/`:43`) are offset by 4 minutes specifically so remediation runs first — but that ordering assumes GitHub Actions' scheduled-workflow queue is punctual. It isn't: this repo's own `monitoring/health-status.md` commit history shows runs landing anywhere from on-time to ~4.5 hours after their nominal slot. Any run that drifts into the window right after a package completes (before the next remediation pass) sees a real-but-transient gap and pages Jonathan for something the system is already fixing.
+
+**Confirmed live** on "Il Brindisi Di Troppo" (2026-09-19, New-Purchase Coherence Sweep): `auto_remediation_log` showed `missing_images` → `outcome: fixed` 17 minutes *before* the health-check alert that Jonathan received — the alert was accurate when it fired, just already stale by the time anyone read it.
+
+**Fix:** added `AND (mp.generation_completed_at IS NULL OR mp.generation_completed_at < now() - interval '45 minutes')` to the detector's `pkg` CTE (migration `20260919170000_grace_period_missing_evidence_images.sql`) — 45 minutes is comfortably 2 remediation cycles. NULL `generation_completed_at` (packages that completed before the 2026-09-08 stamping migration, see `20260908074900_stamp_generation_completed_at_on_validated_completion.sql`) is treated as "old enough," since it can only be legacy data, never a package mid-self-heal right now. Applied directly to the linked project via `supabase db query --linked -f` (Supabase MCP was unavailable this session); verified the live function definition before/after and confirmed the backlog reads empty post-fix.
+
+No customer-facing or auto-remediation behavior changed. This purely raises the bar for what the *health check* considers alert-worthy — the underlying detector, the remediation cron, and `generate-evidence-images` are untouched.
