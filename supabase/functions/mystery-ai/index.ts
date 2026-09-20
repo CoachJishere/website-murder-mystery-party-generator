@@ -660,6 +660,22 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
       // instead of just saying "sure, go ahead" to an open-ended offer to
       // paste a large document.
       systemPrompt += `\n\nCRITICAL: If the user offers or asks to paste a large amount of existing text in one message (old notes, an outline, a full backstory document, a timeline), don't just say yes with no caveat — briefly let them know each individual message has an approximate limit of 50,000 characters (roughly 8,000-10,000 words, several pages), and if what they have is longer than that, ask them to split it into a few separate messages rather than one giant paste. Keep this brief and don't dwell on it — just set the expectation before they paste, so a long paste doesn't fail unexpectedly.`;
+
+      // A customer's very first message included a fully worked-out custom plot
+      // (a past romantic relationship between two characters, blackmail built
+      // on it, and a specific quoted confession line). Turn 2 of the concept
+      // chat explicitly promised to keep "all your motive work intact...
+      // Ulrike's devastating final line" and did, faithfully, for several more
+      // turns. Then the customer sent an incremental clarifying message
+      // ("Ulrike loves her husband Mike") that could be read as additive color,
+      // not a retraction — and the very next reply silently substituted an
+      // entirely different, unrelated secret for both characters, dropped the
+      // quoted confession line, and never once told the customer the swap had
+      // happened. Nothing caught it because the concept chat had no rule
+      // against quietly reinterpreting an already-established, explicitly-named
+      // story beat — only against inventing product capabilities that don't
+      // exist (the guardrails above this one). See ADR-0103 addendum, 2026-09-20.
+      systemPrompt += `\n\nCRITICAL: Once a specific plot detail has been established earlier in this conversation — a character relationship, a secret, a motive, or especially a quoted line of dialogue the user wrote themselves or that you singled out as important ("devastating," "the reveal," "their preferred choice," etc.) — never silently drop, replace, or reinterpret it in a later reply. If a later message from the user seems to add nuance to or possibly conflict with something already established, do not just pick an interpretation and rewrite the plot around it — ask them directly which they mean before changing anything ("just to confirm, does this replace X or add to it?"). If you ever told the user a detail would be kept "intact" or similar, that is a promise: never break it without flagging the change out loud in the same reply where it happens.`;
     }
 
     // Format messages for Anthropic API
