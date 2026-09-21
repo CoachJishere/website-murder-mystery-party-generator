@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-21
+
+### Fix: acknowledged two more false-positive health-check alerts on the known "denial-shaped clause inside a genuine confession" pattern (ADR-0070 Update)
+GitHub issue #3 flagged "The Raven And The Rose" (`murderer_denies`, Susan/Stuart) and "Sweet Tea, Secrets, And A Slug Of Bourbon" (`accomplice_denies_despite_named`, Cornelius Sinclair). Isolated each regex hit via direct SQL rather than eyeballing: Susan's confession (rewritten the same day as part of ADR-0103 Addendum 52's murderer-identity fix) tripped on "I would never" inside an unrelated sentence about a broken 30-year self-promise; Cornelius's tripped on "nothing more." inside "I gave Axel a window, nothing more" — an idiomatic understatement, not a denial. Both `final_statement`s are genuine, unambiguous confessions on a full read. Same false-positive class documented in ADR-0070 four times already (Death At The Velvet Rose, Ghosts Of The Past, The Person Who Died Wasn't A Stranger) — acknowledged both via `acknowledged_health_alerts`, no content patch, no regex change, consistent with ADR-0070's own Rationale against chasing this with more keyword exclusions. Re-ran the live detector afterward: 0 packages flagged. Noted for future sweeps: a "clean" spot-check of a murderer/accomplice character's description/secret doesn't cover `final_statement` — Sweet Tea's sweep the day before missed exactly the field this fired on.
+
 ## 2026-09-20
 
 ### Fix: concept-chat silently rewrote a customer's explicit custom murder motive mid-conversation, and the detective's name never made it into the generated script (ADR-0103 Addendum 51)

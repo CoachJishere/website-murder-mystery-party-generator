@@ -121,3 +121,18 @@ Acknowledged via `supabase/migrations/20260901_acknowledge_person_who_died_wasnt
 
 **Key files, this update:**
 - `supabase/migrations/20260901_acknowledge_person_who_died_wasnt_stranger_fp.sql` — new acknowledgment row, no function change
+
+## Update 2026-09-21: two more instances in the same health-check run, both acknowledged
+
+The 2026-09-21 scheduled health check flagged two packages simultaneously — both already reviewed by hand as part of unrelated same-day sweep work, so this was a quick verify-and-acknowledge rather than a fresh investigation.
+
+**"The Raven And The Rose" (`murderer_denies`, Susan/Stuart, package `7b7bd8bf-3482-41a4-9c78-18720548b121`).** This package's murderer identity had itself just been hand-corrected via ADR-0103 Addendum 52 (Make.com's plot-generation step had originally named the wrong character as murderer), and Susan's `final_statement` was rewritten that same session to confess directly ("I picked up that raven off the mantel and I hit him... I'm the one who killed Danny Mercer, and I am done letting anyone else carry that for me"). Isolated the exact regex hit via direct SQL: the denial pattern matched the literal substring `"I would never"` inside an earlier, unrelated sentence — *"I told myself, every one of those thirty years, that I would never let it happen again"* — about a broken 30-year self-promise regarding the 1996 cover-up, not about denying Danny's murder.
+
+**"Sweet Tea, Secrets, And A Slug Of Bourbon" (`accomplice_denies_despite_named`, Cornelius Sinclair, package `4dca8af6-2e1c-4f12-b0f2-22d819b18ccd`).** This package had passed a full New-Purchase Coherence Sweep as clean the day before — the sweep checked Cornelius's `description`/`secret` but not `final_statement`, which is exactly where this fired. Read in full: a genuine, unambiguous confession ("I disabled that porch camera myself, on purpose... I triggered that loop because Axel asked me to"). Regex matched the literal substring `"nothing more."` inside *"I gave Axel a window, nothing more"* — an idiomatic understatement of scope, not a denial — and none of the accomplice confession-keyword exclusions happen to appear verbatim in Cornelius's own phrasing (he never says "I helped" or "I admit," for example), despite the content being an unambiguous admission.
+
+Same false-positive class as all four prior instances — now 5 total across this one keyword heuristic. Acknowledged both via `supabase/migrations/20260921064244_acknowledge_raven_rose_sweet_tea_fp.sql`; no content patch, no detector/regex change, consistent with this ADR's Rationale. Applied directly to the linked project via `supabase db query --linked -f` (no Supabase MCP access this session); re-ran the live detector function afterward and confirmed 0 packages flagged.
+
+**Note for the New-Purchase Coherence Sweep checklist:** the Sweet Tea instance is a reminder that a "clean sweep" spot-check of a character's `description`/`secret` doesn't cover `final_statement` — worth explicitly including `final_statement` in future murderer/accomplice spot-checks, not just the identity-establishing fields.
+
+**Key files, this update:**
+- `supabase/migrations/20260921064244_acknowledge_raven_rose_sweet_tea_fp.sql` — two new acknowledgment rows, no function change
