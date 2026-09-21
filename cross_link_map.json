@@ -34375,7 +34375,7 @@
       {
         "target_page": "/",
         "match_text": "or anyone wanting personalized characters",
-        "replacement": "or anyone wanting a fully [custom murder mystery party](/) built around their own theme and guest list"
+        "replacement": "or anyone wanting a fully custom murder mystery party built [with Mystery Maker](/) around their own theme and guest list"
       },
       {
         "target_slug": "best-murder-mystery-party-games-review",
@@ -51401,7 +51401,7 @@
       {
         "target_page": "/",
         "match_text": "When you build your mystery in MysteryMaker, the character generation doesn't just populate roles.",
-        "replacement": "When you build your [custom murder mystery game](/) in MysteryMaker, the character generation doesn't just populate roles."
+        "replacement": "When you build your custom murder mystery game with [Mystery Maker](/), the character generation doesn't just populate roles."
       }
     ],
     "lang_insertions": {
