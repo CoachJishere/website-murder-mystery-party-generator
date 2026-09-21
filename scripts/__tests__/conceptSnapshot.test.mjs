@@ -200,6 +200,25 @@ check('bracket-wrapped reserve/placeholder slots are excluded from the roster (2
   assert.ok(!names.some((n) => n.startsWith('[')), `a placeholder slot leaked through as a character; got: ${names.join(', ')}`);
 });
 
+// --- a real name with a short bracketed tag is not a placeholder (2026-09-21) -----
+// Live bug ("Champagne & Crocodile Tears", 424537af-...): the customer's own
+// self-insert character was written by the concept chat as "1. **[YOU] Baby/Bianca
+// Delacroix** - ..." — a real, paid-for 18th character, not a reserve slot. The old
+// `isPlaceholderCharacterName` only checked `startsWith('[')`, which also matched
+// this and silently dropped her from every downstream extraction with no error
+// anywhere — the customer received a 17-character package short their own role.
+// Requiring the bracket to span the whole name (start AND end) distinguishes a real
+// name with a leading tag from an actual bracketed placeholder instruction.
+const draftWithSelfInsertTag = `# Party\n\n## Premise\n\nA party.\n\n## Character List (5 players)\n\n1. **[YOU] Baby/Bianca Delacroix** - Birthday girl and the victim's best friend.\n\n${roster([
+  'Sterling Ashworth', 'Charlie Bianchi', 'Ashton Coleman', 'Reese Donahue',
+])}`;
+
+check('a real character name with a leading bracketed tag (e.g. "[YOU] Name") is NOT treated as a placeholder (2026-09-21)', () => {
+  const names = extractRosterFromMessage(draftWithSelfInsertTag).map((c) => c.name);
+  assert.strictEqual(names.length, 5, `got: ${names.join(', ')}`);
+  assert.ok(names.includes('[YOU] Baby/Bianca Delacroix'), `self-insert character was dropped; got: ${names.join(', ')}`);
+});
+
 // --- ADR-0069: re-capture the snapshot when a LATER message restates a meaningfully
 // different roster ------------------------------------------------------------------
 // The live bug ("Death At The Blackthorn Wedding", cd4ca44d-...): customer approved a

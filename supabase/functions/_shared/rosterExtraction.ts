@@ -89,9 +89,19 @@ export const isGroupHeaderLine = (line: string): boolean => /^\*\*[^*]+\*\*:?\s*
 // while not naming a real character at all — e.g. a truncated draft's leftover
 // placeholder slot: "21. **[RESERVE CHARACTER - Brian's Alternate]** - If Brian
 // cannot attend, his character's secrets and motives will be redistributed..."
-// Real character names are never wrapped in brackets, so this is a safe,
-// structural (not literal-wording) filter, same principle as ADR-0063/ADR-0068.
-export const isPlaceholderCharacterName = (name: string): boolean => name.trim().startsWith('[');
+// A real placeholder slot's ENTIRE name is the bracketed instruction — it opens
+// and closes with the bracket, nothing real outside it. Originally this checked
+// only `startsWith('[')`, which also silently dropped a real character whose
+// name legitimately starts with a short bracketed tag, e.g. a customer's own
+// self-insert role written as "[YOU] Baby/Bianca Delacroix" — an 18th, paid-for
+// character removed from a live package with no error anywhere (found via
+// New-Purchase Coherence Sweep, "Champagne & Crocodile Tears", 2026-09-21).
+// Requiring the bracket to span the WHOLE name still catches the placeholder
+// case above while no longer misfiring on a real name with a leading tag.
+export const isPlaceholderCharacterName = (name: string): boolean => {
+  const trimmed = name.trim();
+  return trimmed.startsWith('[') && trimmed.endsWith(']');
+};
 
 /**
  * What cast does THIS ONE message propose? Tries the explicit header section
