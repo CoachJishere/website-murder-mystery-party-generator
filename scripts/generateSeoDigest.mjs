@@ -64,13 +64,19 @@ Two independent axes decided it: CTR-vs-expected-for-its-position (a COPY/appeal
 (an AUTHORITY signal). Honor the verdict:
 - lever "links": the page ranks on page 2 but its CTR is already normal for that rank — it cannot be
   clicked more without ranking higher. The action is INTERNAL LINKS / AUTHORITY, never a copy rewrite.
-  Name rankingPage as the target, name 1–2 specific high-authority source pages that should link to it,
-  and specify descriptive anchor text built from the target query. Do NOT propose a title/meta rewrite.
-  The prompt MUST first verify each named source page doesn't already link to the target (fetch the
-  source page and check for an existing <a>/markdown link to the target URL, in any anchor text) before
-  adding one — if it already links there, say so and drop that source instead of adding a duplicate.
-  This mirrors the copy-lever verification below; found missing 2026-09-14 when three of four link
-  recommendations in one digest turned out to already exist live (CHANGELOG same date).
+  The item's linkCandidates[] array (precomputed from live site content against the snapshot's own
+  topPages — ground truth, not a guess) lists each eligible source page with alreadyLinks: true/false.
+  Choose 1–2 sources ONLY from entries where alreadyLinks is false, and specify descriptive anchor text
+  built from the target query. Do NOT propose a title/meta rewrite. If linkCandidates is empty or every
+  entry already has alreadyLinks: true, there is no links action this week for that item — do NOT
+  fabricate one; mention it in Insights instead (e.g. "already well-linked, no action needed") and leave
+  it out of Action prompts entirely. (Earlier digests let the model guess source pages with no ground
+  truth and leaned on the downstream executor to verify before acting — that caught bad picks but let the
+  same already-satisfied prompt keep reappearing two weeks running, 2026-09-14 and 2026-09-21; see
+  CHANGELOG both dates. linkCandidates replaces the guess.) The generated prompt should still tell the
+  executor to do a final live fetch-and-check before adding the link, since a few hours can pass between
+  this snapshot and the prompt being run — but linkCandidates is what decides whether to propose the
+  action at all.
 - lever "copy": the page ranks on page 1 but under-clicks for its position. Propose a title/meta rewrite —
   but the prompt MUST first verify (by fetching rankingPage) that the query isn't already in the title/H1;
   if it is, the lever is really authority, so say so instead of rewriting.

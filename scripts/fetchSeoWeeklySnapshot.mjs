@@ -362,6 +362,64 @@ async function fetchSiteHealth(snapshot) {
   };
 }
 
+// ---- Link-candidate ground truth for the "links" lever -------------------------
+// The digest LLM has no live tool access when it writes the email, so until now
+// it picked "1-2 high-authority source pages" for a links-lever target from its
+// own judgment with no way to check whether they already link there — the fix
+// added 2026-09-14 only made the downstream executor (a fresh Claude Code
+// session) verify before acting, which caught bad recommendations but didn't
+// stop the same already-satisfied prompt from reappearing (recurred again
+// 2026-09-21, see CHANGELOG both dates). This computes the real answer here:
+// take the site's own top-traffic pages (topPages, already fetched above) as
+// the "high-authority" candidate pool, check each against live content for an
+// existing link to the target, and attach the verdict so the LLM chooses only
+// from genuinely-missing candidates instead of guessing.
+async function annotateLinkCandidates(snapshot) {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) throw new Error('SUPABASE_URL / SUPABASE_SERVICE_KEY not set');
+  if (!snapshot.gsc?.quickWins?.length) return;
+
+  const leverItems = snapshot.gsc.quickWins.filter((q) => q.lever === 'links' || q.lever === 'both');
+  if (!leverItems.length) return;
+
+  const supabase = createClient(url, key);
+  const { data: pub, error } = await supabase
+    .from('blog_posts').select('slug, content')
+    .eq('language', 'en').eq('status', 'published');
+  if (error) throw new Error(error.message);
+
+  const contentBySlug = new Map((pub || []).map((p) => [p.slug, p.content || '']));
+
+  // Resolve a GSC page URL to a blog slug or the sentinel 'HOME'. The
+  // canonicalized custom-murder-mystery-party page retargets to home
+  // (ADR-0046) — mirrors the retarget rule already in generateSeoDigest.mjs.
+  const resolvePage = (pageUrl) => {
+    if (!pageUrl) return null;
+    let pathname;
+    try { pathname = new URL(pageUrl).pathname; } catch { return null; }
+    if (pathname === '/custom-murder-mystery-party' || pathname === '/custom-murder-mystery-party/') return 'HOME';
+    if (pathname === '/') return 'HOME';
+    const m = pathname.match(/^\/blog\/([a-z0-9-]+)\/?$/);
+    return m ? m[1] : null;
+  };
+
+  const linksTo = (content, target) =>
+    target === 'HOME' ? /\]\(\/\)/.test(content) : new RegExp(`\\]\\(/blog/${target}/?\\)`).test(content);
+
+  const candidateSlugs = [...new Set(
+    (snapshot.gsc.topPages || []).map((p) => resolvePage(p.page)).filter((slug) => slug && slug !== 'HOME')
+  )];
+
+  for (const item of leverItems) {
+    const target = resolvePage(item.rankingPage);
+    if (!target) { item.linkCandidates = []; continue; }
+    item.linkCandidates = candidateSlugs
+      .filter((slug) => slug !== target && contentBySlug.has(slug))
+      .map((slug) => ({ slug, alreadyLinks: linksTo(contentBySlug.get(slug), target) }));
+  }
+}
+
 // ---- persistence (ADR-0084) -----------------------------------------------------
 // Durable history: the local JSON (below) is overwritten every run, so nothing
 // before "this week" was ever queryable. This is purely additive — failure here
@@ -390,7 +448,13 @@ async function main() {
     errors: [],
   };
 
-  for (const [label, fn] of [['GSC', fetchGSC], ['GA4', fetchGA4], ['AI', fetchAI], ['SiteHealth', fetchSiteHealth]]) {
+  for (const [label, fn] of [
+    ['GSC', fetchGSC],
+    ['GA4', fetchGA4],
+    ['AI', fetchAI],
+    ['SiteHealth', fetchSiteHealth],
+    ['LinkCandidates', annotateLinkCandidates],
+  ]) {
     try {
       console.log(`Fetching ${label}…`);
       await fn(snapshot);
