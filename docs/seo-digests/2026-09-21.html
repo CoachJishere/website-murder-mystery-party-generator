@@ -1,0 +1,66 @@
+<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:680px;margin:auto;color:#222;"><p style="color:#666;font-size:13px;">SEO/GEO digest — week ending 2026-09-21 · mysterymaker.party</p><h2>Scoreboard</h2>
+<table cellpadding="6" cellspacing="0" border="1" style="border-collapse:collapse;font-size:14px;">
+  <tr style="background:#f4f1ea;">
+    <th align="left">Metric</th><th align="right">This week</th><th align="right">Last week</th><th align="right">Δ</th>
+  </tr>
+  <tr><td>Organic clicks (GSC)</td><td align="right">143</td><td align="right">177</td><td align="right">-19.2%</td></tr>
+  <tr><td>Impressions (GSC)</td><td align="right">1,115</td><td align="right">1,489</td><td align="right">-25.1%</td></tr>
+  <tr><td>Avg position (GSC)</td><td align="right">8.9</td><td align="right">9.6</td><td align="right">+0.7 (better)</td></tr>
+  <tr><td>GA4 sessions</td><td align="right">1,046</td><td align="right">1,137</td><td align="right">-8.0%</td></tr>
+  <tr><td>AI-referral sessions</td><td align="right">8</td><td align="right">—</td><td align="right">0.8% of sessions</td></tr>
+</table>
+<p>Impressions and clicks both fell double-digits while average position actually improved — this looks like softer demand/visibility on the long tail, not a ranking loss, so the fix is squeezing more from the page-1 queries we already own.</p>
+
+<h2>Insights</h2>
+<ul>
+  <li><strong>Homepage under-clicks its own brand term.</strong> "mystery maker" sits at pos 3.9 but pulls only 6.5% CTR vs ~14.9% expected (ctrGap -8.4, 46 impressions) — biggest single copy gap on a money page.</li>
+  <li><strong>Our top-traffic post leaves clicks on the table.</strong> /blog/free-murder-mystery-games-printable/ ranks pos 4 for "printable murder mystery games" but converts only 4.8% vs ~14.9% expected (ctrGap -10.1) — a title/meta appeal problem on our #1 page (233 clicks).</li>
+  <li><strong>Script-template guide is one nudge from page 1.</strong> "murder mystery party script" ranks pos 7.8 with normal CTR for its rank (ctrGap +0.7) — an authority/internal-links lever, not copy.</li>
+  <li><strong>"Free murder mystery" cluster is genuinely surging.</strong> "free murder mystery games" (+33 impr from 0), "free murder mystery party" (+23), "free murder mystery party game" (+10) — all clean queries (no suspicious shape), all landing on the printable-games post. Real demand worth reinforcing.</li>
+  <li><strong>AI-referral is still a rounding error.</strong> 8 sessions (7 ChatGPT, 1 Gemini), 0.8% share — monitor, not actionable this week.</li>
+  <li><strong>Note:</strong> "custom murder mystery party" (pos 12.9) reports against /custom-murder-mystery-party/, which is canonicalized to the homepage (ADR-0046) — crawl lag. Any authority push retargets to the homepage.</li>
+</ul>
+
+<h2>Action prompts</h2>
+
+<p><strong>1. Quick win — rewrite title/meta for the printable-games post</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Target page: https://www.mysterymaker.party/blog/free-murder-mystery-games-printable/
+Query: "printable murder mystery games" — ranks position 4 but CTR is 4.8% vs ~14.9% expected for that rank (a copy/appeal gap on our highest-traffic page).
+
+Step 1 (verify): Fetch the page and read its current title tag and H1. Confirm whether the phrase "printable murder mystery games" (or a close variant like "printable murder mystery game") already appears in the title tag. If it is already prominently in the title, STOP — the lever is authority/links, not copy; report that finding instead of rewriting.
+
+Step 2 (only if the query is NOT well-represented in the title): Rewrite the title tag and meta description to lead with the printable/free angle and the "games" plural. Keep it under ~60 chars for the title. Make the meta description promise the concrete payoff (instant printable kits, free options, number of players). Goal: lift CTR toward the ~14.9% expected for position 4.
+
+Output the exact before/after title tag and meta description text.</pre>
+
+<p><strong>2. Quick win — internal links to push the script-template guide onto page 1</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Target page: https://www.mysterymaker.party/blog/murder-mystery-party-script-template-guide/
+Query: "murder mystery party script" — position 7.8, CTR is normal for the rank, so this needs authority/internal links, NOT a copy rewrite.
+
+Candidate source pages (both high-traffic, topically related):
+- https://www.mysterymaker.party/blog/free-murder-mystery-games-printable/
+- https://www.mysterymaker.party/blog/murder-mystery-party-character-ideas/
+
+Step 1 (verify before adding): Fetch each source page and check whether it ALREADY contains a link (any anchor text) to the target URL. If a source already links there, skip it and report that — do not add a duplicate.
+
+Step 2: On each source page that does NOT already link to the target, add one contextual in-body link to the target using descriptive anchor text built from the query, e.g. "murder mystery party script template" or "writing your murder mystery script". Place it in a relevant sentence, not a footer dump.
+
+Goal: nudge the target from position 7.8 onto page 1. Output which sources already linked (skipped) and the exact sentence + anchor added on each remaining source.</pre>
+
+<p><strong>3. Moderate — verify then rewrite homepage-adjacent copy? No — homepage is the target; use authority</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Context: The query "mystery maker" ranks position 3.9 on the HOMEPAGE (https://www.mysterymaker.party/) but CTR is only 6.5% vs ~14.9% expected (ctrGap -8.4).
+
+IMPORTANT CONSTRAINT: Per ADR-0024 and ADR-0046, the homepage title/meta is a settled decision ("Custom Murder Mystery Party Kits in Minutes | Mystery Maker") and must NOT be rewritten or A/B-tested — including brand-first variants. Do not touch the homepage title/meta. The lever for the homepage under-clicking on branded/near-branded terms is authority/internal links, not copy.
+
+Task: Strengthen internal linking to the homepage using anchor text that reinforces the brand + "mystery maker" association, so the homepage earns more clicks on its own name over time.
+Step 1 (verify): Fetch these two high-authority pages and check whether each already links to the homepage (/) with brand-relevant anchor text:
+- https://www.mysterymaker.party/blog/free-murder-mystery-games-printable/
+- https://www.mysterymaker.party/blog/murder-mystery-party-character-ideas/
+Step 2: On any that do NOT already link to / with descriptive brand anchor text, add one contextual link using anchor like "Mystery Maker's murder mystery generator" or "make your own with Mystery Maker". Skip and report any that already link.
+
+Do NOT propose any homepage title/meta change. Output verify results and the exact anchors/sentences added.</pre>
+
+<h2>Site health</h2>
+<p>Dead internal links: 0 ✓</p>
+<p>Publish queue: 307 EN posts live, 116 drafts remaining (no prior-week figure available to compare drain).</p>
+<p>Next up by link-graph importance (importance 1 each): interactive-mystery-party-choose-your-adventure, interactive-party-games-beyond-board-games, murder-mystery-for-4th-of-july-party, murder-mystery-for-after-school-programs, murder-mystery-for-company-holiday-party.</p></div>
