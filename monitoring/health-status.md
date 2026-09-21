@@ -1,10 +1,10 @@
 # Site health status
 
-_Last checked: 2026-09-20 20:53 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-09-21 05:03 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ⚠️ Problems found
 
-- 🔴 1 detective-style package(s) whose Final Statements round doesn't actually reveal the solution: The Raven And The Rose [murderer_denies: Susan/Stuart]
+- 🔴 2 detective-style package(s) whose Final Statements round doesn't actually reveal the solution: Sweet Tea, Secrets, And A Slug Of Bourbon [accomplice_denies_despite_named: Cornelius Sinclair]; The Raven And The Rose [murderer_denies: Susan/Stuart]
 
 | Check | Result |
 |---|---|
@@ -21,5 +21,5 @@ _Last checked: 2026-09-20 20:53 UTC (runs every 6 hours; see .github/workflows/h
 | Structural defects — escalate only (30 days) | 0 |
 | Roster-count mismatches — escalate only (30 days) | 0 |
 | Final-statement confession leaks — escalate only (30 days) | 0 |
-| Unconfessed detective-style culprits — escalate only (30 days) | 1 |
+| Unconfessed detective-style culprits — escalate only (30 days) | 2 |
 | Truncated concept messages — escalate only (30 days) | 0 |
