@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-23
+
+### Fix: leaked prompt-template word-count directive in character `background` fields — fixed at the source, 5 live characters corrected, new detector shipped (ADR-0103 Addendum 54)
+New-Purchase sweep on two same-day purchases ("The Isla Serene Incident", "Last Call: The Underground") found a trailing sentence in some characters' `background` field that wasn't character content — e.g. "Total background: concrete facts only." or "Total background: 148 words." Traced to the Child (Unified) blueprint's `background` field template, which ended with a length/style instruction phrased exactly like the `**Label:** value` pattern the model had just been filling in, so the model pattern-matched it as another field to complete and echoed or paraphrased it. A corpus-wide check found 5 affected characters across 4 packages (2 from today's purchases, 2 pre-existing from "Rank Zero" and "Sweet Tea, Secrets, And A Slug Of Bourbon"). All 5 hand-corrected via direct UPDATE; corpus re-verified clean. Prompt fixed at the source — rewritten as an explicit bracketed instruction that tells the model not to echo it — saved as `temp-files/MM Live - Child (Unified)43-BackgroundLengthLeakFix.blueprint.json` (not yet imported into Make.com). `list_packages_with_meta_text_leak()` extended with a new marker pattern to catch recurrences (`supabase/migrations/20260923000000_extend_meta_text_leak_for_background_word_count.sql`, not yet applied to remote — see ADR-0103 Addendum 54 for why). Full writeup: ADR-0103 Addendum 54.
+
 ## 2026-09-21
 
 ### Fix: weekly SEO digest's "links" lever no longer guesses source pages — computes real candidates from live content (`scripts/fetchSeoWeeklySnapshot.mjs`, `scripts/generateSeoDigest.mjs`)
