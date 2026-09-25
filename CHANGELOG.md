@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-25
+
+### Fix: stray unmatched quote mark in "The Gala Of Daggers" murderer confession script (ADR-0103 Addendum 55)
+New-Purchase sweep on package `7d8a3015-6e48-468d-a860-3144e7a8200b` found Mike Millingdon's `final_statement` ended with a trailing, unmatched closing quote with no corresponding opening quote anywhere in the passage. All other detectors and manual checks came back clean. Hand-corrected via direct UPDATE, re-verified. Separately flagged (not fixed): the victim, "Ronald Dump," reads as an unmistakable parody of a real politician — a content/brand-risk judgment call outside the coherence sweep's scope, surfaced to Jonathan for a call on whether it needs a generation guardrail. Full detail: ADR-0103 Addendum 55.
+
 ## 2026-09-23
 
 ### Fix: leaked prompt-template word-count directive in character `background` fields — fixed at the source, 5 live characters corrected, new detector shipped (ADR-0103 Addendum 54)
