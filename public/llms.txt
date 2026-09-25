@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 311 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 312 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -100,6 +100,7 @@ This index organizes 311 published guides by topic cluster. All guides are avail
 - [Murder Mystery for Fourth of July Party](https://www.mysterymaker.party/blog/murder-mystery-for-4th-of-july-party): Fourth of July murder mystery party with patriotic themes, fireworks atmosphere, BBQ integration and American historical settings.
 - [Murder Mystery for After School Programs](https://www.mysterymaker.party/blog/murder-mystery-for-after-school-programs): After school enrichment with purpose. Murder mystery programs build critical thinking, collaboration, and problem-solving in middle and high school students.
 - [Murder Mystery Games for College Dorms](https://www.mysterymaker.party/blog/murder-mystery-for-college-dorm-activities): Plan a murder mystery night for your college dorm floor. RA programming guide with common room setup, budget-friendly tips, and diversity-inclusive theme ideas.
+- [Company Holiday Party Murder Mystery](https://www.mysterymaker.party/blog/murder-mystery-for-company-holiday-party): Plan a murder mystery company holiday party for 20-100+ people. Budget justification, inclusive themes, and a step-by-step guide to pitch leadership.
 - [Murder Mystery for Homeschool Curriculum](https://www.mysterymaker.party/blog/murder-mystery-for-homeschool-curriculum): Use murder mystery activities in your homeschool curriculum for cross-curricular learning. Covers history, science, writing, logic, and co-op group formats.
 - [Murder Mystery Games for Library Programs](https://www.mysterymaker.party/blog/murder-mystery-for-library-programs): Run a murder mystery program at your public library on a small budget. Community engagement planning guide with all-ages adaptations and practical setup steps.
 - [Murder Mystery Games for Summer Camp](https://www.mysterymaker.party/blog/murder-mystery-for-summer-camp-activities): Plan a murder mystery for summer camp with outdoor scene adaptations, large group management techniques, and practical weather contingency backup plans.
