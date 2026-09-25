@@ -138,6 +138,16 @@ const CharacterAccess: React.FC = () => {
         mystery_characters: characterData
       });
 
+      // Fire-and-forget: records this access for party-cluster detection
+      // (ADR-0128), which accelerates the "how did it go" follow-up email
+      // once several guests are on their character pages at once. Never
+      // blocks or fails the page load.
+      supabase.rpc('touch_character_access', { access_token_param: accessToken }).then(
+        ({ error: touchError }) => {
+          if (touchError) console.error('touch_character_access error:', touchError);
+        }
+      );
+
       // Fetch the host's display preference (full / pointForm / both) for this packet
       const { data: meta } = await supabase
         .rpc('get_packet_metadata_by_token', { access_token_param: accessToken })
