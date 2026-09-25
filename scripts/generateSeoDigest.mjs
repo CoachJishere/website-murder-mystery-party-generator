@@ -337,6 +337,122 @@ Context: ADR-0128 (docs/adr/0128-party-cluster-detection-for-feedback-email-timi
 4. EMAIL OUTCOME: for followup_emails rows with email_type='how_did_it_go' and status='sent', compare scheduled_for against what it would have been under the old flat +21d rule -- how many actually got pulled earlier, and by how much on average?
 5. VERDICT: is detection firing on real data yet? Does "3 distinct characters / trailing 6h" look right, too strict, or too loose based on what's actually happening? If the sample is still thin, say so and suggest a specific next recheck date rather than forcing a verdict.`,
   },
+  {
+    // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
+    // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
+    // item. Full detail: vault
+    // 01_Projects/Mystery-Maker/mystery-maker-character-content-verbosity-signal-2026-09-19.md.
+    start: '2026-09-26',
+    end: '2026-10-17',
+    title: 'Concise-character-content fix is drafted and tested but not yet imported into Make.com',
+    body:
+      'Two post-Sonnet-5 customers (Sherri, Marie) flagged character content as too long/dense. A fix -- ' +
+      '<code>Child (Unified)42-ConciseCharacterContent</code> -- was drafted and tested per the 2026-09-19 ' +
+      'CHANGELOG entry, but the blueprint has not been imported into Make.com. This is an action item, not a ' +
+      'watch-item.',
+    prompt: `Check whether the ConciseCharacterContent blueprint fix (temp-files/MM Live - Child (Unified)42-ConciseCharacterContent.blueprint.json per the 2026-09-19 CHANGELOG entry) has been imported into Make.com yet. Re-derive from ground truth -- check the actual Make.com scenario version if reachable, or ask Jonathan directly whether he imported it, don't assume from this note.
+
+If not yet imported: surface that plainly as the blocking action -- nothing else needs building, it's a one-click import away from shipping.
+If imported: generate a fresh test package and manually assess whether character description/background/relationships fields read noticeably tighter than the Sherri/Marie examples (1000-1600 chars each, multi-paragraph). If it looks fixed, close this out. If a third customer complaint about content length/density has shown up since 2026-09-19 (check contact_messages), note that too -- it would mean the fix needs a second look, not just an import confirmation.`,
+  },
+  {
+    // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
+    // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
+    // item. Full detail: vault
+    // 01_Projects/Mystery-Maker/stale-concept-audit-2026-08-02-mystery-maker.md.
+    start: '2026-09-26',
+    end: '2026-10-17',
+    title: 'Two paid packages generated from a superseded concept were never remediated',
+    body:
+      'A 2026-08-02 audit (ADR-0069 related) found two paid, delivered packages -- "The Black Swan Society" and ' +
+      '"The Last Will And Testament Of Adelaide Crane" -- generated from an earlier concept draft while the ' +
+      'customer kept revising afterward, so the delivered content misses real, load-bearing details the customer ' +
+      'actually asked for. Recovery was scoped (repoint <code>approved_concept_message_id</code>, reset ' +
+      'generation status, retrigger -- one paid regeneration run each) but never performed. This needs a decision, ' +
+      'not another audit.',
+    prompt: `Decide whether to remediate the two packages found stale-concept-mismatched in the 2026-08-02 audit (vault 01_Projects/Mystery-Maker/stale-concept-audit-2026-08-02-mystery-maker.md): "The Black Swan Society: Unmasking Murder" (conversation 926cd375) and "The Last Will And Testament Of Adelaide Crane" (conversation a366885d). Re-derive from ground truth -- query Supabase directly, don't trust this note's framing.
+
+1. Confirm both conversations are still in the delivered state described (still is_paid, still showing the mismatched content) -- check nothing has changed since 2026-08-02.
+2. If still mismatched and Jonathan wants it fixed: for each, identify the correct final concept from the later assistant messages (there's no single message that fully restates it -- may need to synthesize from the Q&A turns), repoint approved_concept_message_id, reset generation_status/generation_completed_at, and retrigger generation (one paid regeneration run each -- confirm with Jonathan before spending on this).
+3. If he'd rather not touch already-delivered customer packages retroactively, close this out explicitly as a deliberate decision (not silence) and note it in CHANGELOG/ADR-0069 addendum.`,
+  },
+  {
+    // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
+    // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
+    // item. Full detail: vault
+    // 01_Projects/Mystery-Maker/detector-rpc-public-execute-grants-2026-08-01-mystery-maker.md.
+    start: '2026-09-26',
+    end: '2026-10-17',
+    title: 'Eight detector RPCs are still callable by anon -- customer package titles/ids enumerable',
+    body:
+      'Found 2026-08-01: Postgres grants EXECUTE to PUBLIC by default, and none of the ' +
+      '<code>list_packages_with_*</code> detector-RPC migrations revoke it. Only one of nine ' +
+      '(<code>list_packages_missing_evidence_images</code>, ADR-0032) was ever locked down. Low severity -- no ' +
+      'PII, no character content, ids alone grant no access -- but an unauthenticated caller can currently ' +
+      'enumerate paid customer package titles/ids via the REST RPC endpoint on the other eight.',
+    prompt: `Lock down the 8 remaining anon-executable detector RPCs the same way ADR-0032 already locked down list_packages_missing_evidence_images, using Mystery Maker's Supabase project (id mhfikaomkmqcndqfohbp). Re-derive from ground truth first.
+
+1. Confirm via has_function_privilege('anon', ...) which of these still grant anon EXECUTE: list_packages_with_identity_conflicts, list_packages_with_meta_text_leak, list_packages_with_evidence_culprit_spoiler, list_packages_with_victim_mismatch, list_packages_with_slip_culprit_leak, list_packages_with_self_directed_questions, list_completed_but_empty_packages, list_packages_with_structural_defects -- plus check whether any newer detector RPCs added since 2026-08-01 have the same gap (there are more than 9 in this family now per later ADR-0103 addenda).
+2. Confirm nothing in the app or automation calls these with the anon key (health-check and auto-remediation both use the service key per the original note) -- grep supabase/functions and src/ for any anon-key call to these specific RPC names before revoking, to be sure the blast radius really is zero.
+3. If clear: one migration, REVOKE EXECUTE ... FROM PUBLIC, anon, authenticated; GRANT EXECUTE ... TO service_role; for each function, applied consistently across the whole family (not just the ones checked here -- match whatever the actual current list of list_packages_with_* / list_completed_but_empty_packages functions is at the time this runs). CHANGELOG + ADR-0032 addendum documenting the fix.`,
+  },
+  {
+    // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
+    // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
+    // item. Full detail: vault
+    // 01_Projects/Mystery-Maker/da-sv-partial-localization-2026-07-19-mystery-maker.md.
+    start: '2026-09-26',
+    end: '2026-10-17',
+    title: 'Danish and Swedish locales are ~63% untranslated -- needs a market-priority decision',
+    body:
+      'Found 2026-07-19: <code>da.json</code> and <code>sv.json</code> are only ~37% localized (the other 11 ' +
+      'non-EN languages are effectively fully translated). This has sat as an open decision since -- are da/sv ' +
+      'meaningful markets worth a full localization pass, or should it stay parked (accepting that new English ' +
+      'strings keep leaking through in those two locales)?',
+    prompt: `Help Jonathan decide whether Danish and Swedish are worth a full localization pass for Mystery Maker, or should stay parked. Re-derive from ground truth, don't trust the 2026-07-19 baseline numbers as still accurate.
+
+1. Re-run the untranslated-string count for da.json and sv.json against en.json (flatten both files, compare values) -- has the ~63% figure changed at all since 2026-07-19 (e.g. from smaller fixes landing incidentally)?
+2. Pull actual usage/revenue signal for these two locales if available (GA4 sessions by locale, Stripe purchases by locale/currency, or conversations.language distribution in Supabase) -- is there any real customer volume in da/sv today, even partial?
+3. Present the decision plainly: if da/sv volume is negligible, recommend explicitly parking it (and say so in this reminder's retirement note); if there's real signal, scope what a full pass would take (same per-file approach used for the other 11 languages) and let Jonathan decide whether to schedule it.`,
+  },
+  {
+    // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
+    // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
+    // item, though GSC-adjacent. Full detail: vault
+    // 01_Projects/Mystery-Maker/gsc-sitemap-submission-permission-error-2026-09-07-mystery-maker.md.
+    start: '2026-09-26',
+    end: '2026-10-17',
+    title: 'GSC sitemap submission -- was the 2026-09-07 fix actually confirmed working in CI?',
+    body:
+      'A double-slash URL bug in sitemap submission was found and fixed 2026-09-07/08, confirmed working when ' +
+      'run locally, but the note\'s own "real confirmation" step -- checking the 2026-09-09 09:17 UTC scheduled ' +
+      'CI run\'s log -- was never followed up on. Low severity (non-blocking, <code>continue-on-error: true</code>, ' +
+      'sitemap discovery still happens on its own) but a dangling verification step.',
+    prompt: `Confirm whether the GSC sitemap-submission fix from 2026-09-07/08 (double-slash URL bug in scripts/submit-sitemap-gsc.mjs) is actually working in production CI, not just locally. Re-derive from ground truth.
+
+1. Check recent GitHub Actions logs for publish-daily-blog.yml / publish-specific-slugs.yml runs since 2026-09-08 -- has the "Submit sitemap to Google Search Console" step succeeded consistently, or is it still failing/being silently swallowed by continue-on-error?
+2. If it's been succeeding, close this out plainly -- the fix held, nothing more to do.
+3. If it's still failing: diff the CI GSC_SERVICE_ACCOUNT_JSON secret against the local .google-search-console-credentials.json file used for the working local test, per the note's own next-step suggestion.`,
+  },
+  {
+    // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
+    // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
+    // item. Full detail: vault
+    // 01_Projects/Mystery-Maker/round-count-configurability-deferred-2026-08-15-mystery-maker.md.
+    start: '2026-09-26',
+    end: '2026-10-17',
+    title: 'Configurable round count is deliberately parked -- the cheap validation step to unpark it was never run',
+    body:
+      'Deferred 2026-08-15 after the Alexandra Broadus refund: before building a round-count UI/pipeline feature, ' +
+      'the plan was to first generate a handful of test mysteries at 3 rounds across a few player counts and ' +
+      'manually check pacing/solvability, specifically to avoid building a feature and finding out afterward that ' +
+      'short mysteries play badly. That cheap experiment was never run.',
+    prompt: `Either run the cheap 3-round content-quality experiment that was supposed to precede any round-count configurability work (vault 01_Projects/Mystery-Maker/round-count-configurability-deferred-2026-08-15-mystery-maker.md), or explicitly decide this is still not worth unparking. Re-derive current state from ground truth first -- check whether round count is still hardcoded (grep the generation pipeline / Make.com blueprints for round-count logic) and whether any new refund/complaint has cited round count or total game length since 2026-08-15 (the 2026-09-19 character-content-verbosity signal's Marie Potesta case may be another data point -- check contact_messages).
+
+If proceeding: generate a small number of test mysteries at 3 rounds (vs. the current hardcoded count) across 2-3 different player counts, using disposable test conversations per the small-test-mysteries convention (3-4 characters where possible). Manually read through for pacing and whether the elimination logic still works with one fewer round. Report a plain verdict -- does a 3-round mystery play adequately, or does cutting a round genuinely break solvability/pacing as originally suspected?
+
+If not proceeding: say so and note why (e.g. no new signal since 2026-08-15 suggesting real demand), and note whether this reminder should keep recurring or be retired as "revisit only if a new complaint cites round count specifically."`,
+  },
 ];
 
 // Safety net: neutralise any literal HTML tags the model leaves inside <pre>
