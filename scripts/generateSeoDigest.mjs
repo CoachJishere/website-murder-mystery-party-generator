@@ -300,6 +300,43 @@ Context (re-derive from ground truth, don't trust this note alone): the H1 lives
 
 4. VERDICT: is this series being discovered and indexed normally, or is something (missing internal links, a crawl issue, the rot-signal-style gate that gap-checks other locales) holding it back? If discovery looks fine, say so plainly and don't manufacture concern. If not, be specific about which locales and why.`,
   },
+  {
+    // Not an SEO item -- riding along on this digest for the same reason
+    // the PostHog-timing reminder above does: it's the one recurring
+    // channel that reliably reaches Jonathan (a bare vault note doesn't --
+    // 2026-09-25 correction, he doesn't check the vault; recheck/watch
+    // notes should default here going forward, see feedback memory
+    // feedback_recheck_notes_default_to_seo_digest).
+    //
+    // ADR-0128 (2026-09-25): shipped live detection of "party clusters" --
+    // 3+ distinct character-token pages accessed within a trailing 6h
+    // window -- which pulls the existing 21-day how_did_it_go follow-up
+    // email forward to +16h after the detected cluster, once per
+    // conversation (conversations.party_detected_at). Built off a
+    // retrospective PostHog-vs-Supabase join covering only 24 conversations
+    // (2026-08-22 to 2026-09-25), so the "3 distinct / 6h" threshold is a
+    // reasonable starting point, not a tuned constant. Full detail:
+    // docs/adr/0128-party-cluster-detection-for-feedback-email-timing.md,
+    // vault 00_INBOX/recheck-party-cluster-detection-2026-09-25-mystery-maker.md.
+    start: '2026-10-09',
+    end: '2026-10-23',
+    title: 'Check whether party-cluster detection (ADR-0128) is actually firing and helping',
+    body:
+      'On <strong>2026-09-25</strong> (ADR-0128) we shipped live detection of "party clusters" -- 3+ distinct ' +
+      'character-token pages accessed within a trailing 6h window -- which pulls the existing 21-day ' +
+      '<code>how_did_it_go</code> follow-up email forward to ~16h after the detected party instead of a flat ' +
+      'calendar delay. It was tuned on only 24 conversations of retrospective data. Two weeks live is enough to ' +
+      'check whether it is actually firing on real traffic and whether the threshold needs adjusting.',
+    prompt: `Check whether the ADR-0128 party-cluster detection system is working, using Mystery Maker's Supabase project (id mhfikaomkmqcndqfohbp). Re-derive everything from ground truth -- do not trust this note's framing or numbers, they are priors from 2026-09-25 only.
+
+Context: ADR-0128 (docs/adr/0128-party-cluster-detection-for-feedback-email-timing.md) added character_assignments.last_accessed_at (updated via the touch_character_access RPC, called from CharacterAccess.tsx on every guest page load) and a scheduled function detect_party_clusters() (pg_cron job 'party-cluster-detection', every 30 min) that looks for 3+ distinct characters with last_accessed_at in the trailing 6 hours per conversation, and on a hit pulls that conversation's pending 'how_did_it_go' row in followup_emails forward to NOW() + 16 hours, gated by conversations.party_detected_at IS NULL so it only fires once.
+
+1. HIT COUNT: SELECT count(*) FROM conversations WHERE party_detected_at IS NOT NULL AND created_at > '2026-09-25' -- any detections at all yet? If zero or near-zero, say so plainly and recommend waiting longer rather than judging the threshold on no data.
+2. SANITY-CHECK A FEW HITS: for a handful of conversations where party_detected_at is set, pull the actual character_assignments.last_accessed_at timestamps for that conversation's characters and confirm the pattern really does look like a cluster (several distinct characters within a few hours), not a false positive (e.g. one person re-opening several links back to back while proofreading).
+3. FALSE NEGATIVES: for conversations created since 2026-09-25 that are now well past their package_generated_at + 16h with no party_detected_at set, check whether there's guest activity that looks like it should have tripped the detector but didn't (e.g. only 2 distinct characters accessed, or accesses spread just over 6h) -- that's evidence the threshold is too strict.
+4. EMAIL OUTCOME: for followup_emails rows with email_type='how_did_it_go' and status='sent', compare scheduled_for against what it would have been under the old flat +21d rule -- how many actually got pulled earlier, and by how much on average?
+5. VERDICT: is detection firing on real data yet? Does "3 distinct characters / trailing 6h" look right, too strict, or too loose based on what's actually happening? If the sample is still thin, say so and suggest a specific next recheck date rather than forcing a verdict.`,
+  },
 ];
 
 // Safety net: neutralise any literal HTML tags the model leaves inside <pre>
