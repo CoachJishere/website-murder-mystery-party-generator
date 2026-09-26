@@ -969,3 +969,15 @@ New-Purchase sweep on two packages: "El Zasca Final" (package `9513886e-ce1a-4be
 - `mystery_characters.introduction` — 1 row hand-corrected (`dd0b0ec3-0123-4f2b-a365-754f199cb61f`, Professor Ivy/Ivo Ravensmoor, dangling-quote-mark)
 - `acknowledged_health_alerts` — 1 row added for `9513886e-ce1a-4bea-8492-117fc58eafb3` resolving the GitHub health-check `needs_review` flag
 
+**Follow-up, same day — Jonathan's call on the two "surface, don't decide solo" items above:** (1) structural fix for T-V register drift, yes; (2) LLM-judge semantic-consistency check, yes. Structural register fix implemented same session — see below. LLM-judge check requires a design/cost/invocation-scope decision before building anything that spends money automatically (per the global no-paid-API-without-permission rule); scoping that separately rather than building it into this addendum.
+
+**Structural register-consistency fix, implemented in two new blueprint versions (not yet imported):**
+1. `temp-files/MM Live - Parent70 (Register Consistency Fix).blueprint.json` — adds a new `<register_consistency>` instruction block to both detective_script generation call sites (initial + retry), directly targeting the bug found in this addendum: the detective's own voice must commit to ONE register (formal by default) for its entire script, applied uniformly to every suspect including the murderer and accomplice at the reveal — never switching between suspects or sections. Includes an explicit self-check instruction ("re-read your own reveal before finishing").
+2. `temp-files/MM Live - Child (Unified)45-RegisterConsistencyFix.blueprint.json` — adds a new "REGISTER CONSISTENCY" rule to the shared `content_coherence_rules` block (same 8 call sites patched for Addendum 55's quote fix), targeting the original Addendum 13 bug shape: a character's own introduction establishes their register, and every other field generated for that same character (round scripts, final statement, confession/reveal branches) must match it.
+
+Both are JSON-validated, ready for Jonathan to import. **Not yet imported into Make.com.**
+
+### Key files (Addendum 56, continued)
+- `temp-files/MM Live - Parent70 (Register Consistency Fix).blueprint.json` — detective-voice register consistency; awaiting import
+- `temp-files/MM Live - Child (Unified)45-RegisterConsistencyFix.blueprint.json` — per-character register consistency; awaiting import
+
