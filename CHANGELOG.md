@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-26
+
+### Fix: party-cluster detection threshold now scales with cast size (ADR-0128 Addendum 1)
+Jonathan flagged a real edge case in yesterday's ADR-0128 live trigger: a flat "3 distinct characters" floor is a low bar for a large cast — a host mass-sending links to 30 guests could trip the detector from mere curiosity-clicking (3 people peeking within the hour just because the email arrived), not an actual party, and this gets *easier* to false-positive as cast size grows. Considered and rejected a pure percentage swap (50% of a 4-player cast is only 2, weaker than the existing floor of 3) — landed on `GREATEST(3, CEIL(player_count / 2))` instead, keeping the floor for small casts and scaling it up for large ones. Also considered and rejected gating on elapsed time since `character_assignments.sent_at`: Jonathan caught that this would break detection for a same-day-or-night-before send, a real and common cohort in the original retro data, since for that cohort "just got the link" and "the party is starting" are the same event. `supabase/migrations/20260926000000_scale_party_cluster_threshold_by_cast_size.sql`, applied to remote. Full discussion: ADR-0128 Addendum 1.
+
 ## 2026-09-25
 
 ### Improvement: migrated 6 stale open vault follow-ups into the weekly digest, closed out 3 as moot

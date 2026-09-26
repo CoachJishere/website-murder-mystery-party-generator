@@ -60,3 +60,15 @@ This validated building the live trigger rather than just retuning the static ti
 ## Discussion
 
 Started as an exploratory PostHog/analytics question ("how do we improve feedback-email timing"), with the user's stated top preference being the automated live trigger. Before building it, a retrospective join of real PostHog access data against the mystery database was run to validate the "simultaneous character-token access = party happening" premise and to check whether a cheaper static-delay retune could get most of the value. The retro data both confirmed the clustering premise (tight, real clusters) and ruled out the cheaper option (the delay distribution is too spread out for one fixed number). The one open design fork — PostHog-live vs. a first-party Supabase column as the live trigger's signal source — was raised explicitly before implementation; Supabase was chosen for reliability (no ad-blocker blind spot) and architectural locality (same database the cron job and email sender already use).
+
+## Addendum 1 (2026-09-26): scale the threshold by cast size, reject a sent-time delay gate
+
+Jonathan flagged a real edge case the next day: a flat "3 distinct characters" floor is a low bar for a large cast. If a host mass-sends links to, say, 30 guests, having 3 of them peek at their phone within the same hour just because the email arrived is plausible on its own — that's "the link arrived," not "the party is happening." The larger the cast, the easier this specific false positive gets, which is backwards from what you'd want.
+
+A pure percentage swap (e.g. "50% of the cast") was considered and rejected on its own: for a 4-player mystery, 50% is only 2 — weaker than the existing floor of 3. Landed instead on `GREATEST(3, CEIL(player_count / 2))` — keeps the floor of 3 for small casts (already a meaningful bar there) and scales it up for large ones.
+
+Also considered and explicitly rejected: gating on elapsed time since `character_assignments.sent_at` (e.g. "only count an access if it's ≥90 min after the link was sent"), to more directly target the "just got the email" mechanism. Jonathan caught the flaw: a host who sends links the same day as, or the night before, the party is a real and common cohort in the ADR-0128 retro data — for that cohort, "just received the link" and "the party is starting" are the same event. A delay-since-sent gate would suppress fast detection for exactly the population this system was built to serve. The cast-size-scaled count threshold doesn't have this problem — a real same-day party with a large cast still clusters most/all of its characters together and clears the higher bar easily (the original retro data has a clean example: an 11-player mystery where all 11 characters clustered the same day).
+
+No retro evidence yet that the cast-size false positive has actually fired — this is a preemptive fix for a sound-but-unconfirmed mechanism, not a response to an observed incident.
+
+Key file: `supabase/migrations/20260926000000_scale_party_cluster_threshold_by_cast_size.sql`.
