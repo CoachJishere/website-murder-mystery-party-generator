@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-27
+
+### Fix: first Italian-language sweep — one dangling-quote hit fixed, package otherwise clean (ADR-0103 Addendum 57)
+New-Purchase sweep on "L'eredità Del Silenzio" ($19.99, 7 players, first Italian package swept under ADR-0103). Generated before Jonathan's same-day import of the Addendum 56 register-consistency blueprints (`Parent70`, `Child v45`), so this doesn't test that fix yet — watch the next non-English purchase for that. One live hit from `list_packages_with_dangling_quote_mark` (`final_statement:Suzanne`), hand-corrected. Widened full-cast read (per Addendum 56's checklist change) found no register drift and no genuine cross-field mismatches — one near-miss (an evidence card attributing an attendance register to "the custodian," who is also the murderer, with no canonical source specifying that ownership) was checked against the actual solution mechanism and cleared, since the murderer-flaw logic relies on witness testimony, not the register's own entries. Full detail: ADR-0103 Addendum 57.
+
 ## 2026-09-26
 
 ### Fix: two same-day purchases each had one real defect — tú/usted register drift and a cross-field evidence-ownership mismatch; also resolves a GitHub health-check `needs_review` flag (ADR-0103 Addendum 56)
