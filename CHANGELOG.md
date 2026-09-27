@@ -2,6 +2,9 @@
 
 ## 2026-09-27
 
+### Fix: recovered a missing Round 2 evidence-card image for "L'eredità Del Silenzio"
+Scheduled health check flagged the package as missing an evidence-card image; `list_packages_missing_evidence_images()` confirmed a partial drop (Round 2 only, Rounds 3-4 present) — the known intermittent Flux/Replicate failure mode documented in ADR-0016/0017. Recovered via the documented recovery path: crafted a forensic-photo prompt from the Round 2 evidence card's own text and called `generate-evidence-images` directly with just that round's prompt, no full scenario re-run. Succeeded first attempt, verified visually, confirmed clean in `list_packages_missing_evidence_images()`. Replied on GitHub issue #3 with the resolution.
+
 ### Fix: first Italian-language sweep — one dangling-quote hit fixed, package otherwise clean (ADR-0103 Addendum 57)
 New-Purchase sweep on "L'eredità Del Silenzio" ($19.99, 7 players, first Italian package swept under ADR-0103). Generated before Jonathan's same-day import of the Addendum 56 register-consistency blueprints (`Parent70`, `Child v45`), so this doesn't test that fix yet — watch the next non-English purchase for that. One live hit from `list_packages_with_dangling_quote_mark` (`final_statement:Suzanne`), hand-corrected. Widened full-cast read (per Addendum 56's checklist change) found no register drift and no genuine cross-field mismatches — one near-miss (an evidence card attributing an attendance register to "the custodian," who is also the murderer, with no canonical source specifying that ownership) was checked against the actual solution mechanism and cleared, since the murderer-flaw logic relies on witness testimony, not the register's own entries. Full detail: ADR-0103 Addendum 57.
 
