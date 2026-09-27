@@ -379,9 +379,22 @@ async function releaseClaim(packageId: string): Promise<void> {
 /**
  * Pull one round's evidence card out of the evidence_cards markdown.
  *
- * CRITICAL: we take only the player-facing `#### DESCRIPTION` body and stop at
- * the next `####`. The `#### SIGNIFICANCE (Host Only)` block routinely names
- * the murderer (that is its job), and must never reach an image prompt.
+ * CRITICAL: we take only the player-facing description body and stop at the
+ * next `####`. The `#### SIGNIFICANCE (Host Only)` / `#### IMPLICATIONS`
+ * block routinely names the murderer (that is its job), and must never reach
+ * an image prompt.
+ *
+ * Matches the description heading by POSITION (the first `####` subsection
+ * under the round's `###` title) rather than the English word "DESCRIPTION".
+ * The heading itself gets translated per the package's language_instruction
+ * (e.g. Italian "DESCRIZIONE") and the section label that follows it varies
+ * by template version too (SIGNIFICANCE vs IMPLICATIONS), so a hardcoded
+ * English keyword silently matches nothing on many packages. Confirmed live
+ * 2026-09-27 ("L'eredità Del Silenzio"): the old `#### DESCRIPTION` regex
+ * never matched `#### DESCRIZIONE`, `extractCard` returned null, and
+ * `handleMissingImages` escalated instead of regenerating the missing round
+ * — every non-English package with a dropped evidence image silently skips
+ * mechanical remediation this way, not just this one case.
  */
 export function extractCard(
   ecText: string,
@@ -396,17 +409,22 @@ export function extractCard(
   const body = section[1];
 
   const title = (/^[ \t]*###[ \t]+(.+)$/m.exec(body)?.[1] ?? `Round ${roundNum} evidence`).trim();
+
+  // First `####`-level heading in the section, whatever word it uses.
+  const firstHeading = /^[ \t]*####[ \t]*[^\r\n]*\r?\n/m.exec(body);
+  if (!firstHeading) return null;
+  const afterHeading = body.slice(firstHeading.index + firstHeading[0].length);
   // Stop at the next heading in ANY form — `#{2,6}` (with or without a trailing
   // space, so `####SIGNIFICANCE` and `##### SIGNIFICANCE` both terminate).
-  let description = /####[ \t]*DESCRIPTION[ \t]*\r?\n([\s\S]*?)(?=\r?\n[ \t]*#{2,6}|$)/i
-    .exec(body)?.[1]?.trim();
+  let description = /^([\s\S]*?)(?=\r?\n[ \t]*#{2,6}|$)/.exec(afterHeading)?.[1]?.trim();
 
   if (!description) return null;
-  // Belt-and-suspenders: the SIGNIFICANCE (Host Only) block names the murderer
-  // and must NEVER reach an image prompt. Truncate at a line-anchored
-  // "significance" whatever markup precedes it (####, #####, **…**, blockquote),
-  // covering any heading form the terminator above might miss.
-  description = description.replace(/\r?\n[ \t]*[#*>\s]*significance\b[\s\S]*$/i, "").trim();
+  // Belt-and-suspenders: an English-labeled SIGNIFICANCE/IMPLICATIONS
+  // ("Host Only") block must NEVER reach an image prompt — it routinely
+  // names the murderer. The structural stop above already excludes it in the
+  // normal case (any heading, any language, ends the description); this only
+  // catches the case where that stop somehow doesn't fire.
+  description = description.replace(/\r?\n[ \t]*[#*>\s]*(significance|implications)\b[\s\S]*$/i, "").trim();
   if (!description) return null;
   return { title, description };
 }
