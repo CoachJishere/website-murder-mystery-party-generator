@@ -56,10 +56,20 @@ export const sectionHeaderCountRegex = new RegExp(
 // 1. **Name** - Description  (bold with dash)
 // 1. **Name**: Description   (bold with colon)
 // 1. Name - Description      (plain with dash)
-export const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))(?:\s*\*?\([^)]*\)\*?)?\s*[-–—:]\s*(.+)/;
+//
+// The separator requires a preceding space when it's a plain ASCII hyphen
+// (but not for en-dash/em-dash/colon, which never appear mid-name) so a
+// hyphenated name — "Marcus/Marisol Adebayo-Finch", "Mary-Anne Fitzgerald" —
+// isn't mistaken for the separator itself. Without this, the non-greedy name
+// capture stops at the FIRST hyphen it finds, which is the one inside the
+// name, silently truncating it (ADR-0130). Verified against the full corpus
+// of historical approved concept messages: nothing relies on a zero-space
+// "Name-Description" separator, so this is a pure bug fix with no found
+// regression risk.
+export const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))(?:\s*\*?\([^)]*\)\*?)?(?:\s+-|[–—:])\s*(.+)/;
 
 // Header-agnostic: 4+ consecutive "**Name** - Description" lines.
-export const boldCharRegex = /^\*\*(.+?)\*\*(?:\s*\*?\([^)]*\)\*?)?\s*[-–—:]\s*(.+)/;
+export const boldCharRegex = /^\*\*(.+?)\*\*(?:\s*\*?\([^)]*\)\*?)?(?:\s+-|[–—:])\s*(.+)/;
 
 /** A message proposing fewer names than this isn't a cast. */
 export const MIN_ROSTER_SIZE = 4;
