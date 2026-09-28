@@ -246,72 +246,25 @@ Context (re-derive from ground truth, don't trust this note alone): the H1 lives
 2. Weigh the case for changing the H1: would surfacing "custom" in the H1 plausibly help ranking/relevance on top of what the title/meta already do, or is that redundant once title/meta already lead with it? Consider whether an H1 change risks anything (brand voice, existing A/B assumptions, the "Create Murder Mystery Parties in Minutes" phrasing possibly targeting a different, broader intent than "custom").
 3. If a change looks worth it, propose exact new H1 copy (a few options) rather than assuming any one direction. If not, say so plainly and close this out — don't manufacture a change for its own sake.`,
   },
-  {
-    // Published 2026-09-05 (de) through 2026-09-08 (zh-cn/ko/ja + the remaining
-    // 8: es/fr/it/pt/nl/da/sv/fi) — a new "meta" content type, distinct from the
-    // ~40-190-per-locale templated murder-mystery-specific posts. All 12 non-EN
-    // locales share one slug, alternative-party-ideas-by-culture, each with
-    // GENUINELY DIFFERENT hand/agent-researched content (not translations of
-    // each other) positioning a custom murder mystery as one honest option
-    // among real local alternatives — cross-linked via hreflang on the shared
-    // slug (confirmed working: de page correctly links all 11 other locales).
-    // No EN version exists by design.
-    //
-    // Inserted directly into Supabase (status='published') OUTSIDE the normal
-    // blog_map.xlsx / pick-next-draft.mjs pipeline, since this was one-off
-    // hand-vetted content, not a templated topic. That matters for this
-    // check: the normal daily-publish pipeline auto-applies cross-links from
-    // OTHER posts to a newly-published slug (apply-crosslinks.mjs) as part of
-    // its own publish step. This post never went through that step, so as far
-    // as I know it likely has ZERO inbound internal links from any of the
-    // other ~190-per-locale posts — re-derive and confirm, don't assume either
-    // way. If true, that's a real authority/discovery gap worth closing
-    // (candidate targets: the "themed-party-ideas-for-adults" post in each
-    // locale, and any escape-room/format-comparison posts, are natural
-    // linking sources — but confirm via the actual cross_link_map.json /
-    // content, don't just guess).
-    //
-    // Deploy + prerender confirmed live and correct at time of publish (all
-    // 12 URLs returned HTTP 200 with correct title/meta/hreflang after
-    // deploy.yml run 34276296170). IndexNow (Bing) accepted all 12 URLs same
-    // day. GSC sitemap ping was attempted but failed locally on a permission
-    // error (likely wrong local credential, not a live problem — see vault
-    // note) — Google's own indexing timeline was never independently confirmed.
-    //
-    // PARTIALLY RESOLVED 2026-09-28: the internal-links gap flagged just above
-    // was already fixed 2026-09-09 (commit aa7d6c6, "add inbound cross-links to
-    // the new locale party-ideas series") — one insertion per locale from
-    // murder-mystery-escape-room-kits-comparison via cross_link_map.json's
-    // lang_insertions. Re-verified live 2026-09-28: cross_link_map.json has all
-    // 12 locale entries, and a live fetch of the fr, ja, and da versions of the
-    // source page all show the link actually rendered in the prerendered HTML
-    // (e.g. fr: "consultez notre [comparaison d'idées de soirée selon la
-    // culture](/fr/blog/alternative-party-ideas-by-culture)"). Internal-links
-    // check is done — don't re-run it. Indexing/GSC/GA4 early-signal steps are
-    // still open and were NOT checked this pass: no GSC or GA4 tool was
-    // available in that session (only Supabase/Make/Vercel connectors were
-    // configured, and Supabase/Make were both down that day too). Needs a
-    // session with GSC URL Inspection API + GA4 access actually wired in.
-    start: '2026-09-23',
-    end: '2026-10-07',
-    title: 'Check GSC indexing/early ranking on the "alternative party ideas by culture" post series (12 locales) — internal links already fixed',
-    body:
-      'Twelve non-EN locale versions of a new post type (real per-culture alternative-party-format comparisons, custom ' +
-      'murder mystery positioned honestly alongside local alternatives) went live 2026-09-05 to 2026-09-08, all sharing ' +
-      'the slug <code>alternative-party-ideas-by-culture</code>. The inbound-internal-links gap this reminder used to ' +
-      'flag was fixed 2026-09-09 and re-confirmed live 2026-09-28 — don\'t re-check that part. What is still ' +
-      'unconfirmed is Google indexing status and any early GSC/GA4 signal; that check needs a GSC + GA4 tool actually ' +
-      'available in the session (not the case as of 2026-09-28).',
-    prompt: `Check GSC indexing and any early ranking/traffic signal for the "alternative party ideas by culture" post series (12 locales, slug alternative-party-ideas-by-culture). Re-derive from ground truth. Note: the internal-links gap this reminder originally flagged is CLOSED (fixed 2026-09-09 commit aa7d6c6, re-verified live 2026-09-28 — cross_link_map.json lang_insertions has all 12 locales linking in from murder-mystery-escape-room-kits-comparison, confirmed rendered on fr/ja/da at minimum). Do not re-do that check; focus on indexing/ranking only.
-
-0. GROUND TRUTH ON WHAT WAS PUBLISHED: query Supabase blog_posts where slug='alternative-party-ideas-by-culture' — confirm which languages exist, their actual published_at timestamps, and status. Prior claims to verify: 12 locales (de, es, fr, it, pt, nl, da, sv, fi, ko, ja, zh-cn), published 2026-09-05 (de) to 2026-09-08 (the rest), all status='published', no 'en' row exists (by design).
-
-1. INDEXING STATUS (primary goal): for each of the 12 locale URLs (https://www.mysterymaker.party/{lang}/blog/alternative-party-ideas-by-culture/), use the GSC URL Inspection API to check indexing status. Report how many of the 12 are indexed vs. not, and for any not indexed, what reason GSC gives (crawled-not-indexed, discovered-not-indexed, etc.).
-
-2. EARLY SIGNAL (bonus, don't over-read into a few weeks of data): pull GSC performance data (impressions/clicks/position) for each of the 12 URLs since publish. Also check GA4 for any sessions landing on these URLs, and note the traffic source (organic search, direct, referral — especially any AI-answer-engine referral pattern if that's tracked). Frame any numbers as "too early to be conclusive" rather than a verdict.
-
-3. VERDICT: is this series being discovered and indexed normally, or is something (a crawl issue, the rot-signal-style gate that gap-checks other locales) holding it back, now that internal links are confirmed present? If discovery looks fine, say so plainly.`,
-  },
+  // RETIRED 2026-09-28: indexing check completed once the GSC URL Inspection API
+  // access was fixed (see the fetchGAMetrics.mjs/fetchGSCMetrics.mjs bugfix commit
+  // the same day -- it was a code bug, not missing GSC access). Internal links were
+  // already confirmed fixed earlier the same session (2026-09-09, commit aa7d6c6).
+  // Indexing results for all 12 locale URLs: 10/12 "Submitted and indexed"
+  // (es, fr, it, pt, nl, sv, fi, ko, ja, zh-cn). de is "Crawled - currently not
+  // indexed" (crawled 2026-09-27, Google chose not to index -- a quality/duplicate
+  // signal, not a discovery failure, since it HAS been crawled repeatedly). da is
+  // "URL is unknown to Google" -- never crawled at all, the one genuine discovery
+  // gap. GSC performance (2026-09-01 to 09-28): 10 of 12 URLs have real impressions
+  // (1-68 each, zh-cn highest at 68 impr/pos 6.0), es/fr/it/pt/fi/ko/nl at
+  // reasonable positions (5.5-9 for most, it is an outlier at pos 36); de and da
+  // show zero impressions, consistent with their indexing status. Verdict: 10/12
+  // locales are discovering and indexing normally with real (if early) impression
+  // volume -- the series overall is fine. da is the one locale that needs a look
+  // (never crawled -- check its sitemap entry, hreflang correctness, and whether
+  // IndexNow/GSC sitemap actually included it). de is likely just early in Google's
+  // own quality evaluation given repeated recent crawls; revisit only if it's still
+  // "crawled not indexed" after another few weeks. Not re-adding this reminder.
   {
     // Not an SEO item -- riding along on this digest for the same reason
     // the PostHog-timing reminder above does: it's the one recurring
