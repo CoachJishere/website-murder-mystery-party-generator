@@ -39,9 +39,9 @@ That incident raised a broader question Jonathan asked to have actually investig
 | `sweep_incomplete_packages()` (cron, `*/2 * * * *`) | Stuck-package sweep, quiet-period gated | Re-checks packages that should have completed but haven't; won't act mid-generation (Addendum 14) | `sweep_incomplete_packages_2min` job | ADR-0103 Addendum 14 |
 | `adapt-mystery-apply`'s verify-or-revert gate | Feature-scoped blocking gate (Remove-a-Character / reassignment) | Deterministic scrub → snapshot-write → verify-or-revert; a failed verify reverts byte-for-byte rather than shipping a broken removal | `supabase/functions/adapt-mystery-apply/index.ts` | ADR-0088 (+13 addenda) |
 
-### 1B. Advisory, read-only SQL detectors (`list_packages_with_*`) — 15 live
+### 1B. Advisory, read-only SQL detectors (`list_packages_with_*`) — 17 live
 
-Confirmed via direct `pg_proc` query against the live database (not `grep`), per the ADR-0130 Addendum 1 lesson that grep undercounts here.
+Confirmed via direct `pg_proc` query against the live database (not `grep`), per the ADR-0130 Addendum 1 lesson that grep undercounts here. **Corrected (Addendum 3, 2026-09-28):** the original version of this table listed 16 and missed `list_packages_with_final_statement_confession_leak` (added below) — found only while gathering source for the item-7 comment backfill, not by this section's own stated method. There is also a sibling function, `list_packages_missing_evidence_images()` (ADR-0016), whose name doesn't match the `list_packages_with_*` pattern at all — a live illustration of exactly the grep-undercounting risk this table's method claims to avoid; a name-pattern query is still a name-pattern query.
 
 | Function | Defect class | Wired to auto-remediate? | Has `COMMENT ON FUNCTION`? | Origin |
 |---|---|---|---|---|
@@ -61,8 +61,9 @@ Confirmed via direct `pg_proc` query against the live database (not `grep`), per
 | `list_packages_with_unresolved_victim_name` | `master_context`'s victim name still dual-gendered | No | No | ADR-0107 |
 | `list_packages_with_dangling_quote_mark` | Unmatched trailing quote in confession/reveal fields | No (manual sweep only) | No | ADR-0103 Addendum 55 |
 | `list_packages_with_role_tag_leak` | Murderer/accomplice's internal role-suffixed name leaking into another character's guest-facing text | No (manual sweep only) | Yes | ADR-0103 Addendum 59 |
+| `list_packages_with_final_statement_confession_leak` | For `mystery_style='character'` packages, a reveal-confession field exists but the branch text reads as a denial, not a confession | No | Yes (backfilled, Addendum 3) | ADR-0074 |
 
-*(12 of 16 detector-shaped functions above — the exact set with no `COMMENT ON FUNCTION` — carry no in-database documentation at all. See Part 3C.)*
+*(Originally reported as "12 of 16 lack documentation" — corrected, Addendum 3: 12 of these 17 functions, plus `package_victim_is_playable_character()`, carried no `COMMENT ON FUNCTION` before Decision item 7's backfill. All 13 now documented; see Addendum 3.)*
 
 ### 1C. Self-heal / auto-remediation
 
@@ -121,7 +122,7 @@ The advisory `list_packages_with_meta_text_leak()` has been patched five times s
 
 Both of these are currently live, unfixed, and — as far as this audit found — undocumented as a known gap anywhere in the ADR history. Nothing in this codebase currently asserts that the gate and its advisory sibling agree.
 
-**Not independently re-verified in this pass** (flagged rather than asserted, consistent with this project's own "don't hand-flag without checking" discipline): the gate's `self_directed_question`, `slip_culprit_leak`, and `identity_conflict` checks were not diffed against their `list_packages_with_*` counterparts. Given the confirmed pattern above, this is a cheap, high-value follow-up check (same method: `pg_get_functiondef` diff) rather than a new finding to act on yet.
+**Follow-up check completed (Addendum 3, 2026-09-28):** `self_directed_question` and `slip_culprit_leak` — diffed the gate's inline patterns against `list_packages_with_self_directed_questions()`/`list_packages_with_slip_culprit_leak()`. **Both confirmed byte-for-byte identical, currently in sync.** Not every duplicate pair in this codebase has drifted — worth stating plainly rather than only reporting the ones that have. `identity_conflict` remains unchecked (same method, still a cheap high-value follow-up).
 
 **Update (Addendum 1, 2026-09-28):** a third gate/advisory pair — `pointform_language_mismatch` — was confirmed the same day this ADR was written, via unrelated live work, not via the follow-up check above. It's a different failure shape than the two above: the two copies hadn't diverged from each other, they were identically, symmetrically wrong since the class was created (Addendum 40/41). See this ADR's Addendum 1 for detail; already fixed (`docs/adr/0103-new-purchase-coherence-sweep-ritual.md` Addendum 62).
 
@@ -139,7 +140,7 @@ Both of these are currently live, unfixed, and — as far as this audit found �
 
 ### 2E. Possibly dead or redundant
 
-- **`get_empty_characters()`** — written 2026-04-22, confirmed (per ADR-0096's own addendum) to have zero callers, ever. Fully superseded by `validate_package_characters()`'s broader field-coverage check. Dead code.
+- ~~`get_empty_characters()` — dead code~~ **CORRECTED (Addendum 3): this was wrong, not dead.** See Decision item 6 and Addendum 3.
 - **`quick_reference`** field on `mystery_characters` — generated on every package, confirmed (Addendum 59) not rendered anywhere in `src/` or any edge function. Generates real generation cost for a field nothing shows a customer.
 - **`evidence_culprit_spoiler`** — permanently advisory-only by explicit design (high false-positive rate). Not dead, but worth confirming someone still periodically reads it, since nothing alerts on it automatically.
 - **Two independently-capped repair lanes for `meta_text_leak`** (the free deterministic strip vs. the delegated `regenerate-child-content` path) — a deliberate asymmetry per ADR-0061, not a bug, but a standing complexity/bookkeeping cost ("a stubborn package can be attempted up to 4 times total across two different mechanisms before a human is needed").
@@ -166,7 +167,7 @@ For clarity against the historical record: `pointform_language_mismatch`, `missi
 - **"Paired-predicate drift" itself** — named explicitly, by that phrase, in at least six separate ADRs (0079, 0088's 2026-08-28 addendum, 0094, 0096, 0125's writeup, 0130) as the root cause of an incident, and it has no detector, lint, or CI check of its own. It is the mechanism behind both confirmed findings in Part 2B and the triggering incident.
 - **Model staleness** — three confirmed occurrences, no automated check (see 3A).
 - **A SQL/TS boundary duplicate silently under-covering its DB-side counterpart** — two confirmed instances now (`meta_text_leak`, `victim_mismatch`), found only by this audit's source diff, not by any existing process.
-- **Missing documentation on new detectors** — 12 of 16 `list_packages_with_*` functions carry no `COMMENT ON FUNCTION`, which is exactly the kind of self-documentation gap that made the ADR-0130 Addendum 1 "grep for the wrong name" near-miss possible in the first place.
+- **Missing documentation on new detectors** — 13 detector/gate-adjacent functions carried no `COMMENT ON FUNCTION` (corrected count, Addendum 3), which is exactly the kind of self-documentation gap that made the ADR-0130 Addendum 1 "grep for the wrong name" near-miss possible in the first place. **Implemented, Addendum 3: all 13 now documented.**
 
 ---
 
@@ -184,9 +185,9 @@ Each item is tagged **[combine]**, **[eliminate]**, **[add]**, or **[preserve]**
 
 5. **[add] Promote the manual "stale hardcoded model" `CLAUDE.md` checklist to an automated `health-check.yml` step** — a grep for `claude-haiku|claude-sonnet|claude-opus` across `supabase/functions/*/index.ts`, diffed against a small allowlist of intentionally-different models, alerting on anything new. This was proposed twice (ADR-0098 Addenda 7–8) and never built; per Addendum 38's own impact/cost framework, three confirmed incidents of real, paid-content defects (Haiku confession drops, pointform language drift, stale `temperature`/`thinking` settings) is more than enough evidence that "cheap to detect, severe when missed" applies here.
 
-6. **[eliminate] Delete `get_empty_characters()`.** Confirmed zero callers via this audit's own inventory; fully superseded by `validate_package_characters()`. No coverage loss — it currently catches nothing, because nothing calls it.
+6. ~~**[eliminate] Delete `get_empty_characters()`.**~~ **RETRACTED (Addendum 3, 2026-09-28) — this finding was wrong.** Re-verifying live callers immediately before deletion (the exact caution this item itself specified) found the function carries its own `COMMENT ON FUNCTION`: *"Used by the parent Make.com scenario's retry loop to detect failed character generations."* It is not dead code — it is a live completion/retry router called directly by Make.com's Parent blueprint over HTTP, a caller surface no repo grep can see. This ADR's original claim leaned on ADR-0096's addendum ("zero callers, ever"), without checking that ADR-0109 — five days later — already corrected that same claim after finding and fixing exactly this blind spot. Deleting it would have broken production character-generation retry logic. See Addendum 3 for the full account. No deletion was made.
 
-7. **[add] Require `COMMENT ON FUNCTION` on every new detector/gate function going forward**, and backfill the 12 existing ones that lack it as a low-priority housekeeping pass. Costs nothing per function going forward; directly targets the documentation gap that made the ADR-0130 Addendum 1 grep-undercounting near-miss possible, and is exactly the kind of policy that "would survive a rewrite."
+7. **[add] Require `COMMENT ON FUNCTION` on every new detector/gate function going forward**, and backfill the 12 existing ones that lack it as a low-priority housekeeping pass. Costs nothing per function going forward; directly targets the documentation gap that made the ADR-0130 Addendum 1 grep-undercounting near-miss possible, and is exactly the kind of policy that "would survive a rewrite." **Implemented (Addendum 3, 2026-09-28)** — with a corrected target list (2 more undocumented detector-shaped functions turned up while doing this than the original inventory counted; see Addendum 3).
 
 8. **[preserve, ratify] Formally adopt ADR-0103 Addendum 38's impact/cost framework as standing project policy**, not just an addendum buried in one ADR's history. The framework — build immediately when detection is cheap+deterministic and impact is severe+obvious, regardless of occurrence count; keep deferring only when detection genuinely requires fuzzy/semantic judgment and impact is subtle — already correctly explains every "wait for a 2nd occurrence" and every "build now" decision found in this audit's full history. Recommend citing it by name in `CLAUDE.md`'s sweep section so future sessions apply it explicitly rather than re-deriving similar reasoning ad hoc each time.
 
@@ -254,6 +255,24 @@ This ADR was written and committed earlier on 2026-09-28. Later the same day, un
 
 ### Key files (Addendum 1)
 - No new files — this addendum records evidence from `docs/adr/0103-new-purchase-coherence-sweep-ritual.md` Addendum 62 and its underlying fix (`supabase/migrations/20260928140000_widen_pointform_language_mismatch_bidirectional.sql`) as it bears on this ADR's own findings and recommendations. This ADR's own Decision items are unchanged in substance; item 2's scope is explicitly widened per the inline update above.
+
+## Addendum 3 (2026-09-28): implemented Decision item 7 — and in re-verifying item 6 immediately before acting on it, found the ADR's own "delete this" recommendation was wrong
+
+Continuing the step-by-step rollout Jonathan asked for, next in sequence were items 6 (delete `get_empty_characters()`) and 7 (backfill missing `COMMENT ON FUNCTION`s). Item 6's own text already committed to "re-verify zero callers live right before deleting" — that check is what surfaced this addendum.
+
+**Item 6 retracted: `get_empty_characters()` is not dead code, and deleting it would have broken production.** Its own live `COMMENT ON FUNCTION` reads: *"Used by the parent Make.com scenario's retry loop to detect failed character generations."* Reconstructing why the original audit got this wrong: Part 2E's claim came from ADR-0096's addendum (2026-08-20), which found no *repo-visible* callers and called it dead. But ADR-0109 (2026-08-25, five days later) directly contradicts that: Make.com's Parent blueprint calls this exact RPC over HTTP as its own completion/retry router for detective-style packages, a caller surface no codebase grep can ever see — and ADR-0109 extended the function specifically to fix a gap in that live usage (a `UNION ALL` branch for wholly-missing character rows). The original audit read ADR-0096's claim and didn't cross-check it against the later, contradicting ADR-0109 finding — exactly the "verify a memory/claim against current ground truth before acting on it" failure this project's own standing practice warns about, now caught in this ADR's own work rather than by an external incident. **No deletion was made.** This is also the clearest evidence yet, from inside this exercise itself, for why item 6-style "confirmed dead code" claims need re-verification at the point of action, not just at audit time — state (and understanding of state) can be wrong in ways that only show up when you go to actually act on it.
+
+**Item 7 implemented, with a corrected scope.** While gathering each function's real SQL to write an accurate comment (not inferring content from ADR prose — a guessed-at `COMMENT ON FUNCTION` would be worse than none), found two more detector-shaped functions the original audit's inventory missed entirely: `list_packages_with_final_statement_confession_leak()` (referenced by ADR-0074 but never added to Part 1B's table) and `package_victim_is_playable_character()` (the shared predicate behind the victim-as-character gate/advisory pair, itself undocumented). Corrected count: 13 functions lacked documentation, not 12. Backfilled all 13 via `supabase/migrations/20260928200000_backfill_detector_function_comments.sql`, applied live and committed. Comments-only, no behavior change.
+
+**A useful side effect of reading every function's real source for item 7: verified two more gate-vs-advisory pairs Part 2B had explicitly left unchecked.** `self_directed_question` and `slip_culprit_leak` — diffed the gate's inline patterns against their `list_packages_with_*` siblings. Both are byte-for-byte identical, currently in sync. Recorded inline in Part 2B — this audit should report the pairs that check out clean as plainly as the ones that don't, not just accumulate findings.
+
+**A near-miss that resolved itself, worth naming for the next session rather than silently ignoring.** Partway through this investigation, a fresh check of `package_completion_blocking_defects()`'s `pointform_language_mismatch` block appeared to show only one direction (the pre-Addendum-62 shape), which would have meant Addendum 1's "fixed live, both copies" claim was itself wrong. Before reporting that as a finding, re-queried live state directly rather than trusting the in-conversation read from earlier in this same (long) session — the gate is in fact correctly bidirectional right now. The likely explanation: this is a shared checkout (per the standing `project_shared_checkout_git_hazard` memory), and Addendum 62's actual migration apply most likely landed on the live database *during* this conversation, after this session's own earlier read but before this re-check. Not a new bug — but a reminder that in this environment, a claim about live state is only as fresh as the query that produced it, even within one sitting.
+
+### Key files (Addendum 3)
+- `get_empty_characters()` (DB function) — NOT deleted; correction only
+- `supabase/migrations/20260928200000_backfill_detector_function_comments.sql` — new, applied live and committed
+- `list_packages_with_final_statement_confession_leak()`, `package_victim_is_playable_character()` — the two functions this audit's original inventory missed
+- `CHANGELOG.md` (+ vault sync) — dated entry for this implementation step
 
 ## Addendum 2 (2026-09-28): implemented Decision item 1 — found "CI gate" doesn't mean what it sounds like in this repo, shipped a two-part fix instead
 
