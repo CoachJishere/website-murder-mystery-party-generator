@@ -1,6 +1,6 @@
 # Site health status
 
-_Last checked: 2026-09-28 20:07 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-09-28 20:15 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ✅ All checks passing
 
@@ -22,3 +22,4 @@ _Last checked: 2026-09-28 20:07 UTC (runs every 6 hours; see .github/workflows/h
 | Unconfessed detective-style culprits — escalate only (30 days) | 0 |
 | Truncated concept messages — escalate only (30 days) | 0 |
 | Stale hardcoded models — escalate only | 0 |
+| Detector status-predicate drift — escalate only | 0 |
