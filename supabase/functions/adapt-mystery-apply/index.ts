@@ -285,12 +285,36 @@ async function hashIndex(seed: string, mod: number): Promise<number> {
   return n % mod;
 }
 
+/** currentText: the field's own text, BEFORE this substitution — passed so
+ *  the pick can avoid a candidate already named somewhere else in that same
+ *  text. Incident 2026-09-28 (package a0a985a9): a blind hash pick landed on
+ *  a character already named earlier in the very same sentence, producing
+ *  "at least three faculty members (Dr. Ellis Kapoor, Dr. Ellis/Elena
+ *  Kapoor, and potentially others)" — the same person listed twice under
+ *  different name forms (this was itself the SECOND hop of a two-removal
+ *  substitution chain within one batch: an earlier removal's substitute was
+ *  later removed too, and picked a new substitute with zero awareness that
+ *  the result would collide with someone already sitting in that sentence).
+ *  Checks every VARIANT of a candidate's name (via nameVariants), not just
+ *  the literal stored string, since the collision above was exactly a
+ *  variant-form match ("Dr. Ellis Kapoor" vs. the candidate's canonical
+ *  "Dr. Ellis/Elena Kapoor") that a plain substring check on the raw name
+ *  would have missed. Falls back to the unfiltered pool if every candidate
+ *  is already mentioned (small-cast edge case) rather than erroring or
+ *  silently degrading to "another guest". */
 async function pickSubstitute(
   packageId: string, removedId: string, sourceId: string, field: string,
   pool: { id: string; character_name: string }[],
+  currentText?: string,
 ): Promise<string> {
-  const candidates = pool.filter((c) => c.id !== sourceId);
+  let candidates = pool.filter((c) => c.id !== sourceId);
   if (candidates.length === 0) return "another guest";
+  if (currentText) {
+    const notAlreadyMentioned = candidates.filter(
+      (c) => !nameVariants(c.character_name).some((v) => currentText.includes(v)),
+    );
+    if (notAlreadyMentioned.length > 0) candidates = notAlreadyMentioned;
+  }
   const idx = await hashIndex(`${packageId}:${removedId}:${sourceId}:${field}`, candidates.length);
   return candidates[idx].character_name;
 }
@@ -993,7 +1017,7 @@ serve(async (req) => {
       for (const field of PROSE_CHARACTER_FIELDS) {
         const current = other[field];
         if (typeof current !== "string" || !current) continue;
-        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, other.id, field, substitutePool);
+        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, other.id, field, substitutePool, current);
         const { result, count } = substituteVariants(current, variantRegex, sub);
         if (count > 0) changes.push({ field, before: current, after: result, kind: "prose" });
       }
@@ -1008,7 +1032,7 @@ serve(async (req) => {
         // correctly (but avoidably) caught by the verify gate downstream,
         // rolling back an otherwise-correct removal.
         if (isSingleStringArray(current)) {
-          const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, other.id, field, substitutePool);
+          const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, other.id, field, substitutePool, current[0]);
           const { result, count } = substituteVariants(current[0], variantRegex, sub);
           if (count > 0) changes.push({ field, before: current, after: [result, ...current.slice(1)], kind: "prose" });
           continue;
@@ -1026,7 +1050,7 @@ serve(async (req) => {
           variantRegex.lastIndex = 0;
           continue;
         }
-        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, other.id, field, substitutePool);
+        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, other.id, field, substitutePool, current);
         const { result, count } = substituteVariants(current, variantRegex, sub);
         if (count > 0) changes.push({ field, before: current, after: result, kind: "prose" });
       }
@@ -1044,7 +1068,7 @@ serve(async (req) => {
     for (const field of PACKAGE_PROSE_FIELDS) {
       const current = (pkg as Record<string, unknown>)[field];
       if (typeof current !== "string" || !current) continue;
-      const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", field, substitutePool);
+      const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", field, substitutePool, current);
       const { result, count } = substituteVariants(current, variantRegex, sub);
       if (count > 0) packageChanges.push({ field, before: current, after: result, kind: "prose" });
     }
@@ -1054,7 +1078,7 @@ serve(async (req) => {
       // (see isSingleStringArray) -- only the first element is ever populated
       // in practice, so transform that element and preserve the rest as-is.
       if (isSingleStringArray(current)) {
-        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", field, substitutePool);
+        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", field, substitutePool, current[0]);
         const { result, count } = substituteVariants(current[0], variantRegex, sub);
         if (count > 0) {
           const after = [result, ...current.slice(1)];
@@ -1063,7 +1087,7 @@ serve(async (req) => {
         continue;
       }
       if (isJsonbString(current) && current) {
-        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", field, substitutePool);
+        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", field, substitutePool, current);
         const { result, count } = substituteVariants(current, variantRegex, sub);
         if (count > 0) packageChanges.push({ field, before: current, after: result, kind: "prose" });
       }
@@ -1074,7 +1098,7 @@ serve(async (req) => {
     {
       const current = pkg.detective_script;
       if (typeof current === "string" && current) {
-        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", "detective_script", substitutePool);
+        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", "detective_script", substitutePool, current);
         const { result } = substituteVariants(current, variantRegex, sub);
         packageChanges.push({ field: "detective_script", before: current, after: result, kind: "prose" });
       }
@@ -1105,7 +1129,7 @@ serve(async (req) => {
     {
       const current = pkg.master_context;
       if (typeof current === "string" && current) {
-        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", "master_context", substitutePool);
+        const sub = await pickSubstitute(adaptation.package_id, adaptation.character_id, "package", "master_context", substitutePool, current);
         const { result, count } = substituteVariants(current, variantRegex, sub);
         if (count > 0) packageChanges.push({ field: "master_context", before: current, after: result, kind: "list" });
       }
