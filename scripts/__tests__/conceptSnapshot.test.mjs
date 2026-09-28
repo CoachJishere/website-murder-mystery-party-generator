@@ -354,4 +354,53 @@ check('ADR-0069 Addendum 1: a fake structural match with near-zero overlap is st
   assert.ok(!isPlausibleRosterCandidate(fakeRoster, 11, snapshotRoster), 'zero overlap plus implausible count must still be rejected');
 });
 
+// --- ADR-0130: a hyphenated name no longer gets truncated at its internal hyphen ---
+// Live bug ("Ghost In The Uplink", 4f9babf8-...): "Marcus/Marisol Adebayo-Finch" was
+// truncated to "Marcus/Marisol Adebayo" in every field that stored the extracted name,
+// while master_context and the customer's own approved message both correctly said
+// "Adebayo-Finch". Root cause: the plain (non-bold) name branch's non-greedy capture
+// stopped at the FIRST hyphen-like character it found — the one inside the name —
+// instead of the en-dash actually meant as the separator, because a bare hyphen
+// needed no preceding space to count as a separator.
+const draftWithHyphenatedName = `# Ghost In The Uplink\n\n## Premise\n\nA heist gone wrong.\n\n## Character List (4 players)\n\n1. Marcus/Marisol Adebayo-Finch – Orochi-Tanaka Corp's disgraced former security chief.\n\n${roster(['Priya Lindqvist', 'Six', 'Vex Castellan'])}`;
+
+check('ADR-0130: a hyphenated name is not truncated at its internal hyphen', () => {
+  const names = extractRosterFromMessage(draftWithHyphenatedName).map((c) => c.name);
+  assert.ok(names.includes('Marcus/Marisol Adebayo-Finch'), `hyphenated name truncated; got: ${names.join(', ')}`);
+});
+
+// --- ADR-0130 Addendum 1: a space before an en-dash separator no longer breaks the
+// line ------------------------------------------------------------------------------
+// Live bug (Mel "Embers Of Trust" 2abeb1a9-..., Alison "Nine Lives & One Death Wish"
+// 2923cfa6-...): the ADR-0130 fix above tightened the bare-hyphen branch by requiring
+// a preceding space, but the rewrite dropped ALL leading-whitespace tolerance for the
+// en-dash/em-dash/colon branch too — when it was only ever supposed to tighten the
+// hyphen case. "**Name** – Description" (a space before the en-dash) is this corpus's
+// single most common line shape, not an edge case, so this silently broke roster
+// detection at checkout for ~28 hours before two customers reported it the same day.
+// This is the regression that actually shipped and reached customers — the case above
+// (ADR-0130 itself) never did, it was caught before customers hit it. Guard both, since
+// this file has now regressed via a synthetic-case-only check twice within ~12 hours.
+const draftWithSpacedEnDash = `# Embers Of Trust\n\n## Premise\n\nA campfire mystery.\n\n## Character List (4 players)\n\n1. **Jordan/Jordana Finch** – Alder's oldest friend and co-founder.\n\n${roster(['Casey Brook', 'Sam Ridge', 'Drew Marsh'])}`;
+
+check('ADR-0130 Addendum 1: a space before an en-dash separator ("**Name** – Description") still parses', () => {
+  const names = extractRosterFromMessage(draftWithSpacedEnDash).map((c) => c.name);
+  assert.ok(names.includes('Jordan/Jordana Finch'), `spaced-en-dash line dropped; got: ${names.join(', ')}`);
+  assert.strictEqual(names.length, 4, `got: ${names.join(', ')}`);
+});
+
+check('ADR-0130 Addendum 1: em-dash and colon separators (with or without a leading space) still parse', () => {
+  const withEmDash = `## Character List (4 players)\n\n1. **Name One** — Description one.\n\n${roster(['Name Two', 'Name Three', 'Name Four'])}`;
+  const withColon = `## Character List (4 players)\n\n1. **Name Five**: Description five.\n\n${roster(['Name Six', 'Name Seven', 'Name Eight'])}`;
+  assert.strictEqual(extractRosterFromMessage(withEmDash).length, 4, 'em-dash separator broke');
+  assert.strictEqual(extractRosterFromMessage(withColon).length, 4, 'colon separator broke');
+});
+
+check('ADR-0130: a zero-space bare hyphen is still NOT a valid separator (no reintroduced truncation risk)', () => {
+  // Sanity check on the other direction: nothing in this corpus relies on
+  // "Name-Description" with no space anywhere, so this must keep NOT matching.
+  const names = extractRosterFromMessage(`## Character List (4 players)\n\n1. Test-Description with no spaces around the hyphen at all\n\n${roster(['A One', 'B Two', 'C Three'])}`).map((c) => c.name);
+  assert.ok(!names.some((n) => n.startsWith('Test-Description')), `zero-space hyphen should not match as name+separator; got: ${names.join(', ')}`);
+});
+
 console.log(`\n${passed} checks passed.`);
