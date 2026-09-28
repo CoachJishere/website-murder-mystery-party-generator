@@ -51737,7 +51737,8 @@
       "murder-mystery-party-character-ideas",
       "murder-mystery-party-backdrop-photo-booth-ideas",
       "murder-mystery-party-favors-prizes-ideas",
-      "antique-shop-murder-mystery-party-guide-discover-deadly-treasures-and-secrets"
+      "antique-shop-murder-mystery-party-guide-discover-deadly-treasures-and-secrets",
+      "free-murder-mystery-games-printable"
     ],
     "cluster": [
       "rules_planning"
@@ -51767,6 +51768,10 @@
         "target_page": "/",
         "match_text": "When you're using MysteryMaker, this work is partially done for you.",
         "replacement": "When you're building a [custom murder mystery game](/) using MysteryMaker, this work is partially done for you."
+      },
+      {
+        "match_text": "though quality varies significantly.",
+        "replacement": "though quality varies significantly — for a curated roundup, see our [free printable murder mystery games](/blog/free-murder-mystery-games-printable/) guide."
       }
     ],
     "lang_insertions": {
