@@ -443,28 +443,32 @@ Context: ADR-0128 (docs/adr/0128-party-cluster-detection-for-feedback-email-timi
     // item. Full detail: vault
     // 01_Projects/Mystery-Maker/da-sv-partial-localization-2026-07-19-mystery-maker.md.
     //
-    // RE-CHECKED 2026-09-28 (string count only -- usage/revenue data was NOT
-    // checked, Supabase + GA4 were both unreachable that session): re-flattened
-    // da.json/sv.json against en.json's 1347 leaf keys. da is now 46.8%
-    // untranslated (631 values still identical to English), sv is 46.5% (627).
-    // Down from ~63% on 2026-07-19 -- some incidental improvement has landed,
-    // but it's still nowhere near the ~1.7% baseline the other 11 non-EN
-    // languages sit at (checked de/es for comparison: 23/1347, 1.7% each). The
-    // market-priority question (is there real da/sv customer volume to justify
-    // closing the rest of the gap) is still open -- still needs GA4
-    // sessions-by-locale and/or Supabase conversations.language distribution,
-    // neither of which was reachable this pass.
+    // RE-CHECKED 2026-09-28, full picture now in hand. String count: da.json is
+    // 46.8% untranslated (631/1347 leaf keys still identical to English), sv.json
+    // is 46.5% (627/1347) -- down from ~63% on 2026-07-19, but still far above the
+    // ~1.7% baseline the other 11 non-EN languages sit at (de/es checked for
+    // comparison: 23/1347, 1.7% each). Usage signal (previously blocked --
+    // Supabase/GA4 were unreachable earlier in the session, fixed later the same
+    // day, see the fetchGAMetrics.mjs/fetchGSCMetrics.mjs dotenv-hoisting and
+    // www-site-URL bugs): GA4 sessions on /da/ and /sv/ paths, last 90 days --
+    // da 61, sv 55 -- are comparable to or HIGHER than de (54) and es (53), despite
+    // da/sv being 27x less translated. Traffic isn't the gap; the localization is.
+    // (GA4 "conversions" metric read 0 for every locale including total site --
+    // that's a property-side conversion-event configuration issue, not a real
+    // zero, so it wasn't usable as a revenue signal; sessions is the only reliable
+    // number here.) Jonathan's read in-session: worth doing given comparable
+    // traffic to established locales -- decide with him whether to proceed now.
     start: '2026-09-26',
     end: '2026-10-17',
-    title: 'Danish and Swedish locales are ~47% untranslated (down from 63%) -- still needs a market-priority decision',
+    title: 'Danish and Swedish locales are ~47% untranslated but get de/es-comparable traffic -- worth finishing',
     body:
-      'Re-checked 2026-09-28: <code>da.json</code> is 46.8% untranslated, <code>sv.json</code> is 46.5% (down from ' +
-      '~63% on 2026-07-19, but still far above the ~1.7% the other 11 non-EN languages sit at). The usage/revenue ' +
-      'side of this was not re-checked this pass (Supabase and GA4 were unreachable) -- are da/sv meaningful ' +
-      'markets worth a full localization pass, or should it stay parked?',
-    prompt: `Help Jonathan decide whether Danish and Swedish are worth a full localization pass for Mystery Maker, or should stay parked. Re-derive from ground truth, don't trust the 2026-07-19 baseline numbers as still accurate.
+      'Re-checked 2026-09-28, now with real usage data: da.json is 46.8% untranslated, sv.json 46.5% (down from ' +
+      '~63% on 2026-07-19, still far above the ~1.7% the other 11 non-EN languages sit at). GA4: /da/ and /sv/ ' +
+      'path sessions (90 days) are 61 and 55 -- comparable to or above de (54) and es (53), which are fully ' +
+      'localized. Traffic is not the reason to leave these parked.',
+    prompt: `Confirm whether the Danish/Swedish localization gap is still being closed, and finish it if so. Re-derive from ground truth, don't trust this note's numbers as still current.
 
-1. Re-run the untranslated-string count for da.json and sv.json against en.json (flatten both files, compare values) -- has the ~63% figure changed at all since 2026-07-19 (e.g. from smaller fixes landing incidentally)?
+1. Re-run the untranslated-string count for da.json and sv.json against en.json (flatten both files, compare values) -- as of 2026-09-28 it was 46.8%/46.5%, down from ~63% on 2026-07-19.
 2. Pull actual usage/revenue signal for these two locales if available (GA4 sessions by locale, Stripe purchases by locale/currency, or conversations.language distribution in Supabase) -- is there any real customer volume in da/sv today, even partial?
 3. Present the decision plainly: if da/sv volume is negligible, recommend explicitly parking it (and say so in this reminder's retirement note); if there's real signal, scope what a full pass would take (same per-file approach used for the other 11 languages) and let Jonathan decide whether to schedule it.`,
   },

@@ -12,6 +12,10 @@
  * 5. Run: node scripts/fetchGSCMetrics.mjs
  */
 
+// See fetchGAMetrics.mjs for why this needs its own dotenv load: ESM static-import
+// hoisting means a caller's `import 'dotenv/config'` can run after this file's own
+// CONFIG has already captured process.env at module-evaluation time.
+import 'dotenv/config';
 import { google } from 'googleapis';
 import { readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -22,9 +26,14 @@ const __dirname = dirname(__filename);
 
 // Configuration
 const CONFIG = {
-  siteUrl: process.env.GSC_SITE_URL || 'https://mysterymaker.party',
+  // Must be the www form -- the GSC property (and the service account's grant on
+  // it) is registered under https://www.mysterymaker.party/, not the bare domain.
+  // Found 2026-09-28: the bare-domain default silently pointed every un-parameterized
+  // call at a property the service account has no access to, surfacing as a generic
+  // "insufficient permission" error that looked like a real GSC-side access gap.
+  siteUrl: process.env.GSC_SITE_URL || 'https://www.mysterymaker.party/',
   credentialsPath: join(__dirname, '../.google-search-console-credentials.json'),
-  victorianPostUrl: 'https://mysterymaker.party/blog/how-to-host-a-victorian-murder-mystery-party', // EN; non-EN would be https://mysterymaker.party/<lang>/blog/<slug>
+  victorianPostUrl: 'https://www.mysterymaker.party/blog/how-to-host-a-victorian-murder-mystery-party', // EN; non-EN would be https://www.mysterymaker.party/<lang>/blog/<slug>
   outputPath: join(__dirname, '../temp-files/gsc-metrics.json'),
   daysBack: 7
 };

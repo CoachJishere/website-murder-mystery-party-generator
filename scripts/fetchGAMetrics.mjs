@@ -12,6 +12,13 @@
  * 5. Run: node scripts/fetchGAMetrics.mjs
  */
 
+// Self-contained env loading: this file's CONFIG reads process.env.GA4_PROPERTY_ID at
+// module-evaluation time. ES module static imports are hoisted and run before the
+// importing script's own top-level code, so a caller doing `import 'dotenv/config'`
+// then `import { fetchGAMetrics } from './fetchGAMetrics.mjs'` (e.g. test-analytics.mjs)
+// actually loads .env AFTER this file's CONFIG has already captured GA4_PROPERTY_ID as
+// undefined. Loading dotenv here too makes this script correct regardless of caller.
+import 'dotenv/config';
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
 import { readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
