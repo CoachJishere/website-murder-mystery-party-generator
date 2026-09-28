@@ -66,10 +66,18 @@ export const sectionHeaderCountRegex = new RegExp(
 // of historical approved concept messages: nothing relies on a zero-space
 // "Name-Description" separator, so this is a pure bug fix with no found
 // regression risk.
-export const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))(?:\s*\*?\([^)]*\)\*?)?(?:\s+-|[–—:])\s*(.+)/;
+//
+// The en-dash/em-dash/colon branch keeps its OPTIONAL leading whitespace
+// (`\s*`) rather than requiring none. ADR-0130's initial cut of this fix
+// dropped that `\s*` entirely for this branch, which broke the single most
+// common line shape in this corpus - "**Name** – Description", a space
+// before the en-dash - and took down roster detection for every purchase
+// using that format for ~28 hours before being caught. See ADR-0130
+// Addendum 1.
+export const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))(?:\s*\*?\([^)]*\)\*?)?(?:\s+-|\s*[–—:])\s*(.+)/;
 
 // Header-agnostic: 4+ consecutive "**Name** - Description" lines.
-export const boldCharRegex = /^\*\*(.+?)\*\*(?:\s*\*?\([^)]*\)\*?)?(?:\s+-|[–—:])\s*(.+)/;
+export const boldCharRegex = /^\*\*(.+?)\*\*(?:\s*\*?\([^)]*\)\*?)?(?:\s+-|\s*[–—:])\s*(.+)/;
 
 /** A message proposing fewer names than this isn't a cast. */
 export const MIN_ROSTER_SIZE = 4;
