@@ -1,0 +1,48 @@
+name: Test roster-extraction regression suite
+
+# ADR-0131 item 1. This does NOT gate an edge function deploy — deploys happen
+# via a manual `supabase functions deploy` CLI call, fully disconnected from
+# this repo's git history and CI (see memory: "Git push != deployed for edge
+# functions"). This workflow's job is a fast, automated tripwire instead of a
+# hard block: a failure here surfaces a regression within minutes of it
+# landing on main, rather than the ~28 hours it took customer support tickets
+# to surface the ADR-0130 Addendum 1 regression. The actual blocking gate is
+# scripts/deploy-roster-functions.sh (ADR-0131 item 1, second half) — use it
+# to deploy these functions instead of a bare `supabase functions deploy`.
+#
+# Path-filtered to the files scripts/__tests__/conceptSnapshot.test.mjs
+# actually exercises (imports shipped source directly, not a hand-copy) plus
+# its two sibling suites' own targets, so unrelated pushes to main don't pay
+# for this job.
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'supabase/functions/_shared/rosterExtraction.ts'
+      - 'supabase/functions/_shared/conversation-excerpt.ts'
+      - 'supabase/functions/mystery-webhook-trigger/**'
+      - 'supabase/functions/extract-concept-roster/**'
+      - 'supabase/functions/mystery-ai/**'
+      - 'supabase/functions/auto-remediate-packages/index.ts'
+      - 'scripts/__tests__/**'
+      - 'scripts/detect-roster-mismatches.mjs'
+      - 'scripts/detect-truncated-concept-messages.mjs'
+      - '.github/workflows/test-roster-extraction.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run roster-extraction regression suite
+        run: npm run test:roster
