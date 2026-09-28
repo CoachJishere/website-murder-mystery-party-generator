@@ -544,6 +544,15 @@ function nameVariants(fullName: string): string[] {
   const surname = tokens[tokens.length - 1];
   if (surname && surname.length >= 4) variants.add(surname);
 
+  // Bare-first-name fallback, title-aware (ported from adapt-mystery-apply
+  // 2026-09-28 — this copy had drifted out of sync since being forked
+  // 2026-09-06, missing this fix entirely until now). Skips a leading title
+  // (Dr./Mr./Mrs./Ms./Prof.) so a titled dual-gender name like "Dr. Cameron/
+  // Camille Reeves" still yields "Cameron", not the useless "Dr." token.
+  const titleRegex = /^(?:Dr|Mr|Mrs|Ms|Prof)\.?$/i;
+  const firstNameToken = tokens.find((t) => !titleRegex.test(t));
+  if (firstNameToken && firstNameToken.length >= 4) variants.add(firstNameToken);
+
   return [...variants].filter((v) => v.length >= 3);
 }
 

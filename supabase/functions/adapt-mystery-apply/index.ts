@@ -239,8 +239,19 @@ function nameVariants(fullName: string): string[] {
   // fields across three other characters, including describing his old
   // chauffeur role attached to nobody. Same guard/rationale as the surname
   // fallback above.
-  const firstName = tokens[0];
-  if (firstName && firstName.length >= 4) variants.add(firstName);
+  //
+  // Skip a leading title when picking that first-name token (incident
+  // 2026-09-28, same day, found during a corpus check of the fix above):
+  // for a titled dual-gender name like "Dr. Cameron/Camille Reeves", plain
+  // tokens[0] is "Dr." — 3 chars, rejected by the length guard below — so
+  // every titled name in this corpus got ZERO bare-first-name coverage from
+  // the fix above, silently. Confirmed live in package a0a985a9 (9 titled
+  // dual-gender removals from 2026-08-20, predating this fallback entirely):
+  // 6 of 9 removed characters' bare first names were still leaking across 10
+  // character fields, hand-backfilled the same day this was found.
+  const titleRegex = /^(?:Dr|Mr|Mrs|Ms|Prof)\.?$/i;
+  const firstNameToken = tokens.find((t) => !titleRegex.test(t));
+  if (firstNameToken && firstNameToken.length >= 4) variants.add(firstNameToken);
 
   return [...variants].filter((v) => v.length >= 3);
 }
