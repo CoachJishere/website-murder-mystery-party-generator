@@ -75,3 +75,13 @@ The second debate was whether spam caps belong in this pass at all given zero ob
 - `docs/adr/0016-detect-missing-evidence-images-decoupled-from-needs-review.md` — the locked detector
 - `docs/adr/0031-short-code-guest-links.md` — newest member of the deliberate public RPC surface
 - `src/pages/CharacterAccess.tsx`, `src/pages/HostAccess.tsx`, `src/pages/GuestFeedback.tsx` — consumers of the public surface
+
+## Addendum (2026-09-28) — the rest of the `list_packages_with_*` family had the same gap
+
+This ADR only locked down `list_packages_missing_evidence_images` at the time. The same detector-RPC family grew to 18 functions since (ADR-0103's various addenda each added one), and every new one inherited Postgres's default `EXECUTE` grant to `PUBLIC` — nobody was re-running this ADR's checklist per new detector. Found and flagged 2026-08-01, sat as an open item until today.
+
+Confirmed via `has_function_privilege('anon', ...)`: all 18 (`list_completed_but_empty_packages` plus 17 `list_packages_with_*` functions) still granted anon/authenticated EXECUTE. Confirmed zero blast radius first — grepped `supabase/functions/` and `src/` for every call site; the only two callers (`regenerate-child-content`, `auto-remediate-packages`) construct their Supabase client with `SUPABASE_SERVICE_ROLE_KEY` exclusively, and `mystery-ai`'s one hit was a comment, not a call. No frontend code calls any of these.
+
+Applied migration `20260928170000_lock_down_detector_rpc_anon_execute.sql`: same `REVOKE ... FROM PUBLIC, anon, authenticated; GRANT ... TO service_role` pattern as the original evidence-images fix, looped over all 18 by name (all share the single `_since timestamptz` signature). Verified post-migration: all 18 now return `false` for `has_function_privilege('anon', ...)` and `has_function_privilege('authenticated', ...)`, `true` for `service_role`.
+
+This is a recurring-gap pattern, not a one-off: the next detector RPC added will have the same default-open grant unless someone remembers to lock it down by hand. Not building `ALTER DEFAULT PRIVILEGES` for this (this ADR's own Alternative 1 already rejected that, for the token-RPC-architecture reason above) — the practical mitigation is checking `has_function_privilege('anon', ...)` for new `list_packages_with_*` functions as part of shipping them, the same way the coherence-sweep checklist already treats each new detector as needing its own care.

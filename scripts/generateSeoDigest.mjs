@@ -372,65 +372,71 @@ Context: ADR-0128 (docs/adr/0128-party-cluster-detection-for-feedback-email-timi
 6. REMOVE-A-CHARACTER CHECK (2026-09-26 hunch): for conversations with a completed row in mystery_adaptations (the "Remove a Character" feature), how close is the adaptation's timestamp to purchase_date or to the eventual party_detected_at (if set)? Is there any visible correlation suggesting adaptation usage clusters near the actual party date, or is it scattered? If the sample is too small to say anything, say so plainly rather than forcing a read -- this was flagged as a weak, unconfirmed hunch, not a claim.
 7. VERDICT: is detection firing on real data yet? Does the current cast-scaled threshold look right, too strict, or too loose based on what's actually happening? If the sample is still thin, say so and suggest a specific next recheck date rather than forcing a verdict.`,
   },
-  {
-    // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
-    // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
-    // item. Full detail: vault
-    // 01_Projects/Mystery-Maker/mystery-maker-character-content-verbosity-signal-2026-09-19.md.
-    start: '2026-09-26',
-    end: '2026-10-17',
-    title: 'Concise-character-content fix is drafted and tested but not yet imported into Make.com',
-    body:
-      'Two post-Sonnet-5 customers (Sherri, Marie) flagged character content as too long/dense. A fix -- ' +
-      '<code>Child (Unified)42-ConciseCharacterContent</code> -- was drafted and tested per the 2026-09-19 ' +
-      'CHANGELOG entry, but the blueprint has not been imported into Make.com. This is an action item, not a ' +
-      'watch-item.',
-    prompt: `Check whether the ConciseCharacterContent blueprint fix (temp-files/MM Live - Child (Unified)42-ConciseCharacterContent.blueprint.json per the 2026-09-19 CHANGELOG entry) has been imported into Make.com yet. Re-derive from ground truth -- check the actual Make.com scenario version if reachable, or ask Jonathan directly whether he imported it, don't assume from this note.
-
-If not yet imported: surface that plainly as the blocking action -- nothing else needs building, it's a one-click import away from shipping.
-If imported: generate a fresh test package and manually assess whether character description/background/relationships fields read noticeably tighter than the Sherri/Marie examples (1000-1600 chars each, multi-paragraph). If it looks fixed, close this out. If a third customer complaint about content length/density has shown up since 2026-09-19 (check contact_messages), note that too -- it would mean the fix needs a second look, not just an import confirmation.`,
-  },
+  // RETIRED 2026-09-28: Jonathan confirmed directly (asked in the SEO-digest
+  // sweep session, Make MCP was down so no scenario-version check was possible)
+  // that Child (Unified)42-ConciseCharacterContent was imported and he's since
+  // moved on to Child (Unified)47-TargetFloorGuarantee (local blueprint file
+  // dated 2026-09-27, not yet committed -- temp-files/**/*.json is gitignored).
+  // The manual re-test (generate a package, compare character-content length
+  // against the Sherri/Marie 1000-1600-char baseline) was NOT run this session --
+  // if a length/density complaint resurfaces, check that before assuming 42
+  // regressed, since 47 is a separate later change on top of it. Not re-adding
+  // this reminder -- revisit only on a new complaint.
   {
     // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
     // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
     // item. Full detail: vault
     // 01_Projects/Mystery-Maker/stale-concept-audit-2026-08-02-mystery-maker.md.
+    //
+    // RE-CHECKED 2026-09-28 (Supabase reconnected mid-session): both conversations
+    // confirmed still is_paid/purchased, approved_concept_message_id unchanged
+    // since the audit -- original finding still holds. BUT: went to synthesize
+    // the "correct final concept" from the later Q&A per this reminder's own
+    // recovery plan and found neither conversation actually resolves. Black Swan
+    // Society (43 messages) ends with the assistant mid-question ("Last
+    // clarifying questions... What should Dr. Ashford's educational institution
+    // be called? ... The Savannah connection -- which works best?") -- the
+    // customer never answered. Adelaide Crane (50 messages) ends the same way,
+    // assistant still asking follow-ups about Patricia's argument scene. So
+    // there is no clean "repoint to the customer's real final intent" move here
+    // -- any regeneration would require inventing plot specifics (institution
+    // name, Savannah-connection variant, etc.) the customer never actually
+    // decided. Jonathan said proceed if still needed, but this changes the
+    // shape of the decision -- flagged back to him rather than guessing at
+    // unconfirmed creative details, especially given the Black Swan Society
+    // content touches HBCU/Black-history references that deserve his read
+    // before anything is invented on top of them. No regeneration triggered,
+    // no spend incurred.
     start: '2026-09-26',
     end: '2026-10-17',
-    title: 'Two paid packages generated from a superseded concept were never remediated',
+    title: 'Two paid packages from a superseded concept: both source conversations dead-end mid-question, no clean "final concept" to regenerate from',
     body:
-      'A 2026-08-02 audit (ADR-0069 related) found two paid, delivered packages -- "The Black Swan Society" and ' +
-      '"The Last Will And Testament Of Adelaide Crane" -- generated from an earlier concept draft while the ' +
-      'customer kept revising afterward, so the delivered content misses real, load-bearing details the customer ' +
-      'actually asked for. Recovery was scoped (repoint <code>approved_concept_message_id</code>, reset ' +
-      'generation status, retrigger -- one paid regeneration run each) but never performed. This needs a decision, ' +
-      'not another audit.',
-    prompt: `Decide whether to remediate the two packages found stale-concept-mismatched in the 2026-08-02 audit (vault 01_Projects/Mystery-Maker/stale-concept-audit-2026-08-02-mystery-maker.md): "The Black Swan Society: Unmasking Murder" (conversation 926cd375) and "The Last Will And Testament Of Adelaide Crane" (conversation a366885d). Re-derive from ground truth -- query Supabase directly, don't trust this note's framing.
+      'Re-checked 2026-09-28: both packages ("The Black Swan Society," "The Last Will And Testament Of Adelaide ' +
+      'Crane") are still in the same stale-concept state as the 2026-08-02 audit. But their conversations don\'t ' +
+      'actually resolve -- both end with the assistant mid-clarifying-question and no customer reply. Regenerating ' +
+      'would mean inventing plot details the customer never confirmed, not just replaying their real intent. Needs ' +
+      'a decision on whether that\'s acceptable, not just a go/no-go on remediating.',
+    prompt: `Decide how to handle the two stale-concept-mismatched packages given that neither source conversation has a clean resolved endpoint: "The Black Swan Society: Unmasking Murder" (conversation 926cd375, 43 messages) and "The Last Will And Testament Of Adelaide Crane" (conversation a366885d, 50 messages). Re-derive from ground truth -- query Supabase directly (messages table, ordered by created_at, for each conversation_id), don't trust this note's framing.
 
-1. Confirm both conversations are still in the delivered state described (still is_paid, still showing the mismatched content) -- check nothing has changed since 2026-08-02.
-2. If still mismatched and Jonathan wants it fixed: for each, identify the correct final concept from the later assistant messages (there's no single message that fully restates it -- may need to synthesize from the Q&A turns), repoint approved_concept_message_id, reset generation_status/generation_completed_at, and retrigger generation (one paid regeneration run each -- confirm with Jonathan before spending on this).
-3. If he'd rather not touch already-delivered customer packages retroactively, close this out explicitly as a deliberate decision (not silence) and note it in CHANGELOG/ADR-0069 addendum.`,
+1. Confirm both conversations are still is_paid/purchased with approved_concept_message_id unchanged (as of 2026-09-28 they were).
+2. Read each conversation's last 5-10 messages directly. As of 2026-09-28 both ended with the assistant asking a clarifying question the customer never answered (Black Swan: institution name + Savannah-connection variant; Adelaide Crane: details of Patricia's argument scene). If still true, this isn't a clean "identify the customer's real final intent" job -- any concept synthesized would include invented specifics.
+3. Options to put to Jonathan: (a) synthesize a best-effort concept from everything confirmed up to the dead-end, filling only the unresolved specifics with reasonable choices, and have him review it before triggering the paid regeneration; (b) leave both packages as-is, close this out as a deliberate decision, and log it as a CHANGELOG/ADR-0069 addendum; (c) something else he specifies. Don't pick for him given the Black Swan Society content involves real HBCU/Black-history references that deserve a human read before anything is invented on top of them.`,
   },
-  {
-    // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
-    // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
-    // item. Full detail: vault
-    // 01_Projects/Mystery-Maker/detector-rpc-public-execute-grants-2026-08-01-mystery-maker.md.
-    start: '2026-09-26',
-    end: '2026-10-17',
-    title: 'Eight detector RPCs are still callable by anon -- customer package titles/ids enumerable',
-    body:
-      'Found 2026-08-01: Postgres grants EXECUTE to PUBLIC by default, and none of the ' +
-      '<code>list_packages_with_*</code> detector-RPC migrations revoke it. Only one of nine ' +
-      '(<code>list_packages_missing_evidence_images</code>, ADR-0032) was ever locked down. Low severity -- no ' +
-      'PII, no character content, ids alone grant no access -- but an unauthenticated caller can currently ' +
-      'enumerate paid customer package titles/ids via the REST RPC endpoint on the other eight.',
-    prompt: `Lock down the 8 remaining anon-executable detector RPCs the same way ADR-0032 already locked down list_packages_missing_evidence_images, using Mystery Maker's Supabase project (id mhfikaomkmqcndqfohbp). Re-derive from ground truth first.
-
-1. Confirm via has_function_privilege('anon', ...) which of these still grant anon EXECUTE: list_packages_with_identity_conflicts, list_packages_with_meta_text_leak, list_packages_with_evidence_culprit_spoiler, list_packages_with_victim_mismatch, list_packages_with_slip_culprit_leak, list_packages_with_self_directed_questions, list_completed_but_empty_packages, list_packages_with_structural_defects -- plus check whether any newer detector RPCs added since 2026-08-01 have the same gap (there are more than 9 in this family now per later ADR-0103 addenda).
-2. Confirm nothing in the app or automation calls these with the anon key (health-check and auto-remediation both use the service key per the original note) -- grep supabase/functions and src/ for any anon-key call to these specific RPC names before revoking, to be sure the blast radius really is zero.
-3. If clear: one migration, REVOKE EXECUTE ... FROM PUBLIC, anon, authenticated; GRANT EXECUTE ... TO service_role; for each function, applied consistently across the whole family (not just the ones checked here -- match whatever the actual current list of list_packages_with_* / list_completed_but_empty_packages functions is at the time this runs). CHANGELOG + ADR-0032 addendum documenting the fix.`,
-  },
+  // RETIRED 2026-09-28: locked down. The family had grown to 18 functions since
+  // the original 2026-08-01 finding (ADR-0103 kept adding detectors, none of them
+  // locked down individually). Confirmed all 18 anon/authenticated-executable via
+  // has_function_privilege, confirmed zero call sites use the anon key (grepped
+  // supabase/functions + src/ -- the only two callers, regenerate-child-content and
+  // auto-remediate-packages, both build their Supabase client from
+  // SUPABASE_SERVICE_ROLE_KEY only), applied migration
+  // 20260928170000_lock_down_detector_rpc_anon_execute.sql, verified all 18 now
+  // false for anon/authenticated, true for service_role. Full detail: ADR-0032
+  // Addendum (2026-09-28). Not re-adding this reminder -- the real residual risk
+  // is that the *next* new list_packages_with_* detector will inherit the same
+  // default-open grant, which this migration can't prevent going forward (see the
+  // ADR's own Addendum for why ALTER DEFAULT PRIVILEGES was rejected) -- worth a
+  // quick has_function_privilege check whenever a new detector RPC ships, not a
+  // recurring digest item.
   {
     // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
     // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
@@ -468,25 +474,23 @@ If imported: generate a fresh test package and manually assess whether character
   // 36011349099, 36326974899) via `gh run view --json jobs` -- every one succeeded.
   // The 2026-09-07/08 double-slash fix held. Not re-adding this reminder --
   // revisit only if the step starts failing again, which would be a new incident.
-  {
-    // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
-    // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
-    // item. Full detail: vault
-    // 01_Projects/Mystery-Maker/round-count-configurability-deferred-2026-08-15-mystery-maker.md.
-    start: '2026-09-26',
-    end: '2026-10-17',
-    title: 'Configurable round count is deliberately parked -- the cheap validation step to unpark it was never run',
-    body:
-      'Deferred 2026-08-15 after the Alexandra Broadus refund: before building a round-count UI/pipeline feature, ' +
-      'the plan was to first generate a handful of test mysteries at 3 rounds across a few player counts and ' +
-      'manually check pacing/solvability, specifically to avoid building a feature and finding out afterward that ' +
-      'short mysteries play badly. That cheap experiment was never run.',
-    prompt: `Either run the cheap 3-round content-quality experiment that was supposed to precede any round-count configurability work (vault 01_Projects/Mystery-Maker/round-count-configurability-deferred-2026-08-15-mystery-maker.md), or explicitly decide this is still not worth unparking. Re-derive current state from ground truth first -- check whether round count is still hardcoded (grep the generation pipeline / Make.com blueprints for round-count logic) and whether any new refund/complaint has cited round count or total game length since 2026-08-15 (the 2026-09-19 character-content-verbosity signal's Marie Potesta case may be another data point -- check contact_messages).
-
-If proceeding: generate a small number of test mysteries at 3 rounds (vs. the current hardcoded count) across 2-3 different player counts, using disposable test conversations per the small-test-mysteries convention (3-4 characters where possible). Manually read through for pacing and whether the elimination logic still works with one fewer round. Report a plain verdict -- does a 3-round mystery play adequately, or does cutting a round genuinely break solvability/pacing as originally suspected?
-
-If not proceeding: say so and note why (e.g. no new signal since 2026-08-15 suggesting real demand), and note whether this reminder should keep recurring or be retired as "revisit only if a new complaint cites round count specifically."`,
-  },
+  // RETIRED 2026-09-28 (decision made, not a finding): Jonathan considered the
+  // disposable-synthetic-test plan this reminder describes and explicitly
+  // decided against it -- the cheap experiment isn't the test he actually wants;
+  // if it's worth testing, he'd rather ship 3-round generation to a subset of
+  // real paying customers (~couple sales/day) and observe genuine outcomes,
+  // since a disposable test mystery played solo can't validate real-party
+  // pacing/solvability the way an actual game night does. Asked whether a
+  // retrospective look at EXISTING customer packages could substitute for
+  // either kind of test: no -- confirmed via grep (regenerate-child-content's
+  // round-3/round-4 prompt text) that round count is uniformly hardcoded at 4
+  // for every package ever generated, so there is no natural 3-round subset in
+  // past data to compare against. Per his own call: stay parked, no synthetic
+  // test, no real-customer test yet -- revisit only when a new complaint or
+  // refund cites round count/game length specifically (same trigger as the
+  // original 2026-08-15 deferral), at which point the real-customer-test
+  // approach is the one to scope, not the disposable-mystery one this reminder
+  // used to describe. Not re-adding this reminder.
 ];
 
 // Safety net: neutralise any literal HTML tags the model leaves inside <pre>
