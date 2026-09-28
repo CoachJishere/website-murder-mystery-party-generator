@@ -228,6 +228,20 @@ function nameVariants(fullName: string): string[] {
   const surname = tokens[tokens.length - 1];
   if (surname && surname.length >= 4) variants.add(surname);
 
+  // Bare-first-name fallback (incident 2026-09-27, package 7d8a3015...,
+  // "Mike Millingdon"): rumors/relationships/questions prose regularly
+  // addresses a character by first name alone ("Point out Mike's ten years
+  // driving...", "Heather and Mike are staff", "did you notice Mike
+  // anywhere..."). Without this, only the full name and bare surname were
+  // matchable, so every bare-first-name mention survived BOTH the scrub pass
+  // and verify untouched (same shared regex) — 'verified' shipped a package
+  // that still named the removed character by first name in five separate
+  // fields across three other characters, including describing his old
+  // chauffeur role attached to nobody. Same guard/rationale as the surname
+  // fallback above.
+  const firstName = tokens[0];
+  if (firstName && firstName.length >= 4) variants.add(firstName);
+
   return [...variants].filter((v) => v.length >= 3);
 }
 
@@ -340,9 +354,11 @@ function jsonbValueMatches(value: unknown, variantRegex: RegExp): boolean {
  *  deterministic pass — see file header) acknowledging the removed character
  *  is absent and cleared, mirroring the manual precedent's detective_script
  *  edit in spirit if not exact form. For a reassignment row, the
- *  reassignment pass rewrites the REVEAL section separately, on top of this
- *  — the absent-note still applies (a real person is still gone from the
- *  party), it's just no longer the ONLY change to this field. */
+ *  reassignment pass rewrites the REVEAL section separately — the absent-note
+ *  still applies (a real person is still gone from the party), but (incident
+ *  2026-09-27) it is stripped out of what the reassignment LLM call sees and
+ *  re-appended deterministically afterward, never left for the model to
+ *  reproduce — see the reassignWithClaude call site. */
 function absentParagraph(characterName: string): string {
   return `\n\n---\n\n**Note (host only):** ${characterName} could not attend and has been cleared of suspicion ahead of time (never in the house, no opportunity) — proceed without them; no other character's script should reference them.`;
 }
@@ -1195,6 +1211,21 @@ serve(async (req) => {
 
       const currentDetectiveScript = (packageChanges.find((c) => c.field === "detective_script")?.after as string)
         ?? (pkg.detective_script as string) ?? "";
+      // Strip the host-only absent-character note before this ever reaches the
+      // model. Incident 2026-09-27: the note deliberately names the removed
+      // character (by design — see absentParagraph), but this prompt's own
+      // hard_rules tells the model to never let that name appear anywhere in
+      // its output. That direct contradiction made the model drop the note
+      // while faithfully avoiding the name elsewhere, and verify correctly
+      // reverted the row. Same fix shape as the ADR-0088 polish-pass
+      // incident: don't ask an LLM to reproduce a fixed marker verbatim when
+      // reproducing it conflicts with something else it's told to do —
+      // remove it from what the model sees, then re-append it deterministically
+      // below, so its survival never depends on model behavior.
+      const noteForRemoved = absentParagraph(adaptation.character_name);
+      const detectiveScriptForReassign = currentDetectiveScript.endsWith(noteForRemoved)
+        ? currentDetectiveScript.slice(0, -noteForRemoved.length)
+        : currentDetectiveScript;
       const evidenceCardsChange = packageChanges.find((c) => c.field === "evidence_cards");
       const currentEvidenceCardsText = evidenceCardsChange
         ? (isSingleStringArray(evidenceCardsChange.after) ? evidenceCardsChange.after[0] : String(evidenceCardsChange.after))
@@ -1205,7 +1236,7 @@ serve(async (req) => {
         removedRole: adaptation.character_role as string,
         forcedReplacementId: forcedId,
         candidates: candidatePool,
-        currentDetectiveScript,
+        currentDetectiveScript: detectiveScriptForReassign,
         currentEvidenceCardsText,
       });
       llmCostUsd += reassignmentResult.costUsd;
@@ -1229,7 +1260,7 @@ serve(async (req) => {
 
       const dsIdx = packageChanges.findIndex((c) => c.field === "detective_script");
       const dsBefore = dsIdx >= 0 ? packageChanges[dsIdx].before : pkg.detective_script;
-      const dsChange: FieldChange = { field: "detective_script", before: dsBefore, after: reassignmentResult.detectiveScript, kind: "prose" };
+      const dsChange: FieldChange = { field: "detective_script", before: dsBefore, after: reassignmentResult.detectiveScript + noteForRemoved, kind: "prose" };
       if (dsIdx >= 0) packageChanges[dsIdx] = dsChange; else packageChanges.push(dsChange);
 
       const ecBefore = evidenceCardsChange ? evidenceCardsChange.before : pkg.evidence_cards;
