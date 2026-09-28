@@ -72,6 +72,18 @@
 #      judgment call, same as every other check here — this just makes sure
 #      the question gets asked automatically instead of only when someone
 #      remembers to run the grep by hand.
+#   17. Detector status-predicate drift (ADR-0131 item 3). ADR-0055 widened
+#      every list_packages_with_* detector's status filter to include
+#      needs_review, specifically so the auto-remediation worker and this
+#      health check could still see a package the completion gate just held
+#      — without that, a held package is invisible to the systems meant to
+#      fix it. ADR-0072's migration silently reverted this for all 8
+#      detectors that existed then, a month before a routine sweep caught it.
+#      Ground truth from list_defect_detector_status_coverage() (live
+#      pg_get_functiondef introspection, ADR-0131 item 3), diffed against a
+#      reviewed allowlist of the functions that legitimately stay
+#      completed-only (scripts/detect-status-predicate-drift.mjs's own header
+#      comment has the per-function reasoning). ESCALATE-ONLY.
 #
 # On failure: opens (or comments on) a GitHub issue labelled `health-alert`.
 # Always: writes monitoring/health-status.md and commits it if changed.
@@ -405,6 +417,22 @@ jobs:
             fi
           fi
 
+          # 17. Detector status-predicate drift (ADR-0131 item 3 detector).
+          # Requires SUPABASE_URL/SUPABASE_SERVICE_KEY (live DB introspection,
+          # not local source). ESCALATE-ONLY.
+          PREDDRIFT=$(node scripts/detect-status-predicate-drift.mjs --json 2>/tmp/preddrift-err.log || echo "QUERY_FAILED")
+          if [ "$PREDDRIFT" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the status-predicate-drift detector: $(tr '\n' ' ' < /tmp/preddrift-err.log)\n"
+            PREDDRIFT_COUNT="?"
+          else
+            PREDDRIFT_COUNT=$(echo "$PREDDRIFT" | jq '(.flagged | length) + (.staleAllowlistEntries | length)')
+            if [ "$PREDDRIFT_COUNT" -gt 0 ]; then
+              FLAGGED_FN_TXT=$(echo "$PREDDRIFT" | jq -r '[.flagged[] | .function_name] | join(", ")')
+              STALE_ALLOW_TXT=$(echo "$PREDDRIFT" | jq -r '[.staleAllowlistEntries[]] | join(", ")')
+              PROBLEMS="${PROBLEMS}- 🟠 ${PREDDRIFT_COUNT} detector status-predicate finding(s) — possibly reverted to completed-only: ${FLAGGED_FN_TXT:-none}; stale allowlist entries: ${STALE_ALLOW_TXT:-none}\n"
+            fi
+          fi
+
           # Write status file
           mkdir -p monitoring
           {
@@ -438,6 +466,7 @@ jobs:
             echo "| Unconfessed detective-style culprits — escalate only (30 days) | ${UCC_COUNT} |"
             echo "| Truncated concept messages — escalate only (30 days) | ${TRUNC_COUNT} |"
             echo "| Stale hardcoded models — escalate only | ${STALEMODEL_COUNT} |"
+            echo "| Detector status-predicate drift — escalate only | ${PREDDRIFT_COUNT} |"
           } > monitoring/health-status.md
 
           if [ -n "$PROBLEMS" ]; then
