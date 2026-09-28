@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 314 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 315 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -103,6 +103,7 @@ This index organizes 314 published guides by topic cluster. All guides are avail
 - [Company Holiday Party Murder Mystery](https://www.mysterymaker.party/blog/murder-mystery-for-company-holiday-party): Plan a murder mystery company holiday party for 20-100+ people. Budget justification, inclusive themes, and a step-by-step guide to pitch leadership.
 - [Murder Mystery for a Company Retreat](https://www.mysterymaker.party/blog/murder-mystery-for-company-retreat): Add a murder mystery to your company retreat for evening entertainment or a full team exercise. Works at any venue: hotels, cabins, resorts, or offices.
 - [Murder Mystery for Leadership Retreats](https://www.mysterymaker.party/blog/murder-mystery-for-executive-leadership-retreat): Use a murder mystery at your leadership retreat to develop strategic thinking and decision-making under uncertainty. Designed for C-suite and senior teams.
+- [Hanukkah Murder Mystery Party](https://www.mysterymaker.party/blog/murder-mystery-for-hanukkah-party): Create a Hanukkah murder mystery with eight nights of progressive clues, menorah themes, and family celebration format. Jewish holiday party entertainment.
 - [Murder Mystery for Homeschool Curriculum](https://www.mysterymaker.party/blog/murder-mystery-for-homeschool-curriculum): Use murder mystery activities in your homeschool curriculum for cross-curricular learning. Covers history, science, writing, logic, and co-op group formats.
 - [Murder Mystery Games for Library Programs](https://www.mysterymaker.party/blog/murder-mystery-for-library-programs): Run a murder mystery program at your public library on a small budget. Community engagement planning guide with all-ages adaptations and practical setup steps.
 - [Murder Mystery Games for Summer Camp](https://www.mysterymaker.party/blog/murder-mystery-for-summer-camp-activities): Plan a murder mystery for summer camp with outdoor scene adaptations, large group management techniques, and practical weather contingency backup plans.
@@ -267,7 +268,7 @@ This index organizes 314 published guides by topic cluster. All guides are avail
 ## Logistics (Food, Costumes, Decor, Invitations)
 
 - [Are Murder Mystery Parties Appropriate for Kids?](https://www.mysterymaker.party/blog/are-murder-mystery-parties-appropriate-for-kids): Are murder mysteries safe for kids? Age-appropriate guidelines, how to adapt games, and which versions actually work.
-- [Free Printable Murder Mystery Games](https://www.mysterymaker.party/blog/free-murder-mystery-games-printable): Free printable murder mystery games for 6-12+ players: instant kits, character scripts, and clue cards — plus when a custom kit beats a free template.
+- [Free Murder Mystery Games (Printable)](https://www.mysterymaker.party/blog/free-murder-mystery-games-printable): Free murder mystery games (printable) for 6-12+ players — instant kits, character scripts, and clue cards. See when a custom kit beats a free template.
 - [How to Host a Rockstar Murder Mystery Party](https://www.mysterymaker.party/blog/how-to-host-a-rockstar-murder-mystery-party-music-industry-mysteries-with-backstage-drama): Rock and roll all night while solving murders in music industry mystery parties featuring bands and backstage drama.
 - [Murder Mystery Party Cleanup Guide](https://www.mysterymaker.party/blog/murder-mystery-party-cleanup-guide): Cleanup strategies for murder mystery parties. Pre-party prep, prop organization, reusable vs disposable, and post-event timelines for stress-free hosting.
 - [Murder Mystery Party Decorations: Atmosphere on Any Budget](https://www.mysterymaker.party/blog/murder-mystery-party-decorations-ideas): Budget-friendly murder mystery party decorations by theme. Atmosphere creation, DIY vs. store-bought, and high-impact decoration priorities.
