@@ -244,6 +244,8 @@ Jonathan asked directly: is there a way to make sure this doesn't happen again? 
 
 **Verified clean with an independent scan, not trusting this session's own account, exactly as the previous addendum did.**
 
+**Full historical corpus sweep — deliberately declined, Jonathan's call, same day.** Raised as the natural next question once the code fix landed. Declined: "Remove a Character" purchases are infrequent, the last one predates both today's fixes by more than a month, and that customer has almost certainly already run their event — the exposure window for any remaining historical leak is effectively closed even where one might exist. The 2 packages caught and fixed today were both found via targeted checks (one from the original sweep that triggered this whole thread, one from checking the fix's own known blind spot), not a full sweep. No standing action beyond this — revisit only if a new signal surfaces (a customer report, or a future "Remove a Character" purchase turning up something on an older package).
+
 **Key files touched by this addendum:** `supabase/functions/adapt-mystery-apply/index.ts` (title-stripping added to the bare-first-name fallback, redeployed version 23); `supabase/functions/regenerate-child-content/index.ts` (same fix ported into its own independent copy, redeployed version 23, `verify_jwt: true` preserved on both); `mystery_characters`/`mystery_packages.master_context` on package `a0a985a9` (data-only, 10 character-field edits + a `master_context` substitution pass).
 
 ## Key files
