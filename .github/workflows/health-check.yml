@@ -86,7 +86,17 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # 22, not 20 (fixed 2026-09-28): @google-analytics/data@7.2.0, a
+          # devDependency added the same day, requires node >=22 -- `npm ci`
+          # respects engine requirements the same way `npm install` does, so
+          # this workflow was one scheduled run away from failing outright
+          # (found while fixing the identical break in
+          # test-roster-extraction.yml, ADR-0131 item 1/Addendum 4). This is
+          # the actual production defect-alerting system -- unlike a failed
+          # CI check, a silently-broken health-check run means real
+          # customer-facing defects stop getting flagged with no obvious
+          # signal that anything changed.
+          node-version: 22
       - name: Install dependencies (for check 12, roster-mismatch detector)
         run: npm ci
 
