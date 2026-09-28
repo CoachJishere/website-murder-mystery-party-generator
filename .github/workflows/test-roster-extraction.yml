@@ -39,7 +39,14 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # 22, not 20: @google-analytics/data@7.2.0 (an unrelated devDependency
+          # added the same day this workflow was written) requires node >=22,
+          # and `npm install` fails outright (EBADENGINE) on anything older --
+          # this workflow's own first run failed in 11s on exactly that, before
+          # the test suite ever got a chance to run. Local "tests pass" checks
+          # never exercise a fresh `npm install`, so this class of gap doesn't
+          # show up until CI actually runs it.
+          node-version: 22
 
       - name: Install dependencies
         run: npm install
