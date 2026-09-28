@@ -59,6 +59,19 @@
 #      snapshot false positive it was built to exclude). ESCALATE-ONLY: like
 #      check 12, a mismatch means the delivered cast doesn't match what the
 #      customer approved — not something to guess-fix automatically.
+#   16. Stale hardcoded models (ADR-0131 item 5, promoting CLAUDE.md's manual
+#      "Model Upgrades" grep checklist to something that actually runs).
+#      ADR-0098 Addenda 7/8/ADR-0103 Addendum 40 found three edge functions
+#      still on Haiku (with stale temperature/thinking/max_tokens too) weeks
+#      after the ADR-0074 blanket Sonnet 5 upgrade — each found only by
+#      accident, not by any standing check. Pure static analysis
+#      (scripts/detect-stale-models.mjs), no DB/API call — greps every
+#      supabase/functions/*/index.ts for a Claude model string and compares
+#      against a small in-script allowlist of deliberately-narrow-task Haiku
+#      calls. ESCALATE-ONLY: "deliberately different" vs. "forgotten" is a
+#      judgment call, same as every other check here — this just makes sure
+#      the question gets asked automatically instead of only when someone
+#      remembers to run the grep by hand.
 #
 # On failure: opens (or comments on) a GitHub issue labelled `health-alert`.
 # Always: writes monitoring/health-status.md and commits it if changed.
@@ -375,6 +388,23 @@ jobs:
             fi
           fi
 
+          # 16. Stale hardcoded models (ADR-0131 item 5 detector).
+          # Pure static analysis, no DB/API call — greps supabase/functions/
+          # */index.ts for a Claude model string and diffs against the
+          # in-script allowlist. ESCALATE-ONLY.
+          STALEMODEL=$(node scripts/detect-stale-models.mjs --json 2>/tmp/stalemodel-err.log || echo "QUERY_FAILED")
+          if [ "$STALEMODEL" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the stale-model detector: $(tr '\n' ' ' < /tmp/stalemodel-err.log)\n"
+            STALEMODEL_COUNT="?"
+          else
+            STALEMODEL_COUNT=$(echo "$STALEMODEL" | jq '(.flagged | length) + (.staleAllowlistEntries | length)')
+            if [ "$STALEMODEL_COUNT" -gt 0 ]; then
+              FLAGGED_TXT=$(echo "$STALEMODEL" | jq -r '[.flagged[] | "\(.file):\(.line) [\(.model)]"] | join(", ")')
+              STALE_TXT=$(echo "$STALEMODEL" | jq -r '[.staleAllowlistEntries[] | "\(.file) [\(.model)] expected \(.expected), found \(.actual)"] | join(", ")')
+              PROBLEMS="${PROBLEMS}- 🟠 ${STALEMODEL_COUNT} stale-model finding(s) — possibly-forgotten: ${FLAGGED_TXT:-none}; stale allowlist entries: ${STALE_TXT:-none}\n"
+            fi
+          fi
+
           # Write status file
           mkdir -p monitoring
           {
@@ -407,6 +437,7 @@ jobs:
             echo "| Final-statement confession leaks — escalate only (30 days) | ${FSCL_COUNT} |"
             echo "| Unconfessed detective-style culprits — escalate only (30 days) | ${UCC_COUNT} |"
             echo "| Truncated concept messages — escalate only (30 days) | ${TRUNC_COUNT} |"
+            echo "| Stale hardcoded models — escalate only | ${STALEMODEL_COUNT} |"
           } > monitoring/health-status.md
 
           if [ -n "$PROBLEMS" ]; then
