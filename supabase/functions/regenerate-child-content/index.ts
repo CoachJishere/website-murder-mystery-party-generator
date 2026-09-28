@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { buildConversationExcerpt } from "../_shared/conversation-excerpt.ts";
+import { nameVariants, buildVariantRegex } from "../_shared/nameVariants.ts";
 
 /**
  * regenerate-child-content — ADR-0051 layer 3: the child-content regenerator.
@@ -512,54 +513,16 @@ async function loadPackage(packageId: string): Promise<PackageRow> {
 // against the actual list of characters removed from THIS package, not a
 // generic "any unrecognized name" heuristic that would false-positive on
 // ordinary prose.
-// nameVariants/buildVariantRegex ported verbatim from
-// supabase/functions/adapt-mystery-apply/index.ts — not shared/imported,
-// matching this codebase's existing "small helpers are duplicated per
-// function, not centralized" convention (see that file's own header for
-// why: two edge functions independently evolving their own copy is safer
-// here than a shared module that couples their deploys).
+// nameVariants/buildVariantRegex now imported from _shared/nameVariants.ts
+// (ADR-0131 item 4). Used to be ported verbatim from adapt-mystery-apply's
+// own copy, on the stated rationale that a shared module would "couple
+// their deploys" — checked before consolidating and that rationale doesn't
+// actually appear in the file it claimed to; the two copies had already
+// drifted out of sync twice (a bare-first-name fix and this file's own
+// missing title-skip fix, both found live and manually ported after the
+// fact) by the time this was written. See _shared/nameVariants.ts's header
+// for the full consolidation rationale.
 // ---------------------------------------------------------------------------
-
-function escapeRegex(s: string): string {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function nameVariants(fullName: string): string[] {
-  const variants = new Set<string>();
-  const trimmed = fullName.trim();
-  variants.add(trimmed);
-
-  const slashMatch = trimmed.match(/^(.*?)\/(\S+)( .*)$/);
-  if (slashMatch) {
-    const [, before, altToken, rest] = slashMatch;
-    variants.add(`${before}${rest}`.trim());
-    variants.add(`${altToken}${rest}`.trim());
-    variants.add(`${before}/${altToken}`.trim());
-  }
-
-  const dashMatch = trimmed.match(/^(.+?)\s+-\s+\S+$/);
-  if (dashMatch) variants.add(dashMatch[1].trim());
-
-  const tokens = trimmed.replace("/", " ").split(/\s+/).filter(Boolean);
-  const surname = tokens[tokens.length - 1];
-  if (surname && surname.length >= 4) variants.add(surname);
-
-  // Bare-first-name fallback, title-aware (ported from adapt-mystery-apply
-  // 2026-09-28 — this copy had drifted out of sync since being forked
-  // 2026-09-06, missing this fix entirely until now). Skips a leading title
-  // (Dr./Mr./Mrs./Ms./Prof.) so a titled dual-gender name like "Dr. Cameron/
-  // Camille Reeves" still yields "Cameron", not the useless "Dr." token.
-  const titleRegex = /^(?:Dr|Mr|Mrs|Ms|Prof)\.?$/i;
-  const firstNameToken = tokens.find((t) => !titleRegex.test(t));
-  if (firstNameToken && firstNameToken.length >= 4) variants.add(firstNameToken);
-
-  return [...variants].filter((v) => v.length >= 3);
-}
-
-function buildVariantRegex(variants: string[]): RegExp {
-  const sorted = [...variants].sort((a, b) => b.length - a.length);
-  return new RegExp(sorted.map((v) => `\\b${escapeRegex(v)}\\b`).join("|"), "gi");
-}
 
 interface RemovedCharacter { name: string; regex: RegExp }
 
