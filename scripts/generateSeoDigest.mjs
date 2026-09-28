@@ -277,28 +277,40 @@ Context (re-derive from ground truth, don't trust this note alone): the H1 lives
     // day. GSC sitemap ping was attempted but failed locally on a permission
     // error (likely wrong local credential, not a live problem — see vault
     // note) — Google's own indexing timeline was never independently confirmed.
+    //
+    // PARTIALLY RESOLVED 2026-09-28: the internal-links gap flagged just above
+    // was already fixed 2026-09-09 (commit aa7d6c6, "add inbound cross-links to
+    // the new locale party-ideas series") — one insertion per locale from
+    // murder-mystery-escape-room-kits-comparison via cross_link_map.json's
+    // lang_insertions. Re-verified live 2026-09-28: cross_link_map.json has all
+    // 12 locale entries, and a live fetch of the fr, ja, and da versions of the
+    // source page all show the link actually rendered in the prerendered HTML
+    // (e.g. fr: "consultez notre [comparaison d'idées de soirée selon la
+    // culture](/fr/blog/alternative-party-ideas-by-culture)"). Internal-links
+    // check is done — don't re-run it. Indexing/GSC/GA4 early-signal steps are
+    // still open and were NOT checked this pass: no GSC or GA4 tool was
+    // available in that session (only Supabase/Make/Vercel connectors were
+    // configured, and Supabase/Make were both down that day too). Needs a
+    // session with GSC URL Inspection API + GA4 access actually wired in.
     start: '2026-09-23',
     end: '2026-10-07',
-    title: 'Check indexing/early ranking on the new "alternative party ideas by culture" post series (12 locales)',
+    title: 'Check GSC indexing/early ranking on the "alternative party ideas by culture" post series (12 locales) — internal links already fixed',
     body:
       'Twelve non-EN locale versions of a new post type (real per-culture alternative-party-format comparisons, custom ' +
       'murder mystery positioned honestly alongside local alternatives) went live 2026-09-05 to 2026-09-08, all sharing ' +
-      'the slug <code>alternative-party-ideas-by-culture</code>. IndexNow (Bing) accepted all 12 URLs immediately, but ' +
-      'Google indexing was never independently confirmed — GSC sitemap submission failed locally on a credential error. ' +
-      'This was also inserted outside the normal publish pipeline, so it may have zero inbound internal links from other ' +
-      'posts (the pipeline\'s auto-cross-linking step never ran for it). Two weeks is enough time to check indexing ' +
-      'status properly; enough for early ranking signal is a stretch but worth a first look.',
-    prompt: `Check indexing and any early ranking/traffic signal for the new "alternative party ideas by culture" post series, and check whether it has any inbound internal links. Re-derive everything from ground truth (Supabase, GSC, GA4, live site) — do not trust this note's dates or claims, they are priors only.
+      'the slug <code>alternative-party-ideas-by-culture</code>. The inbound-internal-links gap this reminder used to ' +
+      'flag was fixed 2026-09-09 and re-confirmed live 2026-09-28 — don\'t re-check that part. What is still ' +
+      'unconfirmed is Google indexing status and any early GSC/GA4 signal; that check needs a GSC + GA4 tool actually ' +
+      'available in the session (not the case as of 2026-09-28).',
+    prompt: `Check GSC indexing and any early ranking/traffic signal for the "alternative party ideas by culture" post series (12 locales, slug alternative-party-ideas-by-culture). Re-derive from ground truth. Note: the internal-links gap this reminder originally flagged is CLOSED (fixed 2026-09-09 commit aa7d6c6, re-verified live 2026-09-28 — cross_link_map.json lang_insertions has all 12 locales linking in from murder-mystery-escape-room-kits-comparison, confirmed rendered on fr/ja/da at minimum). Do not re-do that check; focus on indexing/ranking only.
 
 0. GROUND TRUTH ON WHAT WAS PUBLISHED: query Supabase blog_posts where slug='alternative-party-ideas-by-culture' — confirm which languages exist, their actual published_at timestamps, and status. Prior claims to verify: 12 locales (de, es, fr, it, pt, nl, da, sv, fi, ko, ja, zh-cn), published 2026-09-05 (de) to 2026-09-08 (the rest), all status='published', no 'en' row exists (by design).
 
-1. INDEXING STATUS (primary goal — 2 weeks is enough time for this even if not for ranking): for each of the 12 locale URLs (https://www.mysterymaker.party/{lang}/blog/alternative-party-ideas-by-culture/), use the GSC URL Inspection API to check indexing status. Report how many of the 12 are indexed vs. not, and for any not indexed, what reason GSC gives (crawled-not-indexed, discovered-not-indexed, etc.).
+1. INDEXING STATUS (primary goal): for each of the 12 locale URLs (https://www.mysterymaker.party/{lang}/blog/alternative-party-ideas-by-culture/), use the GSC URL Inspection API to check indexing status. Report how many of the 12 are indexed vs. not, and for any not indexed, what reason GSC gives (crawled-not-indexed, discovered-not-indexed, etc.).
 
-2. INTERNAL LINKS CHECK: this post was inserted directly into Supabase, bypassing the normal daily-publish pipeline's apply-crosslinks.mjs step (which auto-links newly-published slugs from other posts per cross_link_map.json). Check whether alternative-party-ideas-by-culture actually has any inbound internal links from other blog posts in any locale — grep the live prerendered HTML of a sample of other posts per locale, or check cross_link_map.json for whether this slug appears as a link target anywhere. If it has zero or near-zero inbound internal links, flag that plainly as a likely reason for slow indexing/authority, and suggest 2-3 natural linking candidates per locale (e.g. that locale's "themed party ideas" or escape-room comparison post) rather than proposing a blanket fix.
+2. EARLY SIGNAL (bonus, don't over-read into a few weeks of data): pull GSC performance data (impressions/clicks/position) for each of the 12 URLs since publish. Also check GA4 for any sessions landing on these URLs, and note the traffic source (organic search, direct, referral — especially any AI-answer-engine referral pattern if that's tracked). Frame any numbers as "too early to be conclusive" rather than a verdict.
 
-3. EARLY SIGNAL (bonus, don't over-read into 2-3 weeks of data): pull GSC performance data (impressions/clicks/position) for each of the 12 URLs since publish. Also check GA4 for any sessions landing on these URLs, and note the traffic source (organic search, direct, referral — especially any AI-answer-engine referral pattern if that's tracked). Given the short window, frame any numbers as "too early to be conclusive" rather than a verdict — the goal here is confirming discovery is happening, not judging whether the content strategy worked.
-
-4. VERDICT: is this series being discovered and indexed normally, or is something (missing internal links, a crawl issue, the rot-signal-style gate that gap-checks other locales) holding it back? If discovery looks fine, say so plainly and don't manufacture concern. If not, be specific about which locales and why.`,
+3. VERDICT: is this series being discovered and indexed normally, or is something (a crawl issue, the rot-signal-style gate that gap-checks other locales) holding it back, now that internal links are confirmed present? If discovery looks fine, say so plainly.`,
   },
   {
     // Not an SEO item -- riding along on this digest for the same reason
@@ -424,39 +436,38 @@ If imported: generate a fresh test package and manually assess whether character
     // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
     // item. Full detail: vault
     // 01_Projects/Mystery-Maker/da-sv-partial-localization-2026-07-19-mystery-maker.md.
+    //
+    // RE-CHECKED 2026-09-28 (string count only -- usage/revenue data was NOT
+    // checked, Supabase + GA4 were both unreachable that session): re-flattened
+    // da.json/sv.json against en.json's 1347 leaf keys. da is now 46.8%
+    // untranslated (631 values still identical to English), sv is 46.5% (627).
+    // Down from ~63% on 2026-07-19 -- some incidental improvement has landed,
+    // but it's still nowhere near the ~1.7% baseline the other 11 non-EN
+    // languages sit at (checked de/es for comparison: 23/1347, 1.7% each). The
+    // market-priority question (is there real da/sv customer volume to justify
+    // closing the rest of the gap) is still open -- still needs GA4
+    // sessions-by-locale and/or Supabase conversations.language distribution,
+    // neither of which was reachable this pass.
     start: '2026-09-26',
     end: '2026-10-17',
-    title: 'Danish and Swedish locales are ~63% untranslated -- needs a market-priority decision',
+    title: 'Danish and Swedish locales are ~47% untranslated (down from 63%) -- still needs a market-priority decision',
     body:
-      'Found 2026-07-19: <code>da.json</code> and <code>sv.json</code> are only ~37% localized (the other 11 ' +
-      'non-EN languages are effectively fully translated). This has sat as an open decision since -- are da/sv ' +
-      'meaningful markets worth a full localization pass, or should it stay parked (accepting that new English ' +
-      'strings keep leaking through in those two locales)?',
+      'Re-checked 2026-09-28: <code>da.json</code> is 46.8% untranslated, <code>sv.json</code> is 46.5% (down from ' +
+      '~63% on 2026-07-19, but still far above the ~1.7% the other 11 non-EN languages sit at). The usage/revenue ' +
+      'side of this was not re-checked this pass (Supabase and GA4 were unreachable) -- are da/sv meaningful ' +
+      'markets worth a full localization pass, or should it stay parked?',
     prompt: `Help Jonathan decide whether Danish and Swedish are worth a full localization pass for Mystery Maker, or should stay parked. Re-derive from ground truth, don't trust the 2026-07-19 baseline numbers as still accurate.
 
 1. Re-run the untranslated-string count for da.json and sv.json against en.json (flatten both files, compare values) -- has the ~63% figure changed at all since 2026-07-19 (e.g. from smaller fixes landing incidentally)?
 2. Pull actual usage/revenue signal for these two locales if available (GA4 sessions by locale, Stripe purchases by locale/currency, or conversations.language distribution in Supabase) -- is there any real customer volume in da/sv today, even partial?
 3. Present the decision plainly: if da/sv volume is negligible, recommend explicitly parking it (and say so in this reminder's retirement note); if there's real signal, scope what a full pass would take (same per-file approach used for the other 11 languages) and let Jonathan decide whether to schedule it.`,
   },
-  {
-    // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
-    // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
-    // item, though GSC-adjacent. Full detail: vault
-    // 01_Projects/Mystery-Maker/gsc-sitemap-submission-permission-error-2026-09-07-mystery-maker.md.
-    start: '2026-09-26',
-    end: '2026-10-17',
-    title: 'GSC sitemap submission -- was the 2026-09-07 fix actually confirmed working in CI?',
-    body:
-      'A double-slash URL bug in sitemap submission was found and fixed 2026-09-07/08, confirmed working when ' +
-      'run locally, but the note\'s own "real confirmation" step -- checking the 2026-09-09 09:17 UTC scheduled ' +
-      'CI run\'s log -- was never followed up on. Low severity (non-blocking, <code>continue-on-error: true</code>, ' +
-      'sitemap discovery still happens on its own) but a dangling verification step.',
-    prompt: `Confirm whether the GSC sitemap-submission fix from 2026-09-07/08 (double-slash URL bug in scripts/submit-sitemap-gsc.mjs) is actually working in production CI, not just locally. Re-derive from ground truth.
-
-1. Check recent GitHub Actions logs for publish-daily-blog.yml / publish-specific-slugs.yml runs since 2026-09-08 -- has the "Submit sitemap to Google Search Console" step succeeded consistently, or is it still failing/being silently swallowed by continue-on-error?
-2. If it's been succeeding, close this out plainly -- the fix held, nothing more to do.
-3. If it's still failing: diff the CI GSC_SERVICE_ACCOUNT_JSON secret against the local .google-search-console-credentials.json file used for the working local test, per the note's own next-step suggestion.`,
-  },
+  // RETIRED 2026-09-28: confirmed working in CI. Checked the "Submit sitemap to
+  // Google Search Console" step across 5 publish-daily-blog.yml runs spanning
+  // 2026-09-13 to 2026-09-27 (databaseId 34760912649, 35107094632, 35513992780,
+  // 36011349099, 36326974899) via `gh run view --json jobs` -- every one succeeded.
+  // The 2026-09-07/08 double-slash fix held. Not re-adding this reminder --
+  // revisit only if the step starts failing again, which would be a new incident.
   {
     // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
     // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
