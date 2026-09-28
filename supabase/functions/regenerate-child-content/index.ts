@@ -256,14 +256,26 @@ const ROLE_DETERMINATION = `<role_determination>
 This character's role has ALREADY been established in the database — do not re-derive it. It is given below as "Established role". Write consistently with that role.
 </role_determination>`;
 
+// ADR-0103 Addendum 59: ported from the Make.com Child blueprint's `47`
+// version (anti-clustering + cast-wide floor guarantee) — this edge function
+// keeps its own independent copy of these rules (see file header), so a
+// blueprint-side fix does NOT automatically reach here. Keep these two
+// functions textually in sync with the blueprint's `<rumor_targeting_rules>`/
+// `<question_targeting_rules>` blocks whenever either changes.
 function rumorTargetingRules(style: MysteryStyle): string {
   return style === "detective"
     ? `<rumor_targeting_rules>
-Distribute rumors and accusations across characters you have HOSTILE or NEUTRAL relationships with per master_context.relationshipMatrix. NEVER target characters marked Friendly. Never target the victim (the victim is not a player). Pick 3 different cast members for rumors.
+Distribute rumors and accusations across characters you have HOSTILE or NEUTRAL relationships with per master_context.relationshipMatrix. NEVER target characters marked Friendly. Never target the victim (the victim is not a player). Pick 3 different cast members for rumors. CRITICAL - avoid cast-wide clustering: master_context's misdirection strategy already names 1-2 characters who should look suspicious early. Every character's rumors are generated independently, so if everyone defaults to targeting those same named characters, the whole cast's suspicion piles onto just 1-2 people while others get none. Only target a misdirection-strategy character if you have no other eligible Hostile/Neutral relationship -- otherwise prefer your other eligible relationships, including minor or secondary ones, so suspicion spreads across the cast instead of concentrating. There is also a cast-wide floor to keep in mind: count the full cast list you've been given (excluding yourself and the victim) -- across the whole game, every character should ideally end up named as a rumor target by roughly HALF of the other characters (minimum 2, regardless of cast size). Since your own 3 picks are only a fraction of the whole picture, use that floor as a reason to actively avoid always defaulting to the same few obvious names -- deliberately include a less obviously-suspicious cast member sometimes, not just the misdirection-flagged ones.
 </rumor_targeting_rules>`
     : `<rumor_targeting_rules>
-Distribute rumors across characters with HOSTILE or NEUTRAL relationships per master_context.relationshipMatrix. NEVER target Friendly characters or the victim. Pick 3 different cast members.
+Distribute rumors across characters with HOSTILE or NEUTRAL relationships per master_context.relationshipMatrix. NEVER target Friendly characters or the victim. Pick 3 different cast members. CRITICAL - avoid cast-wide clustering: master_context's misdirection strategy already names 1-2 characters who should look suspicious early. Every character's rumors are generated independently, so if everyone defaults to targeting those same named characters, the whole cast's suspicion piles onto just 1-2 people while others get none. Only target a misdirection-strategy character if you have no other eligible Hostile/Neutral relationship -- otherwise prefer your other eligible relationships, including minor or secondary ones, so suspicion spreads across the cast instead of concentrating. There is also a cast-wide floor to keep in mind: count the full cast list you've been given (excluding yourself and the victim) -- across the whole game, every character should ideally end up named as a rumor target by roughly HALF of the other characters (minimum 2, regardless of cast size). Since your own 3 picks are only a fraction of the whole picture, use that floor as a reason to actively avoid always defaulting to the same few obvious names -- deliberately include a less obviously-suspicious cast member sometimes, not just the misdirection-flagged ones.
 </rumor_targeting_rules>`;
+}
+
+function questionTargetingRules(_style: MysteryStyle): string {
+  return `<question_targeting_rules>
+Across your 9 questions (3 each in Rounds 2-4), distribute targets across a variety of cast members using master_context.relationshipMatrix's Hostile and Neutral relationships -- don't default every question to whichever 1-2 characters master_context's misdirection strategy names as suspicious. Every character's questions are written independently, so if everyone gravitates to the same obvious names, those characters get grilled from every direction while most of the cast is barely questioned at all. Round 3's "target 3 different characters than round 2" rule still applies on top of this -- the point is variety both within your own questions AND relative to what the rest of the cast is likely asking. There is also a cast-wide floor to keep in mind: count the full cast list you've been given (excluding yourself and the victim) -- across the whole game, every character should ideally be asked at least one question by roughly HALF of the other characters (minimum 2, regardless of cast size). Since your own 9 questions are only a fraction of the whole picture, use that floor as a reason to spread your targets widely rather than spending most of your questions on the 1-2 most obviously-suspicious names.
+</question_targeting_rules>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -336,6 +348,7 @@ const GROUP_ROUNDS_DETECTIVE: PromptGroup = {
     "round2_questions", "round2_script", "round3_questions", "round3_script",
     "round4_questions", "round4_script", "final_statement",
   ],
+  extraRules: questionTargetingRules,
   schema: `{
   "round2Questions": "## ROUND 2: MOTIVES\\n\\n### QUESTIONS TO ASK\\n\\n1. **To [Cast Name]:** '[question in single quotes]'\\n\\n2. **To [Cast Name]:** '...'\\n\\n3. **To [Cast Name]:** '...'",
   "round2Script": "## ROUND 2: MOTIVES\\n\\n**YOUR SCRIPT**\\n\\n**When asked about your feelings toward the victim:**\\n\\n[3-4 paragraph prose script in first person, role-aware: murderer/accomplice scripts deflect; suspects show genuine motive but deny]",
@@ -355,6 +368,7 @@ const GROUP_ROUNDS_INNOCENT: PromptGroup = {
     "round2_questions", "round2_innocent", "round3_questions", "round3_innocent",
     "round4_questions", "round4_innocent", "final_innocent",
   ],
+  extraRules: questionTargetingRules,
   schema: `{
   "round2Questions": "## ROUND 2: MOTIVES\\n\\n### QUESTIONS TO ASK\\n\\n1. **To [Cast Name]:** '[question]'\\n\\n2. **To [Cast Name]:** '...'\\n\\n3. **To [Cast Name]:** '...'",
   "round2Innocent": "## ROUND 2: MOTIVES\\n\\n**IF YOU'RE INNOCENT**\\n\\n[3-4 paragraph prose script in first person — admit motive but deny acting on it; show what an innocent person with this motive would say]",
