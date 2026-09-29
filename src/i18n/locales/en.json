@@ -1920,5 +1920,27 @@
       "label": "Advertising",
       "description": "Used to measure and personalize ads."
     }
+  },
+  "seasonalSale": {
+    "halloween": {
+      "ribbon": {
+        "message": "Halloween Sale: {{percent}}% off all mysteries — ${{discountedPrice}} instead of ${{originalPrice}}. Code {{code}} auto-applied at checkout.",
+        "endLabel": "Ends October 31",
+        "ariaLabel": "Halloween sale: {{percent}}% off all mysteries"
+      },
+      "purchase": {
+        "endsLabel": "Sale ends October 31"
+      }
+    },
+    "holiday": {
+      "ribbon": {
+        "message": "Holiday Sale: {{percent}}% off all mysteries — ${{discountedPrice}} instead of ${{originalPrice}}. Code {{code}} auto-applied at checkout.",
+        "endLabel": "Ends December 31",
+        "ariaLabel": "Holiday sale: {{percent}}% off all mysteries"
+      },
+      "purchase": {
+        "endsLabel": "Sale ends December 31"
+      }
+    }
   }
 }

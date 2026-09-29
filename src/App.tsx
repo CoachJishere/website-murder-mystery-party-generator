@@ -13,6 +13,7 @@ import { captureLandingAttribution } from "@/lib/attribution";
 import { initPostHog, capturePageView } from "@/lib/posthog";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { WelcomeDiscountRibbon } from "@/components/WelcomeDiscountRibbon";
+import { SeasonalSaleRibbon } from "@/components/SeasonalSaleRibbon";
 import { RecentSalesPopup } from "@/components/RecentSalesPopup";
 import { ConsentBanner } from "@/components/ConsentBanner";
 import Index from "./pages/Index";
@@ -123,6 +124,7 @@ const AppRoutes = () => {
 
   return (
     <LoadingBoundary loading={loading}>
+      <SeasonalSaleRibbon />
       <WelcomeDiscountRibbon />
       <RecentSalesPopup enabled={showRecentSalesPopup} />
       <ConsentBanner />

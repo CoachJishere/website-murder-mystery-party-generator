@@ -1919,5 +1919,27 @@
       "label": "광고",
       "description": "광고 측정 및 맞춤화에 사용됩니다."
     }
+  },
+  "seasonalSale": {
+    "halloween": {
+      "ribbon": {
+        "message": "할로윈 세일: 모든 미스터리 {{percent}}% 할인 — ${{originalPrice}} 대신 ${{discountedPrice}}. 코드 {{code}}가 결제 시 자동 적용됩니다.",
+        "endLabel": "10월 31일에 종료",
+        "ariaLabel": "할로윈 세일: 모든 미스터리 {{percent}}% 할인"
+      },
+      "purchase": {
+        "endsLabel": "세일은 10월 31일에 종료됩니다"
+      }
+    },
+    "holiday": {
+      "ribbon": {
+        "message": "홀리데이 세일: 모든 미스터리 {{percent}}% 할인 — ${{originalPrice}} 대신 ${{discountedPrice}}. 코드 {{code}}가 결제 시 자동 적용됩니다.",
+        "endLabel": "12월 31일에 종료",
+        "ariaLabel": "홀리데이 세일: 모든 미스터리 {{percent}}% 할인"
+      },
+      "purchase": {
+        "endsLabel": "세일은 12월 31일에 종료됩니다"
+      }
+    }
   }
 }

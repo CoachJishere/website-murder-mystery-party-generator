@@ -1920,5 +1920,27 @@
       "label": "Publicité",
       "description": "Utilisés pour mesurer et personnaliser les publicités."
     }
+  },
+  "seasonalSale": {
+    "halloween": {
+      "ribbon": {
+        "message": "Offre Halloween : {{percent}}% de réduction sur tous les mystères — ${{discountedPrice}} au lieu de ${{originalPrice}}. Le code {{code}} est appliqué automatiquement au paiement.",
+        "endLabel": "Se termine le 31 octobre",
+        "ariaLabel": "Offre Halloween : {{percent}}% de réduction sur tous les mystères"
+      },
+      "purchase": {
+        "endsLabel": "L'offre se termine le 31 octobre"
+      }
+    },
+    "holiday": {
+      "ribbon": {
+        "message": "Offre des fêtes : {{percent}}% de réduction sur tous les mystères — ${{discountedPrice}} au lieu de ${{originalPrice}}. Le code {{code}} est appliqué automatiquement au paiement.",
+        "endLabel": "Se termine le 31 décembre",
+        "ariaLabel": "Offre des fêtes : {{percent}}% de réduction sur tous les mystères"
+      },
+      "purchase": {
+        "endsLabel": "L'offre se termine le 31 décembre"
+      }
+    }
   }
 }

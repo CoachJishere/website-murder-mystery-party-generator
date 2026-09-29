@@ -1919,5 +1919,27 @@
       "label": "Annoncering",
       "description": "Bruges til at måle og personalisere annoncer."
     }
+  },
+  "seasonalSale": {
+    "halloween": {
+      "ribbon": {
+        "message": "Halloween-udsalg: {{percent}}% rabat på alle mysterier — ${{discountedPrice}} i stedet for ${{originalPrice}}. Koden {{code}} tilføjes automatisk ved kassen.",
+        "endLabel": "Slutter 31. oktober",
+        "ariaLabel": "Halloween-udsalg: {{percent}}% rabat på alle mysterier"
+      },
+      "purchase": {
+        "endsLabel": "Udsalget slutter 31. oktober"
+      }
+    },
+    "holiday": {
+      "ribbon": {
+        "message": "Julesalg: {{percent}}% rabat på alle mysterier — ${{discountedPrice}} i stedet for ${{originalPrice}}. Koden {{code}} tilføjes automatisk ved kassen.",
+        "endLabel": "Slutter 31. december",
+        "ariaLabel": "Julesalg: {{percent}}% rabat på alle mysterier"
+      },
+      "purchase": {
+        "endsLabel": "Udsalget slutter 31. december"
+      }
+    }
   }
 }

@@ -1919,5 +1919,27 @@
       "label": "Advertenties",
       "description": "Worden gebruikt om advertenties te meten en te personaliseren."
     }
+  },
+  "seasonalSale": {
+    "halloween": {
+      "ribbon": {
+        "message": "Halloween-actie: {{percent}}% korting op alle mysteries — ${{discountedPrice}} in plaats van ${{originalPrice}}. Code {{code}} wordt automatisch toegepast bij het afrekenen.",
+        "endLabel": "Eindigt 31 oktober",
+        "ariaLabel": "Halloween-actie: {{percent}}% korting op alle mysteries"
+      },
+      "purchase": {
+        "endsLabel": "Actie eindigt 31 oktober"
+      }
+    },
+    "holiday": {
+      "ribbon": {
+        "message": "Feestdagenactie: {{percent}}% korting op alle mysteries — ${{discountedPrice}} in plaats van ${{originalPrice}}. Code {{code}} wordt automatisch toegepast bij het afrekenen.",
+        "endLabel": "Eindigt 31 december",
+        "ariaLabel": "Feestdagenactie: {{percent}}% korting op alle mysteries"
+      },
+      "purchase": {
+        "endsLabel": "Actie eindigt 31 december"
+      }
+    }
   }
 }

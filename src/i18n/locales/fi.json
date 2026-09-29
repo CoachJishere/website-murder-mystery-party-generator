@@ -1919,5 +1919,27 @@
       "label": "Mainonta",
       "description": "Käytetään mainonnan mittaamiseen ja kohdentamiseen."
     }
+  },
+  "seasonalSale": {
+    "halloween": {
+      "ribbon": {
+        "message": "Halloween-tarjous: {{percent}}% alennus kaikista mysteereistä — ${{discountedPrice}} hinnan ${{originalPrice}} sijaan. Koodi {{code}} lisätään automaattisesti kassalla.",
+        "endLabel": "Päättyy 31. lokakuuta",
+        "ariaLabel": "Halloween-tarjous: {{percent}}% alennus kaikista mysteereistä"
+      },
+      "purchase": {
+        "endsLabel": "Tarjous päättyy 31. lokakuuta"
+      }
+    },
+    "holiday": {
+      "ribbon": {
+        "message": "Joulutarjous: {{percent}}% alennus kaikista mysteereistä — ${{discountedPrice}} hinnan ${{originalPrice}} sijaan. Koodi {{code}} lisätään automaattisesti kassalla.",
+        "endLabel": "Päättyy 31. joulukuuta",
+        "ariaLabel": "Joulutarjous: {{percent}}% alennus kaikista mysteereistä"
+      },
+      "purchase": {
+        "endsLabel": "Tarjous päättyy 31. joulukuuta"
+      }
+    }
   }
 }

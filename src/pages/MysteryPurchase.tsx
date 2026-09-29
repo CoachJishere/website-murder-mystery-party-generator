@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { trackPurchasePageView, trackBeginCheckout } from "@/lib/analytics";
 import { useWelcomeDiscount } from "@/hooks/useWelcomeDiscount";
 import { ORIGINAL_PRICE, DISCOUNTED_PRICE, DISCOUNT_PERCENT, formatTimeRemaining } from "@/lib/discountUtils";
+import { getActiveSeasonalSale } from "@/lib/seasonalSaleConfig";
 import { Clock, Tag } from "lucide-react";
 
 interface Character {
@@ -79,6 +80,11 @@ const MysteryPurchase = () => {
   const isMobile = useIsMobile();
   const { t, i18n } = useTranslation();
   const { isActive: hasDiscount, discountInfo, timeRemaining } = useWelcomeDiscount();
+  const seasonalSale = getActiveSeasonalSale();
+  // A sitewide seasonal sale applies to every visitor regardless of account
+  // state, so it takes priority over (and doesn't stack with) the personal
+  // welcome discount for both the displayed price and the checkout prefill.
+  const effectiveDiscountActive = hasDiscount || !!seasonalSale;
 
   // Enhanced extraction functions with better pattern matching
   const extractGameOverview = (content: string): string => {
@@ -392,7 +398,7 @@ const MysteryPurchase = () => {
       toast.info(t("purchase.toasts.redirectingToCheckout"), { duration: 2000 });
 
       // Track checkout initiation
-      trackBeginCheckout(id, mystery?.theme || undefined, hasDiscount);
+      trackBeginCheckout(id, mystery?.theme || undefined, effectiveDiscountActive);
 
       // Construct URLs
       const baseUrl = window.location.origin;
@@ -407,11 +413,16 @@ const MysteryPurchase = () => {
       // Build Stripe checkout URL
       let stripeUrl = `https://buy.stripe.com/dRm4gAgls6c47UccYV2Nq03?prefilled_email=${encodeURIComponent(user.email)}&client_reference_id=${id}&success_url=${encodeURIComponent(successUrl)}&cancel_url=${encodeURIComponent(cancelUrl)}&locale=${getStripeLocale(i18n.language)}`;
 
-      // Auto-apply welcome discount promo code if active. Re-check expiry at
+      // Auto-apply a promo code if a discount is active. A sitewide seasonal
+      // sale (same 20%, no signup required) takes priority over the personal
+      // welcome discount when both would otherwise apply. Re-check expiry at
       // click time: the countdown state only refreshes every 15s, and Stripe
       // silently ignores expired promo codes (customer pays full price while
       // our UI implied a discount).
-      if (hasDiscount && discountInfo?.promoCode &&
+      const currentSeasonalSale = getActiveSeasonalSale();
+      if (currentSeasonalSale) {
+        stripeUrl += `&prefilled_promo_code=${encodeURIComponent(currentSeasonalSale.promoCode)}`;
+      } else if (hasDiscount && discountInfo?.promoCode &&
           new Date(discountInfo.expiresAt).getTime() > Date.now()) {
         stripeUrl += `&prefilled_promo_code=${encodeURIComponent(discountInfo.promoCode)}`;
       }
@@ -534,7 +545,7 @@ const MysteryPurchase = () => {
                       )} />
                     </div>
                     <div>
-                      {hasDiscount ? (
+                      {effectiveDiscountActive ? (
                         <>
                           <div className="flex items-center gap-2 mb-1">
                             <div className={cn(
@@ -554,7 +565,14 @@ const MysteryPurchase = () => {
                               {t('purchase.package.discountBadge', { percent: DISCOUNT_PERCENT, defaultValue: '{{percent}}% OFF' })}
                             </span>
                           </div>
-                          {timeRemaining && (
+                          {seasonalSale ? (
+                            <div className="flex items-center gap-1 text-xs" style={{ color: '#ff6b6b' }}>
+                              <Clock className="h-3 w-3" />
+                              {t(`seasonalSale.${seasonalSale.id}.purchase.endsLabel`, {
+                                defaultValue: seasonalSale.id === "halloween" ? "Sale ends October 31" : "Sale ends December 31",
+                              })}
+                            </div>
+                          ) : timeRemaining && (
                             <div className="flex items-center gap-1 text-xs" style={{ color: '#ff6b6b' }}>
                               <Clock className="h-3 w-3" />
                               {t("welcomeDiscount.purchase.expiresIn", {

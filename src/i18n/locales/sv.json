@@ -1919,5 +1919,27 @@
       "label": "Annonsering",
       "description": "Används för att mäta och anpassa annonser."
     }
+  },
+  "seasonalSale": {
+    "halloween": {
+      "ribbon": {
+        "message": "Halloween-rea: {{percent}}% rabatt på alla mysterier — ${{discountedPrice}} istället för ${{originalPrice}}. Koden {{code}} läggs till automatiskt i kassan.",
+        "endLabel": "Slutar 31 oktober",
+        "ariaLabel": "Halloween-rea: {{percent}}% rabatt på alla mysterier"
+      },
+      "purchase": {
+        "endsLabel": "Rean slutar 31 oktober"
+      }
+    },
+    "holiday": {
+      "ribbon": {
+        "message": "Helgrea: {{percent}}% rabatt på alla mysterier — ${{discountedPrice}} istället för ${{originalPrice}}. Koden {{code}} läggs till automatiskt i kassan.",
+        "endLabel": "Slutar 31 december",
+        "ariaLabel": "Helgrea: {{percent}}% rabatt på alla mysterier"
+      },
+      "purchase": {
+        "endsLabel": "Rean slutar 31 december"
+      }
+    }
   }
 }

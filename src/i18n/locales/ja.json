@@ -1919,5 +1919,27 @@
       "label": "広告",
       "description": "広告の測定とパーソナライズに使用されます。"
     }
+  },
+  "seasonalSale": {
+    "halloween": {
+      "ribbon": {
+        "message": "ハロウィンセール：全ミステリーが{{percent}}%オフ — ${{originalPrice}}のところ${{discountedPrice}}に。コード{{code}}はチェックアウト時に自動適用されます。",
+        "endLabel": "10月31日まで",
+        "ariaLabel": "ハロウィンセール：全ミステリーが{{percent}}%オフ"
+      },
+      "purchase": {
+        "endsLabel": "セールは10月31日まで"
+      }
+    },
+    "holiday": {
+      "ribbon": {
+        "message": "ホリデーセール：全ミステリーが{{percent}}%オフ — ${{originalPrice}}のところ${{discountedPrice}}に。コード{{code}}はチェックアウト時に自動適用されます。",
+        "endLabel": "12月31日まで",
+        "ariaLabel": "ホリデーセール：全ミステリーが{{percent}}%オフ"
+      },
+      "purchase": {
+        "endsLabel": "セールは12月31日まで"
+      }
+    }
   }
 }

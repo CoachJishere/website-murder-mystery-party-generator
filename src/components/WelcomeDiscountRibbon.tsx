@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Clock, Tag } from "lucide-react";
 import { useWelcomeDiscount } from "@/hooks/useWelcomeDiscount";
 import { formatTimeRemaining, DISCOUNT_PERCENT, ORIGINAL_PRICE, DISCOUNTED_PRICE } from "@/lib/discountUtils";
+import { getActiveSeasonalSale } from "@/lib/seasonalSaleConfig";
 import { useTranslation } from "react-i18next";
 
 export function WelcomeDiscountRibbon() {
@@ -9,7 +10,10 @@ export function WelcomeDiscountRibbon() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  if (!isActive || !timeRemaining) return null;
+  // A sitewide seasonal sale (Halloween/holiday) offers the same 20% to
+  // everyone, so showing both ribbons at once would just be two banners
+  // saying the same thing — the seasonal one wins while it's active.
+  if (!isActive || !timeRemaining || getActiveSeasonalSale()) return null;
 
   const timeStr = formatTimeRemaining(timeRemaining);
 

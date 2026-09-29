@@ -1919,5 +1919,27 @@
       "label": "广告",
       "description": "用于衡量和个性化广告。"
     }
+  },
+  "seasonalSale": {
+    "halloween": {
+      "ribbon": {
+        "message": "万圣节大促：所有谜团{{percent}}%折扣 — 原价${{originalPrice}}，现仅${{discountedPrice}}。结账时自动应用优惠码{{code}}。",
+        "endLabel": "10月31日结束",
+        "ariaLabel": "万圣节大促：所有谜团{{percent}}%折扣"
+      },
+      "purchase": {
+        "endsLabel": "促销将于10月31日结束"
+      }
+    },
+    "holiday": {
+      "ribbon": {
+        "message": "节日大促：所有谜团{{percent}}%折扣 — 原价${{originalPrice}}，现仅${{discountedPrice}}。结账时自动应用优惠码{{code}}。",
+        "endLabel": "12月31日结束",
+        "ariaLabel": "节日大促：所有谜团{{percent}}%折扣"
+      },
+      "purchase": {
+        "endsLabel": "促销将于12月31日结束"
+      }
+    }
   }
 }

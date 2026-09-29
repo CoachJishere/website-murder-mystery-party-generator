@@ -1919,5 +1919,27 @@
       "label": "Werbung",
       "description": "Wird verwendet, um Werbung zu messen und zu personalisieren."
     }
+  },
+  "seasonalSale": {
+    "halloween": {
+      "ribbon": {
+        "message": "Halloween-Angebot: {{percent}}% Rabatt auf alle Mysterien — ${{discountedPrice}} statt ${{originalPrice}}. Code {{code}} wird an der Kasse automatisch angewendet.",
+        "endLabel": "Endet am 31. Oktober",
+        "ariaLabel": "Halloween-Angebot: {{percent}}% Rabatt auf alle Mysterien"
+      },
+      "purchase": {
+        "endsLabel": "Angebot endet am 31. Oktober"
+      }
+    },
+    "holiday": {
+      "ribbon": {
+        "message": "Feiertagsangebot: {{percent}}% Rabatt auf alle Mysterien — ${{discountedPrice}} statt ${{originalPrice}}. Code {{code}} wird an der Kasse automatisch angewendet.",
+        "endLabel": "Endet am 31. Dezember",
+        "ariaLabel": "Feiertagsangebot: {{percent}}% Rabatt auf alle Mysterien"
+      },
+      "purchase": {
+        "endsLabel": "Angebot endet am 31. Dezember"
+      }
+    }
   }
 }
