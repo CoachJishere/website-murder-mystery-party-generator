@@ -4,6 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
   extractRosterFromMessage,
   findLatestConceptMessage,
+  isRosterExtractionAnomaly,
   mergeRosterContinuations,
 } from "../_shared/rosterExtraction.ts";
 
@@ -21,6 +22,13 @@ import {
  * plus a regex pass. The only thing worth gating is whose conversation can
  * be read, so unlike `mystery-webhook-trigger` this has no payment gate,
  * only an ownership check.
+ *
+ * ADR-0130 Addendum 2: also logs a free, deterministic anomaly row (no LLM
+ * call) when a character-list header exists but nothing under it parsed --
+ * see the check just before the response below. Deliberately NOT a paid
+ * Claude fallback like mystery-webhook-trigger's: most empty-roster hits here
+ * are a customer who simply hasn't finished their concept yet, and a paid
+ * retry would fire on that normal case constantly.
  */
 
 const ALLOWED_ORIGINS = [
@@ -114,6 +122,26 @@ serve(async (req) => {
     const characters = latestMessage
       ? extractRosterFromMessage(latestMessage.content || '')
       : [];
+
+    // ADR-0130 Addendum 2: distinguishes "customer hasn't finished their concept
+    // yet" (no character-list header anywhere -- normal, not logged) from "a
+    // character-list header exists but nothing under it parsed" -- the exact
+    // ADR-0130 Addendum 1 shape that silently blocked checkout for ~28 hours.
+    // Best-effort: a logging failure here must never break the actual roster
+    // response the customer is waiting on.
+    if (isRosterExtractionAnomaly(messages, characters)) {
+      console.warn(`[RosterAnomaly] conversation ${conversationId}: a character-list header is present but roster extraction found 0 characters`);
+      try {
+        const { error: anomalyError } = await supabaseAdmin.from('roster_extraction_anomalies').insert({
+          conversation_id: conversationId,
+          user_id: user.id,
+          player_count: conversation.player_count ?? null,
+        });
+        if (anomalyError) console.error('[RosterAnomaly] Failed to log anomaly row:', anomalyError);
+      } catch (logError) {
+        console.error('[RosterAnomaly] Failed to log anomaly row (threw):', logError);
+      }
+    }
 
     return new Response(
       JSON.stringify({

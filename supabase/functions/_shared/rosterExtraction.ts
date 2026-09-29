@@ -390,3 +390,23 @@ export function rosterOverlapFraction(a: ExtractedCharacter[], b: ExtractedChara
   for (const n of aNames) if (bNames.has(n)) shared++;
   return shared / Math.max(aNames.size, bNames.size, 1);
 }
+
+/**
+ * ADR-0130 Addendum 2: true when a character-list-shaped section header
+ * (any supported locale, via `sectionHeaderRegex`) is present somewhere in
+ * these messages but `characters` came back empty anyway - distinguishes
+ * "the parser has a bug" from "the customer hasn't written a roster yet"
+ * (which never has the header at all, so this correctly returns false).
+ *
+ * Used by `extract-concept-roster` to log a free, deterministic anomaly
+ * signal instead of firing a paid LLM fallback on every legitimate
+ * in-progress concept - confirmed via PostHog during the ADR-0130 Addendum 1
+ * investigation that most empty-roster checkout visits are exactly that
+ * (8 of 10 in the incident window), not bugs, so a fallback keyed on "empty"
+ * alone would spend money on the normal case constantly.
+ */
+export function isRosterExtractionAnomaly(messages: any[], characters: ExtractedCharacter[]): boolean {
+  if (characters.length > 0) return false;
+  return (messages ?? []).some((m: any) =>
+    (m.role === 'assistant' || m.is_ai) && sectionHeaderRegex.test(m.content || ''));
+}

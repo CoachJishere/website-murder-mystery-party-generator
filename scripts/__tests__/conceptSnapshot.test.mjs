@@ -58,7 +58,7 @@ const js = transformSync(
   { loader: 'ts', format: 'esm' },
 ).code;
 
-const { extractRosterFromMessage, findLatestConceptMessage, rosterDiffersMeaningfully, isPlausibleRosterCandidate, rosterOverlapFraction } = await import(
+const { extractRosterFromMessage, findLatestConceptMessage, rosterDiffersMeaningfully, isPlausibleRosterCandidate, rosterOverlapFraction, isRosterExtractionAnomaly } = await import(
   'data:text/javascript;base64,' + Buffer.from(js).toString('base64')
 );
 
@@ -401,6 +401,46 @@ check('ADR-0130: a zero-space bare hyphen is still NOT a valid separator (no rei
   // "Name-Description" with no space anywhere, so this must keep NOT matching.
   const names = extractRosterFromMessage(`## Character List (4 players)\n\n1. Test-Description with no spaces around the hyphen at all\n\n${roster(['A One', 'B Two', 'C Three'])}`).map((c) => c.name);
   assert.ok(!names.some((n) => n.startsWith('Test-Description')), `zero-space hyphen should not match as name+separator; got: ${names.join(', ')}`);
+});
+
+// --- ADR-0130 Addendum 2: the checkout-path anomaly detector ----------------------
+// `extract-concept-roster` (the pre-purchase preview) has no LLM fallback, unlike
+// real generation - most empty-roster hits there are a customer who simply hasn't
+// finished their concept yet, not a bug. `isRosterExtractionAnomaly` is the free,
+// deterministic signal that tells the two cases apart: a character-list-shaped
+// header present with nothing parseable under it (the actual ADR-0130 Addendum 1
+// shape that blocked Mel and Alison) vs. no header at all (normal, in-progress).
+const msgWithBrokenRoster = {
+  id: 'a1', role: 'assistant', created_at: '2026-09-28T00:00:00Z',
+  content: '## Character List (4 players)\n\nSome unstructured prose describing four suspects without any numbered or bulleted lines at all, so nothing here matches the line parser even though the section header itself is completely well-formed.',
+};
+const msgStillDrafting = {
+  id: 'a2', role: 'assistant', created_at: '2026-09-28T00:00:00Z',
+  content: 'Great, let\'s keep building this out! What theme are you thinking for your mystery?',
+};
+
+check('ADR-0130 Addendum 2: a header present with nothing parseable under it IS flagged as an anomaly', () => {
+  const characters = extractRosterFromMessage(msgWithBrokenRoster.content);
+  assert.strictEqual(characters.length, 0, 'sanity check: this broken roster should not parse');
+  assert.ok(isRosterExtractionAnomaly([msgWithBrokenRoster], characters), 'a real header + zero parsed characters should be flagged');
+});
+
+check('ADR-0130 Addendum 2: a customer still mid-concept (no header at all) is NOT flagged - the normal case', () => {
+  const characters = extractRosterFromMessage(msgStillDrafting.content);
+  assert.strictEqual(characters.length, 0);
+  assert.ok(!isRosterExtractionAnomaly([msgStillDrafting], characters), 'no header present should never be flagged - this is the common, legitimate empty-roster case');
+});
+
+check('ADR-0130 Addendum 2: a successfully-parsed roster is never flagged, regardless of header shape', () => {
+  const goodMsg = { id: 'a3', role: 'assistant', created_at: '2026-09-28T00:00:00Z', content: draft1 };
+  const characters = extractRosterFromMessage(goodMsg.content);
+  assert.ok(characters.length > 0, 'sanity check: draft1 should parse fine');
+  assert.ok(!isRosterExtractionAnomaly([goodMsg], characters));
+});
+
+check('ADR-0130 Addendum 2: a header buried in one message among several is still found', () => {
+  const characters = [];
+  assert.ok(isRosterExtractionAnomaly([msgStillDrafting, msgWithBrokenRoster], characters), 'must scan every message, not just the first/last');
 });
 
 console.log(`\n${passed} checks passed.`);

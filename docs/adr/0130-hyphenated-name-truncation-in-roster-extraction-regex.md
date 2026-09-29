@@ -78,3 +78,23 @@ Confirmed directly against both customers' real conversation content (fetched vi
 - `scripts/__tests__/conceptSnapshot.test.mjs` — 4 new regression checks covering both this ADR's bug and this addendum's; 25/25 passing. Run: `node scripts/__tests__/conceptSnapshot.test.mjs`.
 - No `mystery_characters`/package data required correction — zero purchases completed while the bug was live.
 - CHANGELOG.md 2026-09-28 entries.
+
+## Addendum 2 (2026-09-29): closed the pre-purchase detection gap Addendum 1 left open
+
+Addendum 1 fixed the regex and added CI-adjacent regression tests, but left one thing genuinely unaddressed: this whole incident's actual failure mode — a regex regression silently blocking checkout — happened entirely on the pre-purchase path, and every quality-check mechanism in this codebase (detectors, the completion gate, `auto-remediate-packages`, health-check.yml) operates on `mystery_packages`/`mystery_characters` *after* generation. A separate audit thread (ADR-0131) independently named this exact gap in its Part 3A: "no detector coverage of the pre-purchase/checkout path at all... nothing here would have caught it even in principle, at any layer, because none of it runs before a purchase." It was documented but never turned into a decision item there.
+
+**Considered and rejected: a paid Claude fallback on `extract-concept-roster`, mirroring `mystery-webhook-trigger`'s post-purchase one.** Checked the actual usage pattern first, via PostHog pageview events on `/mystery/purchase/:id` during the Addendum 1 incident window: of 10 conversations that reached checkout, only Mel's and Alison's had a genuinely complete roster the bug blocked — the other 8 hit the same "couldn't detect" message for a completely different, correct reason (their concept simply wasn't finished yet). A paid LLM fallback keyed on "roster extraction returned empty" would fire on that ordinary, majority case constantly, not just on the rare real bug. Also out of scope without explicit sign-off per standing policy on new metered API paths.
+
+**Built instead: a free, deterministic anomaly signal.** Added `isRosterExtractionAnomaly(messages, characters)` to `_shared/rosterExtraction.ts` — true only when a character-list-shaped section header (via the already-shared `sectionHeaderRegex`, every supported locale) is present somewhere in the conversation but nothing parsed under it. This structurally cannot fire on the normal "still drafting" case, since that case has no header at all yet. `extract-concept-roster` now logs a row to a new `roster_extraction_anomalies` table whenever this fires (best-effort — a logging failure is caught and cannot break the actual customer-facing response). A new `list_roster_extraction_anomalies(_since)` RPC (excludes `is_test`, groups by conversation) feeds `health-check.yml` check 18, with a tighter 24h window than the 30-day window used elsewhere, since the entire point is fast notice rather than trend tracking.
+
+**Verification.** Added 4 regression tests to `conceptSnapshot.test.mjs` (29 checks total) covering the flag and no-flag cases, including a header buried among several messages. Ran the actual new health-check bash fragment against live production data twice — once confirming a clean empty-result render, once against a throwaway conversation (created, tested, then fully deleted, not a real customer's) to confirm the found-a-hit formatting path renders correctly too, since an untested alert path would defeat the point of building this at all. Deployed `extract-concept-roster` via Supabase CLI (`verify_jwt` unchanged) and the migration via direct apply.
+
+**Why this is the right layer for the fix, not ADR-0131 itself.** ADR-0131 is about the machinery that governs already-generated package content; this gap sits one step earlier, in the concept-chat/checkout path, and is a direct continuation of this ADR's own incident rather than a new finding from that audit. Logged here to keep the incident's full arc — bug, fix, regression, fix, detection gap, detection — in one place; cross-referenced from ADR-0131 Part 3A.
+
+### Key files (Addendum 2)
+- `supabase/migrations/20260929071551_add_roster_extraction_anomaly_detector.sql` — new `roster_extraction_anomalies` table + `list_roster_extraction_anomalies()` RPC, applied live.
+- `supabase/functions/_shared/rosterExtraction.ts` — new `isRosterExtractionAnomaly()` export.
+- `supabase/functions/extract-concept-roster/index.ts` — logs the anomaly row; deployed (version 7).
+- `.github/workflows/health-check.yml` — new check 18, 24h window.
+- `scripts/__tests__/conceptSnapshot.test.mjs` — 4 new checks; 29/29 passing.
+- CHANGELOG.md 2026-09-29 entry.

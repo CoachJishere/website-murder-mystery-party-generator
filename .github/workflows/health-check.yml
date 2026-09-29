@@ -84,6 +84,20 @@
 #      reviewed allowlist of the functions that legitimately stay
 #      completed-only (scripts/detect-status-predicate-drift.mjs's own header
 #      comment has the per-function reasoning). ESCALATE-ONLY.
+#   18. Pre-purchase checkout-path roster anomalies (ADR-0130 Addendum 2,
+#      closes the ADR-0131 Part 3A gap "no detector coverage of the
+#      pre-purchase/checkout path at all"). Every check above operates on
+#      mystery_packages/mystery_characters AFTER generation — the actual
+#      ADR-0130 failure mode (a roster-extraction regex regression silently
+#      blocking checkout for ~28 hours before two customers emailed) sat
+#      entirely outside that domain. extract-concept-roster now logs a free,
+#      deterministic anomaly row whenever a character-list-shaped header is
+#      present in a customer's concept chat but nothing parsed under it —
+#      deliberately NOT a paid LLM fallback, since most empty-roster hits are
+#      a customer who simply hasn't finished their concept yet (confirmed via
+#      PostHog: 8 of 10 checkout-page visits in the incident window were
+#      exactly that, not bugs). 24h rolling window, tighter than the 30-day
+#      window elsewhere, since the whole point is fast notice. ESCALATE-ONLY.
 #
 # On failure: opens (or comments on) a GitHub issue labelled `health-alert`.
 # Always: writes monitoring/health-status.md and commits it if changed.
@@ -133,6 +147,7 @@ jobs:
           NOW_UTC=$(date -u +"%Y-%m-%d %H:%M UTC")
           TEN_MIN_AGO=$(date -u -d '10 minutes ago' +"%Y-%m-%dT%H:%M:%SZ")
           TWO_H_AGO=$(date -u -d '2 hours ago' +"%Y-%m-%dT%H:%M:%SZ")
+          ONE_D_AGO=$(date -u -d '1 day ago' +"%Y-%m-%dT%H:%M:%SZ")
           SEVEN_D_AGO=$(date -u -d '7 days ago' +"%Y-%m-%dT%H:%M:%SZ")
           THIRTY_D_AGO=$(date -u -d '30 days ago' +"%Y-%m-%dT%H:%M:%SZ")
 
@@ -433,6 +448,21 @@ jobs:
             fi
           fi
 
+          # 18. Pre-purchase checkout-path roster anomalies (ADR-0130 Addendum 2).
+          # 24h window (tighter than the 30-day window above) since the whole point
+          # is fast notice, not long-tail trend tracking. ESCALATE-ONLY.
+          ROSTERANOM=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_roster_extraction_anomalies" \
+            -H "Content-Type: application/json" -d "{\"_since\": \"${ONE_D_AGO}\"}" || echo "QUERY_FAILED")
+          if [ "$ROSTERANOM" = "QUERY_FAILED" ]; then
+            PROBLEMS="${PROBLEMS}- 🟠 Could not run the checkout roster-anomaly detector (Supabase API error)\n"
+            ROSTERANOM_COUNT="?"
+          else
+            ROSTERANOM_COUNT=$(echo "$ROSTERANOM" | jq 'length')
+            if [ "$ROSTERANOM_COUNT" -gt 0 ]; then
+              PROBLEMS="${PROBLEMS}- 🔴 ${ROSTERANOM_COUNT} conversation(s) hit a checkout roster-extraction anomaly in the last 24h (a character-list header present but nothing parsed — possible regex regression, same shape as ADR-0130 Addendum 1): $(echo "$ROSTERANOM" | jq -r '[.[] | "\(.title // .conversation_id) [\(.hit_count)x, paid=\(.is_paid)]"] | join("; ")')\n"
+            fi
+          fi
+
           # Write status file
           mkdir -p monitoring
           {
@@ -467,6 +497,7 @@ jobs:
             echo "| Truncated concept messages — escalate only (30 days) | ${TRUNC_COUNT} |"
             echo "| Stale hardcoded models — escalate only | ${STALEMODEL_COUNT} |"
             echo "| Detector status-predicate drift — escalate only | ${PREDDRIFT_COUNT} |"
+            echo "| Checkout roster-extraction anomalies — escalate only (24h) | ${ROSTERANOM_COUNT} |"
           } > monitoring/health-status.md
 
           if [ -n "$PROBLEMS" ]; then
