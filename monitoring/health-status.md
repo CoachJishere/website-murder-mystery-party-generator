@@ -1,6 +1,6 @@
 # Site health status
 
-_Last checked: 2026-09-29 05:49 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-09-29 13:00 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ✅ All checks passing
 
@@ -23,3 +23,4 @@ _Last checked: 2026-09-29 05:49 UTC (runs every 6 hours; see .github/workflows/h
 | Truncated concept messages — escalate only (30 days) | 0 |
 | Stale hardcoded models — escalate only | 0 |
 | Detector status-predicate drift — escalate only | 0 |
+| Checkout roster-extraction anomalies — escalate only (24h) | 0 |
