@@ -42,7 +42,7 @@ export function SeasonalSaleRibbon() {
           style={{ color: '#1a1a1a', fontFamily: 'var(--font-body)' }}
         >
           {t(`seasonalSale.${sale.id}.ribbon.message`, {
-            defaultValue: `${theme.name} Sale: get {{percent}}% off all mysteries — ${{discountedPrice}} instead of ${{originalPrice}}. Code {{code}} auto-applied at checkout.`,
+            defaultValue: `${theme.name} Sale: get {{percent}}% off all mysteries — \${{discountedPrice}} instead of \${{originalPrice}}. Code {{code}} auto-applied at checkout.`,
             percent: DISCOUNT_PERCENT,
             discountedPrice: DISCOUNTED_PRICE.toFixed(2),
             originalPrice: ORIGINAL_PRICE.toFixed(2),
