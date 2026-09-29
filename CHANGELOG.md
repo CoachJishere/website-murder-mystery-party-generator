@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-29
+
+### Fix: New-Purchase Coherence Sweep — "Nine Lives & One Death Wish" — leaked authoring note in a guest-facing script (ADR-0103 Addendum 64)
+Routine sweep on a paid purchase (conversation `2923cfa6-1506-4710-b699-abc92718da73`, package `3f590e79-fa70-41d6-b6eb-5e7c93aa8b00`, 11-player detective-style, `has_accomplice=true`). All 5 blocking/advisory detectors (`meta_text_leak`, `victim_mismatch`, `unresolved_victim_name`, `dangling_quote_mark`, `role_tag_leak`) and `package_completion_blocking_defects()` came back clean. Full-cast manual read (all 11 characters, `detective_script`, `master_context` cross-check) found one real defect: Rory/Rhonda Hollowbrook's `round3_script_pointform` contained the bullet `- Mention Rory (self-reference deflection) has used the shed for years due to allergies.` — a leaked internal authoring note (third-person self-reference + a bracketed meta-comment), breaking from every other bullet in the package's second-person "you" convention. Not a plot spoiler, but a guest-facing immersion break.
+
+Fixed via direct SQL `UPDATE` to `- Mention you've used the shed for years because of your allergies, offering it up before anyone can ask.`, preserving the original content intent (Rory using the allergy as an innocent explanation for shed familiarity). Re-verified `package_completion_blocking_defects()` still null post-fix. Ran a corpus-wide regex check for the same leaked-note shape (`(self-reference`, `deflection)`, `(author`, `(note to`, `(internal`, `(meta)`) across all pointform fields in `mystery_characters` — zero other hits, confirmed one-off rather than assumed. Everything else in the package (victim name, murderer/accomplice consistency, all spouse pairings matching the customer's requested "mom, dad, 4 kids each with a spouse, plus a funky extra character" cast, detective script) checked out clean.
+
 ## 2026-09-28
 
 ### Feature/Fix: reconciled the blocking gate's meta_text_leak/victim_mismatch checks with their advisory siblings — item 2 complete, ADR-0131 fully implemented

@@ -1168,3 +1168,29 @@ Addendum 62 chased the two specific defects that happened to surface (content-fi
 ### Key files (Addendum 63)
 - No code or data changes — this addendum is verification only, closing out the sweep Addendum 62 left unfinished.
 
+## Addendum 64 (2026-09-29): "Nine Lives & One Death Wish" — leaked authoring note in a guest-facing pointform script
+
+New purchase (conversation `2923cfa6-1506-4710-b699-abc92718da73`, package `3f590e79-fa70-41d6-b6eb-5e7c93aa8b00`, "Nine Lives & One Death Wish," $19.99, 11 players, `mystery_style = 'detective'`, `script_type = 'pointForm'`, `has_accomplice = true`, created 2026-09-29 — well after both the v44 dangling-quote fix (imported 2026-09-25) and the register-consistency structural fix (2026-09-26), so standard scrutiny applied, no extra pre-upgrade caution needed).
+
+**All 5 scoped detectors clean**: `list_packages_with_meta_text_leak`, `list_packages_with_victim_mismatch`, `list_packages_with_unresolved_victim_name`, `list_packages_with_dangling_quote_mark`, `list_packages_with_role_tag_leak` — zero rows each. `package_completion_blocking_defects()` returned `null`.
+
+**Victim name, murderer/accomplice, and roster composition all consistent.** Victim "Madame Serafina Vex" matches across `game_overview` and `detective_script` verbatim. `detective_script`'s reveal names Jamie Hollowbrook (murderer) and Charlie Hollowbrook (accomplice) — both characters' own `secret`/`background` fields independently confirm the same cover-up (Charlie accidentally caused the family cat's disappearance during a scheme six months ago; Jamie found out and has been covering for them), matching each other and the detective's reveal narration exactly. Roster (11 characters: 2 parents + 4 siblings + 4 spouses + 1 non-family "funky" cryptid-hunter friend) matches the customer's own `additional_details` request ("mom, dad, 4 kids... each kid has a spouse... an extra character that is funky... every family has cats") almost exactly. All 4 spouse pairings cross-checked bidirectionally in `relationships` (Jamie↔Alex/Alexis Marsh, Charlie↔Sam/Samantha Delgado, Bailey↔Morgan/Morgana Reyes, Frankie↔Taylor/Tara Nakamura) — consistent both directions, no orphaned or mismatched pairing.
+
+**Full-cast manual read (all 11 characters' background/relationships/secret + introduction/rumors/round2-4 scripts/accusations/final statement, all pointform) found one real defect**, in Rory/Rhonda Hollowbrook's `round3_script_pointform`:
+
+> `- Mention Rory (self-reference deflection) has used the shed for years due to allergies.`
+
+Every other bullet in this field (and in every other character's equivalent fields across the whole package) is written as a second-person imperative ("Admit...", "Claim you...", "Redirect suspicion..."). This one line breaks convention twice at once: it refers to the character in the third person by name, and it embeds a bracketed-style internal authoring note (`(self-reference deflection)`) describing the line's own narrative function rather than giving the player something to say. This reads as a leaked generation-time note, not guest-facing content — the exact "leaked authoring notes, self-directed questions" class the sweep checklist's step 6 calls out. Not a plot spoiler (Rory is a red herring, not the murderer or accomplice, and the underlying fact — Rory's hidden cat allergy — is Rory's own established secret elsewhere in the same package), but a genuine guest-facing quality defect that would read as obviously broken if noticed at the table.
+
+**Fixed directly via SQL `UPDATE`** (`replace()` on the exact matched substring, confirmed via an exact-match `SELECT` first) to:
+
+> `- Mention you've used the shed for years because of your allergies, offering it up before anyone can ask.`
+
+This preserves the original line's actual narrative intent (Rory proactively volunteering their long-standing, innocent reason for shed familiarity, as a deflection move) while fixing both the person mismatch and the leaked note. Re-ran `package_completion_blocking_defects()` immediately after — still `null`.
+
+**Applied the two-question test from Addendum 38 / ADR-0131 item 8 before deciding whether this needed a detector**: is detection cheap and deterministic? Only for this exact phrasing — a generic "leaked authoring note" has no reliable structural signature (unlike, say, a dangling quote mark or a bracket pattern), so a detector built narrowly around `(self-reference deflection)` would catch only a recurrence of this literal string, not the underlying class. Is the impact severe and obvious? No — it's a single misplaced bullet in one of several rounds for one non-culprit character, not a spoiler or a blocking defect; a host would likely just skip or lightly reword the line rather than have the game break. Both answers point to "don't build a detector yet." Ran a corpus-wide regex check anyway (`\(self.reference|self-reference deflection|deflection\)|\(author|\(note to|\(internal|\(meta\)` across all `*_pointform` columns in `mystery_characters`) before calling it a one-off rather than assuming — zero other hits across the full corpus. Confirmed one-off, no detector built, consistent with policy.
+
+### Key files (Addendum 64)
+- `mystery_characters` — 1 row updated (`round3_script_pointform`) for Rory/Rhonda Hollowbrook, package `3f590e79-fa70-41d6-b6eb-5e7c93aa8b00`
+- No code or migration changes — single hand-fixed content defect, no detector warranted per the Addendum 38 test
+
