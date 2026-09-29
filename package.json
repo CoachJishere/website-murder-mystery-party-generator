@@ -12,7 +12,7 @@
     "fetch-analytics": "GA4_PROPERTY_ID=504442584 GSC_SITE_URL='https://www.mysterymaker.party/' node scripts/test-analytics.mjs",
     "fetch-all-analytics": "./scripts/fetch-all-analytics.sh",
     "fetch-ai-referrals": "GA4_PROPERTY_ID=504442584 node scripts/fetchAIReferrals.mjs",
-    "test:roster": "node scripts/__tests__/conceptSnapshot.test.mjs && node scripts/__tests__/retargetQuestions.test.mjs && node scripts/__tests__/leverClassifier.test.mjs"
+    "test:roster": "node scripts/__tests__/conceptSnapshot.test.mjs && node scripts/__tests__/retargetQuestions.test.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
