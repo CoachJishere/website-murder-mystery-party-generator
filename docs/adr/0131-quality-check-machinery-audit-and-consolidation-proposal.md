@@ -1,6 +1,6 @@
 # ADR-0131: Quality-Check Machinery Audit — Inventory, Relationship Map, Gaps, and a Consolidation Proposal
 
-- **Status:** Proposed
+- **Status:** Accepted — audit and proposal accepted 2026-09-28, implemented item-by-item with Jonathan's explicit go-ahead at each step (Addenda 2–10), fully implemented and independently eval-confirmed as of Addendum 10 (2026-09-29). See "Scope of this ADR" note below — this status line and the Context section's original "no implementation" framing describe this ADR's state at the moment it was written, not its current state; the addenda are the record of what changed since.
 - **Date:** 2026-09-28
 - **Related:** ADR-0130 + Addendum 1 (the triggering incident), ADR-0125 (the consolidation precedent this proposal follows), ADR-0103 + 60 addenda (the sweep ritual this audits), ADR-0042/0047/0048/0049/0051/0053/0054/0055/0060/0061/0062/0096 (the detector/gate/self-heal buildout), ADR-0088 + 13 addenda, ADR-0098 + 8 addenda, ADR-0072 (the silent regression this ADR's Part 2 treats as a cautionary precedent), ADR-0056/0065 (the "paired-predicate drift" pattern named by those ADRs)
 
@@ -10,7 +10,7 @@ On 2026-09-27/28, the shared roster-extraction regex in `supabase/functions/_sha
 
 That incident raised a broader question Jonathan asked to have actually investigated rather than assumed: this project has accumulated a large amount of quality-check machinery over roughly five months of iterative bug-fixing — SQL detector functions (`list_packages_with_*`), a blocking completion gate (`package_completion_blocking_defects()`), a closed-loop self-heal worker (`auto-remediate-packages`), several sweep/recovery crons, alerting logic (`notify-generation-issue`, `health-check.yml`), a manual "New Purchase Coherence Sweep" checklist embedded in `CLAUDE.md`, and a nascent automated test suite (`scripts/__tests__/*.test.mjs`). Is this collection comprehensive, non-redundant, and non-contradictory, or has it grown blind spots, dead checks, and independently-drifting duplicates?
 
-**Scope of this ADR:** an audit and a design proposal, not an implementation. No migration, deploy, or `CLAUDE.md` edit was made while producing it. Every recommendation below is for Jonathan's review before any of it is built.
+**Scope of this ADR:** an audit and a design proposal, not an implementation. No migration, deploy, or `CLAUDE.md` edit was made while producing it. Every recommendation below is for Jonathan's review before any of it is built. *(Note added 2026-09-29: this was true when this ADR was first written. Jonathan reviewed the proposal, approved a step-by-step rollout, and every item was implemented over the following addenda — each with its own explicit go-ahead, not a blanket "keep going." See Addenda 2 through 10 for the full implementation record, including one item retracted after being found wrong (item 6) and one real defect an independent eval caught and this ADR's own work session fixed (Addendum 10). This note exists because an earlier session flagged that this ADR's status had visibly drifted from what actually happened in git — worth stating plainly rather than leaving the original "not an implementation" framing to read as still current.)*
 
 ## Method — how this was independently verified
 
