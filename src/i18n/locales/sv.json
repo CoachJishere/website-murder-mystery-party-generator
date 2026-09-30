@@ -726,36 +726,36 @@
           "answer": "Absolut! Våra mysterier innehåller varierande element så att varje genomspelning känns fräsch, även med samma grupp. Du kan arrangera ditt skräddarsydda mysterium hur många gånger du vill."
         },
         "playerCount": {
-          "question": "How many players do I need?",
-          "answer": "Our system creates mysteries for any group size you specify - from intimate gatherings of 4-6 players to larger parties of 15+ players. Just tell us your player count and we'll design accordingly."
+          "question": "Hur många spelare behöver jag?",
+          "answer": "Vårt system skapar mysterier för vilken gruppstorlek du än anger – från intima sammankomster på 4-6 spelare till större fester med 15+ spelare. Berätta bara ditt antal spelare så designar vi därefter."
         },
         "whatIncluded": {
-          "question": "What's included in my custom mystery package?",
-          "answer": "Everything you need: a comprehensive host guide with step-by-step instructions, detailed character profiles for each player, clues, evidence, and all game materials. No additional preparation required."
+          "question": "Vad ingår i mitt skräddarsydda mysteriepaket?",
+          "answer": "Allt du behöver: en omfattande värdguide med steg-för-steg-instruktioner, detaljerade karaktärsprofiler för varje spelare, ledtrådar, bevis och allt spelmaterial. Ingen ytterligare förberedelse krävs."
         },
         "gameDuration": {
-          "question": "How long does a typical game last?",
-          "answer": "Most mysteries run 2-3 hours, but you control the pacing. Our host guide includes timing suggestions that you can adjust to fit your schedule."
+          "question": "Hur länge varar ett typiskt spel?",
+          "answer": "De flesta mysterier pågår 2-3 timmar, men du styr tempot själv. Vår värdguide innehåller tidsförslag som du kan justera efter ditt schema."
         },
         "themedMysteries": {
-          "question": "Do you offer themed mysteries for special occasions?",
-          "answer": "We create any theme you can imagine! From classic 1920s speakeasies to space stations to fairy tale kingdoms - tell us your vision and we'll make it happen."
+          "question": "Erbjuder ni temamysterier för särskilda tillfällen?",
+          "answer": "Vi skapar vilket tema du än kan föreställa dig! Från klassiska 1920-tals speakeasies till rymdstationer till sagokungariken – berätta din vision så förverkligar vi den."
         },
         "ageRecommendation": {
-          "question": "Is there an age recommendation for your mysteries?",
-          "answer": "Our standard mysteries work great for adults and teens (13+). You can also request family-friendly themes when creating your mystery for younger players."
+          "question": "Finns det en åldersrekommendation för era mysterier?",
+          "answer": "Våra standardmysterier fungerar utmärkt för vuxna och tonåringar (13+). Du kan även be om familjevänliga teman när du skapar ditt mysterium för yngre spelare."
         },
         "freePreview": {
-          "question": "What's included in the free preview?",
-          "answer": "You can create unlimited mystery previews for free, including the basic story premise and character concepts. This lets you explore different ideas before purchasing."
+          "question": "Vad ingår i den kostnadsfria förhandsgranskningen?",
+          "answer": "Du kan skapa ett obegränsat antal förhandsgranskningar av mysterier gratis, inklusive den grundläggande storypremissen och karaktärskoncepten. Detta låter dig utforska olika idéer innan du köper."
         },
         "purchaseIncludes": {
-          "question": "What do I get when I purchase a mystery?",
-          "answer": "For $24.99, you receive everything needed to host: comprehensive host guide, detailed character profiles for each player, clues, evidence, and all game materials ready to use."
+          "question": "Vad får jag när jag köper ett mysterium?",
+          "answer": "För $24.99 får du allt du behöver för att arrangera festen: omfattande värdguide, detaljerade karaktärsprofiler för varje spelare, ledtrådar, bevis och allt spelmaterial klart att använda."
         },
         "refund": {
-          "question": "Can I get a refund if I'm not satisfied?",
-          "answer": "Absolutely! If you're not completely satisfied with your purchase, contact us within 7 days and we'll issue a full refund, no questions asked."
+          "question": "Kan jag få pengarna tillbaka om jag inte är nöjd?",
+          "answer": "Absolut! Om du inte är helt nöjd med ditt köp kan du kontakta oss inom 7 dagar så återbetalar vi hela beloppet – inga frågor ställs."
         },
         "gameDesignEngagement": {
           "question": "Hur säkerställer er speldesign att alla förblir engagerade?",
@@ -772,61 +772,61 @@
       }
     },
     "contact": {
-      "title": "Contact Us",
-      "description": "Need more help? We're here for you",
-      "intro": "Our support team is ready to help with any questions about creating your perfect mystery party with Mystery Maker.",
+      "title": "Kontakta oss",
+      "description": "Behöver du mer hjälp? Vi finns här för dig",
+      "intro": "Vårt supportteam är redo att hjälpa till med alla frågor om att skapa din perfekta mystery-fest med Mystery Maker.",
       "form": {
-        "name": "Name",
-        "email": "Email Address",
-        "subject": "Subject",
-        "message": "Message",
-        "namePlaceholder": "Your name",
-        "emailPlaceholder": "your.email@example.com",
-        "subjectPlaceholder": "What is your message about?",
-        "messagePlaceholder": "How can we help you?",
-        "sendButton": "Send Message",
-        "sending": "Sending...",
-        "success": "Thank you for contacting us! We'll get back to you within 24 hours.",
-        "error": "Failed to send message. Please try again later."
+        "name": "Namn",
+        "email": "E-postadress",
+        "subject": "Ämne",
+        "message": "Meddelande",
+        "namePlaceholder": "Ditt namn",
+        "emailPlaceholder": "din.epost@exempel.se",
+        "subjectPlaceholder": "Vad handlar ditt meddelande om?",
+        "messagePlaceholder": "Hur kan vi hjälpa dig?",
+        "sendButton": "Skicka meddelande",
+        "sending": "Skickar...",
+        "success": "Tack för att du kontaktade oss! Vi återkommer inom 24 timmar.",
+        "error": "Det gick inte att skicka meddelandet. Försök igen senare."
       }
     }
   },
   "chat": {
-    "title": "Murder Mystery Creator",
-    "public": "Public",
-    "private": "Private",
-    "initialGreeting": "Hello! I'm your AI development assistant. Let me help you create a murder mystery. How many players do you want for your murder mystery?",
-    "inputPlaceholder": "Type your message...",
-    "signInPrompt": "Please <1>sign in</1> to use private mode",
-    "errorResponse": "I'm having trouble responding right now. Please try again.",
-    "errorResponseWithFallback": "I'm experiencing some technical difficulties. How many players do you want for your murder mystery?",
-    "connectionErrorResponse": "I'm having trouble connecting right now. How many players do you want for your murder mystery?",
-    "placeholder": "Share your ideas for the mystery...",
-    "loadingMessages": "Loading previous messages...",
+    "title": "Murder Mystery-skapare",
+    "public": "Offentlig",
+    "private": "Privat",
+    "initialGreeting": "Hej! Jag är din AI-utvecklingsassistent. Låt mig hjälpa dig att skapa ett murder mystery. Hur många spelare vill du ha till ditt murder mystery?",
+    "inputPlaceholder": "Skriv ditt meddelande...",
+    "signInPrompt": "<1>Logga in</1> för att använda privat läge",
+    "errorResponse": "Jag har just nu svårt att svara. Försök igen.",
+    "errorResponseWithFallback": "Jag upplever vissa tekniska svårigheter. Hur många spelare vill du ha till ditt murder mystery?",
+    "connectionErrorResponse": "Jag har just nu anslutningsproblem. Hur många spelare vill du ha till ditt murder mystery?",
+    "placeholder": "Dela dina idéer för mysteriet...",
+    "loadingMessages": "Läser in tidigare meddelanden...",
     "generatingConcept": "Skapar ditt mysteriekoncept — detta kan ta upp till 30 sekunder...",
     "errors": {
-      "responseFailed": "Failed to get AI response. Please try again.",
-      "aiUnavailable": "I apologize, but I'm having trouble responding right now. Please try again in a moment.",
+      "responseFailed": "Det gick inte att hämta AI-svar. Försök igen.",
+      "aiUnavailable": "Jag ber om ursäkt, men jag har just nu svårt att svara. Försök igen om en liten stund.",
       "saveFailed": "Ditt meddelande kunde inte sparas — det kan försvinna om du laddar om sidan. Kontrollera din anslutning och kopiera viktig text innan du lämnar sidan."
     }
   },
   "sendToGuests": {
-    "title": "Send Character Guides to Your Guests",
-    "description": "Enter email addresses for each character to send personalized guides directly to your guests. Each guest will only receive their own character information.",
+    "title": "Skicka karaktärsguider till dina gäster",
+    "description": "Ange e-postadresser för varje karaktär för att skicka personliga guider direkt till dina gäster. Varje gäst får bara information om sin egen karaktär.",
     "status": {
-      "sent": "Sent"
+      "sent": "Skickat"
     },
-    "emailPlaceholder": "guest@example.com",
+    "emailPlaceholder": "gäst@exempel.se",
     "buttons": {
-      "sending": "Sending...",
-      "send": "Send Character Guides"
+      "sending": "Skickar...",
+      "send": "Skicka karaktärsguider"
     },
     "errors": {
-      "noValidEmails": "Please add at least one valid email address",
-      "sendFailed": "Failed to send some emails. Please try again."
+      "noValidEmails": "Lägg till minst en giltig e-postadress",
+      "sendFailed": "Det gick inte att skicka vissa e-postmeddelanden. Försök igen."
     },
     "success": {
-      "sentCount": "Sent character guides to {{count}} guests"
+      "sentCount": "Karaktärsguider skickade till {{count}} gäster"
     }
   },
   "common": {
