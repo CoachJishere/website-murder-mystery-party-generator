@@ -1297,74 +1297,74 @@
     }
   },
   "blog": {
-    "title": "Murder Mystery Blog",
-    "subtitle": "Tips, guides, and inspiration for your next mystery party",
-    "backToHome": "Back to Home",
-    "readMore": "Read more →",
-    "minRead": "min read",
-    "publishedOn": "Published on",
-    "by": "By",
-    "relatedPosts": "Related posts",
-    "noPostsFound": "No blog posts found.",
-    "loading": "Loading...",
-    "error": "Failed to load blog posts.",
-    "errorTitle": "Error",
-    "tryAgain": "Try Again",
-    "checkBackLater": "Check back later for new articles!",
+    "title": "Murder Mystery-blog",
+    "subtitle": "Tips, guider og inspiration til din næste mystery-fest",
+    "backToHome": "Tilbage til forsiden",
+    "readMore": "Læs mere →",
+    "minRead": "min. læsning",
+    "publishedOn": "Udgivet den",
+    "by": "Af",
+    "relatedPosts": "Relaterede indlæg",
+    "noPostsFound": "Ingen blogindlæg fundet.",
+    "loading": "Indlæser...",
+    "error": "Kunne ikke indlæse blogindlæg.",
+    "errorTitle": "Fejl",
+    "tryAgain": "Prøv igen",
+    "checkBackLater": "Kig forbi igen senere for nye artikler!",
     "copyForAI": "Kopier til AI",
     "copied": "Kopieret!",
     "copyForAITooltip": "Kopier dette indlæg som ren markdown for at indsætte i ChatGPT, Claude eller en anden AI-assistent"
   },
   "chatbot": {
     "toasts": {
-      "invalidId": "Invalid conversation ID",
-      "loadFailed": "Could not load your previous conversation",
-      "offlineMode": "Using offline mode - some features may be limited",
-      "requestError": "Error processing your request",
-      "generationSuccess": "Mystery generated successfully!",
-      "urlUnavailable": "Chatbot URL not available yet"
+      "invalidId": "Ugyldigt samtale-ID",
+      "loadFailed": "Kunne ikke indlæse din tidligere samtale",
+      "offlineMode": "Bruger offlinetilstand – nogle funktioner kan være begrænsede",
+      "requestError": "Fejl ved behandling af din anmodning",
+      "generationSuccess": "Mysterium genereret!",
+      "urlUnavailable": "Chatbot-URL endnu ikke tilgængelig"
     },
-    "welcomeMessage": "Welcome to the Murder Mystery Creator! Describe the type of mystery you'd like to create, or ask me for suggestions.",
-    "newConversationTitle": "New Murder Mystery",
+    "welcomeMessage": "Velkommen til Murder Mystery-skaberen! Beskriv den type mysterium, du vil skabe, eller bed mig om forslag.",
+    "newConversationTitle": "Nyt Murder Mystery",
     "fallbackResponses": [
-      "I'd love to help you create a murder mystery. What theme or setting would you like for your mystery?",
-      "That's a great choice! Now, let's think about the victim. Who would you like the victim to be?",
-      "Interesting! Now we need some suspects. Could you describe 2-3 characters who might have motives to commit this crime?",
-      "Those are compelling suspects. Let's add some clues. What kind of evidence might be found at the scene?",
-      "Your mystery is taking shape! To continue developing the details of your story, let's think about what other elements we might include."
+      "Jeg vil meget gerne hjælpe dig med at skabe et murder mystery. Hvilket tema eller scenarie vil du have til dit mysterium?",
+      "Det er et godt valg! Lad os nu tænke på offeret. Hvem vil du have som offer?",
+      "Interessant! Nu skal vi bruge nogle mistænkte. Kan du beskrive 2-3 karakterer, der kunne have motiver til at begå denne forbrydelse?",
+      "Det er overbevisende mistænkte. Lad os tilføje nogle spor. Hvilken slags beviser kunne findes på gerningsstedet?",
+      "Dit mysterium tager form! For at fortsætte med at udvikle detaljerne i din historie, lad os tænke på, hvilke andre elementer vi kunne inkludere."
     ],
-    "title": "Create Your Murder Mystery",
+    "title": "Skab dit Murder Mystery",
     "buttons": {
-      "external": "External",
-      "openFull": "Open Full Chatbot",
-      "finalize": "Finalize",
-      "finalizeMystery": "Finalize Mystery"
+      "external": "Ekstern",
+      "openFull": "Åbn fuld chatbot",
+      "finalize": "Fuldfør",
+      "finalizeMystery": "Fuldfør mysterium"
     },
-    "creatorTitle": "Murder Mystery Creator",
-    "placeholder": "Type your ideas for the murder mystery...",
-    "finalizePrompt": "When you're satisfied with your mystery, finalize it to continue."
+    "creatorTitle": "Murder Mystery-skaber",
+    "placeholder": "Skriv dine idéer til murder mystery...",
+    "finalizePrompt": "Når du er tilfreds med dit mysterium, kan du fuldføre det for at fortsætte."
   },
   "homeDashboard": {
-    "title": "Your Mysteries",
-    "searchPlaceholder": "Search mysteries...",
-    "loadMore": "Load More",
-    "loading": "Loading...",
+    "title": "Dine Mysterier",
+    "searchPlaceholder": "Søg i mysterier...",
+    "loadMore": "Indlæs flere",
+    "loading": "Indlæser...",
     "empty": {
-      "title": "You haven't created any mysteries yet",
-      "description": "Use the input box above to start creating your first murder mystery!"
+      "title": "Du har ikke oprettet nogen mysterier endnu",
+      "description": "Brug inputfeltet ovenfor for at begynde at skabe dit første murder mystery!"
     },
     "errors": {
-      "loadFailed": "Failed to load some mysteries. Please refresh the page."
+      "loadFailed": "Kunne ikke indlæse nogle mysterier. Genindlæs venligst siden."
     }
   },
   "mysteryDashboard": {
-    "title": "Mystery Dashboard",
-    "description": "Manage your created mysteries, start new ones, or explore sample content.",
+    "title": "Mysterium-dashboard",
+    "description": "Administrer dine oprettede mysterier, start nye, eller udforsk eksempelindhold.",
     "tabs": {
-      "all": "All",
-      "drafts": "Drafts",
-      "purchased": "Purchased",
-      "archived": "Archived"
+      "all": "Alle",
+      "drafts": "Kladder",
+      "purchased": "Købt",
+      "archived": "Arkiveret"
     }
   },
   "hostAccess": {
