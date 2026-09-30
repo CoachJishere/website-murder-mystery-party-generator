@@ -78,7 +78,7 @@
       "wineCountry": "Design a whodunit at a prestigious vineyard during harvest season.",
       "safariAdventure": "Craft a murder mystery during an African safari expedition.",
       "fashionShow": "Build a mystery backstage at a high-profile fashion show.",
-      "casinoNight": "Create a mystery during a charity casino night fundraiser.",
+      "casinoNight": "Skapa ett mysterium under en välgörenhets-casinokväll.",
       "fairyTaleKingdom": "Design a murder mystery in an enchanted fairy tale kingdom.",
       "spaceColony": "Craft a mystery on humanity's first Mars colony.",
       "superheroAcademy": "Develop a mystery at a school for young superheroes in training.",
@@ -89,7 +89,7 @@
       "dragonsLair": "Design a mystery in a medieval fantasy world where humans and dragons coexist.",
       "timeTravelersBall": "Craft a murder mystery at a gathering where attendees come from different time periods.",
       "atlantisRising": "Develop a mystery in the recently emerged ancient city of Atlantis.",
-      "toyBoxAdventure": "Create a mystery where toys come to life when humans aren't looking.",
+      "toyBoxAdventure": "Skapa ett mysterium där leksaker vaknar till liv när människor inte tittar.",
       "vampireMasquerade": "Design a mystery at an exclusive vampire society's annual blood ball.",
       "dimensionHopping": "Craft a mystery that spans multiple parallel universes.",
       "cyberpunkNightclub": "Create a murder mystery in a neon-soaked cyberpunk nightclub.",
@@ -266,52 +266,52 @@
   },
   "howItWorks": {
     "step1": {
-      "title": "Describe your ideal murder mystery.",
-      "description": "Tell us your unique vision - any theme, characters, or setting you want."
+      "title": "Beskriv ditt perfekta murder mystery.",
+      "description": "Berätta din unika vision – vilket tema, vilka karaktärer eller miljö du vill ha."
     },
     "step2": {
-      "title": "We create your custom mystery instantly.",
-      "description": "Our AI generates everything exactly how you want it - characters, clues, and story."
+      "title": "Vi skapar ditt skräddarsydda mysterium direkt.",
+      "description": "Vår AI genererar allt precis som du vill ha det – karaktärer, ledtrådar och story."
     },
     "step3": {
-      "title": "Perfect your mystery with our editor.",
-      "description": "Refine and adjust until your mystery is exactly right for your group."
+      "title": "Perfektionera ditt mysterium med vår editor.",
+      "description": "Finjustera tills ditt mysterium är precis rätt för din grupp."
     },
     "step4": {
-      "title": "Get everything you need to host and share.",
-      "description": "Download and easily share all materials with your players."
+      "title": "Få allt du behöver för att arrangera och dela.",
+      "description": "Ladda ner och dela enkelt allt material med dina spelare."
     }
   },
   "features": {
-    "title": "Everything You Need Included",
+    "title": "Allt du behöver är inkluderat",
     "step1": {
-      "step": "Step 1",
-      "title": "Unlimited Customization",
-      "content": "Any theme, any characters, any setting - create mysteries exactly how you envision them."
+      "step": "Steg 1",
+      "title": "Obegränsad anpassning",
+      "content": "Vilket tema, vilka karaktärer, vilken miljö som helst – skapa mysterier precis som du föreställer dig dem."
     },
     "step2": {
-      "step": "Step 2",
-      "title": "Complete Character Profiles",
-      "content": "Detailed backgrounds, motivations, and secrets tailored specifically for your mystery."
+      "step": "Steg 2",
+      "title": "Kompletta karaktärsprofiler",
+      "content": "Detaljerade bakgrunder, motiv och hemligheter skräddarsydda specifikt för ditt mysterium."
     },
     "step3": {
-      "step": "Step 3",
-      "title": "Easy Host Guide",
-      "content": "Step-by-step instructions to run your custom mystery with confidence."
+      "step": "Steg 3",
+      "title": "Enkel värdguide",
+      "content": "Steg-för-steg-instruktioner för att köra ditt skräddarsydda mysterium med tillförsikt."
     }
   },
   "testimonials": {
-    "title": "What Others Are Saying",
+    "title": "Vad andra säger",
     "testimonial1": {
-      "text": "My friends and I still talk about our murder mystery night. The characters were so detailed and the plot twists were perfect!",
+      "text": "Mina vänner och jag pratar fortfarande om vår murder mystery-kväll. Karaktärerna var så detaljerade och plottwisterna var perfekta!",
       "author": "Jed"
     },
     "testimonial2": {
-      "text": "So easy to set up! I was worried about hosting for 12 people, but the materials made it simple and everyone had a blast.",
+      "text": "Så enkelt att sätta upp! Jag var orolig för att arrangera för 12 personer, men materialet gjorde det enkelt och alla hade jättekul.",
       "author": "Laura"
     },
     "testimonial3": {
-      "text": "Third murder mystery party using this service and they keep getting better. The customization options are amazing.",
+      "text": "Tredje murder mystery-festen med den här tjänsten, och de blir bara bättre och bättre. Anpassningsmöjligheterna är fantastiska.",
       "author": "Alex"
     }
   },
@@ -319,26 +319,26 @@
     "title": "Se en demo"
   },
   "support": {
-    "title": "Need More Help?",
-    "description": "Visit our comprehensive support center for FAQs, hosting tips, and more information about using our Mystery Maker.",
-    "button": "Visit Support Center",
+    "title": "Behöver du mer hjälp?",
+    "description": "Besök vårt omfattande supportcenter för vanliga frågor, tips för att arrangera och mer information om hur du använder Mystery Maker.",
+    "button": "Besök supportcenter",
     "email": "support@mysterymaker.party"
   },
   "footer": {
-    "tagline": "Craft captivating murder mysteries at the speed of imagination.",
-    "quickLinks": "Quick Links",
-    "company": "Company",
+    "tagline": "Skapa fängslande murder mysteries i samma takt som din fantasi.",
+    "quickLinks": "Genvägar",
+    "company": "Företag",
     "links": {
-      "home": "Home",
+      "home": "Hem",
       "support": "Support",
-      "contact": "Contact",
-      "privacy": "Privacy Policy",
+      "contact": "Kontakt",
+      "privacy": "Integritetspolicy",
       "blog": "Blogg",
       "customMystery": "Skräddarsydd Murder Mystery",
       "corporateEvents": "Företags- och Kontorsevent",
       "cookieSettings": "Cookie-inställningar"
     },
-    "copyright": "Mystery Maker, Inc. All rights reserved."
+    "copyright": "Mystery Maker, Inc. Alla rättigheter förbehållna."
   },
   "trustpilot": {
     "linkText": "Se våra omdömen på Trustpilot",
@@ -348,86 +348,86 @@
   },
   "auth": {
     "signIn": {
-      "title": "Welcome Back",
-      "subtitle": "Sign in to your account to continue creating amazing mysteries",
-      "email": "Email Address",
-      "password": "Password",
-      "rememberMe": "Remember me",
-      "forgotPassword": "Forgot your password?",
-      "noAccount": "Don't have an account?",
-      "signUpLink": "Sign up here",
-      "submitButton": "Sign In",
-      "signingIn": "Signing in...",
-      "orDivider": "or continue with",
-      "googleButton": "Continue with Google",
+      "title": "Välkommen tillbaka",
+      "subtitle": "Logga in på ditt konto för att fortsätta skapa fantastiska mysterier",
+      "email": "E-postadress",
+      "password": "Lösenord",
+      "rememberMe": "Kom ihåg mig",
+      "forgotPassword": "Glömt ditt lösenord?",
+      "noAccount": "Har du inget konto?",
+      "signUpLink": "Skapa ett här",
+      "submitButton": "Logga in",
+      "signingIn": "Loggar in...",
+      "orDivider": "eller fortsätt med",
+      "googleButton": "Fortsätt med Google",
       "success": "Inloggad!"
     },
     "signUp": {
-      "title": "Create Your Account",
-      "subtitle": "Join thousands of mystery makers and start creating today",
-      "name": "Full Name",
-      "email": "Email Address",
-      "password": "Password",
-      "confirmPassword": "Confirm Password",
-      "terms": "I agree to the",
-      "termsLink": "Terms of Service",
-      "privacy": "Privacy Policy",
-      "and": "and",
-      "hasAccount": "Already have an account?",
-      "signInLink": "Sign in here",
-      "submitButton": "Create Account",
-      "creatingAccount": "Creating account...",
-      "orDivider": "or continue with",
-      "googleButton": "Continue with Google"
+      "title": "Skapa ditt konto",
+      "subtitle": "Gå med tusentals mystery makers och börja skapa idag",
+      "name": "Fullständigt namn",
+      "email": "E-postadress",
+      "password": "Lösenord",
+      "confirmPassword": "Bekräfta lösenord",
+      "terms": "Jag godkänner",
+      "termsLink": "användarvillkoren",
+      "privacy": "integritetspolicyn",
+      "and": "och",
+      "hasAccount": "Har du redan ett konto?",
+      "signInLink": "Logga in här",
+      "submitButton": "Skapa konto",
+      "creatingAccount": "Skapar konto...",
+      "orDivider": "eller fortsätt med",
+      "googleButton": "Fortsätt med Google"
     },
     "forgotPassword": {
-      "title": "Reset Your Password",
-      "subtitle": "Enter your email address and we'll send you a link to reset your password",
-      "email": "Email Address",
-      "submitButton": "Send Reset Link",
-      "sending": "Sending...",
-      "backToSignIn": "Back to sign in",
+      "title": "Återställ ditt lösenord",
+      "subtitle": "Ange din e-postadress så skickar vi en länk för att återställa ditt lösenord",
+      "email": "E-postadress",
+      "submitButton": "Skicka återställningslänk",
+      "sending": "Skickar...",
+      "backToSignIn": "Tillbaka till inloggning",
       "checkEmail": {
-        "title": "Check Your Email",
-        "message": "We've sent a password reset link to",
-        "noEmail": "Didn't receive an email?",
-        "tryAgain": "Try again",
-        "returnToSignIn": "Return to Sign In"
+        "title": "Kolla din e-post",
+        "message": "Vi har skickat en länk för återställning av lösenord till",
+        "noEmail": "Fick du inget e-postmeddelande?",
+        "tryAgain": "Försök igen",
+        "returnToSignIn": "Tillbaka till inloggning"
       },
       "rememberedPrompt": "Kom du ihåg ditt lösenord?"
     },
     "resetPassword": {
-      "title": "Set New Password",
-      "subtitle": "Create a new password for your account",
-      "password": "New Password",
-      "confirmPassword": "Confirm New Password",
-      "submitButton": "Update Password",
-      "updating": "Updating...",
-      "success": "Password updated successfully",
+      "title": "Ange nytt lösenord",
+      "subtitle": "Skapa ett nytt lösenord för ditt konto",
+      "password": "Nytt lösenord",
+      "confirmPassword": "Bekräfta nytt lösenord",
+      "submitButton": "Uppdatera lösenord",
+      "updating": "Uppdaterar...",
+      "success": "Lösenordet har uppdaterats",
       "invalidLinkToast": "Ogiltig eller utgången länk för återställning av lösenord",
       "invalidLinkBody": "Länken för att återställa lösenordet är ogiltig eller har gått ut. Begär en ny.",
       "requestNewLink": "Begär ny länk"
     },
     "errors": {
-      "invalidCredentials": "Invalid email or password",
-      "emailAlreadyExists": "An account with this email already exists",
-      "weakPassword": "Password must be at least 6 characters",
-      "passwordMismatch": "Passwords do not match",
-      "invalidEmail": "Please enter a valid email address",
-      "requiredField": "This field is required",
-      "termsRequired": "You must accept the terms of service",
-      "networkError": "Network error. Please try again.",
-      "unknownError": "Something went wrong. Please try again.",
+      "invalidCredentials": "Fel e-postadress eller lösenord",
+      "emailAlreadyExists": "Det finns redan ett konto med denna e-postadress",
+      "weakPassword": "Lösenordet måste vara minst 6 tecken",
+      "passwordMismatch": "Lösenorden matchar inte",
+      "invalidEmail": "Ange en giltig e-postadress",
+      "requiredField": "Detta fält är obligatoriskt",
+      "termsRequired": "Du måste godkänna användarvillkoren",
+      "networkError": "Nätverksfel. Försök igen.",
+      "unknownError": "Något gick fel. Försök igen.",
       "googleSignInFailed": "Det gick inte att logga in med Google",
       "googleSignInInitFailed": "Det gick inte att starta Google-inloggningen.",
       "unexpected": "Ett oväntat fel inträffade",
       "emailNotConfirmed": "Bekräfta din e-post innan inloggning. Kolla din inkorg."
     },
     "success": {
-      "accountCreated": "Account created successfully! Please check your email to verify your account.",
-      "passwordReset": "Password reset email sent successfully",
-      "passwordUpdated": "Password updated successfully",
-      "signedOut": "Signed out successfully",
+      "accountCreated": "Kontot skapades! Kolla din e-post för att verifiera ditt konto.",
+      "passwordReset": "E-post för återställning av lösenord har skickats",
+      "passwordUpdated": "Lösenordet har uppdaterats",
+      "signedOut": "Du är utloggad",
       "accountCreatedVerifyEmail": "Konto skapat! Kolla din e-post för att verifiera och låsa upp alla funktioner."
     },
     "signInPrompt": {
