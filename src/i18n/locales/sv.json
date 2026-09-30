@@ -452,117 +452,117 @@
     }
   },
   "dashboard": {
-    "title": "Your Murder Mysteries",
-    "subtitle": "View, edit and manage all your created mysteries",
+    "title": "Dina Murder Mysteries",
+    "subtitle": "Visa, redigera och hantera alla dina skapade mysterier",
     "welcome": {
-      "title": "Welcome back",
-      "subtitle": "Ready to create your next mystery masterpiece?",
-      "noMysteries": "You haven't created any mysteries yet",
-      "getStarted": "Get started by creating your first mystery"
+      "title": "Välkommen tillbaka",
+      "subtitle": "Redo att skapa ditt nästa mysterium-mästerverk?",
+      "noMysteries": "Du har inte skapat några mysterier än",
+      "getStarted": "Kom igång genom att skapa ditt första mysterium"
     },
     "mysteries": {
-      "title": "Your Mysteries",
-      "searchPlaceholder": "Search mysteries...",
-      "deleteSuccess": "Mystery moved to archive",
-      "deleteFailed": "Failed to archive mystery",
+      "title": "Dina Mysterier",
+      "searchPlaceholder": "Sök i mysterier...",
+      "deleteSuccess": "Mysteriet har flyttats till arkivet",
+      "deleteFailed": "Det gick inte att arkivera mysteriet",
       "filter": {
-        "all": "All Mysteries",
-        "drafts": "Drafts",
-        "completed": "Completed",
-        "purchased": "Purchased",
-        "archived": "Archived"
+        "all": "Alla Mysterier",
+        "drafts": "Utkast",
+        "completed": "Avslutade",
+        "purchased": "Köpta",
+        "archived": "Arkiverade"
       },
       "empty": {
-        "title": "No mysteries found",
-        "description": "Create your first mystery to get started",
-        "searchResult": "No mysteries match your search"
+        "title": "Inga mysterier hittades",
+        "description": "Skapa ditt första mysterium för att komma igång",
+        "searchResult": "Inga mysterier matchar din sökning"
       },
       "card": {
-        "players": "{{count}} players",
-        "created": "Created",
-        "lastEdited": "Last edited",
-        "theme": "Theme: {{theme}}",
+        "players": "{{count}} spelare",
+        "created": "Skapad",
+        "lastEdited": "Senast redigerad",
+        "theme": "Tema: {{theme}}",
         "actions": {
-          "view": "View",
+          "view": "Visa",
           "chat": "Chat",
-          "delete": "Delete",
-          "viewProgress": "View Progress",
-          "progress": "Progress",
-          "editMystery": "Edit Mystery",
-          "edit": "Edit",
-          "archive": "Archive",
-          "deleteTitle": "Delete",
+          "delete": "Ta bort",
+          "viewProgress": "Visa förlopp",
+          "progress": "Förlopp",
+          "editMystery": "Redigera mysterium",
+          "edit": "Redigera",
+          "archive": "Arkivera",
+          "deleteTitle": "Ta bort",
           "unarchive": "Avarkivera"
         },
         "deleteDialog": {
-          "title": "Delete Mystery",
-          "description": "Are you sure you want to delete this mystery? This action cannot be undone."
+          "title": "Ta bort mysterium",
+          "description": "Är du säker på att du vill ta bort det här mysteriet? Denna åtgärd kan inte ångras."
         },
-        "generationInProgress": "Generation in progress...",
-        "editedDate": "Edited {{date}}"
+        "generationInProgress": "Generering pågår...",
+        "editedDate": "Redigerad {{date}}"
       },
       "status": {
-        "completed": "Completed",
-        "draft": "Draft",
-        "purchased": "Purchased",
-        "unknown": "Unknown",
-        "done": "Done",
-        "bought": "Bought",
-        "generating": "Generating...",
+        "completed": "Avslutad",
+        "draft": "Utkast",
+        "purchased": "Köpt",
+        "unknown": "Okänd",
+        "done": "Klar",
+        "bought": "Köpt",
+        "generating": "Genererar...",
         "generatingShort": "Gen..."
       },
-      "showingCount": "Showing {{count}} of {{total}} mysteries"
+      "showingCount": "Visar {{count}} av {{total}} mysterier"
     },
     "stats": {
-      "totalMysteries": "Total Mysteries",
-      "completedMysteries": "Completed",
-      "purchasedMysteries": "Purchased",
-      "totalPlayers": "Total Players Hosted"
+      "totalMysteries": "Mysterier totalt",
+      "completedMysteries": "Avslutade",
+      "purchasedMysteries": "Köpta",
+      "totalPlayers": "Spelare totalt"
     },
-    "backToDashboard": "Back to Dashboard",
+    "backToDashboard": "Tillbaka till Dashboard",
     "buttons": {
-      "createFirstMystery": "Create Your First Mystery"
+      "createFirstMystery": "Skapa ditt första mysterium"
     },
     "errors": {
-      "loadFailed": "Failed to load your mysteries"
+      "loadFailed": "Det gick inte att läsa in dina mysterier"
     }
   },
   "account": {
-    "title": "Account Settings",
+    "title": "Kontoinställningar",
     "tabs": {
-      "profile": "Profile",
-      "security": "Security",
+      "profile": "Profil",
+      "security": "Säkerhet",
       "billing": "Fakturering"
     },
     "profile": {
-      "title": "Profile Information",
-      "description": "Update your account profile information",
-      "name": "Full Name",
-      "email": "Email Address",
-      "emailNote": "Email cannot be changed",
-      "saveButton": "Save Changes",
-      "saving": "Saving...",
-      "success": "Profile updated successfully"
+      "title": "Profilinformation",
+      "description": "Uppdatera din profilinformation",
+      "name": "Fullständigt namn",
+      "email": "E-postadress",
+      "emailNote": "E-post kan inte ändras",
+      "saveButton": "Spara ändringar",
+      "saving": "Sparar...",
+      "success": "Profilen har uppdaterats"
     },
     "security": {
       "password": {
-        "title": "Change Password",
-        "description": "Update your password to keep your account secure",
-        "currentPassword": "Current Password",
-        "newPassword": "New Password",
-        "confirmPassword": "Confirm New Password",
-        "updateButton": "Update Password",
-        "updating": "Updating...",
-        "success": "Password updated successfully"
+        "title": "Byt lösenord",
+        "description": "Uppdatera ditt lösenord för att hålla ditt konto säkert",
+        "currentPassword": "Nuvarande lösenord",
+        "newPassword": "Nytt lösenord",
+        "confirmPassword": "Bekräfta nytt lösenord",
+        "updateButton": "Uppdatera lösenord",
+        "updating": "Uppdaterar...",
+        "success": "Lösenordet har uppdaterats"
       },
       "deleteAccount": {
-        "title": "Delete Account",
-        "description": "Permanently delete your account and all associated data",
-        "warning": "This action cannot be undone. All your mysteries and data will be permanently deleted.",
-        "confirmText": "Type DELETE to confirm",
-        "deleteButton": "Delete Account",
-        "deleting": "Deleting...",
-        "success": "Account deleted successfully"
+        "title": "Radera konto",
+        "description": "Radera ditt konto och all tillhörande data permanent",
+        "warning": "Denna åtgärd kan inte ångras. Alla dina mysterier och all data kommer att raderas permanent.",
+        "confirmText": "Skriv RADERA för att bekräfta",
+        "deleteButton": "Radera konto",
+        "deleting": "Raderar...",
+        "success": "Kontot har raderats"
       }
     },
     "loading": "Laddar...",
