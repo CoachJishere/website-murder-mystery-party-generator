@@ -1,14 +1,16 @@
 # Site health status
 
-_Last checked: 2026-09-29 22:20 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-09-30 05:39 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
-## ✅ All checks passing
+## ⚠️ Problems found
+
+- 🟠 1 package(s) flagged needs_review in the last 7 days: 0c6cf0df-3b61-488d-be52-24bbc9aa4c01
 
 | Check | Result |
 |---|---|
 | Website (www.mysterymaker.party) | HTTP 200 |
 | Generations stuck > 2h | 0 |
-| needs_review packages (7 days) | 0 |
+| needs_review packages (7 days) | 1 |
 | Paid packages missing evidence images | 0 |
 | Character identity conflicts (30 days) | 0 |
 | Meta-text / CoT artifacts (30 days) | 0 |
