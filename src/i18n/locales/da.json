@@ -1097,10 +1097,10 @@
       "devPurchaseSim": "Simulerer køb i udviklingstilstand...",
       "devPurchaseSuccess": "Køb simuleret! Videresender for at generere pakken...",
       "devPurchaseFailed": "Kunne ikke simulere køb.",
-      "signInRequired": "Please sign in to purchase this mystery.",
-      "checkoutRedirect": "Redirecting to secure checkout...",
-      "checkoutFailed": "Failed to redirect to checkout. Please try again.",
-      "genericError": "An error occurred while loading mystery details.",
+      "signInRequired": "Log ind for at købe dette mysterium.",
+      "checkoutRedirect": "Videresender til sikker betaling...",
+      "checkoutFailed": "Kunne ikke videresende til betaling. Prøv venligst igen.",
+      "genericError": "Der opstod en fejl under indlæsning af mysteriedetaljer.",
       "mysteryIdMissing": "Mysterium ikke fundet. Prøv igen fra dashboardet.",
       "emailNotVerified": "Bekræft venligst din e-mailadresse før køb. Tjek din indbakke for bekræftelseslinket.",
       "userEmailMissing": "Bruger-e-mail ikke fundet. Log ud og log ind igen.",
@@ -1111,28 +1111,28 @@
       "conceptIncomplete": "Dit mysteriekoncept er ikke færdigt endnu. Gå tilbage til chatten for at fuldføre det, og generér derefter.",
       "startGenerationFailed": "Kunne ikke starte genereringen. Prøv igen."
     },
-    "title": "Complete Your Purchase",
-    "subtitle": "Get full access to your murder mystery package",
+    "title": "Fuldfør dit køb",
+    "subtitle": "Få fuld adgang til din murder mystery-pakke",
     "package": {
-      "title": "Murder Mystery Package",
-      "description": "One-time purchase, instant access",
-      "priceDescription": "Complete murder mystery package with all character materials, clues, and hosting instructions.",
+      "title": "Murder Mystery-pakke",
+      "description": "Engangskøb, øjeblikkelig adgang",
+      "priceDescription": "Komplet murder mystery-pakke med alt karaktermateriale, spor og værtsinstruktioner.",
       "discountBadge": "{{percent}}% RABAT",
-      "whatsIncluded": "What's included:",
+      "whatsIncluded": "Hvad der er inkluderet:",
       "includes": [
-        "Full character profiles for all suspects",
-        "Host guide with step-by-step instructions",
-        "Printable character sheets",
-        "Evidence and clue cards",
-        "Timeline of events",
-        "Solution reveal script",
-        "PDF downloads of all materials"
+        "Fulde karakterprofiler til alle mistænkte",
+        "Værtsguide med trin-for-trin-instruktioner",
+        "Printbare karakterark",
+        "Bevis- og sporkort",
+        "Tidslinje over begivenhederne",
+        "Manuskript til afsløring af løsningen",
+        "PDF-downloads af alt materiale"
       ]
     },
     "buttons": {
-      "processing": "Processing...",
-      "complete": "Complete Purchase",
-      "backToDesign": "Back to Mystery Design",
+      "processing": "Behandler...",
+      "complete": "Fuldfør køb",
+      "backToDesign": "Tilbage til mysteriedesign",
       "generateAlreadyPaid": "Generér mit mysterium"
     },
     "notes": {
@@ -1146,22 +1146,22 @@
       ]
     },
     "preview": {
-      "defaultTitle": "Custom Murder Mystery",
-      "characterPlaceholder": "Character details will be revealed in the full package.",
-      "characterPlaceholderFull": "Full character description available in the purchased package.",
-      "evidencePlaceholder": "Evidence details available in the full package.",
-      "title": "Murder Mystery Preview",
-      "playersLabel": "Players",
-      "playersCount": "{{count}} Players",
-      "unknownPlayers": "Unknown # of Players",
-      "storyTitle": "Story Preview",
-      "unlockMessage": "Purchase to unlock the complete mystery package with all character details, clues, and materials.",
-      "whatsIncluded": "What's included in the full package:",
+      "defaultTitle": "Skræddersyet Murder Mystery",
+      "characterPlaceholder": "Karakterdetaljer bliver afsløret i den fulde pakke.",
+      "characterPlaceholderFull": "Fuld karakterbeskrivelse tilgængelig i den købte pakke.",
+      "evidencePlaceholder": "Bevisdetaljer tilgængelige i den fulde pakke.",
+      "title": "Forhåndsvisning af murder mystery",
+      "playersLabel": "Spillere",
+      "playersCount": "{{count}} spillere",
+      "unknownPlayers": "Ukendt antal spillere",
+      "storyTitle": "Forhåndsvisning af historien",
+      "unlockMessage": "Køb for at låse den komplette mysteriepakke op med alle karakterdetaljer, spor og materialer.",
+      "whatsIncluded": "Hvad der er inkluderet i den fulde pakke:",
       "packageIncludes": [
-        "Detailed host guide with complete setup instructions",
-        "Character guides for each player",
-        "Evidence cards and printable materials",
-        "Full gameplay script and timeline"
+        "Detaljeret værtsguide med komplette opsætningsinstruktioner",
+        "Karakterguider til hver spiller",
+        "Beviskort og printbart materiale",
+        "Fuldt spilmanuskript og tidslinje"
       ],
       "charactersTitle": "Dine Karakterer ({{count}})",
       "noCharactersWarning": "Vi kunne ikke finde din karakterliste. Gå venligst tilbage og bekræft, at dit mysterie-design inkluderer alle karakterer.",
@@ -1244,43 +1244,43 @@
       "copied": "Manuskript kopieret til udklipsholder",
       "copyFailed": "Kunne ikke kopiere — prøv at markere teksten manuelt"
     },
-    "shareWithGuests": "Share With Guests",
+    "shareWithGuests": "Del med gæster",
     "tabs": {
-      "hostGuide": "Host Guide",
-      "characters": "Characters ({{count}})",
-      "clues": "Evidence",
-      "inspector": "Detective Guide",
-      "relationships": "Relationships",
+      "hostGuide": "Værtsguide",
+      "characters": "Karakterer ({{count}})",
+      "clues": "Beviser",
+      "inspector": "Detektivguide",
+      "relationships": "Relationer",
       "inspectorIntrigue": "Efterforskerguide",
       "extras": "Ekstra"
     },
     "mobileTabs": {
-      "host": "Host",
-      "characters": "Characters ({{count}})",
-      "clues": "Evidence",
-      "inspector": "Detective",
-      "relations": "Relations",
+      "host": "Vært",
+      "characters": "Karakterer ({{count}})",
+      "clues": "Beviser",
+      "inspector": "Detektiv",
+      "relations": "Relationer",
       "inspectorIntrigue": "Efterforsker"
     },
     "loading": {
-      "generating": "Generating...",
-      "generatingMessage": "Currently generating your complete mystery. This process is now in progress.<br />This page will automatically refresh once the mystery is complete.",
-      "characters": "Developing unique character profiles with backgrounds, motivations, and secrets for your mystery game.",
-      "clues": "Crafting evidence cards, clues, and investigative materials that will help solve your mystery.",
-      "inspector": "Writing the detective's script and investigation timeline to guide the mystery solving process.",
-      "matrix": "Building the character relationship matrix showing connections, conflicts, and hidden relationships."
+      "generating": "Genererer...",
+      "generatingMessage": "Genererer i øjeblikket dit komplette mysterium. Denne proces er nu i gang.<br />Denne side opdateres automatisk, når mysteriet er færdigt.",
+      "characters": "Udvikler unikke karakterprofiler med baggrunde, motiver og hemmeligheder til dit mysteriespil.",
+      "clues": "Skaber beviskort, spor og efterforskningsmateriale, der hjælper med at løse dit mysterium.",
+      "inspector": "Skriver detektivens manuskript og efterforskningstidslinje til at guide løsningen af mysteriet.",
+      "matrix": "Opbygger karakterrelationsmatricen, der viser forbindelser, konflikter og skjulte relationer."
     },
     "placeholder": {
-      "title": "Ready to Generate Your Mystery",
-      "description": "Click the button below to start generating your complete mystery package with all materials included.",
-      "button": "Generate Package",
-      "characters": "Character guides will be available after generation starts.",
-      "clues": "Evidence cards will be available after generation starts.",
-      "inspector": "Detective guide will be available after generation starts.",
-      "matrix": "Relationship matrix will be available after generation starts."
+      "title": "Klar til at generere dit mysterium",
+      "description": "Klik på knappen nedenfor for at starte genereringen af din komplette mysteriepakke med alt materiale inkluderet.",
+      "button": "Generér pakke",
+      "characters": "Karakterguider bliver tilgængelige, når genereringen starter.",
+      "clues": "Beviskort bliver tilgængelige, når genereringen starter.",
+      "inspector": "Detektivguiden bliver tilgængelig, når genereringen starter.",
+      "matrix": "Relationsmatricen bliver tilgængelig, når genereringen starter."
     },
     "matrix": {
-      "title": "Character Relationship Matrix"
+      "title": "Karakterrelationsmatrice"
     },
     "edit": {
       "button": "Redigér",
