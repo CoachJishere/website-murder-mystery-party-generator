@@ -396,34 +396,32 @@ Context: ADR-0128 (docs/adr/0128-party-cluster-detection-for-feedback-email-timi
     // item. Full detail: vault
     // 01_Projects/Mystery-Maker/da-sv-partial-localization-2026-07-19-mystery-maker.md.
     //
-    // RE-CHECKED 2026-09-28, full picture now in hand. String count: da.json is
-    // 46.8% untranslated (631/1347 leaf keys still identical to English), sv.json
-    // is 46.5% (627/1347) -- down from ~63% on 2026-07-19, but still far above the
-    // ~1.7% baseline the other 11 non-EN languages sit at (de/es checked for
-    // comparison: 23/1347, 1.7% each). Usage signal (previously blocked --
-    // Supabase/GA4 were unreachable earlier in the session, fixed later the same
-    // day, see the fetchGAMetrics.mjs/fetchGSCMetrics.mjs dotenv-hoisting and
-    // www-site-URL bugs): GA4 sessions on /da/ and /sv/ paths, last 90 days --
-    // da 61, sv 55 -- are comparable to or HIGHER than de (54) and es (53), despite
-    // da/sv being 27x less translated. Traffic isn't the gap; the localization is.
-    // (GA4 "conversions" metric read 0 for every locale including total site --
-    // that's a property-side conversion-event configuration issue, not a real
-    // zero, so it wasn't usable as a revenue signal; sessions is the only reliable
-    // number here.) Jonathan's read in-session: worth doing given comparable
-    // traffic to established locales -- decide with him whether to proceed now.
+    // RE-CHECKED 2026-09-28: GA4 sessions on /da/ and /sv/ paths (90 days) are 61
+    // and 55 -- comparable to or HIGHER than de (54) and es (53), which are fully
+    // localized. Traffic wasn't the reason to leave these parked. Jonathan decided
+    // to close the gap, done bit-by-bit / one string at a time / no scripts
+    // generating the translation content (explicit ask, see feedback memory on
+    // bulk-edit caution).
+    //
+    // da.json DONE 2026-09-30: all ~610 real gaps hand-translated across 8
+    // checkpointed commits (b02ef53 is the last). Verified 0 orphaned keys, 0
+    // i18next interpolation-token mismatches across all 1355 keys, valid JSON.
+    // The 24 keys still "identical to English" by raw string-diff are legitimate
+    // non-gaps (proper names, brand names, an email address, punctuation,
+    // established Danish loanwords) -- not translation debt. Full detail:
+    // CHANGELOG 2026-09-30.
+    //
+    // sv.json NOT STARTED -- same ~627-gap scope, same one-at-a-time approach.
     start: '2026-09-26',
     end: '2026-10-17',
-    title: 'Danish and Swedish locales are ~47% untranslated but get de/es-comparable traffic -- worth finishing',
+    title: 'Danish done, Swedish still ~47% untranslated -- same de/es-comparable traffic case applies',
     body:
-      'Re-checked 2026-09-28, now with real usage data: da.json is 46.8% untranslated, sv.json 46.5% (down from ' +
-      '~63% on 2026-07-19, still far above the ~1.7% the other 11 non-EN languages sit at). GA4: /da/ and /sv/ ' +
-      'path sessions (90 days) are 61 and 55 -- comparable to or above de (54) and es (53), which are fully ' +
-      'localized. Traffic is not the reason to leave these parked.',
-    prompt: `Confirm whether the Danish/Swedish localization gap is still being closed, and finish it if so. Re-derive from ground truth, don't trust this note's numbers as still current.
+      'da.json\'s translation gap is closed (2026-09-30, hand-translated one string at a time -- see CHANGELOG). ' +
+      'sv.json is still at ~46.5% untranslated with the same case for finishing it: GA4 shows /sv/ path sessions ' +
+      '(90 days) comparable to fully-localized de/es, so traffic isn\'t why it\'s parked.',
+    prompt: `Finish the sv.json translation the same way da.json was just completed (2026-09-30, see CHANGELOG for the full approach and verification method). Re-derive current state from ground truth first -- don't assume sv.json is still exactly ~627 gaps, re-flatten sv.json against en.json (JSON.stringify comparison, not === -- a naive === check misses array-valued keys, a real gap found partway through the da.json pass).
 
-1. Re-run the untranslated-string count for da.json and sv.json against en.json (flatten both files, compare values) -- as of 2026-09-28 it was 46.8%/46.5%, down from ~63% on 2026-07-19.
-2. Pull actual usage/revenue signal for these two locales if available (GA4 sessions by locale, Stripe purchases by locale/currency, or conversations.language distribution in Supabase) -- is there any real customer volume in da/sv today, even partial?
-3. Present the decision plainly: if da/sv volume is negligible, recommend explicitly parking it (and say so in this reminder's retirement note); if there's real signal, scope what a full pass would take (same per-file approach used for the other 11 languages) and let Jonathan decide whether to schedule it.`,
+Translate bit-by-bit, one string at a time, hand-composed -- no script or bulk process generating the Danish text itself (Jonathan's explicit ask). Preserve i18next interpolation tokens ({{count}}, {{name}}, etc.) and check any string that looks like it might be validated literally in code (the da.json pass found account.security.deleteAccount.confirmText needs to match actual validation logic, not just read naturally -- confirmed by checking how de/fr/es already handle that same key) before translating it differently from the English literal. Keep established Danish-tech-UI-style loanwords in mind as a pattern (Dashboard, Support, Chat, Download stayed in English in da.json) -- the equivalent Swedish loanwords are likely similar but verify against what already-translated Swedish content in the file does, don't assume. Verify at the end: 0 orphaned keys, 0 interpolation-token mismatches, valid JSON.`,
   },
   // RETIRED 2026-09-28: confirmed working in CI. Checked the "Submit sitemap to
   // Google Search Console" step across 5 publish-daily-blog.yml runs spanning
