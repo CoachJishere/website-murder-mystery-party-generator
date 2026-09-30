@@ -573,9 +573,9 @@
   },
   "mysteryCreation": {
     "scriptType": {
-      "full": "full",
-      "pointForm": "point form",
-      "both": "both full and point form"
+      "full": "fullständig",
+      "pointForm": "punktform",
+      "both": "både fullständig och punktform"
     },
     "sections": {
       "premise": "Premiss",
@@ -588,21 +588,21 @@
       "crimeMethod": "Brottsmetod"
     },
     "wizard": {
-      "title": "Create Your Mystery",
+      "title": "Skapa ditt mysterium",
       "step1": {
-        "title": "Tell Us Your Vision",
-        "description": "Describe your ideal murder mystery party"
+        "title": "Berätta din vision",
+        "description": "Beskriv din perfekta murder mystery-fest"
       },
       "step2": {
-        "title": "Review & Refine",
-        "description": "Perfect your mystery with our AI assistant"
+        "title": "Granska och förfina",
+        "description": "Perfektionera ditt mysterium med vår AI-assistent"
       },
       "step3": {
-        "title": "Complete Package",
-        "description": "Get everything you need to host"
+        "title": "Komplett paket",
+        "description": "Få allt du behöver för att arrangera"
       },
       "prompt": {
-        "defaultStart": "I want to create a murder mystery",
+        "defaultStart": "Jag vill skapa ett murder mystery",
         "defaultStartIntrigue": "Jag vill skapa ett intrigmysterium",
         "withTheme": "med ett {{theme}}-tema för {{playerCount}} spelare med {{scriptType}}-manus",
         "withoutTheme": "för {{playerCount}} spelare med {{scriptType}}-manus",
@@ -612,72 +612,72 @@
       }
     },
     "editor": {
-      "title": "Mystery Editor",
-      "characters": "Characters",
+      "title": "Mysterium-editor",
+      "characters": "Karaktärer",
       "story": "Story",
-      "clues": "Clues",
-      "hostGuide": "Host Guide",
-      "save": "Save Draft",
-      "publish": "Complete Mystery",
-      "saving": "Saving...",
-      "publishing": "Publishing...",
-      "saved": "Draft saved",
-      "published": "Mystery completed"
+      "clues": "Ledtrådar",
+      "hostGuide": "Värdguide",
+      "save": "Spara utkast",
+      "publish": "Slutför mysterium",
+      "saving": "Sparar...",
+      "publishing": "Publicerar...",
+      "saved": "Utkast sparat",
+      "published": "Mysterium slutfört"
     },
     "guidance": {
-      "describe": "Describe your mystery in detail - the more specific you are, the better we can create it for you",
-      "examples": "Try: 'A 1920s speakeasy murder mystery with 8 characters including a jazz singer, bartender, and mob boss'",
-      "playerCount": "How many players will participate?",
-      "theme": "What's the setting or theme?",
-      "special": "Any special requirements or constraints?",
+      "describe": "Beskriv ditt mysterium i detalj – ju mer specifik du är, desto bättre kan vi skapa det åt dig",
+      "examples": "Prova: 'Ett 1920-tals speakeasy murder mystery med 8 karaktärer, inklusive en jazzsångare, bartender och maffiaboss'",
+      "playerCount": "Hur många spelare ska delta?",
+      "theme": "Vad är miljön eller temat?",
+      "special": "Några särskilda krav eller begränsningar?",
       "initialPrompt": {
-        "withTheme": "Let's create a murder mystery with a {{theme}} theme. Please guide me through creating this mystery step by step.",
-        "withoutTheme": "Let's create a murder mystery. Please guide me through creating this mystery step by step."
+        "withTheme": "Låt oss skapa ett murder mystery med temat {{theme}}. Guida mig gärna steg för steg genom att skapa detta mysterium.",
+        "withoutTheme": "Låt oss skapa ett murder mystery. Guida mig gärna steg för steg genom att skapa detta mysterium."
       }
     },
-    "editTitle": "Edit Mystery",
-    "createTitle": "Create New Mystery",
+    "editTitle": "Redigera mysterium",
+    "createTitle": "Skapa nytt mysterium",
     "form": {
-      "description": "Fill out the form below to generate your custom murder mystery"
+      "description": "Fyll i formuläret nedan för att generera ditt skräddarsydda murder mystery"
     },
     "buttons": {
-      "generateFullMystery": "Generate Full Mystery"
+      "generateFullMystery": "Generera fullständigt mysterium"
     },
     "errors": {
-      "signInToSave": "Please sign in to save your mystery",
-      "saveFailed": "Failed to save mystery",
-      "loadFailed": "Failed to load mystery",
-      "loadMessagesFailed": "Failed to load conversation messages",
-      "loadConversationFailed": "Failed to load conversation",
-      "initialPrompt": "Please provide a prompt for your mystery",
-      "saveMessageFailed": "Failed to save message"
+      "signInToSave": "Logga in för att spara ditt mysterium",
+      "saveFailed": "Det gick inte att spara mysteriet",
+      "loadFailed": "Det gick inte att läsa in mysteriet",
+      "loadMessagesFailed": "Det gick inte att läsa in konversationens meddelanden",
+      "loadConversationFailed": "Det gick inte att läsa in konversationen",
+      "initialPrompt": "Ange en prompt för ditt mysterium",
+      "saveMessageFailed": "Det gick inte att spara meddelandet"
     },
     "success": {
-      "setupComplete": "Mystery setup complete! Starting chat..."
+      "setupComplete": "Konfigurationen är klar! Startar chatten..."
     }
   },
   "mysteryForm": {
-    "userRequestLabel": "What you want to create",
-    "userRequestDescription": "Your original request from the homepage",
-    "themeLabel": "Theme/Setting Details (Optional)",
+    "userRequestLabel": "Vad du vill skapa",
+    "userRequestDescription": "Din ursprungliga förfrågan från startsidan",
+    "themeLabel": "Tema/miljödetaljer (valfritt)",
     "themeLabelPrimary": "Beskriv ditt mysterium",
-    "themePlaceholder": "e.g., time period, setting specifics, must-have's, etc.",
+    "themePlaceholder": "t.ex. tidsperiod, specifika detaljer om miljön, must-haves osv.",
     "themePlaceholderPrimary": "t.ex., 1920-talets speakeasy, viktoriansk herrgård, rymdstation...",
-    "themeDescription": "Choose a specific theme or setting for your murder mystery",
+    "themeDescription": "Välj ett specifikt tema eller miljö för ditt murder mystery",
     "themeDescriptionPrimary": "Vilket tema, miljö eller era vill du ha för ditt mordmysterium?",
     "playerCountLabel": "Hur många misstänkta/karaktärer?",
     "playerCountPlaceholder": "Välj antal misstänkta",
     "playerCountItem": "{{count}} misstänkta",
     "playerCountDescription": "Detta är antalet misstänkta karaktärer i ditt mysterium, exklusive värden/detektiven.",
-    "accompliceLabel": "Include Accomplice Mechanism",
-    "accompliceDescription": "Best for games with 10 or more players",
-    "scriptTypeLabel": "Script Detail Level",
-    "scriptTypeFullLabel": "Full Scripts - Complete dialogue and detailed instructions",
-    "scriptTypePointFormLabel": "Point Form - Key points and bullet summaries",
-    "scriptTypeBothLabel": "Both Formats - Full scripts AND point form notes",
-    "additionalDetailsLabel": "Additional Details (Optional)",
-    "additionalDetailsPlaceholder": "Any specific requirements, special rules, or additional context for your mystery...",
-    "additionalDetailsDescription": "Provide any extra details or special requests for your mystery",
+    "accompliceLabel": "Inkludera medbrottslings-mekanism",
+    "accompliceDescription": "Bäst för spel med 10 eller fler spelare",
+    "scriptTypeLabel": "Detaljnivå för manus",
+    "scriptTypeFullLabel": "Fullständiga manus – Komplett dialog och detaljerade instruktioner",
+    "scriptTypePointFormLabel": "Punktform – Nyckelpunkter och punktsammanfattningar",
+    "scriptTypeBothLabel": "Båda formaten – Fullständiga manus OCH punktform-anteckningar",
+    "additionalDetailsLabel": "Ytterligare detaljer (valfritt)",
+    "additionalDetailsPlaceholder": "Eventuella specifika krav, särskilda regler eller ytterligare kontext för ditt mysterium...",
+    "additionalDetailsDescription": "Ange eventuella extra detaljer eller särskilda önskemål för ditt mysterium",
     "mysteryTypeLabel": "Vilken typ av mysterium?",
     "gameSettingsHeading": "Spelinställningar",
     "mysteryTypeMurderLabel": "Mord",
@@ -689,41 +689,41 @@
     "mysteryStyleCharacterDescription": "Den skyldige väljs mitt i spelet genom lottning. Värden kan spela som misstänkt eller som detektiven.",
     "mysteryStyleDetectiveLabel": "Detektivstil (Klassisk)",
     "mysteryStyleDetectiveDescription": "Värden känner till lösningen från början och spelar detektiven, som guidar spelarna med ledtrådar och tips mot avslöjandet.",
-    "startChat": "Start AI Chat",
-    "startingChat": "Starting Chat..."
+    "startChat": "Starta AI-chatt",
+    "startingChat": "Startar chatt..."
   },
   "supportPage": {
-    "title": "Support Center",
-    "subtitle": "Find answers to common questions, contact our support team, and get everything you need to create amazing mystery parties.",
+    "title": "Supportcenter",
+    "subtitle": "Hitta svar på vanliga frågor, kontakta vårt supportteam och få allt du behöver för att skapa fantastiska mystery-fester.",
     "tabs": {
-      "faqs": "FAQs",
-      "contact": "Contact Us"
+      "faqs": "Vanliga frågor",
+      "contact": "Kontakta oss"
     },
     "faqs": {
-      "title": "Frequently Asked Questions",
-      "description": "Find answers to common questions about Mystery Maker",
+      "title": "Vanliga frågor",
+      "description": "Hitta svar på vanliga frågor om Mystery Maker",
       "categories": {
-        "aboutMysteryMaker": "About Mystery Maker",
-        "gameMechanics": "Game Mechanics",
-        "hostingPlanning": "Hosting & Planning",
-        "accountBilling": "Account & Billing"
+        "aboutMysteryMaker": "Om Mystery Maker",
+        "gameMechanics": "Spelmekanik",
+        "hostingPlanning": "Planering och arrangemang",
+        "accountBilling": "Konto och fakturering"
       },
       "questions": {
         "whatIsMysteryMaker": {
-          "question": "What is Mystery Maker and how does it work?",
-          "answer": "Mystery Maker is an AI-powered platform that creates custom murder mystery parties exactly how you want them. Tell us your unique vision - any theme, characters, or setting - and our AI generates everything you need: character profiles, clues, and host materials tailored specifically for your party."
+          "question": "Vad är Mystery Maker och hur fungerar det?",
+          "answer": "Mystery Maker är en AI-driven plattform som skapar skräddarsydda murder mystery-fester precis som du vill ha dem. Berätta din unika vision – vilket tema, vilka karaktärer eller miljö som helst – och vår AI genererar allt du behöver: karaktärsprofiler, ledtrådar och värdmaterial skräddarsytt specifikt för din fest."
         },
         "creationProcess": {
-          "question": "How does the creation and purchase process work?",
-          "answer": "Simple! First, describe your ideal murder mystery and we'll create a custom preview for free. When you're happy with your mystery, purchase the complete package for $24.99. You'll instantly get everything needed to host: detailed character profiles, host guide, and all game materials."
+          "question": "Hur fungerar skapande- och köpprocessen?",
+          "answer": "Enkelt! Beskriv först ditt perfekta murder mystery, så skapar vi en skräddarsydd förhandsgranskning gratis. När du är nöjd med ditt mysterium köper du det kompletta paketet för $24.99. Du får direkt allt du behöver för att arrangera festen: detaljerade karaktärsprofiler, värdguide och allt spelmaterial."
         },
         "saveWork": {
-          "question": "Can I save my work and come back to it later?",
-          "answer": "Yes! All your custom mysteries are saved to your account so you can return and edit them anytime."
+          "question": "Kan jag spara mitt arbete och återvända till det senare?",
+          "answer": "Ja! Alla dina skräddarsydda mysterier sparas på ditt konto så att du kan återvända och redigera dem när som helst."
         },
         "replayable": {
-          "question": "Are these murder mysteries replayable?",
-          "answer": "Absolutely! Our mysteries include variable elements so each playthrough feels fresh, even with the same group. You can host your custom mystery as many times as you want."
+          "question": "Kan dessa murder mysteries spelas om?",
+          "answer": "Absolut! Våra mysterier innehåller varierande element så att varje genomspelning känns fräsch, även med samma grupp. Du kan arrangera ditt skräddarsydda mysterium hur många gånger du vill."
         },
         "playerCount": {
           "question": "How many players do I need?",
