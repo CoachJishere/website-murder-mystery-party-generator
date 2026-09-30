@@ -44,7 +44,7 @@ Built a separate, stateless mechanism that doesn't touch the welcome-discount co
 - No new DB tables, edge functions, or Stripe API calls — the whole feature is a static config plus three call sites.
 
 **Negative:**
-- `endsAt` timestamps assume Jonathan's Stripe account timezone is Europe/Madrid — unverified since no Stripe API access was available this session. If wrong, the banner could show the sale as active slightly past Stripe's actual cutoff (bounded to at most a few hours given the CET assumption, not the many-hours drift naive local-time parsing would have allowed).
+- `endsAt` timestamps assume Jonathan's Stripe account timezone is Europe/Madrid — confirmed correct by Jonathan directly (2026-09-30), no code change needed. (Originally flagged here as unverified since no Stripe API access was available in the session that shipped this.)
 - Two hardcoded promo code strings (`HALLOWEEN20`, `HOLIDAY20`) with hardcoded dates — if either code is ever regenerated in Stripe with a different string or date, `seasonalSaleConfig.ts` needs a manual update; nothing enforces they stay in sync automatically.
 - A customer who already has a personal welcome discount active loses that specific promo code's visibility while a seasonal sale is running (same 20%, no net effect on price, but the two are literally different Stripe promo code strings).
 
