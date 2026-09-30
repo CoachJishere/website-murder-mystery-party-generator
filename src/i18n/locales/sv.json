@@ -614,7 +614,7 @@
     "editor": {
       "title": "Mysterium-editor",
       "characters": "Karaktärer",
-      "story": "Story",
+      "story": "Historia",
       "clues": "Ledtrådar",
       "hostGuide": "Värdguide",
       "save": "Spara utkast",
@@ -1111,28 +1111,28 @@
       "conceptIncomplete": "Ditt mysteriekoncept är inte klart än. Gå tillbaka till chatten för att slutföra det och generera sedan.",
       "startGenerationFailed": "Det gick inte att starta genereringen. Försök igen."
     },
-    "title": "Complete Your Purchase",
-    "subtitle": "Get full access to your murder mystery package",
+    "title": "Fullborda ditt köp",
+    "subtitle": "Få full åtkomst till ditt murder mystery-paket",
     "package": {
-      "title": "Murder Mystery Package",
-      "description": "One-time purchase, instant access",
-      "priceDescription": "Complete murder mystery package with all character materials, clues, and hosting instructions.",
+      "title": "Murder Mystery-paket",
+      "description": "Engångsköp, omedelbar åtkomst",
+      "priceDescription": "Komplett murder mystery-paket med allt karaktärsmaterial, ledtrådar och värdinstruktioner.",
       "discountBadge": "{{percent}}% RABATT",
-      "whatsIncluded": "What's included:",
+      "whatsIncluded": "Vad som ingår:",
       "includes": [
-        "Full character profiles for all suspects",
-        "Host guide with step-by-step instructions",
-        "Printable character sheets",
-        "Evidence and clue cards",
-        "Timeline of events",
-        "Solution reveal script",
-        "PDF downloads of all materials"
+        "Fullständiga karaktärsprofiler för alla misstänkta",
+        "Värdguide med steg-för-steg-instruktioner",
+        "Utskrivbara karaktärsark",
+        "Bevis- och ledtrådskort",
+        "Tidslinje över händelserna",
+        "Manus för avslöjande av lösningen",
+        "PDF-nedladdningar av allt material"
       ]
     },
     "buttons": {
-      "processing": "Processing...",
-      "complete": "Complete Purchase",
-      "backToDesign": "Back to Mystery Design",
+      "processing": "Behandlar...",
+      "complete": "Fullborda köp",
+      "backToDesign": "Tillbaka till mysteriedesign",
       "generateAlreadyPaid": "Generera mitt mysterium"
     },
     "notes": {
@@ -1146,22 +1146,22 @@
       ]
     },
     "preview": {
-      "defaultTitle": "Custom Murder Mystery",
-      "characterPlaceholder": "Character details will be revealed in the full package.",
-      "characterPlaceholderFull": "Full character description available in the purchased package.",
-      "evidencePlaceholder": "Evidence details available in the full package.",
-      "title": "Murder Mystery Preview",
-      "playersLabel": "Players",
-      "playersCount": "{{count}} Players",
-      "unknownPlayers": "Unknown # of Players",
-      "storyTitle": "Story Preview",
-      "unlockMessage": "Purchase to unlock the complete mystery package with all character details, clues, and materials.",
-      "whatsIncluded": "What's included in the full package:",
+      "defaultTitle": "Skräddarsytt Murder Mystery",
+      "characterPlaceholder": "Karaktärsdetaljer avslöjas i det fullständiga paketet.",
+      "characterPlaceholderFull": "Fullständig karaktärsbeskrivning tillgänglig i det köpta paketet.",
+      "evidencePlaceholder": "Bevisdetaljer tillgängliga i det fullständiga paketet.",
+      "title": "Förhandsgranskning av murder mystery",
+      "playersLabel": "Spelare",
+      "playersCount": "{{count}} spelare",
+      "unknownPlayers": "Okänt antal spelare",
+      "storyTitle": "Förhandsgranskning av historien",
+      "unlockMessage": "Köp för att låsa upp det kompletta mysteriepaketet med alla karaktärsdetaljer, ledtrådar och material.",
+      "whatsIncluded": "Vad som ingår i det fullständiga paketet:",
       "packageIncludes": [
-        "Detailed host guide with complete setup instructions",
-        "Character guides for each player",
-        "Evidence cards and printable materials",
-        "Full gameplay script and timeline"
+        "Detaljerad värdguide med kompletta installationsinstruktioner",
+        "Karaktärsguider för varje spelare",
+        "Beviskort och utskrivbart material",
+        "Fullständigt spelmanus och tidslinje"
       ],
       "charactersTitle": "Dina Karaktärer ({{count}})",
       "noCharactersWarning": "Vi kunde inte hitta din karaktärslista. Gå tillbaka och kontrollera att din mysteriedesign inkluderar alla karaktärer.",
@@ -1244,43 +1244,43 @@
       "copied": "Manus kopierat till urklipp",
       "copyFailed": "Kunde inte kopiera – markera texten manuellt"
     },
-    "shareWithGuests": "Share With Guests",
+    "shareWithGuests": "Dela med gäster",
     "tabs": {
-      "hostGuide": "Host Guide",
-      "characters": "Characters ({{count}})",
-      "clues": "Evidence",
-      "inspector": "Detective Guide",
-      "relationships": "Relationships",
+      "hostGuide": "Värdguide",
+      "characters": "Karaktärer ({{count}})",
+      "clues": "Bevis",
+      "inspector": "Detektivguide",
+      "relationships": "Relationer",
       "inspectorIntrigue": "Utredarguide",
       "extras": "Extra"
     },
     "mobileTabs": {
-      "host": "Host",
-      "characters": "Characters ({{count}})",
-      "clues": "Evidence",
-      "inspector": "Detective",
-      "relations": "Relations",
+      "host": "Värd",
+      "characters": "Karaktärer ({{count}})",
+      "clues": "Bevis",
+      "inspector": "Detektiv",
+      "relations": "Relationer",
       "inspectorIntrigue": "Utredare"
     },
     "loading": {
-      "generating": "Generating...",
-      "generatingMessage": "Currently generating your complete mystery. This process is now in progress.<br />This page will automatically refresh once the mystery is complete.",
-      "characters": "Developing unique character profiles with backgrounds, motivations, and secrets for your mystery game.",
-      "clues": "Crafting evidence cards, clues, and investigative materials that will help solve your mystery.",
-      "inspector": "Writing the detective's script and investigation timeline to guide the mystery solving process.",
-      "matrix": "Building the character relationship matrix showing connections, conflicts, and hidden relationships."
+      "generating": "Genererar...",
+      "generatingMessage": "Genererar just nu ditt kompletta mysterium. Processen pågår.<br />Denna sida uppdateras automatiskt när mysteriet är klart.",
+      "characters": "Utvecklar unika karaktärsprofiler med bakgrunder, motiv och hemligheter för ditt mysteriespel.",
+      "clues": "Skapar beviskort, ledtrådar och utredningsmaterial som hjälper till att lösa ditt mysterium.",
+      "inspector": "Skriver detektivens manus och utredningstidslinje för att guida lösningsprocessen.",
+      "matrix": "Bygger karaktärsrelationsmatrisen som visar kopplingar, konflikter och dolda relationer."
     },
     "placeholder": {
-      "title": "Ready to Generate Your Mystery",
-      "description": "Click the button below to start generating your complete mystery package with all materials included.",
-      "button": "Generate Package",
-      "characters": "Character guides will be available after generation starts.",
-      "clues": "Evidence cards will be available after generation starts.",
-      "inspector": "Detective guide will be available after generation starts.",
-      "matrix": "Relationship matrix will be available after generation starts."
+      "title": "Redo att generera ditt mysterium",
+      "description": "Klicka på knappen nedan för att starta genereringen av ditt kompletta mysteriepaket med allt material inkluderat.",
+      "button": "Generera paket",
+      "characters": "Karaktärsguider blir tillgängliga när genereringen startar.",
+      "clues": "Beviskort blir tillgängliga när genereringen startar.",
+      "inspector": "Detektivguiden blir tillgänglig när genereringen startar.",
+      "matrix": "Relationsmatrisen blir tillgänglig när genereringen startar."
     },
     "matrix": {
-      "title": "Character Relationship Matrix"
+      "title": "Karaktärsrelationsmatris"
     },
     "edit": {
       "button": "Redigera",
