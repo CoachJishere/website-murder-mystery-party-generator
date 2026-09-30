@@ -726,36 +726,36 @@
           "answer": "Absolut! Vores mysterier indeholder variable elementer, så hver gennemspilning føles frisk, selv med den samme gruppe. Du kan afholde dit skræddersyede mysterium, lige så mange gange du vil."
         },
         "playerCount": {
-          "question": "How many players do I need?",
-          "answer": "Our system creates mysteries for any group size you specify - from intimate gatherings of 4-6 players to larger parties of 15+ players. Just tell us your player count and we'll design accordingly."
+          "question": "Hvor mange spillere skal jeg bruge?",
+          "answer": "Vores system skaber mysterier til enhver gruppestørrelse, du angiver – fra intime samlinger på 4-6 spillere til større fester med 15+ spillere. Fortæl os bare dit antal spillere, og vi designer derefter."
         },
         "whatIncluded": {
-          "question": "What's included in my custom mystery package?",
-          "answer": "Everything you need: a comprehensive host guide with step-by-step instructions, detailed character profiles for each player, clues, evidence, and all game materials. No additional preparation required."
+          "question": "Hvad er inkluderet i min skræddersyede mysterium-pakke?",
+          "answer": "Alt, hvad du skal bruge: en omfattende værtsguide med trin-for-trin-instruktioner, detaljerede karakterprofiler til hver spiller, spor, beviser og alt spilmateriale. Ingen yderligere forberedelse nødvendig."
         },
         "gameDuration": {
-          "question": "How long does a typical game last?",
-          "answer": "Most mysteries run 2-3 hours, but you control the pacing. Our host guide includes timing suggestions that you can adjust to fit your schedule."
+          "question": "Hvor længe varer et typisk spil?",
+          "answer": "De fleste mysterier varer 2-3 timer, men du styrer tempoet selv. Vores værtsguide indeholder tidsforslag, som du kan justere, så de passer til din tidsplan."
         },
         "themedMysteries": {
-          "question": "Do you offer themed mysteries for special occasions?",
-          "answer": "We create any theme you can imagine! From classic 1920s speakeasies to space stations to fairy tale kingdoms - tell us your vision and we'll make it happen."
+          "question": "Tilbyder I temamysterier til særlige lejligheder?",
+          "answer": "Vi skaber ethvert tema, du kan forestille dig! Fra klassiske 1920'er speakeasies til rumstationer til eventyrkongeriger – fortæl os din vision, og vi gør det til virkelighed."
         },
         "ageRecommendation": {
-          "question": "Is there an age recommendation for your mysteries?",
-          "answer": "Our standard mysteries work great for adults and teens (13+). You can also request family-friendly themes when creating your mystery for younger players."
+          "question": "Er der en aldersanbefaling til jeres mysterier?",
+          "answer": "Vores standardmysterier fungerer godt til voksne og teenagere (13+). Du kan også bede om familievenlige temaer, når du opretter dit mysterium til yngre spillere."
         },
         "freePreview": {
-          "question": "What's included in the free preview?",
-          "answer": "You can create unlimited mystery previews for free, including the basic story premise and character concepts. This lets you explore different ideas before purchasing."
+          "question": "Hvad er inkluderet i den gratis forhåndsvisning?",
+          "answer": "Du kan oprette et ubegrænset antal forhåndsvisninger af mysterier gratis, inklusive den grundlæggende historiepræmis og karakterkoncepter. Dette lader dig udforske forskellige idéer, før du køber."
         },
         "purchaseIncludes": {
-          "question": "What do I get when I purchase a mystery?",
-          "answer": "For $24.99, you receive everything needed to host: comprehensive host guide, detailed character profiles for each player, clues, evidence, and all game materials ready to use."
+          "question": "Hvad får jeg, når jeg køber et mysterium?",
+          "answer": "For $24.99 får du alt, hvad du skal bruge for at afholde festen: omfattende værtsguide, detaljerede karakterprofiler til hver spiller, spor, beviser og alt spilmateriale klar til brug."
         },
         "refund": {
-          "question": "Can I get a refund if I'm not satisfied?",
-          "answer": "Absolutely! If you're not completely satisfied with your purchase, contact us within 7 days and we'll issue a full refund, no questions asked."
+          "question": "Kan jeg få refunderet mine penge, hvis jeg ikke er tilfreds?",
+          "answer": "Absolut! Hvis du ikke er helt tilfreds med dit køb, kan du kontakte os inden for 7 dage, så refunderer vi hele beløbet – ingen spørgsmål stillet."
         },
         "gameDesignEngagement": {
           "question": "Hvordan sikrer jeres spildesign, at alle forbliver engagerede?",
@@ -772,54 +772,54 @@
       }
     },
     "contact": {
-      "title": "Contact Us",
-      "description": "Need more help? We're here for you",
-      "intro": "Our support team is ready to help with any questions about creating your perfect mystery party with Mystery Maker.",
+      "title": "Kontakt os",
+      "description": "Brug for mere hjælp? Vi er her for dig",
+      "intro": "Vores supportteam er klar til at hjælpe med alle spørgsmål om at skabe din perfekte mystery-fest med Mystery Maker.",
       "form": {
-        "name": "Name",
-        "email": "Email Address",
-        "subject": "Subject",
-        "message": "Message",
-        "namePlaceholder": "Your name",
-        "emailPlaceholder": "your.email@example.com",
-        "subjectPlaceholder": "What is your message about?",
-        "messagePlaceholder": "How can we help you?",
-        "sendButton": "Send Message",
-        "sending": "Sending...",
-        "success": "Thank you for contacting us! We'll get back to you within 24 hours.",
-        "error": "Failed to send message. Please try again later."
+        "name": "Navn",
+        "email": "E-mailadresse",
+        "subject": "Emne",
+        "message": "Besked",
+        "namePlaceholder": "Dit navn",
+        "emailPlaceholder": "din.email@eksempel.dk",
+        "subjectPlaceholder": "Hvad handler din besked om?",
+        "messagePlaceholder": "Hvordan kan vi hjælpe dig?",
+        "sendButton": "Send besked",
+        "sending": "Sender...",
+        "success": "Tak, fordi du kontaktede os! Vi vender tilbage inden for 24 timer.",
+        "error": "Kunne ikke sende beskeden. Prøv venligst igen senere."
       }
     }
   },
   "chat": {
-    "title": "Murder Mystery Creator",
-    "public": "Public",
-    "private": "Private",
-    "initialGreeting": "Hello! I'm your AI development assistant. Let me help you create a murder mystery. How many players do you want for your murder mystery?",
-    "inputPlaceholder": "Type your message...",
-    "signInPrompt": "Please <1>sign in</1> to use private mode",
-    "errorResponse": "I'm having trouble responding right now. Please try again.",
-    "errorResponseWithFallback": "I'm experiencing some technical difficulties. How many players do you want for your murder mystery?",
-    "connectionErrorResponse": "I'm having trouble connecting right now. How many players do you want for your murder mystery?",
-    "placeholder": "Share your ideas for the mystery...",
-    "loadingMessages": "Loading previous messages...",
+    "title": "Murder Mystery-skaber",
+    "public": "Offentlig",
+    "private": "Privat",
+    "initialGreeting": "Hej! Jeg er din AI-udviklingsassistent. Lad mig hjælpe dig med at skabe et murder mystery. Hvor mange spillere vil du have til dit murder mystery?",
+    "inputPlaceholder": "Skriv din besked...",
+    "signInPrompt": "<1>Log ind</1> for at bruge privat tilstand",
+    "errorResponse": "Jeg har lige nu svært ved at svare. Prøv venligst igen.",
+    "errorResponseWithFallback": "Jeg oplever nogle tekniske problemer. Hvor mange spillere vil du have til dit murder mystery?",
+    "connectionErrorResponse": "Jeg har lige nu forbindelsesproblemer. Hvor mange spillere vil du have til dit murder mystery?",
+    "placeholder": "Del dine idéer til mysteriet...",
+    "loadingMessages": "Indlæser tidligere beskeder...",
     "generatingConcept": "Skaber dit mystery-koncept — dette kan tage op til 30 sekunder...",
     "errors": {
-      "responseFailed": "Failed to get AI response. Please try again.",
-      "aiUnavailable": "I apologize, but I'm having trouble responding right now. Please try again in a moment.",
+      "responseFailed": "Kunne ikke hente AI-svar. Prøv venligst igen.",
+      "aiUnavailable": "Jeg beklager, men jeg har lige nu svært ved at svare. Prøv venligst igen om et øjeblik.",
       "saveFailed": "Din besked kunne ikke gemmes — den kan forsvinde, hvis du genindlæser siden. Tjek din forbindelse og kopiér vigtig tekst, før du forlader denne side."
     }
   },
   "sendToGuests": {
-    "title": "Send Character Guides to Your Guests",
-    "description": "Enter email addresses for each character to send personalized guides directly to your guests. Each guest will only receive their own character information.",
+    "title": "Send karakterguider til dine gæster",
+    "description": "Indtast e-mailadresser for hver karakter for at sende personlige guider direkte til dine gæster. Hver gæst modtager kun oplysninger om sin egen karakter.",
     "status": {
-      "sent": "Sent"
+      "sent": "Sendt"
     },
-    "emailPlaceholder": "guest@example.com",
+    "emailPlaceholder": "gæst@eksempel.dk",
     "buttons": {
-      "sending": "Sending...",
-      "send": "Send Character Guides"
+      "sending": "Sender...",
+      "send": "Send karakterguider"
     },
     "errors": {
       "noValidEmails": "Please add at least one valid email address",
