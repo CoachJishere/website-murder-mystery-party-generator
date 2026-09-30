@@ -528,41 +528,41 @@
     }
   },
   "account": {
-    "title": "Account Settings",
+    "title": "Kontoindstillinger",
     "tabs": {
-      "profile": "Profile",
-      "security": "Security",
+      "profile": "Profil",
+      "security": "Sikkerhed",
       "billing": "Fakturering"
     },
     "profile": {
-      "title": "Profile Information",
-      "description": "Update your account profile information",
-      "name": "Full Name",
-      "email": "Email Address",
-      "emailNote": "Email cannot be changed",
-      "saveButton": "Save Changes",
-      "saving": "Saving...",
-      "success": "Profile updated successfully"
+      "title": "Profiloplysninger",
+      "description": "Opdater dine profiloplysninger",
+      "name": "Fulde navn",
+      "email": "E-mailadresse",
+      "emailNote": "E-mail kan ikke ændres",
+      "saveButton": "Gem ændringer",
+      "saving": "Gemmer...",
+      "success": "Profilen er opdateret"
     },
     "security": {
       "password": {
-        "title": "Change Password",
-        "description": "Update your password to keep your account secure",
-        "currentPassword": "Current Password",
-        "newPassword": "New Password",
-        "confirmPassword": "Confirm New Password",
-        "updateButton": "Update Password",
-        "updating": "Updating...",
-        "success": "Password updated successfully"
+        "title": "Skift adgangskode",
+        "description": "Opdater din adgangskode for at holde din konto sikker",
+        "currentPassword": "Nuværende adgangskode",
+        "newPassword": "Ny adgangskode",
+        "confirmPassword": "Bekræft ny adgangskode",
+        "updateButton": "Opdater adgangskode",
+        "updating": "Opdaterer...",
+        "success": "Adgangskoden er opdateret"
       },
       "deleteAccount": {
-        "title": "Delete Account",
-        "description": "Permanently delete your account and all associated data",
-        "warning": "This action cannot be undone. All your mysteries and data will be permanently deleted.",
-        "confirmText": "Type DELETE to confirm",
-        "deleteButton": "Delete Account",
-        "deleting": "Deleting...",
-        "success": "Account deleted successfully"
+        "title": "Slet konto",
+        "description": "Slet permanent din konto og alle tilknyttede data",
+        "warning": "Denne handling kan ikke fortrydes. Alle dine mysterier og data vil blive slettet permanent.",
+        "confirmText": "Skriv SLET for at bekræfte",
+        "deleteButton": "Slet konto",
+        "deleting": "Sletter...",
+        "success": "Kontoen er slettet"
       }
     },
     "loading": "Indlæser...",
@@ -573,9 +573,9 @@
   },
   "mysteryCreation": {
     "scriptType": {
-      "full": "full",
-      "pointForm": "point form",
-      "both": "both full and point form"
+      "full": "fuld",
+      "pointForm": "punktform",
+      "both": "både fuld og punktform"
     },
     "sections": {
       "premise": "Præmis",
