@@ -1297,20 +1297,20 @@
     }
   },
   "blog": {
-    "title": "Murder Mystery Blog",
-    "subtitle": "Tips, guides, and inspiration for your next mystery party",
-    "backToHome": "Back to Home",
-    "readMore": "Read more →",
-    "minRead": "min read",
-    "publishedOn": "Published on",
-    "by": "By",
-    "relatedPosts": "Related posts",
-    "noPostsFound": "No blog posts found.",
-    "loading": "Loading...",
-    "error": "Failed to load blog posts.",
-    "errorTitle": "Error",
-    "tryAgain": "Try Again",
-    "checkBackLater": "Check back later for new articles!",
+    "title": "Murder Mystery-bloggen",
+    "subtitle": "Tips, guider och inspiration till din nästa mystery-fest",
+    "backToHome": "Tillbaka till startsidan",
+    "readMore": "Läs mer →",
+    "minRead": "min läsning",
+    "publishedOn": "Publicerad den",
+    "by": "Av",
+    "relatedPosts": "Relaterade inlägg",
+    "noPostsFound": "Inga blogginlägg hittades.",
+    "loading": "Läser in...",
+    "error": "Det gick inte att läsa in blogginlägg.",
+    "errorTitle": "Fel",
+    "tryAgain": "Försök igen",
+    "checkBackLater": "Kom tillbaka senare för nya artiklar!",
     "copyForAI": "Kopiera för AI",
     "copied": "Kopierat!",
     "copyForAITooltip": "Kopiera detta inlägg som ren markdown för att klistra in i ChatGPT, Claude eller någon AI-assistent"
@@ -1332,54 +1332,54 @@
   },
   "chatbot": {
     "toasts": {
-      "invalidId": "Invalid conversation ID",
-      "loadFailed": "Could not load your previous conversation",
-      "offlineMode": "Using offline mode - some features may be limited",
-      "requestError": "Error processing your request",
-      "generationSuccess": "Mystery generated successfully!",
-      "urlUnavailable": "Chatbot URL not available yet"
+      "invalidId": "Ogiltigt konversations-ID",
+      "loadFailed": "Det gick inte att läsa in din tidigare konversation",
+      "offlineMode": "Använder offlineläge – vissa funktioner kan vara begränsade",
+      "requestError": "Fel vid behandling av din förfrågan",
+      "generationSuccess": "Mysterium genererat!",
+      "urlUnavailable": "Chatbot-URL inte tillgänglig än"
     },
-    "welcomeMessage": "Welcome to the Murder Mystery Creator! Describe the type of mystery you'd like to create, or ask me for suggestions.",
-    "newConversationTitle": "New Murder Mystery",
+    "welcomeMessage": "Välkommen till Murder Mystery-skaparen! Beskriv den typ av mysterium du vill skapa, eller be mig om förslag.",
+    "newConversationTitle": "Nytt Murder Mystery",
     "fallbackResponses": [
-      "I'd love to help you create a murder mystery. What theme or setting would you like for your mystery?",
-      "That's a great choice! Now, let's think about the victim. Who would you like the victim to be?",
-      "Interesting! Now we need some suspects. Could you describe 2-3 characters who might have motives to commit this crime?",
-      "Those are compelling suspects. Let's add some clues. What kind of evidence might be found at the scene?",
-      "Your mystery is taking shape! To continue developing the details of your story, let's think about what other elements we might include."
+      "Jag skulle gärna hjälpa dig att skapa ett murder mystery. Vilket tema eller miljö vill du ha till ditt mysterium?",
+      "Det är ett bra val! Låt oss nu tänka på offret. Vem vill du ha som offer?",
+      "Intressant! Nu behöver vi några misstänkta. Kan du beskriva 2-3 karaktärer som skulle kunna ha motiv att begå detta brott?",
+      "Det är övertygande misstänkta. Låt oss lägga till några ledtrådar. Vilken typ av bevis skulle kunna hittas på platsen?",
+      "Ditt mysterium tar form! För att fortsätta utveckla detaljerna i din historia, låt oss tänka på vilka andra element vi skulle kunna inkludera."
     ],
-    "title": "Create Your Murder Mystery",
+    "title": "Skapa ditt Murder Mystery",
     "buttons": {
-      "external": "External",
-      "openFull": "Open Full Chatbot",
-      "finalize": "Finalize",
-      "finalizeMystery": "Finalize Mystery"
+      "external": "Extern",
+      "openFull": "Öppna fullständig chatbot",
+      "finalize": "Slutför",
+      "finalizeMystery": "Slutför mysterium"
     },
-    "creatorTitle": "Murder Mystery Creator",
-    "placeholder": "Type your ideas for the murder mystery...",
-    "finalizePrompt": "When you're satisfied with your mystery, finalize it to continue."
+    "creatorTitle": "Murder Mystery-skapare",
+    "placeholder": "Skriv dina idéer för murder mystery...",
+    "finalizePrompt": "När du är nöjd med ditt mysterium kan du slutföra det för att fortsätta."
   },
   "homeDashboard": {
-    "title": "Your Mysteries",
-    "searchPlaceholder": "Search mysteries...",
-    "loadMore": "Load More",
-    "loading": "Loading...",
+    "title": "Dina Mysterier",
+    "searchPlaceholder": "Sök i mysterier...",
+    "loadMore": "Läs in fler",
+    "loading": "Läser in...",
     "empty": {
-      "title": "You haven't created any mysteries yet",
-      "description": "Use the input box above to start creating your first murder mystery!"
+      "title": "Du har inte skapat några mysterier än",
+      "description": "Använd inmatningsfältet ovan för att börja skapa ditt första murder mystery!"
     },
     "errors": {
-      "loadFailed": "Failed to load some mysteries. Please refresh the page."
+      "loadFailed": "Det gick inte att läsa in vissa mysterier. Uppdatera sidan."
     }
   },
   "mysteryDashboard": {
-    "title": "Mystery Dashboard",
-    "description": "Manage your created mysteries, start new ones, or explore sample content.",
+    "title": "Mysterium-dashboard",
+    "description": "Hantera dina skapade mysterier, starta nya, eller utforska exempelinnehåll.",
     "tabs": {
-      "all": "All",
-      "drafts": "Drafts",
-      "purchased": "Purchased",
-      "archived": "Archived"
+      "all": "Alla",
+      "drafts": "Utkast",
+      "purchased": "Köpta",
+      "archived": "Arkiverade"
     }
   },
   "attribution": {
