@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-30
+
+### Fix: post-generation editing FAQ missing from the actual `/support` page
+A customer (Justin McGowan) emailed asking whether he'd be able to edit his mystery's script/storylines after generating — a question the FAQ already answers (`supportPage.faqs.questions.canIEdit`, translated in all 13 locales), but that answer only lived in the `Faq1` homepage component, not in `Support.tsx`'s own separate `faqCategories` array that actually backs the `/support` page linked from the site header. Same gap for `roundCount`. Neither the chat/concept-builder nor the purchase page link to FAQs beyond the generic header "Support" link, so a customer following that link would hit a dead end for both questions. Added both to the "Hosting & Planning" category in `src/pages/Support.tsx`, next to the related `whatIncluded`/`gameDuration` questions — no i18n work needed, translations already existed.
+
 ## 2026-09-29
 
 ### Fix: site-wide blank-page outage from an unescaped `${{` in the new seasonal-sale banner (~23 min, ADR-0132 Addendum 1)

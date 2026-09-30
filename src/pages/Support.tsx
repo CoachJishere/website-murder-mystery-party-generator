@@ -142,8 +142,16 @@ const Support = () => {
           answer: t('supportPage.faqs.questions.whatIncluded.answer')
         },
         {
+          question: t('supportPage.faqs.questions.canIEdit.question'),
+          answer: t('supportPage.faqs.questions.canIEdit.answer')
+        },
+        {
           question: t('supportPage.faqs.questions.gameDuration.question'),
           answer: t('supportPage.faqs.questions.gameDuration.answer')
+        },
+        {
+          question: t('supportPage.faqs.questions.roundCount.question'),
+          answer: t('supportPage.faqs.questions.roundCount.answer')
         },
         {
           question: t('supportPage.faqs.questions.themedMysteries.question'),
