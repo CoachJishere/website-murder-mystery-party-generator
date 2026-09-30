@@ -390,39 +390,21 @@ Context: ADR-0128 (docs/adr/0128-party-cluster-detection-for-feedback-email-timi
   // ADR's own Addendum for why ALTER DEFAULT PRIVILEGES was rejected) -- worth a
   // quick has_function_privilege check whenever a new detector RPC ships, not a
   // recurring digest item.
-  {
-    // Migrated 2026-09-25 from a vault note that was never reaching Jonathan
-    // (see feedback_recheck_notes_default_to_seo_digest memory). Not an SEO
-    // item. Full detail: vault
-    // 01_Projects/Mystery-Maker/da-sv-partial-localization-2026-07-19-mystery-maker.md.
-    //
-    // RE-CHECKED 2026-09-28: GA4 sessions on /da/ and /sv/ paths (90 days) are 61
-    // and 55 -- comparable to or HIGHER than de (54) and es (53), which are fully
-    // localized. Traffic wasn't the reason to leave these parked. Jonathan decided
-    // to close the gap, done bit-by-bit / one string at a time / no scripts
-    // generating the translation content (explicit ask, see feedback memory on
-    // bulk-edit caution).
-    //
-    // da.json DONE 2026-09-30: all ~610 real gaps hand-translated across 8
-    // checkpointed commits (b02ef53 is the last). Verified 0 orphaned keys, 0
-    // i18next interpolation-token mismatches across all 1355 keys, valid JSON.
-    // The 24 keys still "identical to English" by raw string-diff are legitimate
-    // non-gaps (proper names, brand names, an email address, punctuation,
-    // established Danish loanwords) -- not translation debt. Full detail:
-    // CHANGELOG 2026-09-30.
-    //
-    // sv.json NOT STARTED -- same ~627-gap scope, same one-at-a-time approach.
-    start: '2026-09-26',
-    end: '2026-10-17',
-    title: 'Danish done, Swedish still ~47% untranslated -- same de/es-comparable traffic case applies',
-    body:
-      'da.json\'s translation gap is closed (2026-09-30, hand-translated one string at a time -- see CHANGELOG). ' +
-      'sv.json is still at ~46.5% untranslated with the same case for finishing it: GA4 shows /sv/ path sessions ' +
-      '(90 days) comparable to fully-localized de/es, so traffic isn\'t why it\'s parked.',
-    prompt: `Finish the sv.json translation the same way da.json was just completed (2026-09-30, see CHANGELOG for the full approach and verification method). Re-derive current state from ground truth first -- don't assume sv.json is still exactly ~627 gaps, re-flatten sv.json against en.json (JSON.stringify comparison, not === -- a naive === check misses array-valued keys, a real gap found partway through the da.json pass).
-
-Translate bit-by-bit, one string at a time, hand-composed -- no script or bulk process generating the Danish text itself (Jonathan's explicit ask). Preserve i18next interpolation tokens ({{count}}, {{name}}, etc.) and check any string that looks like it might be validated literally in code (the da.json pass found account.security.deleteAccount.confirmText needs to match actual validation logic, not just read naturally -- confirmed by checking how de/fr/es already handle that same key) before translating it differently from the English literal. Keep established Danish-tech-UI-style loanwords in mind as a pattern (Dashboard, Support, Chat, Download stayed in English in da.json) -- the equivalent Swedish loanwords are likely similar but verify against what already-translated Swedish content in the file does, don't assume. Verify at the end: 0 orphaned keys, 0 interpolation-token mismatches, valid JSON.`,
-  },
+  // RETIRED 2026-09-30: both da.json and sv.json are now functionally complete.
+  // Open since 2026-07-19. GA4 (checked 2026-09-28) showed /da/ and /sv/ path
+  // sessions (90 days) at 61 and 55 -- comparable to or HIGHER than fully-localized
+  // de (54) and es (53) -- so traffic was never the reason these sat parked; the
+  // missing translations were. Jonathan called it: close the gap, one string at a
+  // time, no scripts generating the translation text (explicit ask). da.json done
+  // first (~610 gaps, 8 checkpointed commits), sv.json followed the same day
+  // (~612 gaps, 9 checkpointed commits) -- 17 commits total. Both verified
+  // end-to-end: 0 orphaned keys, 0 i18next interpolation-token mismatches across
+  // all 1355 keys, valid JSON. The handful of keys still "identical to English"
+  // in each file are legitimate non-gaps (proper names, brand names, an email
+  // address, punctuation, established tech-UI loanwords), not translation debt.
+  // Full detail: CHANGELOG 2026-09-30. Not re-adding this reminder -- revisit
+  // only if en.json gains substantial new content that both locales then need to
+  // catch up on.
   // RETIRED 2026-09-28: confirmed working in CI. Checked the "Submit sitemap to
   // Google Search Console" step across 5 publish-daily-blog.yml runs spanning
   // 2026-09-13 to 2026-09-27 (databaseId 34760912649, 35107094632, 35513992780,
