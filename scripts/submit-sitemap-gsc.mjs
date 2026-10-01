@@ -24,7 +24,12 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const SITE_URL = process.env.GSC_SITE_URL || 'https://mysterymaker.party';
+// Must be the www form -- the GSC property (and the service account's grant on
+// it) is registered under https://www.mysterymaker.party/, not the bare domain.
+// CI always sets GSC_SITE_URL explicitly so this default was never actually
+// exercised in production, but it bit a local/manual run 2026-10-01 (same root
+// cause as the fetchGAMetrics.mjs/fetchGSCMetrics.mjs fix the same week).
+const SITE_URL = process.env.GSC_SITE_URL || 'https://www.mysterymaker.party/';
 const SITEMAP_URL = process.env.GSC_SITEMAP_URL || `${SITE_URL.replace(/\/$/, '')}/sitemap.xml`;
 const LOCAL_CREDS_PATH = join(__dirname, '../.google-search-console-credentials.json');
 

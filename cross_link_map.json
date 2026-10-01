@@ -52859,7 +52859,7 @@
       },
       {
         "match_text": "19.1 million Americans listen to true crime podcasts weekly",
-        "replacement": "[19.1 million Americans listen to true crime podcasts weekly](/blog/murder-mystery-party-for-true-crime-fans)"
+        "replacement": "[19.1 million Americans listen to true crime podcasts weekly](/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
       },
       {
         "match_text": "I was at a dinner party last year where the host",
@@ -52875,7 +52875,7 @@
       },
       {
         "match_text": "groups remember theme way more than they remember the mystery solution",
-        "replacement": "[groups remember theme way more than they remember the mystery solution](/blog/murder-mystery-dinner-party-games)"
+        "replacement": "[groups remember theme way more than they remember the mystery solution](/blog/murder-mystery-party-ideas)"
       },
       {
         "match_text": "For adults who sometimes feel awkward at dinner parties",
@@ -52883,7 +52883,7 @@
       },
       {
         "match_text": "You don't memorize lines.",
-        "replacement": "[You don't memorize lines.](/blog/how-to-host-murder-mystery-party-without-experience)"
+        "replacement": "[You don't memorize lines.](/blog/first-time-hosting-murder-mystery-complete-guide)"
       },
       {
         "match_text": "Actual 1920s aesthetics",
@@ -52926,9 +52926,9 @@
           "replacement": "[années 1920, cela devient l'événement. Le mystère](/fr/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "19,1 millions d'Américains écoutent les podcasts de vrai crime hebdomadairement",
-          "replacement": "[19,1 millions d'Américains écoutent les podcasts de vrai crime hebdomadairement](/fr/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[19,1 millions d'Américains écoutent les podcasts de vrai crime hebdomadairement](/fr/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -52946,9 +52946,9 @@
           "replacement": "[62% des organisations utilisent maintenant les jeux immersifs pour la const](/fr/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "les groupes se souviennent du thème bien plus qu'ils ne se souviennent de la solution du mystère",
-          "replacement": "[les groupes se souviennent du thème bien plus qu'ils ne se souviennent de la solution du mystère](/fr/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[les groupes se souviennent du thème bien plus qu'ils ne se souviennent de la solution du mystère](/fr/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -52956,9 +52956,9 @@
           "replacement": "[ois maladroits aux fêtes dîner, cette permission est vraiment précieuse](/fr/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "Vous ne mémorisez pas les lignes",
-          "replacement": "[Vous ne mémorisez pas les lignes](/fr/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[Vous ne mémorisez pas les lignes](/fr/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
@@ -53003,9 +53003,9 @@
           "replacement": "[es hier um die](/de/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "19,1 Millionen Amerikaner hören wöchentlich True-Crime-Podcasts",
-          "replacement": "[19,1 Millionen Amerikaner hören wöchentlich True-Crime-Podcasts](/de/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[19,1 Millionen Amerikaner hören wöchentlich True-Crime-Podcasts](/de/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -53023,9 +53023,9 @@
           "replacement": "[62% der Organisationen nutzen jetzt immersive Gaming für Team-Building](/de/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "Gruppen merken sich das Thema viel mehr als die Mystery-Lösung",
-          "replacement": "[Gruppen merken sich das Thema viel mehr als die Mystery-Lösung](/de/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[Gruppen merken sich das Thema viel mehr als die Mystery-Lösung](/de/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -53033,9 +53033,9 @@
           "replacement": "[Für Erwachsene, die sich manchmal bei Dinnerpartys unbeholfen fühlen](/de/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "Sie memorieren nicht Zeilen",
-          "replacement": "[Sie memorieren nicht Zeilen](/de/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[Sie memorieren nicht Zeilen](/de/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
@@ -53080,9 +53080,9 @@
           "replacement": "[piacciono le feste anni](/it/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "19,1 milioni di americani ascoltano podcast di true crime settimanalmente",
-          "replacement": "[19,1 milioni di americani ascoltano podcast di true crime settimanalmente](/it/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[19,1 milioni di americani ascoltano podcast di true crime settimanalmente](/it/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -53100,9 +53100,9 @@
           "replacement": "[62% delle organizzazioni usa ora i giochi immersivi per il team-building](/it/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "i gruppi ricordano il tema molto più che ricordano la soluzione del mistero",
-          "replacement": "[i gruppi ricordano il tema molto più che ricordano la soluzione del mistero](/it/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[i gruppi ricordano il tema molto più che ricordano la soluzione del mistero](/it/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -53110,9 +53110,9 @@
           "replacement": "[Per gli adulti che a volte risultano impacciati alle cene](/it/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "Non memorizzi linee",
-          "replacement": "[Non memorizzi linee](/it/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[Non memorizzi linee](/it/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
@@ -53157,9 +53157,9 @@
           "replacement": "[MysteryMaker.party genererer voksenmysterier fra bunden, tilpasset](/da/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "19,1 millioner amerikanere lytter til true crime-podcasts ugentligt",
-          "replacement": "[19,1 millioner amerikanere lytter til true crime-podcasts ugentligt](/da/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[19,1 millioner amerikanere lytter til true crime-podcasts ugentligt](/da/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -53177,9 +53177,9 @@
           "replacement": "[62 % af organisationer bruger nu fordybende spil til teambuilding](/da/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "grupper husker temaet langt mere, end de husker mysterieløsningen",
-          "replacement": "[grupper husker temaet langt mere, end de husker mysterieløsningen](/da/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[grupper husker temaet langt mere, end de husker mysterieløsningen](/da/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -53187,9 +53187,9 @@
           "replacement": "[For voksne, der nogle gange føler sig akavede til middagsfester](/da/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "Du memorerer ikke replikker",
-          "replacement": "[Du memorerer ikke replikker](/da/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[Du memorerer ikke replikker](/da/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
@@ -53234,9 +53234,9 @@
           "replacement": "[\"Muistatko sen Gatsby-murhamysteerin](/fi/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "19,1 miljoonaa amerikkalaista kuuntelee true crime -podcasteja viikoittain",
-          "replacement": "[19,1 miljoonaa amerikkalaista kuuntelee true crime -podcasteja viikoittain](/fi/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[19,1 miljoonaa amerikkalaista kuuntelee true crime -podcasteja viikoittain](/fi/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -53254,9 +53254,9 @@
           "replacement": "[62 % organisaatioista käyttää nyt immersiivistä pelaamista tiiminrakennukseen](/fi/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "ryhmät muistavat teeman paljon paremmin kuin mysteerin ratkaisun",
-          "replacement": "[ryhmät muistavat teeman paljon paremmin kuin mysteerin ratkaisun](/fi/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[ryhmät muistavat teeman paljon paremmin kuin mysteerin ratkaisun](/fi/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -53264,9 +53264,9 @@
           "replacement": "[Aikuisille, jotka joskus tuntevat](/fi/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "Et opettele repliikkejä ulkoa",
-          "replacement": "[Et opettele repliikkejä ulkoa](/fi/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[Et opettele repliikkejä ulkoa](/fi/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
@@ -53311,9 +53311,9 @@
           "replacement": "[op een dinnerparty](/nl/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "19,1 miljoen Amerikanen luister naar echte misdaad podcasts wekelijks",
-          "replacement": "[19,1 miljoen Amerikanen luister naar echte misdaad podcasts wekelijks](/nl/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[19,1 miljoen Amerikanen luister naar echte misdaad podcasts wekelijks](/nl/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -53331,9 +53331,9 @@
           "replacement": "[62% van organisaties nu gebruiken immersieve gaming voor team-b](/nl/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "onthouden thema veel meer dan zij onthouden de mysterie-oplossing",
-          "replacement": "[onthouden thema veel meer dan zij onthouden de mysterie-oplossing](/nl/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[onthouden thema veel meer dan zij onthouden de mysterie-oplossing](/nl/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -53341,9 +53341,9 @@
           "replacement": "[Voor volwassenen die soms ongemakkelijk op dinnerfeesten voelen](/nl/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "Je onthoudt niet lijnen",
-          "replacement": "[Je onthoudt niet lijnen](/nl/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[Je onthoudt niet lijnen](/nl/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
@@ -53388,9 +53388,9 @@
           "replacement": "[Det var att värden inte](/sv/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "19,1 miljoner amerikaner lyssnar på true crimepodcasts vecka",
-          "replacement": "[19,1 miljoner amerikaner lyssnar på true crimepodcasts vecka](/sv/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[19,1 miljoner amerikaner lyssnar på true crimepodcasts vecka](/sv/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -53408,9 +53408,9 @@
           "replacement": "[55% av millennials specifikt allokerar](/sv/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "grupper kommer ihåg tema mycket mer än de kommer ihåg mysteriumlösningen",
-          "replacement": "[grupper kommer ihåg tema mycket mer än de kommer ihåg mysteriumlösningen](/sv/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[grupper kommer ihåg tema mycket mer än de kommer ihåg mysteriumlösningen](/sv/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -53418,9 +53418,9 @@
           "replacement": "[tillåtelse för konstighet](/sv/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "Du behöver inte memorera linjer",
-          "replacement": "[Du behöver inte memorera linjer](/sv/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[Du behöver inte memorera linjer](/sv/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
@@ -53465,9 +53465,9 @@
           "replacement": "[em algo. Uma festa de omicídio misterioso](/pt/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "Adultos passam a maior parte de suas vidas",
-          "replacement": "[Adultos passam a maior parte de suas vidas](/pt/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[Adultos passam a maior parte de suas vidas](/pt/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -53485,9 +53485,9 @@
           "replacement": "[Corporate Crime](/pt/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "O tema importa menos do que a execução",
-          "replacement": "[O tema importa menos do que a execução](/pt/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[O tema importa menos do que a execução](/pt/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -53495,9 +53495,9 @@
           "replacement": "[Grupo Introverted ou Quieto](/pt/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "quem resolve",
-          "replacement": "[quem resolve](/pt/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[quem resolve](/pt/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
@@ -53542,9 +53542,9 @@
           "replacement": "[살인미스터리 저녁 식사 파티를](/ko/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "1,910만 명의 미국인이 매주 실제 범죄 팟캐스트를 듣습니다",
-          "replacement": "[1,910만 명의 미국인이 매주 실제 범죄 팟캐스트를 듣습니다](/ko/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[1,910만 명의 미국인이 매주 실제 범죄 팟캐스트를 듣습니다](/ko/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -53562,9 +53562,9 @@
           "replacement": "[조직의 62%는 이제 팀 빌딩을 위해 몰입형 게이밍을 사용합니다](/ko/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "그룹은 미스터리 솔루션보다 주제를 훨씬 더 기억합니다",
-          "replacement": "[그룹은 미스터리 솔루션보다 주제를 훨씬 더 기억합니다](/ko/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[그룹은 미스터리 솔루션보다 주제를 훨씬 더 기억합니다](/ko/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -53572,9 +53572,9 @@
           "replacement": "[괴상함을 위한 허가가 있는 곳](/ko/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "당신은 줄을 암기하지 않습니다",
-          "replacement": "[당신은 줄을 암기하지 않습니다](/ko/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[당신은 줄을 암기하지 않습니다](/ko/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
@@ -53619,9 +53619,9 @@
           "replacement": "[パーティーの前に20分のキャラクター割り当てがない](/ja/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "1910万人のアメリカンを本当の犯罪ポッドキャストを毎週聞きます",
-          "replacement": "[1910万人のアメリカンを本当の犯罪ポッドキャストを毎週聞きます](/ja/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[1910万人のアメリカンを本当の犯罪ポッドキャストを毎週聞きます](/ja/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -53639,9 +53639,9 @@
           "replacement": "[62%の組織は今、チームビルディングのための没入的なゲーム使用](/ja/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "グループはプロットよりはるかにテーマをより多く覚えています",
-          "replacement": "[グループはプロットよりはるかにテーマをより多く覚えています](/ja/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[グループはプロットよりはるかにテーマをより多く覚えています](/ja/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -53649,9 +53649,9 @@
           "replacement": "[奇妙さへの許可があり](/ja/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "条件を設定し、グループが仕事をさせます",
-          "replacement": "[条件を設定し、グループが仕事をさせます](/ja/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[条件を設定し、グループが仕事をさせます](/ja/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
@@ -53696,9 +53696,9 @@
           "replacement": "[我的第一个理论是，凶杀悬疑派对吸引真实犯罪粉丝](/zh-cn/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "1910万美国人每周听真实犯罪播客",
-          "replacement": "[1910万美国人每周听真实犯罪播客](/zh-cn/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[1910万美国人每周听真实犯罪播客](/zh-cn/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -53716,9 +53716,9 @@
           "replacement": "[62％的组织现在使用沉浸式游戏进行团队建设](/zh-cn/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "群体记得主题，远超过他们记得神秘解决方案",
-          "replacement": "[群体记得主题，远超过他们记得神秘解决方案](/zh-cn/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[群体记得主题，远超过他们记得神秘解决方案](/zh-cn/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -53726,9 +53726,9 @@
           "replacement": "[有时在晚餐派对感到尴尬的成人](/zh-cn/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "您不会记忆线条",
-          "replacement": "[您不会记忆线条](/zh-cn/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[您不会记忆线条](/zh-cn/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
@@ -53773,9 +53773,9 @@
           "replacement": "[Mi primera teoría era que](/es/blog/1920s-speakeasy-murder-mystery-party-guide)"
         },
         {
-          "target_slug": "murder-mystery-party-for-true-crime-fans",
+          "target_slug": "murder-mystery-party-for-friend-groups-who-love-true-crime",
           "match_text": "19.1 millones de estadounidenses escuchan podcasts de crimen real semanalmente",
-          "replacement": "[19.1 millones de estadounidenses escuchan podcasts de crimen real semanalmente](/es/blog/murder-mystery-party-for-true-crime-fans)"
+          "replacement": "[19.1 millones de estadounidenses escuchan podcasts de crimen real semanalmente](/es/blog/murder-mystery-party-for-friend-groups-who-love-true-crime)"
         },
         {
           "target_slug": "whodunit-dinner-party-ideas",
@@ -53793,9 +53793,9 @@
           "replacement": "[el 62% de las organizaciones ahora usan juegos inmersivos para team-building](/es/blog/murder-mystery-party-for-corporate-events)"
         },
         {
-          "target_slug": "murder-mystery-dinner-party-games",
+          "target_slug": "murder-mystery-party-ideas",
           "match_text": "los grupos recuerdan el tema mucho más que recuerdan la solución del misterio",
-          "replacement": "[los grupos recuerdan el tema mucho más que recuerdan la solución del misterio](/es/blog/murder-mystery-dinner-party-games)"
+          "replacement": "[los grupos recuerdan el tema mucho más que recuerdan la solución del misterio](/es/blog/murder-mystery-party-ideas)"
         },
         {
           "target_slug": "murder-mystery-party-for-introverts",
@@ -53803,9 +53803,9 @@
           "replacement": "[Para adultos que a veces se sienten incómodos en cenas](/es/blog/murder-mystery-party-for-introverts)"
         },
         {
-          "target_slug": "how-to-host-murder-mystery-party-without-experience",
+          "target_slug": "first-time-hosting-murder-mystery-complete-guide",
           "match_text": "No memorizas líneas",
-          "replacement": "[No memorizas líneas](/es/blog/how-to-host-murder-mystery-party-without-experience)"
+          "replacement": "[No memorizas líneas](/es/blog/first-time-hosting-murder-mystery-complete-guide)"
         },
         {
           "target_slug": "gatsby-murder-mystery-for-birthday-party",
