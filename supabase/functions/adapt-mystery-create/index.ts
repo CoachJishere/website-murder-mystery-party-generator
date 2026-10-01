@@ -171,6 +171,27 @@ serve(async (req) => {
     if (allCharErr) throw new Error(`cast lookup failed: ${allCharErr.message}`);
     const castById = new Map<string, CharacterRow>((allCharacters ?? []).map((c) => [c.id, c as CharacterRow]));
 
+    // Role-count sanity guard (ADR-0103 Addendum 65/66): a murderer/accomplice
+    // removal triggers the expensive, invasive reassignment rewrite below
+    // (adapt-mystery-apply rewrites detective_script, evidence cards, and
+    // invents a new culprit) on the assumption that character_role correctly
+    // identifies exactly one holder of that role. Villa Blackwood, Lethal
+    // Mutations, and Emma's Honky Tonk all shipped with 2+ characters wrongly
+    // tagged 'accomplice' — a generation-time bug now caught going forward by
+    // package_accomplice_role_mismatch() at the completion gate, but that gate
+    // only runs at generation time and never re-validates an already-completed
+    // package. This is the second line of defense: refuse to let a corrupted
+    // cast enter the reassignment flow at all, rather than compounding the
+    // corruption by inventing a second/third "accomplice" on top of it.
+    const roleCounts = new Map<string, number>();
+    if (style === "detective") {
+      for (const c of allCharacters ?? []) {
+        if (c.character_role === "murderer" || c.character_role === "accomplice") {
+          roleCounts.set(c.character_role, (roleCounts.get(c.character_role) ?? 0) + 1);
+        }
+      }
+    }
+
     if (allCharacters && allCharacters.length - dedupedRequests.length < MIN_REMAINING_CHARACTERS) {
       return jsonResponse({
         error: "not_eligible",
@@ -210,6 +231,16 @@ serve(async (req) => {
       } else if (role === "redHerring" || role === "suspect") {
         eligible = true;
       } else if (role === "murderer" || role === "accomplice") {
+        if ((roleCounts.get(role) ?? 0) !== 1) {
+          // Data corruption, not a normal ineligibility — surfaced distinctly
+          // so this never gets silently treated as "character can't be
+          // removed" and instead flags the package for a manual sweep.
+          return jsonResponse({
+            error: "role_data_inconsistent",
+            character_id: r.character_id,
+            reason: `expected exactly 1 character with role '${role}' in this package, found ${roleCounts.get(role) ?? 0}`,
+          }, 409);
+        }
         eligible = true;
         requiresReassignment = true;
       } else {

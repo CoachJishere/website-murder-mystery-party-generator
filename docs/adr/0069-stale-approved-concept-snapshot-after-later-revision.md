@@ -119,3 +119,24 @@ Jonathan asked to tackle the regression head-on rather than leave it open. Re-re
 - `docs/adr/0118-make-parent-scenario-fabricates-characters-ignoring-extracted-roster.md` — the ADR owning `isPlausibleRosterCount`'s original introduction and rationale
 
 Then the write-up made the same category of mistake again, one level up: it assumed "wrong snapshot pointer" necessarily meant "wrong delivered content" without actually reading the delivered content to check. It didn't — the prose-generation pipeline's wider context window apparently compensated. The lesson compounds: verify the *actual output* a customer received, not just the mechanism that theoretically produced it, at every layer of an investigation like this — a plausible causal chain is not the same as a confirmed one.
+
+## Addendum 3 (2026-10-01): the `has_accomplice` auto-sync this ADR's own fix added was silently dropped by a later migration — live broken for 3 weeks, found while closing out an unrelated package
+
+While confirming "Emma's Honky Tonk: A Meow-der Mystery" (package `1b44560c-5e95-4d8a-93d8-6fa682e074d7`, ADR-0103 Addendum 65/66) was fully clean, its `conversations.has_accomplice` still read `true` after its 4 wrongly-tagged `accomplice` characters had already been corrected to 0 and the package had gone through a real `needs_review` → `completed` transition — exactly the transition `validate_package_characters()`'s has_accomplice sync (migration `20260905183501_sync_has_accomplice_from_actual_characters.sql`) is supposed to catch.
+
+**Checked the live database directly rather than trusting the repo file** — `pg_get_functiondef()` on the deployed `validate_package_characters()` showed no `_has_accomplice_actual` variable and no `UPDATE conversations` block at all. Migration `20260908074900_stamp_generation_completed_at_on_validated_completion.sql` (2026-09-08, three days after the sync was added, ADR-0103 Addendum 30's follow-up) redefined the function with `CREATE OR REPLACE` from a base that predated the sync block, and the function it deployed simply never had it — classic paired-predicate-drift via silent base-version loss, not a merge conflict or a reverted commit anyone would have seen flagged.
+
+**Confirmed live-broken 2026-09-08 through 2026-10-01 (~3 weeks):** every package that completed in that window never had `has_accomplice` auto-corrected at completion, regardless of what the customer actually decided via chat.
+
+**Fixed:**
+1. Restored the sync block into the current (correct) version of the function — preserving the `generation_completed_at` stamping logic `20260908074900` added, not reverting that migration, just re-adding what it accidentally dropped. Migration `20261001000000_restore_has_accomplice_sync_dropped_by_completed_at_stamp.sql`.
+2. Confirmed restored: `pg_get_functiondef()` now shows the sync block present.
+3. Fixed Emma's Honky Tonk directly (`has_accomplice → false`) — an already-completed package won't retroactively benefit from the trigger fix.
+4. **Corpus-checked the actual blast radius** rather than assuming it was limited to the one package found by chance: every `mystery_style='detective'` package completed since 2026-09-08 with a genuine `has_accomplice`/`character_role` mismatch in either direction (the original shape this sync exists to catch). Zero other live instances — Emma's Honky Tonk was the only real-world case the 3-week outage actually affected, even though the theoretical exposure was every detective-style completion in that window.
+
+**Lesson, consistent with this codebase's established "migration list isn't reliable, verify live state" practice** (see `supabase migration list` section of `CLAUDE.md`): a `CREATE OR REPLACE FUNCTION` migration that doesn't diff against the *currently live* function body before writing its new version can silently drop logic a completely unrelated, intervening migration added — even when that intervening migration is itself correctly applied and well-documented. The fix for *this* instance is applied; the general risk (another future `CREATE OR REPLACE` on this same function dropping this same block again) isn't structurally closed by this addendum — flagged for awareness, not solved.
+
+### Key files (Addendum 3)
+- `supabase/migrations/20261001000000_restore_has_accomplice_sync_dropped_by_completed_at_stamp.sql` — restores the sync block
+- `conversations` — 1 row corrected (`cdca3a38-fa1b-4bda-9e7d-2e2a99df8166`, Emma's Honky Tonk, `has_accomplice → false`)
+- No other live packages affected per the corpus check above

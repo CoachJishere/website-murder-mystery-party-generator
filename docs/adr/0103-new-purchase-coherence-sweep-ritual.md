@@ -1272,3 +1272,15 @@ New-Purchase sweep on package `c14de0f2-0a98-4475-9578-4a10c810fc2f` (conversati
 - `mystery_characters.reveal_confession_accomplice` — 1 row corrected (`4f9babf8-c691-4987-b2bf-850e92f6522d`, Vex/Vexa Castellan)
 - No migration, no detector shipped this session — both open questions (garbled-reveal-line detector feasibility, dangling-quote auto-remediation wiring) surfaced to Jonathan rather than decided solo
 
+## Addendum 68 (2026-10-01): second line of defense shipped in `adapt-mystery-create` — a corrupted accomplice-role cast can no longer enter the Remove-a-Character reassignment flow at all
+
+Follow-up to Addendum 65/66's `GuestDropoutPanel.tsx`/`isReassignRole()` finding: `package_accomplice_role_mismatch()` closes the gap going forward at generation time, but only re-validates a package at its own completion transition — it can never retroactively protect an already-completed package, and (as Addendum 3 of ADR-0069, found the same session, demonstrates) the trigger that runs it can itself regress silently. Rather than rely solely on the upstream gate, added a direct sanity check inside `adapt-mystery-create` itself, at the exact point a murderer/accomplice removal is accepted: before treating the request as eligible, count how many characters in the full cast (already loaded in memory for the existing headcount guard, so this is a zero-cost addition) share that exact `character_role`. If it's not exactly 1, reject the whole batch with a distinct `role_data_inconsistent` error rather than silently proceeding into the expensive, invasive reassignment rewrite (`adapt-mystery-apply` rewrites `detective_script`, evidence cards, and invents a new culprit) against a cast that's already structurally wrong — which would compound the corruption rather than just fail safely.
+
+Confirmed the frontend (`GuestDropoutPanel.tsx`) already degrades gracefully on an unrecognized error reason (falls through to a generic `createFailed` toast, no crash) — no frontend change needed; per this function's own header comment, the frontend gate is a UX convenience, the backend is the real check.
+
+Deployed via `supabase functions deploy adapt-mystery-create` and verified live (`get_edge_function`: version 7, guard code present, `verify_jwt: true` preserved).
+
+### Key files (Addendum 68)
+- `supabase/functions/adapt-mystery-create/index.ts` — role-count guard added, deployed live (v7)
+- No DB migration — this is application-layer defense-in-depth, not a new detector
+
