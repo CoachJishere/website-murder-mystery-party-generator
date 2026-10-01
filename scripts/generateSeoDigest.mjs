@@ -135,6 +135,53 @@ Keep it skimmable. No preamble before the first <h2>. No closing sign-off.
 // paste-ready prompt that re-derives from ground truth. Delete an entry once acted
 // on, or let it lapse after `end` (inclusive). Dates are 'YYYY-MM-DD' (UTC).
 const REMINDERS = [
+  {
+    // Found 2026-10-01 during a full SEO/GEO health sweep (translation
+    // completeness, MT-rot heuristics, dead-link audit, sitemap HTTP health,
+    // title/meta rot -- all otherwise clean across all 13 locales). This is
+    // the one still-open thread: GSC URL Inspection on
+    // alternative-party-ideas-by-culture (the 12-locale culture-comparison
+    // series, see the 2026-09-28 digest's original reminder, now retired).
+    // 2026-10-01 readings: da moved from "URL is unknown to Google" to
+    // "Discovered - currently not indexed" (the 2026-09-09 internal-link fix
+    // is working, Google just hasn't crawled it yet). de is "Crawled -
+    // currently not indexed" on its second crawl (2026-09-27) -- a Google-side
+    // quality/dedup signal, not a discovery problem; more linking won't move
+    // this. 10/12 locales were already "Submitted and indexed" as of
+    // 2026-09-28 and weren't re-checked this pass (no reason to expect
+    // regression). Give da more time to get crawled; de likely needs a real
+    // content differentiation pass if it's still stuck after another few weeks,
+    // not just patience.
+    start: '2026-10-15',
+    end: '2026-11-05',
+    title: 'Recheck da/de indexing on alternative-party-ideas-by-culture (da discovered-not-crawled, de stuck crawled-not-indexed)',
+    body:
+      'Two-week-old watch item from a 2026-10-01 full SEO health sweep (otherwise clean across all 13 locales -- ' +
+      'translations, content rot, dead links, sitemap health, title/meta all checked and fine). <code>da</code> ' +
+      'was "unknown to Google" on 2026-09-28, now "discovered, not yet crawled" -- the internal-link fix is working, ' +
+      'just needs more time. <code>de</code> has been "crawled, not indexed" across two separate crawls (09-27 and ' +
+      'earlier) -- worth checking if it is still stuck, which would point at a content/quality issue rather than discovery.',
+    prompt: `Recheck GSC indexing status for the alternative-party-ideas-by-culture series' da and de locale URLs specifically (https://www.mysterymaker.party/da/blog/alternative-party-ideas-by-culture/ and .../de/blog/...), using the GSC URL Inspection API. Re-derive from ground truth, don't trust this note's prior readings as still current.
+
+1. da: as of 2026-10-01 it had moved from "URL is unknown to Google" (2026-09-28) to "Discovered - currently not indexed" with no crawl yet. Has it been crawled now? If indexed, close this out for da. If still just "discovered" after another 2+ weeks, that itself would be worth flagging (slow discovery despite the internal link being live since 2026-09-09).
+2. de: has been "Crawled - currently not indexed" across at least two separate crawls (one as of 2026-09-27). If it's still in this state, that's a real signal worth investigating -- compare de's content against the other 11 locale versions of the same post for anything that reads as thin, duplicate, or low-value to Google specifically (not a linking problem at this point, a content one). If it's since moved to indexed, no action needed.
+3. Quick gut-check on the other 10 locales (es, fr, it, pt, nl, sv, fi, ko, ja, zh-cn) -- they were "Submitted and indexed" as of 2026-09-28; a spot-check of 2-3 is enough to confirm no regression, not a full re-audit.
+4. Verdict: is da/de now resolved, or does de specifically need a content-quality look rather than more time?`,
+  },
+  {
+    // Found 2026-10-01 during the same SEO health sweep. Very low stakes --
+    // noting it so it doesn't get silently forgotten, not because it's urgent.
+    start: '2026-10-15',
+    end: '2026-12-01',
+    title: 'One planned internal link never got placed -- best-murder-mystery-kits-buying-guide to homepage',
+    body:
+      'From the 2026-09-28 digest\'s homepage-authority action prompt: of the two suggested source pages, ' +
+      '<code>best-murder-mystery-party-games-review</code> already linked to the homepage (done), but ' +
+      '<code>best-murder-mystery-kits-buying-guide</code> never got its link added -- there was no natural spot in ' +
+      'the existing prose to insert one without it reading as forced. Low priority; worth a look next time that page ' +
+      'is edited for any other reason, not worth a dedicated pass on its own.',
+    prompt: `Check if best-murder-mystery-kits-buying-guide (EN) has a natural place to add a homepage-linking sentence (query-matched anchor text like "custom murder mystery game generator") that wasn't there on 2026-10-01 -- the page may have been edited since for an unrelated reason, which could create a natural opening. If still no natural spot, close this out permanently rather than re-flagging it again; this is optional authority-building, not a real gap.`,
+  },
   // RETIRED 2026-09-07: the ADR-0046 canonical-consolidation reminder that lived
   // here is closed out. Third ground-truth read (30/30 post-days, no longer thin)
   // confirmed the consolidation is working and still strengthening: homepage pos
