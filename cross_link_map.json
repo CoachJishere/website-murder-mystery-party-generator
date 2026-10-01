@@ -52867,7 +52867,7 @@
       },
       {
         "match_text": "The mystery is revealed during cocktails",
-        "replacement": "[The mystery is revealed during cocktails](/blog/murder-mystery-cocktail-party)"
+        "replacement": "[The mystery is revealed during cocktails](/blog/murder-mystery-cocktail-party-guide)"
       },
       {
         "match_text": "62% of organizations now use immersive gaming for team-building",
@@ -52936,9 +52936,9 @@
           "replacement": "[J'étais à une fête dîner l'année dernière où l'hôte a sorti un kit](/fr/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "Le mystère est révélé pendant les cocktails",
-          "replacement": "[Le mystère est révélé pendant les cocktails](/fr/blog/murder-mystery-cocktail-party)"
+          "replacement": "[Le mystère est révélé pendant les cocktails](/fr/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
@@ -53013,9 +53013,9 @@
           "replacement": "[Vor einem Jahr war ich bei einer Dinnerparty, bei der der Gastgeber kurzerhand drei Tage](/de/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "Das Mystery wird während Cocktails enthüllt",
-          "replacement": "[Das Mystery wird während Cocktails enthüllt](/de/blog/murder-mystery-cocktail-party)"
+          "replacement": "[Das Mystery wird während Cocktails enthüllt](/de/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
@@ -53090,9 +53090,9 @@
           "replacement": "[Ero a una cena l'anno scorso dove l'ospite ha tirato fuori un kit](/it/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "Il mistero viene rivelato durante i cocktail",
-          "replacement": "[Il mistero viene rivelato durante i cocktail](/it/blog/murder-mystery-cocktail-party)"
+          "replacement": "[Il mistero viene rivelato durante i cocktail](/it/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
@@ -53167,9 +53167,9 @@
           "replacement": "[Jeg var til en middagsfest sidste år, hvor værten trak et mordmysteriesæt frem](/da/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "Mysteriet afsløres under cocktails",
-          "replacement": "[Mysteriet afsløres under cocktails](/da/blog/murder-mystery-cocktail-party)"
+          "replacement": "[Mysteriet afsløres under cocktails](/da/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
@@ -53244,9 +53244,9 @@
           "replacement": "[Olin illallisilla juhlilla viime vuonna, jossa isäntä veti esiin murhamysteeripaketin](/fi/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "Mysteeri paljastuu cocktailtilaisuuden aikana",
-          "replacement": "[Mysteeri paljastuu cocktailtilaisuuden aikana](/fi/blog/murder-mystery-cocktail-party)"
+          "replacement": "[Mysteeri paljastuu cocktailtilaisuuden aikana](/fi/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
@@ -53321,9 +53321,9 @@
           "replacement": "[Ik was op een dinnerparty vorig jaar waar de gastheer](/nl/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "Het mysterie onthult gedurende cocktails",
-          "replacement": "[Het mysterie onthult gedurende cocktails](/nl/blog/murder-mystery-cocktail-party)"
+          "replacement": "[Het mysterie onthult gedurende cocktails](/nl/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
@@ -53398,9 +53398,9 @@
           "replacement": "[Jag var på en middagsfest förra året](/sv/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "Mysteriet avslöjas under cocktails",
-          "replacement": "[Mysteriet avslöjas under cocktails](/sv/blog/murder-mystery-cocktail-party)"
+          "replacement": "[Mysteriet avslöjas under cocktails](/sv/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
@@ -53475,9 +53475,9 @@
           "replacement": "[uma festa de omicídio misterioso bem executada](/pt/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "você não estará apenas hospedando uma festa",
-          "replacement": "[você não estará apenas hospedando uma festa](/pt/blog/murder-mystery-cocktail-party)"
+          "replacement": "[você não estará apenas hospedando uma festa](/pt/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
@@ -53552,9 +53552,9 @@
           "replacement": "[나는 지난해 저녁 식사 파티에 있었습니다](/ko/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "미스터리가 칵테일 리셉션이나 와인 시음에서 일어나는 것을 말합니다",
-          "replacement": "[미스터리가 칵테일 리셉션이나 와인 시음에서 일어나는 것을 말합니다](/ko/blog/murder-mystery-cocktail-party)"
+          "replacement": "[미스터리가 칵테일 리셉션이나 와인 시음에서 일어나는 것을 말합니다](/ko/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
@@ -53629,9 +53629,9 @@
           "replacement": "[去年、私はディナーパーティーにいました](/ja/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "あなたはミステリーはカクテル受信またはワイン試飲で行われていると伝えます",
-          "replacement": "[あなたはミステリーはカクテル受信またはワイン試飲で行われていると伝えます](/ja/blog/murder-mystery-cocktail-party)"
+          "replacement": "[あなたはミステリーはカクテル受信またはワイン試飲で行われていると伝えます](/ja/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
@@ -53706,9 +53706,9 @@
           "replacement": "[我去年参加了一个晚餐派对](/zh-cn/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "神秘发生在鸡尾酒接待或葡萄酒品尝",
-          "replacement": "[神秘发生在鸡尾酒接待或葡萄酒品尝](/zh-cn/blog/murder-mystery-cocktail-party)"
+          "replacement": "[神秘发生在鸡尾酒接待或葡萄酒品尝](/zh-cn/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
@@ -53783,9 +53783,9 @@
           "replacement": "[Estuve en una cena el año pasado donde el anfitrión sacó un kit](/es/blog/murder-mystery-dinner-party-ideas)"
         },
         {
-          "target_slug": "murder-mystery-cocktail-party",
+          "target_slug": "murder-mystery-cocktail-party-guide",
           "match_text": "El misterio se revela durante cócteles",
-          "replacement": "[El misterio se revela durante cócteles](/es/blog/murder-mystery-cocktail-party)"
+          "replacement": "[El misterio se revela durante cócteles](/es/blog/murder-mystery-cocktail-party-guide)"
         },
         {
           "target_slug": "murder-mystery-party-for-corporate-events",
