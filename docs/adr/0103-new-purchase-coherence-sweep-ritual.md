@@ -1327,3 +1327,24 @@ Before shipping, ran the detector against the full corpus and found 6 raw candid
 - `mystery_packages.detective_script` — 1 row corrected (`8b0729ac-9709-4ab3-9e56-b5121af048b2`, "Riley Blackwell take Reese Blackwell's life" → "Riley take Reese Blackwell's life")
 - `temp-files/build-parent-v71.py`, `temp-files/MM Live - Parent71 (Reveal Name-Fusion Guardrail).blueprint.json` — prevention-at-source prompt fix, all 4 routes; **imported into Make.com by Jonathan, 2026-10-01**
 
+
+## Addendum 71 (2026-10-01): "A Feast For The Dying" sweep: 4 leaks + 1 fact inversion fixed, meta-text detector widened, a second paid package found with the same leak
+
+New-Purchase sweep on "A Feast For The Dying" (conversation `1c5a07a5-f249-40dc-bcd9-08d9f7a65ec5`, package `f25f316e-59ff-48f9-99eb-0cefadf8aea3`, slip-style, 6 characters, no accomplice, post-ADR-0074 so Sonnet 5). Paired with a `needs_review` generation-issue alert listing `meta_text_leak.character.Steward Iona/Ionas Blackwell` and `dangling_quote_mark.introduction:Brother/Sister Edmund Vale`.
+
+**Findings (full 6-character cast, detective_script, evidence_cards and master_context read):**
+1. Steward Blackwell `final_innocent`: "Wait, I need to close this properly." followed by a verbatim duplicate of the whole section. Trimmed to the first copy. This is what the alert flagged.
+2. Percival Ashgrove `final_innocent`: trailing "Wait — I need to review that formatting before finalizing." **The detector did not catch this one**: the pattern was `wait, i need to` (comma only) and this leak used an em dash. Found by manual read.
+3. Duskwood `reveal_confession_guilty`: a stray trailing fragment ("Caught them. End of lies, and end of a tyrant - some debts no apology can repay."). Removed.
+4. Vesper `round2_innocent`: inverted the blood-debt ("a kindness I once extended when I saved his get") against `master_context` and her own other branches (Aldric saved *her* get). Corrected. A cross-field fact inversion, caught only by reading.
+5. Vesper `accusations`: one deflection tip lost its bullet marker (cosmetic, fixed). Percival's confession said "Last night" for a same-night event; changed to "Tonight".
+The dangling-quote flag on Edmund Vale's introduction was already gone when the sweep ran (introduction ends cleanly; `package_dangling_quote_mark` empty). Not traced to a specific self-heal run, so not claimed as a verified Addendum 70 success.
+All five standard detectors + `package_completion_blocking_defects()` returned empty after the fixes; package flipped `needs_review` → `completed` (conditional on the blocking-defects check being null).
+
+**Detector gap, fixed same session (cheap + deterministic + severe, per the Addendum 38 test).** Migration `20261001020000_widen_meta_text_leak_detector.sql`: (a) `wait, i need to` → `wait\s*[,—–-]+\s*i need to`; (b) `package_meta_text_leak()` now also scans `reveal_confession_guilty`/`reveal_confession_accomplice`, which it never looked at. Corpus check before shipping found exactly one other live instance: **"Operation: Thirty & Murdery" (`b8428a57-1c2b-4bf1-881c-98c8436be6a9`), a paid package from 2026-08-25**, `reveal_confession_accomplice` of Indigo/India Mercier had a "Wait, I need to correct that last piece..." leak plus a duplicated confession (one copy hardcoding a murderer's name). Live for ~5 weeks. Fixed by keeping the clean second copy. No other duplicated-section rows exist corpus-wide (checked `## THE REVEAL`/`## FINAL STATEMENT` repeat counts across all 2,507 characters).
+
+**Not done / open:** 8 older packages (all created before 2026-04-01, outside the default detector window) now match the widened detector; not examined. Most are likely the known dual-name "X/Y" pattern, unverified. Root cause upstream (the model emitting a self-correction and then a second copy, in `final_innocent` and `reveal_confession_accomplice`) is a Make.com child-prompt issue; no blueprint change made here (no Make MCP access this session). Whether Auto-remediate should handle this class deterministically (trim at the marker, keep the second copy) was not built; it needs a judgment on which copy is canonical, which was trivial here (identical or cleaner second copy) but not proven general.
+
+### Key files (Addendum 71)
+- `supabase/migrations/20261001020000_widen_meta_text_leak_detector.sql`: applied live via MCP `apply_migration`
+- Data fixes: 6 `mystery_characters` rows in `f25f316e-…` (Blackwell, Percival, Duskwood, Vesper) + 1 row in `b8428a57-…` (Mercier); `mystery_packages.generation_status` for `f25f316e-…`
