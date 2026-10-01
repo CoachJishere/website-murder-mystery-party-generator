@@ -39,10 +39,12 @@ export const extractTitleWithConfidence = (messages: any[]): TitleExtractionResu
       const headerMatch = content.match(headerTitlePattern);
       if (headerMatch && headerMatch[1] && headerMatch[1].trim()) {
         // Strip markdown bold and any surrounding quotes the capture may include.
-        const title = headerMatch[1]
-          .replace(/\*\*/g, '')
-          .replace(/^["'""'']+|["'""'']+$/g, '')
-          .trim();
+        const title = stripMetaSuffix(
+          headerMatch[1]
+            .replace(/\*\*/g, '')
+            .replace(/^["'""'']+|["'""'']+$/g, '')
+            .trim()
+        );
         // Validate it looks like a title (not a section header like "Questions" or "Character 1")
         if (title && /[A-Za-z]/.test(title) && !isLikelySectionHeader(title)) {
           return { title: formatTitle(title), isHeaderMatch: true };
@@ -58,7 +60,7 @@ export const extractTitleWithConfidence = (messages: any[]): TitleExtractionResu
 
       const titleMatch = content.match(titleLabelPattern);
       if (titleMatch && titleMatch[1] && titleMatch[1].trim()) {
-        const title = titleMatch[1].trim();
+        const title = stripMetaSuffix(titleMatch[1].trim());
         if (!isLikelySectionHeader(title)) {
           return { title: formatTitle(title), isHeaderMatch: false };
         }
@@ -75,7 +77,7 @@ export const extractTitleWithConfidence = (messages: any[]): TitleExtractionResu
       const firstPart = content.substring(0, 500);
       const boldMatch = firstPart.match(boldTitlePattern);
       if (boldMatch && boldMatch[1] && boldMatch[1].trim()) {
-        const title = boldMatch[1].trim();
+        const title = stripMetaSuffix(boldMatch[1].trim());
         if (!isLikelySectionHeader(title) && looksLikeTitle(title)) {
           return { title: formatTitle(title), isHeaderMatch: false };
         }
@@ -90,6 +92,13 @@ export const extractTitleWithConfidence = (messages: any[]): TitleExtractionResu
 export const extractTitleFromMessages = (messages: any[]): string | null => {
   return extractTitleWithConfidence(messages)?.title ?? null;
 };
+
+// Strips a dash-separated meta descriptor the AI sometimes appends to its own
+// recap/summary headings (e.g. "# The Night The Storm Hit — Full Final Recap").
+// Requires a dash separator so legitimate colon-separated subtitles
+// ("Dead On Arrival: The Blackwood Victory") are never affected.
+const metaSuffixPattern = /\s*[—–-]\s*(full\s+)?(final\s+)?(recap|summary|overview|draft)\s*$/i;
+const stripMetaSuffix = (title: string): string => title.replace(metaSuffixPattern, '').trim();
 
 // Check if text is likely a section header rather than a mystery title
 const isLikelySectionHeader = (text: string): boolean => {
