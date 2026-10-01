@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 317 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 318 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -166,6 +166,7 @@ This index organizes 317 published guides by topic cluster. All guides are avail
 - [Jazz Club Murder Mystery Party Planning](https://www.mysterymaker.party/blog/jazz-club-murder-mystery-party-planning-swing-into-prohibition-era-crime): Plan a jazz club murder mystery party that captures prohibition-era atmosphere with authentic characters, compelling motives, and collaborative investigation.
 - [Luxury Yacht Murder Mystery Party Guide](https://www.mysterymaker.party/blog/luxury-yacht-murder-mystery-party-guide-nautical-elegance-with-high-stakes-drama): Set sail for sophistication with luxury yacht murder mystery parties featuring wealthy passengers and nautical elegance.
 - [Mountain Resort Murder Mystery Party Guide](https://www.mysterymaker.party/blog/mountain-resort-murder-mystery-party-guide): Reach new heights with scenic mountain resort murder mystery parties featuring alpine adventures and elevated danger.
+- [Murder Mystery Party at a Cabin](https://www.mysterymaker.party/blog/murder-mystery-party-at-a-cabin): Host a murder mystery weekend at a cabin. Isolated settings, multi-day formats, and cozy atmosphere that enhance immersive storytelling.
 - [Spa Resort Murder Mystery Party Guide](https://www.mysterymaker.party/blog/spa-resort-murder-mystery-party-guide-relax-into-danger-and-luxury): How to host a spa resort murder mystery where guests actually feel pampered while solving a crime.
 - [Tropical Resort Murder Mystery Party Guide](https://www.mysterymaker.party/blog/tropical-resort-murder-mystery-party-guide-paradise-with-a-dark-secret): Escape to paradise with tropical resort murder mystery parties featuring beach activities and vacation villains.
 
