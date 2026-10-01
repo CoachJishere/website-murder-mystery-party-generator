@@ -185,3 +185,21 @@ Caught this by re-scanning all 62 for any remaining mention of "confession" (and
 
 - Remediated directly via SQL `UPDATE` on `mystery_packages.detective_script`: 62 packages, `mystery_style='detective'`, purchased 2026-06-01 through 2026-09-16 (full id list in this session's tool-call history; not re-listed here — all 62 are the same set counted in Addendum 3's corpus check, minus none)
 - No blueprint or code changes in this addendum — pure content backfill, `Parent66` (Addendum 3) is the forward-looking fix
+
+## Addendum 5 (2026-09-30): re-verified live against the database — fully closed, confirmed zero real customer packages affected
+
+Picked back up as part of a broader ADR-0103 Addendum 66 session (a different, unrelated `has_accomplice` corpus check that session surfaced this ADR's "~19/30 unswept" line, still showing as open in project memory from before Addendum 2-4 closed it). Re-ran both known leak-shape regexes live against the full `mystery_packages` table rather than trusting the written status line:
+
+```sql
+-- mechanism 1 (Addendum 2's shape)
+detective_script ~* '\[if[^\]]{0,80}accomplice[^\]]{0,120}\]'
+-- mechanism 2 (Addendum 1's original shape)
+detective_script ~* '\[if[^\]]{0,80}there is an accomplice[^\]]{0,120}confession aloud'
+```
+
+**Result: exactly one hit on each query, and both are the same single row** — package `f0f0fa7a-8841-4189-94b1-b1c63719a816`, titled "TEST — Detective Final Statement Fix Verification," conversation flagged `is_test = true`. This is leftover internal test data from this ADR's own original fix verification (2026-08-11), not a real customer package.
+
+**Confirmed: zero real customer packages carry either leak shape.** Status line above stands — this ADR is fully closed, has been since Addendum 4 (2026-09-16). Updated the stale project-memory note that had still listed this as "~19 unswept" (it was written 4 days before Addendum 2 actually closed that gap, and was never updated afterward).
+
+### Key files (Addendum 5)
+- No changes — verification only. The one matching row is test data, not remediated.

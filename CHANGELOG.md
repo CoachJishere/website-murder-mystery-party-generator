@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-01
+
+### Verify: ADR-0120 orphaned-accomplice-bracket backlog confirmed fully closed, zero real customer packages affected (ADR-0120 Addendum 5)
+Follow-up from ADR-0103 Addendum 66's `has_accomplice` corpus check, which surfaced that project memory still listed this ADR's "~19/30 unswept" backlog as open. Re-ran both known leak-shape regexes live against the full `mystery_packages` table rather than trusting the written status: exactly one hit on each, both the same single row, and that row is internal `is_test=true` data left over from this ADR's own original fix verification (2026-08-11), not a real customer package. This ADR has been fully closed since Addendum 4 (2026-09-16) — the memory note was simply never updated after Addendum 2 closed the gap 2026-09-10, four days after the note's last edit. No code or data changes; corrected the stale memory note. Full detail: ADR-0120 Addendum 5.
+
 ## 2026-09-30
 
 ### Fix: two new permanent detectors for the accomplice-role and missing-accusations bug classes; corpus backfill found and fixed 3 more live packages, including a same-day purchase caught before its ready email went out (ADR-0103 Addendum 66)
