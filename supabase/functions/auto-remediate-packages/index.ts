@@ -36,6 +36,18 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
  *                                   per-character precise-field-list shape as
  *                                   missing_role_branch_content (ADR-0103
  *                                   Addendum 45)
+ *   dangling_quote_mark             deterministic strip of the single
+ *                                   trailing stray quote character (ADR-0103
+ *                                   Addendum 67/68) — see handler doc comment
+ *
+ * ADR-0103 Addendum 67/68 (2026-10-01): dangling_quote_mark had a real
+ * detector (Addendum 55) but no auto-remediation wiring at all — a hit was
+ * invisible to every automated system and only got caught by sweep timing.
+ * Confirmed live: "Ghost In The Uplink" shipped 3 live hits that sat unfixed
+ * for 3 days because its one prior sweep never happened to run that
+ * detector. The fix is a pure, safe, single-character trim (no judgment
+ * call, no LLM), so it gets a real deterministic handler here, following the
+ * same runGatedAttempt shape as self_directed_questions/template_artifact.
  *
  * ADR-0061 (2026-08-02): identity_contamination and slip_culprit_leak used to
  * be escalate-only ("child-generated, judgment-heavy, no safe deterministic
@@ -150,7 +162,8 @@ type DefectClass =
   | "slip_culprit_leak"
   | "missing_role_branch_content"
   | "pointform_language_mismatch"
-  | "narration_person_mismatch";
+  | "narration_person_mismatch"
+  | "dangling_quote_mark";
 
 /**
  * ADR-0061: the delegated meta_text_leak fallback (character-scope artifacts
@@ -174,6 +187,7 @@ const DETECTOR_RPC: Record<DefectClass, string> = {
   missing_role_branch_content: "list_packages_with_missing_role_branch_content",
   pointform_language_mismatch: "list_packages_with_pointform_language_mismatch",
   narration_person_mismatch: "list_packages_with_narration_person_mismatch",
+  dangling_quote_mark: "list_packages_with_dangling_quote_mark",
 };
 
 // ---------------------------------------------------------------------------
@@ -1086,6 +1100,65 @@ async function handleSelfDirectedQuestions(ctx: RunCtx, row: Record<string, unkn
   });
 }
 
+/**
+ * ADR-0103 Addendum 67/68: dangling_quote_mark — deterministic strip of a
+ * single trailing stray quote character. `row.sources` comes straight from
+ * list_packages_with_dangling_quote_mark, one 'field:character_name' string
+ * per hit. The transform mirrors the detector's own match exactly (sentence-
+ * terminal punctuation immediately followed by an unmatched closing quote,
+ * optionally trailing whitespace, at the absolute end of the field) — strip
+ * ONLY that quote character, never the punctuation or anything else. If the
+ * detector flagged a shape this stricter JS regex doesn't also match (should
+ * never happen since the two patterns are kept in sync by hand — see the
+ * detector's own SQL), skip that field rather than guess at a different edit.
+ */
+const DANGLING_QUOTE_RX = /([.!?])(['’])(\s*)$/;
+
+async function handleDanglingQuoteMark(ctx: RunCtx, row: Record<string, unknown>): Promise<void> {
+  const packageId = row.package_id as string;
+  const sources = (row.sources as string[]) ?? [];
+
+  await runGatedAttempt(ctx, packageId, "dangling_quote_mark", async () => {
+    const characters = await getCharacters(packageId);
+    const edits: { charId: string; field: string; before: string; after: string }[] = [];
+
+    for (const source of sources) {
+      const sep = source.indexOf(":");
+      if (sep < 0) continue;
+      const field = source.slice(0, sep);
+      const charName = source.slice(sep + 1);
+      const character = characters.find((c) => norm(c.character_name) === norm(charName));
+      if (!character) continue;
+
+      const before = await readField("character", character.id, field);
+      if (!before) continue;
+      const after = before.replace(DANGLING_QUOTE_RX, "$1$3");
+      if (after === before) continue; // our stricter check didn't match -- don't guess
+      edits.push({ charId: character.id, field, before, after });
+    }
+
+    if (edits.length === 0) return null; // detector saw something this handler can't safely parse
+
+    return {
+      action: `strip_dangling_quote:${edits.map((e) => e.field).join(",")}`,
+      costUsd: 0,
+      apply: async () => {
+        for (const e of edits) await writeField("character", e.charId, e.field, e.after);
+        return {
+          beforeValue: JSON.stringify(
+            edits.map((e) => ({ character_id: e.charId, field: e.field, before: e.before })),
+          ),
+          note: `${edits.length} field(s) trimmed`,
+        };
+      },
+      revert: async () => {
+        for (const e of edits) await writeField("character", e.charId, e.field, e.before);
+        return true;
+      },
+    };
+  });
+}
+
 /** ADR-0061: identity_contamination — delegated whole to regenerate-child-content.
  *  `claimants` (character names) comes straight from
  *  list_packages_with_identity_conflicts; the regenerator's own
@@ -1563,6 +1636,14 @@ serve(async (req) => {
     if (shouldRun("template_artifact")) {
       for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.template_artifact, sinceIso))) {
         await handleTemplateArtifacts(ctx, row);
+      }
+    }
+
+    // 2b. Dangling trailing quote mark — deterministic strip, free (ADR-0103
+    //     Addendum 67/68).
+    if (shouldRun("dangling_quote_mark")) {
+      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.dangling_quote_mark, sinceIso))) {
+        await handleDanglingQuoteMark(ctx, row);
       }
     }
 
