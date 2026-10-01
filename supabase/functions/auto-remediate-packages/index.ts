@@ -566,7 +566,7 @@ const ARTIFACT_TOKEN_RX = /\[choose\b|\[closing paragraph\b|\[insert\b|\[if guil
  * never attempt a strip; any match is unconditionally unsafe.
  */
 const PROSE_LEAK_RX =
-  /let me reconsider|let me reread|let me recalculate|let me look at this more carefully|i need to correct this|on second thought|as an ai language model|wait, i need to/i;
+  /let me reconsider|let me reread|let me recalculate|let me look at this more carefully|i need to correct this|on second thought|as an ai language model|wait\s*[,—–-]+\s*i need to/i;
 
 export function stripArtifactLines(
   text: string,
@@ -1247,6 +1247,9 @@ const CHARACTER_ARTIFACT_FIELDS = [
   "final_innocent",
   "final_guilty",
   "final_accomplice",
+  // ADR-0103 Addendum 71: package_meta_text_leak() now scans these too; regenerate-child-content already supports them.
+  "reveal_confession_guilty",
+  "reveal_confession_accomplice",
 ];
 
 async function handleTemplateArtifacts(ctx: RunCtx, row: Record<string, unknown>): Promise<void> {
