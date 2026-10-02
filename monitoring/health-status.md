@@ -1,10 +1,8 @@
 # Site health status
 
-_Last checked: 2026-10-02 05:46 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-10-02 12:44 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
-## ⚠️ Problems found
-
-- 🔴 1 conversation(s) hit a checkout roster-extraction anomaly in the last 24h (a character-list header present but nothing parsed — possible regex regression, same shape as ADR-0130 Addendum 1): Trick, Treat, Dead [1x, paid=false]
+## ✅ All checks passing
 
 | Check | Result |
 |---|---|
@@ -25,4 +23,4 @@ _Last checked: 2026-10-02 05:46 UTC (runs every 6 hours; see .github/workflows/h
 | Truncated concept messages — escalate only (30 days) | 0 |
 | Stale hardcoded models — escalate only | 0 |
 | Detector status-predicate drift — escalate only | 0 |
-| Checkout roster-extraction anomalies — escalate only (24h) | 1 |
+| Checkout roster-extraction anomalies — escalate only (24h) | 0 |
