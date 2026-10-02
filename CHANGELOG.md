@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-03
+
+### Fix: "El Último Brindis De Laia" sweep: English "until" looping through confessions, stray markup, cards inversion, self-naming accomplice; two detector extensions; 10-package backlog found (ADR-0103 Addendum 78)
+Sweep of conversation `e6c75429-ff85-4e56-bf45-06ea1c70ccd9` (Spanish, slip style, 10 characters, delivered 2026-10-02). Every standing detector was clean; the defects came from the full-cast read.
+- **Fixed by hand (49 exact-match edits, one atomic transaction, no paid API):** the English token `until` leaking/looping in 6 fields across 5 characters (up to 11 repeats in Dani Zhou's confession); `</final>`, `</document>`, a ``` fence, a Cyrillic word, stray `more`/`last`, a trailing `”`, two typos, and four Aleix innocent fields with no header; Aida's who-read-whose-cards inversion (4 fields + 2 pointform); Jordi's accomplice confession naming himself in the third person (+5 pointform); a candles/hours contradiction in the detective opening; vosotros/ustedes drift in 4 characters.
+- **Detector: `package_meta_text_leak()`** now flags closing tags, code fences, Cyrillic, and `until` inside non-English text (migration `20261003100000`). Verified over every package: 0 removed, 5 added (all real), 0 false positives.
+- **Detector: `package_dangling_quote_mark()`** now also catches a stray trailing double quote (migration `20261003100100`), strictly additive.
+- **Backlog found, not repaired:** the same `until` class is live in 3 earlier delivered Spanish packages (Bellanotte, Veneno En La Medianoche, El Zasca Final), a stray Cyrillic letter in 2 more, and a stray double quote in 5. The health check will now list them.
+- Customer already had the package when fixes went live. Full detail and what was left alone: ADR-0103 Addendum 78.
+
 ## 2026-10-02
 
 ### Fix: "Blood On The Mead-bench" sweep: `<FILL>` token, non-converging French pointform (4th case), false-positive `identity_conflict`, Child49 not holding, validation-trigger bypass documented (ADR-0103 Addendum 77)
