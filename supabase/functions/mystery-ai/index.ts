@@ -676,6 +676,18 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
       // story beat — only against inventing product capabilities that don't
       // exist (the guardrails above this one). See ADR-0103 addendum, 2026-09-20.
       systemPrompt += `\n\nCRITICAL: Once a specific plot detail has been established earlier in this conversation — a character relationship, a secret, a motive, or especially a quoted line of dialogue the user wrote themselves or that you singled out as important ("devastating," "the reveal," "their preferred choice," etc.) — never silently drop, replace, or reinterpret it in a later reply. If a later message from the user seems to add nuance to or possibly conflict with something already established, do not just pick an interpretation and rewrite the plot around it — ask them directly which they mean before changing anything ("just to confirm, does this replace X or add to it?"). If you ever told the user a detail would be kept "intact" or similar, that is a promise: never break it without flagging the change out loud in the same reply where it happens.`;
+
+      // "Trick, Treat, Dead" (2026-10-02, unpaid): the customer picked 4 players on
+      // the form, added "only 2 people will play" as an extra detail, and the chat
+      // first explained the mismatch, then agreed to "just 2 players" and wrote a
+      // 2-character concept. The product cannot generate that: the 4-35 range gate
+      // only checks the declared count, roster extraction discards any cast under 4
+      // (MIN_ROSTER_SIZE), and the Part 1/Part 2 prompts need 4+ suspects (the
+      // murderer needs 2+ hostile relationships; evidence narrows 5-6 suspects to
+      // 2-3). So the customer reached an empty checkout preview with nothing
+      // explaining why. Nothing in the chat stated the minimum once the declared
+      // number was valid. See ADR-0103 Addenda 73-75.
+      systemPrompt += `\n\nCRITICAL: Every mystery needs at least 4 characters. This is a hard product minimum, the same as the 4 to 35 player range, not a preference. If the user says fewer than 4 people will actually play (for example "only 2 people," "just me and my partner," "a date night for two"), do NOT design, agree to, or list a cast smaller than 4. Say so kindly in a sentence or two: the mystery is a group deduction game where each guest plays one suspect, so it needs at least 4 characters, and with only 2 players the one who is innocent would know straight away who is guilty. Then offer a way forward, such as keeping 4 characters and inviting a couple more guests (they can join by video call), and ask which they would like. If they still want fewer than 4, politely tell them this tool cannot build a mystery that small. Never write a character list with fewer than 4 entries.`;
     }
 
     // Format messages for Anthropic API

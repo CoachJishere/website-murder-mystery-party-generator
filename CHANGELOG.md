@@ -2,6 +2,10 @@
 
 ## 2026-10-02
 
+### Improvement: concept chat now states the 4-character minimum instead of agreeing to a smaller cast (ADR-0103 Addendum 75)
+A customer picked 4 players, added "only 2 people will play", and the chat agreed and wrote a 2-character concept the product cannot generate (roster extraction discards casts under 4, and the Part 1/Part 2 prompts need 4+ suspects), leaving a blank checkout preview with no explanation. Added one unconditional `CRITICAL:` guardrail to `mystery-ai`'s system prompt, same mechanism as the existing product-limit guardrails: if fewer than 4 will play, don't design or agree to a smaller cast; explain kindly why (with 2 players the innocent one knows who is guilty), offer to keep 4 characters and invite more guests, never list fewer than 4. Deployed as v187 (`verify_jwt` still `false`, live source equals repo). Not behavior-tested because that needs the paid API; the first customer who says fewer than 4 will play is the real test.
+- Full detail: ADR-0103 Addendum 75.
+
 ### Fix: checkout roster-anomaly health alert no longer fires on unpaid concepts that state fewer than 4 characters (ADR-0103 Addendum 74)
 The health check commented on GitHub about "Trick, Treat, Dead", an unpaid 2-person concept. Filtering the alert by "paid" can't work: it fires on the pre-purchase checkout page, so every real hit is unpaid. The false positive was the parser reading a "(2 players)" cast correctly and `MIN_ROSTER_SIZE = 4` discarding it on purpose, which looked like "header present, nothing parsed". `isRosterExtractionAnomaly` now ignores a header whose own stated count is below the minimum; a header with no count, or 4+ with nothing parsed (the real ADR-0130 regression shape), still alerts. Added an 11-case offline test to `npm run test:roster` (fails against the old logic, passes against the new). Deployed `extract-concept-roster` only (v8, `verify_jwt` still `false`, live source equals repo); the other two roster functions were not redeployed since they never call this function. Deleted the single stale anomaly row so it would not re-report for 24h.
 - Full detail: ADR-0103 Addendum 74.
