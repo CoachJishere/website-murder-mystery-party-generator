@@ -466,6 +466,22 @@ jobs:
             fi
           fi
 
+          # 16. Ally/rival lists that contradict the relationship matrix (ADR-0134).
+          # A Hostile character listed as an ally, or a Friendly one as a rival, in
+          # a character's own relationships text. INFORMATION ONLY: never added to
+          # PROBLEMS and never alerts. At the time it was added (2026-10-03) 44 of
+          # 103 packages since 2026-08-01 had at least one, because the Child prompt
+          # demanded 2-3 "Friendly" allies and 2-3 "Hostile" rivals that most matrix
+          # rows cannot supply; Child52 fixes the cause going forward, and this row is
+          # how we see whether the rate actually falls after it is imported.
+          RMC=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_relationship_matrix_contradiction" \
+            -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
+          if [ "$RMC" = "QUERY_FAILED" ]; then
+            RMC_COUNT="?"
+          else
+            RMC_COUNT=$(echo "$RMC" | jq 'length')
+          fi
+
           # Write status file
           mkdir -p monitoring
           {
@@ -501,6 +517,7 @@ jobs:
             echo "| Stale hardcoded models — escalate only | ${STALEMODEL_COUNT} |"
             echo "| Detector status-predicate drift — escalate only | ${PREDDRIFT_COUNT} |"
             echo "| Checkout roster-extraction anomalies — escalate only (24h) | ${ROSTERANOM_COUNT} |"
+            echo "| Ally/rival lists contradicting the relationship matrix — info only (30 days) | ${RMC_COUNT} |"
           } > monitoring/health-status.md
 
           if [ -n "$PROBLEMS" ]; then

@@ -2,13 +2,19 @@
 
 ## 2026-10-03
 
+### Feature: ally/rival lists must follow the relationship matrix; Child52 built, information-only detector and health-check row (ADR-0134)
+- **Cause:** the Child prompt demanded 2-3 `Friendly` allies and 2-3 `Hostile` rivals, but 43% of matrix rows have fewer than 2 Friendly cells and 70% fewer than 2 Hostile, so the model padded. 44 of 103 packages since 2026-08-01 (43%) list a Hostile person as an ally or a Friendly one as a rival.
+- **Fix going forward:** `Child52` (nodes 401 and 501 only): look up the character's own row, list only exact Friendly/Hostile names, "up to 3", never pad, one plain sentence when the row has none. **Not yet imported into Make.com.** No backfill of past packages (Jonathan's call).
+- **Detector:** migration `20261003110000`, hard contradictions only, service-role only; shown as an information-only row in the health check (not an alert) so we can see the rate fall after import.
+- Full detail: ADR-0134.
+
 ### Fix: "El Último Brindis De Laia" sweep: English "until" looping through confessions, stray markup, cards inversion, self-naming accomplice; two detector extensions; 10-package backlog found (ADR-0103 Addendum 78)
 Sweep of conversation `e6c75429-ff85-4e56-bf45-06ea1c70ccd9` (Spanish, slip style, 10 characters, delivered 2026-10-02). Every standing detector was clean; the defects came from the full-cast read.
 - **Fixed by hand (49 exact-match edits, one atomic transaction, no paid API):** the English token `until` leaking/looping in 6 fields across 5 characters (up to 11 repeats in Dani Zhou's confession); `</final>`, `</document>`, a ``` fence, a Cyrillic word, stray `more`/`last`, a trailing `”`, two typos, and four Aleix innocent fields with no header; Aida's who-read-whose-cards inversion (4 fields + 2 pointform); Jordi's accomplice confession naming himself in the third person (+5 pointform); a candles/hours contradiction in the detective opening; vosotros/ustedes drift in 4 characters.
 - **Detector: `package_meta_text_leak()`** now flags closing tags, code fences, Cyrillic, and `until` inside non-English text (migration `20261003100000`). Verified over every package: 0 removed, 5 added (all real), 0 false positives.
 - **Detector: `package_dangling_quote_mark()`** now also catches a stray trailing double quote (migration `20261003100100`), strictly additive.
 - **Backlog repaired the same day** (20 exact-match edits, 9 packages, none older than 2026-08-18): the `until` class in Bellanotte, Veneno En La Medianoche and El Zasca Final, Cyrillic letters in Villa Limoncello and Costa Del Karaoke, and a stray double quote in 5 packages. Both detectors now return 0 since 2026-04-01.
-- **Open:** relationship text disagrees with `relationshipMatrix` for 160 of 434 characters (37%) over 92 packages since 2026-08-01; the prompt asks for it but nothing enforces or checks it.
+- **Open (see ADR-0134):** ally/rival lists contradicting the relationship matrix: 44 of 103 packages (43%), 100 of 1,238 characters (8%) since 2026-08-01, because the prompt demanded 2-3 "Friendly" allies and 2-3 "Hostile" rivals that most matrix rows cannot supply. Earlier figures in this entry were parsing errors, corrected.
 - Customer already had the package when fixes went live. Full detail and what was left alone: ADR-0103 Addendum 78.
 
 ## 2026-10-02
