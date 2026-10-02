@@ -229,16 +229,19 @@ jobs:
           # Rolling 30-day window: the backlog itself has no cutoff, but alerting
           # only on recent generations lets handled incidents age out. The
           # Bollinger package (c3a54b47…, guest feedback 2026-07-22, already
-          # handled) is excluded explicitly until the window passes it.
+          # handled) is excluded explicitly until the window passes it. Same for "Blood On
+          # The Mead-bench" (fe0a6738…, 2026-10-02): a confirmed FALSE POSITIVE (two
+          # characters each mention their OWN father; ADR-0103 Addendum 77), released by
+          # hand, so it would otherwise raise a red line every 6 hours for 30 days.
           IDC=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_identity_conflicts" \
             -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
           if [ "$IDC" = "QUERY_FAILED" ]; then
             PROBLEMS="${PROBLEMS}- 🟠 Could not run the identity-conflict detector (Supabase API error)\n"
             IDC_COUNT="?"
           else
-            IDC_COUNT=$(echo "$IDC" | jq '[.[] | select(.package_id != "c3a54b47-2f04-48d7-a83e-43eac0db7f52")] | length')
+            IDC_COUNT=$(echo "$IDC" | jq '[.[] | select(.package_id != "c3a54b47-2f04-48d7-a83e-43eac0db7f52" and .package_id != "fe0a6738-503b-4bee-b82f-3de1ab327718")] | length')
             if [ "$IDC_COUNT" -gt 0 ]; then
-              PROBLEMS="${PROBLEMS}- 🔴 ${IDC_COUNT} package(s) with character identity contamination (multiple characters claiming the same kinship to the victim): $(echo "$IDC" | jq -r '[.[] | select(.package_id != "c3a54b47-2f04-48d7-a83e-43eac0db7f52") | "\(.title) [\(.kin_term): \(.claimants | join(" / "))]"] | join("; ")')\n"
+              PROBLEMS="${PROBLEMS}- 🔴 ${IDC_COUNT} package(s) with character identity contamination (multiple characters claiming the same kinship to the victim): $(echo "$IDC" | jq -r '[.[] | select(.package_id != "c3a54b47-2f04-48d7-a83e-43eac0db7f52" and .package_id != "fe0a6738-503b-4bee-b82f-3de1ab327718") | "\(.title) [\(.kin_term): \(.claimants | join(" / "))]"] | join("; ")')\n"
             fi
           fi
 

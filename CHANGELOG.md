@@ -4,9 +4,11 @@
 
 ### Fix: "Blood On The Mead-bench" sweep: `<FILL>` token, non-converging French pointform (4th case), false-positive `identity_conflict`, Child49 not holding, validation-trigger bypass documented (ADR-0103 Addendum 77)
 Sweep of conversation `6b337314-865d-406e-9191-d3683a79360c` after a `needs_review` alert. The worker had already hit its attempt cap (about $0.80 of paid regeneration logged, none in this session).
-- **Real defects fixed by hand:** a literal `<FILL>` at the end of the murderer's read-aloud confession (first in the corpus; no detector covers it, one proposed); French pointform bullets on English prose for the Steward and Bjorn (14 fields, hand-written English; the 4th non-converging case); three innocents (Bjorn, Wulfstan, Osric) referencing the Steward's concealed alibi gap before the reveal; three low-severity cross-character inconsistencies (Hild, Ragnar/Freydis, Osric).
+- **Real defects fixed by hand:** a literal `<FILL>` at the end of the murderer's read-aloud confession (first in the corpus; new detector shipped, below); French pointform bullets on English prose for the Steward and Bjorn (14 fields, hand-written English; the 4th non-converging case); three innocents (Bjorn, Wulfstan, Osric) referencing the Steward's concealed alibi gap before the reveal; three low-severity cross-character inconsistencies (Hild, Ragnar/Freydis, Osric).
 - **False positive:** `identity_conflict.father` (two characters each mention their own father), the first since the July real hit; released with a one-transaction bypass of `trg_validate_package_characters` (a plain status UPDATE is re-held by that trigger). The ready email sent on release.
-- **Child49:** second live read still shows innocents knowing the culprit's concealed detail; confirm which Child version Make runs.
+- **Detector shipped:** `package_meta_text_leak()` now flags a stray `<TOKEN>` placeholder (case-sensitive, so `<b>`/`<br>` never trip it); migration `20261002180000`, verified equivalent to the old definition over all 248 packages. The worker escalates it for free (no paid regeneration).
+- **Child49 confirmed live and too weak:** the leak paraphrases `master_context`'s `murdererAlibiGap`, which describes the gap as something a guest 'recalls', so the rule's own 'publicly visible' exception is the loophole. Child50 recommended (node 409), not built.
+- **Health check:** by-id exclusion for this package's `father` false positive, so it doesn't raise a red line every 6 hours for 30 days.
 - Full detail: ADR-0103 Addendum 77.
 
 ### Fix: "Paradis Perdu" (French, detective) sweep: reveal-line name fusion + leaked self-correction fixed by hand, 6 more defects fixed; Parent71 guardrail did not fully hold (ADR-0103 Addendum 76)
