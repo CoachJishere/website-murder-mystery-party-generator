@@ -34,7 +34,7 @@ After ADR-0131 audited the quality-check machinery for redundancy, Jonathan aske
 
 ## Consequences
 
-- Parent72 was imported into Make.com by Jonathan on 2026-10-01 (no Make API access in this workflow, so import is manual). **Imported, but not yet verified on a real generation.** After import, the first real generation should be checked that Part 2 still completes and the merged `master_context` has both halves (look for `evidenceProgression`/`hostBriefing` for detective-style, or the 7 Part 2 groups for character-style).
+- Parent72 was imported into Make.com by Jonathan on 2026-10-01 (no Make API access in this workflow, so import is manual). **Verified live 2026-10-02**: the first package generated after import (`c829079c-…`, detective/pointForm, 8 characters) completed with both `master_context` halves and every host-facing field intact (ADR-0103 Addendum 72). After import, the first real generation should be checked that Part 2 still completes and the merged `master_context` has both halves (look for `evidenceProgression`/`hostBriefing` for detective-style, or the 7 Part 2 groups for character-style).
 - Per-mystery input tokens drop by roughly one Part 1 (~9K) for the one Part 2 call.
 
 ## Key files
