@@ -1388,3 +1388,24 @@ Conversation `a80910cf-bdea-4d7d-ad23-f0ec64dd933b`, package `c829079c-ff20-439c
 ### Key files (Addendum 72)
 - Data fixes: 3 `mystery_characters` rows in `c829079c-…` (Elara Voss, Royal Apothecary; Princess Seraphina of Frostmere; Prince Nicholas/Nicola)
 - `auto_remediation_log` row `9d41b346-…` (the quote heal)
+
+## Addendum 73 (2026-10-02): Child49 stops detective-style innocents from naming or knowing the murderer; 2-player games confirmed unsupported
+
+**Child49 (`temp-files/MM Live - Child (Unified)49-InnocentIgnorance.blueprint.json`, built by `temp-files/build-child-v49.py` from Child48).** Follows Addendum 72's finding. Two edits, node 409 only (the detective-style round/final call):
+1. `finalStatement` clause for SUSPECT/RED HERRING changed from "an emotional defense and theory about who really did it" to a defense of their own innocence only, with an explicit ban on naming or theorizing about the murderer.
+2. New `INNOCENT IGNORANCE` bullet in `content_coherence_rules`, active only for suspect/redHerring: they do not know who the murderer is, must not name/accuse them, must not state their private motive, concealed alibi or the content of a private confrontation as known facts, and may only draw on their own history, what was publicly visible, the evidence cards, and what is said aloud in the rounds.
+
+Why both: Crown's Shadow's Round 4 scripts leaked (the culprit's concealed alibi, the confrontation topic) with no "theory" instruction in play, so changing the clause alone would not have been enough.
+
+Why 409 only: detective-style fixes the culprit in `master_context`, which every child call sees; slip-style (5xx) draws the culprit at the table, so its innocent "theory" cannot leak. Node 513's murderer-side "plausible theory about who else could have done it" is the culprit's own deflection and stays. Nodes 401/405 (profile, rumors) were left alone: no leak was observed there, and rumors about the murderer's visible movements are legitimate.
+
+Diff against Child48: exactly node 409's prompt text (+910 chars) and the blueprint `name`. The internal `name` had been stale at "Child (Unified)40" since v41 (earlier builders' `replace()` silently no-op'd), so Child49 sets it explicitly.
+
+**Not yet imported or tested live.** No test generation run (it would call the paid API). Verification once imported: after the first detective-style package, read the innocents' `final_statement`s and Round 4 scripts, and re-run the proxy query (murderer's first name within 80 characters of an accusation cue in a suspect/redHerring `final_statement`; baseline 67 of 716, about 9%, across 65 detective packages in the prior 60 days). Risk to watch: innocents' finals becoming flat or repetitive now that the "theory" is gone.
+
+**2-player games are not supported (checked, not run end to end).** Prompted by "Trick, Treat, Dead" (unpaid customer, chose 4 players, said only 2 would play, chat settled on a 2-character cast). Evidence from code and prompts, three independent places assume at least 4:
+- `mystery-ai` accepts only 4-35 for the declared count; a 2-person "additional detail" slipped past because the declared count was 4.
+- `_shared/rosterExtraction.ts` `MIN_ROSTER_SIZE = 4` discards a 2-character roster, so the checkout preview is empty and `mystery-webhook-trigger` falls through to its legacy scan and then the Claude fallback (not traced further).
+- Part 1 requires the murderer to have at least 2 Hostile relationships and 2-3 other characters who could have left the same evidence; Part 2's funnel is Round 2 5-6 suspects, Round 3 3-4, Round 4 2-3, with 2-3 red herrings and evidence "implicating 4-6 characters". None of that is satisfiable with one other character.
+Likely failure if someone paid for it: fabricated characters up to the declared 4 (the ADR-0118 shape) or a roster/completion mismatch. Jonathan's design point, recorded: even if it generated, with two suspects played by the two guests the innocent player knows the other is guilty, so it only works as a performance for non-participants.
+- **Decision: nothing changed for that customer.** On hold until the customer replies; Jonathan sends the confirmation email (draft given in chat, not sent). **Possible follow-up, not built:** have concept chat state the 4-character minimum when a customer says fewer than 4 people will play, instead of agreeing to a smaller cast.
