@@ -7,7 +7,8 @@ Sweep of conversation `e6c75429-ff85-4e56-bf45-06ea1c70ccd9` (Spanish, slip styl
 - **Fixed by hand (49 exact-match edits, one atomic transaction, no paid API):** the English token `until` leaking/looping in 6 fields across 5 characters (up to 11 repeats in Dani Zhou's confession); `</final>`, `</document>`, a ``` fence, a Cyrillic word, stray `more`/`last`, a trailing `”`, two typos, and four Aleix innocent fields with no header; Aida's who-read-whose-cards inversion (4 fields + 2 pointform); Jordi's accomplice confession naming himself in the third person (+5 pointform); a candles/hours contradiction in the detective opening; vosotros/ustedes drift in 4 characters.
 - **Detector: `package_meta_text_leak()`** now flags closing tags, code fences, Cyrillic, and `until` inside non-English text (migration `20261003100000`). Verified over every package: 0 removed, 5 added (all real), 0 false positives.
 - **Detector: `package_dangling_quote_mark()`** now also catches a stray trailing double quote (migration `20261003100100`), strictly additive.
-- **Backlog found, not repaired:** the same `until` class is live in 3 earlier delivered Spanish packages (Bellanotte, Veneno En La Medianoche, El Zasca Final), a stray Cyrillic letter in 2 more, and a stray double quote in 5. The health check will now list them.
+- **Backlog repaired the same day** (20 exact-match edits, 9 packages, none older than 2026-08-18): the `until` class in Bellanotte, Veneno En La Medianoche and El Zasca Final, Cyrillic letters in Villa Limoncello and Costa Del Karaoke, and a stray double quote in 5 packages. Both detectors now return 0 since 2026-04-01.
+- **Open:** relationship text disagrees with `relationshipMatrix` for 160 of 434 characters (37%) over 92 packages since 2026-08-01; the prompt asks for it but nothing enforces or checks it.
 - Customer already had the package when fixes went live. Full detail and what was left alone: ADR-0103 Addendum 78.
 
 ## 2026-10-02
