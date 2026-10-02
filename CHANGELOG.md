@@ -7,6 +7,7 @@ Sweep of conversation `55235299-2ba2-433d-837a-81a466a6896b` after a `needs_revi
 - Full-cast manual read (all 12, French) found six more defects no detector covers, fixed in one SQL script: English section headers on 5 characters (Charles, Florence, Melyna, Rob, Thomas Lainess), Frederique's tu/vous header drift, stray backticks on Jacob, an innocent (Thomas Henry) referencing "celui de Laura", the Round 2 evidence card contradicting the detective script (Tommy's own journal vs "not Tommy's handwriting"), Rob's secret chronology, and "onze" vs twelve guests.
 - First live read of Child49: innocents did not name the murderer or state her private motive; one residual (the Thomas Henry line above).
 - Corpus check: the English-header leak is in 6 packages in 60 days (3 partial in the last week), not the "one-off" Addendum 66 recorded. No detector (cosmetic, package language not stored).
+- Parent73 (imported 2026-10-02): replaces Parent71's "re-check" guardrail in the reveal prompt (all 4 routes) with a rule keeping murderer and victim names in separate sentences; untested until the next detective purchase.
 - Full detail: ADR-0103 Addendum 76.
 
 ### Improvement: concept chat now states the 4-character minimum instead of agreeing to a smaller cast (ADR-0103 Addendum 75)
