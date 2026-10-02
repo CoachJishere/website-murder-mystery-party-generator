@@ -404,9 +404,22 @@ export function rosterOverlapFraction(a: ExtractedCharacter[], b: ExtractedChara
  * investigation that most empty-roster checkout visits are exactly that
  * (8 of 10 in the incident window), not bugs, so a fallback keyed on "empty"
  * alone would spend money on the normal case constantly.
+ *
+ * ADR-0103 Addendum 74: a header that ITSELF states a cast smaller than
+ * MIN_ROSTER_SIZE ("## Character List (2 players)") is not an anomaly. The
+ * parser read that roster fine; MIN_ROSTER_SIZE discarded it on purpose
+ * because the product does not support fewer than 4 characters. Counting it
+ * paged on every unpaid 2-person concept ("Trick, Treat, Dead"). A header
+ * with no stated count still counts, so the real regression shape (header
+ * present, nothing parsed) is unchanged.
  */
 export function isRosterExtractionAnomaly(messages: any[], characters: ExtractedCharacter[]): boolean {
   if (characters.length > 0) return false;
-  return (messages ?? []).some((m: any) =>
-    (m.role === 'assistant' || m.is_ai) && sectionHeaderRegex.test(m.content || ''));
+  return (messages ?? []).some((m: any) => {
+    if (!(m.role === 'assistant' || m.is_ai)) return false;
+    const content = m.content || '';
+    if (!sectionHeaderRegex.test(content)) return false;
+    const stated = extractStatedRosterCount(content);
+    return stated === null || stated >= MIN_ROSTER_SIZE;
+  });
 }
