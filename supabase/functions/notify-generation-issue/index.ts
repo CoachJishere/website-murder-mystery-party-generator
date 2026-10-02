@@ -650,12 +650,26 @@ serve(async (req) => {
     // error_body_in_character, invalid_role, victim_is_playable_character)
     // are deliberately excluded from this list — nothing is coming to fix
     // those, so they alert immediately, same as before this change.
+    //
+    // KEEP IN SYNC with auto-remediate-packages' `shouldRun(...)` classes: every
+    // class that worker can actually repair needs its structuralDefects prefix
+    // here, or a defect it fixes on its next sweep still pages a human
+    // immediately. dangling_quote_mark (Addendum 70), narration_person_mismatch
+    // (Addendum 45), missing_role_branch_content (Addendum 36) and
+    // pointform_language_mismatch (Addenda 40/41) all shipped handlers without
+    // being added here (ADR-0103 Addendum 72). reveal_name_fusion,
+    // culprit_missing_accusations and accomplice_role_mismatch stay OFF this
+    // list on purpose: detection-only, nothing is coming to fix them.
     const WORKER_RECOGNIZED_PREFIXES = [
       "meta_text_leak",
       "self_directed_question",
       "victim_mismatch",
       "identity_conflict",
       "slip_culprit_leak",
+      "dangling_quote_mark",
+      "narration_person_mismatch",
+      "missing_role_branch_content",
+      "pointform_language_mismatch",
     ];
     const GRACE_PERIOD_MS = 35 * 60 * 1000; // one 30-min sweep (ADR-0062) + buffer
 
