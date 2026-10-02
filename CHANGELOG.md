@@ -2,6 +2,13 @@
 
 ## 2026-10-02
 
+### Fix: "Blood On The Mead-bench" sweep: `<FILL>` token, non-converging French pointform (4th case), false-positive `identity_conflict`, Child49 not holding, validation-trigger bypass documented (ADR-0103 Addendum 77)
+Sweep of conversation `6b337314-865d-406e-9191-d3683a79360c` after a `needs_review` alert. The worker had already hit its attempt cap (about $0.80 of paid regeneration logged, none in this session).
+- **Real defects fixed by hand:** a literal `<FILL>` at the end of the murderer's read-aloud confession (first in the corpus; no detector covers it, one proposed); French pointform bullets on English prose for the Steward and Bjorn (14 fields, hand-written English; the 4th non-converging case); three innocents (Bjorn, Wulfstan, Osric) referencing the Steward's concealed alibi gap before the reveal; three low-severity cross-character inconsistencies (Hild, Ragnar/Freydis, Osric).
+- **False positive:** `identity_conflict.father` (two characters each mention their own father), the first since the July real hit; released with a one-transaction bypass of `trg_validate_package_characters` (a plain status UPDATE is re-held by that trigger). The ready email sent on release.
+- **Child49:** second live read still shows innocents knowing the culprit's concealed detail; confirm which Child version Make runs.
+- Full detail: ADR-0103 Addendum 77.
+
 ### Fix: "Paradis Perdu" (French, detective) sweep: reveal-line name fusion + leaked self-correction fixed by hand, 6 more defects fixed; Parent71 guardrail did not fully hold (ADR-0103 Addendum 76)
 Sweep of conversation `55235299-2ba2-433d-837a-81a466a6896b` after a `needs_review` alert (`reveal_name_fusion`). Not a self-heal case: the detector is detection-only by design (Addendum 70), so the held package waited for a human. The detective's reveal read "l'arrestation de Laura Beaulieu - pardon, de Laura - pour le meurtre de Tommy Beaulieu": the fusion plus a leaked mid-sentence self-correction. First detective-style purchase since Parent71's name-fusion guardrail was imported, so the guardrail did not fully prevent it. Fixed by exact-match `replace()`; the 5-minute held-package sweep then released it.
 - Full-cast manual read (all 12, French) found six more defects no detector covers, fixed in one SQL script: English section headers on 5 characters (Charles, Florence, Melyna, Rob, Thomas Lainess), Frederique's tu/vous header drift, stray backticks on Jacob, an innocent (Thomas Henry) referencing "celui de Laura", the Round 2 evidence card contradicting the detective script (Tommy's own journal vs "not Tommy's handwriting"), Rob's secret chronology, and "onze" vs twelve guests.
