@@ -22,6 +22,8 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
 const MODEL = Deno.env.get("REVIEW_MODEL") || C.DEFAULT_MODEL;
 const EFFORT = Deno.env.get("REVIEW_EFFORT") || "high";
+// "summary" (default): counts + high-severity items only; "full": up to 40 findings; "off": no email. Full list is always in package_review_findings.
+const DIGEST_MODE = (Deno.env.get("REVIEW_DIGEST") || "summary").toLowerCase();
 const AUTO_APPLY_CLASSES = (Deno.env.get("REVIEW_AUTO_APPLY_CLASSES") || "").split(",").map((s) => s.trim()).filter(Boolean);
 const PER_PACKAGE_CAP_USD = 2.0;
 const DAILY_CAP_USD = 10.0; // same figure as auto-remediate-packages
@@ -101,24 +103,14 @@ async function logSpend(packageId: string, action: string, outcome: "fixed" | "e
   if (error) console.error(`auto_remediation_log insert failed: ${error.message}`);
 }
 
-async function sendDigest(pkgTitle: string, packageId: string, style: string, kept: { item_name: string; field: string; category: string; severity: string; exact_quote: string; explanation: string }[], cost: number) {
+async function sendDigest(pkgTitle: string, packageId: string, style: string, kept: C.DigestFinding[], cost: number) {
   const key = Deno.env.get("RESEND_API_KEY");
-  if (!key || kept.length === 0) return;
-  const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const high = kept.filter((f) => f.severity === "high").length;
-  const rows = kept.slice(0, 40).map((f) =>
-    `<tr><td style="padding:4px 8px;vertical-align:top"><b>${f.severity === "high" ? "HIGH" : "med"}</b></td><td style="padding:4px 8px;vertical-align:top">${esc(f.item_name)} / ${esc(f.field)}<br><span style="color:#6b7280">${esc(f.category)}</span></td><td style="padding:4px 8px;vertical-align:top"><i>${esc(f.exact_quote.slice(0, 160))}</i><br>${esc(f.explanation)}</td></tr>`
-  ).join("");
-  const html = `<div style="font-family:sans-serif;max-width:900px"><h3>Review: ${esc(pkgTitle)}</h3><p>${kept.length} findings (${high} high), ${esc(style)} style, model ${esc(MODEL)}, about $${cost.toFixed(2)}. Package ${packageId}. Report-only: nothing was changed. Verify each against the source text, then record verdicts in package_review_findings.human_verdict and the autonomy scoreboard.</p><table style="border-collapse:collapse;font-size:13px">${rows}</table>${kept.length > 40 ? `<p>${kept.length - 40} more in the table.</p>` : ""}</div>`;
+  const mail = C.digestEmail(pkgTitle, packageId, style, MODEL, cost, kept, DIGEST_MODE);
+  if (!key || !mail) return;
   const resp = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: "Mystery Maker Alerts <noreply@mysterymaker.party>",
-      to: ["support@mysterymaker.party"],
-      subject: `Review: ${pkgTitle} - ${kept.length} findings${high ? ` (${high} high)` : ""}`,
-      html,
-    }),
+    body: JSON.stringify({ from: "Mystery Maker Alerts <noreply@mysterymaker.party>", to: ["support@mysterymaker.party"], subject: mail.subject, html: mail.html }),
   });
   if (!resp.ok) console.error(`digest email failed: ${resp.status} ${(await resp.text()).slice(0, 200)}`);
 }

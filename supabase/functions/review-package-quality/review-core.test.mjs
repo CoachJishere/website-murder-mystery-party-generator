@@ -65,4 +65,15 @@ t("costUsd matches the pilot's real run (Boogie v2/high: 123925 in, 32300 cw, 41
   const c = C.costUsd({ input_tokens: 123925, cache_creation_input_tokens: 32300, cache_read_input_tokens: 419900, output_tokens: 28080 });
   assert.ok(Math.abs(c - 0.693) < 0.005, String(c));
 });
+t("digestEmail: summary shows counts and high findings only, says no action needed", () => {
+  const f = [
+    { item_name: "A", field: "round2_script", category: "wrong_fact", severity: "high", exact_quote: "x <b>", explanation: "bad" },
+    { item_name: "B", field: "secret", category: "secret_leak", severity: "medium", exact_quote: "y", explanation: "meh" },
+  ];
+  const m = C.digestEmail("Title", "pid", "detective", "model", 0.63, f, "summary");
+  assert.ok(m.subject.includes("2 findings (1 high), no action needed")); assert.ok(m.html.includes("No action needed")); assert.ok(m.html.includes("x &lt;b&gt;"));
+  assert.ok(!m.html.includes(">B / secret<")); assert.ok(m.html.includes("1 more are in the database"));
+  assert.ok(C.digestEmail("T", "p", "s", "m", 0, f, "full").html.includes("B / secret"));
+  assert.equal(C.digestEmail("T", "p", "s", "m", 0, f, "off"), null); assert.equal(C.digestEmail("T", "p", "s", "m", 0, [], "summary"), null);
+});
 console.log("all passed");

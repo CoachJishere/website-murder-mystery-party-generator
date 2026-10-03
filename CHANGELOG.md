@@ -2,6 +2,10 @@
 
 ## 2026-10-03
 
+### Fix: reviewer digest email is now a short summary; "The Night The Storm Hit" corrected (ADR-0136 Addendum 7)
+- The per-order review email (to Jonathan) was a 40-finding list that looked like an action item. Default is now a summary: counts by category, up to 5 high-severity items, cost, and "No action needed" (`REVIEW_DIGEST` summary|full|off). Full list stays in `package_review_findings`.
+- Storm (a delivered paid package, 23 findings): 20 real findings applied as exact-match edits (reviewer replacements plus 3 hand-written and a corrected evidence card), 3 debatable left, gate clean. Pointforms of the edited characters are slightly stale.
+
 ### Feature: reviewer measurement (precision and recall from real sweeps) (ADR-0136 Addendum 6)
 - Tables `package_review_misses` and `package_review_sweeps` plus view `review_performance` (precision = real/(real+false); recall only over packages a human swept after the reviewer ran). `CLAUDE.md` step 7c carries the protocol (verdicts, misses, sweep marker, scoreboard row). Seeded with Storm (23 findings: 20 real, 3 debatable, 0 false) and Boogie's residual (7: 6 real). Recall is not measurable until the first real order where the reviewer runs before a hand sweep.
 
