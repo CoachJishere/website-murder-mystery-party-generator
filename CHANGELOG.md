@@ -2,6 +2,11 @@
 
 ## 2026-10-03
 
+### Feature: Child55 (chained context) built; hand-fix data shows chaining prevents about 1 in 14 semantic defects (ADR-0137, ADR-0136 addendum)
+- **Finding:** the Child's Claude calls already run in sequence per character but never receive each other's output. Child55 passes background, secret and introduction into the four script-writing calls (and the innocent scripts into the guilty call, which was already told to mirror them). No new scenario or delay. **Built, not imported.**
+- **Measured before relying on it:** classifying the 66 hand-edits to "Boogie Nights", chaining prevents 1 of the 10 non-pronoun semantic edits; 6 are slips inside a single generation and 3 are facts wrong against another character or master_context. My earlier guess that chaining would prevent about half was wrong; treated as a low-priority, reversible experiment (about 0.1 to 0.3 USD per package extra).
+- **ADR-0136:** addendum added with the per-class baseline and what to build into the calibration pilot (per-class recall, run after the prompt fixes, same chained view for the reviewer, count single-generation slips separately).
+
 ### Feature: Child54 built (victim pronouns), not yet imported (ADR-0135 Addendum 1)
 - One `VICTIM PRONOUNS` rule in all 8 Child nodes, outside the language-pack `if()` so English gets it too: name the victim, or use a pronoun only if `master_context` is consistent about gender, otherwise they/them. Fixes the "Dusty called she/he by Lena, Pete, Francesca, Dot" drift from "Boogie Nights" at the source (it has no detector). Built from Child53; diff vs Child53 is exactly 8 strings, +927 chars each. **Jonathan imports and tests (English first).**
 

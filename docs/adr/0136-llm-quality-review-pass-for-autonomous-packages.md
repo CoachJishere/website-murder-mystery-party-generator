@@ -56,3 +56,17 @@ The decision should rest on data, and we already have labelled data:
 ## Decision needed
 
 Approve or decline the ~3 to 4 USD calibration pilot. Building anything beyond the pilot needs a second decision after the numbers are in.
+
+## Addendum 1 (2026-10-03): what ADR-0137 measured, and what to build into the pilot
+
+Added after Jonathan asked whether this ADR should account for the "calls cannot see each other" finding.
+
+**What was missing from this ADR.** The "Alternatives considered" says contradictions between independent Claude calls "are structural to the 8-call Child design, so some will always slip through". More precisely: the calls already run one after another; they just do not receive each other's output (ADR-0137). That is fixable (Child55 chains background, secret and introduction into the four script-writing calls) and should be tried before paying a reviewer to find what a prompt change prevents. But the measurement below shows it removes only a sliver, which strengthens the case for this ADR rather than weakening it.
+
+**Baseline for the pilot (the 66 hand-edits to "Boogie Nights", from the pre-fix edit list).** 32 missing headers, 8 formatting leaks and 2 missing pointforms (all now self-heal or are detected), 14 victim-pronoun edits (Child54), and **10 semantic edits** that nothing deterministic touches: **6 slips inside a single generation** (a garbled sentence, a character contradicting herself within one field, "a informant", "not short list", "last night" for the same night, a stray paragraph), **3 facts wrong against another character or master_context** (the coat-check instinct called "a bartender's", the owner "behind the bar", one character hinting at another's secret) and **1 same-character, different-call contradiction** (the only one chaining prevents). So a reviewer is the only thing that can catch about 9 of the 10.
+
+**Build into the pilot:**
+1. **Tag the ground truth by class** (the three semantic classes above, plus pronouns, register, leaks) and report recall **per class**, not one number. The expected-value question is "does it catch the single-generation slips and the wrong-fact items", which is exactly where nothing else helps.
+2. **Run the pilot on a package generated after Child55 (and 53/54) are imported**, or at least report separately what the reviewer finds that chaining would have prevented. Otherwise the pilot partly pays to rediscover defects a prompt change removes. Recall measured on the existing pre-fix snapshots is still valid; only the "how many findings per order" estimate changes.
+3. **Give the reviewer the same chained view the author should have had** (background, secret, introduction, innocent scripts of the same character, plus master_context and the roster), since cross-field and cross-character checks are its job.
+4. **Count the single-generation slips as their own category.** If they dominate, a cheaper alternative worth pricing is a per-field proofreading pass, or lower temperature on the long calls, before a whole-package reviewer.
