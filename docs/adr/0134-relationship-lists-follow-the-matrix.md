@@ -1,6 +1,6 @@
 # ADR-0134: Ally and rival lists must follow the relationship matrix (stop padding to a quota)
 
-- **Status:** Accepted (direction); Child52 built, **not yet imported into Make.com**
+- **Status:** Accepted (direction); Child52 is part of Child55, **imported into Make.com 2026-10-03 (Jonathan reported "v55 imported"), re-fire tested on `is_test` packages but not yet exercised by a real purchase**. The health-check row for ally/rival contradictions should fall for packages generated after the import; check it after the first order.
 - **Date:** 2026-10-03
 - **Related:** [ADR-0103](0103-new-purchase-coherence-sweep-ritual.md) Addendum 78 (where it surfaced), [ADR-0133](0133-parent-child-prompt-audit-part1-single-injection.md) (the Child prompts)
 
