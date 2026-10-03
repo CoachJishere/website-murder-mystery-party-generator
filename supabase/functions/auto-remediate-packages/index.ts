@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { DANGLING_QUOTE_RX, stripStrayGlitches } from "./glitch-strip.ts";
 
 /**
  * auto-remediate-packages — closed-loop auto-remediation worker. See ADR-0047.
@@ -572,10 +573,13 @@ export function stripArtifactLines(
   text: string,
 ): { text: string; removed: string[]; safe: boolean } {
   if (!text) return { text, removed: [], safe: true };
-  const removed: string[] = [];
+  // ADR-0103 Addendum 80: free removal of glitch characters/lines that can never be real text (stray </br>, closing
+  // tags, backticks, a leaked "Let me correct that formatting issue." line) BEFORE the artifact-line pass.
+  const glitch = stripStrayGlitches(text);
+  const removed: string[] = glitch.changes.map((c) => `[glitch] ${c}`);
   const outLines: string[] = [];
 
-  for (const line of text.split("\n")) {
+  for (const line of glitch.text.split("\n")) {
     if (PROSE_LEAK_RX.test(line)) return { text, removed: [], safe: false };
     if (!ARTIFACT_TOKEN_RX.test(line)) {
       outLines.push(line);
@@ -1112,7 +1116,6 @@ async function handleSelfDirectedQuestions(ctx: RunCtx, row: Record<string, unkn
  * never happen since the two patterns are kept in sync by hand — see the
  * detector's own SQL), skip that field rather than guess at a different edit.
  */
-const DANGLING_QUOTE_RX = /([.!?])(['’])(\s*)$/;
 
 async function handleDanglingQuoteMark(ctx: RunCtx, row: Record<string, unknown>): Promise<void> {
   const packageId = row.package_id as string;
