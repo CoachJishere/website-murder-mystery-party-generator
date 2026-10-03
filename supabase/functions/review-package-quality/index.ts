@@ -142,11 +142,15 @@ async function autoApply(packageId: string, pkg: Row, chars: Row[], findingRows:
     const { data: defBefore } = await supabase.rpc("package_blocking_defects_by_id", { _id: packageId });
     const w = await supabase.rpc("remediation_write_field", { _scope: isDoc ? "package" : "character", _row_id: rowId, _field: f.field, _value: after });
     if (w.error) { console.error(`apply failed: ${w.error.message}`); continue; }
+    // `secret` is duplicated in the `secrets` list column; keep them in sync (found on Boogie, 2026-10-03).
+    const syncSecrets = async (value: string) => { if (!isDoc && f.field === "secret") await supabase.from("mystery_characters").update({ secrets: [value] }).eq("id", rowId); };
+    await syncSecrets(after);
     const { data: defAfter } = await supabase.rpc("package_blocking_defects_by_id", { _id: packageId });
     const beforeSet = new Set((defBefore as string[] | null) ?? []);
     const introduced = ((defAfter as string[] | null) ?? []).filter((d) => !beforeSet.has(d));
     if (introduced.length > 0) {
       await supabase.rpc("remediation_write_field", { _scope: isDoc ? "package" : "character", _row_id: rowId, _field: f.field, _value: before });
+      await syncSecrets(before);
       await supabase.from("package_review_findings").update({ status: "reverted", resolved_at: new Date().toISOString() }).eq("id", f.id);
       reverted++;
     } else {
