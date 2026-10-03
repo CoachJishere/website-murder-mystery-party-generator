@@ -1,6 +1,6 @@
 # ADR-0137: Chain earlier outputs into the script-writing Child calls (Child55), and what the hand-fix data says about how much that buys
 
-- **Status:** Accepted as a low-cost experiment; Child55 built, **not yet imported or tested in Make.com**. The measured payoff is small (below), so it is not the priority.
+- **Status:** Accepted as a low-cost experiment; Child55 **imported into Make.com 2026-10-03 (Jonathan reported "v55 imported") but not yet exercised by a real package**; before/after comparison against `docs/autonomy-scoreboard.md` baselines. The measured payoff is small (below), so it is not the priority.
 - **Date:** 2026-10-03
 - **Related:** [ADR-0135](0135-child-language-pack-fixed-register-and-canonical-headers.md) (Child53/54), [ADR-0136](0136-llm-quality-review-pass-for-autonomous-packages.md) (the LLM review pass), [ADR-0103](0103-new-purchase-coherence-sweep-ritual.md) Addenda 78-80
 

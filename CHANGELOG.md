@@ -2,6 +2,11 @@
 
 ## 2026-10-03
 
+### Docs: autonomy scoreboard, sweep steps 7b/7c (reviewer + scoreboard), Child53/54/55 import recorded
+- `docs/autonomy-scoreboard.md`: one row per sweep (hand edits, prevented/healed, reviewer found, **missed by everything**), seeded with Boogie and the five reviewer-only packages and the baselines to beat after Child55.
+- `CLAUDE.md`: post-import watch now covers Child53/54/55 (imported 2026-10-03, no package generated yet) plus the still-pending Parent73/Child51; new steps 7b (run the report-only reviewer, verify findings) and 7c (append the scoreboard row).
+- ADR-0135/0136/0137 status lines updated (imported; reviewer approved but not yet built).
+
 ### Result: detective-style calibration of the LLM review (ADR-0136 Addendum 4); 1.62 USD, pilot total 5.08 USD
 - Three English detective packages: 5, 23 and 23 findings (the last an unswept package, 14 characters). 9 of 9 checkable factual findings verified correct against source (age 21 vs 22 across documents, a leaked "sorry, I mean" self-correction, years and timing contradictions, a reversed debt). My read: about 78% real, 18% debatable, 4% false.
 - Biggest class: innocent characters hinting at the solution or at others' hidden secrets. Detective packages carry about 20 customer-visible defects each, so report-only alone would not remove the need to sweep; the first production version will include a switched-off-by-default auto-apply tier for mechanical classes.

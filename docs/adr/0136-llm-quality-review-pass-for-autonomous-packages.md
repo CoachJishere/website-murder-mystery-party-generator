@@ -1,6 +1,6 @@
 # ADR-0136: An LLM quality-review pass as the "last mile" of autonomous packages (PROPOSED, not built)
 
-- **Status:** Proposed. Nothing is built and nothing spends money until Jonathan approves the calibration pilot below.
+- **Status:** Accepted in direction 2026-10-03. Calibration pilot done (Addenda 2-4, 5.08 USD). Jonathan approved a report-only production reviewer at about 0.70 USD per order and the v3 prompt check; **production reviewer NOT yet built** (edge function, findings table, held-package alert, auto-apply tier switched off by default). Build next, detective prompt first needs the dual-name rule.
 - **Date:** 2026-10-03
 - **Related:** [ADR-0103](0103-new-purchase-coherence-sweep-ritual.md) Addenda 56 (declined an LLM judge), 79, 80; [ADR-0131](0131-quality-check-machinery-audit-and-consolidation-proposal.md); North Star "Operating Principle: Autonomous Quality".
 
