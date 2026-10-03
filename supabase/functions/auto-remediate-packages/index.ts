@@ -1653,7 +1653,10 @@ serve(async (req) => {
 
     const dryRun = body.dry_run === true;
     // Rail 4: bounded window. A caller may narrow it, never widen it.
-    const windowDays = Math.min(Number(body.window_days) || WINDOW_DAYS, WINDOW_DAYS);
+    // One-off backfills (ADR-0103 Addendum 80): an explicit backfill_days (hard-capped at 120) may widen the window beyond the
+    // standard 30 days. The normal cron never sends it, so the default behaviour is unchanged ("narrow, never widen").
+    const backfillDays = Math.min(Number((body as { backfill_days?: number }).backfill_days) || 0, 120);
+    const windowDays = backfillDays > 0 ? backfillDays : Math.min(Number(body.window_days) || WINDOW_DAYS, WINDOW_DAYS);
     const sinceIso = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000).toISOString();
 
     // ADR-0061: the 5-minute held-only sweep passes both of these to restrict
