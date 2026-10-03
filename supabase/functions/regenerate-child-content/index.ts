@@ -404,9 +404,9 @@ const GROUP_ROUNDS_ACCOMPLICE: PromptGroup = {
   "round2Accomplice": "## ROUND 2: MOTIVES\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph prose script in first person — protect the murderer; redirect suspicion to others]",
   "round3Accomplice": "## ROUND 3: METHOD\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph prose script in first person]",
   "round4Accomplice": "## ROUND 4: OPPORTUNITY\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph prose script in first person]",
-  "finalAccomplice": "## FINAL STATEMENT\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph statement in first person — reveal accomplice role only at the very end if at all; primarily defend the murderer]"
+  "finalAccomplice": "## FINAL STATEMENT\\n\\n**IF YOU'RE THE ACCOMPLICE**\\n\\n[3-4 paragraph statement in first person — a DENIAL and deflection, read BEFORE the reveal: the character admits nothing, says they did not see who did it, and steers suspicion toward others. The confession belongs only in the separate reveal_confession_accomplice field]"
 }`,
-  schemaFooter: `These are the ACCOMPLICE-SLIP scripts (what the player says if they draw the accomplice slip — they helped the murderer). Every one of these 4 fields must be first person throughout — see GRAMMATICAL PERSON above; do not let the "IF YOU'RE THE ACCOMPLICE" framing tempt you into writing this as narration ABOUT the character instead of dialogue BY them, and never name this character inside their own field when describing what they knew or who they protected.`,
+  schemaFooter: `These are the ACCOMPLICE-SLIP scripts (what the player says if they draw the accomplice slip — they helped the murderer). Every one of these 4 fields must be first person throughout — see GRAMMATICAL PERSON above; do not let the "IF YOU'RE THE ACCOMPLICE" framing tempt you into writing this as narration ABOUT the character instead of dialogue BY them, and never name this character inside their own field when describing what they knew or who they protected. EVERY field here, final_accomplice included, is read before THE REVEAL: the accomplice stays in denial throughout. Never write that this character helped hide anything, knows who did it, was told what happened, or chose someone over the truth — that is the confession, and it is read only from reveal_confession_accomplice (ADR-0103 Addendum 81: a regenerated final_accomplice confessed in the Final Statement and spoiled the reveal).`,
 };
 
 // ADR-0103: "THE REVEAL — YOUR CONFESSION" beat — a distinct field from
@@ -428,7 +428,7 @@ const GROUP_REVEAL_CONFESSION: PromptGroup = {
   "revealConfessionGuilty": "## THE REVEAL — YOUR CONFESSION\\n\\n[3-4 paragraph first-person confession, read aloud once this character is revealed as the murderer — motive, method, and timing laid out plainly, no more deflecting]",
   "revealConfessionAccomplice": "## THE REVEAL — YOUR CONFESSION\\n\\n[3-4 paragraph first-person confession, read aloud once this character is revealed as the accomplice — what they knew, what they did to help or cover for the murderer, and why]"
 }`,
-  schemaFooter: `These are read aloud once at THE REVEAL, after the murderer/accomplice slip-holder is named — distinct from final_guilty/final_accomplice (shown below as anchor context), which are read earlier during Final Statements while the character is still deflecting. This is the moment all pretense drops. Both fields must stay first person and must NEVER name this character (the speaker) inside their own confession — e.g. do not write "what Korra had done" inside Korra's own reveal_confession_accomplice; if you don't yet know which OTHER character this one protected/was protected by, keep it generic ("the person I was protecting", "someone I trust") rather than inventing or reusing a name that doesn't belong in this field.`,
+  schemaFooter: `These are read aloud once at THE REVEAL, after the murderer/accomplice slip-holder is named — distinct from final_guilty/final_accomplice (shown below as anchor context), which are read earlier during Final Statements while the character is still deflecting. This is the moment all pretense drops. Both fields must stay first person and must NEVER name this character (the speaker) inside their own confession — e.g. do not write "what Korra had done" inside Korra's own reveal_confession_accomplice; if you don't yet know which OTHER character this one protected/was protected by, keep it generic ("the person I was protecting", "someone I trust") rather than inventing or reusing a name that doesn't belong in this field. The same rule applies to BOTH fields in both directions: the murderer slip and the accomplice slip are drawn at the table, so a confession must never name any other cast member as the accomplice or the murderer (no "Fabian found me", no "I found Aaron standing there", no "Holly Beth came to me"), and must not use he/him or she/her for the other person — use "someone", "the person I was protecting", "they/them" (ADR-0103 Addendum 81: five confessions in one package named a specific helper or culprit and would be wrong for most slip draws).`,
 };
 
 const ALL_GROUPS: PromptGroup[] = [
@@ -641,10 +641,26 @@ interface DetectorState {
   selfDirected: string[] | null;       // `offenders` for this package, or null if clean
 }
 
-async function callDetector(rpc: string): Promise<Record<string, unknown>[]> {
-  const { data, error } = await supabase.rpc(rpc, { _since: FULL_HISTORY_SINCE });
+async function callDetector(rpc: string, since: string): Promise<Record<string, unknown>[]> {
+  const { data, error } = await supabase.rpc(rpc, { _since: since });
   if (error) throw new Error(`detector ${rpc} failed: ${error.message}`);
   return (data ?? []) as Record<string, unknown>[];
+}
+
+// ADR-0103 Addendum 81 (2026-10-03): the full-history scan (`FULL_HISTORY_SINCE`)
+// started hitting the database statement timeout as the corpus grew. Live: the
+// heal worker's first call on a held package failed `invoke_failed`, and 5 of 8
+// manual calls died in the pre-check; one call died in the post-write gate AFTER
+// writing, which left unverified content and no spend row. The detectors filter
+// on `mystery_packages.created_at >= _since`, so a window that starts one day
+// before THIS package was created sees exactly the same package, and a fraction
+// of the rows. Falls back to the full-history scan if the lookup fails.
+async function detectorSince(packageId: string): Promise<string> {
+  const { data } = await supabase.from("mystery_packages").select("created_at").eq("id", packageId).maybeSingle();
+  if (!data?.created_at) return FULL_HISTORY_SINCE;
+  const d = new Date(data.created_at as string);
+  d.setUTCDate(d.getUTCDate() - 1);
+  return d.toISOString();
 }
 
 // NOTE: there are 4 relevant classes here, not 3. This function is whitelisted
@@ -655,11 +671,12 @@ async function callDetector(rpc: string): Promise<Record<string, unknown>[]> {
 // self-directed question and still report outcome: "fixed" — the same failure
 // mode the cross-class regression guard exists to prevent for the other three.
 async function detectorState(packageId: string): Promise<DetectorState> {
+  const since = await detectorSince(packageId);
   const [identityRows, metaRows, slipRows, selfDirectedRows] = await Promise.all([
-    callDetector("list_packages_with_identity_conflicts"),
-    callDetector("list_packages_with_meta_text_leak"),
-    callDetector("list_packages_with_slip_culprit_leak"),
-    callDetector("list_packages_with_self_directed_questions"),
+    callDetector("list_packages_with_identity_conflicts", since),
+    callDetector("list_packages_with_meta_text_leak", since),
+    callDetector("list_packages_with_slip_culprit_leak", since),
+    callDetector("list_packages_with_self_directed_questions", since),
   ]);
   const identity = identityRows
     .filter((r) => r.package_id === packageId)
@@ -1220,7 +1237,25 @@ serve(async (req) => {
     }
 
     // --- Gate step 2: re-detect, accept or revert ---
-    const after = await detectorState(package_id);
+    // ADR-0103 Addendum 81: if the gate itself cannot run (e.g. a statement
+    // timeout), the writes above are unverified. Revert and log them with their
+    // spend instead of throwing into the outer catch, which used to leave the
+    // new content in place with no auto_remediation_log row.
+    let after: DetectorState;
+    try {
+      after = await detectorState(package_id);
+    } catch (gateError) {
+      await revertAll();
+      await logRow({
+        package_id, defect_class: defect_class_hint ?? "child_content_regen",
+        action: `regenerate_child_content:${fields.join(",")}|gate_unavailable|reverted`,
+        before_value: JSON.stringify(beforeValues), outcome: "failed", cost_usd: actualCost,
+      });
+      return new Response(JSON.stringify({
+        package_id, outcome: "failed" as Outcome, results,
+        note: `re-detect gate could not run (${(gateError as Error).message}) — all writes reverted; safe to retry`,
+      }), { status: 200, headers: { "Content-Type": "application/json" } });
+    }
     const stillFlagged = stillImplicatesTouched(after, touchedNames);
     const regressed = regressions(before, after);
     // ADR-0088 addendum, 2026-09-06: none of the 4 detector classes above
