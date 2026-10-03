@@ -2,6 +2,12 @@
 
 ## 2026-10-03
 
+### Feature: Child53 language pack, fixed speech register and canonical section headers per language (ADR-0135)
+- **Why:** the Child's register rule ("the introduction establishes the register") cannot be followed, because the 8 Claude calls per character never see each other's output; and section labels were translated independently in every call (German 10 and Italian 14 distinct wordings per field on average; every French IF-YOU'RE-INNOCENT/GUILTY/ACCOMPLICE header was left in English).
+- **Built (not yet imported):** `Child53` (on top of Child52): register fixed per language (informal always; Spanish tú/vosotros unless set in Latin America, etc.), exact label tables for Spanish, German, French, Italian, Portuguese and Dutch from `docs/language-pack/header-labels.json`, and a no-stray-English rule. Wrapped in `if(63.language = "English"; ...)` so English orders are unchanged and free. No new scenarios or branches.
+- **Needs:** Jonathan imports and fires one English and one Spanish character at the Child webhook first. Dutch and part of the other labels have had no native review. Cost estimate for non-English orders about 0.35 to 0.5 USD each (assumption).
+- Full detail: ADR-0135.
+
 ### Fix: "Boogie Nights, Bloody Nights" sweep: 4 detector hits + 5 undetected leaks, 32 missing branch headers, 2 empty pointforms; detector extended (ADR-0103 Addendum 79)
 Package `a4e3078c` (English, slip style, 14 characters) was held at `needs_review`; fixed and released through the normal path at 07:30 UTC (ready email sent then, with corrected content).
 - **Fixed (57 fields, 11 characters, exact-match edits, two phases so it could not release half-fixed):** stray `</br>`, three dangling quotes, a leaked "Let me correct that formatting issue.", a trailing backtick; 32 branch fields with no baked-in header (the host's compiled guide concatenates raw fields, so they ran on unlabeled); 2 hand-written accomplice-confession pointforms; Dusty's gender normalised to "they" (Lena was she/her throughout); a few cross-field slips (Honey's "went to Sandro first", years of service, Chuck hinting at Pete's badge) and typos.
