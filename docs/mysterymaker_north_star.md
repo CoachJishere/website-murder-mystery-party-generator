@@ -71,6 +71,18 @@ This is a real differentiator in a market where competitors are English-only. It
 
 ---
 
+## Operating Principle: Autonomous Quality (stated 2026-10-03)
+
+**Goal: no human sweeps packages.** Today every purchase is manually swept (ADR-0103) because the machinery does not yet catch or fix everything. The target is that a package which reaches a customer is already as good as a swept one, whether or not the founder is available (holidays, electrician training from September 2026). This is reached gradually, not overnight: every sweep must leave the system better, and the sweep itself is the instrument that measures the gap.
+
+How a defect should be handled, in order of preference:
+1. **Prevent it at the source** (a prompt or generation fix) when the cause is a prompt/instruction gap.
+2. **Detect it** with a cheap, deterministic check that holds the package (the completion gate).
+3. **Heal it automatically** with a free, deterministic fix (strip, prepend, copy from a sibling), re-detect, and revert if still flagged.
+4. **Escalate** only what genuinely needs judgment, with enough context that it is a two-minute decision.
+
+Rules of the road: nothing that spends money runs without explicit approval (a paid self-heal needs a stated per-package cost); a detector and the fix that pairs with it are widened in the same change (a detector without its fix stalls the worker, a fix without its detector is invisible); each sweep reports how many of its findings the machinery caught, healed, or missed, because the "missed" column is the roadmap to zero.
+
 ## Business Model
 
 **$24.99 per mystery. One-time purchase.**
