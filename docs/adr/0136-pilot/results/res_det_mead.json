@@ -1,0 +1,173 @@
+{
+ "label": "det_mead",
+ "model": "claude-sonnet-5-5",
+ "results": [
+  {
+   "character": "Aelfgifu/Aelfgar the Steward",
+   "stop_reason": "end_turn",
+   "cost": 0.0911,
+   "secs": 13.4,
+   "usage": {
+    "in": 5025,
+    "cw": 25828,
+    "cr": 0,
+    "out": 1643
+   },
+   "findings": []
+  },
+  {
+   "character": "Bjorn/Bjorg Ironhand",
+   "stop_reason": "end_turn",
+   "cost": 0.0337,
+   "secs": 12.9,
+   "usage": {
+    "in": 5201,
+    "cw": 0,
+    "cr": 25828,
+    "out": 1812
+   },
+   "findings": []
+  },
+  {
+   "character": "Cynewise/Cyneric the Younger",
+   "stop_reason": "end_turn",
+   "cost": 0.031,
+   "secs": 13.0,
+   "usage": {
+    "in": 4626,
+    "cw": 0,
+    "cr": 25828,
+    "out": 1654
+   },
+   "findings": [
+    {
+     "field": "round4_script",
+     "exact_quote": "the way a bride-to-be is meant to smile at her own betrothal feast",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Cynewise/Cyneric's gender is never fixed, and every other field stays neutral (husband or wife). \"Bride-to-be... her\" commits to female. The feast is also an alliance feast, not a betrothal feast.",
+     "suggested_replacement": "the way someone promised in marriage is meant to smile at an alliance feast"
+    }
+   ]
+  },
+  {
+   "character": "Freydis/Freyr Oathbreaker",
+   "stop_reason": "end_turn",
+   "cost": 0.0308,
+   "secs": 11.7,
+   "usage": {
+    "in": 4867,
+    "cw": 0,
+    "cr": 25828,
+    "out": 1592
+   },
+   "findings": []
+  },
+  {
+   "character": "Hild/Hilde the Shieldmaiden",
+   "stop_reason": "end_turn",
+   "cost": 0.0303,
+   "secs": 12.8,
+   "usage": {
+    "in": 4333,
+    "cw": 0,
+    "cr": 25828,
+    "out": 1646
+   },
+   "findings": []
+  },
+  {
+   "character": "Osric/Osryth of the Marsh",
+   "stop_reason": "end_turn",
+   "cost": 0.0367,
+   "secs": 16.3,
+   "usage": {
+    "in": 5064,
+    "cw": 0,
+    "cr": 25828,
+    "out": 2141
+   },
+   "findings": [
+    {
+     "field": "round4_script",
+     "exact_quote": "What I can tell you is that I never stepped from that bench until the alarm was raised",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Contradicts the same script, where Osric says he poured his own drink and went near the mead-jug once or twice during the toasts.",
+     "suggested_replacement": "What I can tell you is that I never strayed from my table during that final toast beyond filling my own cup"
+    },
+    {
+     "field": "rumors",
+     "exact_quote": "I have always wondered how a household so careful with its coin still seems to come up short when the accounting is done.",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Osric is the Steward's friend and could not know of the hidden embezzlement. This pre-reveal rumor hints at the murderer's secret and clashes with his trust in the Steward.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_script",
+     "exact_quote": "my grandfather's grandfather watered cattle on that land",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "The family has held the grazing rights for three generations, but a grandfather's grandfather is four or more generations back.",
+     "suggested_replacement": "my grandfather watered cattle on that land"
+    }
+   ]
+  },
+  {
+   "character": "Ragnar/Ragna Sea-Wolf",
+   "stop_reason": "end_turn",
+   "cost": 0.0327,
+   "secs": 13.7,
+   "usage": {
+    "in": 4640,
+    "cw": 0,
+    "cr": 25828,
+    "out": 1830
+   },
+   "findings": []
+  },
+  {
+   "character": "Wulfstan/Wulfhild Ashford",
+   "stop_reason": "end_turn",
+   "cost": 0.0371,
+   "secs": 17.5,
+   "usage": {
+    "in": 4680,
+    "cw": 0,
+    "cr": 25828,
+    "out": 2256
+   },
+   "findings": [
+    {
+     "field": "rumors",
+     "exact_quote": "A steward who guards the ledgers so closely might have more reason than any of us to fear what my sister's sharp eyes could uncover.",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Wulfstan/Wulfhild has no way to know of the Steward's hidden embezzlement. This round-1 rumor points straight at the murderer's secret motive and gives away the solution.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "PACKAGE DOCUMENTS",
+   "stop_reason": "end_turn",
+   "cost": 0.0265,
+   "secs": 9.8,
+   "usage": {
+    "in": 4226,
+    "cw": 0,
+    "cr": 25828,
+    "out": 1287
+   },
+   "findings": []
+  }
+ ],
+ "total_cost_usd": 0.3498,
+ "tokens": {
+  "i": 42662,
+  "cw": 25828,
+  "cr": 206624,
+  "o": 15861
+ }
+}

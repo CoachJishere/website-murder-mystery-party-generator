@@ -125,3 +125,26 @@ v2 = v1 plus two rules: never list a finding you conclude is acceptable/minor/by
 2. **Package-level documents** (detective script, game overview, evidence cards) were not reviewed, only characters.
 3. **Languages other than English and Spanish**, and a recall number from more than one labelled package.
 4. **Whether the report-only list is short enough to be a two-minute read** on a typical order (in the pilot: 5 to 13 findings per package at medium/high).
+
+## Addendum 4 (2026-10-03): detective-style calibration, and why it changes the build order (Jonathan approved; this stage 1.62 USD, pilot total 5.08 USD)
+
+**What was run.** The same report-only reviewer, with a detective-style prompt (`docs/adr/0136-pilot/pilot_det.py`): a fixed solution (murderer, accomplice, red herrings listed in the prefix), one script per round, the murderer's deliberate lying treated as by design, a `secret_leak` rule that also covers a shared document spoiling the solution, and one extra call per package for the shared documents (game overview, detective script, evidence cards, materials). Effort high, medium and high severity only, `accomplicePairings` dropped. Three English packages: **Blood On The Mead-bench** (8 characters, swept 10-02), **The Last Lesson Of Professor Vaingloryus** (14, swept 09-26), **The Night The Storm Hit** (14, no remediation logged, effectively an unswept package). 45 calls, no refusals, no errors. Cost 0.35, 0.62, 0.64.
+
+| Package | Findings | By severity | By category |
+|---|---|---|---|
+| Mead-bench | 5 | 5 medium | secret leak 2, wrong fact 1, slip 1, cross-field 1 |
+| Vaingloryus | 23 | 19 medium, 4 high | cross-field 7, secret leak 7, wrong fact 7, slip 2 |
+| Storm (unswept) | 23 | 21 medium, 2 high | secret leak 9, wrong fact 6, cross-field 6, slip 2 |
+
+**Verification.** I checked the checkable factual findings against the source text and `master_context`: **9 of 9 were correct**, for example: Storm's detective script says Miranda "was turning twenty-two" while the game overview says twenty-first (flagged high); Wren's round 4 script contains "...meet Wren - sorry, I mean..." (a leaked self-correction, the same class as ADR-0103 Addendum 79); Renata's final statement says "weeks ago" where her description, secret and introduction all say "this morning"; Desmond "a couple weeks" vs "within a day"; Quillbrook "fifty years" vs her description's "thirty" (fifty is Graves's tenure); Vaingloryus's debt to Sootworth stated in the wrong direction in a rumor; the healer's "thirty years" vs "two decades". My overall read of all 51 (not individually verified for the judgment-type ones): about **40 real (78%), 9 debatable, 2 false**. The two false: a dual-name character ("Cynewise/Cyneric") written with "her" (the detective prompt lacked the dual-name rule that the slip prompt had; add it), and a character lying in a final statement about her own fabricated vision (in character).
+
+**The main finding: detective-style packages carry about 20 customer-visible defects per 14-character package, and the biggest class is "innocent characters hinting at the solution".** Nine of the 23 on Storm and seven of 23 on Vaingloryus are `secret_leak`: innocent characters' final statements pointing at "the nice one" or at the murderer's hidden motive (for example Quillbrook "the person we all trusted most precisely because he gave us every reason to", flagged high), and rumors or questions that show knowledge of another character's hidden secret. This is the class ADR-0103's checklist item (d) and Child51's solution-notes rule target; the data says it is still the largest single defect source. Next largest: wrong numbers between fields (years of service, "within a day" vs "weeks"), and wrong time references ("this week" in a one-night game).
+
+**What this changes.**
+1. **A report-only list of about 20 findings per order is not a two-minute read.** Report-only on its own would leave Jonathan sweeping most orders, which matches his instinct. The reviewer's value shifts from "shorten the sweep" to "measure, and feed an auto-apply tier".
+2. **Build the safe auto-apply tier into the first version, switched off by default and turned on per class as the data supports it.** Candidates where a fix is mechanical and a deterministic check exists: a number or time reference that contradicts another field (the right value is in the same character's description or `master_context`), a leaked self-correction ("sorry, I mean ..."), a typo or non-word, a wrong pronoun. Not auto-applied (need a rewrite, so escalated, or held for the Child fix): solution-hinting innocents, cross-character facts.
+3. **Prevention is now measurable.** Run the reviewer on a package generated after Child55 is imported and compare finding counts with the three above (about 5, 23, 23): that is a direct before/after for ADR-0137 and Child51/55, per class.
+4. **Add the dual-name rule to the detective prompt, and keep `accomplicePairings` out of the prefix.**
+
+### Key files (Addendum 4)
+- `docs/adr/0136-pilot/pilot_det.py`, `docs/adr/0136-pilot/results/res_det_*.json`

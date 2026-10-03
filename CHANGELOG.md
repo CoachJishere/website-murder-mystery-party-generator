@@ -2,6 +2,10 @@
 
 ## 2026-10-03
 
+### Result: detective-style calibration of the LLM review (ADR-0136 Addendum 4); 1.62 USD, pilot total 5.08 USD
+- Three English detective packages: 5, 23 and 23 findings (the last an unswept package, 14 characters). 9 of 9 checkable factual findings verified correct against source (age 21 vs 22 across documents, a leaked "sorry, I mean" self-correction, years and timing contradictions, a reversed debt). My read: about 78% real, 18% debatable, 4% false.
+- Biggest class: innocent characters hinting at the solution or at others' hidden secrets. Detective packages carry about 20 customer-visible defects each, so report-only alone would not remove the need to sweep; the first production version will include a switched-off-by-default auto-apply tier for mechanical classes.
+
 ### Fix: Detective-style mysteries could not save edits to most character sections ("Failed to save")
 - **Cause:** `EDITABLE_CHARACTER_FIELDS` (mysteryPackageService.ts) was the slip-style field list (`round*_innocent/guilty/accomplice`, `final_*`). Detective-style characters store their rounds in `round2_script` / `round3_script` / `round4_script` / `final_statement`, and every style has `accusations`. The tab view rendered an edit pencil on all of them, but the save threw `Field "..." is not editable` before any request was sent, so the user saw only the generic "Failed to save" toast. Reported by a customer (contact form, 2026-10-03) whose detective package has 6 characters; edits to intro/background/secret etc. worked (all PATCHes 204), the round scripts, final statement and accusations did not. Affects every detective-style package (116 in the corpus) plus `accusations` on any style.
 - **Fix:** added the five fields to the allowlist. Cross-checked that every `key:` the character editor renders is now allowlisted.

@@ -1,0 +1,403 @@
+{
+ "label": "det_vain",
+ "model": "claude-sonnet-5-5",
+ "results": [
+  {
+   "character": "Bramble/Brambly Hollowfen",
+   "stop_reason": "end_turn",
+   "cost": 0.1141,
+   "secs": 12.1,
+   "usage": {
+    "in": 4269,
+    "cw": 36764,
+    "cr": 0,
+    "out": 1362
+   },
+   "findings": [
+    {
+     "field": "round3_script",
+     "exact_quote": "it's the reason I was even near that study in the first place",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Hollowfen says here they were near the study, but the round 4 script insists they never went anywhere near it and were by the Chalice display case.",
+     "suggested_replacement": "it's the reason I was even near that display case in the first place"
+    },
+    {
+     "field": "final_statement",
+     "exact_quote": "Someone spent a decade close enough to Vaingloryus's work to know exactly how to turn it against him, and that same someone can't actually say where they stood during the only window that mattered.",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Innocent Hollowfen effectively describes the murderer's decade-long insider knowledge and alibi gap, pointing at the solution in a way this character could not know.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Headmaster/Headmistress Percival/Percy Ashworth",
+   "stop_reason": "end_turn",
+   "cost": 0.0372,
+   "secs": 15.7,
+   "usage": {
+    "in": 4701,
+    "cw": 0,
+    "cr": 36764,
+    "out": 2043
+   },
+   "findings": [
+    {
+     "field": "rumors",
+     "exact_quote": "she mentioned dreaming of the Chalice three nights before it vanished",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Larkspur's claimed vision was of Vaingloryus's death ('silver hair and shattered glass') weeks earlier, not of the Chalice vanishing three nights before.",
+     "suggested_replacement": "she mentioned dreaming of silver hair and shattered glass weeks before Vaingloryus died"
+    },
+    {
+     "field": "final_statement",
+     "exact_quote": "someone trusted, someone charming enough that nobody thought to question their movements too closely",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Innocent Ashworth effectively points at Ravensmoor ('the nice one', vague alibi), hinting at the solution he could not know before the reveal.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Healer/Nurse Wren/Wrenley Applecross",
+   "stop_reason": "end_turn",
+   "cost": 0.037,
+   "secs": 14.5,
+   "usage": {
+    "in": 5007,
+    "cw": 0,
+    "cr": 36764,
+    "out": 1965
+   },
+   "findings": [
+    {
+     "field": "round2_script",
+     "exact_quote": "an oath I've never broken in thirty years of service",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "The description says the healer has served for two decades, but the script claims thirty years of service.",
+     "suggested_replacement": "an oath I've never broken in two decades of service"
+    },
+    {
+     "field": "round4_script",
+     "exact_quote": "our appointments were always held in my own quarters, where I kept my equipment and my records",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "The background says Vaingloryus was treated regularly in the infirmary, but here the appointments were held in the healer's own quarters.",
+     "suggested_replacement": "our appointments were always held in the infirmary, where I kept my equipment and my records"
+    },
+    {
+     "field": "round3_script",
+     "exact_quote": "I've spent this week going back through my private notes",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "The whole game takes place in one night, and the introduction says the body was found hours ago, so 'this week' is a wrong time reference.",
+     "suggested_replacement": "I've spent these last hours going back through my private notes"
+    },
+    {
+     "field": "final_statement",
+     "exact_quote": "I've listened carefully these past few days",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "The game is a single evening, so 'past few days' is wrong.",
+     "suggested_replacement": "I've listened carefully this evening"
+    },
+    {
+     "field": "final_statement",
+     "exact_quote": "Look at who has been the nicest, calmest presence in every single room since this began.",
+     "category": "secret_leak",
+     "severity": "high",
+     "explanation": "An innocent character effectively names the murderer by pointing to 'the nice one', which gives away the solution that guests should not know.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Josephine/Joseph Van der Hollow",
+   "stop_reason": "end_turn",
+   "cost": 0.0413,
+   "secs": 18.7,
+   "usage": {
+    "in": 4586,
+    "cw": 0,
+    "cr": 36764,
+    "out": 2474
+   },
+   "findings": []
+  },
+  {
+   "character": "Ottoline/Otto Fenwick",
+   "stop_reason": "end_turn",
+   "cost": 0.0293,
+   "secs": 10.8,
+   "usage": {
+    "in": 4396,
+    "cw": 0,
+    "cr": 36764,
+    "out": 1316
+   },
+   "findings": [
+    {
+     "field": "final_statement",
+     "exact_quote": "rage that's had ten years to learn patience and charm. Someone who smiled at faculty meetings while quietly cataloguing every slight",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Innocent Fenwick describes the murderer's decade-long grievance and 'nice one' charm, which only Ravensmoor's hidden motive supports. Fenwick has no way to know this, so it points to the solution.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Percival/Persephone 'Percy' Nightshade",
+   "stop_reason": "end_turn",
+   "cost": 0.0377,
+   "secs": 15.4,
+   "usage": {
+    "in": 4816,
+    "cw": 0,
+    "cr": 36764,
+    "out": 2068
+   },
+   "findings": [
+    {
+     "field": "final_statement",
+     "exact_quote": "while everyone searched for a killer, I searched for the Chalice, and I took it",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "The theft happened during the gala chaos, and the body was found hours later, so nobody was searching for a killer yet. This contradicts the timeline and the character's own secret.",
+     "suggested_replacement": "while everyone was distracted by the gala, I went for the Chalice, and I took it"
+    }
+   ]
+  },
+  {
+   "character": "Professor Augustus/Augusta Graves",
+   "stop_reason": "end_turn",
+   "cost": 0.0377,
+   "secs": 15.9,
+   "usage": {
+    "in": 4928,
+    "cw": 0,
+    "cr": 36764,
+    "out": 2051
+   },
+   "findings": []
+  },
+  {
+   "character": "Professor Cassian/Cassandra Blackthorn",
+   "stop_reason": "end_turn",
+   "cost": 0.0396,
+   "secs": 16.4,
+   "usage": {
+    "in": 5076,
+    "cw": 0,
+    "cr": 36764,
+    "out": 2207
+   },
+   "findings": [
+    {
+     "field": "round2_questions",
+     "exact_quote": "You told half the faculty you dreamed of the Chalice vanishing, three full nights before it did.",
+     "category": "wrong_fact",
+     "severity": "high",
+     "explanation": "Larkspur claimed a vision of Vaingloryus's death ('silver hair and shattered glass') weeks earlier, not a dream of the Chalice vanishing three nights before. This misstates Larkspur's claim and uses the theft.",
+     "suggested_replacement": "You told half the faculty you foresaw Vaingloryus's death, weeks before it happened - 'silver hair and shattered glass', was it not?"
+    },
+    {
+     "field": "round3_script",
+     "exact_quote": "I've spent years in the restricted section since I confronted him",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Blackthorn confronted Vaingloryus only weeks ago, per the introduction. Having spent 'years' in the restricted section since then is impossible.",
+     "suggested_replacement": "I've spent weeks in the restricted section since I confronted him"
+    }
+   ]
+  },
+  {
+   "character": "Professor Cornelius/Cornelia Quillbrook",
+   "stop_reason": "end_turn",
+   "cost": 0.0409,
+   "secs": 19.4,
+   "usage": {
+    "in": 4697,
+    "cw": 0,
+    "cr": 36764,
+    "out": 2411
+   },
+   "findings": [
+    {
+     "field": "final_statement",
+     "exact_quote": "I've spent fifty years at this academy being the one nobody looked at twice",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Quillbrook's other fields give thirty years at the academy. Fifty years is Graves's tenure.",
+     "suggested_replacement": "I've spent thirty years at this academy being the one nobody looked at twice"
+    },
+    {
+     "field": "round2_script",
+     "exact_quote": "I've had fifty years of practice swallowing it",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "The same script says the ledger covers nearly thirty years, and the description says thirty years. Fifty years is Graves's tenure, not Quillbrook's.",
+     "suggested_replacement": "I've had thirty years of practice swallowing it"
+    },
+    {
+     "field": "final_statement",
+     "exact_quote": "everything in mine points toward the person we all trusted most precisely because he gave us every reason to.",
+     "category": "secret_leak",
+     "severity": "high",
+     "explanation": "An innocent character effectively names the murderer, 'the nice one', along with the handwriting and alibi clues. Quillbrook cannot know the solution, and this is read before the reveal.",
+     "suggested_replacement": "everything in mine shows how many people had reason to want him humbled."
+    },
+    {
+     "field": "round4_questions",
+     "exact_quote": "You were seen near that display case before the unveiling.",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Hollowfen, not Nightshade, was seen lingering near the Chalice display case. Nightshade's theft is hidden.",
+     "suggested_replacement": "Hollowfen was seen near that display case before the unveiling. Did you see anyone else near the Chalice?"
+    }
+   ]
+  },
+  {
+   "character": "Professor Delphine/Delphinus Larkspur",
+   "stop_reason": "end_turn",
+   "cost": 0.0408,
+   "secs": 17.2,
+   "usage": {
+    "in": 5359,
+    "cw": 0,
+    "cr": 36764,
+    "out": 2276
+   },
+   "findings": [
+    {
+     "field": "final_statement",
+     "exact_quote": "it was a genuine vision, however unwelcome",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Larkspur's secret says there was no true vision and that it was fabricated from an overheard argument. The final statement claims a genuine vision while saying 'I will tell you plainly'.",
+     "suggested_replacement": "it was no true vision, only a scrap of overheard argument dressed up as prophecy"
+    },
+    {
+     "field": "final_statement",
+     "exact_quote": "a decade of swallowed feelings, finally shattered by watching Goldie discarded in public, would grant exactly the motive",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Ravensmoor's secret, long-held love for Thistlewick is a hidden fact Larkspur could not know. An innocent character cites it as the killer's motive.",
+     "suggested_replacement": "a decade of stolen credit and quiet resentment would grant exactly the motive"
+    }
+   ]
+  },
+  {
+   "character": "Professor Ivy/Ivo Ravensmoor",
+   "stop_reason": "end_turn",
+   "cost": 0.0316,
+   "secs": 11.0,
+   "usage": {
+    "in": 5246,
+    "cw": 0,
+    "cr": 36764,
+    "out": 1377
+   },
+   "findings": []
+  },
+  {
+   "character": "Professor Marigold/Marigold 'Goldie' Thistlewick",
+   "stop_reason": "end_turn",
+   "cost": 0.0347,
+   "secs": 13.7,
+   "usage": {
+    "in": 4705,
+    "cw": 0,
+    "cr": 36764,
+    "out": 1793
+   },
+   "findings": [
+    {
+     "field": "rumors",
+     "exact_quote": "Sootworth owed Aurelius a small fortune in unpaid debts",
+     "category": "wrong_fact",
+     "severity": "high",
+     "explanation": "The debt runs the other way: Vaingloryus owed Sootworth about 4,000 galleons and withheld it. Her own round 2 question to Sootworth states this correctly.",
+     "suggested_replacement": "Aurelius owed Sootworth a small fortune in unpaid fees"
+    },
+    {
+     "field": "round2_script",
+     "exact_quote": "that I never remarried",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "She was only engaged to Vaingloryus and never married, so 'remarried' wrongly implies a prior marriage.",
+     "suggested_replacement": "that I never found anyone else"
+    }
+   ]
+  },
+  {
+   "character": "Professor Wilhelmina/William Sootworth",
+   "stop_reason": "end_turn",
+   "cost": 0.0365,
+   "secs": 15.7,
+   "usage": {
+    "in": 4629,
+    "cw": 0,
+    "cr": 36764,
+    "out": 1993
+   },
+   "findings": []
+  },
+  {
+   "character": "Reginald/Regina Thorncastle",
+   "stop_reason": "end_turn",
+   "cost": 0.0339,
+   "secs": 12.4,
+   "usage": {
+    "in": 5102,
+    "cw": 0,
+    "cr": 36764,
+    "out": 1632
+   },
+   "findings": [
+    {
+     "field": "final_statement",
+     "exact_quote": "and watched Thistlewick discarded in a way that clearly wounded him far more than he's ever let on.",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Thorncastle could not know Ravensmoor's hidden love for Thistlewick, which is the murderer's secret motive. An innocent character hints at it here.",
+     "suggested_replacement": "and was passed over for the Council seat in a way that clearly wounded him far more than he's ever let on."
+    }
+   ]
+  },
+  {
+   "character": "PACKAGE DOCUMENTS",
+   "stop_reason": "end_turn",
+   "cost": 0.0327,
+   "secs": 11.7,
+   "usage": {
+    "in": 4477,
+    "cw": 0,
+    "cr": 36764,
+    "out": 1643
+   },
+   "findings": [
+    {
+     "field": "detective_script",
+     "exact_quote": "Tucked inside, a torn engagement announcement and a parent-visitation program, each underlined twice in red ink as though someone revisited these wounds again and again.",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "The master evidence says several ledger entries are underlined twice in red. The announcement and program are only loose items tucked between the pages, so they are not underlined.",
+     "suggested_replacement": "Several entries are underlined twice in red ink, as though someone revisited these wounds again and again. Tucked inside are a torn engagement announcement and a parent-visitation program."
+    }
+   ]
+  }
+ ],
+ "total_cost_usd": 0.6249,
+ "tokens": {
+  "i": 71994,
+  "cw": 36764,
+  "cr": 514696,
+  "o": 28611
+ }
+}

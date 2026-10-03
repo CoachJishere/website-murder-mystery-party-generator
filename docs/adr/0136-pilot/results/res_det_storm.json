@@ -1,0 +1,405 @@
+{
+ "label": "det_storm",
+ "model": "claude-sonnet-5-5",
+ "results": [
+  {
+   "character": "Callum Ashford",
+   "stop_reason": "end_turn",
+   "cost": 0.1217,
+   "secs": 16.8,
+   "usage": {
+    "in": 4639,
+    "cw": 36607,
+    "cr": 0,
+    "out": 2093
+   },
+   "findings": []
+  },
+  {
+   "character": "Danielle Reyes",
+   "stop_reason": "end_turn",
+   "cost": 0.0429,
+   "secs": 19.4,
+   "usage": {
+    "in": 4555,
+    "cw": 0,
+    "cr": 36607,
+    "out": 2647
+   },
+   "findings": [
+    {
+     "field": "round2_script",
+     "exact_quote": "I saw Desmond hand her cash back in October",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Miranda lent Desmond the money on October 17, and Danielle saw her give him cash. Desmond never handed cash to Miranda; the direction is reversed.",
+     "suggested_replacement": "I saw her hand Desmond cash back in October"
+    },
+    {
+     "field": "accusations",
+     "exact_quote": "without ever naming Naomi specifically",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Danielle is innocent and unaware Naomi is the murderer, yet this tip presumes she knows. It also tells her to shield Naomi and act puzzled about the knife, contradicting her own round 4 script.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Desmond Hartley",
+   "stop_reason": "end_turn",
+   "cost": 0.0304,
+   "secs": 12.6,
+   "usage": {
+    "in": 4094,
+    "cw": 0,
+    "cr": 36607,
+    "out": 1487
+   },
+   "findings": [
+    {
+     "field": "round2_script",
+     "exact_quote": "I lost every cent of it within a couple weeks.",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Description and secret say Desmond lost the $4,000 within about a day of borrowing it; the background says within days. 'A couple weeks' contradicts both.",
+     "suggested_replacement": "I lost every cent of it within a day."
+    },
+    {
+     "field": "final_statement",
+     "exact_quote": "because they'd had practice staying composed before.",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Desmond is innocent and cannot know the murderer previously covered up a death. This hints at the hidden 2008 cover-up and points at Naomi.",
+     "suggested_replacement": "because they were hiding something far bigger."
+    }
+   ]
+  },
+  {
+   "character": "Grant Delacroix",
+   "stop_reason": "end_turn",
+   "cost": 0.0408,
+   "secs": 18.1,
+   "usage": {
+    "in": 4820,
+    "cw": 0,
+    "cr": 36607,
+    "out": 2387
+   },
+   "findings": [
+    {
+     "field": "round2_script",
+     "exact_quote": "Miranda and I weren't close in the way some of you were - we ran in the same circles, shared a few classes, that's about it.",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Grant's introduction and background say he knew Miranda over a year and trusted her as one of the people he trusted most. Downplaying the relationship as only shared classes contradicts them, and he is not the murderer.",
+     "suggested_replacement": "Miranda and I were part of the same circle for over a year - I liked and trusted her, though I wasn't as close to her as some of you were."
+    },
+    {
+     "field": "round3_script",
+     "exact_quote": "Wren was retrieving things, Rowan was in there earlier too.",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Rowan secretly placed the voodoo doll in Miranda's room, which Grant could not know. His statement exposes her hidden secret in round 3.",
+     "suggested_replacement": "Wren was in there late in the night; ask who else spent real time in that room."
+    }
+   ]
+  },
+  {
+   "character": "Marcus Calloway",
+   "stop_reason": "end_turn",
+   "cost": 0.0463,
+   "secs": 23.0,
+   "usage": {
+    "in": 4790,
+    "cw": 0,
+    "cr": 36607,
+    "out": 2944
+   },
+   "findings": [
+    {
+     "field": "round4_script",
+     "exact_quote": "I stepped out briefly for air near the side door earlier in the evening, before the cake even came out",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "The master timeline and Marcus's own accusation tip place his air break and the sighting of Naomi on the stairs around when the cake was cut, not before it came out.",
+     "suggested_replacement": "I stepped out briefly for air near the side door right around when the cake was being cut"
+    }
+   ]
+  },
+  {
+   "character": "Max Calder",
+   "stop_reason": "end_turn",
+   "cost": 0.0456,
+   "secs": 21.6,
+   "usage": {
+    "in": 4066,
+    "cw": 0,
+    "cr": 36607,
+    "out": 3018
+   },
+   "findings": [
+    {
+     "field": "round3_questions",
+     "exact_quote": "You found something of yours in her room and said nothing. Why would you sit on that instead of raising it immediately?",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Theo's discovery of his ring in Miranda's room, and his silence about it, is his hidden secret. He told no one, so Max could not know it.",
+     "suggested_replacement": "You were seen near Miranda's bedroom doorway looking shaken. What did you see in there, and why didn't you say anything?"
+    },
+    {
+     "field": "round2_questions",
+     "exact_quote": "Did you ever consider doing more than cursing her?",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Rowan's voodoo-doll curse is her hidden secret. Max has no way of knowing she cursed Miranda, so the question reveals another character's concealed secret.",
+     "suggested_replacement": "Did you ever consider doing more than just resenting her?"
+    }
+   ]
+  },
+  {
+   "character": "Naomi Petrakis",
+   "stop_reason": "end_turn",
+   "cost": 0.0316,
+   "secs": 11.2,
+   "usage": {
+    "in": 4483,
+    "cw": 0,
+    "cr": 36607,
+    "out": 1534
+   },
+   "findings": [
+    {
+     "field": "final_statement",
+     "exact_quote": "Tonight Miranda found Della's watch and put together what Callum let slip in a drunken moment",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Master context says Miranda found the watch on November 17 at 9:00 PM, the day before the party. Only the connection to Callum's slip happened tonight.",
+     "suggested_replacement": "Miranda had found Della's watch the night before, and tonight she put together what Callum let slip in a drunken moment"
+    }
+   ]
+  },
+  {
+   "character": "Renata Kovač",
+   "stop_reason": "end_turn",
+   "cost": 0.03,
+   "secs": 9.6,
+   "usage": {
+    "in": 4522,
+    "cw": 0,
+    "cr": 36607,
+    "out": 1364
+   },
+   "findings": [
+    {
+     "field": "round2_script",
+     "exact_quote": "Miranda and I worked side by side at the Dean's Office for over a year",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "The introduction says they have shared a desk area for 'almost a year', but this script says 'over a year'. The length of time they have worked together disagrees between fields.",
+     "suggested_replacement": "Miranda and I worked side by side at the Dean's Office for almost a year"
+    },
+    {
+     "field": "final_statement",
+     "exact_quote": "I recognized a name on a list weeks ago",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "The description, secret, introduction and background all say Renata recognized Shane's name on the guest list the morning of the party, not weeks earlier.",
+     "suggested_replacement": "I recognized a name on a list this morning"
+    }
+   ]
+  },
+  {
+   "character": "Rowan Bennett",
+   "stop_reason": "end_turn",
+   "cost": 0.0362,
+   "secs": 14.8,
+   "usage": {
+    "in": 4418,
+    "cw": 0,
+    "cr": 36607,
+    "out": 2004
+   },
+   "findings": [
+    {
+     "field": "round2_script",
+     "exact_quote": "I do not believe in cracking someone's skull open on a rooftop.",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Round 2 is about motives. An innocent speaker cannot yet know the death was a skull-cracking blow on the roof, which is round 3 method information.",
+     "suggested_replacement": "I do not believe in hurting someone like that."
+    },
+    {
+     "field": "round2_script",
+     "exact_quote": "transcripts and gambling debts and lab accidents",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Rowan's own questions and rumors never mention Grant's hidden lab accident. She could not know that secret in round 2.",
+     "suggested_replacement": "transcripts and gambling debts"
+    }
+   ]
+  },
+  {
+   "character": "Sage Castellane",
+   "stop_reason": "end_turn",
+   "cost": 0.0311,
+   "secs": 12.0,
+   "usage": {
+    "in": 4227,
+    "cw": 0,
+    "cr": 36607,
+    "out": 1536
+   },
+   "findings": []
+  },
+  {
+   "character": "Shane Prescott",
+   "stop_reason": "end_turn",
+   "cost": 0.0331,
+   "secs": 12.2,
+   "usage": {
+    "in": 4412,
+    "cw": 0,
+    "cr": 36607,
+    "out": 1699
+   },
+   "findings": [
+    {
+     "field": "round3_script",
+     "exact_quote": "What I do know is chemistry and forged paperwork, unfortunately",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Chemistry is Grant Delacroix's field, not Shane's. Shane's only known link is the forged transcript, so claiming chemistry knowledge misattributes another character's trait to him.",
+     "suggested_replacement": "What I do know is forged paperwork, unfortunately"
+    }
+   ]
+  },
+  {
+   "character": "Theo Marsh",
+   "stop_reason": "end_turn",
+   "cost": 0.0332,
+   "secs": 13.2,
+   "usage": {
+    "in": 4413,
+    "cw": 0,
+    "cr": 36607,
+    "out": 1706
+   },
+   "findings": [
+    {
+     "field": "relationships",
+     "exact_quote": "I don't actually know it yet, but something about her always put me faintly on edge around my own belongings, and now I understand exactly why.",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "The sentence contradicts itself: Theo says he doesn't know yet, then says he now understands exactly why. He does not know Wren is the thief, so it also hints at a secret he cannot know.",
+     "suggested_replacement": "I don't actually know why, but something about her always put me faintly on edge around my own belongings."
+    }
+   ]
+  },
+  {
+   "character": "Vivienne Marchetti",
+   "stop_reason": "end_turn",
+   "cost": 0.0409,
+   "secs": 18.5,
+   "usage": {
+    "in": 4551,
+    "cw": 0,
+    "cr": 36607,
+    "out": 2452
+   },
+   "findings": [
+    {
+     "field": "final_statement",
+     "exact_quote": "bigger than Grant's chemistry trouble",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "Grant's lab-accident cover-up is his hidden secret. Vivienne only saw him lingering near the drinks, so she could not know about any chemistry trouble.",
+     "suggested_replacement": "bigger than Grant lingering by the drinks"
+    },
+    {
+     "field": "round4_questions",
+     "exact_quote": "You noticed Naomi's hand before most people did",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Theo noticed Naomi's hand at 10:58 PM, after Danielle (10:51) and Vivienne (10:54). Vivienne's own round 4 script says Theo saw it later still.",
+     "suggested_replacement": "You noticed Naomi's hand too"
+    }
+   ]
+  },
+  {
+   "character": "Wren Castellane",
+   "stop_reason": "end_turn",
+   "cost": 0.0294,
+   "secs": 10.7,
+   "usage": {
+    "in": 4333,
+    "cw": 0,
+    "cr": 36607,
+    "out": 1343
+   },
+   "findings": [
+    {
+     "field": "round4_script",
+     "exact_quote": "I thought that's where I was supposed to meet Wren - sorry, I mean I thought that's where I could find a quiet place",
+     "category": "single_generation_slip",
+     "severity": "high",
+     "explanation": "The speaker is Wren, so she cannot be meeting 'Wren'. The mid-sentence self-correction is a generation slip and also contradicts her claim that she went up for a quiet place.",
+     "suggested_replacement": "I thought that's where I could find a quiet place"
+    }
+   ]
+  },
+  {
+   "character": "PACKAGE DOCUMENTS",
+   "stop_reason": "end_turn",
+   "cost": 0.0478,
+   "secs": 22.7,
+   "usage": {
+    "in": 4308,
+    "cw": 0,
+    "cr": 36607,
+    "out": 3189
+   },
+   "findings": [
+    {
+     "field": "detective_script",
+     "exact_quote": "Miranda Whitlock was turning twenty-two tonight.",
+     "category": "cross_field_contradiction",
+     "severity": "high",
+     "explanation": "The game overview says Miranda's twenty-first birthday party, but the opening statement says she was turning twenty-two. The two shared documents disagree on her age.",
+     "suggested_replacement": "Miranda Whitlock was turning twenty-one tonight."
+    },
+    {
+     "field": "detective_script",
+     "exact_quote": "I am going to find out which one, and I am going to find out who swung that crystal.",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "The opening is read before Round 1, but it names the crystal weapon, which is only revealed as evidence in Round 3.",
+     "suggested_replacement": "I am going to find out which one, and I am going to find out who did this."
+    },
+    {
+     "field": "detective_script",
+     "exact_quote": "I've recovered her personal planner, and it tells a story far bigger than one grudge.",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "master_context describes the Round 2 item as a guest's day planner, not Miranda's own. The script and evidence card both make it Miranda's.",
+     "suggested_replacement": "I've recovered a guest's personal planner, and it tells a story far bigger than one grudge."
+    },
+    {
+     "field": "game_overview",
+     "exact_quote": "a three-year-old secret she's killed to protect once already",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Naomi did not kill anyone in 2008. Callum caused Della's death and Naomi covered it up, so 'killed ... once already' is wrong and confusing.",
+     "suggested_replacement": "a three-year-old secret she's now killed to protect"
+    }
+   ]
+  }
+ ],
+ "total_cost_usd": 0.6413,
+ "tokens": {
+  "i": 66631,
+  "cw": 36607,
+  "cr": 512498,
+  "o": 31403
+ }
+}
