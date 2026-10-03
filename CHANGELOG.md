@@ -2,6 +2,19 @@
 
 ## 2026-10-03
 
+### Fix: regenerate-child-content no longer times out in its own re-detect gate, and can no longer leave unverified writes (ADR-0103 Addendum 81)
+- The gate scanned the whole corpus (`_since = 2000-01-01`) four times per call and hit the database statement timeout: the heal worker's first call on "Hedberg Hollow" failed, 5 of 8 manual calls died in the pre-check, and one died AFTER writing, leaving unverified content and no spend row. Detectors are now scoped to the package's own creation date (minus one day), and a gate that cannot run reverts the writes and logs the spend. Free dry runs after deploy: 0.6 to 2.2 s, 6 of 6; `verify_jwt` still on.
+- Prompt fix at the source: `final_accomplice` regenerated as a full confession in the Final Statement (the schema line said "reveal accomplice role only at the very end if at all"). Every pre-reveal accomplice field now stays in denial, and the reveal confessions may not name any other cast member or use he/she for them (five confessions in one package did).
+
+### Fix: confession-leak detector widened, one false positive removed (ADR-0103 Addendum 81)
+- `list_packages_with_final_statement_confession_leak` now catches "I helped hide/put/move/bury/cover...", "I chose them over the truth" and "covered for", and treats neither/nor/never as negation (Shannon's "neither one of them means I killed him" was a false positive). Migration `20261003210000`; 0 hits across the corpus since 2026-08-06 after the change. Still list-only, not in the completion gate.
+
+### Fix: two new purchases swept ("Hedberg Hollow", "The Great S'more Heist Of Camp Sacajawea") (ADR-0103 Addendum 81)
+- Hedberg: held package completed (Aaron's guilty branch and Tommy's innocent branch and questions regenerated, 0.40 USD approved), then about 35 fields corrected: a heal-written accomplice confession in the Final Statement, five confessions naming a specific helper or culprit, wrong time references ("buried", "funeral", "days ago", "last night", "the night he died"), a party size that said 200 people, Tommy's body location, the overview's "Fourteen others" (twelve), a rival who is a friend in the matrix.
+- S'more: Chef Gus naming Daisy as the borrower of the flour sacks in three fields, Marcy's final statement echoing the culprit's motive, a Round 4 question addressed to a non-cast NPC, the overview's "one small camper", twelve vs eleven witnesses, "all week", "one vanished crate", a garbled lock sentence. Pointform bullets for the edited fields corrected too.
+- Left for Jonathan: the "confession names another cast member" class exists in at least 3 more delivered packages; S'more's Round 2 evidence card is a Round 3/4 clue.
+- Scoreboard rows added; `package_review_findings` verdicts, `package_review_misses` (13) and `package_review_sweeps` (2) recorded.
+
 ### Change: no routine review email; failure-only alerts (ADR-0136 Addendum 8)
 - `REVIEW_DIGEST` defaults to off. New alerts to support@ only when the reviewer itself needs attention: a review that failed or was cut short, a run stuck for over 15 minutes, or the daily cost cap reached (once per UTC day). Optional `REVIEW_ALERT_HIGH=1` for high-severity findings (off). North Star now states the alerting rule: email only for things the system could not resolve itself.
 
