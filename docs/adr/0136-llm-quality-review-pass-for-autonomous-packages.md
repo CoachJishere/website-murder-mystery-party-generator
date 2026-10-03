@@ -169,3 +169,15 @@ Verify each against the source text (about 80 percent were real in the pilot), f
 ### Key files (Addendum 5)
 - `supabase/functions/review-package-quality/index.ts`, `review-core.ts`, `review-core.test.mjs`
 - `supabase/migrations/20261003140000_package_review_tables.sql`, `20261003140100_schedule_review_package_quality_sweep.sql`, `20261003140200_review_sweep_window_12h.sql`
+
+## Addendum 6 (2026-10-03): measuring the reviewer (precision, recall) from real sweeps
+
+**Problem.** Findings had a `human_verdict` column but nothing recorded what the reviewer **missed**, and a recall figure computed without a "this package was actually swept" marker would be inflated (a package nobody swept has no known misses).
+
+**Built.** Migrations `20261003150000` and `20261003150100`: `package_review_misses` (defects a human found that no finding covered, with the same category vocabulary), `package_review_sweeps` (one row per package a human swept, even with zero misses), and the view `review_performance` per (style, category): findings, judged, real, debatable, false, **precision = real / (real + false)** (debatable is reported separately and never counted as real), real findings in swept packages, misses, and **recall = real findings in swept packages / (those + misses)**. `CLAUDE.md` step 7c now holds the protocol.
+
+**The protocol matters for recall.** The reviewer must run first (the cron does, 20 minutes after completion) and the human sweeps second; every hand edit not covered by a finding goes into `package_review_misses`. A package the reviewer saw only after it had been fixed (Boogie) is deliberately not marked swept: its findings measure the residual after a thorough hand sweep (7 findings, 6 real), not recall.
+
+**Seeded.** The 23 production findings on "The Night The Storm Hit" were judged (20 real, 3 debatable, 0 false; the document-level ones checked against `master_context`, for example the planner is a guest's, not Miranda's); Boogie's 7 were judged (6 real, 1 debatable). **Precision so far: 100 percent of the 23 judged-real-or-false across both** (no false alarms recorded), with 4 debatable. Recall is not yet measurable: it needs the first real order where the reviewer runs before a hand sweep. The pilot's pre-fix Boogie numbers (7 of 10 semantic, 18 of 22 with pronouns) remain the only recall data until then.
+
+**Reading it.** `select * from review_performance order by style, category;` Judge in a reasonable sample of findings per category before trusting a percentage (a category with 3 findings says little). Review the debatable ones in aggregate: a rising debatable share means the prompt's by-design list needs a line.

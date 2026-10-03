@@ -2,6 +2,9 @@
 
 ## 2026-10-03
 
+### Feature: reviewer measurement (precision and recall from real sweeps) (ADR-0136 Addendum 6)
+- Tables `package_review_misses` and `package_review_sweeps` plus view `review_performance` (precision = real/(real+false); recall only over packages a human swept after the reviewer ran). `CLAUDE.md` step 7c carries the protocol (verdicts, misses, sweep marker, scoreboard row). Seeded with Storm (23 findings: 20 real, 3 debatable, 0 false) and Boogie's residual (7: 6 real). Recall is not measurable until the first real order where the reviewer runs before a hand sweep.
+
 ### Docs: non-English baseline audit done without the API; audit tool saved (ADR-0135 Addendum 2)
 - Scripted audit of all 12 paid non-English packages since July (123 characters): header wording matches the canonical table for only 45 to 73 percent of headers (English `ROUND` in Italian/French/Portuguese headers), German genuinely mixes formal "Ihnen/Sie" with "ihr/euch", Portuguese mixes "a senhora/o senhor" with "vocês", French and Italian are clean once heuristic false positives are removed; two of the twelve are English packages for non-English profiles. No API spend. Tool: `docs/language-pack/lang_audit.py`. No heal for delivered headers yet (prevention first; revisit after the first real non-English order post-Child53).
 
