@@ -142,3 +142,4 @@ draft_rewrites/
 # Claude Code local/personal state (not shared)
 .claude/
 !supabase/functions/auto-remediate-packages/glitch-strip.test.mjs
+!supabase/functions/review-package-quality/review-core.test.mjs

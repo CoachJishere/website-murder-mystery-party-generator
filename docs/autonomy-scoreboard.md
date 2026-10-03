@@ -17,4 +17,6 @@ How to fill a row (do it at the end of every New-Purchase sweep, before closing)
 | 2026-10-03 | The Last Lesson Of Professor Vaingloryus (review only) | detective, EN, 14 | n/a | n/a (swept 09-26) | n/a | 23 findings, about 19 real | n/a | Mostly innocents hinting at the solution, years/number contradictions |
 | 2026-10-03 | The Night The Storm Hit (review only, unswept) | detective, EN, 14 | n/a | n/a | n/a | 23 findings, about 19 real, 2 high | n/a | Age 21 vs 22 across documents, leaked "sorry, I mean" self-correction. Baseline for the before/after test of Child55 |
 
+**Production reviewer:** live since 2026-10-03 (ADR-0136 Addendum 5); its first run on "The Night The Storm Hit" gave 23 findings (2 high), matching the pilot. Findings per package are now in `package_review_findings`; record `human_verdict` there and the totals in this table.
+
 **Baselines to beat after Child55 (imported 2026-10-03):** unswept detective packages averaged about 20 reviewer findings (medium or high); slip packages about 13 (Boogie 25 before the reviewer prompt was tightened). If the first post-import packages show clearly fewer solution-hinting and years/number contradictions, the Child fixes work.

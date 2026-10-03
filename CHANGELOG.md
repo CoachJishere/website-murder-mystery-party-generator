@@ -2,6 +2,11 @@
 
 ## 2026-10-03
 
+### Feature: production LLM quality reviewer (report-only), scheduled on every new paid package (ADR-0136 Addendum 5)
+- New edge function `review-package-quality` (v1, `verify_jwt` true): one structured Sonnet 5.5 call per character plus one for the shared documents, effort high, cached package context. Every finding is verified (its quote must appear exactly once in the named field) before being stored in `package_review_findings`; a digest is emailed to support@. Report-only: it never edits content. Spend logged in `auto_remediation_log` (`llm_review`) against the shared 10 USD/day cap, plus a 2 USD per-package cap.
+- Cron every 5 minutes, new paid non-test packages only, 20 minutes after completion, last 12 hours (the first 3-day window would have reviewed 8 swept packages, about 4 USD, so it was narrowed). Auto-apply tier built but OFF and untested live.
+- First production run on "The Night The Storm Hit": 23 findings (2 high), 75 s, 0.63 USD, matching the pilot. Detective prompt now has the dual-name rule; `accomplicePairings` removed from the context.
+
 ### Test + backfill: Child55 re-fire verified live on test packages; 3-month heal backfill; worker `backfill_days`
 - **Child55 (v55) tested (Child only, no Parent):** one character re-fired through the Child webhook on `is_test` packages: English slip, Spanish slip, English detective all rewrote 32/32/22 fields with nothing emptied, no Make formula or language-pack text leaked, Spanish headers all canonical, 0 usted/ustedes. Remaining: a full real purchase and the other languages.
 - **Backfill (Jonathan: last 2-3 months only):** `auto-remediate-packages` gets an explicit `backfill_days` option (cap 120; the cron never sends it). Healed 9 packages of missing headers (free) and 15 packages of empty pointforms ($0.95); one Spanish package ("Veneno En La Medianoche", 5 header fields) escalated because its siblings use different header wordings.

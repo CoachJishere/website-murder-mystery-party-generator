@@ -1,6 +1,6 @@
 # ADR-0136: An LLM quality-review pass as the "last mile" of autonomous packages (PROPOSED, not built)
 
-- **Status:** Accepted in direction 2026-10-03. Calibration pilot done (Addenda 2-4, 5.08 USD). Jonathan approved a report-only production reviewer at about 0.70 USD per order and the v3 prompt check; **production reviewer NOT yet built** (edge function, findings table, held-package alert, auto-apply tier switched off by default). Build next, detective prompt first needs the dual-name rule.
+- **Status:** Accepted. Calibration pilot done (Addenda 2-4, 5.08 USD). **Production report-only reviewer built, deployed and scheduled 2026-10-03 (Addendum 5)**; auto-apply tier built but OFF and not yet exercised live; French/German/Italian/Portuguese/Dutch not yet calibrated.
 - **Date:** 2026-10-03
 - **Related:** [ADR-0103](0103-new-purchase-coherence-sweep-ritual.md) Addenda 56 (declined an LLM judge), 79, 80; [ADR-0131](0131-quality-check-machinery-audit-and-consolidation-proposal.md); North Star "Operating Principle: Autonomous Quality".
 
@@ -148,3 +148,24 @@ v2 = v1 plus two rules: never list a finding you conclude is acceptable/minor/by
 
 ### Key files (Addendum 4)
 - `docs/adr/0136-pilot/pilot_det.py`, `docs/adr/0136-pilot/results/res_det_*.json`
+
+## Addendum 5 (2026-10-03): production reviewer built and scheduled, report-only
+
+**What shipped (Jonathan approved the spend: about 0.70 USD per order).**
+- **Edge function `review-package-quality`** (`supabase/functions/review-package-quality/`, `review-core.ts` pure and unit-tested with `node --experimental-strip-types review-core.test.mjs`, `index.ts` the Deno handler; deployed v1, `verify_jwt` true). One structured call per character plus one for the shared documents (game overview, detective script, evidence cards, materials), model `claude-sonnet-5-5` at effort `high`, package context cached, 4 calls in parallel. Prompt version `v4-2026-10-03`: the pilot's v3 slip prompt and the detective prompt, both with the **dual-name rule** added, `accomplicePairings` dropped from the context, relationship-vs-matrix entries and which character a confession names ignored, medium and high severity only.
+- **Every finding is verified before it is stored:** its field must be known, severity medium or high, and the quoted span must appear **exactly once** in that field (else it is discarded and counted). Findings go to `package_review_findings`; one row per run in `package_reviews` (status, items, counts, cost, tokens). Both tables are service-role only (customer text). A `human_verdict` column (`real` / `debatable` / `false`) is for the sweep to fill in, so precision can be tracked over time.
+- **Schedule:** cron `review-package-quality-sweep` every 5 minutes, one package per tick, paid non-test packages **20 minutes after completion** (so the deterministic heals have run) and created within the last **12 hours** (new orders only; a 3-day window would have reviewed 8 already-swept packages, about 4 USD, which was not approved, so it was narrowed the same day). Backfills are run by hand with `{"mode":"one","package_id":...}`.
+- **Report-only.** It never edits content in its default configuration. It emails a digest (finding list with quotes and explanations) to `support@` through Resend, and logs its spend in `auto_remediation_log` (`defect_class` `llm_review`) so it counts against the same 10 USD/day cap as the other heals; it also has a 2 USD per-package cap and a 300 s run budget (a partial run is stored as `partial`).
+- **Auto-apply tier exists but is OFF.** `REVIEW_AUTO_APPLY_CLASSES` (comma list of finding categories, empty by default) enables it per class. It would apply only an exact-quote replacement that appears once, passes `replacementIsSane`, via the existing `remediation_write_field` RPC, then compare the completion gate's defect list before and after (`package_blocking_defects_by_id`) and revert and mark `reverted` if the edit introduced a gate defect. **This path has not been exercised on a live package**; test it on an `is_test` package before enabling any class. Known limitation: a changed prose field leaves its `*_pointform` summary stale.
+
+**First production run (reproduces the pilot).** "The Night The Storm Hit" (detective, 14 characters): 23 findings (2 high), 0 discarded, 15 items in 75 s, 0.63 USD, status `done`; the pilot measured 23 findings and 0.64 USD on the same package. Prefix cache worked (515K of 619K input tokens were cache reads).
+
+**How to use it in a sweep.** The digest email lists the findings; the same rows are in the table:
+`select item_name, field, category, severity, exact_quote, explanation, suggested_replacement, id from package_review_findings where package_id = '...' order by severity, item_name;`
+Verify each against the source text (about 80 percent were real in the pilot), fix the real ones by exact-match edit, and record `update package_review_findings set human_verdict = 'real'|'debatable'|'false' where id = ...`. Then add the scoreboard row.
+
+**Not done yet.** (1) The auto-apply tier is untested live and off. (2) Calibration for French, German, Italian, Portuguese, Dutch (a French package, "Paradis Perdu", is in the corpus; running it is about 0.6 USD). (3) The reviewer runs after release, so a customer can receive a package before its review finishes (about 25 minutes after the ready email); because guests read their sheets live from the database, corrections propagate, but a host who already printed the sheets will not see them. A pre-release gate was considered and rejected for now because the recall and the false-alarm rate were not yet known well enough to hold paid orders on its output. (4) `high` findings are not yet turned into an alert distinct from the digest.
+
+### Key files (Addendum 5)
+- `supabase/functions/review-package-quality/index.ts`, `review-core.ts`, `review-core.test.mjs`
+- `supabase/migrations/20261003140000_package_review_tables.sql`, `20261003140100_schedule_review_package_quality_sweep.sql`, `20261003140200_review_sweep_window_12h.sql`
