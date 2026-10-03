@@ -2,6 +2,10 @@
 
 ## 2026-10-03
 
+### Test + backfill: Child55 re-fire verified live on test packages; 3-month heal backfill; worker `backfill_days`
+- **Child55 (v55) tested (Child only, no Parent):** one character re-fired through the Child webhook on `is_test` packages: English slip, Spanish slip, English detective all rewrote 32/32/22 fields with nothing emptied, no Make formula or language-pack text leaked, Spanish headers all canonical, 0 usted/ustedes. Remaining: a full real purchase and the other languages.
+- **Backfill (Jonathan: last 2-3 months only):** `auto-remediate-packages` gets an explicit `backfill_days` option (cap 120; the cron never sends it). Healed 9 packages of missing headers (free) and 15 packages of empty pointforms ($0.95); one Spanish package ("Veneno En La Medianoche", 5 header fields) escalated because its siblings use different header wordings.
+
 ### Docs: autonomy scoreboard, sweep steps 7b/7c (reviewer + scoreboard), Child53/54/55 import recorded
 - `docs/autonomy-scoreboard.md`: one row per sweep (hand edits, prevented/healed, reviewer found, **missed by everything**), seeded with Boogie and the five reviewer-only packages and the baselines to beat after Child55.
 - `CLAUDE.md`: post-import watch now covers Child53/54/55 (imported 2026-10-03, no package generated yet) plus the still-pending Parent73/Child51; new steps 7b (run the report-only reviewer, verify findings) and 7c (append the scoreboard row).

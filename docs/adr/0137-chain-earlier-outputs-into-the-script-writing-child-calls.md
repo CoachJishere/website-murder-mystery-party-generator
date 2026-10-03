@@ -1,6 +1,6 @@
 # ADR-0137: Chain earlier outputs into the script-writing Child calls (Child55), and what the hand-fix data says about how much that buys
 
-- **Status:** Accepted as a low-cost experiment; Child55 **imported into Make.com 2026-10-03 (Jonathan reported "v55 imported") but not yet exercised by a real package**; before/after comparison against `docs/autonomy-scoreboard.md` baselines. The measured payoff is small (below), so it is not the priority.
+- **Status:** Accepted as a low-cost experiment; Child55 **imported into Make.com 2026-10-03 (Jonathan reported "v55 imported") but not yet exercised by a real package**; before/after comparison against `docs/autonomy-scoreboard.md` baselines. The measured payoff is small (below), so it is not the priority. **Re-fire tested live 2026-10-03 (Child only, on `is_test` packages, via the Child webhook): English slip, Spanish slip and English detective all passed** (32/32/22 fields rewritten, none emptied, no formula or language-pack text leaked; Spanish: all 16 headers match `docs/language-pack/header-labels.json`, 0 usted/ustedes, no stray English; the English victim stayed he/his as `master_context` states). Not yet seen: a full Parent-to-Child purchase, and French/German/Italian/Portuguese/Dutch.
 - **Date:** 2026-10-03
 - **Related:** [ADR-0135](0135-child-language-pack-fixed-register-and-canonical-headers.md) (Child53/54), [ADR-0136](0136-llm-quality-review-pass-for-autonomous-packages.md) (the LLM review pass), [ADR-0103](0103-new-purchase-coherence-sweep-ritual.md) Addenda 78-80
 

@@ -1,6 +1,6 @@
 # ADR-0135: Child language pack: fixed speech register and canonical section headers per language
 
-- **Status:** Accepted (direction); Child53 and Child54 are part of Child55, **imported into Make.com 2026-10-03 (Jonathan reported "v55 imported") but not yet exercised by a real package**; the English test and the first non-English purchase are the verification
+- **Status:** Accepted (direction); Child53 and Child54 are part of Child55, **imported into Make.com 2026-10-03 (Jonathan reported "v55 imported") but not yet exercised by a real package**; the English test and the first non-English purchase are the verification **Re-fire tested live 2026-10-03 (Child only, on `is_test` packages, via the Child webhook): English slip, Spanish slip and English detective all passed** (32/32/22 fields rewritten, none emptied, no formula or language-pack text leaked; Spanish: all 16 headers match `docs/language-pack/header-labels.json`, 0 usted/ustedes, no stray English; the English victim stayed he/his as `master_context` states). Not yet seen: a full Parent-to-Child purchase, and French/German/Italian/Portuguese/Dutch.
 - **Date:** 2026-10-03
 - **Related:** [ADR-0103](0103-new-purchase-coherence-sweep-ritual.md) Addenda 13, 56, 76, 78 (the drift cases), [ADR-0093](0093-explicit-language-parameter-for-child-generation.md) and [ADR-0112](0112-child-generation-language-should-follow-the-conversation-not-the-account.md) (how the language reaches the Child), [ADR-0134](0134-relationship-lists-follow-the-matrix.md) (Child52, which Child53 builds on)
 
