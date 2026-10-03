@@ -113,3 +113,15 @@ v2 = v1 plus two rules: never list a finding you conclude is acceptable/minor/by
 
 ### Key files (Addendum 2)
 - `docs/adr/0136-pilot/` (pilot.py, ground_truth.py, score.py, adjud_v1.py, README.md, results/)
+
+## Addendum 3 (2026-10-03): prompt v3 check, an ensemble result, and what the pilot did not cover (Jonathan approved the spend; pilot total 3.46 USD)
+
+**v3 on the two unseen packages (0.85 USD).** v3 = v2 plus: `accomplicePairings` removed from the context, an instruction to ignore which character a confession names and ally/rival entries versus the relationship matrix (ADR-0134 owns those), medium/high only, and "read description, background and relationships with equal care". Feast 6 -> 5 findings, Laia 15 -> 13, all medium/high. **The by-design false alarms went from 2 to 0** (Dani's and Jordi's accomplice naming, the two matrix entries). The real defects were kept: the same Percival, Laia and Sergi defects were re-found (some on a different quoted span), and v3 added a few more (Edmund's "said what prayers I still trust meaning in"; Ramón's "weeks" vs "a few days" and "welcome party" vs Laia's birthday, the last two debatable). Cost per package unchanged (0.27 and 0.58). Recall on Boogie was **not** re-measured with v3 (that would have been a further 0.7 USD).
+
+**Free ensemble check on the existing Boogie runs.** v1/medium 17 of 22, v2/medium 16, v2/high 18; the **union of any two passes is 19 of 22 (86%)**. The 3 items that **every** run missed are all in the short structured fields (Honey's `description`, Pete's `relationships`, Dot's `background`); v3's equal-care instruction targets exactly that and is untested on Boogie. So recall is movable by design (a second pass, a field-attention instruction), not capped by the model.
+
+**What the pilot did not cover (must be addressed before trusting it everywhere).**
+1. **Detective-style packages.** All 54+ pilot calls were slip style. By corpus count about two thirds of packages since 2026-08-01 are detective style (71 vs 33), with a different structure (unified round scripts, a single killer, a detective script and host guide). The reviewer prompt has slip-specific rules and has not been calibrated on detective style.
+2. **Package-level documents** (detective script, game overview, evidence cards) were not reviewed, only characters.
+3. **Languages other than English and Spanish**, and a recall number from more than one labelled package.
+4. **Whether the report-only list is short enough to be a two-minute read** on a typical order (in the pilot: 5 to 13 findings per package at medium/high).

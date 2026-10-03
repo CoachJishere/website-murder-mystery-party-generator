@@ -1,0 +1,254 @@
+{
+ "label": "laia_v3",
+ "model": "claude-sonnet-5-5",
+ "results": [
+  {
+   "character": "Aida",
+   "stop_reason": "end_turn",
+   "cost": 0.1198,
+   "secs": 13.7,
+   "usage": {
+    "in": 11373,
+    "cw": 31449,
+    "cr": 0,
+    "out": 1845
+   },
+   "findings": [
+    {
+     "field": "relationships",
+     "exact_quote": "Nuestra tensión viene de lejos, de esas discusiones de sobremesa que nunca se resuelven del todo.",
+     "category": "other",
+     "severity": "medium",
+     "explanation": "Jordi appears twice under rivals with two separate entries. The second duplicates the first and reads like a stray extra entry, so the host would see Jordi listed twice.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Aleix",
+   "stop_reason": "end_turn",
+   "cost": 0.0468,
+   "secs": 12.8,
+   "usage": {
+    "in": 11297,
+    "cw": 0,
+    "cr": 31449,
+    "out": 1788
+   },
+   "findings": [
+    {
+     "field": "round2_innocent",
+     "exact_quote": "Si querían que yo hablara esta noche, ya no hace falta.",
+     "category": "language_slip",
+     "severity": "medium",
+     "explanation": "Aleix addresses the table with informal 'vosotros' elsewhere. 'querían' shifts to third person plural, which breaks the address.",
+     "suggested_replacement": "Si queríais que yo hablara esta noche, ya no hace falta."
+    }
+   ]
+  },
+  {
+   "character": "Claudia",
+   "stop_reason": "end_turn",
+   "cost": 0.0524,
+   "secs": 15.4,
+   "usage": {
+    "in": 11465,
+    "cw": 0,
+    "cr": 31449,
+    "out": 2323
+   },
+   "findings": []
+  },
+  {
+   "character": "Dani Zhou",
+   "stop_reason": "end_turn",
+   "cost": 0.0516,
+   "secs": 15.1,
+   "usage": {
+    "in": 12009,
+    "cw": 0,
+    "cr": 31449,
+    "out": 2128
+   },
+   "findings": [
+    {
+     "field": "accusations",
+     "exact_quote": "Recuerda a todos que yo soy el último en enterarme de todo, nunca el primero en actuar",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Description and introduction say Dani loves finding out everything before anyone else; this tip claims he is always the last to find out.",
+     "suggested_replacement": "Recuerda a todos que enterarme de todo es lo mío, pero eso no me convierte en alguien que actúa; no soy planificador para un crimen así."
+    },
+    {
+     "field": "accusations",
+     "exact_quote": "después de haber sido siempre el último en saber las cosas",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Contradicts the character's established trait of being the first to know everything.",
+     "suggested_replacement": "después de haber sido siempre el primero en enterarme de las cosas"
+    }
+   ]
+  },
+  {
+   "character": "Eduard 'Edu'",
+   "stop_reason": "end_turn",
+   "cost": 0.0516,
+   "secs": 15.2,
+   "usage": {
+    "in": 11146,
+    "cw": 0,
+    "cr": 31449,
+    "out": 2306
+   },
+   "findings": []
+  },
+  {
+   "character": "Ignasi",
+   "stop_reason": "end_turn",
+   "cost": 0.0488,
+   "secs": 14.4,
+   "usage": {
+    "in": 10887,
+    "cw": 0,
+    "cr": 31449,
+    "out": 2072
+   },
+   "findings": []
+  },
+  {
+   "character": "Jordi",
+   "stop_reason": "end_turn",
+   "cost": 0.046,
+   "secs": 13.0,
+   "usage": {
+    "in": 10425,
+    "cw": 0,
+    "cr": 31449,
+    "out": 1885
+   },
+   "findings": [
+    {
+     "field": "round2_innocent",
+     "exact_quote": "un médico con ingresos paralelos que la mujer que lo descubrió aparece muerta en su propia fiesta",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled sentence: the conjunction is missing between 'ingresos paralelos' and 'la mujer que lo descubrió aparece muerta', so the grammar breaks.",
+     "suggested_replacement": "un médico con ingresos paralelos y la mujer que lo descubrió aparece muerta en su propia fiesta"
+    },
+    {
+     "field": "reveal_confession_accomplice",
+     "exact_quote": "nunca me puso contra la pared como hizo con otros",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Background and other scripts say Laia confronted Jordi over the clinic papers and told him it could not stay like that, so she did put him against the wall.",
+     "suggested_replacement": "me puso contra la pared con lo de los papeles, igual que hizo con otros"
+    }
+   ]
+  },
+  {
+   "character": "Laura",
+   "stop_reason": "end_turn",
+   "cost": 0.0535,
+   "secs": 17.0,
+   "usage": {
+    "in": 11600,
+    "cw": 0,
+    "cr": 31449,
+    "out": 2399
+   },
+   "findings": [
+    {
+     "field": "round3_innocent",
+     "exact_quote": "ninguna de ellas era yo sola la que tenía las manos libres en ese rato",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled sentence: 'ninguna de ellas era yo sola' is incoherent and does not express the intended point about others also having free hands.",
+     "suggested_replacement": "yo no era la única que tenía las manos libres en ese rato"
+    },
+    {
+     "field": "round2_guilty",
+     "exact_quote": "Que ella decidiera morirse esta noche no tiene nada que ver con lo que yo sentía por dentro.",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Implies Laia chose to die, as if suicide, which contradicts the murder premise. Wrong wording for the poisoning.",
+     "suggested_replacement": "Que ella muriera esta noche no tiene nada que ver con lo que yo sentía por dentro."
+    }
+   ]
+  },
+  {
+   "character": "Ramón",
+   "stop_reason": "end_turn",
+   "cost": 0.0588,
+   "secs": 21.1,
+   "usage": {
+    "in": 11553,
+    "cw": 0,
+    "cr": 31449,
+    "out": 2943
+   },
+   "findings": [
+    {
+     "field": "round2_innocent",
+     "exact_quote": "Llevaba semanas reconstruyendo algo parecido a una vida tranquila",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Ramón has only just returned; the same statement says he had barely been back a few days. 'Weeks' contradicts 'unos días'.",
+     "suggested_replacement": "Llevaba días reconstruyendo algo parecido a una vida tranquila"
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "la que estaba organizando mi fiesta de bienvenida",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "The party is Laia's birthday celebration, not a welcome party for Ramón.",
+     "suggested_replacement": "la que estaba organizando su fiesta de cumpleaños"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "no a quien lleva semanas fuera del país intentando pasar desapercibido",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Ramón was abroad for years and has just returned. 'Weeks outside the country' misstates his situation.",
+     "suggested_replacement": "no a quien acaba de volver del extranjero intentando pasar desapercibido"
+    }
+   ]
+  },
+  {
+   "character": "Sergi",
+   "stop_reason": "end_turn",
+   "cost": 0.0458,
+   "secs": 11.9,
+   "usage": {
+    "in": 11519,
+    "cw": 0,
+    "cr": 31449,
+    "out": 1650
+   },
+   "findings": [
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "prefiero no aireroar aquí delante",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled non-word 'aireroar'; the intended verb is 'airear'.",
+     "suggested_replacement": "prefiero no airear aquí delante"
+    },
+    {
+     "field": "round2_guilty",
+     "exact_quote": "en mi propia fiesta de pádel de los viernes",
+     "category": "wrong_fact",
+     "severity": "high",
+     "explanation": "The party is Laia's birthday at her own house, not Sergi's own padel party. The next phrase even says 'en la casa de mi amiga'.",
+     "suggested_replacement": "en la fiesta de cumpleaños de Laia"
+    }
+   ]
+  }
+ ],
+ "total_cost_usd": 0.5752,
+ "tokens": {
+  "i": 113274,
+  "cw": 31449,
+  "cr": 283041,
+  "o": 21339
+ }
+}

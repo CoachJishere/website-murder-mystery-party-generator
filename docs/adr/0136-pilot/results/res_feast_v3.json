@@ -1,0 +1,133 @@
+{
+ "label": "feast_v3",
+ "model": "claude-sonnet-5-5",
+ "results": [
+  {
+   "character": "Brother/Sister Edmund Vale",
+   "stop_reason": "end_turn",
+   "cost": 0.0872,
+   "secs": 10.5,
+   "usage": {
+    "in": 7067,
+    "cw": 23341,
+    "cr": 0,
+    "out": 1476
+   },
+   "findings": [
+    {
+     "field": "round4_guilty",
+     "exact_quote": "said what prayers I still trust meaning in",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled phrasing: 'trust meaning in' is ungrammatical. The intended sense is prayers he still finds meaning in.",
+     "suggested_replacement": "said what prayers I still find meaning in"
+    }
+   ]
+  },
+  {
+   "character": "Captain/Captainess Row Duskwood",
+   "stop_reason": "end_turn",
+   "cost": 0.0305,
+   "secs": 8.8,
+   "usage": {
+    "in": 6583,
+    "cw": 0,
+    "cr": 23341,
+    "out": 1270
+   },
+   "findings": []
+  },
+  {
+   "character": "Lady/Lord Seren Thorne",
+   "stop_reason": "end_turn",
+   "cost": 0.0351,
+   "secs": 11.7,
+   "usage": {
+    "in": 6840,
+    "cw": 0,
+    "cr": 23341,
+    "out": 1677
+   },
+   "findings": []
+  },
+  {
+   "character": "Lady/Lord Vesper Nightshade",
+   "stop_reason": "end_turn",
+   "cost": 0.0425,
+   "secs": 16.6,
+   "usage": {
+    "in": 7386,
+    "cw": 0,
+    "cr": 23341,
+    "out": 2304
+   },
+   "findings": []
+  },
+  {
+   "character": "Ser/Dame Percival Ashgrove",
+   "stop_reason": "end_turn",
+   "cost": 0.0421,
+   "secs": 16.1,
+   "usage": {
+    "in": 6822,
+    "cw": 0,
+    "cr": 23341,
+    "out": 2382
+   },
+   "findings": [
+    {
+     "field": "introduction",
+     "exact_quote": "I'm not certain that love survived three hundred years of watching him dispense mercy and cruelty with the same steady hand.",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Percival was turned decades ago after some years of service, so he cannot have watched Aldric for three hundred years. That figure is Aldric's length of rule.",
+     "suggested_replacement": "I'm not certain that love survived decades of watching him dispense mercy and cruelty with the same steady hand."
+    },
+    {
+     "field": "round3_innocent",
+     "exact_quote": "I've had decades of idle centuries to fill",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled and self-contradictory phrase mixing decades and centuries; Percival has lived decades as a vampire.",
+     "suggested_replacement": "I've had decades of idle time to fill"
+    },
+    {
+     "field": "round4_guilty",
+     "exact_quote": "you'd need to clear this entire table of suspicion for nobody",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Nonsensical, garbled sentence; the intended meaning is that suspecting him means suspecting everyone.",
+     "suggested_replacement": "you'd need to suspect this entire table"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "I have had centuries of nights when the hatred burned hot enough",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Percival was turned and bound to Aldric decades ago, not centuries, as every other field states.",
+     "suggested_replacement": "I have had decades of nights when the hatred burned hot enough"
+    }
+   ]
+  },
+  {
+   "character": "Steward Iona/Ionas Blackwell",
+   "stop_reason": "end_turn",
+   "cost": 0.0347,
+   "secs": 11.1,
+   "usage": {
+    "in": 7053,
+    "cw": 0,
+    "cr": 23341,
+    "out": 1588
+   },
+   "findings": []
+  }
+ ],
+ "total_cost_usd": 0.2722,
+ "tokens": {
+  "i": 41751,
+  "cw": 23341,
+  "cr": 116705,
+  "o": 10697
+ }
+}

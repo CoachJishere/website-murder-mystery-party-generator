@@ -57,6 +57,13 @@ RULES:
 6. Write explanations in English, at most 30 words.
 """
 
+
+V3_EXTRA = """
+IGNORE THESE (handled by other tools or by design, never report them): (a) which character a confession names as the murderer or accomplice; (b) any ally or rival listed in a relationships field compared with the relationship matrix; (c) section headers, quote marks, tags and other stray characters.
+READ EVERY FIELD WITH EQUAL CARE: the description, background and relationships fields are short, but a slip there is as visible to a guest as a slip in a script. Check each of them sentence by sentence for garbled wording, wrong facts and stray paragraphs.
+Report only medium or high severity findings.
+"""
+
 def parse_first_json(s):
     dec = json.JSONDecoder(); i = 0
     while i < len(s) and s[i].isspace(): i += 1
@@ -64,6 +71,14 @@ def parse_first_json(s):
 
 def build_prefix(pkg, chars):
     mc = pkg["master_context"]; mc = mc if isinstance(mc, str) else json.dumps(mc, ensure_ascii=False)
+    if os.environ.get("PILOT_V") == "3":
+        dec = json.JSONDecoder(); i = 0; objs = []
+        while i < len(mc):
+            while i < len(mc) and mc[i].isspace(): i += 1
+            if i >= len(mc): break
+            o, i = dec.raw_decode(mc, i); objs.append(o)
+        for o in objs: o.pop("accomplicePairings", None)
+        mc = "\n".join(json.dumps(o, ensure_ascii=False, indent=1) for o in objs)
     try: victim = parse_first_json(mc)["victimProfile"]["name"]
     except Exception: victim = "(see master_context)"
     roster = []
@@ -71,7 +86,7 @@ def build_prefix(pkg, chars):
         roster.append(f"### {c['character_name']}\nrole: {c.get('character_role')}\ndescription: {(c.get('description') or '').strip()}\nsecret: {(c.get('secret') or '').strip()}")
     ctx = (f"PACKAGE: {pkg.get('title')}\nVICTIM: {victim}\nGAME STYLE: slip style (murderer and accomplice drawn at the table)\n\n"
            f"=== master_context (canonical facts for this package) ===\n{mc}\n\n=== ROSTER DOSSIER (every character: description and secret) ===\n" + "\n\n".join(roster))
-    return [{"type":"text","text":INSTRUCTIONS},
+    return [{"type":"text","text":INSTRUCTIONS + (V3_EXTRA if os.environ.get("PILOT_V") == "3" else "")},
             {"type":"text","text":ctx,"cache_control":{"type":"ephemeral"}}]
 
 def character_block(c):
