@@ -2,6 +2,13 @@
 
 ## 2026-10-03
 
+### Fix: "Boogie Nights, Bloody Nights" sweep: 4 detector hits + 5 undetected leaks, 32 missing branch headers, 2 empty pointforms; detector extended (ADR-0103 Addendum 79)
+Package `a4e3078c` (English, slip style, 14 characters) was held at `needs_review`; fixed and released through the normal path at 07:30 UTC (ready email sent then, with corrected content).
+- **Fixed (57 fields, 11 characters, exact-match edits, two phases so it could not release half-fixed):** stray `</br>`, three dangling quotes, a leaked "Let me correct that formatting issue.", a trailing backtick; 32 branch fields with no baked-in header (the host's compiled guide concatenates raw fields, so they ran on unlabeled); 2 hand-written accomplice-confession pointforms; Dusty's gender normalised to "they" (Lena was she/her throughout); a few cross-field slips (Honey's "went to Sandro first", years of service, Chuck hinting at Pete's badge) and typos.
+- **Detector:** migration `20261003120000` adds the formatting self-correction phrase and any backtick to `package_meta_text_leak()`; zero corpus hits (250 packages), synthetic tests pass. Deliberately not added to the worker's paid-regenerate path.
+- **Left alone:** slip-style accomplice confessions that name a specific killer (ADR-0125 behaviour), relationship Neutral-as-ally (ADR-0134).
+- Full detail: ADR-0103 Addendum 79.
+
 ### Feature: ally/rival lists must follow the relationship matrix; Child52 built, information-only detector and health-check row (ADR-0134)
 - **Cause:** the Child prompt demanded 2-3 `Friendly` allies and 2-3 `Hostile` rivals, but 43% of matrix rows have fewer than 2 Friendly cells and 70% fewer than 2 Hostile, so the model padded. 44 of 103 packages since 2026-08-01 (43%) list a Hostile person as an ally or a Friendly one as a rival.
 - **Fix going forward:** `Child52` (nodes 401 and 501 only): look up the character's own row, list only exact Friendly/Hostile names, "up to 3", never pad, one plain sentence when the row has none. **Not yet imported into Make.com.** No backfill of past packages (Jonathan's call).
