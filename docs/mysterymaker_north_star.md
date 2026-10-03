@@ -81,6 +81,8 @@ How a defect should be handled, in order of preference:
 3. **Heal it automatically** with a free, deterministic fix (strip, prepend, copy from a sibling), re-detect, and revert if still flagged.
 4. **Escalate** only what genuinely needs judgment, with enough context that it is a two-minute decision.
 
+**Alerting rule (Jonathan, 2026-10-03):** email Jonathan only when something goes awry and needs his explicit attention because the system could not resolve it itself (a package held after the auto-heal gave up, a reviewer or heal that failed or hit a cost cap). Routine results, counts and per-order summaries are never emails; they live in the database and are read during sweeps.
+
 Rules of the road: nothing that spends money runs without explicit approval (a paid self-heal needs a stated per-package cost); a detector and the fix that pairs with it are widened in the same change (a detector without its fix stalls the worker, a fix without its detector is invisible); each sweep reports how many of its findings the machinery caught, healed, or missed, because the "missed" column is the roadmap to zero.
 
 ## Business Model

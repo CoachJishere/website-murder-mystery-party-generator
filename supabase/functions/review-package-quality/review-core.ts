@@ -224,7 +224,7 @@ export function costUsd(u: Usage, price = PRICE): number {
 
 export type DigestFinding = { item_name: string; field: string; category: string; severity: string; exact_quote: string; explanation: string };
 
-const escHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+export const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /**
  * The email Jonathan receives for each reviewed order. Default "summary": counts and the HIGH findings only, with an explicit "no action
@@ -237,18 +237,18 @@ export function digestEmail(
   const high = findings.filter((f) => f.severity === "high");
   const byCat = new Map<string, number>();
   for (const f of findings) byCat.set(f.category, (byCat.get(f.category) ?? 0) + 1);
-  const cats = [...byCat.entries()].sort((a, b) => b[1] - a[1]).map(([c, n]) => `${escHtml(c.replace(/_/g, " "))} ${n}`).join(", ");
+  const cats = [...byCat.entries()].sort((a, b) => b[1] - a[1]).map(([c, n]) => `${escapeHtml(c.replace(/_/g, " "))} ${n}`).join(", ");
   const row = (f: DigestFinding) =>
-    `<tr><td style="padding:4px 8px;vertical-align:top"><b>${f.severity === "high" ? "HIGH" : "med"}</b></td><td style="padding:4px 8px;vertical-align:top">${escHtml(f.item_name)} / ${escHtml(f.field)}</td><td style="padding:4px 8px;vertical-align:top"><i>${escHtml(f.exact_quote.slice(0, 160))}</i><br>${escHtml(f.explanation)}</td></tr>`;
+    `<tr><td style="padding:4px 8px;vertical-align:top"><b>${f.severity === "high" ? "HIGH" : "med"}</b></td><td style="padding:4px 8px;vertical-align:top">${escapeHtml(f.item_name)} / ${escapeHtml(f.field)}</td><td style="padding:4px 8px;vertical-align:top"><i>${escapeHtml(f.exact_quote.slice(0, 160))}</i><br>${escapeHtml(f.explanation)}</td></tr>`;
   const shown = mode === "full" ? findings.slice(0, 40) : high.slice(0, 5);
   const table = shown.length ? `<table style="border-collapse:collapse;font-size:13px">${shown.map(row).join("")}</table>` : "";
   const more = mode === "full"
     ? (findings.length > 40 ? `<p>${findings.length - 40} more in the database.</p>` : "")
     : `<p style="color:#6b7280">${findings.length - shown.length} more are in the database (package_review_findings).</p>`;
-  const html = `<div style="font-family:sans-serif;max-width:800px"><h3>Reviewed: ${escHtml(title)}</h3>` +
-    `<p><b>No action needed.</b> This is an automatic quality check of a finished order (${escHtml(style)} style). It changed nothing. Claude reads the full list during the next sweep, checks each item against the text, and fixes the real ones. ` +
+  const html = `<div style="font-family:sans-serif;max-width:800px"><h3>Reviewed: ${escapeHtml(title)}</h3>` +
+    `<p><b>No action needed.</b> This is an automatic quality check of a finished order (${escapeHtml(style)} style). It changed nothing. Claude reads the full list during the next sweep, checks each item against the text, and fixes the real ones. ` +
     `A handful of small slips per package is normal; the number matters because we are tracking it going down.</p>` +
-    `<p>${findings.length} findings (${high.length} high): ${cats}. About $${cost.toFixed(2)}. Package ${packageId}, model ${escHtml(model)}.</p>` +
+    `<p>${findings.length} findings (${high.length} high): ${cats}. About $${cost.toFixed(2)}. Package ${packageId}, model ${escapeHtml(model)}.</p>` +
     (high.length && mode !== "full" ? `<p><b>High severity:</b></p>` : "") + table + more + `</div>`;
   const subject = `Reviewed: ${title} - ${findings.length} findings${high.length ? ` (${high.length} high)` : ""}, no action needed`;
   return { subject, html };

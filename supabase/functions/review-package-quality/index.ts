@@ -22,8 +22,10 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
 const MODEL = Deno.env.get("REVIEW_MODEL") || C.DEFAULT_MODEL;
 const EFFORT = Deno.env.get("REVIEW_EFFORT") || "high";
-// "summary" (default): counts + high-severity items only; "full": up to 40 findings; "off": no email. Full list is always in package_review_findings.
-const DIGEST_MODE = (Deno.env.get("REVIEW_DIGEST") || "summary").toLowerCase();
+// Default "off" (Jonathan, 2026-10-03: no routine review email). "summary": counts + high items; "full": up to 40 findings. The full list is always in package_review_findings.
+const DIGEST_MODE = (Deno.env.get("REVIEW_DIGEST") || "off").toLowerCase();
+// Optional: email a summary only when a review has a HIGH finding (off by default; Jonathan wants email only for things that need his attention).
+const ALERT_HIGH = Deno.env.get("REVIEW_ALERT_HIGH") === "1";
 const AUTO_APPLY_CLASSES = (Deno.env.get("REVIEW_AUTO_APPLY_CLASSES") || "").split(",").map((s) => s.trim()).filter(Boolean);
 const PER_PACKAGE_CAP_USD = 2.0;
 const DAILY_CAP_USD = 10.0; // same figure as auto-remediate-packages
@@ -101,6 +103,19 @@ async function logSpend(packageId: string, action: string, outcome: "fixed" | "e
     package_id: packageId, defect_class: "llm_review", action, before_value: null, outcome, cost_usd: Number(cost.toFixed(4)),
   });
   if (error) console.error(`auto_remediation_log insert failed: ${error.message}`);
+}
+
+/** Email only when the reviewer itself needs attention (a failed, stuck or cost-capped run). */
+async function sendAlert(subject: string, body: string) {
+  const key = Deno.env.get("RESEND_API_KEY");
+  if (!key) return;
+  const resp = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from: "Mystery Maker Alerts <noreply@mysterymaker.party>", to: ["support@mysterymaker.party"], subject,
+      html: `<div style="font-family:sans-serif;max-width:700px"><h3>${C.escapeHtml(subject)}</h3><p>${C.escapeHtml(body)}</p><p style="color:#6b7280">The package itself is unaffected: the reviewer is report-only and runs after delivery.</p></div>` }),
+  });
+  if (!resp.ok) console.error(`alert email failed: ${resp.status} ${(await resp.text()).slice(0, 200)}`);
 }
 
 async function sendDigest(pkgTitle: string, packageId: string, style: string, kept: C.DigestFinding[], cost: number) {
@@ -240,6 +255,14 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
   let apply = { applied: 0, reverted: 0 };
   if (AUTO_APPLY_CLASSES.length > 0 && inserted.length > 0) apply = await autoApply(packageId, pkg as Row, chars, inserted);
   await sendDigest(String((pkg as Row).title ?? ""), packageId, style, inserted, spent);
+  if (DIGEST_MODE === "off" && ALERT_HIGH && inserted.some((f) => f.severity === "high")) {
+    const mail = C.digestEmail(String((pkg as Row).title ?? ""), packageId, style, MODEL, spent, inserted, "summary");
+    const key = Deno.env.get("RESEND_API_KEY");
+    if (mail && key) await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" }, body: JSON.stringify({ from: "Mystery Maker Alerts <noreply@mysterymaker.party>", to: ["support@mysterymaker.party"], subject: mail.subject, html: mail.html }) });
+  }
+  if (status === "failed" || partialWhy || errors.length > 0) {
+    await sendAlert(`Reviewer needs attention: ${String((pkg as Row).title ?? packageId)} (${status})`, `Review status ${status}; reviewed ${results.length} of ${items.length} items; ${[partialWhy, ...errors.slice(0, 3)].filter(Boolean).join(" | ") || "no detail"}. Package ${packageId}.`);
+  }
 
   return { package_id: packageId, title: (pkg as Row).title, style, status, items: items.length, reviewed: results.length, findings: inserted.length,
     high: inserted.filter((f) => f.severity === "high").length, discarded, cost_usd: Number(spent.toFixed(4)), partial_reason: partialWhy || undefined, errors: errors.slice(0, 5), auto_apply: apply };
@@ -254,7 +277,22 @@ serve(async (req) => {
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
       out.push(await reviewPackage(String(body.package_id), { force: body.force === true, dryRun: body.dry_run === true }));
     } else {
-      if ((await spentToday()) >= DAILY_CAP_USD) return new Response(JSON.stringify({ skipped: "daily cost cap" }), { headers: { "Content-Type": "application/json" } });
+      // A run that died mid-way (timeout, crash) stays "running" forever: mark it failed and tell Jonathan.
+      const staleCut = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+      const { data: stale } = await supabase.from("package_reviews").update({ status: "failed", finished_at: new Date().toISOString(), error: "stuck in running for over 15 minutes" })
+        .eq("status", "running").lt("started_at", staleCut).select("package_id");
+      for (const r of (stale ?? []) as { package_id: string }[]) await sendAlert("Reviewer needs attention: a review got stuck", `Package ${r.package_id} was still "running" after 15 minutes and was marked failed. Re-run it with {"mode":"one","package_id":"${r.package_id}","force":true}.`);
+      if ((await spentToday()) >= DAILY_CAP_USD) {
+        // Once per UTC day, not on every 5-minute tick: a marker row in auto_remediation_log (any package id works; it needs a real one).
+        const dayStart = new Date(); dayStart.setUTCHours(0, 0, 0, 0);
+        const { data: sent } = await supabase.from("auto_remediation_log").select("id").eq("defect_class", "llm_review").eq("action", "alert:daily_cap").gte("created_at", dayStart.toISOString()).limit(1);
+        if (!sent || sent.length === 0) {
+          await sendAlert("Reviewer needs attention: daily cost cap reached", `Today's automatic spend reached the $${DAILY_CAP_USD} cap, so reviews are paused until tomorrow (UTC).`);
+          const { data: anyPkg } = await supabase.from("mystery_packages").select("id").limit(1);
+          if (anyPkg?.[0]?.id) await logSpend(String(anyPkg[0].id), "alert:daily_cap", "escalated", 0);
+        }
+        return new Response(JSON.stringify({ skipped: "daily cost cap" }), { headers: { "Content-Type": "application/json" } });
+      }
       const max = Math.min(Number(body.max_packages) || 1, 3);
       const { data, error } = await supabase.rpc("list_packages_needing_review", { _version: C.PROMPT_VERSION, _limit: max });
       if (error) throw new Error(`selector failed: ${error.message}`);

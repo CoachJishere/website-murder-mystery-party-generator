@@ -2,6 +2,9 @@
 
 ## 2026-10-03
 
+### Change: no routine review email; failure-only alerts (ADR-0136 Addendum 8)
+- `REVIEW_DIGEST` defaults to off. New alerts to support@ only when the reviewer itself needs attention: a review that failed or was cut short, a run stuck for over 15 minutes, or the daily cost cap reached (once per UTC day). Optional `REVIEW_ALERT_HIGH=1` for high-severity findings (off). North Star now states the alerting rule: email only for things the system could not resolve itself.
+
 ### Fix: reviewer digest email is now a short summary; "The Night The Storm Hit" corrected (ADR-0136 Addendum 7)
 - The per-order review email (to Jonathan) was a 40-finding list that looked like an action item. Default is now a summary: counts by category, up to 5 high-severity items, cost, and "No action needed" (`REVIEW_DIGEST` summary|full|off). Full list stays in `package_review_findings`.
 - Storm (a delivered paid package, 23 findings): 20 real findings applied as exact-match edits (reviewer replacements plus 3 hand-written and a corrected evidence card), 3 debatable left, gate clean. Pointforms of the edited characters are slightly stale.
