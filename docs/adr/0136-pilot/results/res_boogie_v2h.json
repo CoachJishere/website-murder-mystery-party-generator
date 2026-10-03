@@ -1,0 +1,406 @@
+{
+ "label": "boogie_v2h",
+ "model": "claude-sonnet-5-5",
+ "results": [
+  {
+   "character": "Billy Hustle",
+   "stop_reason": "end_turn",
+   "cost": 0.1225,
+   "secs": 17.6,
+   "usage": {
+    "in": 8668,
+    "cw": 32300,
+    "cr": 0,
+    "out": 2442
+   },
+   "findings": []
+  },
+  {
+   "character": "Bobby Chains",
+   "stop_reason": "end_turn",
+   "cost": 0.0426,
+   "secs": 13.5,
+   "usage": {
+    "in": 8870,
+    "cw": 0,
+    "cr": 32300,
+    "out": 1837
+   },
+   "findings": []
+  },
+  {
+   "character": "Chuck Bomb",
+   "stop_reason": "end_turn",
+   "cost": 0.0428,
+   "secs": 14.9,
+   "usage": {
+    "in": 8655,
+    "cw": 0,
+    "cr": 32300,
+    "out": 1900
+   },
+   "findings": [
+    {
+     "field": "final_innocent",
+     "exact_quote": "money, a badge, a business, a secret that could end more than just a crush",
+     "category": "secret_leak",
+     "severity": "medium",
+     "explanation": "An innocent Chuck mentions 'a badge', which points to Pete's hidden undercover-cop identity. Chuck has no way to know it; his rumor about Pete only says he might be hiding something.",
+     "suggested_replacement": "money, a reputation, a business, a secret that could end more than just a crush"
+    }
+   ]
+  },
+  {
+   "character": "Dot Mirrorball",
+   "stop_reason": "end_turn",
+   "cost": 0.0388,
+   "secs": 11.5,
+   "usage": {
+    "in": 8289,
+    "cw": 0,
+    "cr": 32300,
+    "out": 1573
+   },
+   "findings": []
+  },
+  {
+   "character": "Francesca Vinyl",
+   "stop_reason": "end_turn",
+   "cost": 0.0426,
+   "secs": 12.2,
+   "usage": {
+    "in": 9279,
+    "cw": 0,
+    "cr": 32300,
+    "out": 1761
+   },
+   "findings": [
+    {
+     "field": "round2_innocent",
+     "exact_quote": "feeling like a informant instead of a friend",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Wrong article: 'a' before a vowel sound. It should be 'an informant'.",
+     "suggested_replacement": "feeling like an informant instead of a friend"
+    },
+    {
+     "field": "round3_innocent",
+     "exact_quote": "slip something into a man's drink",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "The victim Dusty is gender-neutral in the package, so calling Dusty 'a man' breaks the convention.",
+     "suggested_replacement": "slip something into Dusty's drink"
+    }
+   ]
+  },
+  {
+   "character": "Gio Fandango",
+   "stop_reason": "end_turn",
+   "cost": 0.041,
+   "secs": 11.4,
+   "usage": {
+    "in": 8869,
+    "cw": 0,
+    "cr": 32300,
+    "out": 1676
+   },
+   "findings": [
+    {
+     "field": "final_innocent",
+     "exact_quote": "that policy he never told anyone about doesn't sit right with me",
+     "category": "secret_leak",
+     "severity": "high",
+     "explanation": "Sandro's life insurance policy on Dusty is his hidden secret. Gio's own secret only covers Sandro's debts, so an innocent Gio cannot know about the policy.",
+     "suggested_replacement": "and the way he's been so calm about losing Dusty doesn't sit right with me"
+    },
+    {
+     "field": "reveal_confession_guilty",
+     "exact_quote": "while the poison worked its way through the dancing and the drink",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled phrase: poison works through a person, not through 'the dancing and the drink'. Reads as a wording error.",
+     "suggested_replacement": "while the poison worked its way through Dusty's dancing"
+    }
+   ]
+  },
+  {
+   "character": "Honey Hustle",
+   "stop_reason": "end_turn",
+   "cost": 0.0477,
+   "secs": 16.1,
+   "usage": {
+    "in": 9268,
+    "cw": 0,
+    "cr": 32300,
+    "out": 2267
+   },
+   "findings": [
+    {
+     "field": "final_innocent",
+     "exact_quote": "Let me correct that formatting issue.",
+     "category": "single_generation_slip",
+     "severity": "high",
+     "explanation": "Stray assistant meta-text at the end of the statement that would be read aloud to guests.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_guilty",
+     "exact_quote": "I spent three years keeping this club's finances honest",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "The introduction says Honey has done the accounts part-time for 'a couple of years', not three.",
+     "suggested_replacement": "I spent a couple of years keeping this club's finances honest"
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "If I wanted to protect myself, I'd have gone to Sandro first and laid it all out before Dusty could spin the story. That's what a person with nothing to hide does. That's what I did.",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Honey says she brought it privately to Dusty and Dusty then threatened to tell Sandro. Claiming she went to Sandro first contradicts that account.",
+     "suggested_replacement": "If I wanted to protect myself, I'd have gone to Sandro first and laid it all out before Dusty could spin the story. That's what a person with nothing to hide does."
+    }
+   ]
+  },
+  {
+   "character": "Lena Lush",
+   "stop_reason": "end_turn",
+   "cost": 0.0583,
+   "secs": 21.2,
+   "usage": {
+    "in": 8972,
+    "cw": 0,
+    "cr": 32300,
+    "out": 3390
+   },
+   "findings": [
+    {
+     "field": "round2_questions",
+     "exact_quote": "this memoir of hers",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Dusty is gender-neutral in this package, so 'hers' breaks the convention.",
+     "suggested_replacement": "this memoir of theirs"
+    },
+    {
+     "field": "round2_questions",
+     "exact_quote": "things she shouldn't have been able to get her hands on",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Gendered pronouns used for the gender-neutral victim.",
+     "suggested_replacement": "things Dusty shouldn't have been able to get their hands on"
+    },
+    {
+     "field": "round2_questions",
+     "exact_quote": "Did she ever let slip who else she was weaving into that little business scheme of hers?",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Repeated she/her for the gender-neutral victim.",
+     "suggested_replacement": "Did Dusty ever let slip who else they were weaving into that little business scheme of theirs?"
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "I told her then what I'll say now",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Victim referred to as 'her' despite being gender-neutral.",
+     "suggested_replacement": "I told Dusty then what I'll say now"
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "she was writing herself quite the chapter",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Gendered pronouns for the gender-neutral victim.",
+     "suggested_replacement": "they were writing themself quite the chapter"
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "making you feel like the only one who owed her something",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "'her' used for Dusty, who is gender-neutral.",
+     "suggested_replacement": "making you feel like the only one who owed them something"
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "So yes, I resented her.",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "'her' used for Dusty, who is gender-neutral.",
+     "suggested_replacement": "So yes, I resented Dusty."
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "She mocked my gift",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Victim referred to with 'She' instead of Dusty or they.",
+     "suggested_replacement": "Dusty mocked my gift"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "She was squeezing this entire club dry",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Gendered pronoun for the gender-neutral victim.",
+     "suggested_replacement": "Dusty was squeezing this entire club dry"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "a willingness to watch her die on that floor surrounded by people who loved her",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "'her' used for the gender-neutral victim.",
+     "suggested_replacement": "a willingness to watch Dusty die on that floor surrounded by people who loved them"
+    }
+   ]
+  },
+  {
+   "character": "Martha Gold",
+   "stop_reason": "end_turn",
+   "cost": 0.0451,
+   "secs": 14.6,
+   "usage": {
+    "in": 8988,
+    "cw": 0,
+    "cr": 32300,
+    "out": 2067
+   },
+   "findings": [
+    {
+     "field": "round4_accomplice",
+     "exact_quote": "I'll admit the bar got slow for a few minutes right around when the crowd surged toward the floor for the number.",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Says the bar got slow, yet the same passage has her three deep in orders and pouring as fast as she can. The next sentence says everyone wanted a Boogie Fever, so 'slow' contradicts it.",
+     "suggested_replacement": "I'll admit the bar got hectic for a few minutes right around when the crowd surged toward the floor for the number."
+    }
+   ]
+  },
+  {
+   "character": "Pete Platform",
+   "stop_reason": "end_turn",
+   "cost": 0.0394,
+   "secs": 11.7,
+   "usage": {
+    "in": 8477,
+    "cw": 0,
+    "cr": 32300,
+    "out": 1599
+   },
+   "findings": [
+    {
+     "field": "round4_accomplice",
+     "exact_quote": "don't forget Dusty herself wandered through half the club",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Dusty is gender-neutral in the package convention (master_context mixes pronouns), so \"herself\" is pronoun drift.",
+     "suggested_replacement": "don't forget Dusty themself wandered through half the club"
+    },
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "it's not short list.",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Missing article makes the sentence ungrammatical.",
+     "suggested_replacement": "it's not a short list."
+    }
+   ]
+  },
+  {
+   "character": "Roxanne Starlight",
+   "stop_reason": "end_turn",
+   "cost": 0.0395,
+   "secs": 11.8,
+   "usage": {
+    "in": 8520,
+    "cw": 0,
+    "cr": 32300,
+    "out": 1598
+   },
+   "findings": [
+    {
+     "field": "round3_guilty",
+     "exact_quote": "I didn't touch that drink last night, not once.",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "The whole game takes place in one night, so \"last night\" is the wrong time reference for the night of the murder.",
+     "suggested_replacement": "I didn't touch that drink tonight, not once."
+    }
+   ]
+  },
+  {
+   "character": "Sandro Night",
+   "stop_reason": "end_turn",
+   "cost": 0.0425,
+   "secs": 13.3,
+   "usage": {
+    "in": 8863,
+    "cw": 0,
+    "cr": 32300,
+    "out": 1833
+   },
+   "findings": [
+    {
+     "field": "final_innocent",
+     "exact_quote": "than I ever did behind the bar that night",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Sandro is the club owner, not the bartender. Martha Gold works the bar, so placing him behind it contradicts his role and his own account of working the floor.",
+     "suggested_replacement": "than I ever did out on the floor that night"
+    }
+   ]
+  },
+  {
+   "character": "Toni Tinsel",
+   "stop_reason": "end_turn",
+   "cost": 0.0452,
+   "secs": 15.4,
+   "usage": {
+    "in": 8534,
+    "cw": 0,
+    "cr": 32300,
+    "out": 2164
+   },
+   "findings": [
+    {
+     "field": "round4_accomplice",
+     "exact_quote": "I was dancing, same as I'm paid to do.",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Toni is a singer, not a dancer. Being paid to dance contradicts the speaker's own role, and Toni describes being paid to perform and sing elsewhere.",
+     "suggested_replacement": "I was singing along, same as I'm paid to do."
+    }
+   ]
+  },
+  {
+   "character": "Vera Velour",
+   "stop_reason": "end_turn",
+   "cost": 0.0455,
+   "secs": 13.9,
+   "usage": {
+    "in": 9673,
+    "cw": 0,
+    "cr": 32300,
+    "out": 1973
+   },
+   "findings": [
+    {
+     "field": "round3_innocent",
+     "exact_quote": "A year of being the one bankrolling the place, quietly, gives a person access.",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Vera bankrolled Dusty's apartment, wardrobe and lifestyle, not the Golden Garter. Sandro owns the club and she did not fund it.",
+     "suggested_replacement": "A year of being the one bankrolling Dusty, quietly, gives a person access."
+    }
+   ]
+  }
+ ],
+ "total_cost_usd": 0.6934,
+ "tokens": {
+  "i": 123925,
+  "cw": 32300,
+  "cr": 419900,
+  "o": 28080
+ }
+}

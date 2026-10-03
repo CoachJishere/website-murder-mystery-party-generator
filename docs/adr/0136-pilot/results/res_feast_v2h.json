@@ -1,0 +1,141 @@
+{
+ "label": "feast_v2h",
+ "model": "claude-sonnet-5-5",
+ "results": [
+  {
+   "character": "Brother/Sister Edmund Vale",
+   "stop_reason": "end_turn",
+   "cost": 0.0878,
+   "secs": 10.9,
+   "usage": {
+    "in": 7067,
+    "cw": 23076,
+    "cr": 0,
+    "out": 1599
+   },
+   "findings": []
+  },
+  {
+   "character": "Captain/Captainess Row Duskwood",
+   "stop_reason": "end_turn",
+   "cost": 0.0321,
+   "secs": 9.8,
+   "usage": {
+    "in": 6583,
+    "cw": 0,
+    "cr": 23076,
+    "out": 1433
+   },
+   "findings": []
+  },
+  {
+   "character": "Lady/Lord Seren Thorne",
+   "stop_reason": "end_turn",
+   "cost": 0.0401,
+   "secs": 14.4,
+   "usage": {
+    "in": 6840,
+    "cw": 0,
+    "cr": 23076,
+    "out": 2183
+   },
+   "findings": []
+  },
+  {
+   "character": "Lady/Lord Vesper Nightshade",
+   "stop_reason": "end_turn",
+   "cost": 0.0434,
+   "secs": 19.0,
+   "usage": {
+    "in": 7386,
+    "cw": 0,
+    "cr": 23076,
+    "out": 2398
+   },
+   "findings": [
+    {
+     "field": "reveal_confession_guilty",
+     "exact_quote": "I closed the distance in the space between one toast and the next breath",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled phrase: 'between one toast and the next breath' makes no sense; the idiom is 'between one breath and the next', and there is only one toast.",
+     "suggested_replacement": "I closed the distance in the space between one breath and the next"
+    }
+   ]
+  },
+  {
+   "character": "Ser/Dame Percival Ashgrove",
+   "stop_reason": "end_turn",
+   "cost": 0.0448,
+   "secs": 18.0,
+   "usage": {
+    "in": 6822,
+    "cw": 0,
+    "cr": 23076,
+    "out": 2654
+   },
+   "findings": [
+    {
+     "field": "introduction",
+     "exact_quote": "that love survived three hundred years of watching him dispense mercy and cruelty",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Percival was turned decades ago after years as a knight. Three hundred years is Aldric's reign, not the time Percival has watched him.",
+     "suggested_replacement": "that love survived decades of watching him dispense mercy and cruelty"
+    },
+    {
+     "field": "round3_innocent",
+     "exact_quote": "I've had decades of idle centuries to fill",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "'Decades of idle centuries' is self-contradictory and garbled. Percival has lived decades, not centuries.",
+     "suggested_replacement": "I've had decades of idle time to fill"
+    },
+    {
+     "field": "round3_innocent",
+     "exact_quote": "so easily proven false the moment I tried",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Tense error: the hypothetical should read 'the moment I try', not past tense.",
+     "suggested_replacement": "so easily proven false the moment I try"
+    },
+    {
+     "field": "round4_guilty",
+     "exact_quote": "you'd need to clear this entire table of suspicion for nobody",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled sentence; 'for nobody' makes no sense. The intended meaning is that no one at the table can be cleared.",
+     "suggested_replacement": "you'd have to clear no one at this table of suspicion"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "I have had centuries of nights when the hatred burned hot",
+     "category": "cross_field_contradiction",
+     "severity": "low",
+     "explanation": "Percival was turned decades ago and says elsewhere he served for decades, not centuries.",
+     "suggested_replacement": "I have had decades of nights when the hatred burned hot"
+    }
+   ]
+  },
+  {
+   "character": "Steward Iona/Ionas Blackwell",
+   "stop_reason": "end_turn",
+   "cost": 0.0337,
+   "secs": 10.3,
+   "usage": {
+    "in": 7053,
+    "cw": 0,
+    "cr": 23076,
+    "out": 1496
+   },
+   "findings": []
+  }
+ ],
+ "total_cost_usd": 0.2819,
+ "tokens": {
+  "i": 41751,
+  "cw": 23076,
+  "cr": 115380,
+  "o": 11763
+ }
+}

@@ -1,0 +1,270 @@
+{
+ "label": "laia_v2h",
+ "model": "claude-sonnet-5-5",
+ "results": [
+  {
+   "character": "Aida",
+   "stop_reason": "end_turn",
+   "cost": 0.1249,
+   "secs": 16.2,
+   "usage": {
+    "in": 11373,
+    "cw": 32151,
+    "cr": 0,
+    "out": 2180
+   },
+   "findings": [
+    {
+     "field": "relationships",
+     "exact_quote": "**Jordi** - Nuestra tensión viene de lejos, de esas discusiones de sobremesa que nunca se resuelven del todo.",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Jordi is listed twice under RIVALES Y ENEMIGOS with two separate descriptions, which looks like a duplicated entry when read aloud.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Aleix",
+   "stop_reason": "end_turn",
+   "cost": 0.0618,
+   "secs": 24.6,
+   "usage": {
+    "in": 11297,
+    "cw": 0,
+    "cr": 32151,
+    "out": 3278
+   },
+   "findings": [
+    {
+     "field": "round2_innocent",
+     "exact_quote": "Si querían que yo hablara esta noche, ya no hace falta.",
+     "category": "language_slip",
+     "severity": "medium",
+     "explanation": "Switches to third-person plural (ustedes-style) address, while Aleix addresses the table with informal 'vosotros' elsewhere, as in the introduction. The verb should agree with 'vosotros'.",
+     "suggested_replacement": "Si queríais que yo hablara esta noche, ya no hace falta."
+    }
+   ]
+  },
+  {
+   "character": "Claudia",
+   "stop_reason": "end_turn",
+   "cost": 0.0538,
+   "secs": 17.5,
+   "usage": {
+    "in": 11465,
+    "cw": 0,
+    "cr": 32151,
+    "out": 2444
+   },
+   "findings": []
+  },
+  {
+   "character": "Dani Zhou",
+   "stop_reason": "end_turn",
+   "cost": 0.0631,
+   "secs": 23.8,
+   "usage": {
+    "in": 12009,
+    "cw": 0,
+    "cr": 32151,
+    "out": 3267
+   },
+   "findings": [
+    {
+     "field": "accusations",
+     "exact_quote": "Recuerda a todos que yo soy el último en enterarme de todo, nunca el primero en actuar",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Dani is defined as someone who prides himself on finding out everything before anyone else. Claiming to be the last to know contradicts the description, introduction and other fields.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "accusations",
+     "exact_quote": "después de haber sido siempre el último en saber las cosas",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Repeats the claim that Dani is always last to know, which contradicts his established trait of being the first to find out everything.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "reveal_confession_accomplice",
+     "exact_quote": "Jordi vino a mí hace semanas, no con detalles exactos, pero con el miedo encima",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Dani's accomplice pairing is with Ramón, who is the murderer he covers for. Naming Jordi as the murderer contradicts the pairings, and Jordi is paired with Sergi. 'Lealtad vieja' also doesn't fit Dani's recent friendship with Ramón.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Eduard 'Edu'",
+   "stop_reason": "end_turn",
+   "cost": 0.054,
+   "secs": 17.6,
+   "usage": {
+    "in": 11146,
+    "cw": 0,
+    "cr": 32151,
+    "out": 2527
+   },
+   "findings": []
+  },
+  {
+   "character": "Ignasi",
+   "stop_reason": "end_turn",
+   "cost": 0.0512,
+   "secs": 15.8,
+   "usage": {
+    "in": 10887,
+    "cw": 0,
+    "cr": 32151,
+    "out": 2304
+   },
+   "findings": []
+  },
+  {
+   "character": "Jordi",
+   "stop_reason": "end_turn",
+   "cost": 0.0564,
+   "secs": 20.3,
+   "usage": {
+    "in": 10425,
+    "cw": 0,
+    "cr": 32151,
+    "out": 2911
+   },
+   "findings": [
+    {
+     "field": "round2_innocent",
+     "exact_quote": "un médico con ingresos paralelos que la mujer que lo descubrió aparece muerta en su propia fiesta",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "The sentence is ungrammatical: a connector such as 'y' or 'cuando' is missing between the two clauses, so it reads as garbled.",
+     "suggested_replacement": "un médico con ingresos paralelos y la mujer que lo descubrió aparece muerta en su propia fiesta"
+    },
+    {
+     "field": "relationships",
+     "exact_quote": "Nunca hemos tenido roce real más allá de alguna broma pesada entre nosotros",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "The relationship matrix and dossier mark Jordi and Aleix as Hostile (tension), but this entry lists Aleix as an ally with no real friction.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "reveal_confession_accomplice",
+     "exact_quote": "nunca me puso contra la pared como hizo con otros",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Jordi's own background says Laia confronted him over the clinic papers ('esto no se podía quedar así'), so she did put him against the wall.",
+     "suggested_replacement": "me puso contra la pared igual que a otros"
+    },
+    {
+     "field": "reveal_confession_guilty",
+     "exact_quote": "Edu lo supo. No participó con sus manos, pero cubrió mis movimientos esa tarde",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "The package's accomplice pairing for Jordi is Sergi, not Edu, so naming Edu as the accomplice contradicts the assigned pairing.",
+     "suggested_replacement": "Sergi lo supo. No participó con sus manos, pero cubrió mis movimientos esa tarde"
+    }
+   ]
+  },
+  {
+   "character": "Laura",
+   "stop_reason": "end_turn",
+   "cost": 0.0531,
+   "secs": 16.6,
+   "usage": {
+    "in": 11600,
+    "cw": 0,
+    "cr": 32151,
+    "out": 2347
+   },
+   "findings": [
+    {
+     "field": "round3_innocent",
+     "exact_quote": "ninguna de ellas era yo sola la que tenía las manos libres en ese rato",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled, ungrammatical sentence: 'ninguna de ellas era yo sola la que...' is incoherent and unclear to a listener.",
+     "suggested_replacement": "yo no era la única que tenía las manos libres en ese rato"
+    },
+    {
+     "field": "round2_guilty",
+     "exact_quote": "Que ella decidiera morirse esta noche no tiene nada que ver con lo que yo sentía por dentro.",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Phrasing implies Laia chose to die, which contradicts the murder premise and the speaker's own denial of involvement.",
+     "suggested_replacement": "Que ella muriera esta noche no tiene nada que ver con lo que yo sentía por dentro."
+    }
+   ]
+  },
+  {
+   "character": "Ramón",
+   "stop_reason": "end_turn",
+   "cost": 0.0609,
+   "secs": 25.0,
+   "usage": {
+    "in": 11553,
+    "cw": 0,
+    "cr": 32151,
+    "out": 3132
+   },
+   "findings": [
+    {
+     "field": "relationships",
+     "exact_quote": "**Edu** - Edu siempre tuvo esa energía fácil que hace que cualquier reencuentro parezca sencillo, y esta noche no ha sido diferente.",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Edu is listed as an ally, but the relationship matrix and the dossier mark Ramón and Edu as Hostile, with tension between them.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "Yo apenas llevaba unos días reencontrándome con esta gente",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Contradicts the same statement's earlier line that he had spent weeks rebuilding a quiet life. The timeline is inconsistent within one field.",
+     "suggested_replacement": "Yo apenas llevaba unas horas reencontrándome con esta gente"
+    }
+   ]
+  },
+  {
+   "character": "Sergi",
+   "stop_reason": "end_turn",
+   "cost": 0.0469,
+   "secs": 12.3,
+   "usage": {
+    "in": 11519,
+    "cw": 0,
+    "cr": 32151,
+    "out": 1745
+   },
+   "findings": [
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "prefiero no aireroar aquí delante",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled word: 'aireroar' is not a Spanish word; it should be 'airear'.",
+     "suggested_replacement": "prefiero no airear aquí delante"
+    },
+    {
+     "field": "round2_guilty",
+     "exact_quote": "en mi propia fiesta de pádel de los viernes",
+     "category": "wrong_fact",
+     "severity": "high",
+     "explanation": "The party is Laia's birthday party at her house, not Sergi's own weekly padel party. The same sentence also says 'en la casa de mi amiga'.",
+     "suggested_replacement": "en el cumpleaños de Laia"
+    }
+   ]
+  }
+ ],
+ "total_cost_usd": 0.6261,
+ "tokens": {
+  "i": 113274,
+  "cw": 32151,
+  "cr": 289359,
+  "o": 26135
+ }
+}

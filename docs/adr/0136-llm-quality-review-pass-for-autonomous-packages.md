@@ -70,3 +70,46 @@ Added after Jonathan asked whether this ADR should account for the "calls cannot
 2. **Run the pilot on a package generated after Child55 (and 53/54) are imported**, or at least report separately what the reviewer finds that chaining would have prevented. Otherwise the pilot partly pays to rediscover defects a prompt change removes. Recall measured on the existing pre-fix snapshots is still valid; only the "how many findings per order" estimate changes.
 3. **Give the reviewer the same chained view the author should have had** (background, secret, introduction, innocent scripts of the same character, plus master_context and the roster), since cross-field and cross-character checks are its job.
 4. **Count the single-generation slips as their own category.** If they dominate, a cheaper alternative worth pricing is a per-field proofreading pass, or lower temperature on the long calls, before a whole-package reviewer.
+
+## Addendum 2 (2026-10-03): calibration pilot results (Jonathan approved the spend; total 2.61 USD)
+
+**What was run.** A local, report-only per-character review (`docs/adr/0136-pilot/`, code and raw results committed) with `claude-sonnet-5-5`: one structured-output call per character, the package-level prefix (instructions + `master_context` + a roster dossier of every character's description and secret) prompt-cached, the character's full non-pointform text as the variable part, per Addendum 1 items 1 and 3. 54 calls, no refusals, no errors (poisoning-themed mystery text did not trip a safety classifier). Pricing used: 2 USD in / 10 USD out per million tokens, cache reads 0.20 (the API reference table; the 3 / 15 assumed above was too high).
+
+**Runs.**
+| Run | Package | Prompt / effort | Chars | Cost | Findings |
+|---|---|---|---|---|---|
+| 1 | Boogie, **pre-fix snapshot** | v1 / medium | 14 | 0.51 | 66 (32 of the 36 false ones were `low`) |
+| 2 | Boogie snapshot | v2 / medium | 14 | 0.49 | 58 |
+| 3 | Boogie snapshot | v2 / **high** | 14 | 0.69 | 25 (none `low`) |
+| 4 | "A Feast For The Dying" (EN, hand-swept 10-01), **not seen when tuning** | v2 / high | 6 | 0.28 | 6 |
+| 5 | "El Último Brindis De Laia" (ES, hand-swept and repaired), **not seen when tuning** | v2 / high | 10 | 0.63 | 15 |
+
+v2 = v1 plus two rules: never list a finding you conclude is acceptable/minor/by design (the model had been listing items its own explanation called "not a defect"), and report `low` only if certain. **v2 was written after reading v1's Boogie output, so Boogie numbers for v2 are optimistic; Feast and Laia are the honest out-of-sample test.**
+
+**Recall on Boogie's ground truth (v2 / high; v1 in brackets).** Single-generation slips **4/6** (3/6); wrong fact vs another character/`master_context` **2/3** (2/3); same-character cross-call **1/1** (1/1); victim pronouns **11/12** (11/12). So **7 of the 10 semantic edits and 18 of 22 semantic+pronoun items**. Missed by v2/high: Honey's garbled description, Pete's stray paragraph under ALLIES, Honey's "a bartender's instinct", Dot's "golden girl". Mechanical leaks were mostly not reported (it was told to ignore them; 1/6), which is fine because detectors and heals own them. Recall is measured on one package, with the prompt tuned on it, so treat 70 to 80 percent as an upper-ish estimate until a second labelled package exists.
+
+**Precision (adjudicated by me, reading every finding against the source text).**
+- Boogie v2/high: 25 findings, **0 false alarms**, 1 debatable (an innocent Gio knowing Sandro's secret policy, which other characters also mention in round 2). Beyond the ground truth it found **4 real defects the hand sweep missed**: Toni "paid to dance" (Toni is a singer), Gio "the poison worked its way through the dancing and the drink", Vera "bankrolling the place" (she bankrolled Dusty), Francesca contradicting herself inside one field ("stepped away from the booth" vs "didn't need to leave my post"); plus Dot's garbled "learned from Lena's stock over months of candid shots in that doorway" (v1).
+- **Feast (unseen): 6 findings: 4 real, 2 debatable, 0 false.** Real: Percival "three hundred years of watching him" vs `master_context` "decades ago, Aldric turned Percival"; "decades of idle centuries"; "clear this entire table of suspicion for nobody"; "centuries of nights" (low). A package I had already swept by hand and called clean.
+- **Laia (unseen, Spanish): 15 findings: 5 new real** (a non-word `aireroar`; an ungrammatical connector-less sentence in Jordi; Laura's incoherent "ninguna de ellas era yo sola la que"; a remaining ustedes slip, "Si querían", in a vosotros character; Sergi's "mi propia fiesta de pádel" at Laia's birthday), **3 real but already known and left alone** (Aida's duplicate Jordi entry; two ally-vs-matrix entries, ADR-0134), **5 debatable, 2 false** (both are the slip-style accomplice-confession-names-the-killer behaviour that I told it to ignore but it re-derived from `accomplicePairings`).
+- **Out-of-sample total: 21 findings, 12 real (57%), 7 debatable (33%), 2 false (10%)**, about 1 false alarm per package, both of the one by-design kind that a prompt line (and dropping `accomplicePairings` from the prefix) removes.
+
+**What this says about the question "will it reach 100%?"**
+- It does **not** reach 100%: on the one labelled package it found 7 of 10 semantic defects and missed 3, and on the two unseen packages I cannot know what it missed.
+- It **does** substantially beat the manual sweep on a thing the sweep cannot be audited on: **hand-swept packages still contained at least 9 real defects it found (4 in Feast, 5 in Laia)**, plus the 4 extra it found on Boogie. The ground truth is only "what I noticed", so recall against it flatters the human side.
+- **The effort level matters a lot, and cheaply.** v2 at medium found 16/22 with 58 findings (34 low); v2 at high found 18/22 with 25 findings, none low, for 0.20 more per package. High effort (more thinking) is what turned noise into precision.
+- **Single-generation slips dominate the real findings** (Feast 3 of 4, Laia about 4 of 5, Boogie most of the extras). Addendum 1 item 4 asked whether a cheaper proofreading pass would do; at about 0.05 USD per character the whole-package reviewer is already cheap, so a separate proofreading pass is not worth building.
+- Chaining (Child55) would prevent only 1 of the 10 semantic items on Boogie; none of the real findings above on Feast or Laia are of the same-character-different-call kind except possibly Dani's "last to know" (debatable), so the pilot does not need re-running after Child55 to justify the reviewer.
+
+**Cost and latency (real tokens).** v2/high: 0.050 USD per character on Boogie, 0.047 Feast, 0.063 Laia (the Spanish text is longer); a 14-character package about **0.70 USD**, about 3.5% of the 19.99 price; about 14 to 18 s median per call (about 2000 to 2600 output tokens including thinking), so a package finishes in roughly 1 to 2 minutes at 4 calls in parallel. Cache worked: about 75% of input tokens were cache reads.
+
+**Pass criteria set in this ADR vs result.** Recall of at least 70% on the semantic items: **met on Boogie (7/10 and 18/22) but tuned and single-package**. Under 1 false finding per package: **about 1 per package out of sample, borderline, and removable** (see below). Not enough to switch on auto-apply; enough to justify **report-only on every paid order**.
+
+**Recommended next steps (each needs Jonathan's go-ahead because they spend money or change behaviour).**
+1. **Report-only reviewer in production:** a `review-package-quality` edge function that runs after all deterministic heals are clean, writes findings (never edits) to a new table, and puts the medium/high ones in the existing held-package alert and the sweep. About 0.70 USD per order. This replaces the forty-minute read with a two-minute read of a short list.
+2. **Prompt v3 before that:** drop `accomplicePairings` from the prefix and tell it to ignore relationship-vs-matrix entries (ADR-0134 owns them); keep high effort; require `severity` of medium or high. Verify v3 on Feast and Laia (about 0.9 USD) before relying on it, because v2 was tuned on Boogie.
+3. **A second labelled package** for recall: the next real purchase swept in two passes (reviewer first, then my manual sweep) gives an out-of-sample recall number and costs one order's worth of review.
+4. **Only then** consider auto-apply of exact-quote replacements (the suggested_replacement field is present and mostly sensible), starting with `single_generation_slip` and `pronoun_drift` and the existing detector re-run as the safety net.
+
+### Key files (Addendum 2)
+- `docs/adr/0136-pilot/` (pilot.py, ground_truth.py, score.py, adjud_v1.py, README.md, results/)

@@ -1,0 +1,673 @@
+{
+ "label": "boogie_v2m",
+ "model": "claude-sonnet-5-5",
+ "results": [
+  {
+   "character": "Billy Hustle",
+   "stop_reason": "end_turn",
+   "cost": 0.0989,
+   "secs": 2.8,
+   "usage": {
+    "in": 8668,
+    "cw": 32300,
+    "cr": 0,
+    "out": 85
+   },
+   "findings": [
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "everyone knows Dusty had their claws in his finances somehow",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Weak; omit.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Bobby Chains",
+   "stop_reason": "end_turn",
+   "cost": 0.0292,
+   "secs": 4.9,
+   "usage": {
+    "in": 8870,
+    "cw": 0,
+    "cr": 32300,
+    "out": 497
+   },
+   "findings": [
+    {
+     "field": "round2_guilty",
+     "exact_quote": "anybody who's seen me work a door for ten years knows that",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Introduction and background say Bobby has worked the club for three years, not ten.",
+     "suggested_replacement": "anybody who's seen me work a door for three years knows that"
+    },
+    {
+     "field": "round3_innocent",
+     "exact_quote": "I've stood near that bar every night for years",
+     "category": "cross_field_contradiction",
+     "severity": "low",
+     "explanation": "Bobby has worked at the club three years in the other fields, though 'for years' is loosely consistent; not a clear defect.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "That's a lie, but it's the kind of lie that sticks",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Secret says Bobby really did keep the money, so Dusty's claim wasn't a lie; the accomplice version calls it one while other versions admit skimming.",
+     "suggested_replacement": "That's the truth, but it's the kind of truth that sticks"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "No scuffle, no scene, just a glass that disappeared and a body on the floor.",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Clashes with the described chaotic scene where Dusty's collapse was first mistaken for theatrical flair; not clearly wrong though.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Chuck Bomb",
+   "stop_reason": "end_turn",
+   "cost": 0.0273,
+   "secs": 4.0,
+   "usage": {
+    "in": 8655,
+    "cw": 0,
+    "cr": 32300,
+    "out": 355
+   },
+   "findings": [
+    {
+     "field": "round3_innocent",
+     "exact_quote": "My particular skill set runs more toward writing embarrassing letters and making a fool of myself on the dance floor, not toxicology.",
+     "category": "secret_leak",
+     "severity": "low",
+     "explanation": "Not clearly a leak; innocent speaker referencing his own letter is fine. Omit.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "reveal_confession_guilty",
+     "exact_quote": "I'd learned enough watching Lena's little tinctures and overheard enough of Honey's worried talk about chemicals coming through the club",
+     "category": "secret_leak",
+     "severity": "low",
+     "explanation": "Honey's chemical discovery was her hidden secret, but this is the murderer's confession, so it is acceptable. Omit.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_guilty",
+     "exact_quote": "Stood right up there and did an impression of me mooning over them, had everybody howling",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Acceptable detail. Omit.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Dot Mirrorball",
+   "stop_reason": "end_turn",
+   "cost": 0.0255,
+   "secs": 3.4,
+   "usage": {
+    "in": 8289,
+    "cw": 0,
+    "cr": 32300,
+    "out": 243
+   },
+   "findings": [
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "that's not a motive, that's just Tuesday at the Golden Garter",
+     "category": "other",
+     "severity": "low",
+     "explanation": "The setting is a Friday-night club; calling it Tuesday is odd, though it reads as an idiom.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round3_guilty",
+     "exact_quote": "I didn't go near that vial, whatever it was.",
+     "category": "other",
+     "severity": "medium",
+     "explanation": "Round 3 is the first round that mentions the vial. Naming it here is premature and clashes with 'whatever it was', which implies the speaker doesn't know what it was.",
+     "suggested_replacement": "I didn't go near any poison."
+    }
+   ]
+  },
+  {
+   "character": "Francesca Vinyl",
+   "stop_reason": "end_turn",
+   "cost": 0.0298,
+   "secs": 4.5,
+   "usage": {
+    "in": 9279,
+    "cw": 0,
+    "cr": 32300,
+    "out": 483
+   },
+   "findings": [
+    {
+     "field": "round2_innocent",
+     "exact_quote": "feeling like a informant instead of a friend",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Grammatical error: 'a' should be 'an' before 'informant'.",
+     "suggested_replacement": "feeling like an informant instead of a friend"
+    },
+    {
+     "field": "round3_innocent",
+     "exact_quote": "slip something into a man's drink",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Dusty is gender-neutral in the package; calling the victim 'a man' breaks the convention.",
+     "suggested_replacement": "slip something into someone's drink"
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "I just needed them distracted, and believe me, there were a dozen other people up for that role that night.",
+     "category": "single_generation_slip",
+     "severity": "low",
+     "explanation": "Illogical: she needed Dusty distracted from what? Garbled reasoning that does not follow from the preceding sentence about walking away.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round4_innocent",
+     "exact_quote": "forty feet of dancing bodies",
+     "category": "other",
+     "severity": "low",
+     "explanation": "",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "reveal_confession_guilty",
+     "exact_quote": "I'd watched Lena's little vials come and go through this club long enough to know what to ask for",
+     "category": "other",
+     "severity": "low",
+     "explanation": "",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Gio Fandango",
+   "stop_reason": "end_turn",
+   "cost": 0.0285,
+   "secs": 4.2,
+   "usage": {
+    "in": 8869,
+    "cw": 0,
+    "cr": 32300,
+    "out": 429
+   },
+   "findings": [
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "feeling like a fool isn't a motive for murder, it's just a Tuesday.",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Idiom, not a time claim; no defect.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "final_accomplice",
+     "exact_quote": "A ruined career, a ruined marriage, a ruined secret",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "No character in the package has a marriage at stake; a ruined marriage is an invented detail contradicting the club's known motives.",
+     "suggested_replacement": "A ruined career, a ruined reputation, a ruined secret"
+    },
+    {
+     "field": "round3_innocent",
+     "exact_quote": "trying to steal a kiss by the coat check",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Not clearly wrong.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "I didn't love Dusty any less for being angry",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled logic: sentence is illogical in context; likely meant he didn't love Dusty enough to poison them.",
+     "suggested_replacement": "I wasn't so angry that I stopped caring about Dusty"
+    }
+   ]
+  },
+  {
+   "character": "Honey Hustle",
+   "stop_reason": "end_turn",
+   "cost": 0.0315,
+   "secs": 5.3,
+   "usage": {
+    "in": 9268,
+    "cw": 0,
+    "cr": 32300,
+    "out": 655
+   },
+   "findings": [
+    {
+     "field": "rumors",
+     "exact_quote": "that's not a bartender's instinct, that's somebody with secrets of his own",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Honey refers to the coat-check attendant as having a bartender's instinct; the comparison is odd but the role is correct. The bigger problem: it wrongly frames Pete's role as bartender-like, confusing him with Martha.",
+     "suggested_replacement": "that's not a coat-check attendant's instinct, that's somebody with secrets of his own"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "Let me correct that formatting issue.",
+     "category": "single_generation_slip",
+     "severity": "high",
+     "explanation": "Stray AI meta-text that does not belong in the character's spoken statement.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_guilty",
+     "exact_quote": "I spent three years keeping this club's finances honest",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Introduction says Honey has done the accounts part-time for only a couple of years.",
+     "suggested_replacement": "I spent two years keeping this club's finances honest"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "Dusty threatened to destroy my reputation and drag my brother down with me rather than face the consequences of stealing from this club.",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Nothing wrong.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round4_innocent",
+     "exact_quote": "I was backstage for a good stretch of that final hour, going over the night's receipts with Toni Tinsel",
+     "category": "cross_field_contradiction",
+     "severity": "low",
+     "explanation": "Nothing wrong.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "reveal_confession_accomplice",
+     "exact_quote": "palmed the empty glass off the table near the stage riser",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Nothing wrong.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Lena Lush",
+   "stop_reason": "end_turn",
+   "cost": 0.0476,
+   "secs": 15.8,
+   "usage": {
+    "in": 8972,
+    "cw": 0,
+    "cr": 32300,
+    "out": 2318
+   },
+   "findings": [
+    {
+     "field": "round2_questions",
+     "exact_quote": "this memoir of hers",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Dusty is gender-neutral in this package, so the possessive 'hers' breaks the convention.",
+     "suggested_replacement": "Dusty's memoir"
+    },
+    {
+     "field": "round2_questions",
+     "exact_quote": "things she shouldn't have been able to get her hands on",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Dusty is referred to with she/her, which breaks the gender-neutral convention.",
+     "suggested_replacement": "things Dusty shouldn't have been able to get their hands on"
+    },
+    {
+     "field": "round2_questions",
+     "exact_quote": "Did she ever let slip who else she was weaving into that little business scheme of hers",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Dusty is referred to as she/her; the victim should be they/them.",
+     "suggested_replacement": "Did Dusty ever let slip who else they were weaving into that little business scheme of theirs"
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "I told her then what I'll say now: karma keeps a ledger, and she was writing herself quite the chapter.",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Dusty is referred to with she/her, breaking the gender-neutral convention.",
+     "suggested_replacement": "I told Dusty then what I'll say now: karma keeps a ledger, and Dusty was writing themself quite the chapter."
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "making you feel like the only one who owed her something",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Dusty is referred to as 'her'; the victim should be gender-neutral.",
+     "suggested_replacement": "making you feel like the only one who owed them something"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "She mocked my gift, bled my earnings",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Dusty is referred to as 'She'; the victim should be gender-neutral.",
+     "suggested_replacement": "Dusty mocked my gift, bled my earnings"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "She was squeezing this entire club dry",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Dusty is referred to as 'She'; the victim should be gender-neutral.",
+     "suggested_replacement": "Dusty was squeezing this entire club dry"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "a willingness to watch her die on that floor",
+     "category": "pronoun_drift",
+     "severity": "medium",
+     "explanation": "Dusty is referred to as 'her'; the victim should be gender-neutral.",
+     "suggested_replacement": "a willingness to watch Dusty die on that floor"
+    }
+   ]
+  },
+  {
+   "character": "Martha Gold",
+   "stop_reason": "end_turn",
+   "cost": 0.0265,
+   "secs": 2.7,
+   "usage": {
+    "in": 8988,
+    "cw": 0,
+    "cr": 32300,
+    "out": 205
+   },
+   "findings": [
+    {
+     "field": "reveal_confession_guilty",
+     "exact_quote": "I'd been sitting on a little something from Lena's stock for weeks",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Confession names Lena's stock as the poison source, which is only one possible source; not clearly wrong. Omitted if uncertain.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "I won't sit here and pretend I shed a tear when they went down on that dance floor.",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Not a defect.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Pete Platform",
+   "stop_reason": "end_turn",
+   "cost": 0.0294,
+   "secs": 4.7,
+   "usage": {
+    "in": 8477,
+    "cw": 0,
+    "cr": 32300,
+    "out": 602
+   },
+   "findings": [
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "because I promise you, it's not short list.",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Missing article: 'not short list' is ungrammatical.",
+     "suggested_replacement": "because I promise you, it's not a short list."
+    },
+    {
+     "field": "round4_accomplice",
+     "exact_quote": "don't forget Dusty herself wandered through half the club",
+     "category": "pronoun_drift",
+     "severity": "high",
+     "explanation": "Dusty is gender-neutral in this package; 'herself' is a gendered reflexive for the victim.",
+     "suggested_replacement": "don't forget Dusty themself wandered through half the club"
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "it makes me one of about thirteen other people standing right here",
+     "category": "wrong_fact",
+     "severity": "low",
+     "explanation": "There are 14 suspects including Pete, so thirteen others is fine, but 'one of about thirteen other people' is garbled counting; Pete is one of fourteen.",
+     "suggested_replacement": "it makes me one of about fourteen people standing right here"
+    },
+    {
+     "field": "relationships",
+     "exact_quote": "so I've spent three years being the most unremarkable person in this club",
+     "category": "cross_field_contradiction",
+     "severity": "low",
+     "explanation": "Introduction says 'a few years' while here three years; consistent. However round 3 says he watched Martha 'for months', conflicting with years at the club.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round3_innocent",
+     "exact_quote": "I've watched her work that bar for months",
+     "category": "cross_field_contradiction",
+     "severity": "medium",
+     "explanation": "Pete says he has worked at the club for three years, so watching Martha only 'for months' contradicts that.",
+     "suggested_replacement": "I've watched her work that bar for years"
+    }
+   ]
+  },
+  {
+   "character": "Roxanne Starlight",
+   "stop_reason": "end_turn",
+   "cost": 0.0292,
+   "secs": 4.5,
+   "usage": {
+    "in": 8520,
+    "cw": 0,
+    "cr": 32300,
+    "out": 572
+   },
+   "findings": [
+    {
+     "field": "round3_guilty",
+     "exact_quote": "I didn't touch that drink last night, not once.",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "The whole game is one night; the murder happened tonight, so \"last night\" is the wrong time reference.",
+     "suggested_replacement": "I didn't touch that drink tonight, not once."
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "in front of fifty witnesses",
+     "category": "single_generation_slip",
+     "severity": "low",
+     "explanation": "The crowd is described as dozens on a packed floor; a precise 'fifty' is fine, but nothing contradicts it. Not a defect.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "reveal_confession_guilty",
+     "exact_quote": "I'd already slipped the glass away into the crowd and let someone else make it disappear for good.",
+     "category": "cross_field_contradiction",
+     "severity": "low",
+     "explanation": "Unclear; consistent with accomplice taking glass. Not a defect.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_guilty",
+     "exact_quote": "a very good reason not to miss Dusty half as much as some of you seem to think I should",
+     "category": "single_generation_slip",
+     "severity": "medium",
+     "explanation": "Garbled, confusing sentence; the meaning is unclear and contradicts the grieving, defensive tone.",
+     "suggested_replacement": "and a very good reason for me to miss Dusty less than some of you seem to think I should"
+    },
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "I spent most of that last hour trying not to watch my old routine happen without me in it.",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Not a defect.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Sandro Night",
+   "stop_reason": "end_turn",
+   "cost": 0.0313,
+   "secs": 5.6,
+   "usage": {
+    "in": 8863,
+    "cw": 0,
+    "cr": 32300,
+    "out": 707
+   },
+   "findings": [
+    {
+     "field": "round3_innocent",
+     "exact_quote": "Twelve years of greeting regulars, smoothing over fights, and talking down angry suppliers",
+     "category": "cross_field_contradiction",
+     "severity": "low",
+     "explanation": "Twelve years conflicts with the introduction, which says the club was built over a period ending with Dusty's three years; no source supports twelve years of running the club.",
+     "suggested_replacement": "Years of greeting regulars, smoothing over fights, and talking down angry suppliers"
+    },
+    {
+     "field": "round2_guilty",
+     "exact_quote": "not Bobby, not my accountant, nobody",
+     "category": "wrong_fact",
+     "severity": "low",
+     "explanation": "Honey is the part-time accountant who found Dusty's siphoning; calling her 'my accountant' is unsupported and odd. Sandro says nobody knew, but the accountant claim conflicts with the roster.",
+     "suggested_replacement": "not Bobby, not anyone"
+    },
+    {
+     "field": "final_innocent",
+     "exact_quote": "how many of you had a much better chance to get close to that glass than I ever did behind the bar that night",
+     "category": "wrong_fact",
+     "severity": "medium",
+     "explanation": "Sandro is the owner, not the bartender; Martha is behind the bar. Phrase implies Sandro was behind the bar.",
+     "suggested_replacement": "how many of you had a much better chance to get close to that glass than I ever did that night"
+    },
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "only one of them happened here tonight",
+     "category": "other",
+     "severity": "low",
+     "explanation": "The accomplice speaks as if only the killing happened tonight, which is vague; but more importantly 'Funny thing to say the week your extortionist turns up dead' is fine. This line is weak.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "reveal_confession_accomplice",
+     "exact_quote": "a life insurance policy I never should have taken out",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Policy was taken out on Dusty, not on himself; phrase is acceptable but 'Dusty had my back against the wall over... a policy' fine. Minor.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Toni Tinsel",
+   "stop_reason": "end_turn",
+   "cost": 0.0279,
+   "secs": 4.3,
+   "usage": {
+    "in": 8534,
+    "cw": 0,
+    "cr": 32300,
+    "out": 434
+   },
+   "findings": [
+    {
+     "field": "round2_innocent",
+     "exact_quote": "I don't even know what half these herbs and tinctures people keep mentioning actually do.",
+     "category": "other",
+     "severity": "low",
+     "explanation": "In round 2 (motives), nobody has yet mentioned herbs or tinctures; that is the round 3 topic. The reference to what 'people keep mentioning' is premature.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "reveal_confession_guilty",
+     "exact_quote": "nobody was watching the woman who used to beg for a spotlight",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Toni is gender-neutral in the package (description uses no gendered pronouns, other characters' references vary); gendering Toni as a woman here conflicts with the 'girl' used elsewhere only loosely, but master_context calls Toni a performer 'herself'. Not clearly wrong.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "Honey Hustle was wound tight all evening, tighter than I'd ever seen her, and she kept glancing toward the bar like she was waiting for something to happen.",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Accomplice for Toni is Honey; this deflection is by design, not a defect.",
+     "suggested_replacement": ""
+    }
+   ]
+  },
+  {
+   "character": "Vera Velour",
+   "stop_reason": "end_turn",
+   "cost": 0.0312,
+   "secs": 4.7,
+   "usage": {
+    "in": 9673,
+    "cw": 0,
+    "cr": 32300,
+    "out": 543
+   },
+   "findings": [
+    {
+     "field": "relationships",
+     "exact_quote": "spent buying Dusty's silence games and other people's affections",
+     "category": "single_generation_slip",
+     "severity": "low",
+     "explanation": "Garbled phrase: 'silence games' is ungrammatical. The money funded Dusty's blackmail payoffs, not silence games.",
+     "suggested_replacement": "spent funding Dusty's blackmail payoffs and other people's affections"
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "I confronted Dusty privately, quietly, the way I do everything, and I got nothing but that charming, infuriating smile in return",
+     "category": "cross_field_contradiction",
+     "severity": "low",
+     "explanation": "Innocent Vera describes the private confrontation, while her secret says no one knows about it, and it happened two nights before; consistent but she then says 'left angrier', contradicting 'no plan' is fine. Not a defect.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_accomplice",
+     "exact_quote": "Sandro Night was being bled dry for a cut of his own club's profits.",
+     "category": "secret_leak",
+     "severity": "low",
+     "explanation": "Accomplice branch is not innocent, so not a leak; no defect.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round4_innocent",
+     "exact_quote": "the same as the bartender, the same as the DJ",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Not a defect.",
+     "suggested_replacement": ""
+    },
+    {
+     "field": "round2_innocent",
+     "exact_quote": "in front of forty witnesses",
+     "category": "other",
+     "severity": "low",
+     "explanation": "Not a defect.",
+     "suggested_replacement": ""
+    }
+   ]
+  }
+ ],
+ "total_cost_usd": 0.4939,
+ "tokens": {
+  "i": 123925,
+  "cw": 32300,
+  "cr": 419900,
+  "o": 8128
+ }
+}

@@ -2,6 +2,10 @@
 
 ## 2026-10-03
 
+### Result: ADR-0136 calibration pilot (LLM quality review), report-only; 2.61 USD spent (Addendum 2)
+- Per-character review with Sonnet 5.5 (cached package prefix, structured output, high effort): found 7 of 10 semantic and 18 of 22 semantic+pronoun items on the pre-fix "Boogie" snapshot, **0 false alarms** there after a prompt that stops it listing items it calls fine. **Out of sample** (two hand-swept packages, one Spanish): 21 findings, **12 real (including 9 defects the hand sweeps had missed)**, 7 debatable, 2 false (both the known by-design accomplice-names-killer item).
+- Not 100% (it missed 3 of 10 on the labelled package), but cheaper and more thorough than the manual read: about 0.70 USD per 14-character order, 1 to 2 minutes. Recommendation: report-only on every paid order after a v3 prompt check; auto-apply later. Code and raw results in `docs/adr/0136-pilot/`.
+
 ### Feature: Child55 (chained context) built; hand-fix data shows chaining prevents about 1 in 14 semantic defects (ADR-0137, ADR-0136 addendum)
 - **Finding:** the Child's Claude calls already run in sequence per character but never receive each other's output. Child55 passes background, secret and introduction into the four script-writing calls (and the innocent scripts into the guilty call, which was already told to mirror them). No new scenario or delay. **Built, not imported.**
 - **Measured before relying on it:** classifying the 66 hand-edits to "Boogie Nights", chaining prevents 1 of the 10 non-pronoun semantic edits; 6 are slips inside a single generation and 3 are facts wrong against another character or master_context. My earlier guess that chaining would prevent about half was wrong; treated as a low-priority, reversible experiment (about 0.1 to 0.3 USD per package extra).
