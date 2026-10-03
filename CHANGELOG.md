@@ -2,6 +2,9 @@
 
 ## 2026-10-03
 
+### Feature: Child54 built (victim pronouns), not yet imported (ADR-0135 Addendum 1)
+- One `VICTIM PRONOUNS` rule in all 8 Child nodes, outside the language-pack `if()` so English gets it too: name the victim, or use a pronoun only if `master_context` is consistent about gender, otherwise they/them. Fixes the "Dusty called she/he by Lena, Pete, Francesca, Dot" drift from "Boogie Nights" at the source (it has no detector). Built from Child53; diff vs Child53 is exactly 8 strings, +927 chars each. **Jonathan imports and tests (English first).**
+
 ### Feature: self-heal now covers stray quotes/tags/backticks, missing branch headers and empty pointforms; paired-predicate drift that stalled "Boogie Nights" fixed (ADR-0103 Addendum 80)
 - **Why it stalled:** Addendum 78 widened the dangling-quote detector to `”` but the worker's strip only knew `'`, so it fixed 2 fields, re-detected, reverted, twice, and hit its attempt cap. Detector and heal now share one module (`glitch-strip.ts`, unit-tested) and ship together.
 - **Free heals added:** all quote glyphs, stray `</br>`/closing tags/backticks, a leaked "Let me correct that formatting issue." line, and **missing branch headers** (copied from sibling characters, any language). Replay on the pre-fix package reproduces all 38 mechanical hand edits.

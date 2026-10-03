@@ -46,3 +46,13 @@ Two structural causes found in the Child blueprint (Child52), neither of which a
 ## Key files
 - `docs/language-pack/header-labels.json`
 - `temp-files/build-child-v53.py`, `temp-files/MM Live - Child (Unified)53-LanguagePack.blueprint.json` (gitignored; import into Make)
+
+## Addendum 1 (2026-10-03): Child54, victim pronouns
+
+**Trigger.** "Boogie Nights, Bloody Nights" (ADR-0103 Addendum 79): the customer's concept and 12 of 14 characters wrote the victim gender-neutral ("they"), but Lena used she/her for the victim in about ten places, Pete wrote "Dusty herself", Francesca "a man's drink", Dot "golden girl". Same structural cause as the register drift above: the 8 Child calls are independent and each picks its own pronoun for the victim. It cannot be caught by a regex (it needs the per-package convention), so it is fixed at the source.
+
+**Decision.** `Child54` (`MM Live - Child (Unified)54-VictimPronouns`, `temp-files/build-child-v54.py`, built from Child53 so it carries the ADR-0134 relationships fix and this ADR's language pack): one new `VICTIM PRONOUNS` bullet in all 8 nodes (401 405 409 501 505 509 513 517), inserted before the BLACKMAIL / SECRET LOGIC bullet and **outside** the language-pack `if()` so it applies to English (about 91% of orders) too. Rule: name the victim when possible; use a pronoun only when `master_context` refers to the victim with one consistent gender; if it uses none, mixes genders or never states one, treat the victim as gender-neutral (they/them/their or the natural neutral wording in the output language, rewording if needed), never he/she/man/woman/boy/girl/guy/lady, for every field and every character; other characters keep their own pronouns. The build script asserts the anchor appears exactly once per node and a diff against Child53 confirms exactly 8 changed strings, each +927 characters. The text has no double quotes, backslashes, braces or newlines, so it is safe in Make. Cost: about 230 extra input tokens per call, about 1.9K per package, on every package (roughly 0.006 USD at the 3 USD per million assumption).
+
+**Known limit.** `master_context` itself is not always consistent (on this package it wrote "she" once for the victim in a long field), so a mixed `master_context` falls back to they/them by design. A cleaner fix is for the Parent to emit an explicit `victimPronouns` field; deferred until Child54 shows whether the fallback is enough.
+
+**Jonathan imports and tests:** the English test is the important one (a formula or text error would fail every module): fire one English character at the Child webhook, then check the victim is "they" or the name throughout and that no other character's pronouns changed. Not yet imported.
