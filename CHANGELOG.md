@@ -2,6 +2,13 @@
 
 ## 2026-10-03
 
+### Feature: self-heal now covers stray quotes/tags/backticks, missing branch headers and empty pointforms; paired-predicate drift that stalled "Boogie Nights" fixed (ADR-0103 Addendum 80)
+- **Why it stalled:** Addendum 78 widened the dangling-quote detector to `”` but the worker's strip only knew `'`, so it fixed 2 fields, re-detected, reverted, twice, and hit its attempt cap. Detector and heal now share one module (`glitch-strip.ts`, unit-tested) and ship together.
+- **Free heals added:** all quote glyphs, stray `</br>`/closing tags/backticks, a leaked "Let me correct that formatting issue." line, and **missing branch headers** (copied from sibling characters, any language). Replay on the pre-fix package reproduces all 38 mechanical hand edits.
+- **Paid heal added (approved):** empty `*_pointform` next to prose, via the existing regen path at $0.05/character. First run: 5 packages, $0.30.
+- **Gate:** both new classes are blocking defects (completion transitions only). Live corpus: 0 open in the last 30 days.
+- North Star now states the autonomy goal. Full detail: ADR-0103 Addendum 80.
+
 ### Feature: Child53 language pack, fixed speech register and canonical section headers per language (ADR-0135)
 - **Why:** the Child's register rule ("the introduction establishes the register") cannot be followed, because the 8 Claude calls per character never see each other's output; and section labels were translated independently in every call (German 10 and Italian 14 distinct wordings per field on average; every French IF-YOU'RE-INNOCENT/GUILTY/ACCOMPLICE header was left in English).
 - **Built (not yet imported):** `Child53` (on top of Child52): register fixed per language (informal always; Spanish tú/vosotros unless set in Latin America, etc.), exact label tables for Spanish, German, French, Italian, Portuguese and Dutch from `docs/language-pack/header-labels.json`, and a no-stray-English rule. Wrapped in `if(63.language = "English"; ...)` so English orders are unchanged and free. No new scenarios or branches.

@@ -65,3 +65,52 @@ export function stripStrayGlitches(text: string): { text: string; changes: strin
   out = out.replace(/[ \t]+$/gm, "").replace(/\n{3,}/g, "\n\n").replace(/\s+$/, "");
   return { text: out, changes };
 }
+
+// ---------------------------------------------------------------------------
+// Missing baked-in branch headers (ADR-0103 Addendum 80)
+// ---------------------------------------------------------------------------
+// A slip-style branch field normally starts "## ROUND 2: MOTIVES\n\n**IF YOU'RE THE ACCOMPLICE**\n\n". When the model omits it, the
+// host's compiled guide (which concatenates raw fields) shows the branch unlabeled. The right header is not guessable in 13
+// languages, but it is always present on the SAME field of the other characters in the SAME package, so we copy the majority one.
+// Mirrors package_missing_branch_header() (slip style only; a field "has a header" when it starts with '#').
+
+const HEADER_RX = /^(#{1,3}[ \t]+[^\n]+)\n+(\*\*[^\n*][^\n]*\*\*[ \t]*\n+)?/;
+
+/** The leading "## ..." line (plus, for per-role fields, the following bold-only role line), normalised to end in a blank line. */
+export function extractHeader(text: string, field: string): string | null {
+  const m = HEADER_RX.exec((text ?? "").replace(/^\s+/, ""));
+  if (!m) return null;
+  let h = m[1].trimEnd() + "\n\n";
+  // The introduction sometimes has an extra bold instruction line ("**Read this aloud ...**"); that is not part of the header.
+  if (field !== "introduction" && m[2]) h += m[2].trimEnd() + "\n\n";
+  return h;
+}
+
+/**
+ * Majority header for `field` among sibling characters' texts. Returns null (escalate, do not guess) unless the winning header
+ * is a strict majority of the siblings that have a header, and is shared by at least 2 siblings (or is the only header-bearing
+ * sibling when there are at most 2 siblings with text).
+ */
+export function deriveBranchHeader(field: string, siblingTexts: string[]): string | null {
+  const nonEmpty = siblingTexts.filter((t) => (t ?? "").trim() !== "");
+  const counts = new Map<string, number>();
+  for (const t of nonEmpty) {
+    const h = extractHeader(t, field);
+    if (h) counts.set(h, (counts.get(h) ?? 0) + 1);
+  }
+  let best: string | null = null;
+  let bestN = 0;
+  for (const [h, n] of counts) if (n > bestN) { best = h; bestN = n; }
+  if (!best) return null;
+  // Majority is judged among siblings that HAVE a header (headerless siblings are the defect we are fixing, not votes).
+  // A tie is ambiguous, so refuse.
+  let bearing = 0;
+  for (const n of counts.values()) bearing += n;
+  if (bestN * 2 <= bearing && bearing > 1) return null;
+  if (bestN < 2 && nonEmpty.length > 2) return null;
+  return best;
+}
+
+export function prependHeader(text: string, header: string): string {
+  return header + (text ?? "").replace(/^\s+/, "");
+}

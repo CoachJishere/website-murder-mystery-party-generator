@@ -1570,3 +1570,25 @@ Closes the open item from Addendums 73 and 74. **Problem:** "Trick, Treat, Dead"
 ### Key files (Addendum 79)
 - `supabase/migrations/20261003120000_add_formatting_leak_and_backtick_to_meta_text_leak.sql`
 - `src/components/MysteryPackageTabView.tsx` (compiled guide concatenates raw branch fields; why missing headers matter)
+
+## Addendum 80 (2026-10-03): Why "Boogie Nights" did not self-heal, and closing the gap: worker drift fixed, header and pointform classes added (free + approved paid)
+
+**Question that prompted this (Jonathan):** which of the 57 hand-fixed fields were things the system should heal by itself, and which needed new detectors, given the goal that no package is swept by hand. That goal is now written into the North Star ("Operating Principle: Autonomous Quality"): prevent at source, detect, heal deterministically, escalate only judgment.
+
+**Finding 1: the existing self-heal was stalled by a paired-predicate drift introduced the same morning.** `auto_remediation_log` for the package shows `dangling_quote_mark` attempted at 06:13 and 06:43: the worker stripped the two single-quote fields, re-detected, saw Pete's trailing `”` still flagged (Addendum 78 had widened the DETECTOR to double quotes at 10:00 the day before while the worker's `DANGLING_QUOTE_RX` still only knew `'` and `’`), reverted all of it, and at 07:13 hit the 2-attempt cap (`skip:attempt_cap`). `template_artifact` for Gio's `</br>` escalated `no_mechanical_fix` (no strip existed). So a customer-held package waited for a human on two classes that are 100% mechanical. Lesson (third occurrence of this bug shape): a detector change and its heal change ship in the same commit, and the heal's patterns live in ONE shared module.
+
+**Fix.** New dependency-free module `supabase/functions/auto-remediate-packages/glitch-strip.ts` (+ unit tests `glitch-strip.test.mjs`, run with `node --experimental-strip-types`): all four quote glyphs for the dangling-quote strip; free removal of stray `</br>` (to a paragraph break), closing tags, backticks and a whole-line leaked formatting self-correction ("Let me correct that formatting issue.", length-capped, so dialogue like "Let me correct myself" is never touched). Replaying the new logic on the package's pre-fix text reproduces all 6 hand edits exactly. Deployed (v19+), `verify_jwt` unchanged.
+
+**New class `missing_branch_header` (free).** Migration `20261003130000` adds `package_missing_branch_header()` / `list_packages_with_missing_branch_header()` (slip style only: in detective style 57% of round scripts are headerless by design). Heal = copy the header from the same field on the other characters in the same package (majority among header-bearing siblings, strict majority, ties refuse), so it is in the right language and role wording with no translation. Replay on the pre-fix package: 32 of 32 fields derive the same header I wrote by hand. First live run healed 9 delivered packages (≈90 fields) and correctly escalated one where the Spanish reveal headers differed (MI vs TU); that exposed a bug in my first majority rule (headerless siblings were counted as votes) and it was fixed and re-run, 13 more fields healed.
+
+**New class `empty_pointform` (paid, approved by Jonathan 2026-10-03: "yes").** `package_empty_pointform()` / list: prose longer than 200 chars whose `*_pointform` sibling is empty, only when the conversation's `script_type` is `both` or `pointForm`, `accusations` excluded (empty by design for innocents). Heal reuses the existing `generate-pointform-summaries` Sonnet path at the existing `POINTFORM_REGEN_COST_USD = 0.05` per character, own attempt cap, under the existing $10/day cap. Corpus since 2026-05: roughly 1-9 packages a month with 1-2 affected characters. First live run: 5 packages, $0.30.
+
+**Gate.** Migration `20261003130100` adds both classes to `package_completion_blocking_defects()` (built from the live function text; one block added). Only transitions into `completed` and the heal/promote crons call the gate, so delivered packages are not re-flagged. State after the first runs: all four classes (headers, pointform, dangling quote, meta leak) at 0 across the last 30 days; the only delivered package with a blocking defect is the known confirmed false positive on "Blood On The Mead-bench".
+
+**Still manual (the roadmap to zero).** (1) Victim pronoun drift: prompt-level fix in progress (Child53). (2) Cross-field contradictions, wrong names/amounts/ownership, typos: judgment; an LLM review pass is proposed separately (ADR-0135, Proposed) and is NOT built; no paid judge runs without explicit approval. (3) Evidence/image defects etc. unchanged.
+
+### Key files (Addendum 80)
+- `supabase/functions/auto-remediate-packages/glitch-strip.ts`, `glitch-strip.test.mjs`, `index.ts`
+- `supabase/migrations/20261003130000_add_missing_branch_header_and_empty_pointform_detectors.sql`
+- `supabase/migrations/20261003130100_add_header_and_pointform_to_completion_gate.sql`
+- `docs/mysterymaker_north_star.md`

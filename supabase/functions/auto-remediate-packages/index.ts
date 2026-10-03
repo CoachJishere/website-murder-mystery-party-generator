@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { DANGLING_QUOTE_RX, stripStrayGlitches } from "./glitch-strip.ts";
+import { DANGLING_QUOTE_RX, deriveBranchHeader, prependHeader, stripStrayGlitches } from "./glitch-strip.ts";
 
 /**
  * auto-remediate-packages — closed-loop auto-remediation worker. See ADR-0047.
@@ -164,7 +164,9 @@ type DefectClass =
   | "missing_role_branch_content"
   | "pointform_language_mismatch"
   | "narration_person_mismatch"
-  | "dangling_quote_mark";
+  | "dangling_quote_mark"
+  | "missing_branch_header"
+  | "empty_pointform";
 
 /**
  * ADR-0061: the delegated meta_text_leak fallback (character-scope artifacts
@@ -189,6 +191,8 @@ const DETECTOR_RPC: Record<DefectClass, string> = {
   pointform_language_mismatch: "list_packages_with_pointform_language_mismatch",
   narration_person_mismatch: "list_packages_with_narration_person_mismatch",
   dangling_quote_mark: "list_packages_with_dangling_quote_mark",
+  missing_branch_header: "list_packages_with_missing_branch_header",
+  empty_pointform: "list_packages_with_empty_pointform",
 };
 
 // ---------------------------------------------------------------------------
@@ -1105,6 +1109,65 @@ async function handleSelfDirectedQuestions(ctx: RunCtx, row: Record<string, unkn
 }
 
 /**
+ * ADR-0103 Addendum 80: missing_branch_header — free, deterministic. `row.sources` is 'field:character_name' per hit (slip style).
+ * The header for each field is copied from the majority of the OTHER characters' same field in the same package (so it is in the
+ * right language and the right role wording); if the siblings do not agree, that field is skipped and the package escalates.
+ */
+async function handleMissingBranchHeader(ctx: RunCtx, row: Record<string, unknown>): Promise<void> {
+  const packageId = row.package_id as string;
+  const sources = (row.sources as string[]) ?? [];
+
+  await runGatedAttempt(ctx, packageId, "missing_branch_header", async () => {
+    const wanted = sources
+      .map((src) => {
+        const sep = src.indexOf(":");
+        return sep < 0 ? null : { field: src.slice(0, sep), charName: src.slice(sep + 1) };
+      })
+      .filter((x): x is { field: string; charName: string } => x !== null);
+    if (wanted.length === 0) return null;
+
+    const fields = [...new Set(wanted.map((w) => w.field))];
+    const { data, error } = await supabase
+      .from("mystery_characters")
+      .select(["id", "character_name", ...fields].join(", "))
+      .eq("package_id", packageId);
+    if (error) throw new Error(`header lookup failed: ${error.message}`);
+    const chars = (data ?? []) as unknown as Record<string, string | null>[];
+
+    const edits: { charId: string; field: string; before: string; after: string }[] = [];
+    for (const { field, charName } of wanted) {
+      const target = chars.find((c) => norm(String(c.character_name ?? "")) === norm(charName));
+      if (!target) continue;
+      const before = (target[field] as string | null) ?? "";
+      if (!before.trim() || before.trimStart().startsWith("#")) continue;
+      const siblings = chars.filter((c) => c !== target).map((c) => (c[field] as string | null) ?? "");
+      const header = deriveBranchHeader(field, siblings);
+      if (!header) continue; // siblings disagree or too few: do not guess
+      edits.push({ charId: target.id as string, field, before, after: prependHeader(before, header) });
+    }
+    if (edits.length === 0) return null;
+
+    return {
+      action: `prepend_branch_header:${edits.length}_fields`,
+      costUsd: 0,
+      apply: async () => {
+        for (const e of edits) await writeField("character", e.charId, e.field, e.after);
+        return {
+          beforeValue: JSON.stringify(
+            edits.map((e) => ({ character_id: e.charId, field: e.field, before: e.before })),
+          ),
+          note: `${edits.length} header(s) restored`,
+        };
+      },
+      revert: async () => {
+        for (const e of edits) await writeField("character", e.charId, e.field, e.before, { bypassLossGuard: true });
+        return true;
+      },
+    };
+  });
+}
+
+/**
  * ADR-0103 Addendum 67/68: dangling_quote_mark — deterministic strip of a
  * single trailing stray quote character. `row.sources` comes straight from
  * list_packages_with_dangling_quote_mark, one 'field:character_name' string
@@ -1412,10 +1475,12 @@ async function handlePointformLanguageMismatch(
   ctx: RunCtx,
   packageId: string,
   characterNames: string[],
+  // ADR-0103 Addendum 80: the same regeneration also heals an EMPTY pointform; it is its own class so it gets its own attempt cap.
+  defectClass: "pointform_language_mismatch" | "empty_pointform" = "pointform_language_mismatch",
 ): Promise<void> {
   if (characterNames.length === 0) return;
 
-  await runGatedAttempt(ctx, packageId, "pointform_language_mismatch", async () => {
+  await runGatedAttempt(ctx, packageId, defectClass, async () => {
     const { data: chars, error } = await supabase
       .from("mystery_characters")
       .select("id, character_name")
@@ -1653,6 +1718,13 @@ serve(async (req) => {
       }
     }
 
+    // 2c. Missing baked-in branch header — deterministic, free (ADR-0103 Addendum 80).
+    if (shouldRun("missing_branch_header")) {
+      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.missing_branch_header, sinceIso))) {
+        await handleMissingBranchHeader(ctx, row);
+      }
+    }
+
     // 3-4. identity_contamination / slip_culprit_leak — delegated to
     //    regenerate-child-content (ADR-0061; previously escalate-only).
     if (shouldRun("identity_contamination")) {
@@ -1715,6 +1787,17 @@ serve(async (req) => {
       }
       for (const [packageId, characterNames] of byPackage) {
         await handlePointformLanguageMismatch(ctx, packageId, characterNames);
+      }
+    }
+
+    // 8. Empty pointform next to non-empty prose — paid (Sonnet 5, ~$0.05/character), same regeneration path as #7
+    //    (ADR-0103 Addendum 80; Jonathan approved 2026-10-03). Grouped by package, then by distinct character.
+    if (shouldRun("empty_pointform")) {
+      const rows = await filterNeedsReview(await callDetector(DETECTOR_RPC.empty_pointform, sinceIso));
+      for (const row of rows) {
+        const pid = row.package_id as string;
+        const names = [...new Set(((row.sources as string[]) ?? []).map((src) => src.slice(src.indexOf(":") + 1)))];
+        if (pid && names.length > 0) await handlePointformLanguageMismatch(ctx, pid, names, "empty_pointform");
       }
     }
 

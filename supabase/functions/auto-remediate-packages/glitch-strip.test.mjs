@@ -40,3 +40,28 @@ t("br with other tags/clean text", () => {
 });
 t("empty", () => assert.deepEqual(stripStrayGlitches(""), { text: "", changes: [] }));
 console.log("all passed");
+
+// ---- header derivation ----
+import { deriveBranchHeader, extractHeader, prependHeader } from "./glitch-strip.ts";
+const H = "## ROUND 2: MOTIVES\n\n**IF YOU'RE THE ACCOMPLICE**\n\n";
+t("derives majority header", () => assert.equal(deriveBranchHeader("round2_accomplice", [H + "a", H + "b", H + "c", "no header here"]), H));
+t("copies header in another language unchanged", () => {
+  const es = "## RONDA 2: MOTIVOS\n\n**SI ERES EL CÓMPLICE**\n\n";
+  assert.equal(deriveBranchHeader("round2_accomplice", [es + "a", es + "b"]), es);
+});
+t("introduction ignores extra bold instruction line", () => {
+  const intro = "## ROUND 1: YOUR INTRODUCTION\n\n**Read this aloud when introducing yourself:**\n\nHi";
+  assert.equal(extractHeader(intro, "introduction"), "## ROUND 1: YOUR INTRODUCTION\n\n");
+});
+t("refuses to guess when siblings disagree", () => {
+  assert.equal(deriveBranchHeader("round2_guilty", ["## A\n\nx", "## B\n\nx", "## C\n\nx", "## D\n\nx"]), null);
+});
+t("refuses when no sibling has a header", () => assert.equal(deriveBranchHeader("round2_guilty", ["x", "y", "z"]), null));
+t("prepend", () => assert.equal(prependHeader("  Body", H), H + "Body"));
+t("majority among header-bearing siblings, ignoring headerless ones (the Spanish reveal case)", () => {
+  const tu = "## LA REVELACIÓN — TU CONFESIÓN\n\n", mi = "## LA REVELACIÓN — MI CONFESIÓN\n\n";
+  const sibs = [mi + "a", tu + "b", tu + "c", tu + "d", "x", "x", "x", "x", "x", "x"];
+  assert.equal(deriveBranchHeader("reveal_confession_accomplice", sibs), tu);
+});
+t("tie is refused", () => assert.equal(deriveBranchHeader("round2_guilty", ["## A\n\nx", "## A\n\nx", "## B\n\nx", "## B\n\nx"]), null));
+console.log("header tests passed");
