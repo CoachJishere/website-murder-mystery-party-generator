@@ -2,6 +2,9 @@
 
 ## 2026-10-03
 
+### Docs: non-English baseline audit done without the API; audit tool saved (ADR-0135 Addendum 2)
+- Scripted audit of all 12 paid non-English packages since July (123 characters): header wording matches the canonical table for only 45 to 73 percent of headers (English `ROUND` in Italian/French/Portuguese headers), German genuinely mixes formal "Ihnen/Sie" with "ihr/euch", Portuguese mixes "a senhora/o senhor" with "vocês", French and Italian are clean once heuristic false positives are removed; two of the twelve are English packages for non-English profiles. No API spend. Tool: `docs/language-pack/lang_audit.py`. No heal for delivered headers yet (prevention first; revisit after the first real non-English order post-Child53).
+
 ### Feature: production LLM quality reviewer (report-only), scheduled on every new paid package (ADR-0136 Addendum 5)
 - New edge function `review-package-quality` (v1, `verify_jwt` true): one structured Sonnet 5.5 call per character plus one for the shared documents, effort high, cached package context. Every finding is verified (its quote must appear exactly once in the named field) before being stored in `package_review_findings`; a digest is emailed to support@. Report-only: it never edits content. Spend logged in `auto_remediation_log` (`llm_review`) against the shared 10 USD/day cap, plus a 2 USD per-package cap.
 - Cron every 5 minutes, new paid non-test packages only, 20 minutes after completion, last 12 hours (the first 3-day window would have reviewed 8 swept packages, about 4 USD, so it was narrowed). Auto-apply tier built but OFF and untested live.
