@@ -147,6 +147,8 @@ const EditableSection: React.FC<EditableSectionProps> = ({
       setIsEditing(false);
       toast.success(t("mysteryPackage.edit.saved"));
     } catch (error: any) {
+      // The toast text is generic, so keep the real cause findable in the console.
+      console.error(`Failed to save section "${sectionLabel}":`, error);
       toast.error(
         t("mysteryPackage.edit.error") ||
           error.message ||

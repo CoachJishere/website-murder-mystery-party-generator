@@ -2,6 +2,12 @@
 
 ## 2026-10-03
 
+### Fix: Detective-style mysteries could not save edits to most character sections ("Failed to save")
+- **Cause:** `EDITABLE_CHARACTER_FIELDS` (mysteryPackageService.ts) was the slip-style field list (`round*_innocent/guilty/accomplice`, `final_*`). Detective-style characters store their rounds in `round2_script` / `round3_script` / `round4_script` / `final_statement`, and every style has `accusations`. The tab view rendered an edit pencil on all of them, but the save threw `Field "..." is not editable` before any request was sent, so the user saw only the generic "Failed to save" toast. Reported by a customer (contact form, 2026-10-03) whose detective package has 6 characters; edits to intro/background/secret etc. worked (all PATCHes 204), the round scripts, final statement and accusations did not. Affects every detective-style package (116 in the corpus) plus `accusations` on any style.
+- **Fix:** added the five fields to the allowlist. Cross-checked that every `key:` the character editor renders is now allowlisted.
+- **Also:** `EditableSection` now `console.error`s the real cause on a failed save (the toast text is deliberately generic, so the underlying error was previously invisible).
+- **Not changed (flagged):** in `scriptType = 'both'` the displayed text includes the appended "**Point Form:**" block and quote wrapping, and a save writes that displayed text back into the prose column (pre-existing for the slip-style fields too). `accusations` is stored as JSON but displayed as markdown, so a first save replaces the JSON with markdown (renders fine in both views, which fall back to raw text).
+
 ### Result: ADR-0136 calibration pilot (LLM quality review), report-only; 2.61 USD spent (Addendum 2)
 - Per-character review with Sonnet 5.5 (cached package prefix, structured output, high effort): found 7 of 10 semantic and 18 of 22 semantic+pronoun items on the pre-fix "Boogie" snapshot, **0 false alarms** there after a prompt that stops it listing items it calls fine. **Out of sample** (two hand-swept packages, one Spanish): 21 findings, **12 real (including 9 defects the hand sweeps had missed)**, 7 debatable, 2 false (both the known by-design accomplice-names-killer item).
 - Not 100% (it missed 3 of 10 on the labelled package), but cheaper and more thorough than the manual read: about 0.70 USD per 14-character order, 1 to 2 minutes. Recommendation: report-only on every paid order after a v3 prompt check; auto-apply later. Code and raw results in `docs/adr/0136-pilot/`.

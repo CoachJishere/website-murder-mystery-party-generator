@@ -527,6 +527,15 @@ const EDITABLE_CHARACTER_FIELDS = [
   'rumors',
   'secret',
   'introduction',
+  // Detective-style (mystery_style = 'detective') characters store their rounds in
+  // *_script / final_statement, not the innocent/guilty/accomplice branches below.
+  // accusations is shown to every style. All are rendered with an edit pencil in
+  // MysteryPackageTabView, so each must be allowlisted or the save throws.
+  'round2_script',
+  'round3_script',
+  'round4_script',
+  'final_statement',
+  'accusations',
   'round2_questions',
   'round2_innocent',
   'round2_guilty',
