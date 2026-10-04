@@ -12,6 +12,9 @@ import * as C from "./review-core.ts";
  *
  * Invocation (service role): { mode: "sweep", max_packages?: number }  - reviews the next packages from list_packages_needing_review
  *                            { mode: "one", package_id, force?, dry_run? }
+ *                            { mode: "release_queue" } - ADR-0138: packages held in status 'reviewing' are reviewed, their findings of the
+ *                              classes in pipeline_settings.review_auto_apply_classes are applied (with the revert guard), and they are released.
+ *                              A failed, stuck or cost-capped review never holds a customer: the package is released anyway and an alert is sent.
  * Spend is logged in auto_remediation_log (defect_class "llm_review") so it counts against the same daily cap as the other heals.
  * Calibration and design: docs/adr/0136-llm-quality-review-pass-for-autonomous-packages.md (Addenda 1-4), docs/adr/0136-pilot/.
  */
@@ -113,7 +116,7 @@ async function sendAlert(subject: string, body: string) {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({ from: "Mystery Maker Alerts <noreply@mysterymaker.party>", to: ["support@mysterymaker.party"], subject,
-      html: `<div style="font-family:sans-serif;max-width:700px"><h3>${C.escapeHtml(subject)}</h3><p>${C.escapeHtml(body)}</p><p style="color:#6b7280">The package itself is unaffected: the reviewer is report-only and runs after delivery.</p></div>` }),
+      html: `<div style="font-family:sans-serif;max-width:700px"><h3>${C.escapeHtml(subject)}</h3><p>${C.escapeHtml(body)}</p><p style="color:#6b7280">Details are in auto_remediation_log and package_reviews. A held package is always released; the reviewer never blocks a customer.</p></div>` }),
   });
   if (!resp.ok) console.error(`alert email failed: ${resp.status} ${(await resp.text()).slice(0, 200)}`);
 }
@@ -131,10 +134,10 @@ async function sendDigest(pkgTitle: string, packageId: string, style: string, ke
 }
 
 /** Auto-apply tier. OFF unless REVIEW_AUTO_APPLY_CLASSES names a category. Not yet exercised on a live package. */
-async function autoApply(packageId: string, pkg: Row, chars: Row[], findingRows: { id: string; item_name: string; field: string; category: string; exact_quote: string; suggested_replacement: string }[]) {
+async function autoApply(packageId: string, pkg: Row, chars: Row[], findingRows: { id: string; item_name: string; field: string; category: string; exact_quote: string; suggested_replacement: string }[], classes: string[] = AUTO_APPLY_CLASSES) {
   let applied = 0, reverted = 0;
   for (const f of findingRows) {
-    if (!AUTO_APPLY_CLASSES.includes(f.category)) continue;
+    if (!classes.includes(f.category)) continue;
     const raw: C.RawFinding = { field: f.field, exact_quote: f.exact_quote, category: f.category, severity: "medium", explanation: "", suggested_replacement: f.suggested_replacement };
     if (!C.replacementIsSane(raw)) continue;
     const isDoc = f.item_name === C.DOC_ITEM_NAME;
@@ -163,12 +166,22 @@ async function autoApply(packageId: string, pkg: Row, chars: Row[], findingRows:
     } else {
       await supabase.from("package_review_findings").update({ status: "applied", resolved_at: new Date().toISOString() }).eq("id", f.id);
       applied++;
+      // ADR-0138: keep the pointform bullets in step when they quote the same span verbatim (best effort; bullets usually paraphrase).
+      if (!isDoc) {
+        const pfField = `${f.field}_pointform`;
+        const { data: pfRow } = await supabase.from("mystery_characters").select(pfField).eq("id", rowId).single();
+        const pf = pfRow ? (pfRow as unknown as Row)[pfField] : null;
+        if (typeof pf === "string") {
+          const pfAfter = C.applyReplacement(pf, raw);
+          if (pfAfter !== null) await supabase.from("mystery_characters").update({ [pfField]: pfAfter }).eq("id", rowId);
+        }
+      }
     }
   }
   return { applied, reverted };
 }
 
-async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?: boolean }): Promise<Row> {
+async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?: boolean; applyClasses?: string[] }): Promise<Row> {
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
@@ -253,7 +266,8 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
   await logSpend(packageId, `review:${inserted.length}_findings:${status}`, status === "failed" ? "failed" : "escalated", spent);
 
   let apply = { applied: 0, reverted: 0 };
-  if (AUTO_APPLY_CLASSES.length > 0 && inserted.length > 0) apply = await autoApply(packageId, pkg as Row, chars, inserted);
+  const applyClasses = opts.applyClasses ?? AUTO_APPLY_CLASSES;
+  if (applyClasses.length > 0 && inserted.length > 0) apply = await autoApply(packageId, pkg as Row, chars, inserted, applyClasses);
   await sendDigest(String((pkg as Row).title ?? ""), packageId, style, inserted, spent);
   if (DIGEST_MODE === "off" && ALERT_HIGH && inserted.some((f) => f.severity === "high")) {
     const mail = C.digestEmail(String((pkg as Row).title ?? ""), packageId, style, MODEL, spent, inserted, "summary");
@@ -268,12 +282,87 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
     high: inserted.filter((f) => f.severity === "high").length, discarded, cost_usd: Number(spent.toFixed(4)), partial_reason: partialWhy || undefined, errors: errors.slice(0, 5), auto_apply: apply };
 }
 
+async function setting(key: string, fallback: string): Promise<string> {
+  const { data } = await supabase.from("pipeline_settings").select("value").eq("key", key).maybeSingle();
+  return (data as { value?: string } | null)?.value ?? fallback;
+}
+
+// ADR-0138: the reviewer's precision is only measured for English and Spanish packages, so auto-apply is limited to those until other
+// languages are calibrated (findings are still stored and nothing is held back). Cheap stopword test on a sample of the prose. The
+// Spanish list deliberately avoids words that Portuguese, Italian or French share (que, la, con, para, por, como, una, del, esta).
+const EN_STOP = /\b(the|and|you|your|was|that|with|for|have|this|but|not|are|from|they|what|his|her)\b/gi;
+const ES_STOP = /\b(el|los|las|pero|más|está|también|cuando|donde|sobre|entre|muy|sin|porque|había|fue|soy|eres|nada|todo|todos|este|ese|esa|usted|ustedes|nuestro|nuestra|hay|ser)\b/gi;
+function isEnglishOrSpanish(chars: Row[]): boolean {
+  const sample = chars.slice(0, 4).map((c) => String(c.introduction ?? "").slice(0, 700)).join(" ");
+  const words = sample.split(/\s+/).filter(Boolean).length || 1;
+  const en = (sample.match(EN_STOP) ?? []).length / words;
+  const es = (sample.match(ES_STOP) ?? []).length / words;
+  return en > 0.1 || es > 0.06;
+}
+
+/** Apply every still-open finding of the allowed classes for a package (used after a review that did not apply inline). */
+async function applyOpenFindings(packageId: string, classes: string[]): Promise<{ applied: number; reverted: number; skipped?: string }> {
+  if (classes.length === 0) return { applied: 0, reverted: 0 };
+  const { data: pkg } = await supabase.from("mystery_packages").select("*").eq("id", packageId).single();
+  const { data: chars } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId);
+  if (!isEnglishOrSpanish((chars ?? []) as Row[])) return { applied: 0, reverted: 0, skipped: "language not calibrated for auto-apply" };
+  const { data: open } = await supabase.from("package_review_findings")
+    .select("id,item_name,field,category,exact_quote,suggested_replacement").eq("package_id", packageId).eq("status", "open").in("category", classes);
+  if (!pkg || !open || open.length === 0) return { applied: 0, reverted: 0 };
+  return autoApply(packageId, pkg as Row, (chars ?? []) as Row[], open as never, classes);
+}
+
+/**
+ * ADR-0138: review-and-release queue for packages held in status 'reviewing'. Never holds a customer on a reviewer problem:
+ * a failed, stuck, errored or cost-capped review releases the package anyway and sends one alert.
+ */
+async function releaseQueue(): Promise<Row[]> {
+  const started = Date.now();
+  const maxMin = Number(await setting("review_max_minutes", "15")) || 15;
+  const classes = (await setting("review_auto_apply_classes", "")).split(",").map((c) => c.trim()).filter(Boolean);
+  const { data: held } = await supabase.from("mystery_packages").select("id,title,quality_review_started_at,updated_at")
+    .eq("generation_status->>status", "reviewing").order("quality_review_started_at", { ascending: true }).limit(3);
+  const out: Row[] = [];
+  for (const p of (held ?? []) as { id: string; title: string | null; quality_review_started_at: string | null; updated_at: string }[]) {
+    if (Date.now() - started > 200_000) break; // leave time for the next tick instead of running into the platform limit
+    const ageMin = (Date.now() - new Date(p.quality_review_started_at ?? p.updated_at).getTime()) / 60000;
+    let releaseReason = "reviewed";
+    let alertWhy = "";
+    let applied = { applied: 0, reverted: 0 };
+    try {
+      const { data: existing } = await supabase.from("package_reviews").select("id,status,started_at").eq("package_id", p.id).eq("prompt_version", C.PROMPT_VERSION).maybeSingle();
+      const e = existing as { id: string; status: string; started_at: string } | null;
+      if (e?.status === "running" && Date.now() - new Date(e.started_at).getTime() < 10 * 60 * 1000 && ageMin < maxMin) { out.push({ package_id: p.id, waiting: "review running" }); continue; }
+      if (e?.status === "running") { await supabase.from("package_reviews").update({ status: "failed", finished_at: new Date().toISOString(), error: "stuck while releasing" }).eq("id", e.id); alertWhy = "review stuck while releasing"; }
+      if (!e) {
+        if (ageMin >= maxMin) { alertWhy = `review not started within ${maxMin} minutes`; }
+        else if ((await spentToday()) >= DAILY_CAP_USD) { alertWhy = "daily cost cap reached, released without review"; }
+        else {
+          const r = await reviewPackage(p.id, { applyClasses: [] });
+          if (r.skipped) { out.push({ package_id: p.id, waiting: "review started elsewhere" }); continue; }
+          if (r.status !== "done") releaseReason = `review ${String(r.status)}`; // reviewPackage already sent its own alert
+        }
+      }
+      applied = await applyOpenFindings(p.id, classes);
+    } catch (err) {
+      alertWhy = `review error: ${(err as Error).message}`.slice(0, 300);
+    }
+    if (alertWhy) releaseReason = alertWhy.slice(0, 60);
+    const { data: state } = await supabase.rpc("release_package_after_review", { _package_id: p.id, _reason: releaseReason });
+    if (alertWhy) await sendAlert(`Package released without a full quality review: ${p.title ?? p.id}`, `${alertWhy}. The package was released to the customer anyway (status now ${String(state)}). Package ${p.id}.`);
+    out.push({ package_id: p.id, title: p.title, released: state, reason: releaseReason, applied: applied.applied, reverted: applied.reverted });
+  }
+  return out;
+}
+
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = body.mode === "one" ? "one" : "sweep";
+    const mode = body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : "sweep";
     const out: Row[] = [];
-    if (mode === "one") {
+    if (mode === "release_queue") {
+      out.push(...await releaseQueue());
+    } else if (mode === "one") {
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
       out.push(await reviewPackage(String(body.package_id), { force: body.force === true, dryRun: body.dry_run === true }));
     } else {
