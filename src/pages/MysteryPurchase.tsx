@@ -12,6 +12,7 @@ import type { Mystery } from "@/interfaces/mystery";
 import MysteryPreviewCard from "@/components/purchase/MysteryPreviewCard";
 import { extractTitleFromMessages } from "@/utils/titleExtraction";
 import { generateCompletePackage } from "@/services/mysteryPackageService";
+import { getGenerationTiming } from "@/utils/generationTiming";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
@@ -595,6 +596,9 @@ const MysteryPurchase = () => {
                         isMobile && "text-sm"
                       )}>
                         {t("purchase.package.priceDescription")}
+                      </p>
+                      <p className={cn("text-muted-foreground mt-2", isMobile ? "text-sm" : "text-sm")} data-testid="purchase-build-time">
+                        {t("purchase.package.buildTime", { time: t(`mysteryView.timing.${getGenerationTiming(mystery?.guests || 6).etaKey}`) })}
                       </p>
                     </div>
                   </div>

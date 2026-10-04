@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { trackMysteryCreation, trackGenerationCompleted, trackGenerationFailed } from "@/lib/analytics";
 import GenerationProgress from "@/components/GenerationProgress";
+import { getGenerationTiming } from "@/utils/generationTiming";
 
 interface MysteryPackageData {
   title?: string;
@@ -55,21 +56,6 @@ const NEEDS_REVIEW_SILENT_WINDOW_MS = 10 * 60 * 1000;
 // started — older packages (which may have since been legitimately reduced by
 // Remove-a-Character, ADR-0036) are never blocked by a stale character count.
 const CHARACTER_COUNT_GATE_WINDOW_MS = 4 * 60 * 60 * 1000;
-
-// Generation timing scales with cast size (ADR-0043 follow-up). A 32-player
-// package legitimately takes ~17 min, so the old flat 15-min client timeout
-// false-alarmed on large jobs — firing notify-generation-issue and showing the
-// customer a "team notified" card mid-success ("Death At Thornfield Manor",
-// 2026-07-27). The timeout for each tier is kept comfortably above the ETA we
-// display for that tier, so we never alarm before the time we promised.
-// Tiers map to the mysteryView.timing.{small,medium,large,xlarge} i18n keys.
-const getGenerationTiming = (playerCount: number): { etaKey: string; timeoutMin: number } => {
-  const n = playerCount || 6;
-  if (n <= 10) return { etaKey: 'small', timeoutMin: 20 };
-  if (n <= 18) return { etaKey: 'medium', timeoutMin: 30 };
-  if (n <= 28) return { etaKey: 'large', timeoutMin: 40 };
-  return { etaKey: 'xlarge', timeoutMin: 50 };
-};
 
 const MysteryView = () => {
   const [mystery, setMystery] = useState<any | null>(null);

@@ -270,7 +270,7 @@
       "description": "Partagez votre vision unique : n'importe quel thème, personnage ou décor que vous désirez."
     },
     "step2": {
-      "title": "Nous générons instantanément votre mystère personnalisé.",
+      "title": "Nous générons votre mystère personnalisé.",
       "description": "Notre IA crée tout méticuleusement selon vos spécifications : personnages, indices et intrigue."
     },
     "step3": {
@@ -716,7 +716,7 @@
         },
         "creationProcess": {
           "question": "Comment fonctionne le processus de création et d'achat ?",
-          "answer": "C'est simple ! D'abord, vous décrivez votre mystère de meurtre idéal, et nous générons un aperçu personnalisé gratuitement. Une fois que vous êtes satisfait de votre mystère, vous achetez le package complet pour 24,99 $. Vous recevrez instantanément tout ce dont vous avez besoin pour l'hébergement : des profils de personnages détaillés, un guide de l'hôte et tous les matériaux de jeu."
+          "answer": "C'est simple ! D'abord, vous décrivez votre mystère de meurtre idéal, et nous générons un aperçu personnalisé gratuitement. Une fois que vous êtes satisfait de votre mystère, vous achetez le package complet pour 24,99 $. Nous créons ensuite et vérifions votre package complet, en général 15 à 45 minutes selon la taille du groupe, et nous vous envoyons un e-mail dès qu'il est prêt : des profils de personnages détaillés, un guide de l'hôte et tous les matériaux de jeu."
         },
         "saveWork": {
           "question": "Puis-je enregistrer mon travail et y revenir plus tard ?",
@@ -1150,7 +1150,7 @@
     "subtitle": "Obtenez un accès complet à votre package de mystère de meurtre",
     "package": {
       "title": "Package mystère de meurtre",
-      "description": "Achat unique, accès instantané",
+      "description": "Achat unique, sans abonnement",
       "priceDescription": "Le package complet du mystère de meurtre avec tous les matériaux de personnage, les indices et les instructions de l'hôte.",
       "discountBadge": "{{percent}}% DE RÉDUCTION",
       "whatsIncluded": "Ce qui est inclus :",
@@ -1162,7 +1162,8 @@
         "Chronologie des événements",
         "Script de révélation",
         "Téléchargements PDF de tous les matériaux"
-      ]
+      ],
+      "buildTime": "Après votre paiement, nous créons et vérifions votre package complet : {{time}}. Nous vous envoyons un e-mail dès qu'il est prêt."
     },
     "buttons": {
       "processing": "Traitement...",

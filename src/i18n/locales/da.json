@@ -270,7 +270,7 @@
       "description": "Fortæl os din unikke vision – ethvert tema, alle karakterer eller scenarie, du ønsker."
     },
     "step2": {
-      "title": "Vi skaber dit skræddersyede mysterium med det samme.",
+      "title": "Vi skaber dit skræddersyede mysterium.",
       "description": "Vores AI genererer alt præcis, som du ønsker det – karakterer, spor og historie."
     },
     "step3": {
@@ -715,7 +715,7 @@
         },
         "creationProcess": {
           "question": "Hvordan fungerer oprettelses- og købsprocessen?",
-          "answer": "Nemt! Beskriv først dit perfekte murder mystery, og vi skaber en skræddersyet forhåndsvisning gratis. Når du er tilfreds med dit mysterium, køber du den komplette pakke for $24.99. Du får øjeblikkeligt alt, hvad du skal bruge for at afholde festen: detaljerede karakterprofiler, værtsguide og alt spilmateriale."
+          "answer": "Nemt! Beskriv først dit perfekte murder mystery, og vi skaber en skræddersyet forhåndsvisning gratis. Når du er tilfreds med dit mysterium, køber du den komplette pakke for $24.99. Derefter bygger og kvalitetstjekker vi din komplette pakke, normalt 15 til 45 minutter afhængigt af gruppens størrelse, og sender dig en e-mail, så snart den er klar: detaljerede karakterprofiler, værtsguide og alt spilmateriale."
         },
         "saveWork": {
           "question": "Kan jeg gemme mit arbejde og vende tilbage til det senere?",
@@ -1115,7 +1115,7 @@
     "subtitle": "Få fuld adgang til din murder mystery-pakke",
     "package": {
       "title": "Murder Mystery-pakke",
-      "description": "Engangskøb, øjeblikkelig adgang",
+      "description": "Engangskøb, intet abonnement",
       "priceDescription": "Komplet murder mystery-pakke med alt karaktermateriale, spor og værtsinstruktioner.",
       "discountBadge": "{{percent}}% RABAT",
       "whatsIncluded": "Hvad der er inkluderet:",
@@ -1127,7 +1127,8 @@
         "Tidslinje over begivenhederne",
         "Manuskript til afsløring af løsningen",
         "PDF-downloads af alt materiale"
-      ]
+      ],
+      "buildTime": "Når du har betalt, bygger og kvalitetstjekker vi din komplette pakke: {{time}}. Vi sender dig en e-mail, så snart den er klar."
     },
     "buttons": {
       "processing": "Behandler...",

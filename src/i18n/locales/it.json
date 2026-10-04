@@ -270,7 +270,7 @@
       "description": "Condividi la tua visione unica: qualsiasi tema, personaggio o ambientazione desideri."
     },
     "step2": {
-      "title": "Generiamo istantaneamente il tuo mistero personalizzato.",
+      "title": "Generiamo il tuo mistero personalizzato.",
       "description": "La nostra IA crea meticolosamente tutto secondo le tue specifiche: personaggi, indizi e trama."
     },
     "step3": {
@@ -715,7 +715,7 @@
         },
         "creationProcess": {
           "question": "Come funziona il processo di creazione e acquisto?",
-          "answer": "È semplice! Per prima cosa, descrivi il tuo mistero con delitto ideale e noi generiamo un'anteprima personalizzata gratuitamente. Una volta che sei soddisfatto del tuo mistero, acquisti il pacchetto completo per $24.99. Riceverai istantaneamente tutto ciò di cui hai bisogno per l'hosting: profili dettagliati dei personaggi, una guida per l'organizzatore e tutti i materiali di gioco."
+          "answer": "È semplice! Per prima cosa, descrivi il tuo mistero con delitto ideale e noi generiamo un'anteprima personalizzata gratuitamente. Una volta che sei soddisfatto del tuo mistero, acquisti il pacchetto completo per $24.99. Poi creiamo e controlliamo il tuo pacchetto completo, di solito 15-45 minuti a seconda della dimensione del gruppo, e ti inviamo un'e-mail non appena è pronto: profili dettagliati dei personaggi, una guida per l'organizzatore e tutti i materiali di gioco."
         },
         "saveWork": {
           "question": "Posso salvare il mio lavoro e tornarci in seguito?",
@@ -1127,7 +1127,7 @@
     "subtitle": "Ottieni accesso completo al tuo pacchetto mistero con delitto",
     "package": {
       "title": "Pacchetto Mistero con Delitto",
-      "description": "Acquisto una tantum, accesso immediato",
+      "description": "Acquisto una tantum, nessun abbonamento",
       "priceDescription": "Il pacchetto mistero con delitto completo con tutti i materiali dei personaggi, gli indizi e le istruzioni per l'organizzatore.",
       "discountBadge": "{{percent}}% DI SCONTO",
       "whatsIncluded": "Cosa è incluso:",
@@ -1139,7 +1139,8 @@
         "Cronologia degli eventi",
         "Script di rivelazione",
         "Download PDF di tutti i materiali"
-      ]
+      ],
+      "buildTime": "Dopo il pagamento creiamo e controlliamo il tuo pacchetto completo: {{time}}. Ti invieremo un'e-mail non appena è pronto."
     },
     "buttons": {
       "processing": "Elaborazione...",

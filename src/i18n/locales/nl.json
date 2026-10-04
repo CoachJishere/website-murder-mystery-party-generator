@@ -270,7 +270,7 @@
       "description": "Vertel ons uw unieke visie - elk thema, personages of omgeving die u wilt."
     },
     "step2": {
-      "title": "Wij creëren uw aangepaste mysterie direct.",
+      "title": "Wij creëren uw aangepaste mysterie.",
       "description": "Onze AI genereert alles precies zoals u het wilt – personages, aanwijzingen en verhaal."
     },
     "step3": {
@@ -715,7 +715,7 @@
         },
         "creationProcess": {
           "question": "Hoe werkt het aanmaak- en aankoopproces?",
-          "answer": "Eenvoudig! Beschrijf eerst uw ideale moordmysterie en we maken gratis een aangepaste preview. Als u tevreden bent met uw mysterie, koopt u het complete pakket voor $24,99. U krijgt direct alles wat u nodig heeft om te hosten: gedetailleerde personageprofielen, een hostgids en alle spelmaterialen."
+          "answer": "Eenvoudig! Beschrijf eerst uw ideale moordmysterie en we maken gratis een aangepaste preview. Als u tevreden bent met uw mysterie, koopt u het complete pakket voor $24,99. Daarna maken en controleren we uw complete pakket, meestal 15 tot 45 minuten afhankelijk van de groepsgrootte, en sturen we u een e-mail zodra het klaar is: gedetailleerde personageprofielen, een hostgids en alle spelmaterialen."
         },
         "saveWork": {
           "question": "Kan ik mijn werk opslaan en er later op terugkomen?",
@@ -1127,7 +1127,7 @@
     "subtitle": "Krijg volledige toegang tot uw moordmysteriepakket",
     "package": {
       "title": "Moordmysterie Pakket",
-      "description": "Eenmalige aankoop, directe toegang",
+      "description": "Eenmalige aankoop, geen abonnement",
       "priceDescription": "Compleet moordmysteriepakket met alle personagematerialen, aanwijzingen en hostinginstructies.",
       "discountBadge": "{{percent}}% KORTING",
       "whatsIncluded": "Wat is inbegrepen:",
@@ -1139,7 +1139,8 @@
         "Tijdlijn van gebeurtenissen",
         "Oplossingsonthullingsscript",
         "PDF-downloads van alle materialen"
-      ]
+      ],
+      "buildTime": "Na uw betaling maken en controleren we uw complete pakket: {{time}}. We sturen u een e-mail zodra het klaar is."
     },
     "buttons": {
       "processing": "Verwerken...",

@@ -2,6 +2,10 @@
 
 ## 2026-10-04
 
+### Fix: the wait time is now stated before payment, in 13 languages (ADR-0138 Addendum 2)
+- Purchase card "instant access" and the FAQ's "you'll instantly get everything" were untrue. The purchase page now states the measured range for the order's cast size and promises an email; the FAQ and the how-it-works step were corrected; SEO titles ("in Minutes") were left alone on purpose.
+- The "team notified" timeout on the package page was below the ranges we display (20/30/40/50 vs up to 35/60/60/75 minutes); now 40/65/65/80 in a shared util.
+
 ### Improvement: paid customers returning from checkout no longer have to click "Generate" (ADR-0139 Addendum 1)
 - `MysteryView` starts generation by itself for a paid order with no package when the page is opened with `?purchase=success`. The atomic claim makes a double start harmless, and the rescue worker still covers anyone who never reaches the page. Verified with a mocked backend (one trigger call with the flag, none without).
 

@@ -270,7 +270,7 @@
       "description": "Berätta din unika vision – vilket tema, vilka karaktärer eller miljö du vill ha."
     },
     "step2": {
-      "title": "Vi skapar ditt skräddarsydda mysterium direkt.",
+      "title": "Vi skapar ditt skräddarsydda mysterium.",
       "description": "Vår AI genererar allt precis som du vill ha det – karaktärer, ledtrådar och story."
     },
     "step3": {
@@ -715,7 +715,7 @@
         },
         "creationProcess": {
           "question": "Hur fungerar skapande- och köpprocessen?",
-          "answer": "Enkelt! Beskriv först ditt perfekta murder mystery, så skapar vi en skräddarsydd förhandsgranskning gratis. När du är nöjd med ditt mysterium köper du det kompletta paketet för $24.99. Du får direkt allt du behöver för att arrangera festen: detaljerade karaktärsprofiler, värdguide och allt spelmaterial."
+          "answer": "Enkelt! Beskriv först ditt perfekta murder mystery, så skapar vi en skräddarsydd förhandsgranskning gratis. När du är nöjd med ditt mysterium köper du det kompletta paketet för $24.99. Sedan skapar och kvalitetsgranskar vi ditt kompletta paket, vanligtvis 15 till 45 minuter beroende på gruppens storlek, och mejlar dig så fort det är klart: detaljerade karaktärsprofiler, värdguide och allt spelmaterial."
         },
         "saveWork": {
           "question": "Kan jag spara mitt arbete och återvända till det senare?",
@@ -1115,7 +1115,7 @@
     "subtitle": "Få full åtkomst till ditt murder mystery-paket",
     "package": {
       "title": "Murder Mystery-paket",
-      "description": "Engångsköp, omedelbar åtkomst",
+      "description": "Engångsköp, ingen prenumeration",
       "priceDescription": "Komplett murder mystery-paket med allt karaktärsmaterial, ledtrådar och värdinstruktioner.",
       "discountBadge": "{{percent}}% RABATT",
       "whatsIncluded": "Vad som ingår:",
@@ -1127,7 +1127,8 @@
         "Tidslinje över händelserna",
         "Manus för avslöjande av lösningen",
         "PDF-nedladdningar av allt material"
-      ]
+      ],
+      "buildTime": "Efter betalningen skapar och kvalitetsgranskar vi ditt kompletta paket: {{time}}. Vi mejlar dig så fort det är klart."
     },
     "buttons": {
       "processing": "Behandlar...",

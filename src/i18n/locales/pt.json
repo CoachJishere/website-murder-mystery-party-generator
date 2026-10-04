@@ -270,7 +270,7 @@
       "description": "Conte-nos a sua visão única - qualquer tema, personagens ou ambiente que você desejar."
     },
     "step2": {
-      "title": "Criamos o seu mistério personalizado instantaneamente.",
+      "title": "Criamos o seu mistério personalizado.",
       "description": "Nossa IA gera tudo exatamente como você quer – personagens, pistas e enredo."
     },
     "step3": {
@@ -715,7 +715,7 @@
         },
         "creationProcess": {
           "question": "Como funciona o processo de criação e compra?",
-          "answer": "É fácil! Primeiro, descreva seu mistério de assassinato ideal, e criaremos uma prévia personalizada gratuitamente. Se você estiver satisfeito com seu mistério, compre o pacote completo por $24,99. Você receberá instantaneamente tudo o que precisa para hospedar: perfis detalhados de personagens, um guia do anfitrião e todos os materiais do jogo."
+          "answer": "É fácil! Primeiro, descreva seu mistério de assassinato ideal, e criaremos uma prévia personalizada gratuitamente. Se você estiver satisfeito com seu mistério, compre o pacote completo por $24,99. Em seguida, criamos e revisamos o seu pacote completo, geralmente em 15 a 45 minutos, dependendo do tamanho do grupo, e enviamos um e-mail assim que estiver pronto: perfis detalhados de personagens, um guia do anfitrião e todos os materiais do jogo."
         },
         "saveWork": {
           "question": "Posso salvar meu trabalho e voltar a ele mais tarde?",
@@ -1160,7 +1160,7 @@
     "subtitle": "Obtenha acesso total ao seu pacote de mistério de assassinato",
     "package": {
       "title": "Pacote de Mistério de Assassinato",
-      "description": "Compra única, acesso instantâneo",
+      "description": "Compra única, sem assinatura",
       "priceDescription": "Pacote completo de mistério de assassinato com todos os materiais de personagem, pistas e instruções de hospedagem.",
       "discountBadge": "{{percent}}% DE DESCONTO",
       "whatsIncluded": "O que está incluído:",
@@ -1172,7 +1172,8 @@
         "Linha do tempo dos eventos",
         "Roteiro de revelação da solução",
         "Downloads em PDF de todos os materiais"
-      ]
+      ],
+      "buildTime": "Depois do pagamento, criamos e revisamos o seu pacote completo: {{time}}. Enviaremos um e-mail assim que estiver pronto."
     },
     "buttons": {
       "processing": "Processando...",

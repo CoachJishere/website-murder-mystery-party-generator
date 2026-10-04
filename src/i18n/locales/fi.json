@@ -270,7 +270,7 @@
       "description": "Jaa ainutlaatuinen visiosi: mikä tahansa teema, hahmo tai ympäristö, jonka haluat."
     },
     "step2": {
-      "title": "Luomme mukautetun mysteerisi välittömästi.",
+      "title": "Luomme mukautetun mysteerisi.",
       "description": "Tekoälymme luo kaiken tarkasti toiveidesi mukaan: hahmot, vihjeet ja juonen."
     },
     "step3": {
@@ -715,7 +715,7 @@
         },
         "creationProcess": {
           "question": "Miten luomis- ja ostoprosessi toimii?",
-          "answer": "Se on helppoa! Ensin kuvailet ihanteellisen murhamysteerisi, ja luomme mukautetun esikatselun ilmaiseksi. Kun olet tyytyväinen mysteeriisi, ostat koko paketin hintaan 24,99 $. Saat välittömästi kaiken isännöintiin tarvittavan: yksityiskohtaiset hahmoprofiilit, isännöintioppaan ja kaikki pelimateriaalit."
+          "answer": "Se on helppoa! Ensin kuvailet ihanteellisen murhamysteerisi, ja luomme mukautetun esikatselun ilmaiseksi. Kun olet tyytyväinen mysteeriisi, ostat koko paketin hintaan 24,99 $. Sen jälkeen rakennamme ja laadunvarmistamme koko pakettisi, yleensä 15–45 minuutissa ryhmän koosta riippuen, ja lähetämme sinulle sähköpostin heti, kun se on valmis: yksityiskohtaiset hahmoprofiilit, isännöintioppaan ja kaikki pelimateriaalit."
         },
         "saveWork": {
           "question": "Voinko tallentaa työni ja palata siihen myöhemmin?",
@@ -1127,7 +1127,7 @@
     "subtitle": "Hanki täysi pääsy murhamysteeripakettiisi",
     "package": {
       "title": "Murhamysteeripaketti",
-      "description": "Kertaluonteinen osto, välitön pääsy",
+      "description": "Kertaluonteinen osto, ei tilausta",
       "priceDescription": "Täydellinen murhamysteeripaketti kaikilla hahmomateriaaleilla, vihjeillä ja isännöintiohjeilla.",
       "discountBadge": "{{percent}}% ALENNUS",
       "whatsIncluded": "Mitä sisältyy:",
@@ -1139,7 +1139,8 @@
         "Tapahtumien aikajana",
         "Paljastus-skripti",
         "Kaikkien materiaalien PDF-lataukset"
-      ]
+      ],
+      "buildTime": "Maksun jälkeen rakennamme ja laadunvarmistamme koko pakettisi: {{time}}. Lähetämme sinulle sähköpostin heti, kun se on valmis."
     },
     "buttons": {
       "processing": "Käsitellään...",

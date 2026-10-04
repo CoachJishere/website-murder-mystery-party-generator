@@ -273,7 +273,7 @@
       "description": "Tell us your unique vision - any theme, characters, or setting you want."
     },
     "step2": {
-      "title": "We create your custom mystery instantly.",
+      "title": "We create your custom mystery.",
       "description": "Our AI generates everything exactly how you want it - characters, clues, and story."
     },
     "step3": {
@@ -715,7 +715,7 @@
         },
         "creationProcess": {
           "question": "How does the creation and purchase process work?",
-          "answer": "Simple! First, describe your ideal murder mystery and we'll create a custom preview for free. When you're happy with your mystery, purchase the complete package for $24.99. You'll instantly get everything needed to host: detailed character profiles, host guide, and all game materials."
+          "answer": "Simple! First, describe your ideal murder mystery and we'll create a custom preview for free. When you're happy with your mystery, purchase the complete package for $24.99. We then build and quality-check your complete package, usually 15 to 45 minutes depending on group size, and email you the moment it's ready: detailed character profiles, host guide, and all game materials."
         },
         "saveWork": {
           "question": "Can I save my work and come back to it later?",
@@ -1115,7 +1115,7 @@
     "subtitle": "Get full access to your murder mystery package",
     "package": {
       "title": "Murder Mystery Package",
-      "description": "One-time purchase, instant access",
+      "description": "One-time purchase, no subscription",
       "priceDescription": "Complete murder mystery package with all character materials, clues, and hosting instructions.",
       "discountBadge": "{{percent}}% OFF",
       "whatsIncluded": "What's included:",
@@ -1127,7 +1127,8 @@
         "Timeline of events",
         "Solution reveal script",
         "PDF downloads of all materials"
-      ]
+      ],
+      "buildTime": "After you pay, we build and quality-check your complete package: {{time}}. We'll email you the moment it's ready."
     },
     "buttons": {
       "processing": "Processing...",

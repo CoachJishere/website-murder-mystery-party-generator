@@ -270,7 +270,7 @@
       "description": "Cuéntanos tu visión única: cualquier tema, personajes o escenario que desees."
     },
     "step2": {
-      "title": "Creamos tu misterio personalizado al instante.",
+      "title": "Creamos tu misterio personalizado.",
       "description": "Nuestra IA genera todo exactamente como lo quieres: personajes, pistas e historia."
     },
     "step3": {
@@ -715,7 +715,7 @@
         },
         "creationProcess": {
           "question": "¿Cómo funciona el proceso de creación y compra?",
-          "answer": "¡Simple! Primero, describe tu misterio de asesinato ideal y crearemos una vista previa personalizada de forma gratuita. Cuando estés satisfecho con tu misterio, compra el paquete completo por $24.99. Obtendrás al instante todo lo necesario para organizar: perfiles detallados de los personajes, guía del anfitrión y todos los materiales del juego."
+          "answer": "¡Simple! Primero, describe tu misterio de asesinato ideal y crearemos una vista previa personalizada de forma gratuita. Cuando estés satisfecho con tu misterio, compra el paquete completo por $24.99. Después creamos y revisamos tu paquete completo, normalmente entre 15 y 45 minutos según el tamaño del grupo, y te enviamos un correo en cuanto esté listo: perfiles detallados de los personajes, guía del anfitrión y todos los materiales del juego."
         },
         "saveWork": {
           "question": "¿Puedo guardar mi trabajo y volver a él más tarde?",
@@ -1149,7 +1149,7 @@
     "subtitle": "Obtén acceso completo a tu paquete de misterio de asesinato",
     "package": {
       "title": "Paquete de Misterio de Asesinato",
-      "description": "Compra única, acceso instantáneo",
+      "description": "Compra única, sin suscripción",
       "priceDescription": "Paquete completo de misterio de asesinato con todos los materiales de los personajes, pistas e instrucciones de organización.",
       "discountBadge": "{{percent}}% DE DESCUENTO",
       "whatsIncluded": "Qué incluye:",
@@ -1161,7 +1161,8 @@
         "Cronología de eventos",
         "Guion de revelación de la solución",
         "Descargas en PDF de todos los materiales"
-      ]
+      ],
+      "buildTime": "Después de pagar, creamos y revisamos tu paquete completo: {{time}}. Te enviaremos un correo en cuanto esté listo."
     },
     "buttons": {
       "processing": "Procesando...",

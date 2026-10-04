@@ -270,7 +270,7 @@
       "description": "Teilen Sie uns Ihre einzigartige Vision mit: jedes gewünschte Thema, jede Figur oder jedes Setting."
     },
     "step2": {
-      "title": "Wir erstellen Ihr individuelles Mysterium sofort.",
+      "title": "Wir erstellen Ihr individuelles Mysterium.",
       "description": "Unsere KI generiert alles genau nach Ihren Wünschen: Charaktere, Hinweise und Handlung."
     },
     "step3": {
@@ -715,7 +715,7 @@
         },
         "creationProcess": {
           "question": "Wie funktioniert der Erstellungs- und Kaufprozess?",
-          "answer": "Ganz einfach! Zuerst beschreiben Sie Ihr ideales Krimi-Mysterium und wir erstellen eine individuelle Vorschau kostenlos. Wenn Sie mit Ihrem Mysterium zufrieden sind, kaufen Sie das Komplettpaket für 24,99 $. Sie erhalten sofort alles Notwendige zum Hosten: detaillierte Charakterprofile, eine Host-Anleitung und alle Spielmaterialien."
+          "answer": "Ganz einfach! Zuerst beschreiben Sie Ihr ideales Krimi-Mysterium und wir erstellen eine individuelle Vorschau kostenlos. Wenn Sie mit Ihrem Mysterium zufrieden sind, kaufen Sie das Komplettpaket für 24,99 $. Danach erstellen und prüfen wir Ihr komplettes Paket, in der Regel 15 bis 45 Minuten je nach Gruppengröße, und senden Ihnen eine E-Mail, sobald es fertig ist: detaillierte Charakterprofile, eine Host-Anleitung und alle Spielmaterialien."
         },
         "saveWork": {
           "question": "Kann ich meine Arbeit speichern und später darauf zurückgreifen?",
@@ -1127,7 +1127,7 @@
     "subtitle": "Erhalten Sie vollen Zugriff auf Ihr Krimi-Mysterienpaket",
     "package": {
       "title": "Krimi-Mysterienpaket",
-      "description": "Einmaliger Kauf, sofortiger Zugriff",
+      "description": "Einmaliger Kauf, kein Abonnement",
       "priceDescription": "Vollständiges Krimi-Mysterienpaket mit allen Charaktermaterialien, Hinweisen und Host-Anweisungen.",
       "discountBadge": "{{percent}}% RABATT",
       "whatsIncluded": "Was ist enthalten:",
@@ -1139,7 +1139,8 @@
         "Zeitleiste der Ereignisse",
         "Lösungs-Enthüllungs-Skript",
         "PDF-Downloads aller Materialien"
-      ]
+      ],
+      "buildTime": "Nach der Zahlung erstellen und prüfen wir Ihr komplettes Paket: {{time}}. Wir senden Ihnen eine E-Mail, sobald es fertig ist."
     },
     "buttons": {
       "processing": "Wird verarbeitet...",
