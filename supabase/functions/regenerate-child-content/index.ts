@@ -174,7 +174,9 @@ type MysteryStyle = "detective" | "character";
 // precise field list for this exact character, so no widening is needed.
 // Only added to this type so the hint's name is typed and gets written to
 // auto_remediation_log correctly.
-type DefectHint = "identity_contamination" | "slip_culprit_leak" | "meta_text_leak" | "missing_role_branch_content" | "narration_person_mismatch";
+// "confession_names_cast_member" (ADR-0103 Addendum 82) is the same pass-through shape: the caller passes the exact
+// reveal_confession_* fields for the exact character.
+type DefectHint = "identity_contamination" | "slip_culprit_leak" | "meta_text_leak" | "missing_role_branch_content" | "narration_person_mismatch" | "confession_names_cast_member";
 type Outcome = "fixed" | "escalated" | "failed" | "planned" | "noop";
 
 // ---------------------------------------------------------------------------
@@ -639,6 +641,7 @@ interface DetectorState {
   meta: string[] | null;               // `sources` for this package, or null if clean
   slip: string[] | null;               // `characters` for this package, or null if clean
   selfDirected: string[] | null;       // `offenders` for this package, or null if clean
+  confession: string[] | null;         // character_name of each slip confession that names another cast member (ADR-0103 Addendum 82), or null if clean
 }
 
 async function callDetector(rpc: string, since: string): Promise<Record<string, unknown>[]> {
@@ -672,11 +675,12 @@ async function detectorSince(packageId: string): Promise<string> {
 // mode the cross-class regression guard exists to prevent for the other three.
 async function detectorState(packageId: string): Promise<DetectorState> {
   const since = await detectorSince(packageId);
-  const [identityRows, metaRows, slipRows, selfDirectedRows] = await Promise.all([
+  const [identityRows, metaRows, slipRows, selfDirectedRows, confessionRows] = await Promise.all([
     callDetector("list_packages_with_identity_conflicts", since),
     callDetector("list_packages_with_meta_text_leak", since),
     callDetector("list_packages_with_slip_culprit_leak", since),
     callDetector("list_packages_with_self_directed_questions", since),
+    callDetector("list_packages_with_confession_names_cast_member", since),
   ]);
   const identity = identityRows
     .filter((r) => r.package_id === packageId)
@@ -689,6 +693,10 @@ async function detectorState(packageId: string): Promise<DetectorState> {
     meta: metaRow ? ((metaRow.sources as string[]) ?? []) : null,
     slip: slipRow ? ((slipRow.characters as string[]) ?? []) : null,
     selfDirected: selfDirectedRow ? ((selfDirectedRow.offenders as string[]) ?? []) : null,
+    confession: (() => {
+      const names = confessionRows.filter((r) => r.package_id === packageId).map((r) => r.character_name as string);
+      return names.length > 0 ? names : null;
+    })(),
   };
 }
 
@@ -718,6 +726,11 @@ function stillImplicatesTouched(state: DetectorState, touchedNames: Set<string>)
       if (touchedNames.has(normName(name))) hits.push(`self_directed_questions:${name}`);
     }
   }
+  if (state.confession) {
+    for (const name of state.confession) {
+      if (touchedNames.has(normName(name))) hits.push(`confession_names_cast_member:${name}`);
+    }
+  }
   return hits;
 }
 
@@ -745,6 +758,10 @@ function regressions(before: DetectorState, after: DetectorState): string[] {
   if (after.selfDirected && before.selfDirected) {
     const beforeSet = new Set(before.selfDirected);
     for (const c of after.selfDirected) if (!beforeSet.has(c)) out.push(`new self_directed_questions character: ${c}`);
+  }
+  if (after.confession) {
+    const beforeSet = new Set(before.confession ?? []);
+    for (const c of after.confession) if (!beforeSet.has(c)) out.push(`new confession_names_cast_member character: ${c}`);
   }
   return out;
 }

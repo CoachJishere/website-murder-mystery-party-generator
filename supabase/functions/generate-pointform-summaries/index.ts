@@ -54,6 +54,19 @@ const REVEAL_MODEL = 'claude-sonnet-5';
 
 type SourceField = typeof SOURCE_FIELDS[number];
 
+// ADR-0103 Addendum 82 (2026-10-04): the model sometimes writes French bullets for English prose (seen again on
+// "Boogie Nights": a freshly regenerated confession came back French; the known "French bullets on English prose"
+// class). The system prompt only says "same language as the source", and its examples lean French. Deterministic
+// guard: a stopword ratio tells us when the SOURCE is English, the user prompt then says so explicitly, and one
+// retry runs if any returned bullet block is not English. Non-English sources are untouched (existing behaviour).
+const EN_STOPWORDS = /\b(the|and|you|your|was|that|with|for|have|this|but|not|are|from|they|what|his|her)\b/gi;
+function englishRatio(text: string): number {
+  const words = text.split(/\s+/).filter(Boolean).length || 1;
+  return (text.match(EN_STOPWORDS) ?? []).length / words;
+}
+const looksEnglishProse = (t: string) => englishRatio(t) > 0.07;
+const looksEnglishBullets = (t: string) => englishRatio(t) > 0.04;
+
 const SUMMARIZER_SYSTEM_PROMPT = `You are summarizing character-guide fields from a murder mystery party game into point-form bullets. The host or player chose to see "both" formats — they will read the detailed prose AND your bullets together. Your bullets are tactical reminders, not a replacement for the prose.
 
 Write your bullets in the SAME LANGUAGE as the source field text. Do not translate to English — if the source prose is in French, German, Spanish, etc., your bullets must be in that same language. This applies independently to every field and every character; never default to English just because the instructions above are in English.
@@ -129,6 +142,10 @@ function buildUserPrompt(
     'Return one JSON key per field listed below, named "<field>_pointform".',
     '',
   ];
+  const sourceText = fields.map((f) => String(character[f] ?? '')).join(' ');
+  if (looksEnglishProse(sourceText)) {
+    blocks.push('LANGUAGE: the source text below is ENGLISH. Write every bullet in ENGLISH. Do not write French or any other language.', '');
+  }
   for (const field of fields) {
     const val = character[field];
     if (val && String(val).trim()) {
@@ -147,6 +164,7 @@ async function summarizeFields(
   apiKey: string,
   fields: readonly SourceField[],
   model: string,
+  retried = false,
 ): Promise<Record<string, string | null>> {
   const { prompt: userPrompt, populatedFields } = buildUserPrompt(character, fields);
 
@@ -209,6 +227,18 @@ async function summarizeFields(
   for (const field of populatedFields) {
     const key = `${field}_pointform`;
     update[key] = parsed[key] ?? null;
+  }
+  // English source but non-English bullets: retry the whole call once (see EN_STOPWORDS above).
+  const sourceIsEnglish = looksEnglishProse(populatedFields.map((f) => String(character[f] ?? '')).join(' '));
+  if (sourceIsEnglish && !retried) {
+    const wrong = populatedFields.filter((f) => {
+      const v = update[`${f}_pointform`];
+      return typeof v === 'string' && v.trim() && !looksEnglishBullets(v);
+    });
+    if (wrong.length > 0) {
+      console.warn(`pointform language drift for ${character.character_name}: ${wrong.join(', ')} - retrying once`);
+      return summarizeFields(character, apiKey, fields, model, true);
+    }
   }
   return update;
 }

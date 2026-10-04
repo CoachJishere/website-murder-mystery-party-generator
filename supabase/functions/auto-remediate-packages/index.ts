@@ -37,6 +37,13 @@ import { DANGLING_QUOTE_RX, deriveBranchHeader, prependHeader, stripStrayGlitche
  *                                   per-character precise-field-list shape as
  *                                   missing_role_branch_content (ADR-0103
  *                                   Addendum 45)
+ *   confession_names_cast_member    DELEGATE to regenerate-child-content, all
+ *                                   flagged characters of a package in one
+ *                                   call, fields reveal_confession_guilty +
+ *                                   reveal_confession_accomplice; stale
+ *                                   pointform bullets are then cleared so the
+ *                                   empty_pointform class refreshes them
+ *                                   (ADR-0103 Addendum 82)
  *   dangling_quote_mark             deterministic strip of the single
  *                                   trailing stray quote character (ADR-0103
  *                                   Addendum 67/68) — see handler doc comment
@@ -166,7 +173,8 @@ type DefectClass =
   | "narration_person_mismatch"
   | "dangling_quote_mark"
   | "missing_branch_header"
-  | "empty_pointform";
+  | "empty_pointform"
+  | "confession_names_cast_member";
 
 /**
  * ADR-0061: the delegated meta_text_leak fallback (character-scope artifacts
@@ -193,6 +201,7 @@ const DETECTOR_RPC: Record<DefectClass, string> = {
   dangling_quote_mark: "list_packages_with_dangling_quote_mark",
   missing_branch_header: "list_packages_with_missing_branch_header",
   empty_pointform: "list_packages_with_empty_pointform",
+  confession_names_cast_member: "list_packages_with_confession_names_cast_member",
 };
 
 // ---------------------------------------------------------------------------
@@ -903,7 +912,7 @@ const DELEGATE_DEFAULT_FIELDS: Record<"identity_contamination" | "slip_culprit_l
 
 async function delegateToRegenerator(
   ctx: RunCtx,
-  hint: "identity_contamination" | "slip_culprit_leak" | "meta_text_leak" | "missing_role_branch_content" | "narration_person_mismatch",
+  hint: "identity_contamination" | "slip_culprit_leak" | "meta_text_leak" | "missing_role_branch_content" | "narration_person_mismatch" | "confession_names_cast_member",
   packageId: string,
   characterNames: string[],
   fields: string[],
@@ -1278,6 +1287,29 @@ async function handleNarrationPersonMismatch(ctx: RunCtx, row: Record<string, un
   const fields = (row.fields as string[]) ?? [];
   if (!characterName || fields.length === 0) return;
   await delegateToRegenerator(ctx, "narration_person_mismatch", packageId, [characterName], fields);
+}
+
+/** ADR-0103 Addendum 82: confession_names_cast_member — a slip-style reveal confession names another cast member as
+ *  the helper or culprit, which is wrong for most slip draws. One regenerate-child-content call per package covers
+ *  every flagged character, regenerating only the flagged reveal_confession_* fields (a clean field is left alone) (the regenerator caps one call at MAX_TARGET_CHARACTERS and the attempt cap of 2 lets a
+ *  second run take the rest). Afterwards the pointform bullets of characters that are now clean are cleared, because
+ *  they still summarise the OLD confession and the empty_pointform class refreshes empty ones. */
+async function handleConfessionNamesCastMember(
+  ctx: RunCtx, packageId: string, characterNames: string[], fields: string[], sinceIso: string,
+): Promise<void> {
+  await delegateToRegenerator(ctx, "confession_names_cast_member", packageId, characterNames, fields);
+  if (ctx.dryRun) return;
+  const stillFlaggedNames = new Set(
+    (await callDetector(DETECTOR_RPC.confession_names_cast_member, sinceIso))
+      .filter((r) => r.package_id === packageId)
+      .map((r) => norm(r.character_name as string)),
+  );
+  const cleanNames = characterNames.filter((n) => !stillFlaggedNames.has(norm(n)));
+  if (cleanNames.length === 0) return;
+  const { error } = await supabase.from("mystery_characters")
+    .update({ reveal_confession_guilty_pointform: null, reveal_confession_accomplice_pointform: null })
+    .eq("package_id", packageId).in("character_name", cleanNames);
+  if (error) console.error(`pointform clear failed for ${packageId}: ${error.message}`);
 }
 
 const PACKAGE_ARTIFACT_FIELDS = [
@@ -1756,6 +1788,25 @@ serve(async (req) => {
     if (shouldRun("narration_person_mismatch")) {
       for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.narration_person_mismatch, sinceIso))) {
         await handleNarrationPersonMismatch(ctx, row);
+      }
+    }
+
+    // 4d. confession_names_cast_member — delegated to regenerate-child-content, grouped per package
+    //    (ADR-0103 Addendum 82).
+    if (shouldRun("confession_names_cast_member")) {
+      const rows = await filterNeedsReview(await callDetector(DETECTOR_RPC.confession_names_cast_member, sinceIso));
+      const byPackage = new Map<string, { names: string[]; fields: Set<string> }>();
+      for (const row of rows) {
+        const pid = row.package_id as string;
+        const name = row.character_name as string;
+        if (!pid || !name) continue;
+        const entry = byPackage.get(pid) ?? { names: [], fields: new Set<string>() };
+        entry.names.push(name);
+        for (const f of (row.fields as string[]) ?? []) entry.fields.add(f);
+        byPackage.set(pid, entry);
+      }
+      for (const [pid, { names, fields }] of byPackage) {
+        await handleConfessionNamesCastMember(ctx, pid, names, [...fields], sinceIso);
       }
     }
 
