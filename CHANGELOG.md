@@ -2,6 +2,12 @@
 
 ## 2026-10-04
 
+### Feature: quality review BEFORE release, with a visible review phase and honest time estimates (ADR-0138)
+- A new package that passes the gate is held in status `reviewing` while the LLM reviewer runs; findings of the high-precision classes (single-generation slips, wrong facts, cross-field contradictions) are applied automatically (English and Spanish packages only, with the revert-on-new-defect guard) and then the package is released; the "ready" email fires only at release. A failed, stuck or cost-capped review releases the package anyway and alerts; a DB safety net releases anything held over 20 minutes.
+- Staged behind `pipeline_settings.quality_review_release` (`off` / `test_only` / `on`); the kill switch is that one row.
+- Customer-facing: the existing "Final quality checks" phase now explains the read-through ("usually adds 3 to 5 minutes"), the progress screen promises an email when ready, and the time estimates in all 13 locales were rewritten from measured data (for example small: about 15 to 25 minutes, occasionally up to 35). The browser never force-completes or auto-corrects a `reviewing` package, and the generation timeout no longer false-alarms support during review.
+- Tested by hand with fixtures, no API spend: interception, auto-apply, revert guard, secret-leak left open, timeout release, DB safety net, and the real page rendered in Chromium (held, then revealed).
+
 ### Feature: slip confessions that name another cast member are now detected, gated, healed and prevented (ADR-0103 Addendum 82)
 - New detector `list_packages_with_confession_names_cast_member` (12 delivered packages, 53 characters flagged since April; Hedberg and S'more clean), added to the completion gate; `auto-remediate-packages` heals it through `regenerate-child-content`, whose own gate now includes the class. Delivered packages are never re-held (the trigger skips `completed`).
 - Child56 blueprint built locally (`temp-files/build-child-v56.py`): the two reveal-confession schema lines may no longer name another character. Not imported yet; number 56 is claimed.
