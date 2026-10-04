@@ -1,6 +1,6 @@
 # ADR-0142: Prompt-level prevention driven by the reviewer's own findings (Child57, Parent75)
 
-**Status:** Accepted, built 2026-10-04; **not imported until Jonathan does it**
+**Status:** Accepted, built and imported into Make.com 2026-10-04 (no purchase has run through it yet)
 **Date:** 2026-10-04
 **Related:** ADR-0103 (sweep), ADR-0136 and ADR-0138 (reviewer), ADR-0137 (chained context), ADR-0140 (propagation)
 
