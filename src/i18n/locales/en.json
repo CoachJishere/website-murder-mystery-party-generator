@@ -1200,10 +1200,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "about 10 to 15 minutes",
-      "medium": "about 20 minutes",
-      "large": "about 25 to 30 minutes",
-      "xlarge": "up to 45 minutes"
+      "small": "about 15 to 25 minutes, occasionally up to 35",
+      "medium": "about 20 to 35 minutes, occasionally up to an hour",
+      "large": "about 25 to 45 minutes, occasionally up to an hour",
+      "xlarge": "about 35 to 50 minutes, occasionally up to 75 minutes"
     },
     "toasts": {
       "mysteryIdMissing": "Mystery ID is missing",
@@ -1551,7 +1551,7 @@
   },
   "generationProgress": {
     "heading": "We're building your mystery",
-    "subheading": "This page updates automatically — feel free to leave it open or come back later.",
+    "subheading": "This page updates automatically — feel free to leave it open or come back later. We'll also email you the moment it's ready.",
     "percentComplete": "{{percent}}% complete",
     "phases": {
       "setup": {
@@ -1573,7 +1573,7 @@
       },
       "finalChecks": {
         "label": "Final quality checks",
-        "description": "Running automated checks before your mystery is revealed"
+        "description": "A careful read-through and automatic fixes before your mystery is revealed. This usually adds 3 to 5 minutes."
       }
     }
   },

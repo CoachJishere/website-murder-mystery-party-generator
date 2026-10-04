@@ -106,6 +106,9 @@ const MysteryView = () => {
   // never get stuck — it falls through to the existing post-window reveal +
   // warning banner immediately, same as today's ts-is-null handling below.
   const needsReviewWithinWindow = useMemo(() => {
+    // ADR-0138: a package in the automated quality-review phase is always held behind the building screen. The DB
+    // releases it within ~20 minutes at the latest (release_stuck_reviewing_packages), so this cannot hold forever.
+    if (generationStatus?.status === 'reviewing') return true;
     if (generationStatus?.status !== 'needs_review') return false;
     const ts = packageData?.needs_review_at;
     if (!ts) return false;
@@ -473,6 +476,23 @@ const MysteryView = () => {
 
       const packageStatusComplete = packageData?.generation_status?.status === 'completed';
       const packageNeedsReview = packageData?.generation_status?.status === 'needs_review';
+      const packageIsReviewing = packageData?.generation_status?.status === 'reviewing';
+
+      // ADR-0138: held for the automated quality review. Respect the hold exactly like needs_review: never force-complete
+      // from content, or the customer would see the package before the review and its fixes.
+      if (packageIsReviewing) {
+        const reviewingStatus = {
+          status: 'reviewing' as const,
+          progress: 98,
+          currentStep: packageData?.generation_status?.currentStep || 'Quality review',
+          sections: packageData?.generation_status?.sections || { hostGuide: true, characters: true, clues: true },
+          resumable: false,
+        };
+        setGenerationStatus(reviewingStatus as any);
+        setLastUpdate(new Date());
+        setGenerating(false);
+        return reviewingStatus as any;
+      }
 
       // If flagged as needs_review, respect that and don't override
       if (packageNeedsReview) {
@@ -809,6 +829,13 @@ const MysteryView = () => {
         // package. Mirrors the on-load completed path above.
         try {
           const freshStatus = await getPackageGenerationStatus(id);
+          if ((freshStatus.status as string) === 'reviewing') {
+            // ADR-0138: generation finished and the package is in its quality review; not a timeout.
+            setGenerationStatus(freshStatus);
+            setLastUpdate(new Date());
+            setGenerating(false);
+            return;
+          }
           if (freshStatus.status === 'completed' || freshStatus.status === 'needs_review') {
             console.log("✅ Timeout fired but package is complete — loading instead of alerting");
             setGenerationStatus(freshStatus);
@@ -828,7 +855,7 @@ const MysteryView = () => {
     }
 
     // Clear timer when generation completes or fails
-    if (!generating || generationStatus?.status === 'completed' || generationStatus?.status === 'failed') {
+    if (!generating || generationStatus?.status === 'completed' || generationStatus?.status === 'failed' || generationStatus?.status === 'reviewing') {
       if (generationTimerRef.current) {
         clearTimeout(generationTimerRef.current);
         generationTimerRef.current = null;

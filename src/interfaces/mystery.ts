@@ -48,7 +48,7 @@ export interface Mystery {
   ai_title?: string;
   premise?: string;
   package_generation_status?: {
-    status: 'pending' | 'in_progress' | 'completed' | 'failed';
+    status: 'pending' | 'in_progress' | 'reviewing' | 'completed' | 'failed';
     progress: number;
     currentStep: string;
     sections?: {

@@ -1329,10 +1329,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "unos 10 a 15 minutos",
-      "medium": "unos 20 minutos",
-      "large": "unos 25 a 30 minutos",
-      "xlarge": "hasta 45 minutos"
+      "small": "unos 15 a 25 minutos, a veces hasta 35",
+      "medium": "unos 20 a 35 minutos, a veces hasta una hora",
+      "large": "unos 25 a 45 minutos, a veces hasta una hora",
+      "xlarge": "unos 35 a 50 minutos, a veces hasta 75 minutos"
     },
     "toasts": {
       "mysteryIdMissing": "Falta el ID del misterio",
@@ -1550,7 +1550,7 @@
   },
   "generationProgress": {
     "heading": "Estamos creando tu misterio",
-    "subheading": "Esta página se actualiza automáticamente — puedes dejarla abierta o volver más tarde.",
+    "subheading": "Esta página se actualiza automáticamente — puedes dejarla abierta o volver más tarde. También te enviaremos un correo en cuanto esté listo.",
     "percentComplete": "{{percent}}% completado",
     "phases": {
       "setup": {
@@ -1572,7 +1572,7 @@
       },
       "finalChecks": {
         "label": "Comprobaciones finales de calidad",
-        "description": "Ejecutando comprobaciones automáticas antes de mostrar tu misterio"
+        "description": "Una lectura cuidadosa y correcciones automáticas antes de mostrar tu misterio. Normalmente añade de 3 a 5 minutos."
       }
     }
   },

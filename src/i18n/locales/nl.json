@@ -1307,10 +1307,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "ongeveer 10 tot 15 minuten",
-      "medium": "ongeveer 20 minuten",
-      "large": "ongeveer 25 tot 30 minuten",
-      "xlarge": "tot 45 minuten"
+      "small": "ongeveer 15 tot 25 minuten, soms tot 35",
+      "medium": "ongeveer 20 tot 35 minuten, soms tot een uur",
+      "large": "ongeveer 25 tot 45 minuten, soms tot een uur",
+      "xlarge": "ongeveer 35 tot 50 minuten, soms tot 75 minuten"
     },
     "toasts": {
       "mysteryIdMissing": "Mysterie-ID ontbreekt",
@@ -1550,7 +1550,7 @@
   },
   "generationProgress": {
     "heading": "We bouwen aan je mysterie",
-    "subheading": "Deze pagina wordt automatisch bijgewerkt — laat hem gerust open of kom later terug.",
+    "subheading": "Deze pagina wordt automatisch bijgewerkt — laat hem gerust open of kom later terug. We sturen je ook een e-mail zodra het klaar is.",
     "percentComplete": "{{percent}}% voltooid",
     "phases": {
       "setup": {
@@ -1572,7 +1572,7 @@
       },
       "finalChecks": {
         "label": "Laatste kwaliteitscontroles",
-        "description": "Automatische controles worden uitgevoerd voordat je mysterie wordt getoond"
+        "description": "Een zorgvuldige controle en automatische verbeteringen voordat je mysterie wordt getoond. Dit duurt meestal 3 tot 5 minuten extra."
       }
     }
   },

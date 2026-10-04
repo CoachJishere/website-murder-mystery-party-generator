@@ -1184,10 +1184,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "cirka 10 til 15 minutter",
-      "medium": "cirka 20 minutter",
-      "large": "cirka 25 til 30 minutter",
-      "xlarge": "op til 45 minutter"
+      "small": "cirka 15 til 25 minutter, indimellem op til 35",
+      "medium": "cirka 20 til 35 minutter, indimellem op til en time",
+      "large": "cirka 25 til 45 minutter, indimellem op til en time",
+      "xlarge": "cirka 35 til 50 minutter, indimellem op til 75 minutter"
     },
     "toasts": {
       "mysteryIdMissing": "Mysterium-ID mangler",
@@ -1550,7 +1550,7 @@
   },
   "generationProgress": {
     "heading": "Vi bygger dit mysterium",
-    "subheading": "Denne side opdaterer automatisk — lad den gerne stå åben, eller kom tilbage senere.",
+    "subheading": "Denne side opdaterer automatisk — lad den gerne stå åben, eller kom tilbage senere. Vi sender dig også en e-mail, så snart det er klar.",
     "percentComplete": "{{percent}}% færdig",
     "phases": {
       "setup": {
@@ -1572,7 +1572,7 @@
       },
       "finalChecks": {
         "label": "Sidste kvalitetstjek",
-        "description": "Automatiske tjek kører, før dit mysterie vises"
+        "description": "En grundig gennemlæsning og automatiske rettelser, før dit mysterie vises. Det tilføjer typisk 3 til 5 minutter."
       }
     }
   },

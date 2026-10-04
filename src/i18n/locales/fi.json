@@ -1307,10 +1307,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "noin 10–15 minuuttia",
-      "medium": "noin 20 minuuttia",
-      "large": "noin 25–30 minuuttia",
-      "xlarge": "enintään 45 minuuttia"
+      "small": "noin 15–25 minuuttia, joskus enintään 35",
+      "medium": "noin 20–35 minuuttia, joskus enintään tunnin",
+      "large": "noin 25–45 minuuttia, joskus enintään tunnin",
+      "xlarge": "noin 35–50 minuuttia, joskus enintään 75 minuuttia"
     },
     "toasts": {
       "mysteryIdMissing": "Mysteerin tunnus puuttuu",
@@ -1550,7 +1550,7 @@
   },
   "generationProgress": {
     "heading": "Rakennamme mysteeriäsi",
-    "subheading": "Tämä sivu päivittyy automaattisesti — voit jättää sen auki tai palata myöhemmin.",
+    "subheading": "Tämä sivu päivittyy automaattisesti — voit jättää sen auki tai palata myöhemmin. Lähetämme sinulle myös sähköpostin heti, kun se on valmis.",
     "percentComplete": "{{percent}} % valmis",
     "phases": {
       "setup": {
@@ -1572,7 +1572,7 @@
       },
       "finalChecks": {
         "label": "Viimeiset laatutarkastukset",
-        "description": "Automaattiset tarkastukset käynnissä ennen mysteerisi näyttämistä"
+        "description": "Huolellinen läpikäynti ja automaattiset korjaukset ennen mysteerisi näyttämistä. Tämä lisää yleensä 3–5 minuuttia."
       }
     }
   },

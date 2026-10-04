@@ -1307,10 +1307,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "etwa 10 bis 15 Minuten",
-      "medium": "etwa 20 Minuten",
-      "large": "etwa 25 bis 30 Minuten",
-      "xlarge": "bis zu 45 Minuten"
+      "small": "etwa 15 bis 25 Minuten, gelegentlich bis zu 35",
+      "medium": "etwa 20 bis 35 Minuten, gelegentlich bis zu einer Stunde",
+      "large": "etwa 25 bis 45 Minuten, gelegentlich bis zu einer Stunde",
+      "xlarge": "etwa 35 bis 50 Minuten, gelegentlich bis zu 75 Minuten"
     },
     "toasts": {
       "mysteryIdMissing": "Krimi-ID fehlt",
@@ -1550,7 +1550,7 @@
   },
   "generationProgress": {
     "heading": "Wir erstellen Ihr Mysterium",
-    "subheading": "Diese Seite aktualisiert sich automatisch — Sie können sie geöffnet lassen oder später zurückkommen.",
+    "subheading": "Diese Seite aktualisiert sich automatisch — Sie können sie geöffnet lassen oder später zurückkommen. Wir senden Ihnen außerdem eine E-Mail, sobald es fertig ist.",
     "percentComplete": "{{percent}}% abgeschlossen",
     "phases": {
       "setup": {
@@ -1572,7 +1572,7 @@
       },
       "finalChecks": {
         "label": "Abschließende Qualitätsprüfungen",
-        "description": "Automatische Prüfungen laufen, bevor dein Mystery angezeigt wird"
+        "description": "Eine sorgfältige Durchsicht und automatische Korrekturen, bevor dein Mystery angezeigt wird. Das dauert in der Regel 3 bis 5 Minuten zusätzlich."
       }
     }
   },

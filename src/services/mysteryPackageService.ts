@@ -23,7 +23,8 @@ export const toggleTestMode = (enabled: boolean) => {
 
 // Define interface for the generation status
 export interface GenerationStatus {
-  status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+  // 'reviewing' (ADR-0138): the package passed the structural gate and is held for the automated quality review before it is released.
+  status: 'not_started' | 'in_progress' | 'reviewing' | 'completed' | 'failed';
   progress: number;
   currentStep: string;
   // ISO timestamp when generation started; used by the progress UI to anchor its
@@ -379,7 +380,8 @@ export async function getPackageGenerationStatus(mysteryId: string): Promise<Gen
     console.log("📊 [STATUS CHECK] Current database status:", currentStatus);
     
     // Auto-correction logic: if content exists but status is wrong, correct it
-    if (contentComplete && currentStatus && currentStatus.status !== 'completed') {
+    // ADR-0138: never auto-complete a package that is deliberately held for the quality review (the DB releases it).
+    if (contentComplete && currentStatus && currentStatus.status !== 'completed' && currentStatus.status !== 'reviewing') {
       console.log("🔧 [STATUS CHECK] Content exists but status is not 'completed', auto-correcting...");
       
       const completedStatus = {

@@ -1184,10 +1184,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "ungefär 10 till 15 minuter",
-      "medium": "ungefär 20 minuter",
-      "large": "ungefär 25 till 30 minuter",
-      "xlarge": "upp till 45 minuter"
+      "small": "ungefär 15 till 25 minuter, ibland upp till 35",
+      "medium": "ungefär 20 till 35 minuter, ibland upp till en timme",
+      "large": "ungefär 25 till 45 minuter, ibland upp till en timme",
+      "xlarge": "ungefär 35 till 50 minuter, ibland upp till 75 minuter"
     },
     "toasts": {
       "mysteryIdMissing": "Mysterie-ID saknas",
@@ -1550,7 +1550,7 @@
   },
   "generationProgress": {
     "heading": "Vi bygger ditt mysterium",
-    "subheading": "Sidan uppdateras automatiskt — låt den gärna vara öppen eller kom tillbaka senare.",
+    "subheading": "Sidan uppdateras automatiskt — låt den gärna vara öppen eller kom tillbaka senare. Vi mejlar dig också så fort det är klart.",
     "percentComplete": "{{percent}}% klart",
     "phases": {
       "setup": {
@@ -1572,7 +1572,7 @@
       },
       "finalChecks": {
         "label": "Sista kvalitetskontrollerna",
-        "description": "Automatiska kontroller pågår innan ditt mysterium visas"
+        "description": "En noggrann genomläsning och automatiska rättelser innan ditt mysterium visas. Det tar vanligtvis 3 till 5 minuter extra."
       }
     }
   },

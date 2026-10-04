@@ -1329,10 +1329,10 @@
   },
   "mysteryView": {
     "timing": {
-      "small": "约10到15分钟",
-      "medium": "约20分钟",
-      "large": "约25到30分钟",
-      "xlarge": "最多45分钟"
+      "small": "约15到25分钟，有时最长35分钟",
+      "medium": "约20到35分钟，有时最长1小时",
+      "large": "约25到45分钟，有时最长1小时",
+      "xlarge": "约35到50分钟，有时最长75分钟"
     },
     "toasts": {
       "mysteryIdMissing": "缺少谜案 ID",
@@ -1550,7 +1550,7 @@
   },
   "generationProgress": {
     "heading": "我们正在构建您的谜团",
-    "subheading": "本页会自动更新 — 您可以保持页面打开，也可以稍后再回来。",
+    "subheading": "本页会自动更新 — 您可以保持页面打开，也可以稍后再回来。 准备就绪后，我们也会第一时间给您发送电子邮件。",
     "percentComplete": "已完成 {{percent}}%",
     "phases": {
       "setup": {
@@ -1572,7 +1572,7 @@
       },
       "finalChecks": {
         "label": "最终质量检查",
-        "description": "在展示您的谜案前，正在进行自动检查"
+        "description": "在展示您的谜案前，正在进行仔细通读和自动修正。通常会多花 3 到 5 分钟。"
       }
     }
   },
