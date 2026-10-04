@@ -464,6 +464,17 @@ serve(async (req) => {
         conversation_id: conversationId, is_service_call: false, outcome: "claimed",
       });
     } else {
+      // ADR-0139: a service-role call on a conversation with NO package yet (the rescue worker, or a manual first start) used to skip
+      // the claim, so the lookup below found nothing, Make got package_id null and inserted a second, orphan package row (seen on
+      // "Murder By Copy", 2026-10-04). For a first-ever generation, create the row through the same claim a customer click uses.
+      // Re-fires on an existing package still bypass the claim (that is the point of the service path).
+      const { data: existingForClaim } = await supabase
+        .from("mystery_packages").select("id").eq("conversation_id", conversationId).limit(1).maybeSingle();
+      if (!existingForClaim) {
+        const { error: firstClaimErr } = await supabase
+          .rpc("claim_package_for_generation", { _conversation_id: conversationId, _ttl_minutes: 20 });
+        if (firstClaimErr) throw new Error(`Generation claim failed: ${firstClaimErr.message}`);
+      }
       await supabase.from("generation_attempts").insert({
         conversation_id: conversationId, is_service_call: true, outcome: "claimed",
       });

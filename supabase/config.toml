@@ -308,3 +308,6 @@ verify_jwt = false
 
 [functions.stripe-webhook]
 verify_jwt = false
+
+[functions.rescue-unstarted-orders]
+verify_jwt = true

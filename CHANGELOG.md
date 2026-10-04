@@ -2,6 +2,12 @@
 
 ## 2026-10-04
 
+### Fix: paid orders that never started generation are now rescued automatically (ADR-0139)
+- "Murder By Copy" paid at 00:12 UTC and sat 7h22m with no package: generation is started only by the customer's browser clicking "Generate my mystery", the Stripe webhook never starts it, and nothing detected the gap (2 of ~37 recent orders; the other was "The Gilded Cage", 2026-09-15).
+- New detector `list_paid_unstarted_orders()` plus edge function `rescue-unstarted-orders` (cron every 2 minutes): paid, no package, no generation attempt, older than 3 minutes (newer than 72 hours) gets started through `mystery-webhook-trigger`, and support@ gets one alert per order. A refusal (for example `needs_more_info`) is logged as an attempt so it is never looped.
+- Fixed a second bug found while re-firing it: the service-role path of `mystery-webhook-trigger` skipped the claim, so a conversation with no package yet reached Make with `package_id: null` and Make inserted orphan package rows (3 rows for this order, content split across them). The service path now creates the row through the same claim first. Re-fires on existing packages are unchanged.
+- Health check: `name_background_mismatch` no longer flags a customer rename that keeps two or more name words ("Counselor Willow Byrd" to "Camp Counselor Willow", S'more Heist, GitHub issue #3). "The Hollingsworth Estate" (renamed to "Werewolf") still flags and was left alone.
+
 ### Feature: quality review BEFORE release, with a visible review phase and honest time estimates (ADR-0138)
 - A new package that passes the gate is held in status `reviewing` while the LLM reviewer runs; findings of the high-precision classes (single-generation slips, wrong facts, cross-field contradictions) are applied automatically (English and Spanish packages only, with the revert-on-new-defect guard) and then the package is released; the "ready" email fires only at release. A failed, stuck or cost-capped review releases the package anyway and alerts; a DB safety net releases anything held over 20 minutes.
 - Staged behind `pipeline_settings.quality_review_release` (`off` / `test_only` / `on`); the kill switch is that one row.
