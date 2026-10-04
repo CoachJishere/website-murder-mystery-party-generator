@@ -2,6 +2,10 @@
 
 ## 2026-10-04
 
+### Feature: prompt-level prevention built from the reviewer's own findings, Child57 and Parent75 (ADR-0142)
+- About 82 percent of what the reviewer finds sits in three systematic families (one-night time slips, invented or drifting specifics, later-round evidence). Child57 adds three rules to all 8 per-character prompts; Parent75 adds two sentences to all 28 hygiene blocks. Local blueprints, **not imported yet**. Baseline is about 13 findings per English package; judge the effect on the next 3 to 5 purchases.
+- S'more: the Round 2 evidence card was a Round 3 clue (flour sacks); replaced with a motive-round card ("The Grievance Corkboard") and a new image (one Flux call).
+
 ### Feature: reviewer fact propagation (ADR-0140)
 - When the reviewer finds a wrong fact, every other field that mentions the same distinctive entity or amount is re-checked in one small follow-up call per item (max 6, about 0.02 USD each); hits are stored and auto-applied like any finding. Motivated by Murder By Copy, where the Flin Flon fix landed in one field and the same wrong fact survived in two others. Kill switch `pipeline_settings.review_propagate`. Probed read-only: 0 false findings on correct text, all 13 mentions found for a synthetic wrong fact. Not yet seen on a real defect.
 
