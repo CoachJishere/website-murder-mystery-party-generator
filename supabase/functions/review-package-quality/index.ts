@@ -332,17 +332,13 @@ async function setting(key: string, fallback: string): Promise<string> {
   return (data as { value?: string } | null)?.value ?? fallback;
 }
 
-// ADR-0138: the reviewer's precision is only measured for English and Spanish packages, so auto-apply is limited to those until other
-// languages are calibrated (findings are still stored and nothing is held back). Cheap stopword test on a sample of the prose. The
-// Spanish list deliberately avoids words that Portuguese, Italian or French share (que, la, con, para, por, como, una, del, esta).
-const EN_STOP = /\b(the|and|you|your|was|that|with|for|have|this|but|not|are|from|they|what|his|her)\b/gi;
-const ES_STOP = /\b(el|los|las|pero|más|está|también|cuando|donde|sobre|entre|muy|sin|porque|había|fue|soy|eres|nada|todo|todos|este|ese|esa|usted|ustedes|nuestro|nuestra|hay|ser)\b/gi;
-function isEnglishOrSpanish(chars: Row[]): boolean {
-  const sample = chars.slice(0, 4).map((c) => String(c.introduction ?? "").slice(0, 700)).join(" ");
-  const words = sample.split(/\s+/).filter(Boolean).length || 1;
-  const en = (sample.match(EN_STOP) ?? []).length / words;
-  const es = (sample.match(ES_STOP) ?? []).length / words;
-  return en > 0.1 || es > 0.06;
+// ADR-0138 / ADR-0143: auto-apply is limited to languages whose reviewer precision has been measured. The list is a runtime setting
+// (pipeline_settings.review_auto_apply_languages, comma separated, default "en,es"), so enabling a language after calibration is one
+// UPDATE and needs no deploy. Detection is a stopword test (C.detectLanguage); unclear text is never allowed.
+async function languageAllowedForAutoApply(chars: Row[]): Promise<{ ok: boolean; lang: string | null }> {
+  const allowed = (await setting("review_auto_apply_languages", "en,es")).split(",").map((x) => x.trim().toLowerCase()).filter(Boolean);
+  const lang = C.detectLanguage(C.languageSample(chars));
+  return { ok: lang !== null && allowed.includes(lang), lang };
 }
 
 /** Apply every still-open finding of the allowed classes for a package (used after a review that did not apply inline). */
@@ -350,7 +346,8 @@ async function applyOpenFindings(packageId: string, classes: string[]): Promise<
   if (classes.length === 0) return { applied: 0, reverted: 0 };
   const { data: pkg } = await supabase.from("mystery_packages").select("*").eq("id", packageId).single();
   const { data: chars } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId);
-  if (!isEnglishOrSpanish((chars ?? []) as Row[])) return { applied: 0, reverted: 0, skipped: "language not calibrated for auto-apply" };
+  const langGate = await languageAllowedForAutoApply((chars ?? []) as Row[]);
+  if (!langGate.ok) return { applied: 0, reverted: 0, skipped: `language ${langGate.lang ?? "unclear"} not enabled for auto-apply` };
   const { data: open } = await supabase.from("package_review_findings")
     .select("id,item_name,field,category,exact_quote,suggested_replacement").eq("package_id", packageId).eq("status", "open").in("category", classes);
   if (!pkg || !open || open.length === 0) return { applied: 0, reverted: 0 };

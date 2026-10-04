@@ -2,6 +2,9 @@
 
 ## 2026-10-04
 
+### Feature: reviewer auto-fix enabled for French, German, Italian, Portuguese and Dutch (ADR-0143)
+- Pilot on 6 delivered packages (report-only, 2.8 USD, about 130 findings): precision about 88 to 90 percent per language on the verified items; non-English packages carry 8 to 45 findings each against about 13 in English (German register drift, stray English words in Portuguese, swapped amounts). Auto-apply languages are now a runtime setting (`pipeline_settings.review_auto_apply_languages`, now `en,es,fr,de,it,pt,nl`) with a stopword language detector (0 misses on 17 known packages). Same three classes, same revert guard. The 6 pilot packages are delivered and untouched.
+
 ### Feature: prompt-level prevention built from the reviewer's own findings, Child57 and Parent75 (ADR-0142)
 - About 82 percent of what the reviewer finds sits in three systematic families (one-night time slips, invented or drifting specifics, later-round evidence). Child57 adds three rules to all 8 per-character prompts; Parent75 adds two sentences to all 28 hygiene blocks. Local blueprints, **not imported yet**. Baseline is about 13 findings per English package; judge the effect on the next 3 to 5 purchases.
 - S'more: the Round 2 evidence card was a Round 3 clue (flour sacks); replaced with a motive-round card ("The Grievance Corkboard") and a new image (one Flux call).

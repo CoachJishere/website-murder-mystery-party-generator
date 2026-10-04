@@ -100,3 +100,18 @@ t("propagationText names the wrong fact, the correction and the narrow scope", (
   assert.ok(x.includes("WRONG:") && x.includes("CORRECTED:") && x.includes("Check ONLY") && x.includes("[background]"));
 });
 console.log("propagation tests done");
+
+// ---- ADR-0143 language detection ----
+t("detectLanguage recognises the seven languages and refuses unclear text", () => {
+  const rep = (s, n) => Array(n).fill(s).join(" ");
+  assert.equal(C.detectLanguage(rep("I think that you have the best idea and they are with us but not for this", 6)), "en");
+  assert.equal(C.detectLanguage(rep("Ich bin nicht sicher, aber wir haben eine Idee und das ist auch für euch noch wichtig", 5)), "de");
+  assert.equal(C.detectLanguage(rep("Je suis très sûr que vous avez une idée mais nous ne sommes pas dans la salle avec elle", 5)), "fr");
+  assert.equal(C.detectLanguage(rep("Non sono molto sicuro che hai una idea ma anche per questo gli altri sono nella sala", 5)), "it");
+  assert.equal(C.detectLanguage(rep("Não estou muito certo que você tem uma ideia mas também para isso eles estão com ele", 5)), "pt");
+  assert.equal(C.detectLanguage(rep("Ik heb een idee maar het is niet van ons en jullie zijn ook voor het huis met geen", 5)), "nl");
+  assert.equal(C.detectLanguage(rep("Estoy muy seguro de que todos están aquí pero también hay una idea sobre el tema entre los demás", 5)), "es");
+  assert.equal(C.detectLanguage("too short to tell"), null);
+});
+console.log("language tests done");
+
