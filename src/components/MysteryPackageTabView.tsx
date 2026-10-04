@@ -919,71 +919,76 @@ const MysteryPackageTabView = React.memo(({
                   // For 'pointForm', return bullets unwrapped (they're tactical reminders, not speech).
                   // `quoteProse` defaults to false; pass true only for spoken fields where the
                   // body should display as something to deliver aloud.
-                  const composeFormat = (detailed?: string, pointForm?: string, quoteProse: boolean = false): string | undefined => {
+                  // `target` says which column the shown text came from, so a save writes back to
+                  // the same column: in 'pointForm' mode the host sees (and edits) the *_pointform
+                  // column, and writing it to the prose column made every edit look unsaved.
+                  // In 'both' mode the prose and point-form blocks are separate editable sections,
+                  // so `pointform` carries the second block.
+                  type ComposedField = { content: string; target?: 'pointform'; pointform?: string };
+                  const composeFormat = (detailed?: string, pointForm?: string, quoteProse: boolean = false): ComposedField | undefined => {
                     const d = (detailed || '').trim();
                     const p = (pointForm || '').trim();
                     if (!d && !p) return undefined;
                     if (scriptType === 'full' || !p) {
                       if (!d) return undefined;
-                      return quoteProse ? wrapPreservingHeading(d) : d;
+                      return { content: quoteProse ? wrapPreservingHeading(d) : d };
                     }
-                    if (scriptType === 'pointForm') return p || d || undefined;
-                    if (!d) return p;
-                    // 'both' — optionally wrap prose, then append point-form section
-                    const proseSection = quoteProse ? wrapPreservingHeading(d) : d;
-                    return `${proseSection}\n\n**Point Form:**\n\n${p}`;
+                    if (scriptType === 'pointForm') return { content: p, target: 'pointform' };
+                    if (!d) return { content: p, target: 'pointform' };
+                    // 'both' — optionally wrap prose; the point-form section is rendered separately
+                    return { content: quoteProse ? wrapPreservingHeading(d) : d, pointform: p };
                   };
 
                   // Define character fields to render as editable sections.
                   // character_name leads so hosts can rename a character (e.g. pick one
                   // side of a dual-gender template name like "Clarabelle/Clarence Cow").
-                  const characterFields: Array<{ key: string; content: string | undefined }> = [
+                  const characterFields: Array<{ key: string; content?: string; target?: 'pointform'; pointform?: string }> = [
                     { key: 'character_name', content: character.character_name },
                     { key: 'description', content: character.description },
                     { key: 'background', content: character.background },
                     { key: 'relationships', content: typeof character.relationships === 'string' ? character.relationships : undefined },
                     // Spoken fields below get quoteProse=true; rumors and accusations are
                     // structured (lists / tactical bullets), so they don't get quote-wrapped.
-                    { key: 'introduction', content: composeFormat(character.introduction, character.introduction_pointform, true) },
+                    { key: 'introduction', ...composeFormat(character.introduction, character.introduction_pointform, true) },
                     { key: 'secret', content: character.secret },
-                    { key: 'rumors', content: composeFormat(character.rumors, character.rumors_pointform) },
+                    { key: 'rumors', ...composeFormat(character.rumors, character.rumors_pointform) },
                     ...(hasDetectiveScripts
-                      ? [{ key: 'round2_script', content: composeFormat(character.round2_script, character.round2_script_pointform, true) }]
+                      ? [{ key: 'round2_script', ...composeFormat(character.round2_script, character.round2_script_pointform, true) }]
                       : [
-                          { key: 'round2_innocent',   content: composeFormat(character.round2_innocent,   character.round2_innocent_pointform,   true) },
-                          { key: 'round2_guilty',     content: composeFormat(character.round2_guilty,     character.round2_guilty_pointform,     true) },
-                          { key: 'round2_accomplice', content: composeFormat(character.round2_accomplice, character.round2_accomplice_pointform, true) },
+                          { key: 'round2_innocent',   ...composeFormat(character.round2_innocent,   character.round2_innocent_pointform,   true) },
+                          { key: 'round2_guilty',     ...composeFormat(character.round2_guilty,     character.round2_guilty_pointform,     true) },
+                          { key: 'round2_accomplice', ...composeFormat(character.round2_accomplice, character.round2_accomplice_pointform, true) },
                         ]),
                     { key: 'round2_questions', content: character.round2_questions },
                     ...(hasDetectiveScripts
-                      ? [{ key: 'round3_script', content: composeFormat(character.round3_script, character.round3_script_pointform, true) }]
+                      ? [{ key: 'round3_script', ...composeFormat(character.round3_script, character.round3_script_pointform, true) }]
                       : [
-                          { key: 'round3_innocent',   content: composeFormat(character.round3_innocent,   character.round3_innocent_pointform,   true) },
-                          { key: 'round3_guilty',     content: composeFormat(character.round3_guilty,     character.round3_guilty_pointform,     true) },
-                          { key: 'round3_accomplice', content: composeFormat(character.round3_accomplice, character.round3_accomplice_pointform, true) },
+                          { key: 'round3_innocent',   ...composeFormat(character.round3_innocent,   character.round3_innocent_pointform,   true) },
+                          { key: 'round3_guilty',     ...composeFormat(character.round3_guilty,     character.round3_guilty_pointform,     true) },
+                          { key: 'round3_accomplice', ...composeFormat(character.round3_accomplice, character.round3_accomplice_pointform, true) },
                         ]),
                     { key: 'round3_questions', content: character.round3_questions },
                     ...(hasDetectiveScripts
-                      ? [{ key: 'round4_script', content: composeFormat(character.round4_script, character.round4_script_pointform, true) }]
+                      ? [{ key: 'round4_script', ...composeFormat(character.round4_script, character.round4_script_pointform, true) }]
                       : [
-                          { key: 'round4_innocent',   content: composeFormat(character.round4_innocent,   character.round4_innocent_pointform,   true) },
-                          { key: 'round4_guilty',     content: composeFormat(character.round4_guilty,     character.round4_guilty_pointform,     true) },
-                          { key: 'round4_accomplice', content: composeFormat(character.round4_accomplice, character.round4_accomplice_pointform, true) },
+                          { key: 'round4_innocent',   ...composeFormat(character.round4_innocent,   character.round4_innocent_pointform,   true) },
+                          { key: 'round4_guilty',     ...composeFormat(character.round4_guilty,     character.round4_guilty_pointform,     true) },
+                          { key: 'round4_accomplice', ...composeFormat(character.round4_accomplice, character.round4_accomplice_pointform, true) },
                         ]),
                     { key: 'round4_questions', content: character.round4_questions },
-                    { key: 'accusations', content: composeFormat(formatAccusations(character.accusations), character.accusations_pointform) },
+                    { key: 'accusations', ...composeFormat(formatAccusations(character.accusations), character.accusations_pointform) },
                     ...(hasDetectiveScripts && character.final_statement
-                      ? [{ key: 'final_statement', content: composeFormat(character.final_statement, character.final_statement_pointform, true) }]
+                      ? [{ key: 'final_statement', ...composeFormat(character.final_statement, character.final_statement_pointform, true) }]
                       : [
-                          { key: 'final_innocent',   content: composeFormat(character.final_innocent,   character.final_innocent_pointform,   true) },
-                          { key: 'final_guilty',     content: composeFormat(character.final_guilty,     character.final_guilty_pointform,     true) },
-                          { key: 'final_accomplice', content: composeFormat(character.final_accomplice, character.final_accomplice_pointform, true) },
+                          { key: 'final_innocent',   ...composeFormat(character.final_innocent,   character.final_innocent_pointform,   true) },
+                          { key: 'final_guilty',     ...composeFormat(character.final_guilty,     character.final_guilty_pointform,     true) },
+                          { key: 'final_accomplice', ...composeFormat(character.final_accomplice, character.final_accomplice_pointform, true) },
                           // ADR-0065: the actual confession, held back for The Reveal —
                           // distinct from final_guilty/final_accomplice above, which are
                           // now Final-Statements-round denials. No innocent counterpart:
                           // innocent characters are never called on to confess.
-                          { key: 'reveal_confession_guilty',     content: composeFormat(character.reveal_confession_guilty,     character.reveal_confession_guilty_pointform,     true) },
-                          { key: 'reveal_confession_accomplice', content: composeFormat(character.reveal_confession_accomplice, character.reveal_confession_accomplice_pointform, true) },
+                          { key: 'reveal_confession_guilty',     ...composeFormat(character.reveal_confession_guilty,     character.reveal_confession_guilty_pointform,     true) },
+                          { key: 'reveal_confession_accomplice', ...composeFormat(character.reveal_confession_accomplice, character.reveal_confession_accomplice_pointform, true) },
                         ]),
                   ];
 
@@ -1044,7 +1049,11 @@ const MysteryPackageTabView = React.memo(({
                                   <EditableSection
                                     content={field.content!}
                                     onSave={(val) =>
-                                      onCharacterFieldUpdate?.(character.id, field.key, val) ?? Promise.resolve()
+                                      onCharacterFieldUpdate?.(
+                                        character.id,
+                                        field.target === 'pointform' ? `${field.key}_pointform` : field.key,
+                                        val
+                                      ) ?? Promise.resolve()
                                     }
                                     canEdit={!!onCharacterFieldUpdate}
                                     sectionLabel={`${character.character_name} - ${field.key}`}
@@ -1052,6 +1061,18 @@ const MysteryPackageTabView = React.memo(({
                                     hideHeader={!!roundHeader}
                                     isMobile={isMobile}
                                   />
+                                  {field.pointform && (
+                                    <EditableSection
+                                      content={field.pointform}
+                                      onSave={(val) =>
+                                        onCharacterFieldUpdate?.(character.id, `${field.key}_pointform`, val) ?? Promise.resolve()
+                                      }
+                                      canEdit={!!onCharacterFieldUpdate}
+                                      sectionLabel={`${character.character_name} - ${field.key}_pointform`}
+                                      fallbackLabel="Point Form"
+                                      isMobile={isMobile}
+                                    />
+                                  )}
                                   {field.key === 'secret' && (
                                     <div className={cn("prose max-w-none guide-intent", isMobile && "prose-sm")}>
                                       <ReactMarkdown>{`> ${characterGuideCopy.guardDirective}`}</ReactMarkdown>

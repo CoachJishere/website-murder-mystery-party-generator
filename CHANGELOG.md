@@ -2,6 +2,12 @@
 
 ## 2026-10-04
 
+### Fix: editing a point-form mystery saved to the wrong column, so edits looked unsaved and overwrote the prose
+- **Cause:** with `script_type = 'pointForm'` (or `'both'`) the character editor shows the `*_pointform` column, but every save wrote to the prose column of the same name. The toast said "saved" and the screen reverted to the unchanged point-form text, and each save also replaced the hidden prose with the edited bullets. Found via the customer who reported the first save bug (2026-10-03), after e38ac4b let his saves through. Affects every package whose host chose point form or both, on every composed field (introduction, rumors, accusations, round scripts, innocent/guilty/accomplice branches, final statements, reveal confessions).
+- **Fix:** `composeFormat` now returns which column the shown text came from, and the section saves back to it (`<field>_pointform`). In `'both'` mode the point-form block is its own editable section instead of one combined block. The 21 `*_pointform` columns are in the save allowlist (`POINTFORM_SOURCE_FIELDS`).
+- **Data damage (one known package, 7aa38e75):** 14 prose fields on 3 characters (Brian 6, Helga 4, Sally 4) were overwritten with the edited bullets; the original prose is not stored anywhere in the database. It is invisible while the package stays in point-form mode, but would show if the host switched to full script. The customer's edits themselves are intact in those prose columns, and the repair is to copy them into the point-form columns (proposed, not yet applied). Other affected packages were not scanned.
+- **Not changed:** quote-wrapping in full/both mode is still saved into the column; no test guards the allowlist against the editor's rendered keys.
+
 ### Feature: reviewer auto-fix enabled for French, German, Italian, Portuguese and Dutch (ADR-0143)
 - Pilot on 6 delivered packages (report-only, 2.8 USD, about 130 findings): precision about 88 to 90 percent per language on the verified items; non-English packages carry 8 to 45 findings each against about 13 in English (German register drift, stray English words in Portuguese, swapped amounts). Auto-apply languages are now a runtime setting (`pipeline_settings.review_auto_apply_languages`, now `en,es,fr,de,it,pt,nl`) with a stopword language detector (0 misses on 17 known packages). Same three classes, same revert guard. The 6 pilot packages are delivered and untouched.
 

@@ -557,6 +557,38 @@ const EDITABLE_CHARACTER_FIELDS = [
   'reveal_confession_accomplice',
 ] as const;
 
+// The point-form twin of each prose field above that has one. With script_type
+// 'pointForm' (or 'both') the host edits these columns, so they must be allowlisted
+// too (they were not: edits were silently written to the prose column instead).
+const POINTFORM_SOURCE_FIELDS = [
+  'introduction',
+  'rumors',
+  'accusations',
+  'round2_script',
+  'round3_script',
+  'round4_script',
+  'final_statement',
+  'round2_innocent',
+  'round2_guilty',
+  'round2_accomplice',
+  'round3_innocent',
+  'round3_guilty',
+  'round3_accomplice',
+  'round4_innocent',
+  'round4_guilty',
+  'round4_accomplice',
+  'final_innocent',
+  'final_guilty',
+  'final_accomplice',
+  'reveal_confession_guilty',
+  'reveal_confession_accomplice',
+] as const;
+
+const EDITABLE_CHARACTER_FIELD_SET: ReadonlySet<string> = new Set<string>([
+  ...EDITABLE_CHARACTER_FIELDS,
+  ...POINTFORM_SOURCE_FIELDS.map((f) => `${f}_pointform`),
+]);
+
 /**
  * Update a single field on a mystery_packages row.
  */
@@ -591,7 +623,7 @@ export async function updateCharacterField(
   fieldName: string,
   value: string
 ): Promise<void> {
-  if (!EDITABLE_CHARACTER_FIELDS.includes(fieldName as any)) {
+  if (!EDITABLE_CHARACTER_FIELD_SET.has(fieldName)) {
     throw new Error(`Field "${fieldName}" is not editable`);
   }
 
