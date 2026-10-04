@@ -569,12 +569,13 @@ export function retargetQuestions(
 const ARTIFACT_SPAN_RX = [
   /\[choose[^\]]*\]/gi,
   /\[closing paragraph[^\]]*\]/gi,
+  /\[closing:[^\]]*\]/gi,
   /\[insert[^\]]*\]/gi,
   /\[if guilty[^\]]*\]/gi,
   /\[[^\]]*master_context[^\]]*\]/gi,
 ];
 /** Any surviving occurrence of these means the artifact wasn't cleanly removed. */
-const ARTIFACT_TOKEN_RX = /\[choose\b|\[closing paragraph\b|\[insert\b|\[if guilty\b|master_context/i;
+const ARTIFACT_TOKEN_RX = /\[choose\b|\[closing paragraph\b|\[closing:|\[insert\b|\[if guilty\b|master_context/i;
 /**
  * Free-text chain-of-thought phrases (ADR-0099) — no bracket boundary, so
  * never attempt a strip; any match is unconditionally unsafe.

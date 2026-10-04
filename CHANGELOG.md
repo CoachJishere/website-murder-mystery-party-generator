@@ -2,6 +2,11 @@
 
 ## 2026-10-04
 
+### Fix: a leaked `[CLOSING: ...]` authoring label in the detective script is now detected, healed and prevented (ADR-0103 Addendum 83)
+- The Parent prompt wrote its closing slot as a bracketed directive and the model sometimes printed the label into the guest-facing detective script (4 packages in 3 months, incl. "Murder By Copy"). `package_meta_text_leak` now matches `[closing:` (so the completion gate holds it) and the free strip lane in `auto-remediate-packages` removes the standalone line (paired regexes, deployed). The three older delivered packages were stripped by hand.
+- Prevention: `temp-files/build-parent-v74.py` builds Parent74 (local, gitignored) with the four closing slots as plain instructions; needs importing into Make.com.
+- Sweep of "Murder By Copy" (first package through review-before-release): reviewer 5 real findings (applied automatically) against 8 misses (4 hard, 4 debatable/corpus norm), recall 38 to 56 percent. Matrix and header rules were deliberately not widened (they would fire on 22 to 28 percent of characters).
+
 ### Fix: paid orders that never started generation are now rescued automatically (ADR-0139)
 - "Murder By Copy" paid at 00:12 UTC and sat 7h22m with no package: generation is started only by the customer's browser clicking "Generate my mystery", the Stripe webhook never starts it, and nothing detected the gap (2 of ~37 recent orders; the other was "The Gilded Cage", 2026-09-15).
 - New detector `list_paid_unstarted_orders()` plus edge function `rescue-unstarted-orders` (cron every 2 minutes): paid, no package, no generation attempt, older than 3 minutes (newer than 72 hours) gets started through `mystery-webhook-trigger`, and support@ gets one alert per order. A refusal (for example `needs_more_info`) is logged as an attempt so it is never looped.
