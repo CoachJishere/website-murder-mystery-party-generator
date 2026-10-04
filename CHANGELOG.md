@@ -7,6 +7,9 @@
 - Child56 blueprint built locally (`temp-files/build-child-v56.py`): the two reveal-confession schema lines may no longer name another character. Not imported yet; number 56 is claimed.
 - Tested end to end on Boogie Nights (2 characters, 0.20 USD): prose fixed, detector clear. Backlog NOT run (35 characters in the last 30 days, about 5.25 USD with pointforms) pending Jonathan's go.
 
+### Fix: slip-confession backlog cleaned by hand, no API spend (ADR-0103 Addendum 82)
+- 43 reveal-confession fields in 7 delivered packages (last 30 days plus Elementary) rewritten to name no cast member and drop culprit-specific backstory; pointform bullets too for the 4 pointForm packages. Detector: 0 rows since 2026-09-01. Accomplice pattern got a `(?!\s+from)` lookahead (one false positive, Elementary). 11 rows in four August packages left alone.
+
 ### Fix: pointform regeneration wrote French bullets for an English package again (ADR-0103 Addendum 82)
 - `generate-pointform-summaries` now detects English source prose (stopword ratio), tells the model explicitly, and retries once if any bullet block is not English. Lena Lush's two confession pointforms in Boogie Nights were hand-written in English.
 

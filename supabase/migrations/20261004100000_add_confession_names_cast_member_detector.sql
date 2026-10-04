@@ -52,7 +52,7 @@ BEGIN
         END IF;
         IF a.ra IS NOT NULL AND (
              a.ra ~ ('\m' || tok || '\M\s+came to me')
-          OR a.ra ~ ('\m(protected|protecting|covered for|helped)\s+' || tok || '\M')
+          OR a.ra ~ ('\m(protected|protecting|covered for|helped)\s+' || tok || '\M(?!\s+from)')  -- not "protected X from consequences" (a years-old habit, seen in Elementary)
           OR a.ra ~ ('\m' || tok || '\M\s+(was standing|dropped|swung|did it|had done|was the one)')
           OR a.ra ~ ('\mfound\s+' || tok || '\M\s+(standing|shaking|breathing|over|by the)')
         ) THEN
