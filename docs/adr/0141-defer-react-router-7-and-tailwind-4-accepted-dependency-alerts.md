@@ -6,11 +6,11 @@
 
 ## Context
 
-On 2026-10-04 `npm audit fix` and a `sharp` bump (0.35.3 to 0.35.5) cleared everything that did not need a major version. The build, the roster tests and a Chromium smoke render passed. What is left (14 open Dependabot alerts before the fix; `npm audit` now reports 10) falls into three groups:
+On 2026-10-04 `npm audit fix` and a `sharp` bump (0.35.3 to 0.35.5) cleared everything that did not need a major version. The build, the roster tests and a Chromium smoke render passed. What is left is 3 open Dependabot alerts (14 before the fix; `npm audit` still lists a few more transitive build-tool items that Dependabot does not raise):
 
-1. **React Router (`react-router`, `react-router-dom`, runtime).** We are on 6.30.6, the latest 6.x. The open advisories are only patched in 7.18+: an open redirect via backslash in `<Link>` / `useNavigate` (Dependabot #99, a bypass of CVE-2025-68470) and "arbitrary constructor injection via `deserializeErrors()` in SSR hydration" (#97).
-2. **Tailwind 3 and its tooling (`tailwindcss`, `chokidar`, `braces`, `micromatch`, `fast-glob`, build-time).** Fixes need Tailwind 4.
-3. **Build tooling with no fix (`vite-plugin-ssr`, `lovable-tagger`).** Not shipped to users.
+1. **React Router (`react-router`, runtime), alerts #97 and #99.** We are on 6.30.6, the latest 6.x. Both are only patched in 7.18.0: an open redirect via backslash in `<Link>` / `useNavigate` (#99, a bypass of CVE-2025-68470) and "arbitrary constructor injection via `deserializeErrors()` in SSR hydration" (#97).
+2. **`braces` (build-time), alert #127, no patched version.** Stack exhaustion on deeply nested patterns; comes in through glob tooling in the build, never shipped to users.
+3. **Other `npm audit` items** (Tailwind 3 and its `chokidar` / `micromatch` / `fast-glob` chain, `vite-plugin-ssr`, `lovable-tagger`): build tooling, fixes need Tailwind 4 or do not exist.
 
 ## Decision
 
