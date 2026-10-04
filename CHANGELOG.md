@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-04
+
+### Fix: slip-style Host Guide told hosts to draw only a MURDERER slip when the customer had asked for an accomplice (ADR-0069 Addendum 4)
+- Customer report from the Hedberg Hollow purchase: the guide covered the murderer slip draw but not the accomplice. Cause: the `has_accomplice` completion sync (restored 2026-10-01) derives the flag from pre-assigned `accomplice` roles, which slip-style games never have, so it overwrote the real request with false on every slip-style completion. The guide's slip wording keys off that flag.
+- Migration `20261004000000`: the sync now skips `mystery_style = 'character'`. Four packages that had asked for an accomplice (Hedberg Hollow, Boogie Nights, El Último Brindis De Laia, Aphrodite's Birthday Bash) set back to `has_accomplice = true`; the guide renders live, so no regeneration was needed.
+- The accomplice scripts are ally-agnostic by design (they protect whoever drew MURDERER), so no content change.
+
 ## 2026-10-03
 
 ### Fix: regenerate-child-content no longer times out in its own re-detect gate, and can no longer leave unverified writes (ADR-0103 Addendum 81)

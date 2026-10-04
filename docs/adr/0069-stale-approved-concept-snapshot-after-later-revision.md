@@ -140,3 +140,24 @@ While confirming "Emma's Honky Tonk: A Meow-der Mystery" (package `1b44560c-5e95
 - `supabase/migrations/20261001000000_restore_has_accomplice_sync_dropped_by_completed_at_stamp.sql` — restores the sync block
 - `conversations` — 1 row corrected (`cdca3a38-fa1b-4bda-9e7d-2e2a99df8166`, Emma's Honky Tonk, `has_accomplice → false`)
 - No other live packages affected per the corpus check above
+
+## Addendum 4 (2026-10-04): the Addendum 3 restore made slip-style packages lose `has_accomplice` — the Host Guide told hosts to draw only a MURDERER slip
+
+**Trigger:** a customer email from the Hedberg Hollow purchase (slip style, 16 characters, conversation `07864eb8-06b5-4538-a4a5-10814df22563`): "I see in the instructions that after round one we will determine the murderer by picking slips but it doesn't say to do the same with the accomplice. And wouldn't the accomplice have to be an ally of the murderer?"
+
+**Root cause:** the `has_accomplice` sync that Addendum 3 restored sets the flag to "does any `mystery_characters` row have `character_role = 'accomplice'`". That is right for detective style (Make pre-assigns roles) and always false for `mystery_style = 'character'`, where the murderer and accomplice are drawn at the table and no role is ever written. So every slip-style completion since the restore on 2026-10-01 had the customer's real request overwritten with false. `HostGuideTemplate.tsx` (and the character-packet guide copy via `get_packet_metadata_by_token`) pick their slip-draw wording from that flag: with false, the guide prepares and explains a MURDERER slip only, while all 16 characters still carry full accomplice branches and `detective_script` still calls the accomplice up at the reveal. The customer asked for "an accomplice mechanism" in the first chat message. Addendum 3's corpus check covered only `mystery_style = 'detective'` and so could not see this; the sync was also briefly live 2026-09-05 to 2026-09-08 before `20260908074900` dropped it.
+
+**Blast radius (checked, not assumed):** slip-style paid packages with `has_accomplice = false` where the customer's messages ask for an accomplice (and no "do not include") or the characters carry accomplice branches: Hedberg Hollow (10-03), Boogie Nights, Bloody Nights (10-03), El Último Brindis De Laia (10-02, Spanish, "Incluir un mecanismo de cómplice"), The Gods Must Be Gossiping / Aphrodite's Birthday Bash (09-08). Last slip-style `has_accomplice = true` package before the restore: 2026-09-27. "Do not include an accomplice" packages (Feast For The Dying etc.) are correctly false and untouched.
+
+**Fixed:**
+1. Migration `20261004000000_has_accomplice_sync_skip_slip_style.sql`: the sync block in `validate_package_characters()` only runs when `NEW.mystery_style IS DISTINCT FROM 'character'`. Applied via the Supabase MCP and confirmed live with `pg_get_functiondef` (the function was diffed against the repo file first; identical apart from this guard).
+2. The four affected conversations set back to `has_accomplice = true` (the guide is rendered live from the flag, so the Host Guide and character packets now show the accomplice slip text with no regeneration).
+
+**Customer's second question (is the accomplice an ally of the murderer?):** by design the slip-style accomplice scripts are ally-agnostic. They are written around "someone I love / someone I've known for years" and protect whichever player drew MURDERER, because who that is cannot be known when the package is generated. No content change.
+
+**Not done / deliberately left:** no new detector. The signal (what the customer asked for in free-text chat) is not cleanly checkable in SQL; the failure is closed at its source instead. The general risk that a later `CREATE OR REPLACE` drops this block again is still not structurally closed, same as Addendum 3.
+
+### Key files (Addendum 4)
+- `supabase/migrations/20261004000000_has_accomplice_sync_skip_slip_style.sql`
+- `src/components/HostGuideTemplate.tsx` (consumer of the flag, unchanged)
+- `conversations` rows `07864eb8-06b5-4538-a4a5-10814df22563`, `3ad97bed-3d79-4b94-9668-7da9282506b9`, `e6c75429-ff85-4e56-bf45-06ea1c70ccd9`, `14d53082-df91-4eac-99f3-9c0c73e4ae1d` (`has_accomplice → true`)
