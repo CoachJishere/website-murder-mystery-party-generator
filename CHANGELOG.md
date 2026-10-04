@@ -2,6 +2,9 @@
 
 ## 2026-10-04
 
+### Feature: reviewer fact propagation (ADR-0140)
+- When the reviewer finds a wrong fact, every other field that mentions the same distinctive entity or amount is re-checked in one small follow-up call per item (max 6, about 0.02 USD each); hits are stored and auto-applied like any finding. Motivated by Murder By Copy, where the Flin Flon fix landed in one field and the same wrong fact survived in two others. Kill switch `pipeline_settings.review_propagate`. Probed read-only: 0 false findings on correct text, all 13 mentions found for a synthetic wrong fact. Not yet seen on a real defect.
+
 ### Fix: the wait time is now stated before payment, in 13 languages (ADR-0138 Addendum 2)
 - Purchase card "instant access" and the FAQ's "you'll instantly get everything" were untrue. The purchase page now states the measured range for the order's cast size and promises an email; the FAQ and the how-it-works step were corrected; SEO titles ("in Minutes") were left alone on purpose.
 - The "team notified" timeout on the package page was below the ranges we display (20/30/40/50 vs up to 35/60/60/75 minutes); now 40/65/65/80 in a shared util.

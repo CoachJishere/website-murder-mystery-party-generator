@@ -2,7 +2,7 @@
 // with plain node (see review-core.test.mjs). The prompts are the ones calibrated in the pilot (docs/adr/0136-pilot/, Addenda 2-4)
 // plus the two fixes the pilot called for: the dual-name rule in the detective prompt, and `accomplicePairings` kept out of the context.
 
-export const PROMPT_VERSION = "v4-2026-10-03";
+export const PROMPT_VERSION = "v4-2026-10-03"; // the propagation pass below adds no field to the main prompt, so the version is unchanged
 export const DEFAULT_MODEL = "claude-sonnet-5-5";
 // USD per million tokens for the default model (Anthropic price table, 2026-10). Used for the running cost estimate only.
 export const PRICE = { in: 2.0, cacheWrite: 2.5, cacheRead: 0.2, out: 10.0 };
@@ -252,4 +252,56 @@ export function digestEmail(
     (high.length && mode !== "full" ? `<p><b>High severity:</b></p>` : "") + table + more + `</div>`;
   const subject = `Reviewed: ${title} - ${findings.length} findings${high.length ? ` (${high.length} high)` : ""}, no action needed`;
   return { subject, html };
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------
+// ADR-0140: fact propagation. The per-item review sometimes fixes a wrong fact in one field and misses the same wrong fact in other
+// fields (Murder By Copy: the reviewer fixed "Joe transferred in from Flin Flon" in one background and missed two more statements of the
+// same fact). After the main pass, every wrong_fact / cross_field_contradiction finding is turned into distinctive anchors (multi-word
+// proper nouns, amounts); every OTHER field that mentions an anchor is re-checked in one small follow-up call per item.
+// ---------------------------------------------------------------------------------------------------------------------------------
+
+export const PROPAGATION_CATEGORIES = ["wrong_fact", "cross_field_contradiction"];
+const MAX_ANCHOR_FIELDS = 25; // an anchor that appears in more fields than this is background noise (a main location, a cast name)
+
+/** Distinctive strings of a finding: multi-word proper nouns and amounts/years. Single capitalised words are too common to anchor on. */
+export function anchorsFrom(...texts: string[]): string[] {
+  const out = new Set<string>();
+  for (const t of texts) {
+    for (const m of (t ?? "").matchAll(/\b\p{Lu}[\p{L}'\u2019-]+(?:\s+\p{Lu}[\p{L}'\u2019-]+)+\b/gu)) out.add(m[0]);
+    for (const m of (t ?? "").matchAll(/\$\s?\d[\d,]*(?:\.\d+)?|\b\d{1,3}(?:,\d{3})+\b|\b\d{4,}\b/g)) out.add(m[0].trim());
+  }
+  return [...out].filter((a) => a.length >= 4);
+}
+
+export type PropItem = { name: string; row: Row; fields: string[] };
+export type PropCandidate = { item: string; field: string; text: string };
+
+/**
+ * Fields (other than those already carrying a finding) that mention at least one anchor. Anchors that are a cast member's name, or that
+ * appear in more than MAX_ANCHOR_FIELDS fields, are dropped first.
+ */
+export function propagationCandidates(
+  items: PropItem[], anchors: string[], skip: Set<string>, castNames: string[],
+): PropCandidate[] {
+  const names = castNames.map((n) => n.toLowerCase());
+  const usable = anchors.filter((a) => !names.some((n) => n.includes(a.toLowerCase()) || a.toLowerCase().includes(n)));
+  const all: PropCandidate[] = [];
+  for (const it of items) for (const f of it.fields) {
+    const text = asText(it.row[f]).trim();
+    if (text) all.push({ item: it.name, field: f, text });
+  }
+  const kept = usable.filter((a) => all.filter((c) => c.text.includes(a)).length <= MAX_ANCHOR_FIELDS);
+  return all.filter((c) => !skip.has(`${c.item}\u0000${c.field}`) && kept.some((a) => c.text.includes(a)));
+}
+
+export type Correction = { quote: string; explanation: string; replacement: string };
+
+export function propagationText(item: string, corrections: Correction[], fields: { field: string; text: string }[]): string {
+  const known = corrections.map((c, i) =>
+    `${i + 1}. WRONG: "${c.quote}"\n   WHY: ${c.explanation}${c.replacement ? `\n   CORRECTED: "${c.replacement}"` : ""}`).join("\n");
+  const body = fields.map((f) => `[${f.field}]\n${f.text}\n`).join("\n");
+  return `FOLLOW-UP CHECK for ${item}.\n\nThe reviewer already established that the following statements in this package are WRONG and has fixed them:\n${known}\n\n` +
+    `Check ONLY the fields below. Report a finding only where a field states the SAME wrong fact (same entity, same fact; the wording may differ). ` +
+    `Do not report any other defect, even a real one: this is a narrow follow-up. Quote exactly as the rules require. If a statement already matches the corrected version, it is fine. If nothing states the wrong fact, return an empty findings list.\n\n${body}`;
 }

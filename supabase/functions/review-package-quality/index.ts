@@ -181,6 +181,42 @@ async function autoApply(packageId: string, pkg: Row, chars: Row[], findingRows:
   return { applied, reverted };
 }
 
+/** ADR-0140: re-check the other fields that mention a corrected fact. Returns validated findings (never writes anything). */
+type PropRow = { item_name: string; field: string; category: string; severity: string; exact_quote: string; explanation: string; suggested_replacement: string };
+async function propagate(
+  apiKey: string, system: C.SystemBlock[], items: { name: string; row: Row }[], kept: Row[], chars: Row[], extra: C.Correction[] = [],
+): Promise<{ rows: PropRow[]; cost: number; calls: number; candidates: number; anchors: string[] }> {
+  const corrections: C.Correction[] = [
+    ...kept.filter((k) => C.PROPAGATION_CATEGORIES.includes(String(k.category))).map((k) => ({
+      quote: String(k.exact_quote), explanation: String(k.explanation ?? ""), replacement: String(k.suggested_replacement ?? ""),
+    })),
+    ...extra,
+  ];
+  const anchors = [...new Set(corrections.flatMap((c) => C.anchorsFrom(c.quote, c.explanation, c.replacement)))];
+  if (corrections.length === 0 || anchors.length === 0) return { rows: [], cost: 0, calls: 0, candidates: 0, anchors };
+  const propItems = items.map((i) => ({ name: i.name, row: i.row, fields: i.name === C.DOC_ITEM_NAME ? C.DOC_FIELDS : C.CHARACTER_FIELDS }));
+  const skip = new Set(kept.map((k) => `${k.item_name}\u0000${k.field}`));
+  const cands = C.propagationCandidates(propItems, anchors, skip, chars.map((c) => String(c.character_name)));
+  const byItem = new Map<string, C.PropCandidate[]>();
+  for (const c of cands) byItem.set(c.item, [...(byItem.get(c.item) ?? []), c]);
+  const rows: PropRow[] = [];
+  let cost = 0, calls = 0;
+  const rowOf = new Map(items.map((i) => [i.name, i.row]));
+  for (const [name, list] of [...byItem.entries()].slice(0, 6)) {
+    const r = await reviewItem(apiKey, system, `${name} (propagation)`, C.propagationText(name, corrections, list.map((c) => ({ field: c.field, text: c.text }))));
+    calls++; cost += r.cost;
+    for (const f of r.findings) {
+      const row = rowOf.get(name)!;
+      if (!C.validateFinding(row, f).ok) continue;
+      if (kept.some((k) => k.item_name === name && k.field === f.field && k.exact_quote === f.exact_quote)) continue;
+      if (!C.PROPAGATION_CATEGORIES.includes(f.category)) continue;
+      rows.push({ item_name: name, field: f.field, category: f.category, severity: f.severity, exact_quote: f.exact_quote,
+        explanation: `Same wrong fact elsewhere: ${(f.explanation ?? "").slice(0, 440)}`, suggested_replacement: f.suggested_replacement ?? "" });
+    }
+  }
+  return { rows, cost, calls, candidates: cands.length, anchors };
+}
+
 async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?: boolean; applyClasses?: string[] }): Promise<Row> {
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
@@ -246,6 +282,15 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
       });
     }
   }
+  // ADR-0140: fact propagation (kill switch: pipeline_settings.review_propagate = 'off'). Never blocks the review: a failure only logs.
+  let propagated = 0;
+  try {
+    if (!partialWhy && spent < PER_PACKAGE_CAP_USD && dailySpent < DAILY_CAP_USD && (await setting("review_propagate", "on")) === "on") {
+      const pr = await propagate(apiKey, system, items, kept, chars);
+      for (const x of pr.rows) kept.push({ review_id: review.id, package_id: packageId, ...x });
+      spent += pr.cost; dailySpent += pr.cost; propagated = pr.rows.length;
+    }
+  } catch (e) { console.error(`propagation failed (ignored): ${(e as Error).message}`); }
   let inserted: { id: string; item_name: string; field: string; category: string; exact_quote: string; suggested_replacement: string; severity: string; explanation: string }[] = [];
   if (kept.length > 0) {
     const { data: ins, error: ie } = await supabase.from("package_review_findings").insert(kept).select("id,item_name,field,category,exact_quote,suggested_replacement,severity,explanation");
@@ -279,7 +324,7 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
   }
 
   return { package_id: packageId, title: (pkg as Row).title, style, status, items: items.length, reviewed: results.length, findings: inserted.length,
-    high: inserted.filter((f) => f.severity === "high").length, discarded, cost_usd: Number(spent.toFixed(4)), partial_reason: partialWhy || undefined, errors: errors.slice(0, 5), auto_apply: apply };
+    high: inserted.filter((f) => f.severity === "high").length, propagated, discarded, cost_usd: Number(spent.toFixed(4)), partial_reason: partialWhy || undefined, errors: errors.slice(0, 5), auto_apply: apply };
 }
 
 async function setting(key: string, fallback: string): Promise<string> {
@@ -358,8 +403,18 @@ async function releaseQueue(): Promise<Row[]> {
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : "sweep";
+    const mode = body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : "sweep";
     const out: Row[] = [];
+    if (mode === "propagate_probe") {
+      // Read-only check of the propagation pass against a stored package with hand-supplied corrections. Writes nothing.
+      const apiKey = Deno.env.get("ANTHROPIC_API_KEY"); if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
+      const { data: pkg } = await supabase.from("mystery_packages").select("*").eq("id", String(body.package_id)).single();
+      const { data: cd } = await supabase.from("mystery_characters").select("*").eq("package_id", String(body.package_id)).order("character_name");
+      const chars = (cd ?? []) as Row[]; const style: C.Style = (pkg as Row).mystery_style === "detective" ? "detective" : "character";
+      const items = [...chars.map((c) => ({ name: String(c.character_name), row: c })), { name: C.DOC_ITEM_NAME, row: pkg as Row }];
+      const pr = await propagate(apiKey, C.buildSystemBlocks(pkg as Row, chars, style), items, [], chars, (body.corrections ?? []) as C.Correction[]);
+      return new Response(JSON.stringify({ probe: true, ...pr, cost: Number(pr.cost.toFixed(4)) }), { headers: { "Content-Type": "application/json" } });
+    }
     if (mode === "release_queue") {
       out.push(...await releaseQueue());
     } else if (mode === "one") {

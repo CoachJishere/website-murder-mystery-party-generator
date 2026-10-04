@@ -77,3 +77,26 @@ t("digestEmail: summary shows counts and high findings only, says no action need
   assert.equal(C.digestEmail("T", "p", "s", "m", 0, f, "off"), null); assert.equal(C.digestEmail("T", "p", "s", "m", 0, [], "summary"), null);
 });
 console.log("all passed");
+
+// ---- ADR-0140 fact propagation ----
+t("anchorsFrom keeps multi-word proper nouns and amounts, drops single words", () => {
+  const a = C.anchorsFrom('Joe transferred in from the Flin Flon office', "He owed $180,000 and 2,500 dollars in 2026", "Marcus did it");
+  assert.ok(a.includes("Flin Flon")); assert.ok(a.includes("$180,000")); assert.ok(a.includes("2,500")); assert.ok(a.includes("2026"));
+  assert.ok(!a.includes("Joe") && !a.includes("Marcus"));
+});
+t("propagationCandidates finds other fields with the anchor, skips flagged fields, cast names and ubiquitous anchors", () => {
+  const items = [
+    { name: "Amber", row: { background: "Joe joined from the Flin Flon office.", intro: "Hi.", secret: "Marcus Moreno knows" }, fields: ["background", "intro", "secret"] },
+    { name: "Darion", row: { background: "Joe works out of the Flin Flon office." }, fields: ["background"] },
+    { name: "DOCS", row: { detective_script: "formerly of the Flin Flon office" }, fields: ["detective_script"] },
+  ];
+  const got = C.propagationCandidates(items, ["Flin Flon", "Marcus Moreno"], new Set(["Darion\u0000background"]), ["Marcus Moreno"]);
+  assert.deepEqual(got.map((c) => `${c.item}/${c.field}`).sort(), ["Amber/background", "DOCS/detective_script"]);
+  const many = Array.from({ length: 30 }, (_, i) => ({ name: "C" + i, row: { f: "Flin Flon again" }, fields: ["f"] }));
+  assert.equal(C.propagationCandidates(many, ["Flin Flon"], new Set(), []).length, 0);
+});
+t("propagationText names the wrong fact, the correction and the narrow scope", () => {
+  const x = C.propagationText("Amber", [{ quote: "joined from Flin Flon", explanation: "He works there", replacement: "works out of Flin Flon" }], [{ field: "background", text: "abc" }]);
+  assert.ok(x.includes("WRONG:") && x.includes("CORRECTED:") && x.includes("Check ONLY") && x.includes("[background]"));
+});
+console.log("propagation tests done");
