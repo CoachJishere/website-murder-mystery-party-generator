@@ -2,6 +2,16 @@
 
 ## 2026-10-04
 
+### Feature: slip confessions that name another cast member are now detected, gated, healed and prevented (ADR-0103 Addendum 82)
+- New detector `list_packages_with_confession_names_cast_member` (12 delivered packages, 53 characters flagged since April; Hedberg and S'more clean), added to the completion gate; `auto-remediate-packages` heals it through `regenerate-child-content`, whose own gate now includes the class. Delivered packages are never re-held (the trigger skips `completed`).
+- Child56 blueprint built locally (`temp-files/build-child-v56.py`): the two reveal-confession schema lines may no longer name another character. Not imported yet; number 56 is claimed.
+- Tested end to end on Boogie Nights (2 characters, 0.20 USD): prose fixed, detector clear. Backlog NOT run (35 characters in the last 30 days, about 5.25 USD with pointforms) pending Jonathan's go.
+
+### Fix: pointform regeneration wrote French bullets for an English package again (ADR-0103 Addendum 82)
+- `generate-pointform-summaries` now detects English source prose (stopword ratio), tells the model explicitly, and retries once if any bullet block is not English. Lena Lush's two confession pointforms in Boogie Nights were hand-written in English.
+
+## 2026-10-04
+
 ### Fix: slip-style Host Guide told hosts to draw only a MURDERER slip when the customer had asked for an accomplice (ADR-0069 Addendum 4)
 - Customer report from the Hedberg Hollow purchase: the guide covered the murderer slip draw but not the accomplice. Cause: the `has_accomplice` completion sync (restored 2026-10-01) derives the flag from pre-assigned `accomplice` roles, which slip-style games never have, so it overwrote the real request with false on every slip-style completion. The guide's slip wording keys off that flag.
 - Migration `20261004000000`: the sync now skips `mystery_style = 'character'`. Four packages that had asked for an accomplice (Hedberg Hollow, Boogie Nights, El Último Brindis De Laia, Aphrodite's Birthday Bash) set back to `has_accomplice = true`; the guide renders live, so no regeneration was needed.
