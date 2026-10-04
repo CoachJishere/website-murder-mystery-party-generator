@@ -96,6 +96,8 @@ const MysteryView = () => {
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const generationTimerRef = useRef<NodeJS.Timeout | null>(null);
   const timeoutNotifiedRef = useRef<boolean>(false);
+  // ADR-0139: set once the page has auto-started generation for a paid customer who just came back from checkout.
+  const autoStartedRef = useRef<boolean>(false);
   const [generationTimedOut, setGenerationTimedOut] = useState(false);
 
   // Hard quality guarantee (ADR-0077): while a package is held `needs_review`
@@ -1012,6 +1014,25 @@ const MysteryView = () => {
     ]);
     setLastUpdate(new Date());
   }, [checkGenerationStatus, fetchStructuredPackageData, debugLog]);
+
+  // ADR-0139: generation used to start only when the paid customer clicked "Generate". About 5 percent never did (one order sat
+  // 7 hours), so a customer returning from checkout (?purchase=success) with a paid order and no package now starts it by
+  // themselves. Safe against a double start: the server claims the package atomically (a second call gets a 409), and
+  // `needs_more_info` is handled inside handleGeneratePackage. Paid customers who arrive later without the checkout flag keep the
+  // button, and the 3-minute rescue worker (rescue-unstarted-orders) is the backstop for everyone.
+  useEffect(() => {
+    if (autoStartedRef.current || loading || !mystery?.is_paid || generating) return;
+    if (generationStatus?.status !== 'not_started') return;
+    let fromCheckout = false;
+    try {
+      fromCheckout = new URLSearchParams(window.location.search).get('purchase') === 'success';
+    } catch {
+      fromCheckout = false;
+    }
+    if (!fromCheckout) return;
+    autoStartedRef.current = true;
+    handleGeneratePackage();
+  }, [loading, mystery?.is_paid, generating, generationStatus?.status, handleGeneratePackage]);
 
   // Field-level update handler for mystery_packages
   const handlePackageFieldUpdate = useCallback(async (fieldName: string, value: string) => {

@@ -2,6 +2,15 @@
 
 ## 2026-10-04
 
+### Improvement: paid customers returning from checkout no longer have to click "Generate" (ADR-0139 Addendum 1)
+- `MysteryView` starts generation by itself for a paid order with no package when the page is opened with `?purchase=success`. The atomic claim makes a double start harmless, and the rescue worker still covers anyone who never reaches the page. Verified with a mocked backend (one trigger call with the flag, none without).
+
+### Chore: dependency audit (2026-10-04)
+- `npm audit fix` (lockfile) plus `sharp` 0.35.5; react-router stays on 6.30.6 (latest 6.x). The remaining alerts need major versions (react-router 7, tailwind 4) or are build tooling (`braces`, `micromatch`, `fast-glob`, `vite-plugin-ssr`, `lovable-tagger`); runtime exposure checked: client-side SPA, internal navigation only, no SSR hydration.
+
+### Fix: slip-confession backlog closed (ADR-0103 Addendum 82 follow-up)
+- The last 13 flagged confession fields (11 characters in 4 August packages) were rewritten by hand with matching pointform bullets, zero API spend; the detector is at 0 across the whole corpus. "Death By High Tea" carried a `[Closing:` (mixed case) placeholder and was stripped.
+
 ### Fix: a leaked `[CLOSING: ...]` authoring label in the detective script is now detected, healed and prevented (ADR-0103 Addendum 83)
 - The Parent prompt wrote its closing slot as a bracketed directive and the model sometimes printed the label into the guest-facing detective script (4 packages in 3 months, incl. "Murder By Copy"). `package_meta_text_leak` now matches `[closing:` (so the completion gate holds it) and the free strip lane in `auto-remediate-packages` removes the standalone line (paired regexes, deployed). The three older delivered packages were stripped by hand.
 - Prevention: `temp-files/build-parent-v74.py` builds Parent74 (local, gitignored) with the four closing slots as plain instructions; needs importing into Make.com.

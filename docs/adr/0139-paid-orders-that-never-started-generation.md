@@ -42,3 +42,10 @@ Root cause (verified in code and data):
 ## Key files
 
 `supabase/migrations/20261004120000_rescue_unstarted_paid_orders.sql`, `supabase/functions/rescue-unstarted-orders/index.ts`, `supabase/functions/mystery-webhook-trigger/index.ts` (service-role claim), `supabase/migrations/20261004130000_name_background_mismatch_ignore_shared_name_words.sql`.
+
+## Addendum 1 (2026-10-04): the page now starts generation by itself after checkout
+
+`MysteryView` auto-starts generation when a paid customer arrives from checkout (`?purchase=success`), has no package yet and the page has finished loading (one effect, guarded by a ref). This removes the dependency on the click for everyone who reaches the page; the 3-minute rescue worker remains the backstop for people who never do. Double starts are impossible in practice: `claim_package_for_generation` is atomic (the second caller gets a 409, which the client already handles), and `needs_more_info` is handled inside `handleGeneratePackage`. A customer returning later without the checkout flag still sees the button.
+
+Verified with a mocked backend in Chromium (Playwright): with the flag, exactly one call to `mystery-webhook-trigger` and the "We're building your mystery" screen; without the flag, zero calls and the Generate button. Not tested end to end against a real paid order.
+
