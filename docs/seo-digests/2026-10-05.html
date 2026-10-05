@@ -1,0 +1,74 @@
+<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:680px;margin:auto;color:#222;"><p style="color:#666;font-size:13px;">SEO/GEO digest — week ending 2026-10-05 · mysterymaker.party</p><div style="border:1px solid #d9b310;background:#fffbe6;border-radius:6px;padding:12px 14px;margin:0 0 18px;"><p style="margin:0 0 6px;font-weight:600;color:#7a5c00;">📌 Reminder — Two paid packages from a superseded concept: both source conversations dead-end mid-question, no clean "final concept" to regenerate from</p><p style="margin:0 0 10px;font-size:14px;color:#444;">Re-checked 2026-09-28: both packages ("The Black Swan Society," "The Last Will And Testament Of Adelaide Crane") are still in the same stale-concept state as the 2026-08-02 audit. But their conversations don't actually resolve -- both end with the assistant mid-clarifying-question and no customer reply. Regenerating would mean inventing plot details the customer never confirmed, not just replaying their real intent. Needs a decision on whether that's acceptable, not just a go/no-go on remediating.</p><pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;font-size:13px;margin:0;">Decide how to handle the two stale-concept-mismatched packages given that neither source conversation has a clean resolved endpoint: "The Black Swan Society: Unmasking Murder" (conversation 926cd375, 43 messages) and "The Last Will And Testament Of Adelaide Crane" (conversation a366885d, 50 messages). Re-derive from ground truth -- query Supabase directly (messages table, ordered by created_at, for each conversation_id), don't trust this note's framing.
+
+1. Confirm both conversations are still is_paid/purchased with approved_concept_message_id unchanged (as of 2026-09-28 they were).
+2. Read each conversation's last 5-10 messages directly. As of 2026-09-28 both ended with the assistant asking a clarifying question the customer never answered (Black Swan: institution name + Savannah-connection variant; Adelaide Crane: details of Patricia's argument scene). If still true, this isn't a clean "identify the customer's real final intent" job -- any concept synthesized would include invented specifics.
+3. Options to put to Jonathan: (a) synthesize a best-effort concept from everything confirmed up to the dead-end, filling only the unresolved specifics with reasonable choices, and have him review it before triggering the paid regeneration; (b) leave both packages as-is, close this out as a deliberate decision, and log it as a CHANGELOG/ADR-0069 addendum; (c) something else he specifies. Don't pick for him given the Black Swan Society content involves real HBCU/Black-history references that deserve a human read before anything is invented on top of them.</pre></div><h2>Scoreboard</h2>
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-family:sans-serif;font-size:14px;">
+  <tr style="background:#f4f1ea;">
+    <th align="left">Metric</th><th align="right">This week</th><th align="right">Last week</th><th align="right">Δ</th>
+  </tr>
+  <tr><td>Organic clicks</td><td align="right">188</td><td align="right">196</td><td align="right">−4.1%</td></tr>
+  <tr><td>Impressions</td><td align="right">1,208</td><td align="right">1,348</td><td align="right">−10.4%</td></tr>
+  <tr><td>Avg position</td><td align="right">8.1</td><td align="right">7.9</td><td align="right">+0.2 (worse)</td></tr>
+  <tr><td>GA4 sessions</td><td align="right">1,645</td><td align="right">1,146</td><td align="right">+43.5%</td></tr>
+  <tr><td>AI-referral sessions</td><td align="right">24</td><td align="right">—</td><td align="right">1.5% share</td></tr>
+</table>
+<p>GSC impressions and clicks dipped slightly, but GA4 sessions jumped +43.5% — the growth is coming through Direct (607) and Organic Search (834) off-GSC-query traffic, so the headline is engagement up, raw search demand softening a touch.</p>
+
+<h2>Insights</h2>
+<ul>
+  <li><strong>"murder mystery characters" (52 impressions, pos 6.6, 2 clicks)</strong> is one nudge off page 1 on /blog/murder-mystery-party-character-ideas/. CTR is normal for the rank — this is an authority/internal-link lever, and there are unlinked sources available.</li>
+  <li><strong>"murder mystery game free" (28 impressions, pos 10.6)</strong> on the free-printable hub ranks on page 2 with a healthy CTR gap (+5.3) — the page is appealing but under-ranked. Internal links, not copy, are the fix; several candidate sources don't yet link.</li>
+  <li><strong>"printable murder mystery game" (33 impressions, pos 5.8, CTR 3% vs ~5% expected)</strong> is a genuine page-1 copy opportunity on the free-printable hub — ctrGap −2 means title/meta appeal, provided the query isn't already in the title.</li>
+  <li><strong>French demand is surging:</strong> "jeu meurtre et mystère à télécharger" is net-new at 38 impressions (pos 10.7), plus "murder party gratuit" up to 18. The /fr/ printable page is ranking but has <em>no</em> internal-link candidates in the snapshot — flag only, no action this week.</li>
+  <li><strong>Rising buyer intent:</strong> "corporate murder mystery event" is net-new (14 impressions, pos 14.1) and maps to /office-murder-mystery-party/ (currently pos 27.8) — a weak money page with room to grow.</li>
+  <li><strong>"custom murder mystery party" (pos 18.3, 0 clicks)</strong> rankingPage is the homepage. All the strongest blog sources already link to it; remaining candidates are thinner, so this is a low-priority authority nudge, not a copy change (homepage title is settled per ADR-0046).</li>
+</ul>
+
+<h2>Action prompts</h2>
+
+<p><strong>1. Quick win — internal links to rank "murder mystery characters" (lever: links)</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Add 1–2 internal links pointing to https://www.mysterymaker.party/blog/murder-mystery-party-character-ideas/ to push the query "murder mystery characters" (currently position 6.6, one nudge off page 1) onto page 1.
+
+Use these source posts (confirmed not already linking as of this snapshot):
+- /blog/murder-mystery-party-script-template-guide/
+- /blog/how-to-write-murder-mystery-characters/
+
+Before adding each link, fetch the live source page and confirm it does not already link to the target (a few hours may have passed since the snapshot). Use descriptive anchor text built from the query, e.g. "murder mystery characters" or "murder mystery character ideas". Place the link contextually within body copy, not in a footer or nav. Goal: raise authority to the character-ideas post so it crosses into page 1.</pre>
+
+<p><strong>2. Quick win — internal links to rank "murder mystery game free" (lever: links)</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Add 1–2 internal links pointing to https://www.mysterymaker.party/blog/free-murder-mystery-games-printable/ to lift the query "murder mystery game free" (currently position 10.6 on page 2, CTR already healthy at 7.1%).
+
+Use these source posts (confirmed not already linking as of this snapshot):
+- /blog/murder-mystery-party-clue-ideas/
+- /blog/murder-mystery-party-drinks-cocktail-recipes/
+
+Before adding each link, fetch the live source page and confirm it does not already link to the target. Use descriptive anchor text built from the query, e.g. "free printable murder mystery game". Place links contextually in body copy. Goal: move this page from page 2 to page 1 for the free-game query cluster. Do NOT rewrite the title/meta — CTR is fine for the rank; this is an authority problem.</pre>
+
+<p><strong>3. Quick win — rewrite title/meta for "printable murder mystery game" (lever: copy)</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Target page: https://www.mysterymaker.party/blog/free-murder-mystery-games-printable/
+Query: "printable murder mystery game" — position 5.8 (page 1) but CTR is 3% vs ~5% expected for that rank, so this is a title/meta appeal problem.
+
+STEP 1 (required): Fetch the live page and check whether "printable murder mystery game" (or a close variant) is already present in the title tag and H1.
+- If it IS already in the title/H1: do NOT rewrite. The real lever is authority — report back that copy is fine and internal links are needed instead.
+- If it is NOT: rewrite the title tag and meta description to lead with the printable/download angle and the phrase "printable murder mystery game", keeping the free-game value prop prominent. Keep it under ~60 chars for the title and ~155 for the meta description.
+
+Goal: close the ~2-point CTR gap on a page-1 query. Do not touch the page body or URL.</pre>
+
+<p><strong>4. Low priority — expand/strengthen the office money page for "corporate murder mystery event" (lever: rising query + weak money page)</strong></p>
+<pre style="white-space:pre-wrap;background:#f4f1ea;padding:12px;border-radius:6px;">Rising net-new query "corporate murder mystery event" (14 impressions, position 14.1) maps to https://www.mysterymaker.party/office-murder-mystery-party/, which currently ranks weakly at position 27.8.
+
+Fetch the live /office-murder-mystery-party/ page. Then:
+1. Ensure the page copy naturally covers "corporate murder mystery event" and "corporate/office murder mystery" as a use case (team events, offsites, remote-team variants) in on-page body content.
+2. Add 1–2 contextual internal links to this money page from relevant blog posts that mention workplace/team scenarios (verify live before linking), using anchor text like "corporate murder mystery event".
+
+Goal: build relevance + authority for an emerging buyer-intent query against an underperforming money page. Keep changes additive; do not remove existing content.</pre>
+
+<p><em>Note on French surge:</em> "jeu meurtre et mystère à télécharger" and "murder party gratuit" are growing on the /fr/ printable page, but the snapshot lists no eligible internal-link sources for it — no action this week; monitor and revisit if candidates appear.</p>
+
+<p><em>Note on "custom murder mystery party" (homepage, pos 18.3):</em> the strongest blog sources already link to the homepage and remaining candidates are thin, so no high-value links action this week. Homepage title/meta is settled per ADR-0046 — not a lever.</p>
+
+<h2>Site health</h2>
+<p>Dead internal links: 0 ✓</p>
+<p>Publish queue: 321 live, 102 drafts remaining.</p>
+<p>Next up by link-graph importance: murder-mystery-party-for-christmas-eve (1), murder-mystery-party-for-coworkers-outside-work (1), murder-mystery-party-for-prom-afterparty (1), murder-mystery-party-for-wine-tasting-event (1), murder-mystery-party-for-work-from-home-colleagues (1).</p></div>
