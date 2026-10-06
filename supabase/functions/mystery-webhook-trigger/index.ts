@@ -11,6 +11,7 @@ import {
   mergeRosterContinuations,
   rosterOverlapFraction,
 } from "../_shared/rosterExtraction.ts";
+import { selectPreSnapshotBriefs, formatPreSnapshotBrief } from "../_shared/conversation-briefs.ts";
 
 // CORS: restrict to production domains
 const ALLOWED_ORIGINS = [
@@ -724,7 +725,16 @@ serve(async (req) => {
           .sort((a: any, b: any) =>
             new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 
+        // ADR-0144: the one thing BEFORE the snapshot that is safe to include is a long
+        // document the customer wrote themselves (a pasted canon/brief). See
+        // _shared/conversation-briefs.ts for the incident and the selection rule.
+        const preSnapshotBriefs = selectPreSnapshotBriefs(
+          conversation.messages as any[],
+          approvedMsg.created_at,
+        );
+
         conversationContent = [
+          ...preSnapshotBriefs.map((m: any) => formatPreSnapshotBrief(m.content)),
           `AI: ${approvedMsg.content}`,
           ...afterSnapshot.map((m: any) =>
             `${m.role === "assistant" ? "AI" : "User"}: ${m.content}`),
@@ -732,7 +742,11 @@ serve(async (req) => {
 
         console.log(
           `[ConversationContent] Approved concept message (id=${approvedId}, ${approvedMsg.content.length} chars) ` +
-          `+ ${afterSnapshot.length} later message(s) = ${conversationContent.length} chars`,
+          `+ ${afterSnapshot.length} later message(s)` +
+          (preSnapshotBriefs.length
+            ? ` + ${preSnapshotBriefs.length} earlier customer brief(s) (${preSnapshotBriefs.reduce((s: number, m: any) => s + m.content.length, 0)} chars)`
+            : "") +
+          ` = ${conversationContent.length} chars`,
         );
       } else {
         // Fallback: full conversation (either no snapshot, or snapshot is too thin to be trusted)

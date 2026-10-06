@@ -49,6 +49,7 @@ Blog Database - Master.csv
 !scripts/__tests__/leverClassifier.test.mjs
 !scripts/__tests__/nameVariants.test.mjs
 !scripts/__tests__/rosterAnomaly.test.mjs
+!scripts/__tests__/preSnapshotBriefs.test.mjs
 !scripts/sync-blog-map.mjs
 !scripts/backfill-crosslinks.mjs
 !scripts/apply-crosslinks.mjs
