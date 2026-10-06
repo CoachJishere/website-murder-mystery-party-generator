@@ -2,6 +2,11 @@
 
 ## 2026-10-06
 
+### Fix: the relationship-matrix detector misread labeled matrix headers (ADR-0103 Addendum 86)
+- **Cause:** `package_relationship_matrix_contradiction()` assumed the matrix header's top-left cell is empty; 27 of 100 recent matrices use `| Character | ... |`, so every column was read one cell to the left. "The Last Thanksgiving" returned 5 hits, all false (all 11 ally/rival lists match the matrix by hand).
+- **Fix:** header and row are aligned by length (migration `20261006160000_fix_relationship_matrix_detector_labeled_header.sql`, applied live, grants unchanged). Corrected baseline since 2026-08-01: 33 packages / 59 hits (was 44 / 110); 0 since the Child52 import.
+- **Package repair:** 25 exact-match field edits on "The Last Thanksgiving" (cross-character alibi contradictions, innocents pointing at the bookkeeper, a stale announcement timeline, stale pointform twins). Reviewer found 7 of 15 real defects. Parent73 and Child51 did not hold again. Details in the ADR addendum.
+
 ### Fix: a paid customer's final cast was replaced by a stale draft's; stacked roster annotations now parse (ADR-0103 Addendum 85)
 - **Cause:** "The Vellacourt Gala" (14 players, detective): the approved message's roster lines 11-13 carried two annotations (`**William** (M) *(safe-cut)* - ...`). `characterLineRegex` and `boldCharRegex` allowed one, so 10 of 13 names parsed. 10 against `player_count` 14 triggered the Claude count-mismatch fallback, which read the whole chat, "found 14" from an older draft (Lesedi's Friend #1 and #3, Ellis/Elise) and replaced the cast the customer had approved. She received three wrong sheets and no Shreya or Kuei sheet, while the scripts of the other 11 (written from the correct master context) referred to Shreya and Kuei.
 - **Fix:** both regexes accept any number of annotation groups. The fallback upgrade in `mystery-webhook-trigger` is now accepted only if it keeps every name the approved message already yielded, so it can only add to the approved cast. Two new checks in `scripts/__tests__/conceptSnapshot.test.mjs` (the first fails on the old code); `npm run test:roster` green. Deployed with `scripts/deploy-roster-functions.sh` (`extract-concept-roster`, `mystery-webhook-trigger`, `mystery-ai`).

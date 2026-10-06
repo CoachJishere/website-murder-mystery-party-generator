@@ -48,3 +48,6 @@ Jonathan's question ("is the whole point of the matrix to have the texts follow 
 - `supabase/migrations/20261003110000_add_relationship_matrix_contradiction_detector.sql`
 - `.github/workflows/health-check.yml` (check 16, information only)
 - `temp-files/build-child-v52.py`, `temp-files/MM Live - Child (Unified)52-RelationshipsFollowMatrix.blueprint.json` (gitignored; import into Make)
+
+## Addendum 1 (2026-10-06): the detector's baseline was wrong for labeled matrix headers
+The detector assumed an empty top-left cell in the matrix header; 27 of 100 recent matrices have `| Character |`, so those were read one column off (false hits and misses). Fixed by migration `20261006160000_fix_relationship_matrix_detector_labeled_header.sql` (ADR-0103 Addendum 86). Corrected figures since 2026-08-01: 33 packages / 59 hits (previously 44 / 110); 0 since Child52 was imported. Child52 itself held on its first detective purchase after the fix (all 11 lists match the matrix by hand).
