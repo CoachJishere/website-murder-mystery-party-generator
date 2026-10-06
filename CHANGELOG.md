@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-10-06
+
+### Fix: a customer's long pasted brief written before the approved concept now reaches generation (ADR-0144)
+- **Cause:** `mystery-webhook-trigger` sent the approved concept plus everything after it and nothing before. "El Último Trago" (21 players, Spanish) was built from a 4,103-character AI cast list; the customer's 42,225-character canon (two homicides, a fraud, a UV ledger, a closed list of poison buyers) was never sent, and the delivered package had none of it. The "snapshot too thin" guard only fires under 3,000 characters. A corpus check found at least 3 more paid orders in 3 months where a brief 2x or more the concept's size was dropped.
+- **Fix:** user messages of 4,000+ characters before the snapshot are prepended (labelled as source material, approved concept wins on conflict), capped at 50,000 characters, oldest dropped first. New `_shared/conversation-briefs.ts`, 15-check offline test in `npm run test:roster`.
+- **Not deployed yet:** the edge function change waits for a go (live purchase path). **Not changed:** the pipeline still builds one victim, one murderer and an optional accomplice; a two-homicide canon cannot be produced even with the full brief.
+
+### Feature: two new detectors from the Roslyn's Clay and El Último Trago sweeps (ADR-0103 Addendum 84)
+- **`slip_reveal_names_culprit`:** a slip-style detective script whose closing section names a cast member as culprit or accomplice (Roslyn's Clay named "Martin", who was also the customer; "The Workshop Of St. Nick" 2026-08-31 names both). Gate-held, detection and escalation only. Narrowed to culprit-addressing shapes after the first version flagged 6 false positives in 131 slip packages.
+- **Word-loop check in `package_meta_text_leak`:** five or more identical consecutive words. A generation loop ("until until until ...") truncated 6 fields on 4 characters of El Último Trago and the old rule missed the accomplice because the loop contains "the". Corpus: 4 hits, all on that package.
+
+### Fix: "The Roslyn's Clay And The Cracked Foundations" (hand edits, ADR-0103 Addendum 84)
+- Reveal rewritten so it no longer names the culprit; Bridie's self-rumor and Martin's garbled rumor replaced (text and pointform); two broken Round 3 questions fixed; a grammar glitch and a stray blank paragraph; the customer's "riding about town like mad hamsters" family joke added to Lauren's introduction.
+- The reviewer's auto-apply then rewrote the hamster phrase as a "garbled simile"; restored by hand. **Open:** the reviewer has no access to the customer's verbatim requests.
+
 ## 2026-10-04
 
 ### Fix: editing a point-form mystery saved to the wrong column, so edits looked unsaved and overwrote the prose

@@ -1679,3 +1679,49 @@ The reviewer found about 13 things I had not (time-reference slips "buried a hus
 **Measurement.** Recall 56 percent counting hard misses only (5 of 9), 38 percent counting everything (5 of 13); precision 100 percent. Earlier pilots quoted 70 to 80 percent; a single package is a small sample, but the misses are in classes the prompt tells it to ignore or that the detectors own. Scoreboard row added. `review_performance` after this sweep: single-generation slips 100 percent recall (slip 12 of 12, detective 3 of 3), wrong_fact 67 to 73 percent, cross_field_contradiction 50 percent.
 
 **Key files.** `supabase/migrations/20261004140000_meta_text_leak_closing_label.sql`, `supabase/functions/auto-remediate-packages/index.ts`, `temp-files/build-parent-v74.py` (local), `docs/autonomy-scoreboard.md`.
+
+## Addendum 84 (2026-10-06): New-Purchase sweep - "The Roslyn's Clay And The Cracked Foundations" (EN, slip style, 6 characters, no accomplice) and "El Último Trago" (ES, detective style, 21 characters, accomplice) - a slip reveal that named the culprit, a degenerate "until until until" loop the loop detector had missed, and a 42K-character customer brief that never reached generation
+
+**Context.** Two held packages (`needs_review`) and two customer messages from the same person (El Último Trago). The reviewer's cron ran on Roslyn's Clay AFTER my fixes (released 06:23 UTC, ready email sent), so this is not a valid recall measurement and no `package_review_sweeps` row was written.
+
+### Roslyn's Clay (slip, 6 characters)
+**Held by:** self-directed questions (Bridie, Martin) that the worker's retarget heal tried twice and reverted. The 12 missing branch headers had already been healed for free.
+
+**Found by reading the full cast (all fixed, all verified):**
+1. **The detective's reveal named the culprit.** "Martin. It's time you told this room the truth ... Martin, I am arresting you ... Take him away", plus a motive sentence only Martin fits. In a slip game the culprit is drawn at game time, and Martin was the customer. 1 of the 50 slip packages with a reveal section (a second, older one, "The Workshop Of St. Nick" 2026-08-31, names both murderer and accomplice, see below). Rewritten generically (the form every other slip package uses).
+2. **Bridie spread a rumor about herself** (and her pointform said "imply this is about yourself"). Replaced with a rumor about Rick, text and pointform.
+3. **Martin's third rumor had a garbled header** ("About Bridie's dealings being watched, not Bridie herself") and no target. Retargeted to Ness, text and pointform.
+4. **Bridie's Round 3 question 3** was headed "To Bridie's own household aside - To Lauren"; **Martin's Round 3 question 3** was addressed to himself and empty. Both fixed (this is what held the gate).
+5. A garbled "I'm only ever been the first" (Lauren, final innocent), and a stray blank paragraph (Ness, Round 3).
+
+**The customer's explicit requests that never reached the package** (short user messages before the concept, and the concept's own write-up dropped them): the "riding about town like mad hamsters" family joke (added by hand to Lauren's introduction, text and pointform), Captain Smith / the Titanic gag, and most of the fringe cast (George, Jazz, Don Bur, Wayne Walker, Nello, Ted Smith; Roy, Mark, Taylor, Williams and Shovellin do appear), plus most of the dialect words (ar, mardy, nesh, bostin, conna, shunna, asthee). Only the hamster line was added; weaving the cast is a creative edit left for Jonathan's call (offered, not done).
+
+**Reviewer interaction.** The reviewer's auto-apply then REWROTE the hamster phrase ("forever driving about town with that cart of his", text and pointform) as a "garbled, anachronistic simile". It cannot know the phrase was requested. Restored by hand, finding marked `false`. Its other two findings were right (a garbled "found dead set against a man now found dead" sentence, applied; Ness's final statement hinting at her own secret, applied by hand). **Open:** the reviewer needs the customer's verbatim requests (or an exemption for phrases the customer asked for); see decisions.
+
+**Not fixed, deliberately:** two shared holes that come from the generator itself (`master_context` hedges them: "tied to the cottages or cart disputes"): Ness and Rick's "fresh wrong" is never defined in any field, six scripts ask about it; Bridie's secret is never stated, only "something dark about Teapot". Both are playable by improvisation; inventing a canonical answer would be a creative decision.
+
+### El Último Trago (detective, 21 characters, Spanish)
+**Not repairable by a sweep.** Findings, all verified:
+1. **The customer's canon never reached generation** (ADR-0144): `user_conversation` was 8,504 characters (the last 5 chat turns) against a 42,225-character canon. None of the 500/100/400 fraud, the funeral-parlour front, the false confession, the orphanage son or the somnífero appears anywhere; the Libro Negro is a plain ledger card. Verified by search of every field.
+2. **The pipeline cannot build the structure he specified** even with the canon: one victim, one murderer plus an optional accomplice, fixed rounds, no ghost phase. Juanpa and Consuelo were generated as ordinary playable suspects ("redHerring") while the detective announces Juanpa dead; Consuelo is never murdered. The package also adds an external "Inspector Medianoche" against "no external detectives".
+3. **The customer's Golden Rule is broken in the shipped evidence:** the reveal says "todo apunta a una sola persona ... sus propios meseros la vieron donde juró no haber estado ... una marca de labial", i.e. a single clue and a witness identifying Paulina. The canon forbids exactly that.
+4. **A degenerate generation loop truncated 6 fields on 4 characters** ("until until until ..." in Niurka's Round 2/3/4 scripts, Michelle's secret and final statement, Verónica's final statement, one stray "until" in Morgana's Round 2). Verónica (the accomplice) also has NO point-form at all (the pointform heal failed twice, "apply_failed"). The meta-text detector flagged 3 characters and MISSED Verónica: its "English `until` in foreign prose" rule exempts any field that contains "the/and/with/that", and the loop itself contains "the".
+5. `role_tag_leak` on Remedios is the known false-positive shape (a nickname parenthetical, "Verónica ... ('La Dama de Obsidiana')").
+
+**Held, not touched.** No repair was made: regenerating the four looped characters costs about 0.60 USD (0.15 each, paid) and any repair of a package that cannot meet the brief is wasted if the order is regenerated or refunded. The decision (refund, regenerate with the canon, or both) is Jonathan's; see the hand-over.
+
+### Detect, heal, prevent
+- **Detect and gate (shipped, migration `20261006100000_slip_reveal_names_culprit_and_word_loop_detectors.sql`, applied live):**
+  - `package_slip_reveal_names_cast_member()` + `list_packages_with_slip_reveal_names_cast_member()` + a gate block (`slip_reveal_names_culprit.<name>`). Looks only at the last `## ` section of a slip package's detective script (the header is translated, so it is found by position), excludes the victim's name tokens and title words, and counts only culprit-ADDRESSING shapes (an accusation or arrest word near the name, "<name> is the killer / under arrest / you are", the name as a direct address). The first version flagged any mention and hit 8 of 131 slip packages, 6 of them clue references ("Mint Chip's supply network"); the tightened version flags exactly: Roslyn's pre-fix (verified by rebuilding its old text), "The Workshop Of St. Nick" (real) and "Death At The Deadwood Saloon" (an April legacy fixed-murderer vote-card design, a known false positive). English plus the main verbs of es/fr/de. **Detection and escalation only**, same tier as `reveal_name_fusion`: a hand edit takes a minute and a template heal would lose the evidence-specific reveal.
+  - `package_meta_text_leak()` now also flags five or more identical consecutive words (`\m(\w{2,})\M(\s+\1\M){4,}`), so Verónica is caught. Corpus check first: 4 hits, all on this package, none anywhere else. Both existing functions were patched by exact-text replacement on the live definition with asserts, not retyped.
+  - The gate still shows exactly two packages with defects: El Último Trago and the known false positive "Blood On The Mead-bench".
+- **Prevent (code, committed, not deployed):** ADR-0144, customer-written briefs before the approved concept now reach the Parent.
+- **Prevent (not done):** the Parent prompt line forbidding a named culprit in a slip reveal (1 lapse in 50, 49 held). A Make blueprint change; next numbers Parent76, Child58.
+
+### Decisions and what was deliberately not done
+- No LLM-judge tool, as before; every finding above came from reading.
+- "The Workshop Of St. Nick" (delivered 2026-08-31, names murderer and accomplice in the closing reveal) NOT edited: a five-week-old delivered package whose party has probably happened; reported to Jonathan.
+- The reviewer was not changed (no customer-request awareness yet); recorded as open.
+- The structural limit (one victim, no ghost phase) is a product fact, not a defect to patch; whether to say so on the concept page is a decision for Jonathan.
+
+**Key files.** `supabase/migrations/20261006100000_slip_reveal_names_culprit_and_word_loop_detectors.sql`, `supabase/functions/_shared/conversation-briefs.ts`, `supabase/functions/mystery-webhook-trigger/index.ts`, `docs/adr/0144-customer-written-briefs-before-the-approved-concept-reach-generation.md`.
