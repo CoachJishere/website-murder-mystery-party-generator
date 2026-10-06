@@ -341,7 +341,7 @@ serve(async (req) => {
 
   try {
     // Parse request body to get conversation ID
-    const { conversationId, testMode = false } = await req.json();
+    const { conversationId, testMode = false, operatorNote = null } = await req.json();
 
     if (!conversationId) {
       throw new Error("Conversation ID is required");
@@ -761,6 +761,17 @@ serve(async (req) => {
           console.log(`[ConversationContent] Sending full conversation (${conversationContent.length} chars, no approved snapshot found)`);
         }
       }
+    }
+
+    // Operator note: a service-role re-fire may carry a short instruction from the team (never from a customer
+    // request, so it is ignored on the browser path). Used when a re-fire has to honour something the customer
+    // asked for in chat that the generator would otherwise decide by itself. "The Vellacourt Gala" (2026-10-06):
+    // the customer had suggested Arthaur as the murderer; the regeneration picked another character, and the
+    // trigger had no way to pin a choice. Appended last so it cannot displace the approved concept.
+    if (isServiceCall && typeof operatorNote === "string" && operatorNote.trim()) {
+      const note = operatorNote.trim().slice(0, 1000);
+      conversationContent += `\n\n---\n\nOperator note from the Mystery Maker team (applies to this generation, follow it): ${note}`;
+      console.log(`[OperatorNote] Appended ${note.length} chars to conversationContent`);
     }
 
     // Customer's language, resolved to a full name for the child scenario

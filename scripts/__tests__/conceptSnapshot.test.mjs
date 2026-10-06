@@ -193,6 +193,10 @@ check('roster lines with stacked annotations "(M) *(safe-cut)*" all parse (2026-
   assert.deepStrictEqual(names, ['Camille', 'Jimbo', 'Lesedi', 'William', 'Quinn']);
 });
 
+check('an operator note is only honoured on a service-role call (2026-10-06)', () => {
+  assert.ok(/if \(isServiceCall && typeof operatorNote === "string"/.test(src), 'operatorNote must be gated on isServiceCall');
+});
+
 check('the Claude count-mismatch upgrade can only add to the approved cast (2026-10-06)', () => {
   const trigger = src.slice(src.indexOf('Trying Claude fallback'), src.indexOf('Auto-sync `player_count`'));
   assert.ok(trigger.includes('keepsApprovedCast'), 'upgrade must be gated on keeping every approved name');
