@@ -150,6 +150,10 @@ jobs:
           ONE_D_AGO=$(date -u -d '1 day ago' +"%Y-%m-%dT%H:%M:%SZ")
           SEVEN_D_AGO=$(date -u -d '7 days ago' +"%Y-%m-%dT%H:%M:%SZ")
           THIRTY_D_AGO=$(date -u -d '30 days ago' +"%Y-%m-%dT%H:%M:%SZ")
+          # list_packages_with_meta_text_leak scans every text field with ~20 regexes and takes ~7s over 30 days against the API role's
+          # 8s statement timeout (13s after the 2026-10-06 word-loop rule, which made this check fail). 14 days keeps ~3s of margin;
+          # older packages have long since been swept or healed.
+          FOURTEEN_D_AGO=$(date -u -d '14 days ago' +"%Y-%m-%dT%H:%M:%SZ")
 
           # Retries only curl's transient set (connection errors, 408/429/500/502/503/504) —
           # a real 401/403/404 still fails immediately, same as before. Added 2026-08-11:
@@ -249,7 +253,7 @@ jobs:
           # Same 30-day rolling window as check 5 so handled/old incidents age out.
           # 6. Model chain-of-thought / template artifacts in delivered text.
           MTL=$(api -X POST "${SUPABASE_URL}/rest/v1/rpc/list_packages_with_meta_text_leak" \
-            -H "Content-Type: application/json" -d "{\"_since\": \"${THIRTY_D_AGO}\"}" || echo "QUERY_FAILED")
+            -H "Content-Type: application/json" -d "{\"_since\": \"${FOURTEEN_D_AGO}\"}" || echo "QUERY_FAILED")
           if [ "$MTL" = "QUERY_FAILED" ]; then
             PROBLEMS="${PROBLEMS}- 🟠 Could not run the meta-text-leak detector (Supabase API error)\n"
             MTL_COUNT="?"
@@ -504,7 +508,7 @@ jobs:
             echo "| needs_review packages (7 days) | ${REVIEW_COUNT} |"
             echo "| Paid packages missing evidence images | ${IMG_COUNT} |"
             echo "| Character identity conflicts (30 days) | ${IDC_COUNT} |"
-            echo "| Meta-text / CoT artifacts (30 days) | ${MTL_COUNT} |"
+            echo "| Meta-text / CoT artifacts (14 days) | ${MTL_COUNT} |"
             echo "| Wrong victim in overview (30 days) | ${VM_COUNT} |"
             echo "| Slip-culprit leak (30 days) | ${SCL_COUNT} |"
             echo "| Self-directed questions (30 days) | ${SDQ_COUNT} |"
