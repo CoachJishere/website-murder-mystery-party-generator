@@ -1694,7 +1694,7 @@ The reviewer found about 13 things I had not (time-reference slips "buried a hus
 4. **Bridie's Round 3 question 3** was headed "To Bridie's own household aside - To Lauren"; **Martin's Round 3 question 3** was addressed to himself and empty. Both fixed (this is what held the gate).
 5. A garbled "I'm only ever been the first" (Lauren, final innocent), and a stray blank paragraph (Ness, Round 3).
 
-**The customer's explicit requests that never reached the package** (short user messages before the concept, and the concept's own write-up dropped them): the "riding about town like mad hamsters" family joke (added by hand to Lauren's introduction, text and pointform), Captain Smith / the Titanic gag, and most of the fringe cast (George, Jazz, Don Bur, Wayne Walker, Nello, Ted Smith; Roy, Mark, Taylor, Williams and Shovellin do appear), plus most of the dialect words (ar, mardy, nesh, bostin, conna, shunna, asthee). Only the hamster line was added; weaving the cast is a creative edit left for Jonathan's call (offered, not done).
+**The customer's explicit requests that never reached the package** (short user messages before the concept, and the concept's own write-up dropped them): the "riding about town like mad hamsters" family joke (added by hand to Lauren's introduction, text and pointform), Captain Smith / the Titanic gag, and most of the fringe cast (George, Jazz, Don Bur, Wayne Walker, Nello, Ted Smith; Roy, Mark, Taylor, Williams and Shovellin do appear), plus most of the dialect words (ar, mardy, nesh, bostin, conna, shunna, asthee). The hamster line was added first; after Jonathan's go-ahead the cast and dialect were woven back in as one sentence each in five introductions plus point-form bullets, and Nello in the detective's opening (facts only from the approved concept).
 
 **Reviewer interaction.** The reviewer's auto-apply then REWROTE the hamster phrase ("forever driving about town with that cart of his", text and pointform) as a "garbled, anachronistic simile". It cannot know the phrase was requested. Restored by hand, finding marked `false`. Its other two findings were right (a garbled "found dead set against a man now found dead" sentence, applied; Ness's final statement hinting at her own secret, applied by hand). **Open:** the reviewer needs the customer's verbatim requests (or an exemption for phrases the customer asked for); see decisions.
 
@@ -1720,7 +1720,7 @@ The reviewer found about 13 things I had not (time-reference slips "buried a hus
 
 ### Decisions and what was deliberately not done
 - No LLM-judge tool, as before; every finding above came from reading.
-- "The Workshop Of St. Nick" (delivered 2026-08-31, names murderer and accomplice in the closing reveal) NOT edited: a five-week-old delivered package whose party has probably happened; reported to Jonathan.
+- "The Workshop Of St. Nick" (delivered 2026-08-31, named murderer and accomplice in the closing reveal): first left alone as probably already played, then repaired on Jonathan's go-ahead (reveal rewritten without names; detector and gate clean).
 - The reviewer was not changed (no customer-request awareness yet); recorded as open.
 - The structural limit (one victim, no ghost phase) is a product fact, not a defect to patch; whether to say so on the concept page is a decision for Jonathan.
 
