@@ -1726,3 +1726,28 @@ The reviewer found about 13 things I had not (time-reference slips "buried a hus
 - The structural limit (one victim, no ghost phase) is a product fact, not a defect to patch; whether to say so on the concept page is a decision for Jonathan.
 
 **Key files.** `supabase/migrations/20261006100000_slip_reveal_names_culprit_and_word_loop_detectors.sql`, `supabase/functions/_shared/conversation-briefs.ts`, `supabase/functions/mystery-webhook-trigger/index.ts`, `docs/adr/0144-customer-written-briefs-before-the-approved-concept-reach-generation.md`.
+
+
+## Addendum 85 (2026-10-06): New-Purchase sweep - "The Vellacourt Gala: A Killing Among Masterpieces" (EN, detective style, 14 then 13 characters, accomplice) - the approved cast was replaced by a stale draft's; stacked roster annotations fixed; a character with no introduction or secret now holds the gate
+
+**Trigger.** Purchase notification plus a contact-form message from the customer: the character count was out of date and the page sat on "Final quality checks".
+
+**What was found.**
+1. The delivered package had 14 sheets built from an older draft (Lesedi's Friend #1, Lesedi's Friend #3, Ellis/Elise) and no Shreya or Kuei sheet, although her final approved roster (`approved_concept_message_id` 8cde62d0, 12:00 UTC) had 13 names including both. `master_context` and 11 scripts used the right cast, so they named two people without a sheet.
+2. William had `introduction` NULL and `secret` empty. No detector, no gate and the reviewer all missed it.
+3. "Stuck" was a stale tab: the package was released and the ready email sent at 12:16:17, the browser's last package poll was 12:08:51.
+
+**Root cause (edge logs 12:04:30-35).** Roster lines 11-13 had a gender tag and a role tag (`**William** (M) *(safe-cut)* - ...`); the roster regexes allowed one annotation, so 10 of 13 parsed. 10 < `player_count` 14 - 2 triggered `extractCharactersWithClaude`, which scanned the chat and returned 14 names from the 11:32 draft; the upgrade branch accepted it because it was longer. Same family as ADR-0069 (a stale cast winning over the approved one), different mechanism.
+
+**Fix.** Both regexes take any number of annotation groups (`*` instead of `?`). The fallback upgrade is accepted only when it contains every name the approved message already yielded (`keepsApprovedCast`), so it can add names but never replace the approved cast. Tests in `scripts/__tests__/conceptSnapshot.test.mjs` (the stacked-annotation check fails on the old code). Deployed via `scripts/deploy-roster-functions.sh`.
+
+**Repair.** Re-fired generation through the service-role path on the existing package (no second ready email, because `ready_email_sent_at` was already set; that also means the review-before-release pipeline did not hold it, so the reviewer was run by hand, 0.47 USD). Extraction logged `method=regex, count=13`, `player_count` synced to 13, the new package has exactly the customer's 13 names, no empty fields, and the murderer/accomplice are now Shreya/Shonali (the customer had only suggested Arthaur; the first generation had chosen Arthaur/Sina). Reviewer: 11 findings, all verified real and fixed by exact-match edit with the point-form copies kept in step: three Round 2 scripts naming the sculpture before the Round 3 evidence reveals it, an innocent (Camille) told to steer away from the murderer, a reversed-logic sentence, a self-contradictory time reference, a "my introduction" reference the introduction did not support, a grammar slip, and two they/them misgenders of the gender-neutral Quinn.
+
+**Detect (shipped).** `package_completion_blocking_defects()` now reports `missing_round_content.<name>` for an empty `introduction`, or an empty `secret` with no `secrets`. Applied live by exact-text replacement on the live definition; migration `20261006150000_missing_introduction_or_secret_blocks_completion.sql`. Corpus check first (157 paid packages, 1,896 characters): only the three "TEST Mystery" fixture rows match. Rolled-back positive test returned `{missing_round_content.William}`.
+
+**Not done / decisions.**
+- The full-cast manual read was not done on the regenerated package; the reviewer pass, the gate, the detectors and a targeted check of the innocents against the murderer were. For that reason no `package_review_sweeps` row was inserted (it would inflate the recall figure).
+- The reviewer's first-generation miss (William) is now covered by the gate; no `package_review_misses` row, since that package no longer exists.
+- Open: the same Child run produced the William gap, so a Child that silently drops Round 1 fields may recur; the new gate check will hold and heal it.
+
+**Key files.** `supabase/functions/_shared/rosterExtraction.ts`, `supabase/functions/mystery-webhook-trigger/index.ts`, `scripts/__tests__/conceptSnapshot.test.mjs`, `supabase/migrations/20261006150000_missing_introduction_or_secret_blocks_completion.sql`.
