@@ -2,7 +2,7 @@
 
 ## 2026-10-06
 
-### Improvement: Parent79 and Child59 built (not yet imported): every Make.com Anthropic call on Sonnet 5.5, effort medium, adaptive thinking (ADR-0145)
+### Improvement: Parent79 and Child59 built and imported 2026-10-06: every Make.com Anthropic call on Sonnet 5.5, effort medium, adaptive thinking (ADR-0145)
 - **Nothing was on Haiku:** all 28 Parent and 8 Child modules already sent `claude-sonnet-5` (ADR-0074); only Make's cached UI label still read "Claude Haiku 4.5".
 - **Module 171's `thinking: disabled` is rejected by the API on Sonnet 5.5** (400), so all 36 modules use `thinking: adaptive` instead (Jonathan's call). `effort: medium` and `claude-sonnet-5-5` on all; `temperature: 1` is the default and stays.
 - **`max_tokens` raised** on the small caps (1000/2000 to 8000, 4000-6000 to 12000, 8000 to 16000, 16000 to 24000) because adaptive thinking tokens count against it. Same per-token price as Sonnet 5; real cost and latency rise with thinking tokens, not yet measured.
