@@ -2,6 +2,12 @@
 
 ## 2026-10-06
 
+### Improvement: Parent79 and Child59 built (not yet imported): every Make.com Anthropic call on Sonnet 5.5, effort medium, adaptive thinking (ADR-0145)
+- **Nothing was on Haiku:** all 28 Parent and 8 Child modules already sent `claude-sonnet-5` (ADR-0074); only Make's cached UI label still read "Claude Haiku 4.5".
+- **Module 171's `thinking: disabled` is rejected by the API on Sonnet 5.5** (400), so all 36 modules use `thinking: adaptive` instead (Jonathan's call). `effort: medium` and `claude-sonnet-5-5` on all; `temperature: 1` is the default and stays.
+- **`max_tokens` raised** on the small caps (1000/2000 to 8000, 4000-6000 to 12000, 8000 to 16000, 16000 to 24000) because adaptive thinking tokens count against it. Same per-token price as Sonnet 5; real cost and latency rise with thinking tokens, not yet measured.
+- Build script `temp-files/build-sonnet55-parent79-child59.py`; verified by a path-level diff (only model/effort/thinking/max_tokens and Parent metadata changed). **Import both and compare against ADR-0145's watch items.**
+
 ### Improvement: Parent77 and Child58 built (not yet imported): closing arrest line without the victim's name, no innocent steering to the murderer's role, shared key-moment positions map (ADR-0103 Addendum 86)
 - **Parent77:** the closing arrest sentence states the charge in general words and may not contain the victim's name (Parent73's wording failed on the last two detective purchases); Part 2 adds `timelineFramework.keyMomentPositions`, a reciprocal map of where everyone really was at the key moment. Slip routes unchanged.
 - **Child58:** innocents may not point at the murderer's occupation or skills in rounds 2-3 and questions to the murderer must be askable of anyone; every statement about who was where must match the positions map (falls back safely if absent). Detective prompts only.
