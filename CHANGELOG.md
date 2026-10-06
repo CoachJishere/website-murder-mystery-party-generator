@@ -2,6 +2,11 @@
 
 ## 2026-10-06
 
+### Improvement: Parent77 and Child58 built (not yet imported): closing arrest line without the victim's name, no innocent steering to the murderer's role, shared key-moment positions map (ADR-0103 Addendum 86)
+- **Parent77:** the closing arrest sentence states the charge in general words and may not contain the victim's name (Parent73's wording failed on the last two detective purchases); Part 2 adds `timelineFramework.keyMomentPositions`, a reciprocal map of where everyone really was at the key moment. Slip routes unchanged.
+- **Child58:** innocents may not point at the murderer's occupation or skills in rounds 2-3 and questions to the murderer must be askable of anyone; every statement about who was where must match the positions map (falls back safely if absent). Detective prompts only.
+- **Open follow-up (act on the 2nd sighting):** reviewer auto-apply does not patch the `*_pointform` twin of a field it edits (first seen on "The Last Thanksgiving"). Recorded in the ADR with the check to run.
+
 ### Fix: the relationship-matrix detector misread labeled matrix headers (ADR-0103 Addendum 86)
 - **Cause:** `package_relationship_matrix_contradiction()` assumed the matrix header's top-left cell is empty; 27 of 100 recent matrices use `| Character | ... |`, so every column was read one cell to the left. "The Last Thanksgiving" returned 5 hits, all false (all 11 ally/rival lists match the matrix by hand).
 - **Fix:** header and row are aligned by length (migration `20261006160000_fix_relationship_matrix_detector_labeled_header.sql`, applied live, grants unchanged). Corrected baseline since 2026-08-01: 33 packages / 59 hits (was 44 / 110); 0 since the Child52 import.
