@@ -136,10 +136,17 @@ async function sendDigest(pkgTitle: string, packageId: string, style: string, ke
 /** Auto-apply tier. OFF unless REVIEW_AUTO_APPLY_CLASSES names a category. Not yet exercised on a live package. */
 async function autoApply(packageId: string, pkg: Row, chars: Row[], findingRows: { id: string; item_name: string; field: string; category: string; exact_quote: string; suggested_replacement: string }[], classes: string[] = AUTO_APPLY_CLASSES) {
   let applied = 0, reverted = 0;
+  // Customer-wording guard: never auto-rewrite wording the customer typed themselves (they may have asked for it verbatim).
+  const { data: userMsgs } = await supabase.from("messages").select("content").eq("conversation_id", String(pkg.conversation_id ?? "")).eq("role", "user");
+  const customerTexts = ((userMsgs ?? []) as { content: string | null }[]).map((m) => m.content ?? "").filter(Boolean);
   for (const f of findingRows) {
     if (!classes.includes(f.category)) continue;
     const raw: C.RawFinding = { field: f.field, exact_quote: f.exact_quote, category: f.category, severity: "medium", explanation: "", suggested_replacement: f.suggested_replacement };
     if (!C.replacementIsSane(raw)) continue;
+    if (C.quoteIsCustomerWording(f.exact_quote, customerTexts)) {
+      await supabase.from("package_review_findings").update({ human_note: "Not auto-applied: the quoted wording appears in the customer's own chat messages (possibly requested verbatim). Left open for a human." }).eq("id", f.id);
+      continue;
+    }
     const isDoc = f.item_name === C.DOC_ITEM_NAME;
     const rowId = isDoc ? packageId : String(chars.find((c) => c.character_name === f.item_name)?.id ?? "");
     if (!rowId) continue;

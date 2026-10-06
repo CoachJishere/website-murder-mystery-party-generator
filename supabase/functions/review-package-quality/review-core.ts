@@ -338,3 +338,26 @@ export function languageSample(chars: Row[]): string {
   return chars.slice(0, 4).map((c) => String(c.introduction ?? "").slice(0, 700)).join(" ");
 }
 
+
+// ---- Customer-wording guard (2026-10-06, ADR-0103 Addendum 84) ----
+// The reviewer cannot know that a phrase was asked for. On Roslyn's Clay it rewrote the customer's requested family joke ("riding about
+// town like mad hamsters") as a "garbled, anachronistic simile" and auto-apply wrote that into the package, text and pointform.
+// A finding whose quote contains a run of CUSTOMER_WORDING_MIN_WORDS or more consecutive words that the customer themselves typed
+// in the chat is never auto-applied; it stays open for a human.
+export const CUSTOMER_WORDING_MIN_WORDS = 5;
+
+const wordsOf = (s: string): string[] =>
+  s.toLowerCase().replace(/[’‘`´]/g, "'").split(/[^\p{L}\p{N}']+/u).map((w) => w.replace(/^'+|'+$/g, "")).filter(Boolean);
+
+/** True when `quote` shares a run of >= minWords consecutive words with any of the customer's own messages. */
+export function quoteIsCustomerWording(quote: string, customerTexts: string[], minWords = CUSTOMER_WORDING_MIN_WORDS): boolean {
+  const q = wordsOf(quote);
+  if (q.length < minWords || customerTexts.length === 0) return false;
+  const grams = new Set<string>();
+  for (let i = 0; i + minWords <= q.length; i++) grams.add(q.slice(i, i + minWords).join(" "));
+  for (const text of customerTexts) {
+    const w = wordsOf(text);
+    for (let i = 0; i + minWords <= w.length; i++) if (grams.has(w.slice(i, i + minWords).join(" "))) return true;
+  }
+  return false;
+}

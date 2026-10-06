@@ -115,3 +115,31 @@ t("detectLanguage recognises the seven languages and refuses unclear text", () =
 });
 console.log("language tests done");
 
+
+// ---- customer-wording guard ----
+const custMsgs = [
+  "Please add into a script the phrase 'riding about town like mad hamsters' - weave this in somewhere because it is a recurrent joke in the family.",
+  "ay up, ar, mardy, nesh, owt, nowt, bostin, conna, shunna, wunna, Asthee",
+];
+t("the live regression: a requested phrase inside a longer reviewer quote is detected", () => {
+  assert.ok(C.quoteIsCustomerWording("forever riding about town like mad hamsters with that cart of his", custMsgs));
+});
+t("curly apostrophes and case do not hide a match", () => {
+  assert.ok(C.quoteIsCustomerWording("Riding About Town Like Mad Hamsters", custMsgs));
+  assert.ok(C.quoteIsCustomerWording("it's a recurrent joke in the family, ok", ["It’s a recurrent joke in the family"]));
+});
+t("an ordinary garbled-sentence quote that the customer never typed is not blocked", () => {
+  assert.ok(!C.quoteIsCustomerWording("A properly intelligent woman with a secret like that, found dead set against a man now found dead himself, would hang", custMsgs));
+});
+t("short overlaps (a dialect word, a name) are not blocked", () => {
+  assert.ok(!C.quoteIsCustomerWording("owt nowt wunna", custMsgs));
+  assert.ok(!C.quoteIsCustomerWording("riding about town", custMsgs));
+});
+t("exactly the minimum run matches and one word fewer does not", () => {
+  assert.ok(C.quoteIsCustomerWording("riding about town like mad", custMsgs));
+  assert.ok(!C.quoteIsCustomerWording("riding about town like", custMsgs));
+});
+t("no customer text means nothing is blocked", () => {
+  assert.ok(!C.quoteIsCustomerWording("riding about town like mad hamsters", []));
+});
+console.log("customer-wording tests done");
