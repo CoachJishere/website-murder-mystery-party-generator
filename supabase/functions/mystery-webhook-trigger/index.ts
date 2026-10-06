@@ -820,7 +820,19 @@ serve(async (req) => {
       if (extractedCharacters.length < minExpected && extractionMethod === 'regex') {
         console.warn(`[CharExtract] WARNING: Regex found ${extractedCharacters.length} characters but player_count is ${playerCount}. Trying Claude fallback...`);
         const claudeChars = await extractCharactersWithClaude(conversation.messages, playerCount);
-        if (claudeChars && claudeChars.length > extractedCharacters.length) {
+        // The fallback reads the whole chat, so it can return names from superseded
+        // drafts. Vellacourt Gala (2026-10-06): the regex dropped 3 annotated lines
+        // (10 of 13), the fallback "found 14" from an older draft (Friend #1, Friend
+        // #3, Ellis/Elise) and replaced the cast the customer approved. When an
+        // approved message exists, only accept the upgrade if it keeps every name
+        // the approved message already yielded, so it can only ADD to that cast.
+        const approvedNames = new Set(extractedCharacters.map(c => c.name.toLowerCase()));
+        const keepsApprovedCast = !conversation.approved_concept_message_id ||
+          Array.from(approvedNames).every(n => (claudeChars ?? []).some(c => c.name.toLowerCase() === n));
+        if (claudeChars && !keepsApprovedCast) {
+          console.warn(`[CharExtract] Claude fallback result drops names from the approved message (${claudeChars.map(c => c.name).join(', ')}); keeping the regex roster`);
+        }
+        if (claudeChars && keepsApprovedCast && claudeChars.length > extractedCharacters.length) {
           console.log(`[CharExtract] Claude fallback found ${claudeChars.length} characters (vs regex ${extractedCharacters.length}), using Claude result`);
           extractedCharacters = claudeChars;
           extractionMethod = 'claude_upgrade';

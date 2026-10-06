@@ -74,10 +74,15 @@ export const sectionHeaderCountRegex = new RegExp(
 // before the en-dash - and took down roster detection for every purchase
 // using that format for ~28 hours before being caught. See ADR-0130
 // Addendum 1.
-export const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))(?:\s*\*?\([^)]*\)\*?)?(?:\s+-|\s*[–—:])\s*(.+)/;
+export const characterLineRegex = /^\d+\.\s+(?:\*\*(.+?)\*\*|([A-Z\u00C0-\u024F\u0400-\u04FF\u3000-\u9FFF\uAC00-\uD7AF].+?))(?:\s*\*?\([^)]*\)\*?)*(?:\s+-|\s*[–—:])\s*(.+)/;
 
+// Annotations between the name and the separator may be stacked, not just single:
+// "11. **William** (M) *(safe-cut)* – ..." has a gender tag AND a role tag. The
+// original pattern allowed exactly one, so such a line silently dropped out of the
+// roster (Vellacourt Gala, 2026-10-06: 10 of 13 parsed, which then triggered the
+// Claude fallback that replaced the approved cast with a stale draft's).
 // Header-agnostic: 4+ consecutive "**Name** - Description" lines.
-export const boldCharRegex = /^\*\*(.+?)\*\*(?:\s*\*?\([^)]*\)\*?)?(?:\s+-|\s*[–—:])\s*(.+)/;
+export const boldCharRegex = /^\*\*(.+?)\*\*(?:\s*\*?\([^)]*\)\*?)*(?:\s+-|\s*[–—:])\s*(.+)/;
 
 /** A message proposing fewer names than this isn't a cast. */
 export const MIN_ROSTER_SIZE = 4;

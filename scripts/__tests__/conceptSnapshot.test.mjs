@@ -181,6 +181,23 @@ check('roster line with an inline annotation between name and dash still parses 
   assert.ok(names.includes('Blaire/Blair Ashford'), `missing annotated 12th character; got: ${names.join(', ')}`);
 });
 
+// --- stacked annotations: "(M) *(safe-cut)*" (Vellacourt Gala, 2026-10-06) -----------
+// Lines 11-13 of a paid customer's approved roster carried BOTH a gender tag and a
+// role tag between name and dash. The regex allowed one annotation, so 10 of 13 parsed,
+// the count mismatch triggered the Claude fallback, and the fallback replaced the
+// approved cast with a stale draft's. Both regexes now accept any number of them.
+const draftWithStackedAnnotations = `# Gala\n\n## Character List (5 players)\n\n1. **Camille** (GN) – A security consultant.\n2. **Jimbo** (M) – An amateur detective.\n3. **Lesedi** (M) – Universally liked.\n4. **William** (M) *(safe-cut)* – Convinced he recognises Camille.\n5. **Quinn** (GN) *(safe-cut)* – A rival dealer.\n\n## Murder Method\n\nA bust.`;
+
+check('roster lines with stacked annotations "(M) *(safe-cut)*" all parse (2026-10-06)', () => {
+  const names = extractRosterFromMessage(draftWithStackedAnnotations).map((c) => c.name);
+  assert.deepStrictEqual(names, ['Camille', 'Jimbo', 'Lesedi', 'William', 'Quinn']);
+});
+
+check('the Claude count-mismatch upgrade can only add to the approved cast (2026-10-06)', () => {
+  const trigger = src.slice(src.indexOf('Trying Claude fallback'), src.indexOf('Auto-sync `player_count`'));
+  assert.ok(trigger.includes('keepsApprovedCast'), 'upgrade must be gated on keeping every approved name');
+});
+
 // --- bracket-wrapped reserve/placeholder slots aren't real characters (2026-08-11) ---
 // Customer's actual bug ("Death At The Birthday Bash", 7072e6eb-...): the AI's response
 // got cut off mid-draft, and the last two roster lines were leftover placeholder text
