@@ -550,7 +550,15 @@ jobs:
           BODY=$(printf 'The scheduled health check found problems:\n\n%s\nSee monitoring/health-status.md and docs/OPERATIONS.md for triage steps.' "${{ steps.checks.outputs.PROBLEMS }}")
           EXISTING=$(gh issue list --label health-alert --state open --json number --jq '.[0].number // empty')
           if [ -n "$EXISTING" ]; then
-            gh issue comment "$EXISTING" --body "$BODY"
+            # Comment (and so email) only when a problem line is NEW since the last comment (or the issue body). The same unresolved
+            # problem used to be re-posted every 6 hours; Jonathan only wants to hear about something new (2026-10-06).
+            LAST=$(gh issue view "$EXISTING" --json body,comments --jq '(.comments | last | .body) // .body')
+            NEW_LINES=$(printf '%s\n' "$BODY" | grep '^- ' | grep -vFx -f <(printf '%s\n' "$LAST") || true)
+            if [ -n "$NEW_LINES" ]; then
+              gh issue comment "$EXISTING" --body "$BODY"
+            else
+              echo "No new problem lines since the last comment on #$EXISTING; not commenting."
+            fi
           else
             gh label create health-alert --description "Automated site health alert" --color D93F0B 2>/dev/null || true
             gh issue create --title "🔴 Site health check failed $(date -u +%Y-%m-%d)" --label health-alert --body "$BODY"

@@ -15,6 +15,12 @@
 - "The Workshop Of St. Nick" (2026-08-31): the closing reveal named the murderer and the accomplice in a slip game; rewritten without names. The new detector and the gate are clean on it.
 - "The Roslyn's Clay And The Cracked Foundations": the approved concept's side characters and dialect words that never reached the package were woven back in as one sentence each in five introductions (Wayne Walker, George and the misspelt pub sign, Jazz and Don Bur, Mark, Roy and Ted Smith) with matching point-form bullets, plus young Nello in the detective's opening.
 
+### Improvement: alert emails only when something new needs attention (notify-generation-issue and the health check)
+- **Why:** a package held on purpose (El Último Trago) re-sent the identical "Generation Display Issue" email about every 6 hours (a per-package timer), and the health check commented on its open GitHub issue every 6 hours it kept failing. Jonathan's rule, first recorded 2026-10-03 and restated 2026-10-06: email only when there is new information.
+- **Now:** `notify-generation-issue` stores the set of issues it last emailed about (`mystery_packages.last_notified_items`, new column) and emails only when the current set contains an item that set did not. Fixes that shrink the set send nothing, and the smaller set is stored, so an issue that is fixed and then returns is new again. Rows already notified before this change count as told (no extra email on deploy). Logic in `_shared/alert-dedupe.ts`, 9 offline checks in `npm run test:roster`. `notify-generation-issue` v40, deployed.
+- The health-check workflow now comments on the open issue only when a problem line is new since the last comment; a fixed problem or an unchanged list posts nothing.
+- **Not changed:** the purchase notification, the held-package alerts raised by the reviewer, and the rescue-unstarted-orders alert (each already fires once per event).
+
 ### Improvement: the reviewer no longer auto-rewrites wording the customer typed themselves (ADR-0103 Addendum 84)
 - Auto-apply skips any finding whose quote shares a run of 5+ consecutive words with the customer's own chat messages and leaves it open for a human. It had rewritten a requested family-joke phrase on Roslyn's Clay. Free and deterministic; verbatim only. `review-package-quality` v9, deployed; 6 offline checks added.
 

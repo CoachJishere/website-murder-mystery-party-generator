@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { buildConversationExcerpt } from "../_shared/conversation-excerpt.ts";
+import { alertItems, dedupeDecision } from "../_shared/alert-dedupe.ts";
 
 const ALLOWED_ORIGINS = [
   'https://www.mysterymaker.party',
@@ -124,7 +125,7 @@ serve(async (req) => {
     // notify_last_run_at for the invocation-overlap cooldown below.
     const { data: pkg } = await supabase
       .from("mystery_packages")
-      .select("id, title, generation_status, generation_started_at, extracted_characters, last_notified_at, needs_review_at, user_conversation, mystery_style, notify_last_run_at")
+      .select("id, title, generation_status, generation_started_at, extracted_characters, last_notified_at, last_notified_items, needs_review_at, user_conversation, mystery_style, notify_last_run_at")
       .eq("conversation_id", conversation_id)
       .order("updated_at", { ascending: false })
       .limit(1)
@@ -757,30 +758,42 @@ serve(async (req) => {
       capped.length === 0;
     readyToAlert = readyToAlert && !emptyCharacterRecoveryLooksClean;
 
-    // Email cooldown: skip the actual send if we've already alerted on this
-    // package within the last 6 hours. Auto-recovery has already run above
-    // either way, so this just prevents support-inbox flooding for persistent
-    // failures (e.g. unrecoverable cases where recovery can't fix the issue).
-    const COOLDOWN_HOURS = 6;
-    const lastNotified = pkg?.last_notified_at ? new Date(pkg.last_notified_at) : null;
-    const cooldownUntil = lastNotified
-      ? new Date(lastNotified.getTime() + COOLDOWN_HOURS * 60 * 60 * 1000)
-      : null;
-    const inCooldown = cooldownUntil ? cooldownUntil > new Date() : false;
+    // Email only when something NEW needs a human (Jonathan's rule, 2026-10-03 and again 2026-10-06). This used to be a 6-hour timer per
+    // package, so a package held on purpose re-sent the identical alert about four times a day. Now the set of issues last emailed about
+    // is stored (`last_notified_items`) and an email goes out only when the current set contains an item that set did not. Fixes that
+    // shrink the set send nothing (the smaller set is stored so a returning issue counts as new). Auto-recovery has already run above
+    // either way. Logic and tests: _shared/alert-dedupe.ts, scripts/__tests__/alertDedupe.test.mjs.
+    const currentItems = alertItems({
+      structuralDefects,
+      emptyCharacters,
+      missingCharacters,
+      skipped,
+      capped,
+      status: pkg?.generation_status?.status,
+    });
+    const decision = dedupeDecision(
+      currentItems,
+      Array.isArray(pkg?.last_notified_items) ? (pkg.last_notified_items as string[]) : null,
+      pkg?.last_notified_at ?? null,
+    );
+    const inCooldown = decision.suppress;
 
     if (inCooldown || !readyToAlert) {
       const reason = inCooldown
-        ? "cooldown"
+        ? "no_new_issues"
         : emptyCharacterRecoveryLooksClean
           ? "awaiting_empty_character_recovery"
           : "awaiting_self_heal";
+      if (inCooldown && decision.persist !== null && pkg?.id) {
+        await supabase.from("mystery_packages").update({ last_notified_items: decision.persist }).eq("id", pkg.id);
+      }
       console.log(`Email suppressed (${reason}) for package ${pkg?.id} — recovery was attempted (${recovered.length} chars) regardless`);
       return new Response(
         JSON.stringify({
           success: true,
           email_sent: false,
           email_suppressed_reason: reason,
-          cooldown_until: cooldownUntil ? cooldownUntil.toISOString() : null,
+          cooldown_until: null,
           recovery_attempted: recovered,
           recovery_skipped: skipped,
         }),
@@ -807,15 +820,15 @@ serve(async (req) => {
       throw new Error(`Resend API error: ${emailResponse.status} ${errorText}`);
     }
 
-    // Stamp the cooldown timer so subsequent sweep cycles within 6h skip the email
+    // Remember what this email covered, so the next cycle only emails about something new.
     if (pkg?.id) {
       await supabase
         .from("mystery_packages")
-        .update({ last_notified_at: new Date().toISOString() })
+        .update({ last_notified_at: new Date().toISOString(), last_notified_items: currentItems })
         .eq("id", pkg.id);
     }
 
-    console.log("Generation issue notification sent + cooldown stamped");
+    console.log(`Generation issue notification sent; ${currentItems.length} item(s) recorded as told`);
 
     return new Response(
       JSON.stringify({
