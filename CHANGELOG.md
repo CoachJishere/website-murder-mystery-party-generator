@@ -5,7 +5,15 @@
 ### Fix: a customer's long pasted brief written before the approved concept now reaches generation (ADR-0144)
 - **Cause:** `mystery-webhook-trigger` sent the approved concept plus everything after it and nothing before. "El Último Trago" (21 players, Spanish) was built from a 4,103-character AI cast list; the customer's 42,225-character canon (two homicides, a fraud, a UV ledger, a closed list of poison buyers) was never sent, and the delivered package had none of it. The "snapshot too thin" guard only fires under 3,000 characters. A corpus check found at least 3 more paid orders in 3 months where a brief 2x or more the concept's size was dropped.
 - **Fix:** user messages of 4,000+ characters before the snapshot are prepended (labelled as source material, approved concept wins on conflict), capped at 50,000 characters, oldest dropped first. New `_shared/conversation-briefs.ts`, 15-check offline test in `npm run test:roster`.
-- **Not deployed yet:** the edge function change waits for a go (live purchase path). **Not changed:** the pipeline still builds one victim, one murderer and an optional accomplice; a two-homicide canon cannot be produced even with the full brief.
+- **Deployed 2026-10-06** (`mystery-webhook-trigger` v147, verified live). **Not changed:** the pipeline still builds one victim, one murderer and an optional accomplice; a two-homicide canon cannot be produced even with the full brief.
+
+### Improvement: the concept chat now states the one-victim limit and carries explicit requests into the concept (ADR-0144 Addendum 1)
+- The chat had told El Último Trago's customer his two-homicide, ghost-phase canon would be kept "untouchable". It now says in the same reply that a mystery has one victim (already dead, never playable), one murderer and an optional accomplice, no second death during play, no after-death phases and no two independent killers, and offers the closest buildable version.
+- Explicit customer requests (verbatim phrases, dialect words, named side characters, running gags) must be written into the final concept, with a plain "Details to weave in:" line if needed; generation only sees the final concept. `mystery-ai` v188, deployed. Untested against the live model.
+
+### Fix: two delivered packages repaired (ADR-0103 Addendum 84)
+- "The Workshop Of St. Nick" (2026-08-31): the closing reveal named the murderer and the accomplice in a slip game; rewritten without names. The new detector and the gate are clean on it.
+- "The Roslyn's Clay And The Cracked Foundations": the approved concept's side characters and dialect words that never reached the package were woven back in as one sentence each in five introductions (Wayne Walker, George and the misspelt pub sign, Jazz and Don Bur, Mark, Roy and Ted Smith) with matching point-form bullets, plus young Nello in the detective's opening.
 
 ### Feature: two new detectors from the Roslyn's Clay and El Último Trago sweeps (ADR-0103 Addendum 84)
 - **`slip_reveal_names_culprit`:** a slip-style detective script whose closing section names a cast member as culprit or accomplice (Roslyn's Clay named "Martin", who was also the customer; "The Workshop Of St. Nick" 2026-08-31 names both). Gate-held, detection and escalation only. Narrowed to culprit-addressing shapes after the first version flagged 6 false positives in 131 slip packages.

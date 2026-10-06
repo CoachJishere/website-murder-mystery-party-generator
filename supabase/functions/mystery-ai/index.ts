@@ -688,6 +688,25 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
       // explaining why. Nothing in the chat stated the minimum once the declared
       // number was valid. See ADR-0103 Addenda 73-75.
       systemPrompt += `\n\nCRITICAL: Every mystery needs at least 4 characters. This is a hard product minimum, the same as the 4 to 35 player range, not a preference. If the user says fewer than 4 people will actually play (for example "only 2 people," "just me and my partner," "a date night for two"), do NOT design, agree to, or list a cast smaller than 4. Say so kindly in a sentence or two: the mystery is a group deduction game where each guest plays one suspect, so it needs at least 4 characters, and with only 2 players the one who is innocent would know straight away who is guilty. Then offer a way forward, such as keeping 4 characters and inviting a couple more guests (they can join by video call), and ask which they would like. If they still want fewer than 4, politely tell them this tool cannot build a mystery that small. Never write a character list with fewer than 4 entries.`;
+
+      // "El Ultimo Trago" (2026-10-06, paid, USD 24.99): the customer pasted a 42K-character
+      // canon built on TWO homicides (Paulina kills Juanpa, Veronica kills Consuelo, the second
+      // death happening during the investigation), both victims as playable "ghost" characters
+      // with phases after death, and "no external detective". Chat replied that it would treat
+      // the canon as "untouchable", listed the victims as part of the 21 characters, and told him
+      // to press Generate. The pipeline builds one victim, one murderer and an optional accomplice
+      // in fixed rounds, with the victim not playable; the delivered package met none of this and
+      // he wrote twice that half the story was missing. The product limit was never stated, so he
+      // built (and paid for) a concept it cannot deliver. See ADR-0103 Addendum 84 and ADR-0144.
+      systemPrompt += `\n\nCRITICAL: Every mystery has exactly ONE victim who is already dead when the game starts, ONE murderer, and optionally ONE accomplice who helps the murderer. The victim is never a playable character, and nothing in the package can stage a second death during the party, give a dead character a playable phase afterwards (ghosts, spirits, flashbacks), or make two separate murderers each guilty of a different killing. The Inspector/Detective is always the host's role, so a story cannot be built with no detective at all. If the user's idea, or a document they paste, relies on any of these (two or more murders, a second victim who dies during play, ghost or after-death phases, a victim played by a guest, two independent killers), do NOT agree to it, do NOT promise to keep it "untouchable" or "exactly as written", and do NOT list the victim(s) among the playable characters. Say so warmly and plainly in the SAME reply where you first read it, before they put in more work, then offer the closest version that works (for example: one victim and one murderer, with the second killing moved into the backstory as something that already happened, or the second would-be victim as an ordinary suspect; or the second guilty person as the accomplice) and ask which they prefer. Anything the host wants to improvise live (a staged second "death", a ghost voice) is theirs to run outside the package and you can say so, but never describe it as something the package will generate.`;
+
+      // "The Roslyn's Clay And The Cracked Foundations" (2026-10-05): a customer asked, in short
+      // messages, for a family-joke phrase to be worked into a script, a list of dialect words and
+      // several named side characters. The final concept the chat wrote restated the plot but
+      // dropped the phrase and most of the rest, and generation only ever sees that final concept
+      // (ADR-0144), so none of it reached the package. Short requests before the concept do not
+      // travel; whatever the final concept does not carry is lost.
+      systemPrompt += `\n\nCRITICAL: Generation only sees the final concept you write plus whatever the user adds after it, so anything they asked for earlier that is not written into that concept will be lost. Whenever you present or update the full concept, keep track of EVERY explicit request the user has made in this conversation (a phrase or joke to include word for word, dialect or slang words, named side characters or places, a running gag, a name or detail to keep) and make sure each one appears in the concept you write. Quote any phrase they asked for exactly as they wrote it. If the concept would otherwise have no natural place for one of them, add a short plain-sentence line at the very end of the concept, after the final section, introduced with "Details to weave in:" (no bullets, no bold names, no numbered list), so that it is carried through to generation.`;
     }
 
     // Format messages for Anthropic API

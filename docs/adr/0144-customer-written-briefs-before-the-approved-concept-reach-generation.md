@@ -1,6 +1,6 @@
 # ADR-0144: Customer-written briefs before the approved concept now reach generation
 
-**Status:** Accepted (code committed; edge function NOT yet deployed, see Consequences)
+**Status:** Accepted (deployed 2026-10-06: `mystery-webhook-trigger` v147 and `mystery-ai` v188, `verify_jwt` unchanged at false)
 **Date:** 2026-10-06
 **Related:** ADR-0059 (concept plus everything after it), ADR-0069 (stale snapshot), ADR-0097 (windowed excerpts), ADR-0122 (50K message cap), the Fotini "Multiverse" thin-snapshot guard in `mystery-webhook-trigger`
 
@@ -36,7 +36,7 @@ The contamination risk that justified "nothing before the snapshot" comes from a
 
 - Orders with a pasted brief get a larger Parent input (up to about 50K more characters); `user_conversation` stores it, and re-fires still window it (`buildConversationExcerpt`).
 - This does NOT make two-homicide stories possible. The generation pipeline has one victim, one murderer and an optional accomplice, fixed rounds, and no ghost phase; a canon like this one will come out as its closest single-murder form even with the full brief. The ADR records the input gap, not a capability.
-- **Deployment is a separate step and has not been done** (git push does not deploy edge functions). It changes the live purchase path, so it waits for Jonathan's go. Verify after deploy with `get_edge_function` and `verify_jwt` preserved.
+- Deployed 2026-10-06 by CLI (`--use-api --no-verify-jwt`), verified with `functions list` (v147, `verify_jwt` false) and by reading the live source back through `get_edge_function` (the new import and calls are present). The live copies matched the last commits before the change (checked by deploy time), so nothing deployed by another route was reverted.
 - Open: a reviewer finding rewrote a customer-requested phrase (see ADR-0103 Addendum 84); the reviewer has no access to the customer's verbatim requests.
 
 ## Key files
@@ -46,3 +46,12 @@ The contamination risk that justified "nothing before the snapshot" comes from a
 ## Discussion
 
 The first instinct was to widen the thin-snapshot guard, since the customer's snapshot was only 1,100 characters over it. Checking what the guard falls back to showed it would trade one failure for the other; the question became what is safe to include from before the snapshot, and the answer was "what the customer wrote, if it is long", because that is the only thing the concept is a summary of. Whether to deploy now was left to Jonathan: it is the live purchase path, and the same order's regeneration depends on it.
+
+## Addendum 1 (2026-10-06): the concept chat now states the one-victim limit and carries explicit requests into the concept
+
+The trigger fix repairs the input; two causes sit upstream in `mystery-ai` (the concept chat), and a pasted canon is what exposed the first.
+
+1. **The chat promised what the product cannot build.** For El Último Trago it said the canon would be "untouchable", listed both victims among the 21 playable characters, and told the customer to generate. Added a CRITICAL guardrail in the existing style (round count, live crimes, investigators, 4-character minimum): one victim already dead at the start, one murderer, an optional accomplice, the victim never playable, no second death during play, no after-death phases, no two independent killers, and the detective is always the host's role. On meeting any of these (in an idea or a pasted document) the chat must say so in the same reply, not promise to keep it, and offer the closest buildable version (second killing moved into the backstory, the second would-be victim as an ordinary suspect, the second guilty person as the accomplice). Anything a host wants to improvise live is theirs to run outside the package.
+2. **Short explicit requests are lost unless the final concept carries them.** Generation only sees the final concept (plus later messages). Roslyn's Clay lost a requested family-joke phrase, a dialect word list and most named side characters because the concept's write-up dropped them. Added a CRITICAL guardrail: keep a running list of every explicit request (verbatim phrases, dialect words, named side characters, running gags), write each into the concept, quote phrases exactly, and use a plain-sentence "Details to weave in:" line at the very end if there is no natural place (no bullets or bold names, so roster extraction is not confused).
+
+Not tested against the live model (a paid call, and the guardrails are prompt text appended unconditionally like the six before them); the first real conversation with a two-murder idea is the test. The wording is checked by reading only.
