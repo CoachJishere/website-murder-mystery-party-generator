@@ -10,19 +10,48 @@ export interface DetectorFailure {
   message: string;
 }
 
+const isStatementTimeout = (message: string) => /statement timeout/i.test(message);
+
+/**
+ * Update 4: the ten cron jobs that fire together at :00/:10/:50 can push a 2 s detector past the 8 s PostgREST limit,
+ * so a statement timeout (and only that) is retried once before the class is skipped and counted.
+ */
 export async function runDetectorGuarded<T>(
   rpc: string,
   call: () => Promise<T[]>,
   failures: DetectorFailure[],
 ): Promise<T[]> {
-  try {
-    return await call();
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    failures.push({ rpc, message });
-    console.error(`auto-remediate detector skipped: ${rpc}: ${message}`);
-    return [];
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await call();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (attempt === 1 && isStatementTimeout(message)) {
+        console.error(`auto-remediate detector timed out, retrying once: ${rpc}`);
+        continue;
+      }
+      failures.push({ rpc, message });
+      console.error(`auto-remediate detector skipped: ${rpc}: ${message}`);
+      return [];
+    }
   }
+}
+
+/**
+ * Update 4: the 5-minute held-package run only acts on needs_review packages, so it scans a short window; the
+ * half-hourly full run still covers the whole standard window. An explicit backfill always wins.
+ */
+export const HELD_RUN_WINDOW_DAYS = 7;
+
+export function runWindowDays(
+  backfillDays: number,
+  requestedDays: number,
+  standardDays: number,
+  onlyNeedsReview: boolean,
+): number {
+  if (backfillDays > 0) return backfillDays;
+  const days = Math.min(requestedDays || standardDays, standardDays);
+  return onlyNeedsReview ? Math.min(days, HELD_RUN_WINDOW_DAYS) : days;
 }
 
 /** One plain-text body for the single per-run alert, or null when nothing failed. */

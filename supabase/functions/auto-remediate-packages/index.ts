@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { DANGLING_QUOTE_RX, deriveBranchHeader, prependHeader, stripStrayGlitches } from "./glitch-strip.ts";
-import { type DetectorFailure, detectorFailureAlert, runDetectorGuarded } from "./detector-guard.ts";
+import { type DetectorFailure, detectorFailureAlert, runDetectorGuarded, runWindowDays } from "./detector-guard.ts";
 
 /**
  * auto-remediate-packages — closed-loop auto-remediation worker. See ADR-0047.
@@ -1714,7 +1714,7 @@ serve(async (req) => {
     // One-off backfills (ADR-0103 Addendum 80): an explicit backfill_days (hard-capped at 120) may widen the window beyond the
     // standard 30 days. The normal cron never sends it, so the default behaviour is unchanged ("narrow, never widen").
     const backfillDays = Math.min(Number((body as { backfill_days?: number }).backfill_days) || 0, 120);
-    const windowDays = backfillDays > 0 ? backfillDays : Math.min(Number(body.window_days) || WINDOW_DAYS, WINDOW_DAYS);
+    const windowDays = runWindowDays(backfillDays, Number(body.window_days), WINDOW_DAYS, body.only_needs_review === true);
     const sinceIso = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000).toISOString();
 
     // ADR-0061: the 5-minute held-only sweep passes both of these to restrict

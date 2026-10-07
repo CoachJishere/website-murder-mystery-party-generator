@@ -2,6 +2,12 @@
 
 ## 2026-10-07
 
+### Fix: the 5-minute held-package run scans 7 days instead of 30, and a detector statement timeout is retried once (ADR-0103 Addendum 87 Update 5)
+- **Why:** a third detector-timeout alert arrived at 08:50 UTC, four minutes after Update 4's regex fix, so the 2.2 s standalone figure did not hold in production. The failing call was the 5-minute held run, which fires in the same second as nine other cron jobs and was scanning six detectors over 30 days (about 10 s of database CPU every 5 minutes) only to keep `needs_review` rows. The contention link is a strong correlation, not a captured proof.
+- **What:** `auto-remediate-packages` v27: with `only_needs_review` the window is at most 7 days (full half-hourly run still 30; explicit backfill still wins), and `runDetectorGuarded` retries once on "statement timeout" only. New checks in `detectorGuard.test.mjs` (10 total).
+- **Trade-off:** a held package older than 7 days is picked up by the half-hourly run, not the 5-minute one.
+- **Not done:** staggering the cron minutes or changing `heal_completed_packages`/`sweep_incomplete_packages` (next lever if it recurs; capture a `pg_stat_activity` snapshot first).
+
 ### Fix: the meta-text-leak detector's word-loop regex is about 4x cheaper, so the 30-day call is a steady 2.2 s instead of timing out at the 8 s limit (ADR-0103 Addendum 87 Update 4)
 - **Why:** Update 3's evaluate-once fix was not enough margin: the detector still timed out at 08:00 and 08:13 UTC (3.9 to 6.5 s, load-dependent). The new guard worked (run continued, one alert email), but the detector should not fail at all.
 - **What:** in `package_meta_text_leak`, `(\s+\1\M){4,}` became `(?:\s+\1\M){4}` (migration `20261007140000_meta_text_leak_loop_regex_cheaper.sql`, applied by exact replacement on the live definition). The pattern is only a boolean test, so results are identical: compared for all 259 packages, 0 differing, 9 hits; the detector's output hash matches the pre-change one.
