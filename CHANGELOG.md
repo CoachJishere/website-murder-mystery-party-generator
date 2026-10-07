@@ -2,6 +2,12 @@
 
 ## 2026-10-07
 
+### Fix: the meta-text-leak detector's word-loop regex is about 4x cheaper, so the 30-day call is a steady 2.2 s instead of timing out at the 8 s limit (ADR-0103 Addendum 87 Update 4)
+- **Why:** Update 3's evaluate-once fix was not enough margin: the detector still timed out at 08:00 and 08:13 UTC (3.9 to 6.5 s, load-dependent). The new guard worked (run continued, one alert email), but the detector should not fail at all.
+- **What:** in `package_meta_text_leak`, `(\s+\1\M){4,}` became `(?:\s+\1\M){4}` (migration `20261007140000_meta_text_leak_loop_regex_cheaper.sql`, applied by exact replacement on the live definition). The pattern is only a boolean test, so results are identical: compared for all 259 packages, 0 differing, 9 hits; the detector's output hash matches the pre-change one.
+- **Result:** 30-day call 2.2 s steady (original 7.9 s). No worker change.
+- **Not done:** a stored per-package result or a narrower window (further cuts, not needed now). `list_packages_with_pointform_language_mismatch` (4.9 s) is the next closest and is untouched until it fails.
+
 ### Fix: the half-hourly auto-remediate run no longer dies when one detector times out; the meta-text-leak detector is about twice as fast (ADR-0103 Addendum 87 Update 3)
 - **Incident:** `list_packages_with_meta_text_leak` hit "canceling statement due to statement timeout" at 01:45, 07:05 and 07:13 UTC on 2026-10-07 and aborted the whole `auto-remediate-packages` run, so later classes (including the free `dangling_quote_mark` heal) did not run for about 35 minutes on a paid package.
 - **Cause:** the function evaluated `package_meta_text_leak()` twice per package, and that function's backreference word-loop regex costs about 5.7 s over the 30-day text (only for packages under 7 days old). The call took 7.9 s against the 8 s PostgREST timeout.
