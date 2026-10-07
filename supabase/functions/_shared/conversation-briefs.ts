@@ -66,3 +66,64 @@ export function selectPreSnapshotBriefs<T extends BriefCandidateMessage>(
 export function formatPreSnapshotBrief(content: string): string {
   return `User (the customer's own brief, written earlier in the chat and before the concept below was approved - source material; where it conflicts with the approved concept below, the approved concept wins): ${content}`;
 }
+
+/**
+ * ADR-0103 Addendum 87: an approved concept message that is only a DELTA.
+ *
+ * `findLatestConceptMessage` picks the latest assistant message that parses into a cast. When a
+ * customer tweaks two characters after the full concept was written, the assistant answers with a
+ * short "here is the refined lineup ... everything else stays exactly as before" message. That
+ * message parses into a cast, so it becomes the approved snapshot, and the premise, victim,
+ * setting and murder method (which live only in the earlier full concept) never reach the Parent.
+ * Live bug ("Murder At Montero Manor", 2026-10-07, paid USD 19.99): `user_conversation` was the
+ * 3,196-char delta, the Parent's master-context step had nothing to build on, and the package
+ * shipped with an empty `master_context`, no detective script and a game overview that was an AI
+ * request for the missing context.
+ *
+ * Rule: if the approved message has no concept section header (Premise / Victim / Setting / ...) AND says it
+ * only amends something ("everything else stays exactly as before"), include the latest EARLIER assistant message that does, labelled as the draft the approved
+ * message amends. Approved messages that carry their own concept section are untouched, so the
+ * pre-pivot contamination guard (Madysn, April 2026) still holds for every complete concept.
+ */
+export const CONCEPT_BASE_MIN_CHARS = 1500;
+const CONCEPT_SECTION_RE =
+  /^[ \t]*#{1,4}[ \t]*\**[ \t]*(premise|victim|the victim|synopsis|setting|the setting|plot|the plot|story|the story|the mystery|concept|the concept)\b/im;
+
+// The approved message must also SAY it only amends something ("everything else stays exactly as before").
+// A corpus check (132 paid conversations, 2026-10-07) found 11 approved messages with no concept header but a full
+// earlier draft; only 5 of them (Montero Manor, The Final Cut, Sweet Tea, Multiverse Gala, Ghost In The Uplink) state
+// that they amend. The other 6 are complete concepts under different headings, and pulling in their earlier draft
+// would be the pre-pivot contamination the narrow-context design exists to prevent. English phrases only for now.
+const AMENDS_EARLIER_RE =
+  /(as before|stays? (exactly )?(the same|as)|unchanged|everything else|rest (of the [a-z ]+ )?(stays|remains)|remains? (exactly )?(the same|as)|no other changes)/i;
+
+export function amendsEarlierConcept(content: string | null | undefined): boolean {
+  return typeof content === "string" && AMENDS_EARLIER_RE.test(content);
+}
+
+export function hasConceptSection(content: string | null | undefined): boolean {
+  return typeof content === "string" && CONCEPT_SECTION_RE.test(content);
+}
+
+export function selectConceptBase<T extends BriefCandidateMessage>(
+  messages: T[],
+  approved: T,
+): T | null {
+  if (hasConceptSection(approved.content) || !amendsEarlierConcept(approved.content)) return null;
+  const approvedAt = new Date(approved.created_at).getTime();
+  const earlier = messages
+    .filter((m) =>
+      m.role === "assistant" &&
+      m.id !== approved.id &&
+      typeof m.content === "string" &&
+      m.content.length >= CONCEPT_BASE_MIN_CHARS &&
+      hasConceptSection(m.content) &&
+      new Date(m.created_at).getTime() < approvedAt
+    )
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  return earlier[0] ?? null;
+}
+
+export function formatConceptBase(content: string): string {
+  return `AI (the earlier full concept that the approved message below amends - the approved message only restates part of it, so take the premise, victim, setting and murder method from here; where the two conflict, the approved message below wins): ${content}`;
+}

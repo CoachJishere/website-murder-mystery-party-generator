@@ -18,6 +18,7 @@ const { transformSync } = await import('esbuild');
 const js = transformSync(readFileSync(MOD, 'utf8'), { loader: 'ts', format: 'esm' }).code;
 const {
   selectPreSnapshotBriefs, formatPreSnapshotBrief, BRIEF_MIN_CHARS, BRIEF_MAX_TOTAL_CHARS,
+  selectConceptBase, formatConceptBase, hasConceptSection, amendsEarlierConcept, CONCEPT_BASE_MIN_CHARS,
 } = await import('data:text/javascript;base64,' + Buffer.from(js).toString('base64'));
 
 let passed = 0;
@@ -121,6 +122,68 @@ check('the label tells the generator the approved concept wins on conflict', () 
   assert.ok(/conflicts with the approved concept below, the approved concept wins/.test(label));
 });
 
+
+// --- ADR-0103 Addendum 87: an approved message that is only a delta needs the full concept it amends ---
+const FULL = '# MURDER AT MONTERO MANOR\n\n## Premise\nEvery year ...\n\n## Victim\n**Vivienne Blackwood** ...\n\n## Character List (11 players)\n1. **A** - x\n' + 'x'.repeat(2000);
+const DELTA = "Great instinct - let's rework it:\n\nHere's the refined lineup:\n\n## Character List (11 players)\n1. **A** - x\n\nEverything else (premise, victim, murder method) stays exactly as before.";
+const aMsg = (id, content, at) => ({ id, role: 'assistant', content, created_at: at });
+
+check('Montero Manor shape: a delta approved message pulls in the earlier full concept', () => {
+  const approved = aMsg('delta', DELTA, '2026-10-07T01:31:27Z');
+  const msgs = [
+    { id: 'u', role: 'user', content: 'short', created_at: '2026-10-07T01:02:47Z' },
+    aMsg('chatter', 'sure '.repeat(400), '2026-10-07T01:12:30Z'),
+    aMsg('full', FULL, '2026-10-07T01:25:37Z'),
+    approved,
+  ];
+  assert.strictEqual(selectConceptBase(msgs, approved)?.id, 'full');
+});
+
+check('a delta that merely MENTIONS "premise, victim" in prose is still a delta (header required)', () => {
+  assert.strictEqual(hasConceptSection(DELTA), false);
+});
+
+check('an approved message that carries its own Premise/Victim section is left alone (Madysn guard)', () => {
+  const approved = aMsg('whole', FULL, '2026-10-07T01:31:27Z');
+  const msgs = [aMsg('older', FULL, '2026-10-07T01:00:00Z'), approved];
+  assert.strictEqual(selectConceptBase(msgs, approved), null);
+});
+
+check('the NEWEST earlier full concept wins, and later-than-approved messages never qualify', () => {
+  const approved = aMsg('delta', DELTA, '2026-10-07T01:31:27Z');
+  const msgs = [
+    aMsg('old', FULL, '2026-10-07T01:00:00Z'),
+    aMsg('newer', FULL, '2026-10-07T01:20:00Z'),
+    aMsg('after', FULL, '2026-10-07T01:40:00Z'),
+    approved,
+  ];
+  assert.strictEqual(selectConceptBase(msgs, approved)?.id, 'newer');
+});
+
+check('no earlier full concept, short earlier messages, and user messages yield null', () => {
+  const approved = aMsg('delta', DELTA, '2026-10-07T01:31:27Z');
+  const msgs = [
+    aMsg('short', '## Premise\nshort', '2026-10-07T01:00:00Z'),
+    { id: 'u', role: 'user', content: FULL, created_at: '2026-10-07T01:10:00Z' },
+    approved,
+  ];
+  assert.ok('short'.length < CONCEPT_BASE_MIN_CHARS);
+  assert.strictEqual(selectConceptBase(msgs, approved), null);
+});
+
+check('a headerless approved message that does NOT say it amends is a complete concept: no base (6 of 11 corpus cases)', () => {
+  const approved = aMsg('complete', "Here is the plan.\n\nCharacter list (6 players)\n1. A - x\n2. B - y\n" + 'x'.repeat(2500), '2026-10-07T01:31:27Z');
+  assert.strictEqual(amendsEarlierConcept(approved.content), false);
+  assert.strictEqual(selectConceptBase([aMsg('full', FULL, '2026-10-07T01:00:00Z'), approved], approved), null);
+});
+
+check('the base label says the approved message wins on conflict', () => {
+  const label = formatConceptBase('BODY');
+  assert.ok(label.startsWith('AI ('));
+  assert.ok(label.endsWith(': BODY'));
+  assert.ok(/the approved message below wins/.test(label));
+});
+
 // --- wiring guard: the trigger must actually use it, and only inside the approved branch ---
 const trigger = readFileSync(TRIGGER, 'utf8');
 
@@ -139,6 +202,15 @@ check('briefs are placed BEFORE the approved concept in the assembled content', 
 check('the thin-snapshot full-conversation fallback is untouched (it already sends everything)', () => {
   const fallback = trigger.slice(trigger.indexOf('// Fallback: full conversation'), trigger.indexOf('// Fallback: full conversation') + 700);
   assert.ok(!fallback.includes('preSnapshotBriefs'));
+});
+
+check('trigger wires the concept base before the approved message, inside the approved branch only', () => {
+  assert.ok(trigger.includes('selectConceptBase(') && trigger.includes('formatConceptBase('));
+  const block = trigger.slice(trigger.indexOf('conversationContent = ['), trigger.indexOf('conversationContent = [') + 500);
+  assert.ok(block.indexOf('formatConceptBase') > block.indexOf('preSnapshotBriefs.map'));
+  assert.ok(block.indexOf('formatConceptBase') < block.indexOf('`AI: ${approvedMsg.content}`'));
+  const fallback = trigger.slice(trigger.indexOf('// Fallback: full conversation'), trigger.indexOf('// Fallback: full conversation') + 700);
+  assert.ok(!fallback.includes('conceptBase'));
 });
 
 console.log(`\n${passed} checks passed.`);

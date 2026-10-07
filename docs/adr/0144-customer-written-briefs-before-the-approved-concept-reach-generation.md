@@ -55,3 +55,7 @@ The trigger fix repairs the input; two causes sit upstream in `mystery-ai` (the 
 2. **Short explicit requests are lost unless the final concept carries them.** Generation only sees the final concept (plus later messages). Roslyn's Clay lost a requested family-joke phrase, a dialect word list and most named side characters because the concept's write-up dropped them. Added a CRITICAL guardrail: keep a running list of every explicit request (verbatim phrases, dialect words, named side characters, running gags), write each into the concept, quote phrases exactly, and use a plain-sentence "Details to weave in:" line at the very end if there is no natural place (no bullets or bold names, so roster extraction is not confused).
 
 Not tested against the live model (a paid call, and the guardrails are prompt text appended unconditionally like the six before them); the first real conversation with a two-murder idea is the test. The wording is checked by reading only.
+
+## Addendum 1 (2026-10-07): the approved concept can be a delta
+
+`_shared/conversation-briefs.ts` gained `selectConceptBase`: when the approved message has no concept section header and says it only amends something ("everything else stays exactly as before"), the latest earlier full concept is sent before it. Live case "Murder At Montero Manor" (the Parent got a 3,196-character delta and produced no master context). Corpus: 5 of 132 qualify, 6 other headerless snapshots are complete concepts and are excluded by the amend-phrase condition. Full account: ADR-0103 Addendum 87.

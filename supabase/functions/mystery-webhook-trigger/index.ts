@@ -11,7 +11,9 @@ import {
   mergeRosterContinuations,
   rosterOverlapFraction,
 } from "../_shared/rosterExtraction.ts";
-import { selectPreSnapshotBriefs, formatPreSnapshotBrief } from "../_shared/conversation-briefs.ts";
+import {
+  selectPreSnapshotBriefs, formatPreSnapshotBrief, selectConceptBase, formatConceptBase,
+} from "../_shared/conversation-briefs.ts";
 
 // CORS: restrict to production domains
 const ALLOWED_ORIGINS = [
@@ -733,8 +735,13 @@ serve(async (req) => {
           approvedMsg.created_at,
         );
 
+        // ADR-0103 Addendum 87: an approved message that is only a delta ("everything else stays as before")
+        // has no premise/victim/method, so bring in the earlier full concept it amends.
+        const conceptBase = selectConceptBase(conversation.messages as any[], approvedMsg);
+
         conversationContent = [
           ...preSnapshotBriefs.map((m: any) => formatPreSnapshotBrief(m.content)),
+          ...(conceptBase ? [formatConceptBase(conceptBase.content)] : []),
           `AI: ${approvedMsg.content}`,
           ...afterSnapshot.map((m: any) =>
             `${m.role === "assistant" ? "AI" : "User"}: ${m.content}`),
@@ -746,6 +753,7 @@ serve(async (req) => {
           (preSnapshotBriefs.length
             ? ` + ${preSnapshotBriefs.length} earlier customer brief(s) (${preSnapshotBriefs.reduce((s: number, m: any) => s + m.content.length, 0)} chars)`
             : "") +
+          (conceptBase ? ` + earlier full concept (id=${conceptBase.id}, ${conceptBase.content.length} chars; approved message is a delta)` : "") +
           ` = ${conversationContent.length} chars`,
         );
       } else {
