@@ -1,6 +1,6 @@
 # ADR-0146: Make.com reads the model's answer from `textResponse`, not `content[].text`
 
-**Status:** Proposed (Parent80 and Child60 built 2026-10-07, NOT yet imported into Make.com)
+**Status:** Accepted (Parent80 and Child60 built and imported into Make.com 2026-10-07; first live purchase still to confirm)
 **Date:** 2026-10-07
 **Related:** ADR-0145 (Sonnet 5.5, adaptive thinking on every module), ADR-0103 Addendum 87 (the incident), ADR-0138 (review before release)
 
