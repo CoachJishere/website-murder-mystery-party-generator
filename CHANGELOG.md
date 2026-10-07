@@ -2,6 +2,11 @@
 
 ## 2026-10-07
 
+### Improvement: Parent80 and Child60 built (not yet imported): read `textResponse` instead of `content[].text` after adaptive thinking emptied the detective script (ADR-0146)
+- **Why:** with Parent79/Child59's adaptive thinking, `content[0]` can be an empty `thinking` block, and `{{N.content[].text}}` then reads empty; "Murder At Montero Manor" saved `detective_script` NULL twice while Make reported success. 84 such reads in the Parent, 8 in the Child.
+- **What:** every read becomes `{{N.textResponse}}` (a top-level output the module already exposes). Nothing else changes; the build script verifies by a path-level diff that only those strings differ, and that all referenced modules are Anthropic modules.
+- **Not done:** a throwaway test scenario (the pasted execution already shows the text in `textResponse`); a Make-side non-empty guard and gating `host_guide`/`materials`/evidence cards (noted in the ADR). Jonathan imports; free checks and watch items are in the ADR.
+
 ### Fix: a package with no detective script, or an AI "send me the context" game overview, now holds the completion gate; a delta concept now brings in the full concept it amends (ADR-0103 Addendum 87)
 - **Incident:** "Murder At Montero Manor" (paid USD 19.99, slip, 11 characters) shipped and was emailed with `master_context` empty, `detective_script` NULL, no evidence cards and a `game_overview` that read "The master context ... arrived empty ... Please send the master context". Every existing check is character- or pattern-based and the 11 sheets were fine, so the gate passed it, no alert fired, and only the customer's contact form revealed it.
 - **Detector and gate:** `package_missing_core_content()` (`missing_core_content.detective_script_empty`, `missing_core_content.game_overview_is_ai_request`) wired into `package_completion_blocking_defects()`, plus `list_packages_with_missing_core_content()`. Corpus check: 1 hit in 134 paid completed packages since 2026-06-01, the incident itself; limited to packages created from 2026-06-01. Detection only (the repair is a paid re-fire). Applied by migration `20261007060000`, verified live (hit on the incident, NULL on a clean control).
