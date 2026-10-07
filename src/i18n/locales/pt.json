@@ -1942,5 +1942,9 @@
         "endsLabel": "A promoção termina em 31 de dezembro"
       }
     }
+  },
+  "awayNotice": {
+    "message": "Estarei fora de 8 a 13 de outubro, por isso as respostas serão mais lentas do que o habitual. Se algo no teu mistério não parecer certo, escreve para support@mysterymaker.party e resolvo um ou dois dias depois de regressar (no máximo a 15 de outubro). Se o teu evento for antes disso, diz-me a data e devolvo-te o valor total.",
+    "signoff": "Jonathan, Mystery Maker"
   }
 }

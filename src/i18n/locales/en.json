@@ -1943,5 +1943,9 @@
         "endsLabel": "Sale ends December 31"
       }
     }
+  },
+  "awayNotice": {
+    "message": "I'm away from October 8 to 13, so replies will be slower than usual. If anything in your mystery looks off, email support@mysterymaker.party and I'll take care of it within a day or two of getting back (by October 15 at the latest). If your event is before then, tell me the date and I'll refund you in full.",
+    "signoff": "Jonathan, Mystery Maker"
   }
 }

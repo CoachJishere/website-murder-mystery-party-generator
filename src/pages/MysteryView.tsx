@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { trackMysteryCreation, trackGenerationCompleted, trackGenerationFailed } from "@/lib/analytics";
 import GenerationProgress from "@/components/GenerationProgress";
+import { AwayNotice } from "@/components/AwayNotice";
 import { getGenerationTiming } from "@/utils/generationTiming";
 
 interface MysteryPackageData {
@@ -1319,6 +1320,9 @@ const MysteryView = () => {
           "container mx-auto max-w-4xl",
           isMobile && "max-w-full"
         )}>
+          {/* Temporary away notice (Oct 8-13, 2026), paid mysteries only. Remove after Oct 13. */}
+          {mystery?.is_paid && <AwayNotice className={cn("mb-4", isMobile && "mx-2")} />}
+
           {/* Stale-needs-review banner: only renders if the package has been
               flagged needs_review for longer than the silent recovery window
               (~10 min). For fresher needs_review states, auto-recovery is

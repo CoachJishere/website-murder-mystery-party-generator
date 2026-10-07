@@ -1942,5 +1942,9 @@
         "endsLabel": "Actie eindigt 31 december"
       }
     }
+  },
+  "awayNotice": {
+    "message": "Ik ben van 8 tot en met 13 oktober weg, dus antwoorden duren langer dan normaal. Klopt er iets niet in je mysterie, mail dan naar support@mysterymaker.party en ik los het binnen een dag of twee na mijn terugkomst op (uiterlijk 15 oktober). Is je evenement eerder, laat me de datum weten en ik betaal je het volledige bedrag terug.",
+    "signoff": "Jonathan, Mystery Maker"
   }
 }

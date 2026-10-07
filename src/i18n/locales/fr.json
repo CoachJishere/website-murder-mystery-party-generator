@@ -1943,5 +1943,9 @@
         "endsLabel": "L'offre se termine le 31 décembre"
       }
     }
+  },
+  "awayNotice": {
+    "message": "Je serai absent du 8 au 13 octobre, mes réponses seront donc plus lentes que d'habitude. Si quelque chose ne va pas dans ton mystère, écris à support@mysterymaker.party et je m'en occuperai un ou deux jours après mon retour (au plus tard le 15 octobre). Si ton événement a lieu avant, indique-moi la date et je te rembourserai intégralement.",
+    "signoff": "Jonathan, Mystery Maker"
   }
 }

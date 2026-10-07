@@ -31,6 +31,23 @@ function getCorsHeaders(req: Request) {
   };
 }
 
+// Temporary away notice (Jonathan away Oct 8-13, 2026). Self-expiring; mirrors
+// src/lib/awayNotice.ts (edge functions cannot import from src/), keep in sync.
+// English only, like the rest of this email. Remove after Oct 13.
+const AWAY_NOTICE_STARTS_AT = Date.UTC(2026, 9, 7, 0, 0, 0);
+const AWAY_NOTICE_ENDS_AT = Date.UTC(2026, 9, 13, 10, 0, 0); // Oct 13 12:00 CEST
+function awayNoticeHtml(): string {
+  const now = Date.now();
+  if (now < AWAY_NOTICE_STARTS_AT || now > AWAY_NOTICE_ENDS_AT) return "";
+  return `
+          <div style="margin-top: 30px; padding: 16px 18px; border: 1px solid rgba(245,240,232,0.15); border-radius: 6px;">
+            <p style="font-size: 14px; color: rgba(245,240,232,0.7); margin: 0 0 10px 0; line-height: 1.6;">
+              I'm away from October 8 to 13, so replies will be slower than usual. If anything in your mystery looks off, reply to this email and I'll take care of it within a day or two of getting back (by October 15 at the latest). If your event is before then, tell me the date and I'll refund you in full.
+            </p>
+            <p style="font-size: 14px; color: rgba(245,240,232,0.7); margin: 0; line-height: 1.6;">Jonathan<br>Mystery Maker</p>
+          </div>`;
+}
+
 const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
 const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -107,6 +124,7 @@ serve(async (req) => {
               View Your Mystery
             </a>
           </div>
+          ${awayNoticeHtml()}
         </div>
         <div style="text-align: center; padding: 20px; color: rgba(245,240,232,0.35); font-size: 12px;">
           <a href="https://www.mysterymaker.party" style="color: rgba(245,240,232,0.5); text-decoration: none;">mysterymaker.party</a>

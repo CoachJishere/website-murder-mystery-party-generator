@@ -2,6 +2,13 @@
 
 ## 2026-10-07
 
+### Feature: temporary "I'm away Oct 8-13" notice on paid mysteries and in the ready email
+- **Why:** Jonathan is away from Thursday Oct 8 (morning CET) to Tuesday Oct 13 (morning CET) while many mysteries still need hand fixes. Customers get no Mystery Maker email at purchase (only Stripe's receipt), so the "your mystery is ready" email is the one message every buyer receives, at the moment they open the mystery.
+- **What:** (1) `send-mystery-ready-email` appends a short notice under the button (deployed with `supabase functions deploy`, `verify_jwt` unchanged at true); (2) `AwayNotice` banner at the top of `/mystery/:id`, rendered only when `mystery.is_paid`, translated for en/es/fr/de/it/pt/nl (other locales fall back to English); (3) both gated by the same window, `src/lib/awayNotice.ts` and a mirrored constant in the edge function (Oct 7 00:00 UTC to Oct 13 10:00 UTC = 12:00 CEST), so they switch off by themselves.
+- **Promise made to customers:** anything off is handled within a day or two of Jonathan's return (by Oct 15 at the latest); if the event is before then, they reply with the date and get a full refund.
+- **Deliberately not done:** no banner on the landing page, chat, checkout or dashboard (would risk pre-purchase customers hesitating); no separate email or bulk send to past buyers (decided against unless Jonathan asks); the email notice is English only like the rest of that email.
+- **Cleanup after Oct 13:** delete the `<AwayNotice>` mount in `MysteryView.tsx`, `AwayNotice.tsx`, `src/lib/awayNotice.ts`, the `awayNotice` locale keys, and the `awayNoticeHtml` block in the edge function (the notice is already invisible by then; this is tidiness only).
+
 ### Improvement: Parent80 and Child60 built (not yet imported): read `textResponse` instead of `content[].text` after adaptive thinking emptied the detective script (ADR-0146)
 - **Why:** with Parent79/Child59's adaptive thinking, `content[0]` can be an empty `thinking` block, and `{{N.content[].text}}` then reads empty; "Murder At Montero Manor" saved `detective_script` NULL twice while Make reported success. 84 such reads in the Parent, 8 in the Child.
 - **What:** every read becomes `{{N.textResponse}}` (a top-level output the module already exposes). Nothing else changes; the build script verifies by a path-level diff that only those strings differ, and that all referenced modules are Anthropic modules.

@@ -1942,5 +1942,9 @@
         "endsLabel": "Angebot endet am 31. Dezember"
       }
     }
+  },
+  "awayNotice": {
+    "message": "Ich bin vom 8. bis 13. Oktober nicht erreichbar, daher dauern Antworten länger als sonst. Wenn bei deinem Krimi etwas nicht stimmt, schreib an support@mysterymaker.party, und ich kümmere mich ein bis zwei Tage nach meiner Rückkehr darum (spätestens am 15. Oktober). Findet deine Veranstaltung vorher statt, nenn mir das Datum und ich erstatte dir den vollen Betrag.",
+    "signoff": "Jonathan, Mystery Maker"
   }
 }
