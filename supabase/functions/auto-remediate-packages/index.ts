@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { DANGLING_QUOTE_RX, deriveBranchHeader, prependHeader, stripStrayGlitches } from "./glitch-strip.ts";
+import { type DetectorFailure, detectorFailureAlert, runDetectorGuarded } from "./detector-guard.ts";
 
 /**
  * auto-remediate-packages — closed-loop auto-remediation worker. See ADR-0047.
@@ -1659,6 +1660,30 @@ async function handleMissingImages(ctx: RunCtx, row: Record<string, unknown>): P
   });
 }
 
+/** Same Resend pattern as rescue-unstarted-orders. Best effort: the run has already done its work. */
+async function sendDetectorFailureAlert(text: string): Promise<void> {
+  const key = Deno.env.get("RESEND_API_KEY");
+  if (!key) {
+    console.error("auto-remediate: no RESEND_API_KEY, detector failure alert not sent");
+    return;
+  }
+  try {
+    const resp = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "Mystery Maker Alerts <noreply@mysterymaker.party>",
+        to: ["support@mysterymaker.party"],
+        subject: "auto-remediate-packages: detector failed (run continued)",
+        text,
+      }),
+    });
+    if (!resp.ok) console.error(`auto-remediate: detector failure alert send failed: ${resp.status}`);
+  } catch (e) {
+    console.error(`auto-remediate: detector failure alert send threw: ${(e as Error).message}`);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Entry point
 // ---------------------------------------------------------------------------
@@ -1729,11 +1754,16 @@ serve(async (req) => {
       return rows.filter((r) => heldIds.has(r.package_id as string));
     }
 
+    // ADR-0103 Addendum 87 Update 3: a failing detector (e.g. a statement timeout) skips only its own class.
+    const detectorFailures: DetectorFailure[] = [];
+    const sweep = (rpc: string) =>
+      runDetectorGuarded(rpc, async () => filterNeedsReview(await callDetector(rpc, sinceIso)), detectorFailures);
+
     // Free work first, so a spend halt can never starve the deterministic fixes.
 
     // 1. Self/victim-directed questions — deterministic, free.
     if (shouldRun("self_directed_questions")) {
-      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.self_directed_questions, sinceIso))) {
+      for (const row of await sweep(DETECTOR_RPC.self_directed_questions)) {
         await handleSelfDirectedQuestions(ctx, row);
       }
     }
@@ -1741,7 +1771,7 @@ serve(async (req) => {
     // 2. Template artifacts — deterministic strip (free) + delegated fallback
     //    for embedded character-scope instances (paid; ADR-0061).
     if (shouldRun("template_artifact")) {
-      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.template_artifact, sinceIso))) {
+      for (const row of await sweep(DETECTOR_RPC.template_artifact)) {
         await handleTemplateArtifacts(ctx, row);
       }
     }
@@ -1749,14 +1779,14 @@ serve(async (req) => {
     // 2b. Dangling trailing quote mark — deterministic strip, free (ADR-0103
     //     Addendum 67/68).
     if (shouldRun("dangling_quote_mark")) {
-      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.dangling_quote_mark, sinceIso))) {
+      for (const row of await sweep(DETECTOR_RPC.dangling_quote_mark)) {
         await handleDanglingQuoteMark(ctx, row);
       }
     }
 
     // 2c. Missing baked-in branch header — deterministic, free (ADR-0103 Addendum 80).
     if (shouldRun("missing_branch_header")) {
-      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.missing_branch_header, sinceIso))) {
+      for (const row of await sweep(DETECTOR_RPC.missing_branch_header)) {
         await handleMissingBranchHeader(ctx, row);
       }
     }
@@ -1764,12 +1794,12 @@ serve(async (req) => {
     // 3-4. identity_contamination / slip_culprit_leak — delegated to
     //    regenerate-child-content (ADR-0061; previously escalate-only).
     if (shouldRun("identity_contamination")) {
-      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.identity_contamination, sinceIso))) {
+      for (const row of await sweep(DETECTOR_RPC.identity_contamination)) {
         await handleIdentityContamination(ctx, row);
       }
     }
     if (shouldRun("slip_culprit_leak")) {
-      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.slip_culprit_leak, sinceIso))) {
+      for (const row of await sweep(DETECTOR_RPC.slip_culprit_leak)) {
         await handleSlipCulpritLeak(ctx, row);
       }
     }
@@ -1777,7 +1807,7 @@ serve(async (req) => {
     // 4b. missing_role_branch_content — delegated to regenerate-child-content
     //    (ADR-0103 Addendum 36; previously alert-only since Addendum 31).
     if (shouldRun("missing_role_branch_content")) {
-      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.missing_role_branch_content, sinceIso))) {
+      for (const row of await sweep(DETECTOR_RPC.missing_role_branch_content)) {
         await handleMissingRoleBranchContent(ctx, row);
       }
     }
@@ -1787,7 +1817,7 @@ serve(async (req) => {
     //    only, no self-heal). Same per-character precise-field-list shape as
     //    missing_role_branch_content above.
     if (shouldRun("narration_person_mismatch")) {
-      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.narration_person_mismatch, sinceIso))) {
+      for (const row of await sweep(DETECTOR_RPC.narration_person_mismatch)) {
         await handleNarrationPersonMismatch(ctx, row);
       }
     }
@@ -1795,7 +1825,7 @@ serve(async (req) => {
     // 4d. confession_names_cast_member — delegated to regenerate-child-content, grouped per package
     //    (ADR-0103 Addendum 82).
     if (shouldRun("confession_names_cast_member")) {
-      const rows = await filterNeedsReview(await callDetector(DETECTOR_RPC.confession_names_cast_member, sinceIso));
+      const rows = await sweep(DETECTOR_RPC.confession_names_cast_member);
       const byPackage = new Map<string, { names: string[]; fields: Set<string> }>();
       for (const row of rows) {
         const pid = row.package_id as string;
@@ -1813,14 +1843,14 @@ serve(async (req) => {
 
     // 5. game_overview victim mismatch — paid (Haiku).
     if (shouldRun("game_overview_victim_mismatch")) {
-      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.game_overview_victim_mismatch, sinceIso))) {
+      for (const row of await sweep(DETECTOR_RPC.game_overview_victim_mismatch)) {
         await handleVictimMismatch(ctx, row);
       }
     }
 
     // 6. Missing evidence images — paid (Replicate).
     if (shouldRun("missing_images")) {
-      for (const row of await filterNeedsReview(await callDetector(DETECTOR_RPC.missing_images, sinceIso))) {
+      for (const row of await sweep(DETECTOR_RPC.missing_images)) {
         await handleMissingImages(ctx, row);
       }
     }
@@ -1830,7 +1860,7 @@ serve(async (req) => {
     //    one incident affecting many characters in the same package spends one
     //    attempt-cap slot, not one per character.
     if (shouldRun("pointform_language_mismatch")) {
-      const rows = await filterNeedsReview(await callDetector(DETECTOR_RPC.pointform_language_mismatch, sinceIso));
+      const rows = await sweep(DETECTOR_RPC.pointform_language_mismatch);
       const byPackage = new Map<string, string[]>();
       for (const row of rows) {
         const pid = row.package_id as string;
@@ -1848,13 +1878,17 @@ serve(async (req) => {
     // 8. Empty pointform next to non-empty prose — paid (Sonnet 5, ~$0.05/character), same regeneration path as #7
     //    (ADR-0103 Addendum 80; Jonathan approved 2026-10-03). Grouped by package, then by distinct character.
     if (shouldRun("empty_pointform")) {
-      const rows = await filterNeedsReview(await callDetector(DETECTOR_RPC.empty_pointform, sinceIso));
+      const rows = await sweep(DETECTOR_RPC.empty_pointform);
       for (const row of rows) {
         const pid = row.package_id as string;
         const names = [...new Set(((row.sources as string[]) ?? []).map((src) => src.slice(src.indexOf(":") + 1)))];
         if (pid && names.length > 0) await handlePointformLanguageMismatch(ctx, pid, names, "empty_pointform");
       }
     }
+
+    // One alert per run, only when a detector failed. Never fatal: a missing key or a failed send is only logged.
+    const failureAlert = detectorFailureAlert(detectorFailures);
+    if (failureAlert && !dryRun) await sendDetectorFailureAlert(failureAlert);
 
     const spentThisRun = ctx.results.reduce((sum, r) => sum + (r.outcome === "planned" ? 0 : r.cost_usd), 0);
     const summary = {
@@ -1871,13 +1905,14 @@ serve(async (req) => {
       spent_today_usd: Number((alreadySpent + spentThisRun).toFixed(4)),
       daily_cap_usd: DAILY_SPEND_CAP_USD,
       spend_halted: ctx.spendHalted,
+      detector_failures: detectorFailures,
       duration_ms: Date.now() - startedAt,
       results: ctx.results,
     };
 
     console.log(
       `auto-remediate: ${summary.fixed} fixed, ${summary.escalated} escalated, ` +
-        `${summary.failed} failed, ${summary.skipped} skipped, $${summary.spent_usd} spent` +
+        `${summary.failed} failed, ${summary.skipped} skipped, ${detectorFailures.length} detector failures, $${summary.spent_usd} spent` +
         (dryRun ? " (DRY RUN)" : ""),
     );
 

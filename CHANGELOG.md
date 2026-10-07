@@ -2,6 +2,13 @@
 
 ## 2026-10-07
 
+### Fix: the half-hourly auto-remediate run no longer dies when one detector times out; the meta-text-leak detector is about twice as fast (ADR-0103 Addendum 87 Update 3)
+- **Incident:** `list_packages_with_meta_text_leak` hit "canceling statement due to statement timeout" at 01:45, 07:05 and 07:13 UTC on 2026-10-07 and aborted the whole `auto-remediate-packages` run, so later classes (including the free `dangling_quote_mark` heal) did not run for about 35 minutes on a paid package.
+- **Cause:** the function evaluated `package_meta_text_leak()` twice per package, and that function's backreference word-loop regex costs about 5.7 s over the 30-day text (only for packages under 7 days old). The call took 7.9 s against the 8 s PostgREST timeout.
+- **SQL:** evaluate once per package via `CROSS JOIN LATERAL (... OFFSET 0)` (migration `20261007120000_meta_text_leak_detector_evaluate_once.sql`, applied). Now about 3.9 to 4.8 s; output identical (side-by-side on the 30-day window, and the default-window hash matches the pre-change value). Headroom, not a guarantee: cost still scales with recent packages.
+- **Worker:** `auto-remediate-packages` v26: a failing detector is logged and skipped, the other classes run, `detector_failures` is in the response, and one alert email per run lists them. The re-detect gates after a fix still throw on purpose. New `detector-guard.ts` and `scripts/__tests__/detectorGuard.test.mjs` (in `test:roster`).
+- **Not done:** a shorter loop-check window or a stored per-package result (would change or add state); per-row handler errors remain fatal to a run.
+
 ### Feature: temporary "I'm away Oct 8-13" notice on paid mysteries and in the ready email
 - **Why:** Jonathan is away from Thursday Oct 8 (morning CET) to Tuesday Oct 13 (morning CET) while many mysteries still need hand fixes. Customers get no Mystery Maker email at purchase (only Stripe's receipt), so the "your mystery is ready" email is the one message every buyer receives, at the moment they open the mystery.
 - **What:** (1) `send-mystery-ready-email` appends a short notice under the button (deployed with `supabase functions deploy`, `verify_jwt` unchanged at true); (2) `AwayNotice` banner at the top of `/mystery/:id`, rendered only when `mystery.is_paid`, translated for en/es/fr/de/it/pt/nl (other locales fall back to English); (3) both gated by the same window, `src/lib/awayNotice.ts` and a mirrored constant in the edge function (Oct 7 00:00 UTC to Oct 13 10:00 UTC = 12:00 CEST), so they switch off by themselves.

@@ -51,6 +51,7 @@ Blog Database - Master.csv
 !scripts/__tests__/rosterAnomaly.test.mjs
 !scripts/__tests__/preSnapshotBriefs.test.mjs
 !scripts/__tests__/alertDedupe.test.mjs
+!scripts/__tests__/detectorGuard.test.mjs
 !scripts/sync-blog-map.mjs
 !scripts/backfill-crosslinks.mjs
 !scripts/apply-crosslinks.mjs
