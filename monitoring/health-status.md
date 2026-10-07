@@ -1,11 +1,12 @@
 # Site health status
 
-_Last checked: 2026-10-07 06:07 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-10-07 13:32 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ⚠️ Problems found
 
 - 🟠 1 package(s) flagged needs_review in the last 7 days: e0806547-4229-4ab9-a7f4-6f75c3fb1ed6
 - 🔴 1 recent package(s) with model chain-of-thought or template artifacts in delivered text: El Último Trago
+- 🔴 1 package(s) with a confession leaked into the Final Statements round (should be a denial): Murder At Montero Manor [Madame Celeste Devereaux]
 
 | Check | Result |
 |---|---|
@@ -21,7 +22,7 @@ _Last checked: 2026-10-07 06:07 UTC (runs every 6 hours; see .github/workflows/h
 | Completed-but-empty packages (30 days) | 0 |
 | Structural defects — escalate only (30 days) | 0 |
 | Roster-count mismatches — escalate only (30 days) | 0 |
-| Final-statement confession leaks — escalate only (30 days) | 0 |
+| Final-statement confession leaks — escalate only (30 days) | 1 |
 | Unconfessed detective-style culprits — escalate only (30 days) | 0 |
 | Truncated concept messages — escalate only (30 days) | 0 |
 | Stale hardcoded models — escalate only | 0 |
