@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-07
+
+### Fix: a package with no detective script, or an AI "send me the context" game overview, now holds the completion gate; a delta concept now brings in the full concept it amends (ADR-0103 Addendum 87)
+- **Incident:** "Murder At Montero Manor" (paid USD 19.99, slip, 11 characters) shipped and was emailed with `master_context` empty, `detective_script` NULL, no evidence cards and a `game_overview` that read "The master context ... arrived empty ... Please send the master context". Every existing check is character- or pattern-based and the 11 sheets were fine, so the gate passed it, no alert fired, and only the customer's contact form revealed it.
+- **Detector and gate:** `package_missing_core_content()` (`missing_core_content.detective_script_empty`, `missing_core_content.game_overview_is_ai_request`) wired into `package_completion_blocking_defects()`, plus `list_packages_with_missing_core_content()`. Corpus check: 1 hit in 134 paid completed packages since 2026-06-01, the incident itself; limited to packages created from 2026-06-01. Detection only (the repair is a paid re-fire). Applied by migration `20261007060000`, verified live (hit on the incident, NULL on a clean control).
+- **Input gap, fixed at the source:** the approved concept was the assistant's "here's the refined lineup, everything else stays exactly as before" reply, so the Parent never saw the premise, victim or murder method. `mystery-webhook-trigger` (v150) now sends the latest earlier full concept before an approved message that has no concept section header AND says it only amends something. A corpus check showed 5 of 132 qualify; the 6 other headerless snapshots are complete concepts and are left alone (pre-pivot contamination guard). 8 new offline checks (23 total).
+- **Not excluded:** this was also the first generation on Parent79/Child59 (Sonnet 5.5 adaptive) and Parent77/Child58; the re-fire will show which cause it was. Side findings (detector statement timeout killing the remediation worker, a truncated pointform summary) recorded in the ADR addendum, not fixed.
+
 ## 2026-10-06
 
 ### Improvement: Parent79 and Child59 built and imported 2026-10-06: every Make.com Anthropic call on Sonnet 5.5, effort medium, adaptive thinking (ADR-0145)
