@@ -1,6 +1,6 @@
 # ADR-0147: Make.com reads the model's answer with a fallback (textResponse, then content[].text, then content[2].text)
 
-**Status:** Accepted (Parent81 and Child61 built 2026-10-08; NOT yet imported; first live purchase and the re-fire of "Death And Dumplings" will be the test)
+**Status:** Accepted (Parent81 and Child61 built and imported 2026-10-08; VERIFIED on the re-fire of "Death And Dumplings", see Addendum 1)
 **Date:** 2026-10-08
 **Related:** ADR-0146 (superseded in part), ADR-0145 (Sonnet 5.5 adaptive thinking), ADR-0103 Addendum 88 (the incident), Addendum 87 (Montero Manor)
 
@@ -39,3 +39,7 @@ Jonathan's question was whether Sonnet 5.5 is the cause. The output of 165 and 4
 ## Key files
 
 `temp-files/build-textresponse-fallback-parent81-child61.py`, `temp-files/MM Live - Parent81 (textResponse With Fallback).blueprint.json`, `temp-files/MM Live - Child (Unified)61-TextResponseFallback.blueprint.json` (gitignored like earlier blueprints); `docs/adr/0146-read-textresponse-not-content-text-in-make.md`.
+
+## Addendum 1 (2026-10-08): verified live
+
+Jonathan imported Parent81/Child61 (live scenarios 9106101 and 9061052, blueprints identical to the built files, checked through the Make API) and approved the paid re-fire of the held package. Fired 07:02:48 UTC through `mystery-webhook-trigger` (service role). Result: `master_context` 45,332 chars at 07:04:36, overview names the victim, 5 of 5 characters, the whole run 07:02:51 to 07:08:09 (about 5 minutes), `detective_script` 9,006 and `evidence_cards` regenerated against the real context, the gate held it for one dangling quote (healed free), the reviewer applied 3 findings (0.23 USD), released at 07:14:38 UTC and the ready email went out. So Make accepts `ifempty(...; ifempty(...content[].text; ...content[2].text))` inside prompt strings, and the fallback chain recovers the answer on the module that had come back blank. Which of the three reads supplied it for modules 165/4010 was not looked at (the field is correct either way). Still open: the Make-side stop after module 158 on an empty `master_context`, and a DB gate condition for it. Spend: the re-fire (Make credits plus the Anthropic calls of one whole generation, not itemised) plus 0.23 USD of review.

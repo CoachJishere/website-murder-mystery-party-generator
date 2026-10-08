@@ -2,6 +2,11 @@
 
 ## 2026-10-08
 
+### Fix: "Death And Dumplings At Madwimmin House" regenerated on Parent81/Child61 and released (ADR-0147 Addendum 1, ADR-0103 Addendum 88 Update 2)
+- **Why:** Parent80 saved an empty `master_context` and 0 of 5 characters on two runs (`textResponse` blank on the Master Doc modules).
+- **What:** after Jonathan imported Parent81/Child61, the package was re-fired (service role, approved) at 07:02:48 UTC and finished in about 5 minutes: `master_context` 45k chars, 5 characters, gate hold on one dangling quote healed free, reviewer applied 3 findings, released and emailed at 07:14:38 UTC. One garbled tip in Mo/Moe's accusations fixed by hand. The fallback read is verified live.
+- **Open:** Make-side stop on an empty `master_context` and a DB gate condition for it; the dangling quote appearing after v44 (one sighting).
+
 ### Fix: Parent81 and Child61 read the model's answer with a fallback instead of `textResponse` alone (ADR-0147, ADR-0103 Addendum 88 Update 1)
 - **Why:** the first purchase on Parent80 ("Death And Dumplings At Madwimmin House") saved an empty `master_context` and 0 of 5 characters on two runs, although modules 165 and 4010 had returned complete answers: `{{N.textResponse}}` resolved blank for those two modules. `content[].text` (Parent79) fails the other way round when a thinking block comes first.
 - **What:** every read is now `{{ifempty(N.textResponse; ifempty(N.content[].text; N.content[2].text))}}` (84 in the Parent, 8 in the Child); built and diff-verified, NOT yet imported into Make.com. The held package stays held until the import and a paid re-fire (needs a yes).
