@@ -2,6 +2,11 @@
 
 ## 2026-10-08
 
+### Improvement: an empty master_context now holds the gate, and character re-fires are not sent without one (ADR-0148)
+- **Why:** "Death And Dumplings" (2026-10-07) saved an empty `master_context`; it was only caught indirectly through the overview text, and the recovery loop still logged 10 futile character re-fires (1.50 USD) that could not write anything.
+- **What:** `package_missing_core_content` adds `master_context_empty` (under 1,000 chars) for packages created from 2026-10-08 (migration applied; 0 existing packages newly flagged; boundary checked at 999 and 1000). `notify-generation-issue` v42 skips character re-fires when `master_context` is unusable, logs one 0 USD row, adds an "Auto-Recovery Blocked" line to the alert and alerts at once; it fails open if the lookup errors. New offline test `recoveryGuard.test.mjs` (6 checks) in `test:roster`.
+- **Not done:** the Make-side stop (Parent82), declined (rare, cause fixed, ~1.50 USD saving, import risk); the guard path is untested on a real incident.
+
 ### Fix: "Death And Dumplings At Madwimmin House" regenerated on Parent81/Child61 and released (ADR-0147 Addendum 1, ADR-0103 Addendum 88 Update 2)
 - **Why:** Parent80 saved an empty `master_context` and 0 of 5 characters on two runs (`textResponse` blank on the Master Doc modules).
 - **What:** after Jonathan imported Parent81/Child61, the package was re-fired (service role, approved) at 07:02:48 UTC and finished in about 5 minutes: `master_context` 45k chars, 5 characters, gate hold on one dangling quote healed free, reviewer applied 3 findings, released and emailed at 07:14:38 UTC. One garbled tip in Mo/Moe's accusations fixed by hand. The fallback read is verified live.

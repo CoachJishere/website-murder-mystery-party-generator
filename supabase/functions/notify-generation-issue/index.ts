@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { buildConversationExcerpt } from "../_shared/conversation-excerpt.ts";
 import { alertItems, dedupeDecision } from "../_shared/alert-dedupe.ts";
+import { partitionRecoveryTargets } from "../_shared/recovery-guard.ts";
 
 const ALLOWED_ORIGINS = [
   'https://www.mysterymaker.party',
@@ -467,7 +468,38 @@ serve(async (req) => {
     const missingNameSet = new Set(missingCharacters);
     const recoveryTargets = [...emptyCharacters, ...missingCharacters];
 
-    for (const charName of recoveryTargets) {
+    // ADR-0148: a re-fire reads master_context. With an empty one the Child cannot generate, so every attempt only spends the
+    // attempt budget and the daily estimate (2026-10-07 "Death And Dumplings": 10 re-fires, 1.50 USD logged, 0 characters). Hold
+    // the loop back, log it once at 0 USD, and let the alert say what is needed (a whole-package re-fire, paid, needs a yes).
+    // Fails open: if the lookup errors or finds no row, the guard does not apply and recovery behaves exactly as before.
+    let masterContextForGuard: string | null = null;
+    let masterContextKnown = false;
+    if (recoveryTargets.length > 0 && pkg?.id) {
+      const { data: mcRow, error: mcErr } = await supabase.from("mystery_packages").select("master_context").eq("id", pkg.id).maybeSingle();
+      if (!mcErr && mcRow) {
+        masterContextForGuard = (mcRow.master_context as string | null) ?? "";
+        masterContextKnown = true;
+      } else if (mcErr) {
+        console.warn(`[RecoveryGuard] master_context lookup failed for ${pkg.id}: ${mcErr.message}; guard skipped`);
+      }
+    }
+    const { fire: loopTargets, blocked: blockedNoContext } = masterContextKnown
+      ? partitionRecoveryTargets(recoveryTargets, masterContextForGuard)
+      : { fire: recoveryTargets, blocked: [] as string[] };
+    if (blockedNoContext.length > 0 && pkg?.id) {
+      const BLOCK_ACTION = "skip_regenerate:master_context_empty";
+      const { data: already } = await supabase
+        .from("auto_remediation_log").select("id").eq("package_id", pkg.id).eq("action", BLOCK_ACTION).limit(1);
+      if (!already || already.length === 0) {
+        await supabase.from("auto_remediation_log").insert({
+          package_id: pkg.id, defect_class: "missing_core_content", action: BLOCK_ACTION,
+          before_value: null, outcome: "escalated", cost_usd: 0,
+        });
+      }
+      console.warn(`[RecoveryGuard] master_context empty for package ${pkg.id}; not re-firing ${blockedNoContext.length} character(s)`);
+    }
+
+    for (const charName of loopTargets) {
       const description = charDescriptions[charName];
       if (!description) {
         skipped.push(charName); // can't recover without a description in master_context
@@ -586,7 +618,18 @@ serve(async (req) => {
           </td>
         </tr>`
       : "";
-    const recoveryHtml = recoveredHtml + skippedHtml + cappedHtml;
+    const blockedHtml = blockedNoContext.length > 0
+      ? `<tr>
+          <td style="padding: 8px 0; color: #6b7280;">Auto-Recovery Blocked:</td>
+          <td style="padding: 8px 0; color: #dc2626; font-weight: 600;">
+            ${blockedNoContext.join(", ")}<br>
+            <span style="font-size: 12px; font-weight: normal; color: #6b7280;">
+              The package's master_context is empty, so a character re-fire cannot work and none was sent (nothing spent). The repair is a whole-package re-fire (paid, needs a yes), after checking the Make execution.
+            </span>
+          </td>
+        </tr>`
+      : "";
+    const recoveryHtml = recoveredHtml + skippedHtml + cappedHtml + blockedHtml;
 
     const html = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -755,7 +798,8 @@ serve(async (req) => {
       (recoveryTargets.length > 0 || isFullyComplete) &&
       structuralDefectsNotSelfRecovered.length === 0 &&
       skipped.length === 0 &&
-      capped.length === 0;
+      capped.length === 0 &&
+      blockedNoContext.length === 0;
     readyToAlert = readyToAlert && !emptyCharacterRecoveryLooksClean;
 
     // Email only when something NEW needs a human (Jonathan's rule, 2026-10-03 and again 2026-10-06). This used to be a 6-hour timer per
