@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 324 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 325 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -124,6 +124,7 @@ This index organizes 324 published guides by topic cluster. All guides are avail
 - [Murder Mystery Party for Oktoberfest](https://www.mysterymaker.party/blog/murder-mystery-party-for-oktoberfest-raise-your-steins-to-murder-and-mystery): Raise steins to murder with Oktoberfest murder mystery parties featuring German themes, beer, and bavarian celebration.
 - [Murder Mystery Party for Retirement Celebrations](https://www.mysterymaker.party/blog/murder-mystery-party-for-retirement-celebrations-honoring-career-achievements-with-professional-drama): Honor career achievements with memorable retirement murder mystery parties featuring workplace themes and professional pride.
 - [Murder Mystery Party for St. Patrick's Day](https://www.mysterymaker.party/blog/murder-mystery-party-for-st-patricks-day-irish-intrigue-and-emerald-mysteries): Find more than luck with St. Patrick's Day murder mystery parties featuring Irish themes and emerald mysteries.
+- [Murder Mystery Party for Wine Tasting Event](https://www.mysterymaker.party/blog/murder-mystery-party-for-wine-tasting-event): Combine wine tasting and murder mystery for immersive dinner parties. Sommelier suspects, vineyard settings, clue delivery through wine.
 - [Hosting a Murder Mystery in a Haunted Asylum Setting](https://www.mysterymaker.party/blog/murder-mystery-party-haunted-asylum-theme): Haunted asylum murder mystery party ideas. Psychological horror, patient records, doctor dynamics, immersive mystery themes.
 - [Haunted Castle Murder Mystery Party](https://www.mysterymaker.party/blog/murder-mystery-party-haunted-castle-theme): Host a haunted castle murder mystery party blending ghost stories with murder investigation, gothic atmosphere, and supernatural intrigue.
 - [5 Prohibition Speakeasy Murder Mystery Themes](https://www.mysterymaker.party/blog/murder-mystery-party-speakeasy-jazz-bar): Go underground with authentic prohibition speakeasy murder mysteries featuring bootleggers, cops, and illegal operations.
