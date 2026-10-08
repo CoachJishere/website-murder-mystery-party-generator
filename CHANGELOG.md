@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-08
+
+### Docs: ADR-0103 restored after being truncated, and the Death And Dumplings incident recorded (ADR-0103 Addendum 88)
+- **Why:** commit a2dbfce replaced the 554 KB ADR-0103 with only its Update 4 text (1,851 lines deleted) and 8ab5a5f built on the fragment, so the repo copy had lost the whole sweep history. The vault copy was intact.
+- **What:** rebuilt from the last intact version (5c57802) plus Updates 4 and 5; byte-identical to the vault body. Added Addendum 88: "Death And Dumplings At Madwimmin House" is the first live purchase on Parent80/Child60 and it saved an empty `master_context` and 0 of 5 characters on two runs; cause not yet settled (module 165/4010 output needed from the Make UI), nothing released, no spend.
+
 ## 2026-10-07
 
 ### Fix: the 5-minute held-package run scans 7 days instead of 30, and a detector statement timeout is retried once (ADR-0103 Addendum 87 Update 5)
