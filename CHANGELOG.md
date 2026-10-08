@@ -2,6 +2,11 @@
 
 ## 2026-10-08
 
+### Fix: Parent81 and Child61 read the model's answer with a fallback instead of `textResponse` alone (ADR-0147, ADR-0103 Addendum 88 Update 1)
+- **Why:** the first purchase on Parent80 ("Death And Dumplings At Madwimmin House") saved an empty `master_context` and 0 of 5 characters on two runs, although modules 165 and 4010 had returned complete answers: `{{N.textResponse}}` resolved blank for those two modules. `content[].text` (Parent79) fails the other way round when a thinking block comes first.
+- **What:** every read is now `{{ifempty(N.textResponse; ifempty(N.content[].text; N.content[2].text))}}` (84 in the Parent, 8 in the Child); built and diff-verified, NOT yet imported into Make.com. The held package stays held until the import and a paid re-fire (needs a yes).
+- **Not done:** a Make-side stop on an empty `master_context` and a DB gate condition for it (follow-ups).
+
 ### Docs: ADR-0103 restored after being truncated, and the Death And Dumplings incident recorded (ADR-0103 Addendum 88)
 - **Why:** commit a2dbfce replaced the 554 KB ADR-0103 with only its Update 4 text (1,851 lines deleted) and 8ab5a5f built on the fragment, so the repo copy had lost the whole sweep history. The vault copy was intact.
 - **What:** rebuilt from the last intact version (5c57802) plus Updates 4 and 5; byte-identical to the vault body. Added Addendum 88: "Death And Dumplings At Madwimmin House" is the first live purchase on Parent80/Child60 and it saved an empty `master_context` and 0 of 5 characters on two runs; cause not yet settled (module 165/4010 output needed from the Make UI), nothing released, no spend.
