@@ -2,7 +2,7 @@
 
 > Mystery Maker is an AI-powered murder mystery party generator and comprehensive content resource. This site offers custom murder mystery party scripts, themes, hosting guides, and troubleshooting help for parties of any size, theme, or audience.
 
-This index organizes 325 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
+This index organizes 326 published guides by topic cluster. All guides are available in 13 languages (EN, ES, FR, DE, IT, DA, FI, NL, SV, PT, KO, JA, ZH-CN) at `/{lang}/blog/{slug}` — the EN versions are listed below.
 
 **Generator**: [Create a custom murder mystery party](https://www.mysterymaker.party/)
 **Blog index**: [All published posts](https://www.mysterymaker.party/blog)
@@ -201,6 +201,7 @@ This index organizes 325 published guides by topic cluster. All guides are avail
 - [Murder Mystery Party for Office Teams](https://www.mysterymaker.party/blog/murder-mystery-party-for-office-teams-build-bonds-through-collaborative-investigation): Build stronger workplace relationships with collaborative office murder mystery experiences that encourage teamwork.
 - [Prom Afterparty Murder Mystery Party](https://www.mysterymaker.party/blog/murder-mystery-party-for-prom-afterparty): Plan a prom afterparty murder mystery for teens with age-appropriate content, formal attire already done, and entertainment for post-prom celebrations.
 - [How to Host a Murder Mystery Party for Teenagers](https://www.mysterymaker.party/blog/murder-mystery-party-for-teenagers-guide): Throw a murder mystery party teens will actually care about. Real plots, characters they relate to, and investigation methods that actually work.
+- [Murder Mystery Party for Work From Home Colleagues](https://www.mysterymaker.party/blog/murder-mystery-party-for-work-from-home-colleagues): Remote murder mystery parties for work-from-home teams. Virtual bonding, casual gaming, asynchronous and synchronous formats for distributed teams.
 - [Murder Mystery Team Building Activities](https://www.mysterymaker.party/blog/murder-mystery-team-building-activities): Murder mystery team building activities boost engagement, communication, and ROI. Complete guide with data, formats, and planning steps for any team size.
 - [Murder Mystery Team Building: ROI Case](https://www.mysterymaker.party/blog/murder-mystery-team-building-benefits-roi): Justify murder mystery team building to HR with hard ROI data. Gallup engagement stats, turnover reduction, communication gains, and cost comparisons.
 - [Murder Mystery Themed Wedding Reception](https://www.mysterymaker.party/blog/murder-mystery-themed-wedding-reception): Murder mystery wedding reception entertainment that unfolds across dinner courses. A unique alternative to dancing where guests stay engaged.
