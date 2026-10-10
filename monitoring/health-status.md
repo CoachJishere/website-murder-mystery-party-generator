@@ -1,12 +1,12 @@
 # Site health status
 
-_Last checked: 2026-10-10 12:39 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-10-10 21:49 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ⚠️ Problems found
 
 - 🟠 2 package(s) flagged needs_review in the last 7 days: 4b53b965-0230-4faf-bf9b-54dfad225b9e, e0806547-4229-4ab9-a7f4-6f75c3fb1ed6
 - 🔴 1 recent package(s) with model chain-of-thought or template artifacts in delivered text: El Último Trago
-- 🔴 1 package(s) with a confession leaked into the Final Statements round (should be a denial): Murder At Montero Manor [Madame Celeste Devereaux]
+- 🔴 2 package(s) with a confession leaked into the Final Statements round (should be a denial): Dead Man's Saddle [Dr. Adeline Marsh]; Murder At Montero Manor [Madame Celeste Devereaux]
 
 | Check | Result |
 |---|---|
@@ -22,10 +22,10 @@ _Last checked: 2026-10-10 12:39 UTC (runs every 6 hours; see .github/workflows/h
 | Completed-but-empty packages (30 days) | 0 |
 | Structural defects — escalate only (30 days) | 0 |
 | Roster-count mismatches — escalate only (30 days) | 0 |
-| Final-statement confession leaks — escalate only (30 days) | 1 |
+| Final-statement confession leaks — escalate only (30 days) | 2 |
 | Unconfessed detective-style culprits — escalate only (30 days) | 0 |
 | Truncated concept messages — escalate only (30 days) | 0 |
 | Stale hardcoded models — escalate only | 0 |
 | Detector status-predicate drift — escalate only | 0 |
 | Checkout roster-extraction anomalies — escalate only (24h) | 0 |
-| Ally/rival lists contradicting the relationship matrix — info only (30 days) | 7 |
+| Ally/rival lists contradicting the relationship matrix — info only (30 days) | 6 |
