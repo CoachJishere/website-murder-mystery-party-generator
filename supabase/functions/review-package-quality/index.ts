@@ -151,13 +151,25 @@ async function openDigest(dryRun: boolean): Promise<Row> {
   const minSev = (await setting("review_open_digest_min_severity", "high")).trim().toLowerCase();
   if (!["high", "medium"].includes(minSev)) return { skipped: `review_open_digest_min_severity=${minSev}` };
   const since = new Date(Date.now() - 26 * 3600 * 1000).toISOString();
-  const { data: pk } = await supabase.from("mystery_packages").select("id,title").gte("quality_review_released_at", since);
-  const pkgs = (pk ?? []) as { id: string; title: string | null }[];
+  const { data: pk } = await supabase.from("mystery_packages").select("id,title,mystery_style,evidence_cards").gte("quality_review_released_at", since);
+  const pkgs = (pk ?? []) as { id: string; title: string | null; mystery_style: string | null; evidence_cards: unknown }[];
   if (pkgs.length === 0) return { sent: false, packages: 0 };
   const titles = new Map(pkgs.map((p) => [p.id, p.title ?? ""]));
   const { data: fs } = await supabase.from("package_review_findings")
     .select("package_id,item_name,field,category,severity,exact_quote,explanation").in("package_id", [...titles.keys()]).eq("status", "open").is("human_verdict", null);
-  const rows = ((fs ?? []) as Omit<C.OpenFindingRow, "title">[]).map((f) => ({ ...f, title: titles.get(f.package_id) ?? "" }));
+  const rows: C.OpenFindingRow[] = ((fs ?? []) as Omit<C.OpenFindingRow, "title">[]).map((f) => ({ ...f, title: titles.get(f.package_id) ?? "" }));
+  // ADR-0151: deterministic check that no printed evidence card names the murderer or accomplice (detective style only).
+  const detective = pkgs.filter((p) => p.mystery_style === "detective");
+  if (detective.length > 0) {
+    const { data: cs } = await supabase.from("mystery_characters").select("package_id,character_name,character_role").in("package_id", detective.map((p) => p.id)).in("character_role", ["murderer", "accomplice"]);
+    for (const p of detective) {
+      const names = ((cs ?? []) as { package_id: string; character_name: string }[]).filter((c) => c.package_id === p.id).map((c) => c.character_name);
+      for (const h of C.culpritNameHits(p.evidence_cards, names)) {
+        rows.push({ package_id: p.id, title: p.title ?? "", item_name: C.DOC_ITEM_NAME, field: "evidence_cards", category: "secret_leak", severity: "high",
+          exact_quote: h.snippet, explanation: `A printed evidence card names the culprit ${h.name} (deterministic check, ADR-0035). Neutralise the name in the card DESCRIPTION.` });
+      }
+    }
+  }
   const mail = C.openDigestEmail(rows, minSev);
   if (!mail) return { sent: false, packages: pkgs.length, qualifying: 0, min_severity: minSev };
   if (dryRun) return { sent: false, dry_run: true, subject: mail.subject, packages: mail.packages, findings: mail.findings };

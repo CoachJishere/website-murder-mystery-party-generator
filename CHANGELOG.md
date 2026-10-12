@@ -2,6 +2,12 @@
 
 ## 2026-10-12
 
+### Feature: full-name culprit check on printed evidence cards in the daily email; pronoun fixes auto-applied; Parent83 built (ADR-0151)
+- **Why:** Jonathan asked whether the Dutch package's defects should have been caught already. Four classes had a layer that saw them but did not act: a culprit named on a card (prompt rule ignored, surname detector advisory with 50 percent false positives), secrets revealed in a read-aloud overview (the prompt asks for "compelling motives"), French victim pronouns (found 7 of 7, not an auto-apply class), and a garbled Danish header (no language pack for Danish).
+- **What:** (1) `culpritNameHits` matches the full name of the murderer and accomplice in the printed card text only and adds a high line to the daily open-findings email; over 81 detective packages since August it finds exactly 2 genuine hits and no false positive. (2) `pronoun_drift` is now auto-applied (7 of 7 French correct). (3) Parent83 (not imported): Game Overview paragraph 2 limited to public information and the evidence-card rule extended to master_context clue lines and quoted notes.
+- **Also done:** the open findings on the Danish, Swedish and French packages are all closed (0 open): 7 French pronoun fixes applied, the Danish header restored, 5 Swedish leaks applied (two in the read-aloud overview), pointform bullets kept in step.
+- **Not done:** Parent83 needs Jonathan's import; no Danish or Swedish language pack; the two older packages that name a culprit on a card (Aug 1 and Aug 14) are untouched.
+
 ### Feature: the reviewer checks that the customer's requirements are carried, and re-reads each package once after release (ADR-0150); retroactive apply on delivered DA/SV/FR packages (ADR-0149 Update 1)
 - **Why:** the Dutch Tijdcapsule package had the customer's whole climax missing from every character sheet and the reviewer cannot see an absent requirement (recall 58 percent on that package).
 - **What:** (1) a requirements-coverage call inside the pre-release review (customer list from `master_context` against every sheet; high findings for climax, reveal or clue lines, medium for quirks; never auto-applied; high ones feed the ADR-0149 email). (2) A second review pass after release (cron `review-second-pass`, every 5 minutes, one package at a time, under prompt version `+p2`, deduped, applying through the language-gated path). (3) `requirements_probe` and `apply_open` modes. (4) Applied 40 open findings on the delivered Danish (31), Swedish (7) and French (2) packages, 0 reverted, backups kept.

@@ -171,6 +171,43 @@ export function packageDocsBlock(pkg: Row): string {
   return parts.join("\n");
 }
 
+// ---- Culprit named on a printed evidence card (ADR-0151) ----
+// ADR-0035: the printed DESCRIPTION of an evidence card must never name the murderer or accomplice. The older SQL detector matches the SURNAME
+// only, so it fires on family and company names (3 of its 4 hits since August were a victim's family or business) and stayed advisory. This
+// check matches the character's FULL name (every spelling of a "Pat/Patricia Lee" dual name) in the printed text only, so a family name does
+// not trip it, and it feeds the daily open-findings email as a high finding instead of gating a customer.
+const HOST_ONLY_HEADING = /^#{2,4}[ \t]*(Significance|Implications|What This Reveals|Who It Implicates|Visual Description|Discovered)[^\n]*\n[\s\S]*?(?=^#{2,4}[ \t]|(?![\s\S]))/gim;
+
+/** The printed (guest-facing) part of the evidence cards: host-only sections removed. */
+export function printedEvidenceText(evidence: unknown): string {
+  const t = typeof evidence === "string" ? evidence : JSON.stringify(evidence ?? "");
+  return t.replace(HOST_ONLY_HEADING, "");
+}
+
+/** Every spelling of a cast name: "Pat/Patricia Lee" gives "Pat Lee" and "Patricia Lee"; a single name stays as it is. Names under 4 letters are skipped. */
+export function nameVariants(name: string): string[] {
+  const parts = name.trim().split(/\s+/);
+  const first = (parts[0] ?? "").split("/").filter(Boolean);
+  const rest = parts.slice(1).join(" ");
+  const out = first.map((f) => (rest ? `${f} ${rest}` : f));
+  // a dual name can also sit in the last part ("Ann Lee/Leigh"): expand it too
+  return [...new Set(out.flatMap((o) => (o.includes("/") ? o.split("/") .map((x) => x.trim()) : [o])))].filter((v) => v.length >= 4);
+}
+
+/** Snippets of the printed evidence text that contain a culprit's full name (empty when none). */
+export function culpritNameHits(evidence: unknown, culpritNames: string[]): { name: string; snippet: string }[] {
+  const text = printedEvidenceText(evidence).replace(/\\n/g, "\n");
+  const hits: { name: string; snippet: string }[] = [];
+  for (const full of culpritNames) {
+    for (const v of nameVariants(full)) {
+      const esc = v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const m = new RegExp(`(?<![\\p{L}])${esc}(?![\\p{L}])`, "u").exec(text);
+      if (m) { const a = Math.max(0, m.index - 50); hits.push({ name: full, snippet: text.slice(a, m.index + v.length + 50).replace(/\s+/g, " ").trim() }); break; }
+    }
+  }
+  return hits;
+}
+
 // ---- Requirements coverage (ADR-0150) ----
 // The per-character calls cannot see an ABSENT requirement: "Daan is called Daanus all game, Kevin shouts X, Dina remembers Y" was in the
 // customer's approved concept (master_context.conversationDetailsExtraction.userRequirements) and in no character sheet, and nothing

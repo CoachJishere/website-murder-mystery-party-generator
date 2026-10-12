@@ -187,4 +187,16 @@ t("coverageBlock carries the list, every sheet, the documents and the trimming n
   assert.ok(!C.validateFinding(row, { field: C.REQUIREMENTS_FIELD, exact_quote: "Kevin whispers", category: "other", severity: "high", explanation: "", suggested_replacement: "" }).ok);
 });
 
+
+t("culpritNameHits matches the full name in printed text only, expands dual names, and ignores family names and host-only sections (ADR-0151)", () => {
+  const card = "## EVIDENCE CARDS\n\n## EVIDENCE: ROUND 3\n\n### The Ledger\n\n#### DESCRIPTION\nA page from Whitfield Land & Holdings' ledger, kept in Axel's files.\n\n#### SIGNIFICANCE (Host Only)\nPoints at Axel Whitfield.\n\n## EVIDENCE: ROUND 4\n\n### The Phone\n\n#### DESCRIPTION\nMessages recovered from Jasper Gold's device.\n\n#### SIGNIFICANCE (Host Only)\nJasper did it.";
+  assert.deepEqual(C.culpritNameHits(card, ["Axel Whitfield"]), []);
+  const h = C.culpritNameHits(card, ["Jasper Gold"]); assert.equal(h.length, 1); assert.ok(h[0].snippet.includes("Jasper Gold's device"));
+  assert.deepEqual(C.nameVariants("Percival/Prudence Ashworth"), ["Percival Ashworth", "Prudence Ashworth"]);
+  assert.equal(C.culpritNameHits("#### DESCRIPTION\nPrudence Ashworth was seen.", ["Percival/Prudence Ashworth"]).length, 1);
+  assert.equal(C.culpritNameHits('"#### DESCRIPTION\\nHe had to ask Daan about it.\\n\\n#### SIGNIFICANCE (Host Only)\\nDaan."', ["Daan"]).length, 1);
+  assert.deepEqual(C.culpritNameHits("#### DESCRIPTION\nMo was there.", ["Mo"]), []);
+  assert.deepEqual(C.culpritNameHits("#### DESCRIPTION\nDaanus appears.", ["Daan"]), []);
+});
+
 console.log("customer-wording tests done");
