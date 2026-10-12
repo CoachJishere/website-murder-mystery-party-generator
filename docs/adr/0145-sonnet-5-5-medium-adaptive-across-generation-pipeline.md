@@ -1,6 +1,6 @@
 # ADR-0145: Claude Sonnet 5.5 at medium effort with adaptive thinking across the generation pipeline
 
-- **Status:** Accepted (built 2026-10-06; Parent79 and Child59 not yet imported into Make.com)
+- **Status:** Accepted, imported 2026-10-06; the first live runs exposed a side effect of adaptive thinking (see Addendum 1), fixed downstream by ADR-0146/0147
 - **Date:** 2026-10-06
 - **Related:** ADR-0074 (blanket Sonnet 5 upgrade), ADR-0098 Addenda 7/8 (stale hardcoded models), ADR-0135/0142 (quality work this should be measured against)
 
@@ -39,3 +39,10 @@ Parent modules also take Make's own export metadata from module 171 (`expect`, `
 
 - `temp-files/MM Live - Parent79 (Sonnet 5.5 Medium Adaptive).blueprint.json`, `temp-files/MM Live - Child (Unified)59-Sonnet55MediumAdaptive.blueprint.json` (gitignored, local)
 - `temp-files/build-sonnet55-parent79-child59.py`
+
+## Addendum 1 (2026-10-12): adaptive thinking broke the answer reads, not the model choice
+
+This ADR's "Consequences" listed latency and cost as the risks to watch; the real one was missed. With adaptive thinking on, the response `content` array can start with an empty `thinking` block, so every `{{N.content[].text}}` read in the blueprints evaluated empty (84 reads in Parent79, 8 in Child59) while Make still reported success through the Resume error handler. Montero Manor saved `detective_script` as NULL (ADR-0103 Addendum 87); the new completion gate held the package. ADR-0146 (Parent80/Child60) switched to `textResponse`, which then came back blank on the 32,000-token Master Doc modules (Death And Dumplings, ADR-0103 Addendum 88); ADR-0147 (Parent81/Child61, verified live) reads with a fallback chain. The model, effort and thinking choice themselves were kept.
+
+**Lesson for any future model or thinking change:** before importing, grep every `content[].text` / `textResponse` read and test one run of a multi-block-response module (large `max_tokens` included); a green Make run is not proof the field was populated.
+
