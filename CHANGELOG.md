@@ -22,6 +22,7 @@
 - **Not done:** no detector built (card-intro slip is low impact; customer-required-phrase check is fuzzy, first occurrence); the garbled English handwriting in the Round 4 evidence image was left (needs a paid regeneration); no customer outreach.
 - **Measurement:** reviewer 11 findings, all real (6 auto-applied, 5 open then fixed by hand), 8 misses, recall 58 percent; recorded in `package_review_findings`, `package_review_misses`, `package_review_sweeps` and `docs/autonomy-scoreboard.md`.
 - **Update (same day):** all three evidence images (not only Round 4) carried garbled English text; regenerated with text-free prompts via Replicate Flux (about 0.32 USD for 8 images, approved). The failed Pages deploy for the previous commit was a transient npm 404; a fresh deploy run was started.
+- **Update (later):** customer quirks that the requirements probe found missing from every sheet (Tom's fillers, Bram's camping story, Kevin's slip and truck remark, Anna's fine) were hand-written into the Dutch package, plus Mila's cue to call "Het is dus Daan!"; one line from the customer's list (Tom's Nazi-parody quip) was left out on purpose.
 
 ## 2026-10-08
 
