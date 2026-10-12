@@ -1,6 +1,6 @@
 # ADR-0151: Full-name culprit check on printed evidence cards, pronoun fixes auto-applied, and two Parent prompt guards (Parent83)
 
-**Status:** Accepted (the check, the digest line and the setting are live 2026-10-12; **Parent83 is built and NOT imported into Make.com**, awaiting Jonathan)
+**Status:** Accepted (the check, the digest line and the setting are live 2026-10-12; **Parent83 imported by Jonathan 2026-10-12 and verified through the Make API**: live scenario 9106101 is named Parent83 and carries the 4 overview edits and the 1 card edit, none of the old wording; not yet exercised by a real purchase)
 **Date:** 2026-10-12
 **Related:** ADR-0035 (evidence cards must not name the culprit), ADR-0042 and ADR-0053 (why the surname detector stayed advisory), ADR-0149, ADR-0150, ADR-0103 Addendum 89
 
@@ -23,7 +23,7 @@ Jonathan asked, after the Dutch "Tijdcapsule Klas '96" sweep: should these defec
 
 1. **Culprit-name check (deterministic).** `culpritNameHits` (review-core.ts) matches the FULL name of every murderer and accomplice, in every spelling of a dual name, against the printed evidence text only (host-only sections stripped), detective style only. It runs inside the daily open-findings email (ADR-0149) and adds a high line "A printed evidence card names the culprit". It never edits or holds anything. Over the 81 detective packages since 2026-08-01 it reports exactly 2 hits, both genuine ("a vehicle registered to Marina Splash", "recovered from Jasper Gold's device"), with no false positive (the surname detector would have fired on Whitfield and Ashworth, family names). The Dutch card is already fixed so it no longer appears. The two old hits are packages delivered in August and are left as they are unless Jonathan wants them neutralised.
 2. **`pronoun_drift` added to the auto-apply classes** (`review_auto_apply_classes`). Evidence: 7 of 7 French replacements read and correct (applied via `apply_open` and verdicted), 11 of 12 earlier on Boogie Nights; every replacement is a minimal edit of the quoted span. Revert-on-new-defect and customer-wording guards still apply.
-3. **Parent83 (built, not imported)** from Parent81, two exact-substring prompt edits (`temp-files/build-parent83-overview-secrets-and-card-names.py`, path-by-path diff verified: 4 overview modules, 1 evidence-card module): (a) the Game Overview's paragraph 2 may describe characters only by public role, public relationships and visible tension and must never state or hint at a hidden secret, motive, wrongdoing or secret love; (b) the evidence-card rule now says master_context clue lines may name the culprit and that name must never be copied, even inside a quoted note, label, signature or document line. Parent82 was proposed and declined in ADR-0148 and never built, so the number is 83.
+3. **Parent83 (imported 2026-10-12)** from Parent81, two exact-substring prompt edits (`temp-files/build-parent83-overview-secrets-and-card-names.py`, path-by-path diff verified: 4 overview modules, 1 evidence-card module): (a) the Game Overview's paragraph 2 may describe characters only by public role, public relationships and visible tension and must never state or hint at a hidden secret, motive, wrongdoing or secret love; (b) the evidence-card rule now says master_context clue lines may name the culprit and that name must never be copied, even inside a quoted note, label, signature or document line. Parent82 was proposed and declined in ADR-0148 and never built, so the number is 83.
 
 ## Rationale
 
@@ -45,3 +45,8 @@ Jonathan asked, after the Dutch "Tijdcapsule Klas '96" sweep: should these defec
 ## Key files
 
 `supabase/functions/review-package-quality/review-core.ts` (`culpritNameHits`, `nameVariants`, `printedEvidenceText`), `index.ts` (`openDigest`), `review-core.test.mjs`, `temp-files/build-parent83-overview-secrets-and-card-names.py` and `temp-files/MM Live - Parent83 (Overview No Secrets, Card No Culprit Name).blueprint.json` (gitignored local copies).
+
+## Decisions on the leftovers (Jonathan, 2026-10-12, taking the recommendation)
+
+- **The two older packages that name a culprit on a printed card (Aug 1 "The Case Of The Stolen Golden Flamingo", Aug 14 "Sunset Songs: The Stolen Spotlight") are left as delivered.** Reason: the parties were most likely played two months ago, an unsolicited edit to old deliveries adds risk for no clear gain, and the daily check now stops this for new packages. Revisit only if a customer comes back.
+- **Tom's "jawuhl meine Führer" line is not added to the Dutch package.** Reason: a Nazi-parody quip in a printed script; the other five filler sayings carry the customer's intent. Add it with one edit if the customer asks.
