@@ -226,6 +226,35 @@ export type DigestFinding = { item_name: string; field: string; category: string
 
 export const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+// ---- Daily open-findings check (ADR-0149) ----
+// Findings the reviewer could not apply before release (or that were never in an auto-apply class) sit in package_review_findings with
+// status 'open'. By the alerting rule (North Star) only what needs Jonathan and could not be handled by the system is an email, so this
+// lists the packages released in the last day that still carry unverified open findings at or above a severity threshold (default high).
+export type OpenFindingRow = { package_id: string; title: string; item_name: string; field: string; category: string; severity: string; exact_quote: string; explanation: string };
+const SEVERITY_RANK: Record<string, number> = { low: 1, medium: 2, high: 3 };
+
+export function openDigestEmail(rows: OpenFindingRow[], minSeverity: string): { subject: string; html: string; packages: number; findings: number } | null {
+  const min = SEVERITY_RANK[minSeverity.toLowerCase()];
+  if (!min) return null; // "off" or anything unknown sends nothing
+  const kept = rows.filter((r) => (SEVERITY_RANK[r.severity] ?? 0) >= min);
+  if (kept.length === 0) return null;
+  const byPkg = new Map<string, OpenFindingRow[]>();
+  for (const r of kept) byPkg.set(r.package_id, [...(byPkg.get(r.package_id) ?? []), r]);
+  const clip = (t: string, n: number) => (t.length > n ? t.slice(0, n - 1) + "…" : t);
+  const blocks = [...byPkg.entries()].map(([id, list]) => {
+    const items = list.slice(0, 8).map((f) =>
+      `<li><b>${escapeHtml(f.severity.toUpperCase())}</b> ${escapeHtml(f.item_name)} / ${escapeHtml(f.field)} (${escapeHtml(f.category.replace(/_/g, " "))}): &ldquo;${escapeHtml(clip(f.exact_quote, 140))}&rdquo; ${escapeHtml(clip(f.explanation, 200))}</li>`).join("");
+    const more = list.length > 8 ? `<li>…and ${list.length - 8} more</li>` : "";
+    return `<h4 style="margin:16px 0 4px">${escapeHtml(list[0].title || id)} <span style="color:#6b7280;font-weight:normal">(${id})</span></h4><ul>${items}${more}</ul>`;
+  }).join("");
+  const n = byPkg.size;
+  const subject = `${n} package${n === 1 ? "" : "s"} released with unresolved quality findings (${minSeverity}+)`;
+  const html = `<div style="font-family:sans-serif;max-width:760px"><h3>${escapeHtml(subject)}</h3>` +
+    `<p>The reviewer found these before release but could not apply them itself, and nobody has recorded a verdict yet. Read them with the full list in <code>package_review_findings</code> (status open, human_verdict null) and sweep the package.</p>${blocks}` +
+    `<p style="color:#6b7280">Threshold: pipeline_settings.review_open_digest_min_severity (high, medium, or off). At most one of these emails per day.</p></div>`;
+  return { subject, html, packages: n, findings: kept.length };
+}
+
 /**
  * The email Jonathan receives for each reviewed order. Default "summary": counts and the HIGH findings only, with an explicit "no action
  * needed" (the sweep reads the full list from package_review_findings). "full" lists up to 40 findings; "off" sends nothing (returns null).
@@ -319,6 +348,9 @@ const LANG_STOPWORDS: Record<string, RegExp> = {
   it: /\b(che|non|sono|per|una|della|nel|questo|anche|più|molto|ho|hai|gli|del|nella|essere|ma|come|era)\b/gi,
   pt: /\b(não|uma|você|para|mas|com|está|foi|são|mais|muito|também|ele|dos|nos|meu|minha|isso|era)\b/gi,
   nl: /\b(het|een|niet|van|zijn|maar|ook|nog|jullie|dat|voor|wij|naar|met|ik|heb|dit|was|geen)\b/gi,
+  // Danish and Swedish share many function words, so only words that differ between them are listed (ADR-0149).
+  da: /\b(og|ikke|jeg|af|hvad|noget|nogen|også|være|havde|kunne|hun|hende|vores|deres|meget|selv|der)\b/gi,
+  sv: /\b(och|inte|jag|av|vad|något|någon|också|vara|hade|kunde|hon|henne|vår|våra|mycket|själv|där)\b/gi,
 };
 
 /** The language of a sample of text, or null when it is not clear (too little text, or two languages close together). */

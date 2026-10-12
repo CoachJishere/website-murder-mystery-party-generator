@@ -2,6 +2,12 @@
 
 ## 2026-10-12
 
+### Feature: daily check for packages released with unresolved reviewer findings; reviewer auto-apply widened (ADR-0149)
+- **Why:** the Dutch "Tijdcapsule Klas '96" package was complete and gate-clean but carried more than ten defects; the reviewer had found 11 and left 5 open with no signal. 10 of 14 packages since 2026-10-04 were released with open findings (22 high and 216 medium open overall).
+- **What:** `review-package-quality` gains `mode: open_digest` (cron `review-open-findings-digest`, 07:30 UTC): one email per day, only if a package released in the last 26 hours has an unverified open finding at or above `review_open_digest_min_severity` (default high). Auto-apply now also covers `language_slip`, and Danish and Swedish (the language detector learned both; existing detection unchanged on all 124 packages since 08-01).
+- **Not done (and why):** `secret_leak` is not auto-applied (about 2 in 9 replacements were debatable); no hold-on-high; retroactive apply to delivered Danish, Swedish and French packages left for a preview and a yes; the recall gap (missing customer requirements) needs the paid levers in the ADR.
+- **Kill switches:** set `review_open_digest_min_severity` to `off`; edit the two auto-apply settings back; `cron.unschedule('review-open-findings-digest')`.
+
 ### Fix: "Compleet Overzicht - de Tijdcapsule Van Klas '96" (NL detective) swept six days after delivery: spoiler card, mismatched cues, and the customer's climax written into the characters (ADR-0103 Addendum 89)
 - **Why:** Jonathan asked whether an older order with no generation alert was complete. It was (7 of 7 characters, gate clean, released 2026-10-06 20:16 UTC), but it had never been swept, and it predates Parent77/Child58/Parent79.
 - **What (27 exact-match edits, pointform twins in sync):** Round 4 evidence card no longer names the murderer; detective-script Round 2/3 cues now match the Round 2/3 cards; "u" to "jullie", two mixed-language slips, an ambiguous nickname line and the arrest line fixed; Tom no longer hints at Daan and Anna; Mila/Anna photo-fact errors and a stray combining accent fixed; Anna's empty accusations pointform filled. Added the customer's required climax, which was in no character sheet: a "Klimaxmoment" line for Kevin, Dina and Bram ("Hij is dus écht een gladjanus!", Dina's stairs memory, the nickname confirmation) and "Daanus" in six Round 3/4 questions.

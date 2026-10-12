@@ -121,6 +121,35 @@ async function sendAlert(subject: string, body: string) {
   if (!resp.ok) console.error(`alert email failed: ${resp.status} ${(await resp.text()).slice(0, 200)}`);
 }
 
+/** ADR-0149: one email per UTC day listing packages released in the last 26 hours that still carry unverified open findings. */
+async function openDigest(dryRun: boolean): Promise<Row> {
+  const minSev = (await setting("review_open_digest_min_severity", "high")).trim().toLowerCase();
+  if (!["high", "medium"].includes(minSev)) return { skipped: `review_open_digest_min_severity=${minSev}` };
+  const since = new Date(Date.now() - 26 * 3600 * 1000).toISOString();
+  const { data: pk } = await supabase.from("mystery_packages").select("id,title").gte("quality_review_released_at", since);
+  const pkgs = (pk ?? []) as { id: string; title: string | null }[];
+  if (pkgs.length === 0) return { sent: false, packages: 0 };
+  const titles = new Map(pkgs.map((p) => [p.id, p.title ?? ""]));
+  const { data: fs } = await supabase.from("package_review_findings")
+    .select("package_id,item_name,field,category,severity,exact_quote,explanation").in("package_id", [...titles.keys()]).eq("status", "open").is("human_verdict", null);
+  const rows = ((fs ?? []) as Omit<C.OpenFindingRow, "title">[]).map((f) => ({ ...f, title: titles.get(f.package_id) ?? "" }));
+  const mail = C.openDigestEmail(rows, minSev);
+  if (!mail) return { sent: false, packages: pkgs.length, qualifying: 0, min_severity: minSev };
+  if (dryRun) return { sent: false, dry_run: true, subject: mail.subject, packages: mail.packages, findings: mail.findings };
+  const dayStart = new Date(); dayStart.setUTCHours(0, 0, 0, 0);
+  const { data: already } = await supabase.from("auto_remediation_log").select("id").eq("defect_class", "llm_review").eq("action", "alert:open_digest").gte("created_at", dayStart.toISOString()).limit(1);
+  if (already && already.length > 0) return { sent: false, reason: "already sent today" };
+  const key = Deno.env.get("RESEND_API_KEY");
+  if (!key) return { sent: false, reason: "RESEND_API_KEY missing" };
+  const resp = await fetch("https://api.resend.com/emails", {
+    method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from: "Mystery Maker Alerts <noreply@mysterymaker.party>", to: ["support@mysterymaker.party"], subject: mail.subject, html: mail.html }),
+  });
+  if (!resp.ok) return { sent: false, error: `${resp.status} ${(await resp.text()).slice(0, 200)}` };
+  await logSpend(pkgs[0].id, "alert:open_digest", "escalated", 0);
+  return { sent: true, packages: mail.packages, findings: mail.findings };
+}
+
 async function sendDigest(pkgTitle: string, packageId: string, style: string, kept: C.DigestFinding[], cost: number) {
   const key = Deno.env.get("RESEND_API_KEY");
   const mail = C.digestEmail(pkgTitle, packageId, style, MODEL, cost, kept, DIGEST_MODE);
@@ -407,7 +436,7 @@ async function releaseQueue(): Promise<Row[]> {
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : "sweep";
+    const mode = body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : "sweep";
     const out: Row[] = [];
     if (mode === "propagate_probe") {
       // Read-only check of the propagation pass against a stored package with hand-supplied corrections. Writes nothing.
@@ -418,6 +447,9 @@ serve(async (req) => {
       const items = [...chars.map((c) => ({ name: String(c.character_name), row: c })), { name: C.DOC_ITEM_NAME, row: pkg as Row }];
       const pr = await propagate(apiKey, C.buildSystemBlocks(pkg as Row, chars, style), items, [], chars, (body.corrections ?? []) as C.Correction[]);
       return new Response(JSON.stringify({ probe: true, ...pr, cost: Number(pr.cost.toFixed(4)) }), { headers: { "Content-Type": "application/json" } });
+    }
+    if (mode === "open_digest") {
+      return new Response(JSON.stringify(await openDigest(body.dry_run === true)), { headers: { "Content-Type": "application/json" } });
     }
     if (mode === "release_queue") {
       out.push(...await releaseQueue());

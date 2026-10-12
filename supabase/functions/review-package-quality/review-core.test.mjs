@@ -142,4 +142,29 @@ t("exactly the minimum run matches and one word fewer does not", () => {
 t("no customer text means nothing is blocked", () => {
   assert.ok(!C.quoteIsCustomerWording("riding about town like mad hamsters", []));
 });
+
+t("detectLanguage tells Danish from Swedish and does not disturb the other seven (ADR-0149)", () => {
+  const rep = (x, n) => Array(n).fill(x).join(" ");
+  assert.equal(C.detectLanguage(rep("Jeg har ikke selv gjort noget, og hun var der også, men hvad kunne jeg have sagt til hende", 4)), "da");
+  assert.equal(C.detectLanguage(rep("Jag har inte själv gjort något, och hon var där också, men vad kunde jag ha sagt till henne", 4)), "sv");
+  assert.equal(C.detectLanguage(rep("Ik ben niet zeker, maar wij hebben een idee en het is ook voor jullie nog belangrijk", 4)), "nl");
+  assert.equal(C.detectLanguage(rep("I think that you have the best idea and they are with us but not for this", 6)), "en");
+  assert.equal(C.detectLanguage("Jeg har ikke gjort noget."), null);
+});
+
+t("openDigestEmail lists only unverified findings at or above the threshold, groups by package, escapes html, and sends nothing when off", () => {
+  const row = (o = {}) => ({ package_id: "p1", title: "Case <One>", item_name: "Ann", field: "introduction", category: "wrong_fact", severity: "high", exact_quote: "a & b", explanation: "wrong", ...o });
+  assert.equal(C.openDigestEmail([], "high"), null);
+  assert.equal(C.openDigestEmail([row({ severity: "medium" })], "high"), null);
+  assert.equal(C.openDigestEmail([row()], "off"), null);
+  const m = C.openDigestEmail([row(), row({ severity: "medium" }), row({ package_id: "p2", title: "Two" })], "high");
+  assert.equal(m.packages, 2); assert.equal(m.findings, 2);
+  assert.ok(m.subject.startsWith("2 packages released with unresolved quality findings"));
+  assert.ok(m.html.includes("Case &lt;One&gt;")); assert.ok(m.html.includes("a &amp; b"));
+  const mm = C.openDigestEmail([row({ severity: "medium" })], "medium");
+  assert.equal(mm.packages, 1); assert.ok(mm.subject.startsWith("1 package released"));
+  const many = C.openDigestEmail(Array.from({ length: 11 }, () => row()), "high");
+  assert.ok(many.html.includes("and 3 more"));
+});
+
 console.log("customer-wording tests done");
