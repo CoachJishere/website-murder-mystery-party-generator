@@ -121,6 +121,31 @@ async function sendAlert(subject: string, body: string) {
   if (!resp.ok) console.error(`alert email failed: ${resp.status} ${(await resp.text()).slice(0, 200)}`);
 }
 
+/** ADR-0150: a second review pass AFTER release (never delays a customer). One package per call; kill switch pipeline_settings.review_second_pass = 'off'. */
+async function secondPass(only?: string, force = false): Promise<Row> {
+  if ((await setting("review_second_pass", "on")) !== "on") return { skipped: "review_second_pass off" };
+  if ((await spentToday()) >= DAILY_CAP_USD) return { skipped: "daily cost cap" };
+  const ver = C.PROMPT_VERSION + "+p2";
+  let id = only ?? null;
+  if (!id) {
+    const since = new Date(Date.now() - 12 * 3600 * 1000).toISOString();
+    const before = new Date(Date.now() - 60 * 1000).toISOString();
+    const { data: rel } = await supabase.from("mystery_packages").select("id").gte("quality_review_released_at", since).lte("quality_review_released_at", before).order("quality_review_released_at", { ascending: true }).limit(40);
+    const ids = ((rel ?? []) as { id: string }[]).map((r) => r.id);
+    if (ids.length === 0) return { skipped: "nothing released in the last 12 hours" };
+    const { data: rv } = await supabase.from("package_reviews").select("package_id,prompt_version,status").in("package_id", ids).in("prompt_version", [C.PROMPT_VERSION, ver]);
+    const rows = (rv ?? []) as { package_id: string; prompt_version: string; status: string }[];
+    const first = new Set(rows.filter((r) => r.prompt_version === C.PROMPT_VERSION && (r.status === "done" || r.status === "partial")).map((r) => r.package_id));
+    const second = new Set(rows.filter((r) => r.prompt_version === ver).map((r) => r.package_id));
+    id = ids.find((i) => first.has(i) && !second.has(i)) ?? null;
+    if (!id) return { skipped: "no package waiting for a second pass" };
+  }
+  const r = await reviewPackage(id, { version: ver, pass2: true, force, applyClasses: [] });
+  const classes = (await setting("review_auto_apply_classes", "")).split(",").map((c) => c.trim()).filter(Boolean);
+  const applied = r.skipped ? { applied: 0, reverted: 0 } : await applyOpenFindings(id, classes);
+  return { ...r, second_pass: true, applied: applied.applied, reverted: applied.reverted };
+}
+
 /** ADR-0149: one email per UTC day listing packages released in the last 26 hours that still carry unverified open findings. */
 async function openDigest(dryRun: boolean): Promise<Row> {
   const minSev = (await setting("review_open_digest_min_severity", "high")).trim().toLowerCase();
@@ -253,7 +278,8 @@ async function propagate(
   return { rows, cost, calls, candidates: cands.length, anchors };
 }
 
-async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?: boolean; applyClasses?: string[] }): Promise<Row> {
+async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?: boolean; applyClasses?: string[]; version?: string; pass2?: boolean; requirementsOnly?: boolean; remove?: string[] }): Promise<Row> {
+  const version = opts.version ?? C.PROMPT_VERSION;
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
@@ -269,11 +295,26 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
     ...chars.map((c) => ({ name: String(c.character_name), text: C.characterBlock(c, style), row: c })),
     { name: C.DOC_ITEM_NAME, text: C.packageDocsBlock(pkg as Row), row: pkg as Row },
   ];
-  if (opts.dryRun) return { package_id: packageId, style, items: items.length, system_chars: system.reduce((n, b) => n + b.text.length, 0), dry_run: true };
+  // ADR-0150: requirements coverage item (kill switch: pipeline_settings.review_requirements = 'off'); not in the second pass.
+  let reqs: C.CustomerRequirements | null = null;
+  if (!opts.pass2 && (opts.requirementsOnly || (await setting("review_requirements", "on")) === "on")) reqs = C.customerRequirements(pkg as Row);
+  const reqText = (chs: Row[]) => C.coverageBlock(reqs!, chs, style, pkg as Row);
+  if (reqs && !opts.requirementsOnly) items.push({ name: C.REQUIREMENTS_ITEM_NAME, text: reqText(chars), row: { [C.REQUIREMENTS_FIELD]: reqs.text } });
+  if (opts.requirementsOnly) {
+    // Read-only probe: runs just the coverage call (optionally with phrases removed from the character text to prove it notices) and writes nothing.
+    if (!reqs) return { package_id: packageId, skipped: "no customer requirements in master_context" };
+    const strip = (v: unknown) => { let t = typeof v === "string" ? v : ""; for (const ph of opts.remove ?? []) t = t.replace(new RegExp(ph.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), ""); return t; };
+    const chs = (opts.remove?.length ? chars.map((c) => ({ ...c, ...Object.fromEntries(C.CHARACTER_FIELDS.map((f) => [f, strip(c[f])])) })) : chars);
+    const r = await reviewItem(apiKey, system, C.REQUIREMENTS_ITEM_NAME, reqText(chs));
+    const row = { [C.REQUIREMENTS_FIELD]: reqs.text } as Row;
+    return { package_id: packageId, requirements: reqs.count, removed: opts.remove ?? [], cost_usd: Number(r.cost.toFixed(4)), secs: Math.round(r.secs), error: r.error,
+      findings: r.findings.map((f) => ({ ok: C.validateFinding(row, f).ok, severity: f.severity, quote: f.exact_quote.slice(0, 120), explanation: f.explanation })) };
+  }
+  if (opts.dryRun) return { package_id: packageId, style, items: items.length, requirements: reqs?.count ?? 0, system_chars: system.reduce((n, b) => n + b.text.length, 0), dry_run: true };
 
-  if (opts.force) await supabase.from("package_reviews").delete().eq("package_id", packageId).eq("prompt_version", C.PROMPT_VERSION);
+  if (opts.force) await supabase.from("package_reviews").delete().eq("package_id", packageId).eq("prompt_version", version);
   const { data: review, error: re } = await supabase.from("package_reviews")
-    .insert({ package_id: packageId, prompt_version: C.PROMPT_VERSION, model: MODEL, mystery_style: style }).select("id").single();
+    .insert({ package_id: packageId, prompt_version: version, model: MODEL, mystery_style: style }).select("id").single();
   if (re || !review) return { package_id: packageId, skipped: "already reviewed for this prompt version", detail: re?.message };
 
   const started = Date.now();
@@ -321,12 +362,18 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
   // ADR-0140: fact propagation (kill switch: pipeline_settings.review_propagate = 'off'). Never blocks the review: a failure only logs.
   let propagated = 0;
   try {
-    if (!partialWhy && spent < PER_PACKAGE_CAP_USD && dailySpent < DAILY_CAP_USD && (await setting("review_propagate", "on")) === "on") {
-      const pr = await propagate(apiKey, system, items, kept, chars);
+    if (!opts.pass2 && !partialWhy && spent < PER_PACKAGE_CAP_USD && dailySpent < DAILY_CAP_USD && (await setting("review_propagate", "on")) === "on") {
+      const pr = await propagate(apiKey, system, items.filter((i) => i.name !== C.REQUIREMENTS_ITEM_NAME), kept, chars);
       for (const x of pr.rows) kept.push({ review_id: review.id, package_id: packageId, ...x });
       spent += pr.cost; dailySpent += pr.cost; propagated = pr.rows.length;
     }
   } catch (e) { console.error(`propagation failed (ignored): ${(e as Error).message}`); }
+  if (opts.pass2 && kept.length > 0) {
+    // The second pass re-reads the (already corrected) text; drop anything the first pass already recorded.
+    const { data: ex } = await supabase.from("package_review_findings").select("item_name,field,exact_quote").eq("package_id", packageId);
+    const seen = new Set(((ex ?? []) as { item_name: string; field: string; exact_quote: string }[]).map((e) => `${e.item_name}|${e.field}|${e.exact_quote}`));
+    for (let i = kept.length - 1; i >= 0; i--) if (seen.has(`${kept[i].item_name}|${kept[i].field}|${kept[i].exact_quote}`)) kept.splice(i, 1);
+  }
   let inserted: { id: string; item_name: string; field: string; category: string; exact_quote: string; suggested_replacement: string; severity: string; explanation: string }[] = [];
   if (kept.length > 0) {
     const { data: ins, error: ie } = await supabase.from("package_review_findings").insert(kept).select("id,item_name,field,category,exact_quote,suggested_replacement,severity,explanation");
@@ -349,7 +396,7 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
   let apply = { applied: 0, reverted: 0 };
   const applyClasses = opts.applyClasses ?? AUTO_APPLY_CLASSES;
   if (applyClasses.length > 0 && inserted.length > 0) apply = await autoApply(packageId, pkg as Row, chars, inserted, applyClasses);
-  await sendDigest(String((pkg as Row).title ?? ""), packageId, style, inserted, spent);
+  if (!opts.pass2) await sendDigest(String((pkg as Row).title ?? ""), packageId, style, inserted, spent);
   if (DIGEST_MODE === "off" && ALERT_HIGH && inserted.some((f) => f.severity === "high")) {
     const mail = C.digestEmail(String((pkg as Row).title ?? ""), packageId, style, MODEL, spent, inserted, "summary");
     const key = Deno.env.get("RESEND_API_KEY");
@@ -436,7 +483,7 @@ async function releaseQueue(): Promise<Row[]> {
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : "sweep";
+    const mode = body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
     const out: Row[] = [];
     if (mode === "propagate_probe") {
       // Read-only check of the propagation pass against a stored package with hand-supplied corrections. Writes nothing.
@@ -447,6 +494,17 @@ serve(async (req) => {
       const items = [...chars.map((c) => ({ name: String(c.character_name), row: c })), { name: C.DOC_ITEM_NAME, row: pkg as Row }];
       const pr = await propagate(apiKey, C.buildSystemBlocks(pkg as Row, chars, style), items, [], chars, (body.corrections ?? []) as C.Correction[]);
       return new Response(JSON.stringify({ probe: true, ...pr, cost: Number(pr.cost.toFixed(4)) }), { headers: { "Content-Type": "application/json" } });
+    }
+    if (mode === "second_pass") {
+      return new Response(JSON.stringify(await secondPass(body.package_id ? String(body.package_id) : undefined, body.force === true)), { headers: { "Content-Type": "application/json" } });
+    }
+    if (mode === "apply_open") {
+      if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
+      const classes = (await setting("review_auto_apply_classes", "")).split(",").map((c) => c.trim()).filter(Boolean);
+      return new Response(JSON.stringify(await applyOpenFindings(String(body.package_id), classes)), { headers: { "Content-Type": "application/json" } });
+    }
+    if (mode === "requirements_probe") {
+      return new Response(JSON.stringify(await reviewPackage(String(body.package_id), { requirementsOnly: true, remove: Array.isArray(body.remove) ? body.remove.map(String) : [] })), { headers: { "Content-Type": "application/json" } });
     }
     if (mode === "open_digest") {
       return new Response(JSON.stringify(await openDigest(body.dry_run === true)), { headers: { "Content-Type": "application/json" } });

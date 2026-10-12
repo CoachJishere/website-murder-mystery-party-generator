@@ -20,7 +20,9 @@ export const CHARACTER_FIELDS = [
 ];
 export const DOC_FIELDS = ["game_overview", "detective_script", "evidence_cards", "materials"];
 export const DOC_ITEM_NAME = "PACKAGE DOCUMENTS";
-export const KNOWN_FIELDS = new Set([...CHARACTER_FIELDS, ...DOC_FIELDS]);
+export const REQUIREMENTS_ITEM_NAME = "REQUIREMENTS";
+export const REQUIREMENTS_FIELD = "userRequirements"; // pseudo field: the customer's list inside master_context, never written back
+export const KNOWN_FIELDS = new Set([...CHARACTER_FIELDS, ...DOC_FIELDS, REQUIREMENTS_FIELD]);
 
 export const CATEGORIES = [
   "single_generation_slip", "wrong_fact", "cross_field_contradiction", "pronoun_drift", "secret_leak", "language_slip", "other",
@@ -167,6 +169,56 @@ export function packageDocsBlock(pkg: Row): string {
     if (v) parts.push(`[${f}]\n${v}\n`);
   }
   return parts.join("\n");
+}
+
+// ---- Requirements coverage (ADR-0150) ----
+// The per-character calls cannot see an ABSENT requirement: "Daan is called Daanus all game, Kevin shouts X, Dina remembers Y" was in the
+// customer's approved concept (master_context.conversationDetailsExtraction.userRequirements) and in no character sheet, and nothing
+// noticed. One extra call per package gets the customer's list plus every character's text and reports what no guest-facing text carries.
+export type CustomerRequirements = { text: string; count: number };
+
+function findKey(o: unknown, key: string, depth = 0): unknown {
+  if (!o || typeof o !== "object" || depth > 4) return undefined;
+  if (Array.isArray(o)) return undefined;
+  const r = o as Row;
+  if (key in r) return r[key];
+  for (const v of Object.values(r)) { const f = findKey(v, key, depth + 1); if (f !== undefined) return f; }
+  return undefined;
+}
+
+/** The customer's own requirements and character quirks from master_context, one per line, or null when there are none. */
+export function customerRequirements(pkg: Row): CustomerRequirements | null {
+  const objs = parseMasterContext(pkg.master_context);
+  const lines: string[] = [];
+  for (const key of ["userRequirements", "characterDetails"]) {
+    for (const o of objs) {
+      const v = findKey(o, key);
+      if (Array.isArray(v)) { for (const x of v) if (typeof x === "string" && x.trim().length > 8) lines.push(x.trim().replace(/\s+/g, " ")); break; }
+    }
+  }
+  const uniq = [...new Set(lines)];
+  if (uniq.length === 0) return null;
+  return { text: uniq.map((l) => `- ${l}`).join("\n"), count: uniq.length };
+}
+
+const COVERAGE_BUDGET_CHARS = 380_000;
+
+/** The user message for the coverage call: the task, the customer's list, then every character sheet and the shared documents. */
+export function coverageBlock(req: CustomerRequirements, chars: Row[], style: Style, pkg: Row, budget = COVERAGE_BUDGET_CHARS): string {
+  const per = Math.max(4000, Math.floor(budget / Math.max(1, chars.length)));
+  const sheets = chars.map((c) => { const b = characterBlock(c, style); return b.length > per ? b.slice(0, per) + "\n[trimmed]" : b; }).join("\n\n=====\n\n");
+  return `TASK: REQUIREMENTS COVERAGE CHECK (this overrides the usual per-item review). Ignore everything else.\n\n` +
+    `Below is the list of things the CUSTOMER explicitly asked for (requirements and character quirks), followed by every guest-facing text of the package: all character sheets, then the shared documents.\n\n` +
+    `For each line of the customer's list decide whether the package carries it. Report ONLY a line that is NOT carried, or is carried in a way that contradicts it. Rules:\n` +
+    `- Running gags, catchphrases and quirks are carried if the right character's text uses them at least once. A quirk for a character whose sheet shows it is fine.\n` +
+    `- A scene, line or action the PLAYERS must perform (a climax line, a confession cue, a recollection, a shout when someone is accused) is carried only if the sheet of the character who performs it tells that player to do it or gives the words. The SHARED DOCUMENTS (detective script, reveal, evidence cards) are narration read by the host: a document describing that someone said or remembered something NEVER carries a line the customer wants a PLAYER to say. Example: if the list says Kevin shouts a line when Daan is accused, and no part of Kevin's own sheet contains that line or tells him to shout it, report it even if the reveal text mentions the line.\n` +
+    `- A clue the customer wants present "all game" must appear in more than one place or round to count.\n` +
+    `- Structural lines (a character must play, a headcount, a style) are carried if the package obeys them; do not report those without a concrete miss.\n` +
+    `- If a sheet ends with [trimmed], the cut part may carry a line; do not report a line that could be in a trimmed sheet.\n` +
+    `- Check the climax and solution-reveal lines FIRST and most carefully: they matter most to the customer. Then the running clues, then the quirks.\n` +
+    `- Be conservative: report only what you are confident is missing. Zero findings is fine; do not pad.\n\n` +
+    `OUTPUT: use the usual JSON. field must be exactly "${REQUIREMENTS_FIELD}". exact_quote must be the customer's line copied exactly from the list (without the leading "- ") or its most distinctive 40 to 160 characters. category: "other". severity: "high" when the missing line defines the climax, the solution reveal or a central clue, otherwise "medium". explanation: at most 30 words saying what is missing and which character's sheet should carry it. suggested_replacement: empty.\n\n` +
+    `=== CUSTOMER'S LIST ===\n${req.text}\n\n=== CHARACTER SHEETS ===\n${sheets}\n\n=== SHARED DOCUMENTS ===\n${packageDocsBlock(pkg)}`;
 }
 
 export type RawFinding = {

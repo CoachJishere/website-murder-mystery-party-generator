@@ -2,6 +2,13 @@
 
 ## 2026-10-12
 
+### Feature: the reviewer checks that the customer's requirements are carried, and re-reads each package once after release (ADR-0150); retroactive apply on delivered DA/SV/FR packages (ADR-0149 Update 1)
+- **Why:** the Dutch Tijdcapsule package had the customer's whole climax missing from every character sheet and the reviewer cannot see an absent requirement (recall 58 percent on that package).
+- **What:** (1) a requirements-coverage call inside the pre-release review (customer list from `master_context` against every sheet; high findings for climax, reveal or clue lines, medium for quirks; never auto-applied; high ones feed the ADR-0149 email). (2) A second review pass after release (cron `review-second-pass`, every 5 minutes, one package at a time, under prompt version `+p2`, deduped, applying through the language-gated path). (3) `requirements_probe` and `apply_open` modes. (4) Applied 40 open findings on the delivered Danish (31), Swedish (7) and French (2) packages, 0 reverted, backups kept.
+- **Evidence:** positive control flagged all three stripped climax lines as high after one prompt fix; negative control flagged only 6 genuinely absent customer quirks on the Dutch package (confirmed in the database); the second pass found 3 new genuine defects on a hand-swept package. Spend about 0.82 USD.
+- **Cost going forward:** about 0.15 USD (coverage) plus about 0.3 USD (second pass) per paid package. Kill switches: `review_requirements` and `review_second_pass` set to `off`; `cron.unschedule('review-second-pass')`.
+- **Not done:** carrying the customer's requirements into every Child call at generation (the prevention fix, a Make change); evidence cards never naming the culprit (a Make guardrail).
+
 ### Feature: daily check for packages released with unresolved reviewer findings; reviewer auto-apply widened (ADR-0149)
 - **Why:** the Dutch "Tijdcapsule Klas '96" package was complete and gate-clean but carried more than ten defects; the reviewer had found 11 and left 5 open with no signal. 10 of 14 packages since 2026-10-04 were released with open findings (22 high and 216 medium open overall).
 - **What:** `review-package-quality` gains `mode: open_digest` (cron `review-open-findings-digest`, 07:30 UTC): one email per day, only if a package released in the last 26 hours has an unverified open finding at or above `review_open_digest_min_severity` (default high). Auto-apply now also covers `language_slip`, and Danish and Swedish (the language detector learned both; existing detection unchanged on all 124 packages since 08-01).

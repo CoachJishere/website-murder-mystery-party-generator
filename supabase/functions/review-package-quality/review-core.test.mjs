@@ -167,4 +167,24 @@ t("openDigestEmail lists only unverified findings at or above the threshold, gro
   assert.ok(many.html.includes("and 3 more"));
 });
 
+
+t("customerRequirements reads userRequirements and characterDetails from the second JSON object, and returns null when absent (ADR-0150)", () => {
+  const first = { victimProfile: { name: "Bas" }, conversationDetailsExtraction: { setting: "x", characterDetails: ["Daan: has a dog called Struisje and is sometimes called Daanus"], userRequirements: ["Dina plays as a full character, not optional.", "Kevin shouts: 'Hij is dus écht een gladjanus!' when Daan is accused.", "short"] } };
+  const pkgR = { master_context: JSON.stringify(first) + "\n" + JSON.stringify({ evidenceProgression: {} }) };
+  const r = C.customerRequirements(pkgR);
+  assert.equal(r.count, 3); assert.ok(r.text.includes("- Kevin shouts")); assert.ok(r.text.includes("- Daan: has a dog")); assert.ok(!r.text.includes("short"));
+  assert.equal(C.customerRequirements({ master_context: JSON.stringify({ victimProfile: { name: "x" } }) }), null);
+  assert.equal(C.customerRequirements({ master_context: "" }), null);
+});
+
+t("coverageBlock carries the list, every sheet, the documents and the trimming note; the pseudo field validates against the list", () => {
+  const req = { text: "- Kevin shouts the gladjanus line", count: 1 };
+  const chs = [{ character_name: "Kevin", introduction: "Hoi allemaal" }, { character_name: "Dina", introduction: "x".repeat(9000) }];
+  const b = C.coverageBlock(req, chs, "detective", { detective_script: "The reveal." }, 6000);
+  assert.ok(b.includes("REQUIREMENTS COVERAGE CHECK")); assert.ok(b.includes("- Kevin shouts the gladjanus line")); assert.ok(b.includes("CHARACTER UNDER REVIEW: Dina")); assert.ok(b.includes("[trimmed]")); assert.ok(b.includes("The reveal."));
+  const row = { [C.REQUIREMENTS_FIELD]: req.text };
+  assert.ok(C.validateFinding(row, { field: C.REQUIREMENTS_FIELD, exact_quote: "Kevin shouts the gladjanus line", category: "other", severity: "high", explanation: "", suggested_replacement: "" }).ok);
+  assert.ok(!C.validateFinding(row, { field: C.REQUIREMENTS_FIELD, exact_quote: "Kevin whispers", category: "other", severity: "high", explanation: "", suggested_replacement: "" }).ok);
+});
+
 console.log("customer-wording tests done");

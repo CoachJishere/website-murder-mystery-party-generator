@@ -1,6 +1,6 @@
 # ADR-0149: A daily check for packages released with unresolved reviewer findings, and wider reviewer auto-apply
 
-**Status:** Accepted (shipped 2026-10-12: `review-package-quality` deployed, settings changed, cron job 19 created; the first scheduled run is 2026-10-13 07:30 UTC)
+**Status:** Accepted (shipped and extended 2026-10-12, see Update 1: `review-package-quality` deployed, settings changed, cron job 19 created; the first scheduled run is 2026-10-13 07:30 UTC)
 **Date:** 2026-10-12
 **Related:** ADR-0136 (the reviewer, Addendum 8 and the North Star alerting rule), ADR-0138 (review before release), ADR-0143 (non-English auto-apply), ADR-0103 Addendum 89 (the sweep that prompted this)
 
@@ -46,3 +46,7 @@ Jonathan asked three questions: why no generation note, why a sweep still finds 
 ## Key files
 
 `supabase/functions/review-package-quality/index.ts` (`openDigest`, `mode: open_digest`), `review-core.ts` (`openDigestEmail`, da and sv stopwords), `review-core.test.mjs`, `supabase/migrations/20261012180000_review_open_findings_digest_and_wider_autoapply.sql`.
+
+## Update 1 (2026-10-12): retroactive apply on delivered packages
+
+Jonathan approved applying the open findings on the delivered Danish, Swedish and French packages. Backups of every text field of all three packages and their findings were taken first (`temp-files/backup-retro-apply-2026-10-12.json`, gitignored local copy), then `mode: apply_open` ran per package through the guarded path (language gate, sanity check, customer-wording guard, revert if a new defect appears): Champagnens Skygge (DA) 31 applied, Sammanfattning: Murder Under Golden Star (SV) 7 applied, La Malédiction Du Rang Du Vieux (FR) 2 applied, 0 reverted. The gate and the meta-leak, pointform-language and missing-header detectors are clean on all three. 13 applied replacements were read in context (all genuine grammar, gender and tense fixes; one removed clue recaps from a Danish reveal that appeared on no evidence card). Left open as outside the auto-apply classes or failing the sanity check: 7 pronoun_drift, 4 secret_leak, 1 slip.
