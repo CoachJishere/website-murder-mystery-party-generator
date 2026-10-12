@@ -8,6 +8,7 @@
 - **Dutch or wider:** mostly wider. English scaffolding in the detective script and card headings is by design (the card printer parses it); the card-intro language slip also appears in an Italian package; the culprit-naming card hits 3 English packages; the arrest line is the pre-Parent77 flaw; the missing climax is not language-related.
 - **Not done:** no detector built (card-intro slip is low impact; customer-required-phrase check is fuzzy, first occurrence); the garbled English handwriting in the Round 4 evidence image was left (needs a paid regeneration); no customer outreach.
 - **Measurement:** reviewer 11 findings, all real (6 auto-applied, 5 open then fixed by hand), 8 misses, recall 58 percent; recorded in `package_review_findings`, `package_review_misses`, `package_review_sweeps` and `docs/autonomy-scoreboard.md`.
+- **Update (same day):** all three evidence images (not only Round 4) carried garbled English text; regenerated with text-free prompts via Replicate Flux (about 0.32 USD for 8 images, approved). The failed Pages deploy for the previous commit was a transient npm 404; a fresh deploy run was started.
 
 ## 2026-10-08
 
