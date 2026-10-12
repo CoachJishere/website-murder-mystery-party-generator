@@ -1900,3 +1900,39 @@ The reviewer found about 13 things I had not (time-reference slips "buried a hus
 
 **Update 3 (2026-10-08, follow-ups shipped, ADR-0148).** Jonathan chose the database-side guards over a Make-side stop (Parent82 declined, reasons in ADR-0148). Shipped: the gate check `missing_core_content.master_context_empty` (new packages only, 0 existing packages newly flagged) and the recovery guard in `notify-generation-issue` v42 (no character re-fires without a usable `master_context`, one 0 USD log row, immediate alert). The 10 futile re-fires on this package (1.50 USD logged) are the case it prevents. Customer note sent by Jonathan the same day. Sweep checklist impact: step 3 now also expects `missing_core_content.master_context_empty` to stay empty.
 
+## Addendum 89 (2026-10-12): New-Purchase sweep - "Compleet Overzicht - de Tijdcapsule Van Klas '96" (NL, detective style, 7 characters, no accomplice) - found unswept six days after delivery; the customer's explicit climax (the "Daanus" running clue, "Hij is dus écht een gladjanus!", Dina's stairs memory) was in no character sheet
+
+**Trigger.** Jonathan pasted the purchase notification on 2026-10-12 to confirm an older order "was indeed complete" (no generation alert had ever fired). Conversation `f2dd8b07-d46f-4fb7-9778-70be4ff738fc`, package `01c497a2-e20a-48f6-8b9a-e06e54b56ebe`, purchased 2026-10-06 20:03 UTC, completed and ready email sent 20:16:52 UTC (reviewer 20:14:33 to 20:16:52, about 2 minutes). First live Dutch package since Child53 (language pack) was imported.
+
+**Complete: yes.** `generation_status` completed; 7 of 7 characters with every detective-style field; `detective_script`, `evidence_cards`, `materials`, `game_overview`, `master_context` (59k) and the three evidence images present; `package_completion_blocking_defects` NULL. `host_guide` NULL and `final_innocent`/`reveal_confession_*` NULL are normal for detective packages (checked against every paid detective package since 09-25). No alert fired because nothing failed, so the order had simply not been swept. Generated BEFORE Parent77/Child58 (imported 20:35 UTC) and Parent79 (20:50 UTC) and before Parent80, so it carries none of their fixes.
+
+**Reviewer (read first, before any edit, so recall is valid):** 11 findings, 6 auto-applied (all read correctly in context) and 5 left open. All 11 real (verdicts recorded). Misses by the reviewer: 8 (below). Recall 11 of 19 (58 percent).
+
+**Defects fixed (27 exact-match replaces in one transaction, each asserted to hit exactly one row; pointform twins kept in sync):**
+1. Round 4 evidence card named the murderer ("nog aan Daan moest stellen", ADR-0035 violation) and contradicted the timeline (Bas had already asked): now "aan iemand heeft gesteld over de camera en de la". The advisory `evidence_culprit_spoiler` had hit it; the reviewer flagged the same quote only as a wrong fact.
+2. Detective script Round 2 cued the Round 2 card after describing Round 1 clues (card is Mila's school-newspaper clipping): clipping added before the cue. Round 3 cued the Round 3 card after Bas's notes (card is the darkroom developing slip, the notes are the Round 4 card): slip described before the cue. The Round 3 half was a reviewer miss.
+3. Detective voice: formal "u" in the opening changed to "jullie"; "of [Google NotebookLM]" and "pairs met één forensische afbeelding" (mixed-language slips) corrected; the reveal's "Het was zijn bijnaam" (ambiguous, reads as the father's) made explicit; the arrest line "voor de aanval op Bas" changed to "voor de aanval van drie dagen geleden" (murderer and victim in one sentence, expected because the package predates Parent77).
+4. Tom's `round3_script` and `final_statement` named "Daan en Anna" (he cannot know; hints at the solution); Mila's `round2_script` used the Round 3 notes finding (reviewer finding) and her `round2_questions` said Tom "gelegd" the photos (he found them); Anna's rumor "neerlegden" and question "met de foto's" (same fact); Anna's introduction had a stray combining accent ("hé́l"); Anna's `accusations_pointform` was empty (hand-written).
+5. **Missing customer requirements (Jonathan approved the authored additions):** the master context lists as user requirements that Daan is called "Daanus" occasionally all game, that someone shouts "Het is dus Daan!" and Kevin answers "Hij is dus écht een gladjanus!", that Dina recalls her father saying "Die gladjanus..." from the stairs, and that a friend confirms the nickname. "gladjanus", "Daanus" and "trap" appeared in zero character fields; only the detective reveal mentioned them, as if already said. Added one italic "Klimaxmoment" line (and pointform bullet) to the accusations of Kevin, Dina and Bram (Bram's worded so his sheet does not reveal the culprit), and "Daanus," as a vocative in six Round 3/4 questions (Tom x2, Bram x2, Kevin, Mila).
+
+**Left alone (decisions):** (a) the English scaffolding in `detective_script` and `evidence_cards` headings: it is by design in every non-English detective package and the card printer parses the English headings (`evidenceCardUtils`, ADR-0035/0129); not translated. (b) The Round 4 evidence image carries garbled English handwriting ("Monday Morning routing; D chame Tom 3451!"): an image-model text artefact on an English prompt; a fix is a paid regeneration, not asked for. (c) 6 reviewer-applied fixes accepted as they stand.
+
+**Dutch or wider? (Jonathan's question).** Mostly wider.
+| Item | Verdict | Evidence |
+|---|---|---|
+| English scaffolding in detective script and card headings | wider, by design | present in nearly every non-English detective package since 08-01 (ES, FR, IT, DE, PT) |
+| Mixed-language slip in the card intro sentence | wider | the Italian "I Dodici Sigilli Di Villa Blackwood" (09-30) has "Each card pairs con un'immagine forense" |
+| Round 4 card names the murderer | wider | the detector hits 3 English packages too (Whitfield 09-21, Ashworth 09-06, Gold 08-14); 4 hits in about 75 detective packages; single-name murderers match on the first name |
+| Arrest line with murderer and victim | wider, timing | all 10-06 packages (EN too) have it; from 10-09 the line is generic ("for the crime committed in this house tonight"), so Parent77 held (a) |
+| Formal "u" in the detective voice | unclear | one instance; the earlier cases (Addendum 13, 56) were German and Spanish |
+| `accusations_pointform` empty | wider, normal | 398 characters in 54 packages since 09-01 |
+| Character headers and register | held | all headers Dutch and canonical, no formal "u" in any character (hand regex; `lang_audit.py` has no Dutch register pattern) |
+| Customer-required climax missing from the characters | wider | not language-related; first confirmed instance |
+
+**Decisions on new detectors (ADR-0103 Addendum 38 test: cheap and deterministic, and severe and obvious?).** (1) Card-intro-sentence slip (`Each card pairs` not followed by `with one forensic image`): cheap, but low impact (a host-facing display note); deferred, 2 occurrences, no detector. (2) Customer-required phrases absent from every character: needs a parse of the approved concept, so fuzzy; severity high for the customer; first occurrence, so stays manual; a repeat should trigger a look at an "unresolved user requirements" check in the reviewer or Parent. Not built.
+
+**Misses logged** to `package_review_misses` (8 rows) and a `package_review_sweeps` row written; scoreboard row added.
+
+**Post-import watch items touched.** Language pack (Child53/ADR-0135): held for characters on the first Dutch package. Detective-style Parent73/Child51 items not evaluated (package predates Parent77/Child58).
+
+**Not done / open for Jonathan.** The customer received this on 10-06 and may have seen the Round 4 card spoiler and the missing climax; no outreach made (nothing in the data says they complained). The vault changelog is missing the 2026-10-08 entries (not touched here).

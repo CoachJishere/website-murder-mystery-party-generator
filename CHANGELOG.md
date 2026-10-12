@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-12
+
+### Fix: "Compleet Overzicht - de Tijdcapsule Van Klas '96" (NL detective) swept six days after delivery: spoiler card, mismatched cues, and the customer's climax written into the characters (ADR-0103 Addendum 89)
+- **Why:** Jonathan asked whether an older order with no generation alert was complete. It was (7 of 7 characters, gate clean, released 2026-10-06 20:16 UTC), but it had never been swept, and it predates Parent77/Child58/Parent79.
+- **What (27 exact-match edits, pointform twins in sync):** Round 4 evidence card no longer names the murderer; detective-script Round 2/3 cues now match the Round 2/3 cards; "u" to "jullie", two mixed-language slips, an ambiguous nickname line and the arrest line fixed; Tom no longer hints at Daan and Anna; Mila/Anna photo-fact errors and a stray combining accent fixed; Anna's empty accusations pointform filled. Added the customer's required climax, which was in no character sheet: a "Klimaxmoment" line for Kevin, Dina and Bram ("Hij is dus écht een gladjanus!", Dina's stairs memory, the nickname confirmation) and "Daanus" in six Round 3/4 questions.
+- **Dutch or wider:** mostly wider. English scaffolding in the detective script and card headings is by design (the card printer parses it); the card-intro language slip also appears in an Italian package; the culprit-naming card hits 3 English packages; the arrest line is the pre-Parent77 flaw; the missing climax is not language-related.
+- **Not done:** no detector built (card-intro slip is low impact; customer-required-phrase check is fuzzy, first occurrence); the garbled English handwriting in the Round 4 evidence image was left (needs a paid regeneration); no customer outreach.
+- **Measurement:** reviewer 11 findings, all real (6 auto-applied, 5 open then fixed by hand), 8 misses, recall 58 percent; recorded in `package_review_findings`, `package_review_misses`, `package_review_sweeps` and `docs/autonomy-scoreboard.md`.
+
 ## 2026-10-08
 
 ### Improvement: an empty master_context now holds the gate, and character re-fires are not sent without one (ADR-0148)
