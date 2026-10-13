@@ -22,7 +22,7 @@ function design({ murderer = "Simone Delacroix", accomplice = "Marcus Finch", my
     ...(mysteryType ? { mysteryType } : {}),
     murdererSelection: { character: murderer, reasoning: "Simone alone served the brandy and had the nerve to use the moment of the toast." },
     accompliceSelection: accomplice ? { character: accomplice, relationshipToMurderer: "Old friends." } : undefined,
-    relationshipMatrix: ["| | " + CAST.join(" | ") + " |", "|" + "---|".repeat(CAST.length + 1), ...CAST.map((c) => `| **${c}** | ` + CAST.map((d) => (d === c ? "—" : "Neutral")).join(" | ") + " |")].join("\n"),
+    relationshipMatrix: ["| | " + CAST.join(" | ") + " |", "|" + "---|".repeat(CAST.length + 1), ...CAST.map((c) => `| **${c}** | ` + CAST.map((d) => (d === c ? "-" : "Neutral")).join(" | ") + " |")].join("\n"),
     victimProfile: {
       name: "Reginald Ashworth", role: "The railway magnate who owns the Silver Train and everyone's debts", powerSource: "Reginald held old debts over half the dining car and enjoyed it.",
       personality: "Jovial in public, ruthless in private, and never forgetful of a slight.", activitiesAndSchemes: `${murderer} was secretly forced to carry out his schemes.`,

@@ -14,7 +14,7 @@ const pad = (who) => `${who} was wronged by Reginald in a way only this characte
 const mc = (over = {}) => JSON.stringify({
   mysteryStyle: "detective", ...over.p1,
   murdererSelection: { character: "Simone Delacroix" },
-  relationshipMatrix: "| | a |\n|---|---|\n| a | — |",
+  relationshipMatrix: "| | a |\n|---|---|\n| a | - |",
   victimProfile: { name: "Reginald Ashworth", role: "The magnate of the Silver Train and everyone's debts", powerSource: "He held the debts of half the dining car and enjoyed it.", personality: "Jovial in public, ruthless in private, forgetful of nothing.", wrongedEachCharacter: CAST.map((c) => ({ character: c, howVictimWrongedThem: pad(c), motiveStrength: "x", isMurderer: c === "Simone Delacroix" ? "true" : "false" })) },
   murderMethod: { weapon: "Poison in a brandy glass served during the first toast in the dining car.", execution: "SECRET-EXECUTION-TEXT" },
   conversationDetailsExtraction: { characterSpecificDetails: CAST.map((c) => ({ character: c, backgroundDetails: pad(c), threatsOrPressures: pad(c) })) },
