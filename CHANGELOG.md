@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Docs: ADR-0153 Phase 0 run, prompt "accretion" hypothesis UNSUPPORTED (rule registry and findings, nothing changed in production)
+- **What:** read-only analysis of the Parent84 and Child62 prompts against all 142 saved blueprint versions, `package_review_findings`, `auto_remediation_log` and the SQL detectors. Added `docs/adr/0153-phase0/` (`rule-registry.csv` with 1,300 rows over 25 modules, `findings.md`, `tools/`) and a "Phase 0 result" section in ADR-0153.
+- **Result:** 11.3% of rule rows have a deterministic detector or heal (64.9% have no check); the failing rules do not sit at the end of their prompts (closing arrest rule second to last in every version, dangling-quote rule duplicated near the end and still failing on 13 of 36 packages); prompt length against finding rate is +0.50 overall and -0.55 without the cross-checking categories (n = 8). The patterns that are real are instruction conflicts (JSON closing-quote rule, English schema headers), solution visibility in detective innocents, and the 2026-10-06 model change on the materials module.
+- **Decision:** Phases 1 to 3 on hold; candidates recorded in `findings.md` (older Image Prompts copy in R1 to R3, Child JSON-rule wording drift, quote conflict in the JSON rules, redacted master_context for innocents), none fixed. No paid call, database write, blueprint edit or Make import.
+
 ### Fix: the two slowest auto-remediate detectors scan 14 days instead of 30 (ADR-0103 Addendum 87 Update 6)
 - **Why:** six days after Update 5 the logs still showed 11 meta-text-leak statement timeouts in 24 h (300 runs, 0 fatals), 8 recovered by the retry and 3 skipped runs (about 3 alert emails a day, one of them pointform-language-mismatch). The guard keeps the run alive; this reduces how often it is needed.
 - **What:** `auto-remediate-packages` v28: `list_packages_with_meta_text_leak` and `list_packages_with_pointform_language_mismatch` use at most 14 days (all other detectors, the held run's 7 days and explicit `backfill_days` unchanged). Test added (11 checks).

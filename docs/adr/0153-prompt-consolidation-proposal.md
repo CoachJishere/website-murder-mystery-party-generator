@@ -1,6 +1,6 @@
 # ADR-0153: Prompt consolidation - stop fixing recurring defects by adding another rule to the end of a prompt (PROPOSED)
 
-**Status:** Proposed (nothing built; Phase 0 is free and can start on a yes)
+**Status:** Proposed. Phase 0 ran 2026-10-13: hypothesis UNSUPPORTED, Phases 1 to 4 on hold (see "Phase 0 result" below)
 **Date:** 2026-10-13
 **Related:** ADR-0103 Addendum 91 (the trigger), ADR-0142 (prompt prevention), ADR-0131 (quality-check machinery), ADR-0151 (Parent83 guards)
 
@@ -64,6 +64,16 @@ The pattern in that list is not "prompts are bad". It is that rules which could 
 ## Discussion
 
 Jonathan's question was whether the materials bug showed that the scenario is "too dense". Reading the module showed it is not (2,700 characters, one job), which is the honest reason this ADR does not start from "the prompts are too big". The accretion argument is stronger for the Master Doc and Child prompts, where a rule added in October sits under 20 to 30 earlier emphatic ones. The proposal is deliberately falsifiable: Phase 0 either finds the pattern or stops the project cheaply. The alternative Jonathan offered, splitting prompts into more scenarios, is kept as a targeted tool for the overloaded modules rather than a blanket change.
+
+## Phase 0 result (2026-10-13)
+
+**Verdict: HYPOTHESIS UNSUPPORTED.** Full analysis in `docs/adr/0153-phase0/findings.md`; rule registry in `docs/adr/0153-phase0/rule-registry.csv` (1,300 rows, 25 modules; scripts in `tools/`). Read-only: no paid call, no database write, no blueprint change.
+
+- **Coverage:** 77 of 684 directive rule rows (11.3%) have a deterministic detector or heal; 85 more are partly covered; 77 are reviewer-only; 444 (64.9%) have no check. By unique rule: 21 of 354 (5.9%).
+- **Position:** the closing-arrest rule that failed under Parent71 and Parent73 was second to last in every version; the dangling-quote rule exists twice (position 16 to 18 and position 3 to 7 from the end) and still needed the strip heal on 13 of 36 packages since Child44; the materials prompt is 2,687 characters. No positional pattern. New rules added since 2026-08-15 landed in the last 3 positions only 29% of the time (Child rules are inserted among related bullets, not appended).
+- **Length:** rank correlation of Child prompt length with findings per field is +0.50 overall and -0.55 without the cross-checking categories (n = 8 calls; reviewer data covers 10 days and 25 packages). Inconclusive, leaning no.
+- **What the data points to instead:** (1) a later instruction or literal template contradicting an earlier rule (JSON "verify the closing quote on the last field" against the stray-quote rule; English schema headers against "translate the headers"); (2) calls that hold the solution and are told not to use it (secret_leak 26 of 93 in the detective Round Scripts call, 3 of 39 in the slip Innocent call); (3) a model and thinking change on 2026-10-06 for the materials module with no prompt edit before the failures; (4) half of the heal log is missing or empty character rows, and 44.6% of reviewer findings are single slips no rule targets.
+- **Decision:** do not start Phase 1 to 3 on the accretion argument. Recorded candidates (not fixed): Image Prompts R1 to R3 are an older copy of R0; Child 4xx and 5xx JSON rules differ in wording; the quote conflict in the JSON rules and the 409 footer; a redacted master_context for innocent and rumor calls. Phase 4 (registry entry for every new prompt rule) stays a cheap, optional discipline. Dedupe remains available as a pure maintenance decision. A causal test needs a paid A/B (about 6 USD, not run).
 
 ## Key files
 
