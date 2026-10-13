@@ -7,9 +7,9 @@
 // How it stays cheap: for each character's secret, retrieve DETERMINISTICALLY the few sentences in OTHER sheets that mention the owner and
 // share rare words with the secret, then ask the model one small question per owner about those sentences only.
 
-export type LeakSheet = { name: string; secret: string; texts: { field: string; text: string }[] };
+export type LeakSheet = { name: string; secret: string; texts: { field: string; text: string }[]; open?: string };
 export type LeakHit = { sheet: string; field: string; sentence: string; overlap: string[]; mentionsOwner: boolean };
-export type LeakCandidates = { owner: string; secret: string; hits: LeakHit[] };
+export type LeakCandidates = { owner: string; secret: string; open: string; hits: LeakHit[] };
 
 const TITLES = new Set(["dr", "fru", "hr", "herr", "greve", "kaptajn", "baronesse", "officer", "konsul", "lady", "lord", "sir", "mr", "mrs", "miss", "ms", "captain", "count", "baron", "countess", "doctor", "professor", "madame", "monsieur", "señor", "señora", "signor", "signora", "herr", "frau", "kapitän", "graf", "gräfin", "baron", "mevrouw", "meneer", "kapten", "greve"]);
 const STOP = new Set<string>(); // language neutral: rarity (document frequency) does the work, not a stop list
@@ -68,22 +68,22 @@ export function leakCandidates(sheets: LeakSheet[], opts: { maxPerOwner?: number
     }
     hits.sort((a, b) => Number(b.mentionsOwner) - Number(a.mentionsOwner) || b.overlap.length - a.overlap.length);
     const kept = hits.slice(0, Math.min(maxPer, Math.max(0, maxTotal - total)));
-    if (kept.length) { out.push({ owner: owner.name, secret: owner.secret, hits: kept }); total += kept.length; }
+    if (kept.length) { out.push({ owner: owner.name, secret: owner.secret, open: (owner.open ?? "").slice(0, 3600), hits: kept }); total += kept.length; }
   }
   return out;
 }
 
 export const LEAK_INSTRUCTIONS = [
-  "You check a murder mystery party game for SECRET LEAKS across character sheets. Each guest reads only their own sheet, so a secret that one character holds must not be stated in another character's sheet.",
-  "You get ONE character's hidden secret and a numbered list of sentences taken from OTHER characters' sheets. For each sentence decide whether it STATES the secret, or a specific hidden part of it, as fact or as a specific rumour that a guest reading it would then know.",
-  "It is a leak when the sentence reveals the hidden fact (who did what, owes what, hides what, is secretly paying, is secretly a journalist and so on) even in other words.",
-  "It is NOT a leak when: the sentence only expresses vague suspicion or asks a question without the fact; it repeats something the owner says openly in their own public introduction or rumours; it is about a different fact that merely shares words; or the speaker is the owner.",
-  "Report only clear leaks. For each one give: field = the sheet and field written exactly as 'SHEET NAME | field' from the list; exact_quote = the sentence copied exactly, as it appears; category = secret_leak; severity high if it reveals the core of the secret, otherwise medium; explanation = one sentence saying which hidden fact is stated; suggested_replacement = the same sentence rewritten so it keeps its role (a suspicion or a pointer to the person) without stating the hidden fact, in the same language and voice. If nothing is a clear leak return an empty list.",
+  "You check a murder mystery party game for SECRET LEAKS across character sheets. Each guest reads only their own sheet, so the DEEPEST hidden fact of one character's secret must not be stated in another character's sheet.",
+  "You get ONE character's hidden secret, the text that character says OPENLY (their introduction and honest scripts, which every guest hears), and a numbered list of sentences from OTHER characters' sheets.",
+  "Think first about what the secret's core is: the one fact the owner most wants hidden and that would ruin them if known (usually what the 'why this matters' part says is at stake). Surface facts, rumours the owner spreads or admits themselves, and anything the OPEN text already says are public and NEVER a leak.",
+  "A sentence is a leak ONLY when it states the core hidden fact (or a specific hidden detail of it that is not in the open text) as established fact, and the speaker has no stated way of knowing it. Rumour sections are meant to carry gossip, so a rumour is a leak only if it states the core fact as certain, not a hint, question or suspicion. Relationship descriptions may state what the two characters witnessed together or were told; that is not a leak. A character the secret itself involves may know it.",
+  "Be conservative: when in doubt, it is not a leak. Report at most the clear cases. For each give: field = 'SHEET NAME | field' written exactly as in the list; exact_quote = the sentence copied exactly; category = secret_leak; severity = high only if it states the core fact, otherwise medium; explanation = one sentence naming the hidden core fact and why the open text does not already say it; suggested_replacement = the same sentence rewritten to keep its role (a pointer, suspicion or question about the person) without stating the hidden fact, in the same language and voice. If nothing is a clear leak return an empty list.",
 ].join("\n");
 
 export function leakPromptText(c: LeakCandidates): string {
   const lines = c.hits.map((h, i) => `${i + 1}. [${h.sheet} | ${h.field}] ${h.sentence}`);
-  return `OWNER OF THE SECRET: ${c.owner}\nTHE SECRET (hidden from everyone else):\n${c.secret.trim()}\n\nSENTENCES FROM OTHER SHEETS:\n${lines.join("\n")}`;
+  return `OWNER OF THE SECRET: ${c.owner}\nTHE SECRET (hidden from everyone else):\n${c.secret.trim()}\n\nWHAT THE OWNER SAYS OPENLY (public, not secret):\n${c.open.trim() || "(nothing supplied)"}\n\nSENTENCES FROM OTHER SHEETS:\n${lines.join("\n")}`;
 }
 
 /** Map a model finding back to the sheet and field it points at, using the sentence it quoted. null when it quotes nothing we sent. */

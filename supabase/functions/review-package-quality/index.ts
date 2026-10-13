@@ -587,6 +587,7 @@ async function leakProbe(packageId: string, opts: { dryRun?: boolean; write?: bo
   const sheets: LP.LeakSheet[] = chars.map((c) => ({
     name: String(c.character_name), secret: typeof c.secret === "string" ? c.secret : "",
     texts: LC.CONFORM_FIELDS.filter((f) => f !== "secret" && typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
+    open: ["introduction", "round2_innocent", "round3_innocent", "round4_innocent", "final_innocent"].map((f) => (typeof c[f] === "string" ? String(c[f]) : "")).filter(Boolean).join("\n\n"),
   }));
   const cands = LP.leakCandidates(sheets);
   const sentences = cands.reduce((n, c) => n + c.hits.length, 0);

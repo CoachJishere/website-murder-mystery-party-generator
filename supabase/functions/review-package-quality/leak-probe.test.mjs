@@ -59,14 +59,14 @@ t("caps: per owner and in total", () => {
 t("prompt text lists the secret and numbered sentences; resolveFinding maps a quote back to the sheet", () => {
   const c = P.leakCandidates(sheets).find((x) => x.owner === "Ingrid Castenskiold");
   const txt = P.leakPromptText(c);
-  assert.ok(txt.includes("THE SECRET") && txt.includes("1. [") && txt.includes("hendes mor stille og roligt betaler"));
+  assert.ok(txt.includes("THE SECRET") && txt.includes("SAYS OPENLY") && txt.includes("1. [") && txt.includes("hendes mor stille og roligt betaler"));
   const r = P.resolveFinding(c, { field: "x", exact_quote: "Se på Ingrid, hvis gæld hendes mor stille og roligt betaler." });
   assert.deepEqual(r, { sheet: "Johannes 'Jazz-Jo' Møller", field: "round2_accomplice" });
   assert.equal(P.resolveFinding(c, { field: "x", exact_quote: "noget helt andet" }), null);
 });
 
-t("instructions say report only clear leaks and ask for a rewrite in the same language", () => {
-  assert.ok(P.LEAK_INSTRUCTIONS.includes("Report only clear leaks") && P.LEAK_INSTRUCTIONS.includes("same language"));
+t("instructions are conservative, treat rumours and open text as public, and ask for a rewrite in the same language", () => {
+  assert.ok(P.LEAK_INSTRUCTIONS.includes("when in doubt, it is not a leak") && P.LEAK_INSTRUCTIONS.includes("OPEN") && P.LEAK_INSTRUCTIONS.includes("Rumour sections") && P.LEAK_INSTRUCTIONS.includes("same language"));
 });
 
 console.log("leak-probe tests passed");
