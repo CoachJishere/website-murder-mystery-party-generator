@@ -2,6 +2,10 @@
 
 ## 2026-10-13
 
+### Fix: blog prerender retries a page that hits a transient statement timeout
+- **Why:** the "Deploy to GitHub Pages" run for bb045e2 failed in `scripts/prerender-blog.mjs` with Postgres `57014` (statement timeout) while fetching blog posts, about 55 s in. `SUPABASE_SERVICE_KEY` is wired in, so this was database contention, not a missing key; the next two pushes deployed fine.
+- **What:** each 100-row page is retried up to 4 times with 5/10/15 s backoff before the build fails. A persistent error still fails the deploy.
+
 ### Improvement: host guide now tells hosts of slip-style games they can also play a suspect (ADR-0157)
 - **Why:** a paying customer (Dead Man's Saddle) wanted to host and play a character without learning the killer or the scripts; the guide said hosts do NOT participate as a suspect in character-based games and told every host to skim all secrets, although slip-style narration never names the culprit.
 - **What:** for slip style only, a new block "Playing a suspect yourself?" after Option 2 (take a character page, draw a slip, read the narration, skip other pages, shuffle slips unseen), a character-based checklist item 2 that says to skip other secrets when playing, and Option 1's note reworded. 10 new and 2 reworded keys in all 13 locales (translated by hand, no paid API); detective style is unchanged (its script names the murderer). Typecheck error count unchanged (959 before and after, all pre-existing), eslint clean, rendered output checked for slip murder/intrigue, detective, German and Japanese.
