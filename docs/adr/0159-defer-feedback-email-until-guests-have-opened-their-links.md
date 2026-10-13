@@ -18,7 +18,7 @@ Data on 2026-10-13 (weekly SEO digest follow-up):
 ## Decision
 In `send-followup-emails`, before sending a `how_did_it_go` email:
 - If `conversations.party_detected_at` is set, send as before.
-- Otherwise, count distinct characters whose link has ever been opened. If that count is below `max(3, ceil(player_count / 2))` (the ADR-0128 threshold, `player_count` defaulting to 6) and the row is younger than 49 days, push `scheduled_for` out by 14 days and set `skipped_reason = 'deferred_guests_not_opened'`. The status stays `pending`, so the party-cluster detector (which needs `scheduled_for > now + 16h`) can still pull it forward later.
+- Otherwise, count distinct characters whose link has ever been opened. If that count is below `max(3, ceil(player_count / 2))` (the ADR-0128 threshold, `player_count` defaulting to 6) and the row is younger than 90 days, push `scheduled_for` out by 14 days and set `skipped_reason = 'deferred_guests_not_opened'`. The status stays `pending`, so the party-cluster detector (which needs `scheduled_for > now + 16h`) can still pull it forward later.
 - Update (same day): there is no send-anyway cap. At 90 days from generation with the threshold still unmet the row is marked `skipped` (`no_party_assumed_after_90_days`) and no email is sent. Jonathan: "after something like 90 days assume that the party isn't happening."
 - A sent row clears `skipped_reason`.
 

@@ -9,9 +9,9 @@
 
 ### Feature: "how did it go" email waits until guests have opened their links (ADR-0159)
 - **Why:** the +21 day email can land before the party (The Masque Of Shadows got it on day 21 and was played on day 62); Jonathan chose to hold off rather than ask early.
-- **What:** `send-followup-emails` now defers the email by 14 days (cap day 49) unless a party was detected or at least `max(3, ceil(players/2))` distinct character links have been opened. Deferred rows stay `pending` with `skipped_reason = 'deferred_guests_not_opened'`, so ADR-0128 can still pull them forward; a sent row clears the reason. Deployed to production (version 22, verify_jwt on).
+- **What:** `send-followup-emails` now defers the email by 14 days at a time unless a party was detected or at least `max(3, ceil(players/2))` distinct character links have been opened. Deferred rows stay `pending` with `skipped_reason = 'deferred_guests_not_opened'`, so ADR-0128 can still pull them forward; a sent row clears the reason. Update: no send-anyway cap; at 90 days from generation with the threshold unmet the row is skipped (`no_party_assumed_after_90_days`) and never sent. Deployed to production (version 22, verify_jwt on).
 - **Scope decision:** counting any single open was tried first and replaced before the next cron run, because one host click on a 7-player package would have released the email.
-- **Not verified:** no live run yet; first expected effect is the 2026-10-14 10:15 UTC run. Day-49 cap and 14-day step are untested guesses.
+- **Not verified:** no live run yet; first expected effect is the 2026-10-14 10:15 UTC run. The 14-day step and 90-day give-up are untested guesses.
 
 ### SEO: acted on the 2026-10-12 digest (3 internal links, 1 stop-condition, 3 reminders checked)
 - **Title/meta ("murder mystery characters" + "roles"):** no change. The live title already reads "Murder Mystery Characters & Roles: 7 Character Ideas" (both words present), so per the prompt's own stop condition the lever is authority, not copy. The meta description was left alone too.

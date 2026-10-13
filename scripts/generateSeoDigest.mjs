@@ -383,11 +383,11 @@ Context (re-derive from ground truth, don't trust this note alone): the H1 lives
     // hourly histograms understate early opens. Near-day-of: completed parties
     // opened 8/8, 9/10, 13/14, 14/16 links (large casts miss 1-3, hunch roughly
     // holds). DECISION 2026-10-13 (ADR-0159): better late than premature. The
-    // how_did_it_go email now defers 14 days at a time (cap day 49) until
+    // how_did_it_go email now defers 14 days at a time until
     // max(3, ceil(players/2)) distinct links have been opened or a party is
-    // detected. Check: row aa119be0 should show skipped_reason
+    // detected; at day 90 without that it is skipped, never sent. Check: row aa119be0 should show skipped_reason
     // 'deferred_guests_not_opened' after the 2026-10-14 10:15 UTC run; count
-    // deferrals vs sends after 4 weeks and whether the day-49 cap ever fires.
+    // deferrals vs sends after 4 weeks and how many rows end as no_party_assumed_after_90_days.
     // Remove-a-Character: 9 verified adaptations, all pre-date the
     // 2026-09-25 access tracking, none has guest access data: unanswerable yet.
     start: '2026-11-09',
