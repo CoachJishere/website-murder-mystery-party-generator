@@ -237,9 +237,23 @@ const REMINDERS = [
     //   the same day the fix went live (2026-08-22), so this one's a coin
     //   flip depending on whether her guests opened pages before or after
     //   the fix's deploy time that day.
-    start: '2026-10-06',
-    end: '2026-10-27',
-    title: 'Check whether there is enough PostHog data yet for the purchase-to-play timing analysis',
+    //
+    // RESULT 2026-10-13: the premise was wrong. `package_tab_viewed` is sent by
+    // trackEvent() in src/lib/analytics.ts, which only calls gtag (GA4) -- it has
+    // never reached PostHog (0 events, not in the taxonomy). What PostHog does hold
+    // is $pageview on the guest routes /c/:code and /character/:token: 25,899
+    // pageviews overall, ~277 guest links, 33 distinct packages joined to Supabase
+    // (well over the 15-20 floor). Spot checks held: "Camp Pine Shadow" has zero
+    // data; Lyn's "Cognitive Dissonance Incident" shows 8 links first opened within
+    // 5 h on 2026-08-22 (a real cluster, left-censored by the fix date). First pass:
+    // 25 of 33 packages had their first guest open within 2 days of purchase, so
+    // first-open lag is NOT play lag; late players exist (15, 22, 36 days).
+    // Next step = the per-view clustering run below, which needs every pageview
+    // timestamp per package, not just first/last. The host-side tab view signal is
+    // GA4 only (not wired to PostHog; decide separately if that is worth doing).
+    start: '2026-10-20',
+    end: '2026-11-10',
+    title: 'Run the purchase-to-play clustering on PostHog guest pageviews (package_tab_viewed is GA4-only, not in PostHog)',
     body:
       'On <strong>2026-08-22</strong> (ADR-0102) we fixed PostHog actually capturing production events — before that, ' +
       'the tracking code existed but the live GitHub Pages deploy never had the API key wired in, so it silently did ' +
@@ -247,7 +261,9 @@ const REMINDERS = [
       '<code>package_tab_viewed</code>/pageview data. Paste the prompt below into a fresh chat to check whether ' +
       'there is enough volume yet to attempt the purchase-to-play timing analysis (using character/Host Guide page ' +
       'view clustering and dwell time as a proxy for when a mystery actually gets played, vs. purchase_date).',
-    prompt: `Check whether there is now enough PostHog data to attempt a "time from purchase to actual play" analysis for Mystery Maker, and if so, run a first pass.
+    prompt: `CORRECTION (2026-10-13, re-verify): \`package_tab_viewed\` never reaches PostHog (src/lib/analytics.ts trackEvent only calls gtag/GA4), so step 0 below must use \`$pageview\` on the guest routes /c/<short_code> and /character/<access_token> instead, joined to character_assignments (short_code or access_token) -> mystery_characters -> mystery_packages -> conversations. On 2026-10-13 that gave 33 packages (enough). Do the real analysis: pull EVERY pageview timestamp per token (not first/last), group by package, and find the clustered play session (several distinct characters inside a 1-3 hour block with return visits) versus the initial link-opening burst right after purchase; report purchase-to-session lag per package. Prior first pass: 25 of 33 first opens were within 2 days of purchase, so first-open is not play.
+
+Check whether there is now enough PostHog data to attempt a "time from purchase to actual play" analysis for Mystery Maker, and if so, run a first pass.
 
 Context (re-derive from ground truth, do not trust this note's framing alone): PostHog only started genuinely capturing production events on 2026-08-22 (ADR-0102, docs/adr/0102-posthog-key-missing-from-actual-deploy-pipeline.md) — before that date, VITE_POSTHOG_KEY was never wired into the site's actual GitHub Pages deploy pipeline (.github/workflows/deploy.yml), so posthog.init() silently no-op'd on every page load despite the client-side integration existing since 2026-04-24 (ADR-0100, superseded — its "4 months of lost history" framing was probably never real history to begin with). PostHog project id 569867 ("Mystery Maker"), events fired from src/lib/posthog.ts / src/lib/analytics.ts: \`$pageview\` (every route change) and \`package_tab_viewed\` (tab_name, conversation_id when available).
 
@@ -349,8 +365,27 @@ Context (re-derive from ground truth, don't trust this note alone): the H1 lives
     //
     // Full detail: docs/adr/0128-party-cluster-detection-for-feedback-email-timing.md,
     // vault 00_INBOX/recheck-party-cluster-detection-2026-09-25-mystery-maker.md.
-    start: '2026-10-09',
-    end: '2026-10-23',
+    //
+    // RESULT 2026-10-13: firing and looks right, sample still small. 6 detections
+    // in total (4 on conversations created since 2026-09-25, 2 older ones; note the
+    // prompt's `created_at > 2026-09-25` filter undercounts), 6 of 6 emails sent,
+    // pulled forward by 17 days on average (range 4 to 19) against the flat +21 d.
+    // Hits look like real clusters (5 clear; Blood On The Mead-bench is 7 of 8
+    // links opened in 7 minutes, then one open 21 h later: ambiguous, could be one
+    // host proofreading). No threshold false negatives: the two big undetected
+    // conversations were not threshold misses: The Masque Of Shadows (25 players,
+    // party 2026-10-06 = 62 days after purchase) had its how_did_it_go email
+    // already SENT on 2026-08-26, so the pending-email gate blocked it; Blood
+    // Moon Requiem (14 players) played about 2026-09-11, before detection went
+    // live on 2026-09-25. Open
+    // design question: a package played after day 21 gets its feedback email
+    // before the party. last_accessed_at keeps only the LATEST open per link, so
+    // hourly histograms understate early opens. Near-day-of: completed parties
+    // opened 8/8, 9/10, 13/14, 14/16 links (large casts miss 1-3, hunch roughly
+    // holds). Remove-a-Character: 9 verified adaptations, all pre-date the
+    // 2026-09-25 access tracking, none has guest access data: unanswerable yet.
+    start: '2026-11-09',
+    end: '2026-11-23',
     title: 'Check whether party-cluster detection (ADR-0128) is actually firing and helping',
     body:
       'On <strong>2026-09-25</strong> (ADR-0128) we shipped live detection of "party clusters" -- pulls the ' +
@@ -407,8 +442,16 @@ Context: ADR-0128 (docs/adr/0128-party-cluster-detection-for-feedback-email-timi
     // content touches HBCU/Black-history references that deserve his read
     // before anything is invented on top of them. No regeneration triggered,
     // no spend incurred.
-    start: '2026-09-26',
-    end: '2026-10-17',
+    //
+    // RESULT 2026-10-13: still both unresolved (paid, same approved_concept_message_id,
+    // last messages unchanged, 43 and 50 messages). New evidence: zero guest opens on
+    // either package in PostHog since 2026-08-22 and in character_assignments since
+    // 2026-09-25 (Adelaide Crane has 1 of 7 links marked sent, Black Swan 0 of 10);
+    // both how_did_it_go emails already went out. So nobody appears to have played
+    // either. Leaning option (b), leave as-is and log it, but Jonathan has not
+    // decided; kept the reminder alive.
+    start: '2026-10-19',
+    end: '2026-11-09',
     title: 'Two paid packages from a superseded concept: both source conversations dead-end mid-question, no clean "final concept" to regenerate from',
     body:
       'Re-checked 2026-09-28: both packages ("The Black Swan Society," "The Last Will And Testament Of Adelaide ' +

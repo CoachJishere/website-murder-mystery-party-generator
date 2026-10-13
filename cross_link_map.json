@@ -29941,7 +29941,8 @@
       "best-murder-mystery-board-games-review",
       "best-murder-mystery-generators-online-review",
       "best-murder-mystery-kits-buying-guide",
-      "free-vs-paid-murder-mystery-games-comparison"
+      "free-vs-paid-murder-mystery-games-comparison",
+      "murder-mystery-party-script-template-guide"
     ],
     "cluster": [
       "comparison"
@@ -29976,6 +29977,11 @@
         "target_page": "/custom-murder-mystery-party/",
         "match_text": "For custom personalization with real guest names across 13 languages, you can",
         "replacement": "For a fully [custom murder mystery party](/custom-murder-mystery-party/) with real guest names across 13 languages, you can"
+      },
+      {
+        "target_slug": "murder-mystery-party-script-template-guide",
+        "match_text": "If you want a script refined over hundreds of parties",
+        "replacement": "If you want a [murder mystery party script](/blog/murder-mystery-party-script-template-guide) refined over hundreds of parties"
       }
     ],
     "lang_insertions": {
