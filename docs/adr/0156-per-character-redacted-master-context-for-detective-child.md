@@ -1,6 +1,6 @@
 # ADR-0156: Give each detective character only the part of master_context it may know (PROPOSED)
 
-**Status:** Proposed. Phases 1, 1b, 2 done; Phase 4 built and verified on real model output 2026-10-13 and Parent86 imported; Phase 3 built 2026-10-13: `child-context` and the `regenerate-child-content` seam DEPLOYED with the switch off, Child64 built locally and NOT imported, paid check not yet run (needs the import and a test package)
+**Status:** Proposed. Phases 1, 1b, 2 done; Phase 4 built and verified on real model output 2026-10-13 and Parent86 imported; Phase 3 built 2026-10-13: `child-context` and the `regenerate-child-content` seam DEPLOYED with the switch off, Child64 built locally and NOT imported, Child64 imported (id 26), paid check run: wiring works, switch back to off
 **Date:** 2026-10-13
 **Related:** ADR-0153 (Phase 0 candidate 4, where this came from), ADR-0103 Addenda 81, 86, 91 (Child51 and the Silver Nightingale leaks), ADR-0142 (prompt prevention), ADR-0140 (propagation)
 
@@ -121,3 +121,13 @@ Built and deployed with `pipeline_settings.child_context_redaction` = `off` (row
 - **Deployed:** `child-context` and `regenerate-child-content` (live version compared with HEAD first: identical, so only this change went out), secret `CHILD_CONTEXT_KEY` set (also in the gitignored `.env`). Live smoke test: 401 without the key, 401 with only the anon key, 200 `redacted:false` with the key and the switch off.
 - **Not done, and why:** Child64 is not imported (Jonathan). The approved paid check was NOT run: it is a Child-only re-fire, which needs Child64 imported, and the only `is_test` detective package is a 1,826-character stub, so a test package must be created first (DB writes). Estimates in the design: plan A (after the import) about 3.4 USD, cap 4.5; plan B (regenerate seam only, no import) about 2.8 USD, cap 3.5. The `on` path has therefore never run in the deployed Deno runtime.
 - **Least certain:** that Make evaluates `{{if(414.data.redacted; ...)}}` on the parsed boolean as intended. Safe in one direction (everything falls back to the old reference) but redaction would silently never apply; the first `test_only` execution proves it.
+
+## Phase 3 paid check result (2026-10-13)
+
+Child64 imported by Jonathan (`prompt_version_history` id 26). Check run as Plan A with the real Make Child: two `is_test` copies of Silver Nightingale, the same 6 innocents re-fired (control with the switch `off`, then `test_only`), one reviewer pass per package, about 3.6 USD of the 4.5 USD cap; all test data deleted, switch `off`. Full table and limits: `docs/adr/0156-phase3/design.md` section 13.
+
+- **Wiring works in production:** the deployed Deno `on` path ran (6 of 6 `redacted=true`, design 13 percent of the original size, no fallback row) and Make's `{{if(414.data.redacted; ...)}}` picked the redacted text; the control arm took the original inputs.
+- **Result (n = 6 per arm, one sample):** other characters' hidden text in the sheet: 0 redacted versus 3 control (5 original); no empty fields, sheet sizes within 5 percent; reviewer on the 6 sheets: control 2 findings including a `secret_leak` (Marcus states Juliet's private confrontation), redacted 1 (a garbled phrase), no `wrong_fact` or `cross_field_contradiction` in either. Package-level finding counts (5 versus 3) are mostly reviewer noise on identical untouched sheets and are not claimed.
+- **Side effect:** the stored role of an innocent now follows the design's `isRedHerring` flag (all 6 `redHerring`), harmless downstream.
+- **Not shown:** a reduction on real purchases (post-go-live metric over the first 5 detective purchases), the eyewitness clue (this design predates `whatAnObserverSees`), other languages.
+- **Next decision (Jonathan's):** move `child_context_redaction` to `on` for real purchases. Kill switch is the same row; rollback is `update pipeline_settings set value='off' where key='child_context_redaction'`.

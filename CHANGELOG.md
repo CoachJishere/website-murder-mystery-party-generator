@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Test: ADR-0156 Phase 3 paid check, redaction works end to end through Make (switch back to off)
+- **What:** two `is_test` copies of Silver Nightingale, 6 innocents re-fired through the real Child64 (control switch `off`, then `test_only`), one reviewer pass each. Redacted arm: 6 of 6 `redacted=true` in the deployed function, design cut to 13 percent, no fallback rows, no empty fields; other characters' hidden text in the sheets 0 versus 3 in the control; reviewer on the 6 sheets 1 finding (a garbled phrase) versus 2 (including one `secret_leak`), no `wrong_fact` or `cross_field_contradiction`. Package-level counts (3 versus 5) are reviewer noise on untouched sheets.
+- **Found:** the stored role of an innocent now follows the design's `isRedHerring` flag (all `redHerring`); harmless downstream. **Limits:** n = 6 per arm, one package, English, old design without observer text.
+- **Cost:** about 3.6 USD (12 Child runs estimated at 0.2, reviewers measured 1.196) of the 4.5 USD cap. Test data deleted; switch `off`. **Next (Jonathan):** whether to set `child_context_redaction` to `on` for real purchases. Details: `docs/adr/0156-phase3/design.md` section 13.
+
 ### Docs: Parent86 imported; watch item added (ADR-0156 Phase 4)
 - **What:** Parent86 (observer field on `keyMomentPositions`) imported by Jonathan; row already in `prompt_version_history`. `CLAUDE.md` sweep checklist now lists what to read on the first detective purchase after it. Nothing consumes the field until Child64.
 

@@ -1,6 +1,6 @@
 # ADR-0156 Phase 3 design: `child-context` and Child64 (2026-10-13)
 
-Status: built, tested, **`child-context` and the `regenerate-child-content` change deployed with the switch OFF**; Child64 built locally, **not imported**; the switch has never been anything but `off`. The approvals recorded in the ADR on 2026-10-13 were used as follows: failure policy (used), edge function deployment with the switch off (used), paid check (NOT used: see section 9).
+Status: built, tested, deployed with the switch OFF, **Child64 imported by Jonathan (`prompt_version_history` id 26)** and the paid check run (section 13). The switch was `test_only` only during arm B of that check and is `off`. The approvals recorded in the ADR on 2026-10-13 were all used.
 
 ## 1. Facts checked against the code and the database (free, read-only)
 
@@ -110,3 +110,27 @@ That Make resolves `{{if(414.data.redacted; ...)}}` for a boolean from a parsed 
 ## 12. Files
 
 `supabase/functions/_shared/childContext.ts` (+ `.test.mjs`), `supabase/functions/child-context/{index.ts,handler.ts,child-context.test.mjs}`, `supabase/functions/regenerate-child-content/{index.ts,redaction-seam.test.mjs}`, `supabase/config.toml`, `package.json` (`npm run test:childctx`), `temp-files/build-child-v64.py` and `docs/adr/0156-phase3/tools/{build-child-v64.py,mutate.py}`, local `temp-files/MM Live - Child (Unified)64-RedactedContext.blueprint.json`.
+
+## 13. Paid check result (2026-10-13, Plan A, after Child64 was imported)
+
+Setup (all deleted afterwards, switch back to `off`): two `is_test` copies of Murder On The Silver Nightingale (12 characters, accomplice, a design made before Parent86 so no observer text, the "omit" variant). Same 6 innocents re-fired Child-only through the real Make Child64 webhook with the production payload shape: Vivian Calloway, Harry Dunmore, Marcus Finch, Juliet Reyes, Beatrice Langley, Josie Beaumont. Arm A (control): switch `off`. Arm B: switch `test_only`. One reviewer pass per package.
+
+**Wiring (the thing I was least sure of):** works. In the deployed Deno runtime arm A logged `mode=off redacted=false` six times and arm B `mode=test_only redacted=true` six times with no flags and no fallback row. Make resolved `{{if(414.data.redacted; ...)}}` correctly: arm B sheets were generated from the slice (design 68,782 to 8,724 to 10,796 characters, 13 percent; chat 25,956 to about 21,400), arm A from the full inputs.
+
+| Check (6 sheets per arm) | Original (Child63, full inputs) | A control (Child64, off) | B redacted |
+|---|---|---|---|
+| Other characters' hidden text (6-word runs) in the sheet | 5 | 3 | **0** |
+| Solution-text runs (execution, alibi gap, flaw, deception guidelines) | 5 | 3 | 4 |
+| Sentences naming the murderer or accomplice next to a guilt word | 0 | 0 | 1 |
+| Empty fields | 0 | 0 | 0 |
+| Average sheet size, characters | 11,278 | 10,598 | 11,147 |
+| Reviewer findings on the 6 sheets | n/a | 2 (a garbled phrase, 1 `secret_leak`: Marcus states Juliet's private corridor confrontation) | 1 (a garbled phrase) |
+| Reviewer `wrong_fact` / `cross_field_contradiction` on the 6 sheets | n/a | 0 | 0 |
+
+Reading the non-zero B cells: the 4 solution-text runs are all generic scene phrases from `deceptionGuidelines` ("between the brandy tray and the ..."), which the control also produces (3); the one murderer-plus-guilt sentence is Juliet asking the accomplice "someone took poison from the infirmary stores", an invention the model made from the physician's job (the word is in no input of arm B) and every full-input sheet makes the same guess. No other sheet in arm B names Harry's journalist secret (Phase 2: 2 of 10 did); Marcus's B sheet uses only the position map he is entitled to. Whole-package reviewer counts were 5 (A) and 3 (B), but the untouched, identical sheets drew different findings in each (A: Bartholomew, Felicity; B: Antonia), so the package-level difference is mostly reviewer noise and is not claimed.
+
+**Side effect found:** the stored `character_role` of an innocent now follows the design's `isRedHerring` flag (all 6 B sheets `redHerring`; the control's model-chosen roles were mostly `suspect`). Nothing downstream treats the two differently (INNOCENT IGNORANCE covers both, adapt-mystery-apply accepts both), but the stored role distribution will shift to the design's.
+
+**Limits:** 6 sheets per arm, one sample each, one package, English, the omit variant (no `whatAnObserverSees`, so the eyewitness clue is untested here), reviewer noise as above. It shows the wiring, no starvation, and the hidden-text leak path closed in this sample; it does not show a reduction in the real purchases' finding counts (that is the post-go-live metric in section 9).
+
+**Cost:** 12 Child executions (not measurable from here; estimated 0.2 USD each, 2.4 USD) plus the two reviewer passes (measured 1.196 USD) = **about 3.6 USD, under the 4.5 USD cap.** No `child_context` fallback rows were written. Test data removed: 2 conversations, 2 packages, 24 characters, 8 findings, 2 review rows; the switch is `off`.
