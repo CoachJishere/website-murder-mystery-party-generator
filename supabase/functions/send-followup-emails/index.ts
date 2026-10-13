@@ -359,7 +359,8 @@ serve(async (req) => {
         conversation_id,
         user_id,
         email_type,
-        scheduled_for
+        scheduled_for,
+        created_at
       `)
       .eq("status", "pending")
       .lte("scheduled_for", new Date().toISOString());
@@ -380,7 +381,7 @@ serve(async (req) => {
       try {
         const { data: convo } = await supabase
           .from("conversations")
-          .select("title, unsubscribed_from_followups, is_paid")
+          .select("title, unsubscribed_from_followups, is_paid, party_detected_at, player_count")
           .eq("id", email.conversation_id)
           .single();
 
@@ -452,6 +453,26 @@ serve(async (req) => {
             continue;
           }
 
+          // Better late than premature (owner decision 2026-10-13, ADR-0159): until
+          // as many guests have opened their links as the party-cluster detector
+          // needs (ADR-0128), the party has probably not happened, so re-check in 14
+          // days instead of asking for feedback. A single open is usually the host
+          // checking a link. Capped so a host who never uses the guest links still
+          // gets the email.
+          const ageDays = (Date.now() - new Date(email.created_at).getTime()) / 86_400_000;
+          const needed = Math.max(3, Math.ceil((convo.player_count ?? 6) / 2));
+          if (!convo.party_detected_at && ageDays < FEEDBACK_MAX_DEFER_DAYS
+              && (await countGuestsOpened(supabase, email.conversation_id)) < needed) {
+            await supabase
+              .from("followup_emails")
+              .update({
+                scheduled_for: new Date(Date.now() + FEEDBACK_DEFER_DAYS * 86_400_000).toISOString(),
+                skipped_reason: "deferred_guests_not_opened",
+              })
+              .eq("id", email.id);
+            continue;
+          }
+
           const guestFeedback = await getPositiveGuestFeedback(supabase, email.conversation_id);
           const feedbackUrl = `https://www.mysterymaker.party/feedback/${email.conversation_id}`;
           const shareUrl = buildShareUrl(email.user_id, "trustpilot_followup");
@@ -488,7 +509,7 @@ serve(async (req) => {
 
         await supabase
           .from("followup_emails")
-          .update({ status: "sent", sent_at: new Date().toISOString() })
+          .update({ status: "sent", sent_at: new Date().toISOString(), skipped_reason: null })
           .eq("id", email.id);
 
         sentCount++;
@@ -532,6 +553,32 @@ async function markHeld(supabase: any, emailId: string, reason: string) {
     .from("followup_emails")
     .update({ status: "held", skipped_reason: reason })
     .eq("id", emailId);
+}
+
+const FEEDBACK_DEFER_DAYS = 14;
+// Counted from the row's creation (package generation): 21 + 14 + 14.
+const FEEDBACK_MAX_DEFER_DAYS = 49;
+
+// Distinct characters whose link has been opened at least once (any time).
+async function countGuestsOpened(supabase: any, conversationId: string): Promise<number> {
+  const { data: packages } = await supabase
+    .from("mystery_packages")
+    .select("id")
+    .eq("conversation_id", conversationId);
+  if (!packages || packages.length === 0) return 0;
+
+  const { data: chars } = await supabase
+    .from("mystery_characters")
+    .select("id")
+    .in("package_id", packages.map((p: any) => p.id));
+  if (!chars || chars.length === 0) return 0;
+
+  const { data: opened } = await supabase
+    .from("character_assignments")
+    .select("character_id")
+    .in("character_id", chars.map((c: any) => c.id))
+    .not("last_accessed_at", "is", null);
+  return new Set((opened ?? []).map((o: any) => o.character_id)).size;
 }
 
 async function getPositiveGuestFeedback(supabase: any, conversationId: string) {
