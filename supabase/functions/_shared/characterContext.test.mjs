@@ -217,6 +217,131 @@ ta("a visible accomplice entry is dropped (no claimed position exists) and the t
   assert.ok(out.dropped.some((d) => d.includes("visible accomplice")));
 });
 
+// ---------------------------------------------------------------------------------------------------------------------------------
+// ADR-0156 Phase 4: whatAnObserverSees (written by Parent86). Synthetic cases; the real-data one is in Part B.
+// ---------------------------------------------------------------------------------------------------------------------------------
+const OBS = {
+  "Dr. Mara Quill": "Standing in the cellar passage holding a bottle of claret.",
+  "Tobias Reed": "Standing at the top of the cellar stairs with a lamp.",
+  "Ivy Chen": "In the kitchen cutting bread at the table.",
+  "Leo Park/Lena Park": "Out in the garden smoking by the roses.",
+  "Nora Bell ('The Baker')": "At the kitchen door watching Ivy cut bread.",
+};
+/** part2 with observer text on every entry, then per-test edits. */
+const withObs = (edit = () => {}, texts = OBS) => {
+  const p2 = structuredClone(part2);
+  for (const e of p2.timelineFramework.keyMomentPositions) e.whatAnObserverSees = texts[e.character];
+  edit(p2.timelineFramework.keyMomentPositions);
+  return JSON.stringify(part1) + "\n" + JSON.stringify(p2);
+};
+const kmpFor = (mc, who, opts) => {
+  const out = buildCharacterContext(mc, who, "suspect", opts);
+  return { out, kmp: JSON.parse(out.context).timelineFramework?.keyMomentPositions ?? [] };
+};
+const entry = (kmp, start) => kmp.find((e) => e.character.startsWith(start));
+
+ta("observer text: a visible murderer is given as observer text, same shape, no true position and no stated alibi", () => {
+  const mc = withObs((k) => { k[0].canBeSeenBy = ["Leo Park/Lena Park"]; });
+  const { out, kmp } = kmpFor(mc, "Leo Park/Lena Park");
+  const e = entry(kmp, "Dr. Mara");
+  assert.deepEqual(Object.keys(e).sort(), ["besideOrNear", "canBeSeenBy", "character", "position"]);
+  assert.equal(e.position, OBS["Dr. Mara Quill"]);
+  assert.ok(!out.context.includes("adding aconite") && !out.context.includes("door shut"), "true position must not travel");
+  assert.ok(!out.context.includes("says she was in the kitchen"), "the stated alibi is not needed when the observer text exists");
+  assert.ok(out.kept.some((k) => k.includes("whatAnObserverSees")));
+});
+
+ta("observer text replaces the stated alibi even when visibleMurderer is omit", () => {
+  const mc = withObs((k) => { k[0].canBeSeenBy = ["Leo Park/Lena Park"]; });
+  assert.equal(entry(kmpFor(mc, "Leo Park/Lena Park", { visibleMurderer: "omit" }).kmp, "Dr. Mara").position, OBS["Dr. Mara Quill"]);
+});
+
+ta("observer text: a murderer this character cannot see is absent, and her observer text does not travel", () => {
+  const mc = withObs(); // Mara's canBeSeenBy is empty in the base design
+  for (const who of ["Ivy Chen", "Nora Bell ('The Baker')", "Leo Park/Lena Park"]) {
+    const { out, kmp } = kmpFor(mc, who);
+    assert.ok(!kmp.some((e) => e.character.startsWith("Dr. Mara")), who);
+    assert.ok(!out.context.includes(OBS["Dr. Mara Quill"]), who);
+  }
+  // Listed in someone else's besideOrNear is not the same as being allowed to see: only canBeSeenBy opens an entry.
+  const mc2 = withObs((k) => { k[2].besideOrNear = ["Nora Bell ('The Baker')", "Dr. Mara Quill"]; });
+  const { out } = kmpFor(mc2, "Leo Park/Lena Park");
+  assert.ok(!out.context.includes(OBS["Dr. Mara Quill"]));
+});
+
+ta("observer text: a visible accomplice is now given (it was dropped without it)", () => {
+  const mc = withObs((k) => { k[1].canBeSeenBy = ["Ivy Chen"]; });
+  const { out, kmp } = kmpFor(mc, "Ivy Chen");
+  assert.equal(entry(kmp, "Tobias").position, OBS["Tobias Reed"]);
+  assert.ok(!out.dropped.some((d) => d.includes("visible accomplice")));
+  assert.ok(!out.context.includes("Standing guard"), "true position must not travel");
+});
+
+ta("observer text: the viewer's own entry stays the true position and its observer text is not repeated", () => {
+  const { out, kmp } = kmpFor(withObs(), "Ivy Chen");
+  assert.equal(entry(kmp, "Ivy").position, "In the kitchen cutting bread, alone and in view of Nora.");
+  assert.ok(!out.context.includes(OBS["Ivy Chen"]));
+});
+
+ta("observer text: another innocent's entry is given as observer text, not as its true position", () => {
+  // Nora's true position names the murderer, so without the field Ivy got position: null. With it she gets what Nora looked like.
+  const { out, kmp } = kmpFor(withObs(), "Ivy Chen");
+  assert.equal(entry(kmp, "Nora").position, OBS["Nora Bell ('The Baker')"]);
+  assert.ok(!out.context.includes("glimpsed Mara hurrying"));
+});
+
+ta("observer text: a culprit named in another entry is removed unless this character can see that culprit", () => {
+  const texts = { ...OBS, "Nora Bell ('The Baker')": "At the kitchen door, speaking with Dr. Mara Quill." };
+  // Ivy cannot see Mara: the sentence goes, the neighbour tag stays (an alibi witness).
+  const hidden = entry(kmpFor(withObs(() => {}, texts), "Ivy Chen").kmp, "Nora");
+  assert.equal(hidden.position, null);
+  assert.deepEqual(hidden.besideOrNear, ["Ivy Chen"]);
+  // Ivy can see Mara (with observer text): naming her is the same information Mara's own entry gives.
+  const visible = withObs((k) => { k[0].canBeSeenBy = ["Ivy Chen"]; }, texts);
+  const nora = entry(kmpFor(visible, "Ivy Chen").kmp, "Nora");
+  assert.equal(nora.position, texts["Nora Bell ('The Baker')"]);
+});
+
+ta("observer text: a hidden accomplice's name is stripped from a visible murderer's neighbour and witness lists", () => {
+  const mc = withObs((k) => { k[0].canBeSeenBy = ["Ivy Chen", "Tobias Reed"]; k[0].besideOrNear = ["Tobias Reed", "Ivy Chen"]; });
+  const e = entry(kmpFor(mc, "Ivy Chen").kmp, "Dr. Mara");
+  assert.deepEqual(e.besideOrNear, ["Ivy Chen"]);
+  assert.deepEqual(e.canBeSeenBy, ["Ivy Chen"]);
+});
+
+ta("observer text: absent, empty, not a string or over the length cap is not used and falls back to the old behaviour", () => {
+  const long = Array.from({ length: 60 }, (_, i) => `word${i}`).join(" ");
+  for (const [label, v] of [["absent", undefined], ["empty", ""], ["blank", "   "], ["number", 7], ["object", { a: 1 }], ["too long", long]]) {
+    const mc = withObs((k) => { k[0].canBeSeenBy = ["Leo Park/Lena Park"]; if (v === undefined) delete k[0].whatAnObserverSees; else k[0].whatAnObserverSees = v; });
+    const { out, kmp } = kmpFor(mc, "Leo Park/Lena Park");
+    assert.match(entry(kmp, "Dr. Mara").position, /says she was in the kitchen/, label); // the old "claimed" shape
+    assert.ok(!out.context.includes("word59") && !out.context.includes("adding aconite"), label);
+    if (label === "too long") assert.ok(out.dropped.some((d) => d.includes("over 45 words")));
+  }
+});
+
+ta("observer text: a mixed map (some entries without the field) uses the field where it exists and the old rules elsewhere", () => {
+  const mc = withObs((k) => { delete k[4].whatAnObserverSees; }); // Nora has no field
+  const { kmp } = kmpFor(mc, "Ivy Chen");
+  assert.equal(entry(kmp, "Nora").position, null); // old rule: every sentence of her true position names the murderer
+  const leo = kmpFor(mc, "Nora Bell ('The Baker')").kmp;
+  assert.equal(entry(leo, "Leo").position, OBS["Leo Park/Lena Park"]);
+});
+
+ta("observer text: the murderer and accomplice still receive the stored text byte for byte", () => {
+  const mc = withObs();
+  assert.equal(buildCharacterContext(mc, "Dr. Mara Quill", "murderer").context, mc);
+  assert.equal(buildCharacterContext(mc, "Tobias Reed", "accomplice").context, mc);
+});
+
+ta("observer text: a design without the field gives exactly the same output as before Phase 4", () => {
+  // Phase 1 behaviour is pinned by the tests above; this pins it against the field being present but unusable everywhere.
+  const bad = withObs((k) => { for (const e of k) e.whatAnObserverSees = ""; });
+  for (const who of ["Ivy Chen", "Nora Bell ('The Baker')", "Leo Park/Lena Park"]) {
+    assert.equal(buildCharacterContext(bad, who, "suspect").context, buildCharacterContext(MC, who, "suspect").context, who);
+  }
+});
+
 ta("unknown or empty role is treated as an innocent (fail closed)", () => {
   for (const r of ["", "unknown", "Suspect", "guilty", undefined]) {
     const out = buildCharacterContext(MC, "Ivy Chen", r);
@@ -410,6 +535,43 @@ t("Silver Nightingale eyewitness: Percival keeps what he saw in his own entry, a
   const marcus = JSON.parse(buildCharacterContext(pkg.master_context, "Marcus Finch", "suspect").context).timelineFramework.keyMomentPositions;
   assert.ok(!/handed it to Reginald/.test(marcus.find((e) => e.character === "Percival Okafor").position));
   assert.deepEqual(marcus.find((e) => e.character === "Percival Okafor").besideOrNear, []);
+});
+
+t("Phase 4 on the real Silver Nightingale design: the eyewitnesses get the steward back, nobody gets the act", () => {
+  const pkg = PACKAGES.find((p) => p.id === SILVER);
+  // Observer texts a Parent86 run could write for the entries that matter (hand-written, derived from the true positions; no model call).
+  const SIMONE = "At the service sideboard at the bar end of the dining car, holding the brandy tray and handing Reginald his glass during the toast.";
+  const PERCIVAL = "Standing at the bar end beside the service sideboard, speaking with Reginald and moving his glass aside once.";
+  const mc = parseMasterContext(pkg.master_context);
+  for (const e of mc.timelineFramework.keyMomentPositions) {
+    if (e.character === "Simone Delacroix") e.whatAnObserverSees = SIMONE;
+    else if (e.character === "Percival Okafor") e.whatAnObserverSees = PERCIVAL;
+    else e.whatAnObserverSees = e.canBeSeenBy.length ? "Seated at the dining car tables during the toasts." : "";
+  }
+  const text = JSON.stringify(mc);
+  const act = /dosed|set apart on its own napkin|She was not in the pantry/;
+  const get = (n) => buildCharacterContext(text, n, "suspect");
+  // Simone lists Percival, Marcus, Harry and Josie. The first three are the witnesses the Phase 2 replay lost; Josie is a fourth.
+  for (const n of ["Marcus Finch", "Harry Dunmore", "Josie Beaumont"]) {
+    const kmp = JSON.parse(get(n).context).timelineFramework.keyMomentPositions;
+    assert.equal(kmp.find((e) => e.character === "Simone Delacroix")?.position, SIMONE, n);
+  }
+  // Marcus also sees Percival's entry, with Simone named, because he can see Simone.
+  const marcus = JSON.parse(get("Marcus Finch").context).timelineFramework.keyMomentPositions;
+  assert.equal(marcus.find((e) => e.character === "Percival Okafor").position, PERCIVAL);
+  // Everyone who cannot see Simone gets neither her entry nor any sentence of Percival's that names her.
+  for (const n of ["Vivian Calloway", "Bartholomew Calloway", "Juliet Reyes", "Beatrice Langley", "Nikolai Volkov", "Antonia Rolewicz"]) {
+    const out = get(n);
+    const kmp = JSON.parse(out.context).timelineFramework?.keyMomentPositions ?? [];
+    assert.ok(!kmp.some((e) => e.character === "Simone Delacroix"), n);
+    assert.ok(!out.context.includes("handing Reginald his glass"), n);
+  }
+  // No innocent receives any part of the act, the stated alibi gap or the accomplice's post.
+  for (const c of CHARS.filter((x) => x.package_id === SILVER && !/murderer|accomplice/i.test(x.character_role ?? ""))) {
+    let out; try { out = get(c.character_name).context; } catch { continue; }
+    assert.ok(!act.test(out), c.character_name);
+    assert.ok(!out.includes("keeping watch so no crew member came through"), c.character_name);
+  }
 });
 
 assert.equal(failures.length, 0, `${failures.length} leak(s):\n${failures.slice(0, 20).join("\n")}`);

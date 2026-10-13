@@ -158,12 +158,18 @@ function scrub(text: string, rx: RegExp | null, path: string, t: Tracker): strin
 }
 
 const FULL_ROLES = new Set(["murderer", "accomplice"]);
+/** Parent86 asks for 8 to 25 words. Anything much longer is a model explaining the act, so the text is not used (fail closed to the old behaviour). */
+const MAX_OBSERVER_WORDS = 45;
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // The allowlist. Anything not named here is dropped, including keys the Parent adds in future.
 // ---------------------------------------------------------------------------------------------------------------------------------
 export interface CharacterContextOptions {
-  /** What a character who can see the murderer is told about the murderer's position: "claimed" (default, the stated alibi, same shape as other entries) or "omit" (no entry at all). */
+  /**
+   * What a character who can see the murderer is told about the murderer's position when the entry has NO `whatAnObserverSees` text
+   * (packages made before Parent86): "claimed" (default, the stated alibi, same shape as other entries) or "omit" (no entry at all).
+   * An entry that carries `whatAnObserverSees` is always given as that text and this option is ignored for it.
+   */
   visibleMurderer?: "claimed" | "omit";
 }
 
@@ -277,22 +283,51 @@ export function buildCharacterContext(masterContext: string, characterName: stri
       const claimed = str(tf.murdererClaimedLocation);
       const seen: Obj[] = [];
       let scrubbedInOthers = 0;
+      let observerUsed = 0;
+      const viewerSees = (e: Obj) => Array.isArray(e.canBeSeenBy) && e.canBeSeenBy.some((n) => typeof n === "string" && isSelf(n));
+      // Observer-safe text (ADR-0156 Phase 4, written by Parent86): what a bystander would literally see. Used instead of truePosition for
+      // every entry this character can see, so a culprit's entry is the same kind of text as an innocent's. Absent, empty or too long: not used.
+      const observer = new Map<Obj, string>();
+      for (const e of kmp) {
+        if (!isObj(e) || isSelf(entryName(e))) continue;
+        const o = str(e.whatAnObserverSees)?.trim();
+        if (!o) continue;
+        if (o.split(/\s+/).length > MAX_OBSERVER_WORDS) { t.drop(`timelineFramework.keyMomentPositions[${entryName(e)}].whatAnObserverSees (over ${MAX_OBSERVER_WORDS} words, not used)`); continue; }
+        observer.set(e, o);
+      }
+      // A culprit this character can see (with usable observer text) may be named in other entries; every other culprit name is still removed.
+      const visibleCulprits = kmp.filter((e): e is Obj => isObj(e) && observer.has(e) && viewerSees(e) && (isMurderer(entryName(e)) || isAccomplice(entryName(e)))).map(entryName);
+      const hiddenCulprits = culpritNames.filter((n) => !visibleCulprits.some((v) => sameCharacter(v, n)));
+      const hiddenRx = culpritRegex(hiddenCulprits);
+      const isHiddenCulprit = (n: string) => hiddenCulprits.some((h) => sameCharacter(h, n));
+      const namesNoHidden = (v: unknown) => (Array.isArray(v) ? v : []).filter((n) => typeof n === "string" && !isHiddenCulprit(n));
       for (const e of kmp) {
         if (!isObj(e)) continue;
         const who = entryName(e);
-        const canSee = Array.isArray(e.canBeSeenBy) && e.canBeSeenBy.some((n) => typeof n === "string" && isSelf(n));
+        const canSee = viewerSees(e);
+        const obs = observer.get(e);
         if (isSelf(who)) {
           seen.push({ character: e.character, position: e.truePosition, besideOrNear: e.besideOrNear ?? [], canBeSeenBy: e.canBeSeenBy ?? [] });
+        } else if (canSee && obs) {
+          const isCulpritEntry = isMurderer(who) || isAccomplice(who);
+          // One sentence by design, so it is kept or withheld whole (splitting on full stops breaks "Dr. Quill").
+          if (hiddenRx) hiddenRx.lastIndex = 0;
+          const namesHidden = !!hiddenRx && hiddenRx.test(fold(obs));
+          const near = namesNoHidden(e.besideOrNear);
+          const by = namesNoHidden(e.canBeSeenBy);
+          scrubbedInOthers += (namesHidden ? 1 : 0) + ((Array.isArray(e.besideOrNear) ? e.besideOrNear.length : 0) - near.length);
+          if (isCulpritEntry && namesHidden) t.drop(`timelineFramework.keyMomentPositions[${who}] (observer text names another culprit this character cannot see)`);
+          else { observerUsed++; seen.push({ character: e.character, position: namesHidden ? null : obs, besideOrNear: near, canBeSeenBy: by }); }
         } else if (canSee && isMurderer(who)) {
-          // Same shape as every other entry, so the culprit is not recognisable from the structure. Only the stated position is given.
+          // Entry without observer text (older package). Same shape as every other entry, so the culprit is not recognisable from the structure.
           if (options.visibleMurderer === "omit") t.drop(`timelineFramework.keyMomentPositions[${who}] (visible murderer, omitted by option)`);
           else if (claimed) seen.push({ character: e.character, position: claimed, besideOrNear: [], canBeSeenBy: [characterName] });
           else t.drop(`timelineFramework.keyMomentPositions[${who}] (visible murderer, no claimed position)`);
         } else if (canSee && isAccomplice(who)) {
-          t.drop(`timelineFramework.keyMomentPositions[${who}] (visible accomplice, no claimed position field exists)`);
+          t.drop(`timelineFramework.keyMomentPositions[${who}] (visible accomplice, no observer text and no claimed position field exists)`);
         } else if (canSee) {
-          // Another innocent's entry. What they did next to the culprit is the culprit's true position seen from the side, and would
-          // contradict the stated position above, so sentences and neighbours naming a culprit are removed (the viewer's own entry is untouched).
+          // Another innocent's entry without observer text. What they did next to the culprit is the culprit's true position seen from the side,
+          // and would contradict the stated position above, so sentences and neighbours naming a culprit are removed (the viewer's own entry is untouched).
           const pos = String(e.truePosition ?? "");
           const sentences = pos.split(/(?<=[.!?…])\s+/);
           const keepS = rx ? sentences.filter((x) => { rx.lastIndex = 0; return !rx.test(fold(x)); }) : sentences;
@@ -303,6 +338,7 @@ export function buildCharacterContext(masterContext: string, characterName: stri
         }
       }
       if (scrubbedInOthers) t.drop(`timelineFramework.keyMomentPositions (${scrubbedInOthers} sentence(s) or neighbour(s) naming a culprit, removed from other characters' entries)`);
+      if (observerUsed) t.keep(`timelineFramework.keyMomentPositions.whatAnObserverSees (${observerUsed} entries)`);
       if (seen.length) { o.keyMomentPositions = seen; t.keep(`timelineFramework.keyMomentPositions (${seen.length} of ${kmp.length})`); }
       t.drop(`timelineFramework.keyMomentPositions (${kmp.length - seen.length} not observable by this character)`);
     }

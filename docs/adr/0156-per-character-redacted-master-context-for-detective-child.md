@@ -1,6 +1,6 @@
 # ADR-0156: Give each detective character only the part of master_context it may know (PROPOSED)
 
-**Status:** Proposed. Phase 1 done 2026-10-13 (pure function and tests only, nothing wired in); Phases 2 to 4 not started
+**Status:** Proposed. Phases 1, 1b, 2 done and Phase 4 built locally 2026-10-13 (pure functions and tests, a local Parent86 blueprint; nothing wired in or imported); Phase 3 not started
 **Date:** 2026-10-13
 **Related:** ADR-0153 (Phase 0 candidate 4, where this came from), ADR-0103 Addenda 81, 86, 91 (Child51 and the Silver Nightingale leaks), ADR-0142 (prompt prevention), ADR-0140 (propagation)
 
@@ -70,6 +70,15 @@ Replay of the 10 Silver Nightingale innocents with the redacted context (omit va
 ## Phase 1b result (2026-10-13)
 
 Chat redaction built and tested (`characterChat.ts`, `npm run test:charchat`, 14 tests, mutation-checked). On the 12 real chats the pairs where one character's hidden text is in another's chat fall from 822 to 50 (zero in 10 packages; the two customer-written story bibles keep a remainder, and strict mode keeps only 21 to 42 percent of their chat). No killer-plus-guilt sentence survives. Details and limits: `docs/adr/0156-phase1b/findings.md`.
+
+## Phase 4 result (2026-10-13)
+
+Built, not imported, no paid call. `whatAnObserverSees`: a new last key on every `timelineFramework.keyMomentPositions` entry, one plain sentence of 8 to 25 words saying only what a bystander on `canBeSeenBy` would literally see (empty string when nobody can see the character). Added to both Parent modules that define the map: 3000 (classic detective) and 4020 (intrigue), by `temp-files/build-parent-v86.py` into the local, gitignored `MM Live - Parent86 (Observer Field).blueprint.json`; the diff against Parent85 is three leaves (those two prompt texts, pure insertions, and the blueprint name). The three Child modules that read the map (401, 405, 409) are unchanged. Full design, wording rules, worked examples per type and the verification plan: `docs/adr/0156-phase4/design.md`.
+
+- **`buildCharacterContext`:** an entry the viewer can see is given as that text for every character, culprit and accomplice included (the accomplice used to be dropped), so a culprit's entry has the same shape and style as an innocent's; the viewer's own entry stays `truePosition`; culprit names in other entries survive only for a culprit the viewer can see; an entry whose field is missing, empty, not a string or over 45 words falls back to the Phase 1 rules entry by entry. 58 tests (13 new, one on the real Silver design with hand-written observer texts), 12 mutations killed; Phase 1 sizes unchanged (median 0.104). One real bug found by the tests: the sentence splitter cut "Dr. Quill" at the full stop, so the observer text is treated as one unit.
+- **Real maps:** only 4 of 14 recent packages carry a map and in 4 of the 6 culprit and accomplice entries among them nobody can see the culprit, so the field matters for culprits in about a third of the cases, but where it does (Silver Nightingale) it is the alibi-breaking clue.
+- **Decision against a code wording filter:** an n-gram overlap guard against the solution text flagged 34 of 36 honest entries at 4 words and 11 of 36 at 6, so it was not built; a multi-language tamper-verb list was not built either. Wording safety rests on the Parent rule, the paid verification and the reviewer. This is the weakest point of the design.
+- **Not done:** the paid verification (Tier 1, seven Part 2 replays, about 2.5 USD; Tier 2, four Child regenerations, about 0.8 USD; needs a yes), the Make import of Parent86, the Child64 clause, intrigue support in `buildCharacterContext` (still refused), a SQL detector for a missing field.
 
 ## Key files
 

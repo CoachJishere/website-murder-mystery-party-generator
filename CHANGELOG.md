@@ -2,6 +2,13 @@
 
 ## 2026-10-13
 
+### Feature: `whatAnObserverSees` for every mystery (ADR-0156 Phase 4, built and tested, Parent86 not imported)
+- **What:** (1) `temp-files/build-parent-v86.py` builds the local `MM Live - Parent86 (Observer Field)` from Parent85: modules 3000 (classic detective) and 4020 (intrigue) each get a rule paragraph and a schema key so every `keyMomentPositions` entry carries `whatAnObserverSees`, one plain observable sentence (empty when nobody can see the character); the diff is those two prompt texts (pure insertions) and the name. (2) `buildCharacterContext` gives a viewer that sentence for every entry it can see, the culprit's and accomplice's included, instead of omitting them or giving the stated alibi; the viewer's own entry stays `truePosition`; culprit names survive in other entries only for a culprit the viewer can see; a missing, empty or over-45-word field falls back to the Phase 1 rules per entry.
+- **Why:** Marcus and Harry in the Silver Nightingale replay lost the clue "I saw the steward at the sideboard with the tray" because the culprit's `truePosition` contains the act. Real maps: only 4 of 14 recent packages have one, 2 of 6 culprit and accomplice entries are seen by anybody.
+- **Tests:** `npm run test:charcontext` 58 tests (13 new), 12 mutations killed, Phase 1 sizes unchanged; `npm run test:charchat` 14 pass. A test caught the sentence splitter cutting "Dr. Quill", so the text is handled as one unit.
+- **Decided against:** a code guard comparing the text with the solution text (flags 34 of 36 honest entries at 4 words, 11 at 6) and a multi-language tamper-verb list; only a 45-word cap is in code. Wording safety rests on the Parent rule, the paid verification and the reviewer.
+- **Not done:** paid verification (about 3.3 USD, range 2.4 to 4.5, needs a yes), the Make import (Jonathan), the Child64 clause, intrigue support in `buildCharacterContext`, a SQL detector for a missing field. Details: `docs/adr/0156-phase4/design.md`.
+
 ### Feature: per-character chat redaction for the detective Child (ADR-0156 Phase 1b, built, not wired in)
 - **What:** `supabase/functions/_shared/characterChat.ts` withholds other characters' blurbs, killer sections and culprit-plus-guilt sentences from the customer's chat for innocents, with a strict fallback when the design's hidden text still shows; culprits and accomplices get the chat unchanged. `npm run test:charchat` (14 tests, real-data part skips without fixtures). Result on 12 real chats: hidden-text pairs 822 to 50.
 - **Not done:** the edge function and Child64 wiring; a second replay (Blackthorn Manor) to judge what strict mode costs in sheet quality.
