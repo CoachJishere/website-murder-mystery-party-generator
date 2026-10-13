@@ -2079,4 +2079,4 @@ The reviewer found about 13 things I had not (time-reference slips "buried a hus
 
 **Scope call.** No new detector or heal for the self-name header: one occurrence, no mechanical rewrite is safe (the intended name is unknown), and the gate already held it. The slow part was the 30 hours before anyone swept it, not the detection (see Open).
 
-**Open.** Whether the alert for a held package should reach Jonathan sooner (this one sat about 30 hours). Not changed here.
+**Open.** None on alert latency: the 30-hour delay was Jonathan being out of office, not an alert failure (Jonathan, 2026-10-13). The two debatable items above (scripts volunteering their own secret, overview naming hidden secrets) await his call.
