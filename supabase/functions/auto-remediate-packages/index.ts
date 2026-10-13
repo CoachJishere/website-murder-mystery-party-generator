@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { DANGLING_QUOTE_RX, deriveBranchHeader, prependHeader, stripStrayGlitches } from "./glitch-strip.ts";
 import { planAccompliceRoleHeal, POINTFORM_TWINS, runWithRoleSwap } from "./accomplice-heal.ts";
 import { type DetectorFailure, detectorFailureAlert, detectorSinceIso, runDetectorGuarded, runWindowDays } from "./detector-guard.ts";
+import { hasPlayerInstruction } from "./player-instruction.ts";
 
 /**
  * auto-remediate-packages — closed-loop auto-remediation worker. See ADR-0047.
@@ -1496,6 +1497,12 @@ async function handleTemplateArtifacts(ctx: RunCtx, row: Record<string, unknown>
         for (const field of CHARACTER_ARTIFACT_FIELDS) {
           const before = await readField("character", character.id, field);
           if (!before) continue;
+          // ADR-0103 Addendum 93: an instruction handed back to the player ("Choose for yourself what this secret is")
+          // is prose, so stripArtifactLines finds nothing to strip; send the field straight to regeneration.
+          if (hasPlayerInstruction(field, before)) {
+            unsafeCharacterFields.push({ charId: character.id, charName: character.character_name, field });
+            continue;
+          }
           const { text: after, removed, safe } = stripArtifactLines(before);
           if (!safe) {
             // ADR-0061: previously this bailed the WHOLE plan here with no
