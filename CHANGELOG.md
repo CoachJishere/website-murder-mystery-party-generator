@@ -2,6 +2,9 @@
 
 ## 2026-10-13
 
+### Fix: Blackthorn Manor, Jackie's `secrets` column still named the accomplice after the first fix (ADR-0103 Addendum 92 Update 2)
+- **Why:** the ADR-0155 eval found that my edit changed `secret` but not the `secrets` array. **What:** synced that one row; 0 of 11 characters now differ. No other change.
+
 ### Docs: ADR-0156 Phase 3 scoped against the code (nothing built)
 - **Found:** the Child gets no role as input (it determines `characterRole` itself in Call 1), so `child-context` should derive the role from `master_context`; `regenerate-child-content` is a second consumer of the full design and must be covered or the leak stays open on every heal; the chat reaches the prompts twice (`characterChatExcerpts`, `conversationContent`). Proposed shape, kill switch, failure policy and verification are in the ADR ("Phase 3 scope").
 - **Not done:** all of Phase 3; decisions needed from Jonathan: failure policy, edge-function deployment, the paid Child-only re-fire.
