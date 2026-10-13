@@ -2,6 +2,10 @@
 
 ## 2026-10-13
 
+### Feature: per-character chat redaction for the detective Child (ADR-0156 Phase 1b, built, not wired in)
+- **What:** `supabase/functions/_shared/characterChat.ts` withholds other characters' blurbs, killer sections and culprit-plus-guilt sentences from the customer's chat for innocents, with a strict fallback when the design's hidden text still shows; culprits and accomplices get the chat unchanged. `npm run test:charchat` (14 tests, real-data part skips without fixtures). Result on 12 real chats: hidden-text pairs 822 to 50.
+- **Not done:** the edge function and Child64 wiring; a second replay (Blackthorn Manor) to judge what strict mode costs in sheet quality.
+
 ### Docs: ADR-0156 Phase 2 replay (about 2.2 USD, approved): master_context leak closed, chat is the remaining path
 - **What:** regenerated the 10 Silver Nightingale innocents locally with the Child63 prompts and the per-character redacted context (no database writes). Juliet's corridor confrontation no longer reaches any other sheet; 2 of 10 sheets state Harry's secret via the customer's character list in the chat; Marcus and Harry lose the steward eyewitness clue. Findings in `docs/adr/0156-phase2/findings.md`, scripts in `docs/adr/0156-phase2/tools/`.
 - **Not done:** Child64; chat redaction (Phase 1b) and `whatAnObserverSees` (Phase 4) come first.

@@ -61,7 +61,7 @@ export function parseMasterContext(text: string): Obj {
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Names
 // ---------------------------------------------------------------------------------------------------------------------------------
-const fold = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+export const fold = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
 /** "Paulina Guzmán ('La Sirena')" -> base "Paulina Guzmán" and extra "La Sirena". Quotes inside names ("Jazz-Jo") are kept as extras. */
 function nameParts(raw: string): { base: string; extras: string[] } {
@@ -89,7 +89,7 @@ const TITLE = /^(?:dr|mr|mrs|ms|prof|professor|lady|lord|sir|dame|captain|kaptaj
 const stripTitle = (f: string) => f.split(/\s+/).filter((t, idx, a) => !(idx < a.length - 1 && TITLE.test(t))).join(" ");
 
 /** Folded, title-stripped word set of a name, nickname words included ("Josephine 'Josie' Beaumont" -> josephine, josie, beaumont). */
-function tokenSet(raw: string): string[] {
+export function tokenSet(raw: string): string[] {
   const { base, extras } = nameParts(raw);
   const words = [...fullForms(raw)].flatMap((f) => stripTitle(f).split(/[\s/]+/)).concat(extras.flatMap((e) => fold(e).split(/\s+/)));
   return [...new Set(words.filter(Boolean))];
@@ -107,7 +107,7 @@ export function sameCharacter(a: string, b: string): boolean {
 }
 
 /** Regex matching any name variant of the given characters (full name, nickname, first name, surname), diacritics ignored at match time. */
-function culpritRegex(names: string[]): RegExp | null {
+export function culpritRegex(names: string[]): RegExp | null {
   const variants = new Set<string>();
   for (const raw of names) {
     const { base, extras } = nameParts(raw);

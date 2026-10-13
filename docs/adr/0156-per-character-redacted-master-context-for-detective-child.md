@@ -67,6 +67,10 @@ Jonathan asked to scope this after ADR-0153 Phase 0 rejected prompt accretion as
 
 Replay of the 10 Silver Nightingale innocents with the redacted context (omit variant), about 2.2 USD, nothing written to the database. Verdict: **partly works**. The `master_context` leak (Juliet's confrontation) is gone from every other sheet; 2 of 10 sheets now state Harry's secret, copied from the customer's character list in the chat; Marcus and Harry lost the eyewitness clue about the steward. Recommendation: redact the chat's character list per character (Phase 1b) and add `whatAnObserverSees` (Phase 4) before Child64. Details: `docs/adr/0156-phase2/findings.md`.
 
+## Phase 1b result (2026-10-13)
+
+Chat redaction built and tested (`characterChat.ts`, `npm run test:charchat`, 14 tests, mutation-checked). On the 12 real chats the pairs where one character's hidden text is in another's chat fall from 822 to 50 (zero in 10 packages; the two customer-written story bibles keep a remainder, and strict mode keeps only 21 to 42 percent of their chat). No killer-plus-guilt sentence survives. Details and limits: `docs/adr/0156-phase1b/findings.md`.
+
 ## Key files
 
 `temp-files/MM Live - Child (Unified)63-QuoteTalkRemoved.blueprint.json` (module 142, prompts 401, 405, 409), `docs/adr/0153-phase0/findings.md`, `docs/adr/0103-new-purchase-coherence-sweep-ritual.md` (Addenda 81, 86, 91), `supabase/functions/regenerate-child-content/index.ts`, `supabase/migrations/20261013140000_prompt_version_history.sql`.
