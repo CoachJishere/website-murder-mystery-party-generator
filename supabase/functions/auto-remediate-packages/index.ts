@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { DANGLING_QUOTE_RX, deriveBranchHeader, prependHeader, stripStrayGlitches } from "./glitch-strip.ts";
+import { planAccompliceRoleHeal, POINTFORM_TWINS, runWithRoleSwap } from "./accomplice-heal.ts";
 import { type DetectorFailure, detectorFailureAlert, detectorSinceIso, runDetectorGuarded, runWindowDays } from "./detector-guard.ts";
 
 /**
@@ -45,6 +46,12 @@ import { type DetectorFailure, detectorFailureAlert, detectorSinceIso, runDetect
  *                                   pointform bullets are then cleared so the
  *                                   empty_pointform class refreshes them
  *                                   (ADR-0103 Addendum 82)
+ *   accomplice_role_mismatch        ONLY the unambiguous shape (detective style, not yet delivered,
+ *                                   exactly 2 accomplice-role characters, master_context names one):
+ *                                   correct the other character's role, DELEGATE the regeneration of
+ *                                   that whole sheet to regenerate-child-content, then rebuild its
+ *                                   bullets; the role is put back if the regeneration does not land.
+ *                                   Anything else escalates (ADR-0155 Decision 1)
  *   dangling_quote_mark             deterministic strip of the single
  *                                   trailing stray quote character (ADR-0103
  *                                   Addendum 67/68) — see handler doc comment
@@ -175,7 +182,8 @@ type DefectClass =
   | "dangling_quote_mark"
   | "missing_branch_header"
   | "empty_pointform"
-  | "confession_names_cast_member";
+  | "confession_names_cast_member"
+  | "accomplice_role_mismatch";
 
 /**
  * ADR-0061: the delegated meta_text_leak fallback (character-scope artifacts
@@ -203,6 +211,7 @@ const DETECTOR_RPC: Record<DefectClass, string> = {
   missing_branch_header: "list_packages_with_missing_branch_header",
   empty_pointform: "list_packages_with_empty_pointform",
   confession_names_cast_member: "list_packages_with_confession_names_cast_member",
+  accomplice_role_mismatch: "list_packages_with_accomplice_role_mismatch",
 };
 
 // ---------------------------------------------------------------------------
@@ -914,10 +923,13 @@ const DELEGATE_DEFAULT_FIELDS: Record<"identity_contamination" | "slip_culprit_l
 
 async function delegateToRegenerator(
   ctx: RunCtx,
-  hint: "identity_contamination" | "slip_culprit_leak" | "meta_text_leak" | "missing_role_branch_content" | "narration_person_mismatch" | "confession_names_cast_member",
+  hint: "identity_contamination" | "slip_culprit_leak" | "meta_text_leak" | "missing_role_branch_content" | "narration_person_mismatch" | "confession_names_cast_member" | "accomplice_role_mismatch",
   packageId: string,
   characterNames: string[],
   fields: string[],
+  /** ADR-0155: write `to` as this character's role once the claim is held, and put `from` back unless the regeneration comes back "fixed",
+   *  so a relabel can never outlive a failed regeneration (the gate would then pass a sheet that was written for the wrong role). */
+  roleSwap?: { characterId: string; from: string; to: string },
 ): Promise<void> {
   const logClass: LogDefectClass = hint;
 
@@ -989,47 +1001,66 @@ async function delegateToRegenerator(
   }
 
   try {
-    const { ok, json } = await invokeFunctionJson("regenerate-child-content", {
-      package_id: packageId,
-      character_id: primaryId,
-      character_ids: restIds,
-      fields,
-      defect_class_hint: hint,
-    });
+    await runWithRoleSwap(
+      async (characterId, role) => {
+        const { error } = await supabase.from("mystery_characters").update({ character_role: role }).eq("id", characterId);
+        return error ? error.message : null;
+      },
+      roleSwap,
+      async () => {
+        const { ok, json } = await invokeFunctionJson("regenerate-child-content", {
+          package_id: packageId,
+          character_id: primaryId,
+          character_ids: restIds,
+          fields,
+          defect_class_hint: hint,
+        });
 
-    if (!ok || !json) {
-      // The call itself failed before the regenerator could log anything of
-      // its own (network error, cold-start 5xx, etc.) — the worker must log
-      // here, or this attempt vanishes from the audit trail entirely.
-      await logRow({
-        package_id: packageId, defect_class: logClass,
-        action: "delegate:regenerate_child_content|invoke_failed",
-        before_value: null, outcome: "failed", cost_usd: 0,
-      });
-      ctx.results.push({
-        package_id: packageId, defect_class: logClass, action: "delegate:regenerate_child_content",
-        outcome: "failed", cost_usd: 0, note: "regenerate-child-content call failed before it could respond",
-      });
-      return;
-    }
+        if (!ok || !json) {
+          // The call itself failed before the regenerator could log anything of
+          // its own (network error, cold-start 5xx, etc.) — the worker must log
+          // here, or this attempt vanishes from the audit trail entirely.
+          await logRow({
+            package_id: packageId, defect_class: logClass,
+            action: "delegate:regenerate_child_content|invoke_failed",
+            before_value: null, outcome: "failed", cost_usd: 0,
+          });
+          ctx.results.push({
+            package_id: packageId, defect_class: logClass, action: "delegate:regenerate_child_content",
+            outcome: "failed", cost_usd: 0, note: "regenerate-child-content call failed before it could respond",
+          });
+          return false;
+        }
 
-    const rawOutcome = typeof json.outcome === "string" ? json.outcome : "failed";
-    const outcome: Outcome = rawOutcome === "fixed" || rawOutcome === "failed" ? rawOutcome : "escalated";
-    const costUsd = Number(json.cost_usd ?? 0) || 0;
+        const rawOutcome = typeof json.outcome === "string" ? json.outcome : "failed";
+        const outcome: Outcome = rawOutcome === "fixed" || rawOutcome === "failed" ? rawOutcome : "escalated";
+        const costUsd = Number(json.cost_usd ?? 0) || 0;
 
-    // The regenerator already logged this attempt's own auto_remediation_log
-    // row (see file header) — never call logRow again here. Only adjust this
-    // run's LOCAL budget view, so any paid fix later in this same run
-    // (game_overview_victim_mismatch, missing_images) sees accurate headroom
-    // instead of the stale snapshot taken at run start (ADR-0061 Decision 3).
-    ctx.budgetRemaining -= costUsd;
-    if (ctx.budgetRemaining <= 0) ctx.spendHalted = true;
+        // The regenerator already logged this attempt's own auto_remediation_log
+        // row (see file header) — never call logRow again here. Only adjust this
+        // run's LOCAL budget view, so any paid fix later in this same run
+        // (game_overview_victim_mismatch, missing_images) sees accurate headroom
+        // instead of the stale snapshot taken at run start (ADR-0061 Decision 3).
+        ctx.budgetRemaining -= costUsd;
+        if (ctx.budgetRemaining <= 0) ctx.spendHalted = true;
 
-    ctx.results.push({
-      package_id: packageId, defect_class: logClass,
-      action: `delegate:regenerate_child_content:${fields.join(",")}`,
-      outcome, cost_usd: costUsd,
-      note: typeof json.note === "string" ? json.note : undefined,
+        ctx.results.push({
+          package_id: packageId, defect_class: logClass,
+          action: `delegate:regenerate_child_content:${fields.join(",")}`,
+          outcome, cost_usd: costUsd,
+          note: typeof json.note === "string" ? json.note : undefined,
+        });
+        return outcome === "fixed";
+      },
+    ).then(async (r) => {
+      if (r.swapError) {
+        // The corrected role could not be written, so nothing was regenerated.
+        await logRow({ package_id: packageId, defect_class: logClass, action: "delegate:role_swap_failed", before_value: roleSwap?.from ?? null, outcome: "failed", cost_usd: 0 });
+        ctx.results.push({
+          package_id: packageId, defect_class: logClass, action: "delegate:role_swap_failed", outcome: "failed", cost_usd: 0,
+          note: `could not write the corrected role (${r.swapError}); nothing regenerated`,
+        });
+      }
     });
   } finally {
     await releaseClaim(packageId);
@@ -1289,6 +1320,76 @@ async function handleNarrationPersonMismatch(ctx: RunCtx, row: Record<string, un
   const fields = (row.fields as string[]) ?? [];
   if (!characterName || fields.length === 0) return;
   await delegateToRegenerator(ctx, "narration_person_mismatch", packageId, [characterName], fields);
+}
+
+/** ADR-0155 Decision 1: a second character stored with the `accomplice` role. Heals ONLY the unambiguous shape (see planAccompliceRoleHeal);
+ *  everything else is logged once as an escalation and left to a human. The sheet was written for the wrong role, so a relabel alone would pass the
+ *  gate and ship the leak (ADR-0103 Addendum 92): the role is corrected only together with a regeneration of the whole sheet, and put back if that
+ *  regeneration does not land, so the gate keeps holding the package. Afterwards the `secrets` list and the bullet versions follow the new prose. */
+async function handleAccompliceRoleMismatch(ctx: RunCtx, row: Record<string, unknown>): Promise<void> {
+  const packageId = row.package_id as string;
+  const cls = "accomplice_role_mismatch" as const;
+  const { data: pkg, error: pkgError } = await supabase.from("mystery_packages")
+    .select("mystery_style, master_context, ready_email_sent_at").eq("id", packageId).single();
+  const { data: chars, error: charError } = await supabase.from("mystery_characters")
+    .select("id, character_name, character_role").eq("package_id", packageId);
+  if (pkgError || !pkg || charError) { console.error(`accomplice_role_mismatch lookup failed for ${packageId}: ${pkgError?.message ?? charError?.message}`); return; }
+
+  const plan = planAccompliceRoleHeal({
+    style: (pkg as { mystery_style: string | null }).mystery_style,
+    delivered: (pkg as { ready_email_sent_at: string | null }).ready_email_sent_at != null,
+    chars: (chars ?? []).map((c: { id: string; character_name: string; character_role: string | null }) => ({ id: c.id, name: c.character_name, role: c.character_role })),
+    masterContext: (pkg as { master_context: unknown }).master_context,
+  });
+  if (!plan.ok) {
+    const action = `escalate:ambiguous:${plan.reason}`.slice(0, 200);
+    if (!ctx.dryRun && !(await alreadyLogged(packageId, cls, action))) {
+      await logRow({ package_id: packageId, defect_class: cls, action, before_value: String(row.detail ?? ""), outcome: "escalated", cost_usd: 0 });
+    }
+    ctx.results.push({ package_id: packageId, defect_class: cls, action, outcome: "skipped", cost_usd: 0, note: `not the unambiguous shape: ${plan.reason}` });
+    return;
+  }
+
+  if (ctx.dryRun) {
+    ctx.results.push({
+      package_id: packageId, defect_class: cls, action: `plan:role ${plan.demote.name} accomplice->${plan.toRole}, regenerate ${plan.fields.length} fields (keeps ${plan.keep.name})`,
+      outcome: "planned", cost_usd: 0, note: "dry_run — nothing called, nothing written, nothing spent",
+    });
+    return;
+  }
+
+  const resultsBefore = ctx.results.length;
+  await delegateToRegenerator(ctx, cls, packageId, [plan.demote.name], plan.fields, { characterId: plan.demote.id, from: "accomplice", to: plan.toRole });
+  const delegated = ctx.results.slice(resultsBefore).find((r) => r.package_id === packageId && r.defect_class === cls);
+  if (!delegated || delegated.outcome !== "fixed") return; // the role was put back inside delegateToRegenerator; the package stays held and the existing alert path applies
+
+  // The regenerator never writes the `secrets` list (a duplicate of `secret`); keep it in step when it is the plain single-entry shape.
+  const { data: fresh } = await supabase.from("mystery_characters").select("secret, secrets").eq("id", plan.demote.id).single();
+  const f = fresh as { secret: string | null; secrets: unknown } | null;
+  if (f?.secret && Array.isArray(f.secrets) && f.secrets.length <= 1) {
+    await supabase.from("mystery_characters").update({ secrets: [f.secret] }).eq("id", plan.demote.id);
+  }
+
+  // The bullet versions still summarise the old accomplice-styled prose: rebuild them now (about 0.05 USD); if that cannot run, clear them so
+  // stale bullets cannot ship and the empty_pointform class refills them.
+  let bulletsRebuilt = false;
+  if (!ctx.spendHalted) {
+    const { ok, json } = await invokeFunctionJson("generate-pointform-summaries", { packageId, characterIds: [plan.demote.id] });
+    const results = (ok && Array.isArray(json?.results) ? json!.results : []) as Array<{ status: string }>;
+    bulletsRebuilt = results.length > 0 && results.every((r) => r.status === "ok");
+    await logRow({
+      package_id: packageId, defect_class: "empty_pointform", action: `regenerate_pointform:1_characters|after_accomplice_role_heal:${bulletsRebuilt ? "ok" : "failed"}`,
+      before_value: null, outcome: bulletsRebuilt ? "fixed" : "failed", cost_usd: POINTFORM_REGEN_COST_USD,
+    });
+    ctx.budgetRemaining -= POINTFORM_REGEN_COST_USD;
+    if (ctx.budgetRemaining <= 0) ctx.spendHalted = true;
+  }
+  if (!bulletsRebuilt) {
+    const cleared = Object.fromEntries(POINTFORM_TWINS.map((field) => [`${field}_pointform`, null]));
+    const { error } = await supabase.from("mystery_characters").update(cleared).eq("id", plan.demote.id);
+    if (error) console.error(`pointform clear failed for ${plan.demote.id}: ${error.message}`);
+  }
+  console.log(`accomplice_role_mismatch healed on ${packageId}: ${plan.demote.name} accomplice->${plan.toRole}, bullets ${bulletsRebuilt ? "rebuilt" : "cleared"}`);
 }
 
 /** ADR-0103 Addendum 82: confession_names_cast_member — a slip-style reveal confession names another cast member as
@@ -1809,6 +1910,14 @@ serve(async (req) => {
     if (shouldRun("missing_role_branch_content")) {
       for (const row of await sweep(DETECTOR_RPC.missing_role_branch_content)) {
         await handleMissingRoleBranchContent(ctx, row);
+      }
+    }
+
+    // 4b2. accomplice_role_mismatch — ADR-0155: the unambiguous duplicate-accomplice shape only (role + whole-sheet regeneration);
+    //    everything else escalates. Runs before the content classes so a corrected role is in place when they look at the sheet.
+    if (shouldRun("accomplice_role_mismatch")) {
+      for (const row of await sweep(DETECTOR_RPC.accomplice_role_mismatch)) {
+        await handleAccompliceRoleMismatch(ctx, row);
       }
     }
 

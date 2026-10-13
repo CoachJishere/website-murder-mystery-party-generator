@@ -701,9 +701,12 @@ serve(async (req) => {
     // immediately. dangling_quote_mark (Addendum 70), narration_person_mismatch
     // (Addendum 45), missing_role_branch_content (Addendum 36) and
     // pointform_language_mismatch (Addenda 40/41) all shipped handlers without
-    // being added here (ADR-0103 Addendum 72). reveal_name_fusion,
-    // culprit_missing_accusations and accomplice_role_mismatch stay OFF this
-    // list on purpose: detection-only, nothing is coming to fix them.
+    // being added here (ADR-0103 Addendum 72). reveal_name_fusion and
+    // culprit_missing_accusations stay OFF this list on purpose:
+    // detection-only, nothing is coming to fix them. accomplice_role_mismatch
+    // is ON it since ADR-0155: the worker heals the unambiguous shape; an
+    // ambiguous one is logged as an escalated row, which ends the grace
+    // period below and pages immediately.
     const WORKER_RECOGNIZED_PREFIXES = [
       "meta_text_leak",
       "self_directed_question",
@@ -714,6 +717,7 @@ serve(async (req) => {
       "narration_person_mismatch",
       "missing_role_branch_content",
       "pointform_language_mismatch",
+      "accomplice_role_mismatch",
     ];
     const GRACE_PERIOD_MS = 35 * 60 * 1000; // one 30-min sweep (ADR-0062) + buffer
 
