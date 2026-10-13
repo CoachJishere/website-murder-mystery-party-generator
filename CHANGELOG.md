@@ -5,6 +5,7 @@
 ### Fix: "Blackthorn Manor" (EN detective, 11 characters) held four days in `needs_review` - an innocent journalist was stored as a second accomplice; plus a leaked accomplice name and a missing clue line (ADR-0103 Addendum 92)
 - **Why:** Jonathan pasted the purchase and the generation alert. The gate flagged `accomplice_role_mismatch` (two characters with role `accomplice`) at 2026-10-09 18:10 UTC and the customer has had no package since.
 - **What (data edits only, one package, every replace asserted):** Jackie Winthrop's `character_role` accomplice to redHerring (the concept, `master_context`, the reveal and her own sheet all say Pam is the only accomplice); Jackie's secret no longer says she is protecting Pam; Caroline's Round 4 script (and pointform) now says the chill was "from the cellar stairs", the clue the reveal relies on; `game_overview` no longer states Thorne's, Wendy's and Anna's hidden secrets. Gate (`package_completion_blocking_defects`) is NULL afterwards.
+- **Update:** released the same day after Jonathan's yes (ready email 08:48 UTC); the reviewer applied 3 small real fixes (Lex's cellar contradiction, Thorne's unlabelled/labelled bottle, Jackie's "handwritten hand").
 - **Not done:** release (the status flip fires the paid reviewer and the customer's ready email, waits on Jonathan's yes); no heal or detector for a duplicate accomplice role (first sighting in the corpus). Reviewer never ran on this package, so no sweep row is recorded.
 
 ### Docs: ADR-0153 proposes a prompt consolidation project (Proposed, nothing built)
