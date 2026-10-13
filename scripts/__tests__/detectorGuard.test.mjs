@@ -11,7 +11,7 @@ const load = async (rel) => {
   const js = transformSync(src, { loader: 'ts', format: 'esm' }).code;
   return import('data:text/javascript;base64,' + Buffer.from(js).toString('base64'));
 };
-const { runDetectorGuarded, detectorFailureAlert, runWindowDays, HELD_RUN_WINDOW_DAYS } = await load('../../supabase/functions/auto-remediate-packages/detector-guard.ts');
+const { runDetectorGuarded, detectorFailureAlert, runWindowDays, HELD_RUN_WINDOW_DAYS, detectorSinceIso } = await load('../../supabase/functions/auto-remediate-packages/detector-guard.ts');
 let passed = 0;
 const check = async (n, fn) => { await fn(); passed++; console.log(`  ok - ${n}`); };
 const quiet = async (fn) => { const e = console.error; console.error = () => {}; try { return await fn(); } finally { console.error = e; } };
@@ -60,6 +60,16 @@ await check('window: the full run keeps 30 days, the held run scans 7, narrow re
   assert.strictEqual(runWindowDays(0, 3, 30, true), 3);
   assert.strictEqual(runWindowDays(0, 90, 30, false), 30);
   assert.strictEqual(runWindowDays(60, 0, 30, true), 60);
+});
+await check('heavy detectors are capped at 14 days, the rest and explicit backfills are untouched', () => {
+  const now = Date.parse('2026-10-13T12:00:00Z'); const day = 86400000;
+  const iso = (d) => new Date(now - d * day).toISOString();
+  assert.strictEqual(detectorSinceIso('list_packages_with_meta_text_leak', iso(30), 30, now), iso(14));
+  assert.strictEqual(detectorSinceIso('list_packages_with_pointform_language_mismatch', iso(30), 30, now), iso(14));
+  assert.strictEqual(detectorSinceIso('list_packages_with_dangling_quote_mark', iso(30), 30, now), iso(30));
+  assert.strictEqual(detectorSinceIso('list_packages_with_meta_text_leak', iso(7), 30, now), iso(7)); // held run already narrower
+  assert.strictEqual(detectorSinceIso('list_packages_with_meta_text_leak', iso(60), 30, now), iso(60)); // backfill
+  assert.strictEqual(detectorSinceIso('list_packages_with_meta_text_leak', 'garbage', 30, now), 'garbage');
 });
 await check('non-Error throws are recorded as text', async () => {
   const failures = [];

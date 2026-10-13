@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { DANGLING_QUOTE_RX, deriveBranchHeader, prependHeader, stripStrayGlitches } from "./glitch-strip.ts";
-import { type DetectorFailure, detectorFailureAlert, runDetectorGuarded, runWindowDays } from "./detector-guard.ts";
+import { type DetectorFailure, detectorFailureAlert, detectorSinceIso, runDetectorGuarded, runWindowDays } from "./detector-guard.ts";
 
 /**
  * auto-remediate-packages — closed-loop auto-remediation worker. See ADR-0047.
@@ -213,7 +213,7 @@ const escapeRx = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const norm = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
 
 async function callDetector(rpc: string, sinceIso: string): Promise<Record<string, unknown>[]> {
-  const { data, error } = await supabase.rpc(rpc, { _since: sinceIso });
+  const { data, error } = await supabase.rpc(rpc, { _since: detectorSinceIso(rpc, sinceIso, WINDOW_DAYS) });
   if (error) throw new Error(`detector ${rpc} failed: ${error.message}`);
   return (data ?? []) as Record<string, unknown>[];
 }

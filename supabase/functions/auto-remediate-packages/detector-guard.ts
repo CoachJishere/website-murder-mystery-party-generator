@@ -60,3 +60,23 @@ export function detectorFailureAlert(failures: DetectorFailure[]): string | null
   const lines = failures.map((f) => `- ${f.rpc}: ${f.message}`);
   return `${failures.length} detector(s) failed in this auto-remediate run and were skipped (the other classes ran):\n${lines.join("\n")}`;
 }
+
+/**
+ * Update 6: the two slowest detectors (a regex scan of every character's text in the window) still timed out about
+ * 11 times a day with 3 skipped runs after the retry. Their window is capped at 14 days on the normal runs; every
+ * other detector keeps the full window. A window wider than the standard one is an explicit backfill and is left alone.
+ */
+export const HEAVY_DETECTOR_RPCS = new Set([
+  "list_packages_with_meta_text_leak",
+  "list_packages_with_pointform_language_mismatch",
+]);
+export const HEAVY_DETECTOR_WINDOW_DAYS = 14;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+export function detectorSinceIso(rpc: string, sinceIso: string, standardDays: number, nowMs: number = Date.now()): string {
+  if (!HEAVY_DETECTOR_RPCS.has(rpc)) return sinceIso;
+  const sinceMs = Date.parse(sinceIso);
+  if (!Number.isFinite(sinceMs)) return sinceIso;
+  if (nowMs - sinceMs > standardDays * DAY_MS + 60 * 60 * 1000) return sinceIso; // backfill: caller asked for more on purpose
+  return new Date(Math.max(sinceMs, nowMs - HEAVY_DETECTOR_WINDOW_DAYS * DAY_MS)).toISOString();
+}

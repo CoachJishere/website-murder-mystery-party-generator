@@ -2,6 +2,12 @@
 
 ## 2026-10-13
 
+### Fix: the two slowest auto-remediate detectors scan 14 days instead of 30 (ADR-0103 Addendum 87 Update 6)
+- **Why:** six days after Update 5 the logs still showed 11 meta-text-leak statement timeouts in 24 h (300 runs, 0 fatals), 8 recovered by the retry and 3 skipped runs (about 3 alert emails a day, one of them pointform-language-mismatch). The guard keeps the run alive; this reduces how often it is needed.
+- **What:** `auto-remediate-packages` v28: `list_packages_with_meta_text_leak` and `list_packages_with_pointform_language_mismatch` use at most 14 days (all other detectors, the held run's 7 days and explicit `backfill_days` unchanged). Test added (11 checks).
+- **Trade-off:** a leak or pointform mismatch in a package older than 14 days is no longer auto-healed (hand fix or `backfill_days`).
+- **Not done:** staggering the cron minutes, a `pg_stat_activity` snapshot, a stored per-package verdict (next levers, in that order). Not yet measured; baseline to compare against is 300 runs / 11 retries / 3 skips per 24 h.
+
 ### Docs: ADR-0155 proposes a heal for a duplicate accomplice and a fix for the requirements check that was skipped on about 88 percent of orders (Proposed, nothing built)
 - **Why:** Blackthorn Manor's customer got a package with a mislabelled second accomplice and no page for Shannon, whom the approved concept promised. A `requirements_probe` (about 0.15 USD, run on Jonathan's yes) returned "skipped: no customer requirements in master_context": only 3 of 26 paid packages since 2026-10-01 carry the list the ADR-0150 check reads, so the check has not been running on most orders since it shipped.
 - **What:** ADR only. Decision 1: heal the unambiguous duplicate-accomplice shape (relabel plus regenerate that one sheet, about 0.15 USD). Decision 2: when the list is missing, extract requirements from the customer's own brief and approved concept (about 0.03 to 0.05 USD per order, estimate).
