@@ -19,7 +19,7 @@ Data on 2026-10-13 (weekly SEO digest follow-up):
 In `send-followup-emails`, before sending a `how_did_it_go` email:
 - If `conversations.party_detected_at` is set, send as before.
 - Otherwise, count distinct characters whose link has ever been opened. If that count is below `max(3, ceil(player_count / 2))` (the ADR-0128 threshold, `player_count` defaulting to 6) and the row is younger than 49 days, push `scheduled_for` out by 14 days and set `skipped_reason = 'deferred_guests_not_opened'`. The status stays `pending`, so the party-cluster detector (which needs `scheduled_for > now + 16h`) can still pull it forward later.
-- At 49 days (21 + 14 + 14) the email goes out regardless.
+- Update (same day): there is no send-anyway cap. At 90 days from generation with the threshold still unmet the row is marked `skipped` (`no_party_assumed_after_90_days`) and no email is sent. Jonathan: "after something like 90 days assume that the party isn't happening."
 - A sent row clears `skipped_reason`.
 
 Jonathan's call: "hold off on asking for feedback vs sending a premature email."
@@ -33,8 +33,8 @@ Asking for feedback before the party is wasted and mildly annoying; asking a few
 - New column or table for deferrals: unnecessary; the existing `scheduled_for` and `skipped_reason` columns carry it.
 
 ## Consequences
-- Hosts who never use the platform's guest links get the email at day 49 instead of day 21.
-- Cap and step (14, 49) are guesses; review after about 4 weeks of data.
+- Hosts who never use the platform's guest links, or play from a printed guide, now never get this email (it is skipped at day 90). Accepted by Jonathan.
+- The 14-day step and the 90-day give-up are guesses; review after about 4 weeks of data and count how many rows end as `no_party_assumed_after_90_days`.
 - `skipped_reason` on a pending row now means "deferred", on a skipped row "excluded".
 - Not verified live: first effect expected on the 2026-10-14 10:15 UTC run (conversation `aa119be0`, 1 of 4 opens needed, should show `deferred_guests_not_opened` and `scheduled_for` about 14 days out).
 

@@ -457,19 +457,23 @@ serve(async (req) => {
           // as many guests have opened their links as the party-cluster detector
           // needs (ADR-0128), the party has probably not happened, so re-check in 14
           // days instead of asking for feedback. A single open is usually the host
-          // checking a link. Capped so a host who never uses the guest links still
-          // gets the email.
+          // checking a link. After 90 days without that, assume it never happens and
+          // never send.
           const ageDays = (Date.now() - new Date(email.created_at).getTime()) / 86_400_000;
           const needed = Math.max(3, Math.ceil((convo.player_count ?? 6) / 2));
-          if (!convo.party_detected_at && ageDays < FEEDBACK_MAX_DEFER_DAYS
+          if (!convo.party_detected_at
               && (await countGuestsOpened(supabase, email.conversation_id)) < needed) {
-            await supabase
-              .from("followup_emails")
-              .update({
-                scheduled_for: new Date(Date.now() + FEEDBACK_DEFER_DAYS * 86_400_000).toISOString(),
-                skipped_reason: "deferred_guests_not_opened",
-              })
-              .eq("id", email.id);
+            if (ageDays >= FEEDBACK_GIVE_UP_DAYS) {
+              await markSkipped(supabase, email.id, "no_party_assumed_after_90_days");
+            } else {
+              await supabase
+                .from("followup_emails")
+                .update({
+                  scheduled_for: new Date(Date.now() + FEEDBACK_DEFER_DAYS * 86_400_000).toISOString(),
+                  skipped_reason: "deferred_guests_not_opened",
+                })
+                .eq("id", email.id);
+            }
             continue;
           }
 
@@ -556,8 +560,8 @@ async function markHeld(supabase: any, emailId: string, reason: string) {
 }
 
 const FEEDBACK_DEFER_DAYS = 14;
-// Counted from the row's creation (package generation): 21 + 14 + 14.
-const FEEDBACK_MAX_DEFER_DAYS = 49;
+// Counted from the row's creation (package generation).
+const FEEDBACK_GIVE_UP_DAYS = 90;
 
 // Distinct characters whose link has been opened at least once (any time).
 async function countGuestsOpened(supabase: any, conversationId: string): Promise<number> {
