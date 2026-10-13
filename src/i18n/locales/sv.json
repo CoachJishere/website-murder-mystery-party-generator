@@ -1618,7 +1618,8 @@
       "reassignNote": "Tar du bort {{role}} måste någon annan ta över den rollen. Välj vem, eller låt oss välja.",
       "replacementAuto": "Låt oss välja",
       "maxReached": "Ett mysterium behöver minst {{min}} karaktärer för att fungera - det är max du kan ta bort på en gång.",
-      "selectedSummary": "{{count}} valda - ${{total}}"
+      "selectedSummary": "{{count}} valda - ${{total}}",
+      "sealedNote": "Du spelar med, så roller är dolda här. Om du tar bort den skyldiga karaktären eller medbrottslingen anger bekräftelsesidan och mejlet vem som tar över; låt en hjälpare som inte spelar göra borttagningen om du vill förbli ovetande."
     },
     "confirm": {
       "back": "Tillbaka",
@@ -1763,7 +1764,8 @@
       "detectivePlaysItem3": "Läs upp manuset som vanligt till och med de avslutande uttalandena. Allt som reglaget lämnar synligt läses ändå upp eller visas för hela bordet",
       "detectivePlaysItem4_murder": "Låt mördaren (som redan vet) eller en hjälpare som inte spelar öppna värdlänken från ditt värd-mejl på sin egen enhet, stänga av reglaget där och läsa upp avslöjandet",
       "detectivePlaysItem4_intrigue": "Låt gärningspersonen (som redan vet) eller en hjälpare som inte spelar öppna värdlänken från ditt värd-mejl på sin egen enhet, stänga av reglaget där och läsa upp avslöjandet",
-      "detectivePlaysItem5": "Vissa äldre mysterier har ingen separat avslöjandedel. Då döljer appen hela manuset och en hjälpare som inte spelar läser upp det i stället"
+      "detectivePlaysItem5": "Vissa äldre mysterier har ingen separat avslöjandedel. Då döljer appen hela manuset och en hjälpare som inte spelar läser upp det i stället",
+      "detectivePlaysItem6": "Reglaget sparas bara i den här webbläsaren. Värdlänken finns först när du har tryckt på «{{send}}» (under «{{share}}») och har ett eget reglage som är avslaget som standard: öppnar du den själv, slå på det där också. Hjälparen som läser upp avslöjandet lämnar det avslaget"
     },
     "runningGame": {
       "heading": "Att leda spelet",

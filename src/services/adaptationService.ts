@@ -32,6 +32,7 @@ export interface AdaptationBatchRow {
   status: AdaptationStatusValue;
   character_name: string;
   character_role: string | null;
+  package_id?: string | null;
   error_message: string | null;
   transform_result: {
     reassignment?: AdaptationReassignmentInfo;
@@ -73,7 +74,7 @@ export async function createAdaptation(
 export async function getAdaptationBatchStatus(batchId: string): Promise<AdaptationBatchRow[]> {
   const { data, error } = await supabase
     .from("mystery_adaptations")
-    .select("id, batch_sequence, status, character_name, character_role, error_message, transform_result")
+    .select("id, batch_sequence, status, character_name, character_role, package_id, error_message, transform_result")
     .eq("batch_id", batchId)
     .order("batch_sequence", { ascending: true });
   if (error) throw error;

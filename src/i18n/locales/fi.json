@@ -1618,7 +1618,8 @@
       "reassignNote": "Jos poistat {{role}}, jonkun toisen täytyy ottaa se rooli. Valitse kuka, tai anna meidän valita.",
       "replacementAuto": "Anna meidän valita",
       "maxReached": "Mysteeri tarvitsee toimiakseen vähintään {{min}} hahmoa - se on enimmäismäärä, jonka voit poistaa kerralla.",
-      "selectedSummary": "{{count}} valittu - {{total}} $"
+      "selectedSummary": "{{count}} valittu - {{total}} $",
+      "sealedNote": "Pelaat mukana, joten roolit on piilotettu tästä. Jos poistat syyllisen hahmon tai rikoskumppanin, vahvistussivu ja sähköposti kertovat, kuka ottaa roolin; pyydä apulaista, joka ei pelaa, tekemään poisto, jos haluat pysyä tietämättömänä."
     },
     "confirm": {
       "back": "Takaisin",
@@ -1756,14 +1757,15 @@
       "hostPlaysItem4": "Taita ja sekoita liput katsomatta, tai anna vieraan valmistella ne, jotta et tiedä kuka nosti minkä",
       "detectivePlaysLabel": "**Haluatko pelata itse epäiltyä? (etsivätyyliset mysteerit)**",
       "detectivePlaysPointer": "Jos pelaat myös epäiltyä, ohita tämä ja lue alempana kohta «Haluatko pelata itse epäiltyä?».",
-      "detectivePlaysItem1_murder": "Ennen kuin avaat Etsivän oppaan tai Vihjeet-välilehden, ota siellä käyttöön «Pelaan myös epäiltyä (piilota vastaus)». Se piilottaa käsikirjoituksen lopun paljastuksen ja todistekorttien «Host Only»-vihjeet, jotka ovat ainoat paikat, joissa kerrotaan, kuka on syyllinen",
+      "detectivePlaysItem1_murder": "Ennen kuin avaat Tarkastaja-oppaan tai Vihjeet-välilehden, ota siellä käyttöön «Pelaan myös epäiltyä (piilota vastaus)». Se piilottaa käsikirjoituksen lopun paljastuksen ja todistekorttien «Host Only»-vihjeet, jotka ovat ainoat paikat, joissa kerrotaan, kuka on syyllinen",
       "detectivePlaysItem1_intrigue": "Ennen kuin avaat Tutkijan oppaan tai Vihjeet-välilehden, ota siellä käyttöön «Pelaan myös epäiltyä (piilota vastaus)». Se piilottaa käsikirjoituksen lopun paljastuksen ja todistekorttien «Host Only»-vihjeet, jotka ovat ainoat paikat, joissa kerrotaan, kuka on syyllinen",
       "detectivePlaysItem2_murder": "Ota hahmon sivu kuten kuka tahansa vieras ja ohita muiden sivut (pyydä vaikka vierasta ojentamaan sinulle yksi). Jos saat murhaajan sivun, tiedät sen omasta sivustasi, ja se on reilua",
       "detectivePlaysItem2_intrigue": "Ota hahmon sivu kuten kuka tahansa vieras ja ohita muiden sivut (pyydä vaikka vierasta ojentamaan sinulle yksi). Jos saat syyllisen sivun, tiedät sen omasta sivustasi, ja se on reilua",
       "detectivePlaysItem3": "Lue käsikirjoitus ääneen kuten tavallisesti loppulausuntoihin asti. Kaikki, minkä kytkin jättää näkyviin, luetaan tai näytetään koko pöydälle joka tapauksessa",
       "detectivePlaysItem4_murder": "Pyydä paljastusta varten murhaajaa (joka jo tietää) tai apulaista, joka ei pelaa, avaamaan isännän linkki sähköpostistasi omalla laitteellaan, kytkemään asetus siellä pois päältä ja lukemaan paljastus ääneen",
       "detectivePlaysItem4_intrigue": "Pyydä paljastusta varten syyllistä (joka jo tietää) tai apulaista, joka ei pelaa, avaamaan isännän linkki sähköpostistasi omalla laitteellaan, kytkemään asetus siellä pois päältä ja lukemaan paljastus ääneen",
-      "detectivePlaysItem5": "Joissakin vanhemmissa mysteereissä ei ole erillistä paljastusosiota. Niissä sovellus piilottaa koko käsikirjoituksen ja apulainen, joka ei pelaa, lukee sen ääneen"
+      "detectivePlaysItem5": "Joissakin vanhemmissa mysteereissä ei ole erillistä paljastusosiota. Niissä sovellus piilottaa koko käsikirjoituksen ja apulainen, joka ei pelaa, lukee sen ääneen",
+      "detectivePlaysItem6": "Kytkin muistetaan vain tässä selaimessa. Isännän linkki on olemassa vasta, kun olet painanut «{{send}}» (kohdassa «{{share}}»), ja siinä on oma kytkimensä, joka on oletuksena pois päältä: jos avaat sen itse, kytke se päälle myös siellä. Apulainen, joka lukee paljastuksen, jättää sen pois päältä"
     },
     "runningGame": {
       "heading": "Pelin vetäminen",

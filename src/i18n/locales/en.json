@@ -1619,7 +1619,8 @@
       "reassignNote": "Removing the {{role}} means someone else needs to take over that role. Pick who, or let us choose.",
       "replacementAuto": "Let us choose",
       "maxReached": "A mystery needs at least {{min}} characters to work - that's as many as you can remove at once.",
-      "selectedSummary": "{{count}} selected — ${{total}}"
+      "selectedSummary": "{{count}} selected — ${{total}}",
+      "sealedNote": "You are playing, so roles are hidden here. If you remove the guilty character or the accomplice, the confirmation page and email will say who takes over; have a helper who is not playing do the removal if you want to stay unspoiled."
     },
     "confirm": {
       "back": "Back",
@@ -1841,7 +1842,8 @@
       "detectivePlaysItem3": "Read the script aloud as usual, up to the final statements. Everything the switch leaves visible is read aloud or shown to the whole table anyway",
       "detectivePlaysItem4_murder": "For the Reveal, have the murderer (who already knows) or a helper who is not playing open the Host link from your host email on their own device, switch the setting off there, and read the Reveal aloud",
       "detectivePlaysItem4_intrigue": "For the Reveal, have the culprit (who already knows) or a helper who is not playing open the Host link from your host email on their own device, switch the setting off there, and read the Reveal aloud",
-      "detectivePlaysItem5": "Some older mysteries have no separate Reveal section. For those the app hides the whole script and a helper who is not playing reads it aloud instead"
+      "detectivePlaysItem5": "Some older mysteries have no separate Reveal section. For those the app hides the whole script and a helper who is not playing reads it aloud instead",
+      "detectivePlaysItem6": "The switch is remembered in this browser only. The Host link only exists once you press \"{{send}}\" (under \"{{share}}\"), and it has its own switch, off by default: if you open it yourself, switch it on there too. The helper who reads the Reveal leaves it off"
     },
     "runningGame": {
       "heading": "Running the Game",

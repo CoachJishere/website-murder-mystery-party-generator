@@ -1618,7 +1618,8 @@
       "reassignNote": "Eliminar a {{role}} significa que otra persona debe asumir ese papel. Elige quién, o deja que lo elijamos nosotros.",
       "replacementAuto": "Que lo elijamos nosotros",
       "maxReached": "Un misterio necesita al menos {{min}} personajes para funcionar - ese es el máximo que puedes eliminar de una vez.",
-      "selectedSummary": "{{count}} seleccionados - ${{total}}"
+      "selectedSummary": "{{count}} seleccionados - ${{total}}",
+      "sealedNote": "Estás jugando, así que aquí se ocultan los roles. Si quitas al personaje culpable o al cómplice, la página de confirmación y el correo dirán quién lo reemplaza; pide a un ayudante que no juegue que haga el cambio si quieres seguir sin saberlo."
     },
     "confirm": {
       "back": "Atrás",
@@ -1763,7 +1764,8 @@
       "detectivePlaysItem3": "Lee el guion en voz alta como siempre, hasta las declaraciones finales. Todo lo que el interruptor deja visible se lee en voz alta o se muestra de todos modos a toda la mesa",
       "detectivePlaysItem4_murder": "Para La revelación, pide al asesino (que ya lo sabe) o a un ayudante que no juegue que abra el enlace del anfitrión de tu correo en su propio dispositivo, desactive allí el interruptor y lea La revelación en voz alta",
       "detectivePlaysItem4_intrigue": "Para La revelación, pide al culpable (que ya lo sabe) o a un ayudante que no juegue que abra el enlace del anfitrión de tu correo en su propio dispositivo, desactive allí el interruptor y lea La revelación en voz alta",
-      "detectivePlaysItem5": "Algunos misterios antiguos no tienen una sección de revelación separada. En esos casos la app oculta todo el guion y lo lee en voz alta un ayudante que no juegue"
+      "detectivePlaysItem5": "Algunos misterios antiguos no tienen una sección de revelación separada. En esos casos la app oculta todo el guion y lo lee en voz alta un ayudante que no juegue",
+      "detectivePlaysItem6": "El interruptor solo se recuerda en este navegador. El enlace del anfitrión solo existe cuando pulsas «{{send}}» (en «{{share}}») y tiene su propio interruptor, desactivado por defecto: si lo abres tú, actívalo también ahí. El ayudante que lee La revelación lo deja desactivado"
     },
     "runningGame": {
       "heading": "Cómo Dirigir la Partida",

@@ -1618,7 +1618,8 @@
       "reassignNote": "Fjerner du {{role}}, skal en anden overtage den rolle. Vælg hvem, eller lad os vælge.",
       "replacementAuto": "Lad os vælge",
       "maxReached": "Et mysterie kræver mindst {{min}} karakterer for at fungere - det er det maksimale, du kan fjerne på én gang.",
-      "selectedSummary": "{{count}} valgt - ${{total}}"
+      "selectedSummary": "{{count}} valgt - ${{total}}",
+      "sealedNote": "Du spiller med, så roller er skjult her. Hvis du fjerner den skyldige karakter eller medskyldige, oplyser bekræftelsessiden og e-mailen, hvem der overtager; lad en hjælper, der ikke spiller med, udføre fjernelsen, hvis du vil være uvidende."
     },
     "confirm": {
       "back": "Tilbage",
@@ -1763,7 +1764,8 @@
       "detectivePlaysItem3": "Læs manuskriptet højt som sædvanligt til og med de afsluttende udtalelser. Alt, hvad kontakten lader være synligt, bliver alligevel læst højt eller vist for hele bordet",
       "detectivePlaysItem4_murder": "Til afsløringen skal morderen (der allerede ved det) eller en hjælper, der ikke spiller med, åbne værtslinket fra din værts-e-mail på sin egen enhed, slå kontakten fra dér og læse afsløringen højt",
       "detectivePlaysItem4_intrigue": "Til afsløringen skal gerningsmanden (der allerede ved det) eller en hjælper, der ikke spiller med, åbne værtslinket fra din værts-e-mail på sin egen enhed, slå kontakten fra dér og læse afsløringen højt",
-      "detectivePlaysItem5": "Nogle ældre mysterier har ingen separat afsløringssektion. Dér skjuler appen hele manuskriptet, og en hjælper, der ikke spiller med, læser det højt i stedet"
+      "detectivePlaysItem5": "Nogle ældre mysterier har ingen separat afsløringssektion. Dér skjuler appen hele manuskriptet, og en hjælper, der ikke spiller med, læser det højt i stedet",
+      "detectivePlaysItem6": "Kontakten huskes kun i denne browser. Værtslinket findes først, når du har trykket på «{{send}}» (under «{{share}}»), og det har sin egen kontakt, der som standard er slået fra: åbner du det selv, så slå den til dér også. Hjælperen, der læser afsløringen, lader den være slået fra"
     },
     "runningGame": {
       "heading": "Sådan leder du spillet",

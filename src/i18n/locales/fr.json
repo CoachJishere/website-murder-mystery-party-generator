@@ -1619,7 +1619,8 @@
       "reassignNote": "Retirer {{role}} signifie que quelqu'un d'autre doit reprendre ce rôle. Choisissez qui, ou laissez-nous choisir.",
       "replacementAuto": "Laissez-nous choisir",
       "maxReached": "Un mystère a besoin d'au moins {{min}} personnages pour fonctionner - c'est le maximum que vous pouvez retirer en une fois.",
-      "selectedSummary": "{{count}} sélectionnés - {{total}} $"
+      "selectedSummary": "{{count}} sélectionnés - {{total}} $",
+      "sealedNote": "Vous jouez, donc les rôles sont masqués ici. Si vous retirez le personnage coupable ou le complice, la page de confirmation et l'e-mail indiqueront qui prend le relais ; demandez à un assistant qui ne joue pas de faire le retrait si vous voulez rester dans l'ignorance."
     },
     "confirm": {
       "back": "Retour",
@@ -1757,14 +1758,15 @@
       "hostPlaysItem4": "Pliez et mélangez les papiers sans les regarder, ou laissez un invité les préparer, pour ne pas savoir qui a tiré quoi",
       "detectivePlaysLabel": "**Vous voulez jouer un suspect vous-même ? (mystères de style détective)**",
       "detectivePlaysPointer": "Si vous jouez aussi un suspect, passez ce point et lisez « Vous voulez jouer un suspect vous-même ? » plus bas.",
-      "detectivePlaysItem1_murder": "Avant d'ouvrir le Guide du détective ou l'onglet Indices, activez-y « Je joue aussi un suspect (masquer la réponse) ». Cela masque la révélation à la fin du script et les indices « Host Only » des cartes de preuve, les seuls endroits qui disent qui est coupable",
+      "detectivePlaysItem1_murder": "Avant d'ouvrir le Guide de l'inspecteur ou l'onglet Indices, activez-y « Je joue aussi un suspect (masquer la réponse) ». Cela masque la révélation à la fin du script et les indices « Host Only » des cartes de preuve, les seuls endroits qui disent qui est coupable",
       "detectivePlaysItem1_intrigue": "Avant d'ouvrir le Guide de l'enquêteur ou l'onglet Indices, activez-y « Je joue aussi un suspect (masquer la réponse) ». Cela masque la révélation à la fin du script et les indices « Host Only » des cartes de preuve, les seuls endroits qui disent qui est coupable",
       "detectivePlaysItem2_murder": "Prenez la page d'un personnage comme n'importe quel invité et passez celles des autres (demandez à un invité de vous en tendre une si vous voulez). Si vous tombez sur la page du meurtrier, vous le saurez grâce à votre propre page, et c'est de bonne guerre",
       "detectivePlaysItem2_intrigue": "Prenez la page d'un personnage comme n'importe quel invité et passez celles des autres (demandez à un invité de vous en tendre une si vous voulez). Si vous tombez sur la page du coupable, vous le saurez grâce à votre propre page, et c'est de bonne guerre",
       "detectivePlaysItem3": "Lisez le script à voix haute comme d'habitude, jusqu'aux déclarations finales. Tout ce que l'interrupteur laisse visible est de toute façon lu à voix haute ou montré à toute la tablée",
       "detectivePlaysItem4_murder": "Pour la révélation, demandez au meurtrier (qui sait déjà) ou à un assistant qui ne joue pas d'ouvrir le lien hôte reçu par e-mail sur son propre appareil, d'y désactiver l'option et de lire la révélation à voix haute",
       "detectivePlaysItem4_intrigue": "Pour la révélation, demandez au coupable (qui sait déjà) ou à un assistant qui ne joue pas d'ouvrir le lien hôte reçu par e-mail sur son propre appareil, d'y désactiver l'option et de lire la révélation à voix haute",
-      "detectivePlaysItem5": "Certains mystères plus anciens n'ont pas de section de révélation distincte. Pour ceux-là, l'application masque tout le script et un assistant qui ne joue pas le lit à voix haute"
+      "detectivePlaysItem5": "Certains mystères plus anciens n'ont pas de section de révélation distincte. Pour ceux-là, l'application masque tout le script et un assistant qui ne joue pas le lit à voix haute",
+      "detectivePlaysItem6": "L'option n'est mémorisée que dans ce navigateur. Le lien hôte n'existe qu'une fois que vous avez cliqué sur « {{send}} » (sous « {{share}} »), et il a sa propre option, désactivée par défaut : si vous l'ouvrez vous-même, activez-la aussi là-bas. L'assistant qui lit la révélation la laisse désactivée"
     },
     "runningGame": {
       "heading": "Déroulement de la partie",

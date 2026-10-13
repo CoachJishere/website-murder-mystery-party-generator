@@ -1347,6 +1347,7 @@ const MysteryPackageTabView = React.memo(({
                 packageId={packageId}
                 characters={characters}
                 mysteryStyle={mysteryStyle}
+                hideRoles={sealActive}
               />
             </div>
           </TabsContent>

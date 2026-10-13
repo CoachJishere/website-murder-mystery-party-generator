@@ -1618,7 +1618,8 @@
       "reassignNote": "Als je {{role}} verwijdert, moet iemand anders die rol overnemen. Kies wie, of laat ons kiezen.",
       "replacementAuto": "Laat ons kiezen",
       "maxReached": "Een mysterie heeft minstens {{min}} personages nodig om te werken - dat is het maximum dat je in één keer kunt verwijderen.",
-      "selectedSummary": "{{count}} geselecteerd - ${{total}}"
+      "selectedSummary": "{{count}} geselecteerd - ${{total}}",
+      "sealedNote": "Je speelt mee, dus rollen zijn hier verborgen. Als je het schuldige personage of de handlanger verwijdert, noemen de bevestigingspagina en de e-mail wie het overneemt; laat een helper die niet meespeelt de verwijdering doen als je niets wilt weten."
     },
     "confirm": {
       "back": "Terug",
@@ -1763,7 +1764,8 @@
       "detectivePlaysItem3": "Lees het script zoals gewoonlijk hardop voor, tot de slotverklaringen. Alles wat de schakelaar zichtbaar laat, wordt toch al voorgelezen of aan de hele tafel getoond",
       "detectivePlaysItem4_murder": "Laat voor de onthulling de moordenaar (die het al weet) of een helper die niet meespeelt de hostlink uit je host-e-mail op het eigen apparaat openen, daar de schakelaar uitzetten en de onthulling hardop voorlezen",
       "detectivePlaysItem4_intrigue": "Laat voor de onthulling de dader (die het al weet) of een helper die niet meespeelt de hostlink uit je host-e-mail op het eigen apparaat openen, daar de schakelaar uitzetten en de onthulling hardop voorlezen",
-      "detectivePlaysItem5": "Sommige oudere mysteries hebben geen aparte onthullingssectie. Dan verbergt de app het hele script en leest een helper die niet meespeelt het hardop voor"
+      "detectivePlaysItem5": "Sommige oudere mysteries hebben geen aparte onthullingssectie. Dan verbergt de app het hele script en leest een helper die niet meespeelt het hardop voor",
+      "detectivePlaysItem6": "De schakelaar wordt alleen in deze browser onthouden. De hostlink bestaat pas nadat je op «{{send}}» hebt gedrukt (onder «{{share}}») en heeft een eigen schakelaar, standaard uit: open je hem zelf, zet hem daar dan ook aan. De helper die de onthulling voorleest, laat hem uit"
     },
     "runningGame": {
       "heading": "Het Spel Leiden",

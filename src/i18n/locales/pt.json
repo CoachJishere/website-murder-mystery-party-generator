@@ -1618,7 +1618,8 @@
       "reassignNote": "Remover {{role}} significa que outra pessoa precisa assumir esse papel. Escolha quem, ou deixe que a gente escolha.",
       "replacementAuto": "Deixe que a gente escolha",
       "maxReached": "Um mistério precisa de pelo menos {{min}} personagens para funcionar - esse é o máximo que você pode remover de uma vez.",
-      "selectedSummary": "{{count}} selecionados - ${{total}}"
+      "selectedSummary": "{{count}} selecionados - ${{total}}",
+      "sealedNote": "Estás a jogar, por isso os papéis ficam escondidos aqui. Se removeres a personagem culpada ou o cúmplice, a página de confirmação e o e-mail dizem quem assume o papel; pede a um ajudante que não joga para fazer a remoção se quiseres continuar sem saber."
     },
     "confirm": {
       "back": "Voltar",
@@ -1756,14 +1757,15 @@
       "hostPlaysItem4": "Dobra e mistura os papelinhos sem olhar, ou pede a um convidado que os prepare, para não saberes quem tirou o quê",
       "detectivePlaysLabel": "**Queres jogar também como suspeito? (mistérios no estilo detetivesco)**",
       "detectivePlaysPointer": "Se também vais jogar como suspeito, salta isto e lê «Queres jogar também como suspeito?» mais abaixo.",
-      "detectivePlaysItem1_murder": "Antes de abrires o Guia do Detetive ou o separador Evidências, ativa aí «Também estou a jogar como suspeito (esconder a resposta)». Isto esconde a revelação no fim do guião e as pistas «Host Only» nos cartões de provas, os únicos sítios que dizem quem é culpado",
+      "detectivePlaysItem1_murder": "Antes de abrires o Guia do Inspetor ou o separador Evidências, ativa aí «Também estou a jogar como suspeito (esconder a resposta)». Isto esconde a revelação no fim do guião e as pistas «Host Only» nos cartões de provas, os únicos sítios que dizem quem é culpado",
       "detectivePlaysItem1_intrigue": "Antes de abrires o Guia do Investigador ou o separador Evidências, ativa aí «Também estou a jogar como suspeito (esconder a resposta)». Isto esconde a revelação no fim do guião e as pistas «Host Only» nos cartões de provas, os únicos sítios que dizem quem é culpado",
       "detectivePlaysItem2_murder": "Pega na página de uma personagem como qualquer convidado e salta as páginas das outras (podes pedir a um convidado que te passe uma). Se calhar a página do assassino, ficas a saber pela tua própria página, e isso é justo",
       "detectivePlaysItem2_intrigue": "Pega na página de uma personagem como qualquer convidado e salta as páginas das outras (podes pedir a um convidado que te passe uma). Se calhar a página do culpado, ficas a saber pela tua própria página, e isso é justo",
       "detectivePlaysItem3": "Lê o guião em voz alta como de costume, até às declarações finais. Tudo o que o interruptor deixa visível é, de qualquer forma, lido em voz alta ou mostrado a toda a mesa",
       "detectivePlaysItem4_murder": "Para a revelação, pede ao assassino (que já sabe) ou a um ajudante que não joga que abra a ligação do anfitrião que veio no teu e-mail no seu próprio dispositivo, desative lá a opção e leia a revelação em voz alta",
       "detectivePlaysItem4_intrigue": "Para a revelação, pede ao culpado (que já sabe) ou a um ajudante que não joga que abra a ligação do anfitrião que veio no teu e-mail no seu próprio dispositivo, desative lá a opção e leia a revelação em voz alta",
-      "detectivePlaysItem5": "Alguns mistérios mais antigos não têm uma secção de revelação separada. Nesses casos, a aplicação esconde o guião todo e um ajudante que não joga lê-o em voz alta"
+      "detectivePlaysItem5": "Alguns mistérios mais antigos não têm uma secção de revelação separada. Nesses casos, a aplicação esconde o guião todo e um ajudante que não joga lê-o em voz alta",
+      "detectivePlaysItem6": "O interruptor fica guardado apenas neste navegador. A ligação do anfitrião só existe depois de carregares em «{{send}}» (em «{{share}}») e tem o seu próprio interruptor, desligado por predefinição: se a abrires tu, ativa-o também aí. O ajudante que lê a revelação deixa-o desligado"
     },
     "runningGame": {
       "heading": "Conduzir o Jogo",

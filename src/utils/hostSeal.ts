@@ -8,6 +8,9 @@
 // A heading (levels 2 to 4) that opens the reveal. Reveal headings are localized by the
 // Parent, so this list is the words seen in delivered packages (es, it, fr, nl, sv) plus
 // the likely forms in the other locales. A word missing here fails CLOSED (see below).
+// Do NOT add "closing": older packages put the resolution inside "ACCUSATIONS AND RESOLUTION" and a
+// CLOSING heading after it would then count as the reveal and leave the answer open (corpus check
+// 2026-10-13: one delivered package). A closing section above the reveal is a latent, unseen case.
 // "Resolution" is deliberately not a trigger in English: older packages have no reveal
 // section at all and the sealing then fails closed for them.
 const REVEAL_WORDS =

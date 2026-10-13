@@ -71,6 +71,8 @@ const HostGuideTemplate: React.FC<HostGuideTemplateProps> = ({
   const slipCount = playerCount ?? 7;
 
   const tt = (key: string) => t(`hostGuide.${key}`);
+  // Loosely typed lookup for the ADR-0158 strings (same reason as useHostSealText: keeps tsc at its baseline).
+  const looseT = t as unknown as (key: string, opts?: Record<string, string>) => string;
   // ADR-0158: detective-style sentences that tell the host to look up who is guilty get a short
   // pointer to the "Playing a suspect yourself?" block, so a playing host does not follow them.
   const dp = (text: string) => (isCharacterBased ? text : `${text} ${tt("setupChoice.detectivePlaysPointer")}`);
@@ -159,6 +161,7 @@ ${tt("setupChoice.detectivePlaysLabel")}
 - ${tt("setupChoice.detectivePlaysItem3")}
 - ${tt(`setupChoice.detectivePlaysItem4_${ctx}`)}
 - ${tt("setupChoice.detectivePlaysItem5")}
+- ${looseT("hostGuide.setupChoice.detectivePlaysItem6", { send: looseT("character.guestManager.hostKit.sendButton"), share: looseT("mysteryPackage.shareWithGuests") })}
 `}
 ## ${tt("runningGame.heading")}
 

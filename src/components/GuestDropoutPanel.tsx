@@ -59,6 +59,8 @@ interface GuestDropoutPanelProps {
   packageId: string;
   characters: MysteryCharacter[];
   mysteryStyle?: string | null;
+  /** ADR-0158: a playing host of a detective-style game must not see who is the murderer or accomplice. */
+  hideRoles?: boolean;
 }
 
 type Step = "explainer" | "picker" | "confirm";
@@ -70,7 +72,7 @@ function isReassignRole(role: string | null | undefined): boolean {
 }
 
 const GuestDropoutPanel: React.FC<GuestDropoutPanelProps> = ({
-  packageId, characters, mysteryStyle,
+  packageId, characters, mysteryStyle, hideRoles = false,
 }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -346,11 +348,14 @@ const GuestDropoutPanel: React.FC<GuestDropoutPanelProps> = ({
                 </DialogTitle>
               </DialogHeader>
               <p className="text-sm text-muted-foreground">{t("adaptation.picker.subtitle")}</p>
+              {hideRoles && (
+                <p className="text-sm font-medium border rounded-md p-3">{(t as unknown as (key: string) => string)("adaptation.picker.sealedNote")}</p>
+              )}
 
               <div className="space-y-2 mt-2">
                 {characters.map((character) => {
                   const eligible = isEligible(character);
-                  const reassign = isReassignRole(character.character_role);
+                  const reassign = isReassignRole(character.character_role) && !hideRoles;
                   const checked = selected.has(character.id);
                   const disabled = !eligible || (!checked && atCap);
                   return (
@@ -431,7 +436,7 @@ const GuestDropoutPanel: React.FC<GuestDropoutPanelProps> = ({
                   <ul className="space-y-1.5">
                     {Array.from(selected).map((id) => {
                       const c = characters.find((x) => x.id === id)!;
-                      const reassign = isReassignRole(c.character_role);
+                      const reassign = isReassignRole(c.character_role) && !hideRoles;
                       const chosenId = replacements[id];
                       const chosenName = chosenId ? characters.find((x) => x.id === chosenId)?.character_name : null;
                       return (

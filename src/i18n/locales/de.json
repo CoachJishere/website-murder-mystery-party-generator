@@ -1618,7 +1618,8 @@
       "reassignNote": "Wenn du {{role}} entfernst, muss jemand anderes diese Rolle übernehmen. Wähle wer, oder lass uns entscheiden.",
       "replacementAuto": "Lasst uns entscheiden",
       "maxReached": "Ein Mysterium braucht mindestens {{min}} Charaktere, um zu funktionieren - mehr kannst du nicht auf einmal entfernen.",
-      "selectedSummary": "{{count}} ausgewählt - {{total}} $"
+      "selectedSummary": "{{count}} ausgewählt - {{total}} $",
+      "sealedNote": "Du spielst mit, deshalb sind die Rollen hier ausgeblendet. Entfernst du die schuldige Figur oder den Komplizen, nennen die Bestätigungsseite und die E-Mail, wer übernimmt; lass die Entfernung von einem Helfer erledigen, der nicht mitspielt, wenn du nichts erfahren willst."
     },
     "confirm": {
       "back": "Zurück",
@@ -1763,7 +1764,8 @@
       "detectivePlaysItem3": "Lies das Skript wie gewohnt bis zu den Schlussaussagen laut vor. Alles, was der Schalter sichtbar lässt, wird ohnehin der ganzen Runde vorgelesen oder gezeigt",
       "detectivePlaysItem4_murder": "Für die Enthüllung soll der Mörder (der es ja schon weiß) oder ein Helfer, der nicht mitspielt, den Host-Link aus deiner Host-E-Mail auf dem eigenen Gerät öffnen, den Schalter dort ausschalten und die Enthüllung laut vorlesen",
       "detectivePlaysItem4_intrigue": "Für die Enthüllung soll der Täter (der es ja schon weiß) oder ein Helfer, der nicht mitspielt, den Host-Link aus deiner Host-E-Mail auf dem eigenen Gerät öffnen, den Schalter dort ausschalten und die Enthüllung laut vorlesen",
-      "detectivePlaysItem5": "Manche älteren Mysterien haben keinen eigenen Enthüllungsabschnitt. Dort blendet die App das ganze Skript aus und ein Helfer, der nicht mitspielt, liest es stattdessen laut vor"
+      "detectivePlaysItem5": "Manche älteren Mysterien haben keinen eigenen Enthüllungsabschnitt. Dort blendet die App das ganze Skript aus und ein Helfer, der nicht mitspielt, liest es stattdessen laut vor",
+      "detectivePlaysItem6": "Der Schalter wird nur in diesem Browser gespeichert. Den Host-Link gibt es erst, nachdem du „{{send}}“ gedrückt hast (unter „{{share}}“), und er hat einen eigenen Schalter, standardmäßig aus: Wenn du ihn selbst öffnest, schalte ihn dort ebenfalls ein. Der Helfer, der die Enthüllung liest, lässt ihn aus"
     },
     "runningGame": {
       "heading": "Das Spiel leiten",

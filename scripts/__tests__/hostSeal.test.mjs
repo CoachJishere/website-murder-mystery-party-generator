@@ -44,6 +44,10 @@ check('a level-1 title that contains a reveal word does not trigger the split', 
   assert.strictEqual(s.found, true);
   assert.ok(s.open.includes('OPENING STATEMENT') && !/Quillon/.test(s.open));
 });
+check('a CLOSING heading after an older-format resolution does NOT count as the reveal (fails closed)', () => {
+  const s = sealDetectiveScript('## DETECTIVE SCRIPT\n### ACCUSATIONS AND RESOLUTION\nIt was Quillon.\n### FINAL STATEMENTS\nBye.\n### CLOSING STATEMENT\nGoodnight.');
+  assert.strictEqual(s.found, false);
+});
 check('empty or missing script is not found, not a crash', () => {
   assert.strictEqual(sealDetectiveScript(null).found, false);
   assert.strictEqual(sealDetectiveScript('').found, false);

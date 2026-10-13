@@ -10,6 +10,7 @@ import {
   AdaptationBatchRow,
 } from "@/services/adaptationService";
 import { Button } from "@/components/ui/button";
+import { readHostPlaying } from "@/utils/hostSeal";
 
 // "Remove a Character" (renamed from "Recast" — ADR-0091) — ADR-0036/0082/0088
 // (staging only). Stripe success_url lands
@@ -158,7 +159,8 @@ const AdaptationSuccess = () => {
             </h1>
             <ul className="text-left space-y-2 text-sm bg-muted/30 rounded-md p-4">
               {rows!.map((r) => {
-                const promoted = r.transform_result?.reassignment?.promoted_character_name;
+                // ADR-0158: a host who switched "I'm also playing" on for this package is not told who took the role.
+                const promoted = readHostPlaying(r.package_id) ? undefined : r.transform_result?.reassignment?.promoted_character_name;
                 return (
                   <li key={r.id}>
                     {r.status === "verified" ? (
