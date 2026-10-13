@@ -48,6 +48,12 @@ check('a CLOSING heading after an older-format resolution does NOT count as the 
   const s = sealDetectiveScript('## DETECTIVE SCRIPT\n### ACCUSATIONS AND RESOLUTION\nIt was Quillon.\n### FINAL STATEMENTS\nBye.\n### CLOSING STATEMENT\nGoodnight.');
   assert.strictEqual(s.found, false);
 });
+check('host-facing Key Points sections are dropped from the open part (they can name the culprit), other sections stay', () => {
+  const s = sealDetectiveScript('## OPENING STATEMENT\n\nHi.\n\n### ROUND 3\n\n#### Script\n\nSo, who was in the study?\n\n#### Key Points\n\n- Do NOT name Quillon directly yet\n- Pace: 15 minutes\n\n### ROUND 4\n\nMore.\n\n## THE REVEAL\n\nIt was Quillon.');
+  assert.strictEqual(s.found, true);
+  assert.ok(!/Quillon|Key Points|Pace/.test(s.open));
+  assert.ok(/So, who was in the study/.test(s.open) && /ROUND 4/.test(s.open) && /More\./.test(s.open));
+});
 check('empty or missing script is not found, not a crash', () => {
   assert.strictEqual(sealDetectiveScript(null).found, false);
   assert.strictEqual(sealDetectiveScript('').found, false);

@@ -131,8 +131,12 @@ serve(async (req) => {
     }
 
     const { data: pkg } = await supabase
-      .from("mystery_packages").select("title").eq("id", batchRows[0].package_id).maybeSingle();
+      .from("mystery_packages").select("title, mystery_style").eq("id", batchRows[0].package_id).maybeSingle();
     const mysteryTitle = (pkg as { title?: string } | null)?.title || "your mystery";
+    // ADR-0158: in detective style the new culprit must not be named in an email, because the host may
+    // be playing a suspect and this server cannot know that (the switch lives in their browser). The
+    // updated Detective Guide has the details for a host who is not playing.
+    const isDetectiveStyle = (pkg as { mystery_style?: string | null } | null)?.mystery_style !== "character";
 
     const allVerified = batchRows.every((r) => r.status === "verified");
     const anyFailed = batchRows.some((r) => r.status === "failed" || r.status === "rolled_back");
@@ -141,6 +145,9 @@ serve(async (req) => {
     const resultLines = batchRows.map((r) => {
       const promoted = r.transform_result?.reassignment?.promoted_character_name;
       if (r.status === "verified") {
+        if (promoted && isDetectiveStyle) {
+          return `<strong>${r.character_name}</strong> removed — a key story role was reassigned to another character. The updated Detective Guide has the details.`;
+        }
         return promoted
           ? `<strong>${r.character_name}</strong> removed — <strong>${promoted}</strong> is now the ${r.character_role}.`
           : `<strong>${r.character_name}</strong> removed from every character sheet, the detective script, and evidence cards.`;

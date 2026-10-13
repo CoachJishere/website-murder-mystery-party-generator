@@ -1619,7 +1619,7 @@
       "replacementAuto": "Que lo elijamos nosotros",
       "maxReached": "Un misterio necesita al menos {{min}} personajes para funcionar - ese es el máximo que puedes eliminar de una vez.",
       "selectedSummary": "{{count}} seleccionados - ${{total}}",
-      "sealedNote": "Estás jugando, así que aquí se ocultan los roles. Si quitas al personaje culpable o al cómplice, la página de confirmación y el correo dirán quién lo reemplaza; pide a un ayudante que no juegue que haga el cambio si quieres seguir sin saberlo."
+      "sealedNote": "Estás jugando, así que aquí se ocultan los roles y, si quitas a un personaje con un papel culpable, no se anunciará quién lo reemplaza. Eso solo aparece en La revelación, que sigue oculta mientras el interruptor esté activado."
     },
     "confirm": {
       "back": "Atrás",

@@ -1619,7 +1619,7 @@
       "replacementAuto": "Låt oss välja",
       "maxReached": "Ett mysterium behöver minst {{min}} karaktärer för att fungera - det är max du kan ta bort på en gång.",
       "selectedSummary": "{{count}} valda - ${{total}}",
-      "sealedNote": "Du spelar med, så roller är dolda här. Om du tar bort den skyldiga karaktären eller medbrottslingen anger bekräftelsesidan och mejlet vem som tar över; låt en hjälpare som inte spelar göra borttagningen om du vill förbli ovetande."
+      "sealedNote": "Du spelar med, så roller är dolda här, och en borttagning avslöjar inte vem som tar över en skyldig roll. Det står bara i avslöjandet, som förblir dolt så länge reglaget är på."
     },
     "confirm": {
       "back": "Tillbaka",

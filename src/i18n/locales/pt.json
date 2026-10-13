@@ -1240,7 +1240,7 @@
       "hostGuide": "Guia do Anfitrião",
       "characters": "Personagens ({{count}})",
       "clues": "Evidências",
-      "inspector": "Guia do Inspetor",
+      "inspector": "Guia do Detetive",
       "relationships": "Relacionamentos",
       "inspectorIntrigue": "Guia do Investigador",
       "extras": "Extras"
@@ -1249,7 +1249,7 @@
       "host": "Anfitrião",
       "characters": "Personagens ({{count}})",
       "clues": "Evidências",
-      "inspector": "Inspetor",
+      "inspector": "Detetive",
       "relations": "Relações",
       "inspectorIntrigue": "Investigador"
     },
@@ -1619,7 +1619,7 @@
       "replacementAuto": "Deixe que a gente escolha",
       "maxReached": "Um mistério precisa de pelo menos {{min}} personagens para funcionar - esse é o máximo que você pode remover de uma vez.",
       "selectedSummary": "{{count}} selecionados - ${{total}}",
-      "sealedNote": "Estás a jogar, por isso os papéis ficam escondidos aqui. Se removeres a personagem culpada ou o cúmplice, a página de confirmação e o e-mail dizem quem assume o papel; pede a um ajudante que não joga para fazer a remoção se quiseres continuar sem saber."
+      "sealedNote": "Estás a jogar, por isso os papéis ficam escondidos aqui e uma remoção não anuncia quem assume um papel culpado. Isso só aparece na revelação, que fica escondida enquanto o interruptor estiver ativado."
     },
     "confirm": {
       "back": "Voltar",
@@ -1757,7 +1757,7 @@
       "hostPlaysItem4": "Dobra e mistura os papelinhos sem olhar, ou pede a um convidado que os prepare, para não saberes quem tirou o quê",
       "detectivePlaysLabel": "**Queres jogar também como suspeito? (mistérios no estilo detetivesco)**",
       "detectivePlaysPointer": "Se também vais jogar como suspeito, salta isto e lê «Queres jogar também como suspeito?» mais abaixo.",
-      "detectivePlaysItem1_murder": "Antes de abrires o Guia do Inspetor ou o separador Evidências, ativa aí «Também estou a jogar como suspeito (esconder a resposta)». Isto esconde a revelação no fim do guião e as pistas «Host Only» nos cartões de provas, os únicos sítios que dizem quem é culpado",
+      "detectivePlaysItem1_murder": "Antes de abrires o Guia do Detetive ou o separador Evidências, ativa aí «Também estou a jogar como suspeito (esconder a resposta)». Isto esconde a revelação no fim do guião e as pistas «Host Only» nos cartões de provas, os únicos sítios que dizem quem é culpado",
       "detectivePlaysItem1_intrigue": "Antes de abrires o Guia do Investigador ou o separador Evidências, ativa aí «Também estou a jogar como suspeito (esconder a resposta)». Isto esconde a revelação no fim do guião e as pistas «Host Only» nos cartões de provas, os únicos sítios que dizem quem é culpado",
       "detectivePlaysItem2_murder": "Pega na página de uma personagem como qualquer convidado e salta as páginas das outras (podes pedir a um convidado que te passe uma). Se calhar a página do assassino, ficas a saber pela tua própria página, e isso é justo",
       "detectivePlaysItem2_intrigue": "Pega na página de uma personagem como qualquer convidado e salta as páginas das outras (podes pedir a um convidado que te passe uma). Se calhar a página do culpado, ficas a saber pela tua própria página, e isso é justo",

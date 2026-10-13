@@ -1207,7 +1207,7 @@
       "hostGuide": "Guida per l'Organizzatore",
       "characters": "Personaggi ({{count}})",
       "clues": "Indizi",
-      "inspector": "Guida dell'Investigatore",
+      "inspector": "Guida del Detective",
       "relationships": "Relazioni",
       "inspectorIntrigue": "Guida dell'Investigatore",
       "extras": "Extra"
@@ -1216,7 +1216,7 @@
       "host": "Organizzatore",
       "characters": "Personaggi ({{count}})",
       "clues": "Indizi",
-      "inspector": "Investigatore",
+      "inspector": "Detective",
       "relations": "Relazioni",
       "inspectorIntrigue": "Investigatore"
     },
@@ -1619,7 +1619,7 @@
       "replacementAuto": "Lascia scegliere a noi",
       "maxReached": "Un mistero ha bisogno di almeno {{min}} personaggi per funzionare - è il massimo che puoi rimuovere in una volta.",
       "selectedSummary": "{{count}} selezionati - {{total}} $",
-      "sealedNote": "Stai giocando, quindi qui i ruoli sono nascosti. Se rimuovi il personaggio colpevole o il complice, la pagina di conferma e l'email indicheranno chi subentra; fai fare la rimozione a un aiutante che non gioca se vuoi restare all'oscuro."
+      "sealedNote": "Stai giocando, quindi qui i ruoli sono nascosti e una rimozione non annuncerà chi subentra in un ruolo colpevole. Lo si trova solo nella rivelazione, che resta nascosta finché l'interruttore è attivo."
     },
     "confirm": {
       "back": "Indietro",
@@ -1757,7 +1757,7 @@
       "hostPlaysItem4": "Piega e mescola i bigliettini senza guardarli, oppure fai preparare tutto a un ospite, così non saprai chi ha pescato cosa",
       "detectivePlaysLabel": "**Vuoi giocare anche come sospettato? (misteri in stile detective)**",
       "detectivePlaysPointer": "Se giocherai anche come sospettato, salta questo punto e leggi «Vuoi giocare anche come sospettato?» più avanti.",
-      "detectivePlaysItem1_murder": "Prima di aprire la Guida dell'Investigatore o la scheda Indizi, attiva lì «Gioco anch'io come sospettato (nascondi la soluzione)». Nasconde la rivelazione alla fine del copione e gli indizi «Host Only» sulle carte delle prove, gli unici punti che dicono chi è colpevole",
+      "detectivePlaysItem1_murder": "Prima di aprire la Guida del Detective o la scheda Indizi, attiva lì «Gioco anch'io come sospettato (nascondi la soluzione)». Nasconde la rivelazione alla fine del copione e gli indizi «Host Only» sulle carte delle prove, gli unici punti che dicono chi è colpevole",
       "detectivePlaysItem1_intrigue": "Prima di aprire la Guida dell'Investigatore o la scheda Indizi, attiva lì «Gioco anch'io come sospettato (nascondi la soluzione)». Nasconde la rivelazione alla fine del copione e gli indizi «Host Only» sulle carte delle prove, gli unici punti che dicono chi è colpevole",
       "detectivePlaysItem2_murder": "Prendi la pagina di un personaggio come qualsiasi ospite e salta quelle degli altri (puoi farti passare una pagina da un ospite). Se ti capita la pagina dell'assassino, lo saprai dalla tua stessa pagina, ed è giusto così",
       "detectivePlaysItem2_intrigue": "Prendi la pagina di un personaggio come qualsiasi ospite e salta quelle degli altri (puoi farti passare una pagina da un ospite). Se ti capita la pagina del colpevole, lo saprai dalla tua stessa pagina, ed è giusto così",

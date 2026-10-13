@@ -1619,7 +1619,7 @@
       "replacementAuto": "Laat ons kiezen",
       "maxReached": "Een mysterie heeft minstens {{min}} personages nodig om te werken - dat is het maximum dat je in één keer kunt verwijderen.",
       "selectedSummary": "{{count}} geselecteerd - ${{total}}",
-      "sealedNote": "Je speelt mee, dus rollen zijn hier verborgen. Als je het schuldige personage of de handlanger verwijdert, noemen de bevestigingspagina en de e-mail wie het overneemt; laat een helper die niet meespeelt de verwijdering doen als je niets wilt weten."
+      "sealedNote": "Je speelt mee, dus rollen zijn hier verborgen en een verwijdering maakt niet bekend wie een schuldige rol overneemt. Dat staat alleen in de onthulling, die verborgen blijft zolang de schakelaar aan staat."
     },
     "confirm": {
       "back": "Terug",

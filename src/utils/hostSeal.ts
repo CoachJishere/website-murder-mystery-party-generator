@@ -19,7 +19,7 @@ const REVEAL_WORDS =
 export interface SealedScript {
   /** True when a reveal heading was found and the script could be split. */
   found: boolean;
-  /** Everything before the reveal heading (the whole script when not found). */
+  /** Everything before the reveal heading, without Key Points sections (the whole script when not found). */
   open: string;
   /** From the reveal heading to the end of the script, including any closing sections. */
   sealed: string;
@@ -31,13 +31,26 @@ export interface SealedScript {
  * found (older packages put the resolution inside "Accusations and Resolution"), `found`
  * is false and callers must show NOTHING of the script: fail closed.
  */
+// Some packages follow each script block with a host-facing "#### Key Points" bullet list. One
+// delivered package's bullets name the culprit ("Do NOT name Max directly yet"), which is not
+// read aloud, so the open part drops every Key Points section (to the next heading).
+function dropKeyPoints(text: string): string {
+  const out: string[] = [];
+  let skip = false;
+  for (const line of text.split("\n")) {
+    if (/^#{1,6}[ \t]+/.test(line)) skip = /^#{1,6}[ \t]+key points\b/i.test(line);
+    if (!skip) out.push(line);
+  }
+  return out.join("\n");
+}
+
 export function sealDetectiveScript(script: string | null | undefined): SealedScript {
   const text = script ?? "";
   const headingRe = /^(#{2,4})[ \t]+(.+)$/gm;
   let m: RegExpExecArray | null;
   while ((m = headingRe.exec(text)) !== null) {
     if (REVEAL_WORDS.test(m[2])) {
-      return { found: true, open: text.slice(0, m.index).trimEnd(), sealed: text.slice(m.index) };
+      return { found: true, open: dropKeyPoints(text.slice(0, m.index)).trimEnd(), sealed: text.slice(m.index) };
     }
   }
   return { found: false, open: text, sealed: "" };

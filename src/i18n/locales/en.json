@@ -1620,7 +1620,7 @@
       "replacementAuto": "Let us choose",
       "maxReached": "A mystery needs at least {{min}} characters to work - that's as many as you can remove at once.",
       "selectedSummary": "{{count}} selected — ${{total}}",
-      "sealedNote": "You are playing, so roles are hidden here. If you remove the guilty character or the accomplice, the confirmation page and email will say who takes over; have a helper who is not playing do the removal if you want to stay unspoiled."
+      "sealedNote": "You are playing, so roles are hidden here, and a removal will not announce who takes over a guilty role. That is only in the Reveal, which stays hidden while the switch is on."
     },
     "confirm": {
       "back": "Back",

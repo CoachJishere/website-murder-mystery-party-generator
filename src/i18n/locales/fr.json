@@ -1230,7 +1230,7 @@
       "hostGuide": "Guide de l'hôte",
       "characters": "Personnages ({{count}})",
       "clues": "Indices",
-      "inspector": "Guide de l'inspecteur",
+      "inspector": "Guide du détective",
       "relationships": "Relations",
       "inspectorIntrigue": "Guide de l'enquêteur",
       "extras": "Extras"
@@ -1239,7 +1239,7 @@
       "host": "Hôte",
       "characters": "Personnages ({{count}})",
       "clues": "Indices",
-      "inspector": "Inspecteur",
+      "inspector": "Détective",
       "relations": "Relations",
       "inspectorIntrigue": "Enquêteur"
     },
@@ -1620,7 +1620,7 @@
       "replacementAuto": "Laissez-nous choisir",
       "maxReached": "Un mystère a besoin d'au moins {{min}} personnages pour fonctionner - c'est le maximum que vous pouvez retirer en une fois.",
       "selectedSummary": "{{count}} sélectionnés - {{total}} $",
-      "sealedNote": "Vous jouez, donc les rôles sont masqués ici. Si vous retirez le personnage coupable ou le complice, la page de confirmation et l'e-mail indiqueront qui prend le relais ; demandez à un assistant qui ne joue pas de faire le retrait si vous voulez rester dans l'ignorance."
+      "sealedNote": "Vous jouez, donc les rôles sont masqués ici et un retrait n'annoncera pas qui reprend un rôle coupable. Cela n'apparaît que dans la révélation, qui reste masquée tant que l'option est activée."
     },
     "confirm": {
       "back": "Retour",
@@ -1758,7 +1758,7 @@
       "hostPlaysItem4": "Pliez et mélangez les papiers sans les regarder, ou laissez un invité les préparer, pour ne pas savoir qui a tiré quoi",
       "detectivePlaysLabel": "**Vous voulez jouer un suspect vous-même ? (mystères de style détective)**",
       "detectivePlaysPointer": "Si vous jouez aussi un suspect, passez ce point et lisez « Vous voulez jouer un suspect vous-même ? » plus bas.",
-      "detectivePlaysItem1_murder": "Avant d'ouvrir le Guide de l'inspecteur ou l'onglet Indices, activez-y « Je joue aussi un suspect (masquer la réponse) ». Cela masque la révélation à la fin du script et les indices « Host Only » des cartes de preuve, les seuls endroits qui disent qui est coupable",
+      "detectivePlaysItem1_murder": "Avant d'ouvrir le Guide du détective ou l'onglet Indices, activez-y « Je joue aussi un suspect (masquer la réponse) ». Cela masque la révélation à la fin du script et les indices « Host Only » des cartes de preuve, les seuls endroits qui disent qui est coupable",
       "detectivePlaysItem1_intrigue": "Avant d'ouvrir le Guide de l'enquêteur ou l'onglet Indices, activez-y « Je joue aussi un suspect (masquer la réponse) ». Cela masque la révélation à la fin du script et les indices « Host Only » des cartes de preuve, les seuls endroits qui disent qui est coupable",
       "detectivePlaysItem2_murder": "Prenez la page d'un personnage comme n'importe quel invité et passez celles des autres (demandez à un invité de vous en tendre une si vous voulez). Si vous tombez sur la page du meurtrier, vous le saurez grâce à votre propre page, et c'est de bonne guerre",
       "detectivePlaysItem2_intrigue": "Prenez la page d'un personnage comme n'importe quel invité et passez celles des autres (demandez à un invité de vous en tendre une si vous voulez). Si vous tombez sur la page du coupable, vous le saurez grâce à votre propre page, et c'est de bonne guerre",

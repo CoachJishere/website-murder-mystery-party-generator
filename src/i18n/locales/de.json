@@ -1619,7 +1619,7 @@
       "replacementAuto": "Lasst uns entscheiden",
       "maxReached": "Ein Mysterium braucht mindestens {{min}} Charaktere, um zu funktionieren - mehr kannst du nicht auf einmal entfernen.",
       "selectedSummary": "{{count}} ausgewählt - {{total}} $",
-      "sealedNote": "Du spielst mit, deshalb sind die Rollen hier ausgeblendet. Entfernst du die schuldige Figur oder den Komplizen, nennen die Bestätigungsseite und die E-Mail, wer übernimmt; lass die Entfernung von einem Helfer erledigen, der nicht mitspielt, wenn du nichts erfahren willst."
+      "sealedNote": "Du spielst mit, deshalb sind die Rollen hier ausgeblendet, und nach einem Entfernen wird nicht verraten, wer eine schuldige Rolle übernimmt. Das steht nur in der Enthüllung, die ausgeblendet bleibt, solange der Schalter an ist."
     },
     "confirm": {
       "back": "Zurück",

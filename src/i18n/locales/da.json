@@ -1619,7 +1619,7 @@
       "replacementAuto": "Lad os vælge",
       "maxReached": "Et mysterie kræver mindst {{min}} karakterer for at fungere - det er det maksimale, du kan fjerne på én gang.",
       "selectedSummary": "{{count}} valgt - ${{total}}",
-      "sealedNote": "Du spiller med, så roller er skjult her. Hvis du fjerner den skyldige karakter eller medskyldige, oplyser bekræftelsessiden og e-mailen, hvem der overtager; lad en hjælper, der ikke spiller med, udføre fjernelsen, hvis du vil være uvidende."
+      "sealedNote": "Du spiller med, så roller er skjult her, og en fjernelse oplyser ikke, hvem der overtager en skyldig rolle. Det står kun i afsløringen, som forbliver skjult, så længe kontakten er slået til."
     },
     "confirm": {
       "back": "Tilbage",
