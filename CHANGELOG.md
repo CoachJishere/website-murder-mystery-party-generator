@@ -2,6 +2,10 @@
 
 ## 2026-10-13
 
+### Docs: Child64 imported by Jonathan, logged in `prompt_version_history` (ADR-0156 Phase 3)
+- **What:** row id 26 (`child`, 64, `MM Live - Child (Unified)64-RedactedContext`, effective 2026-10-13 11:54 UTC, `approximate = false`). The switch `child_context_redaction` is `off`, so every detective Child still gets today's inputs; the first execution should show module 414 with `redacted: false`.
+- **Not done:** the paid check (needs a created `is_test` package and a yes on the plan and cap) and moving the switch.
+
 ### Fix: Dead Man's Saddle, Jessica's secret had an unfilled "choose for yourself" instruction (ADR-0103 Addendum 93)
 - **Why:** the full-cast sweep found it in a delivered slip package; the brief never defined her secret and no detector or the reviewer flagged it (one occurrence corpus-wide, so no detector). **What:** wrote a concrete secret (borrowed against the stock contracts, kept the loan papers from her father; no ledger tie) and synced `secrets` to `[secret]`. Bookkeeping: reviewer verdict, one `package_review_misses` row, one `package_review_sweeps` row, scoreboard row.
 - **Also found:** the host guide tells hosts of slip-style games they cannot play a character; a customer asked for exactly that. Tracked as ADR-0157.
