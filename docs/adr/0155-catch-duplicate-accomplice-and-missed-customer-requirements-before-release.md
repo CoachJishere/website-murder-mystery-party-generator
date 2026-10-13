@@ -1,6 +1,6 @@
 # ADR-0155: Catch a duplicate accomplice and a missed customer requirement before release (PROPOSED)
 
-**Status:** Proposed (nothing built; waits on Jonathan's yes for the recurring cost in Decision 2)
+**Status:** Proposed (nothing built). Jonathan approved the recurring extraction cost in Decision 2 on 2026-10-13 ("recurring cost sounds fine"); the build is next, in a fresh session.
 **Date:** 2026-10-13
 **Related:** ADR-0103 Addendum 92 (the trigger), ADR-0150 (requirements coverage), ADR-0154 (customer email on a hold), ADR-0138 (review-before-release), ADR-0153 (prompt consolidation, why the fix is not another prompt sentence)
 
