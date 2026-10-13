@@ -199,4 +199,23 @@ t("culpritNameHits matches the full name in printed text only, expands dual name
   assert.deepEqual(C.culpritNameHits("#### DESCRIPTION\nDaanus appears.", ["Daan"]), []);
 });
 
+t("requirements extraction: text is null without a conversation, long chats keep start and end, answer parsing dedupes and caps (ADR-0155)", () => {
+  assert.equal(C.requirementsExtractionText(null), null);
+  assert.equal(C.requirementsExtractionText("short"), null);
+  const long = "BRIEF-START " + "x".repeat(C.EXTRACT_CONVERSATION_MAX_CHARS + 5000) + " CONCEPT-END";
+  const txt = C.requirementsExtractionText(long);
+  assert.ok(txt.includes("BRIEF-START") && txt.includes("CONCEPT-END") && txt.includes("middle of the conversation omitted"));
+  assert.ok(txt.length < C.EXTRACT_CONVERSATION_MAX_CHARS + 500);
+  const r = C.parseExtractedRequirements(JSON.stringify({ requirements: ["- Shannon plays a co-investigator with her own briefing", "Shannon plays a co-investigator with her own briefing", "tiny", 7, "  * Kevin shouts the line when Daan is accused  "] }));
+  assert.equal(r.count, 2);
+  assert.ok(r.text.startsWith("- Shannon plays") && r.text.includes("- Kevin shouts the line when Daan is accused"));
+  assert.equal(C.parseExtractedRequirements(JSON.stringify({ requirements: [] })), null);
+  assert.equal(C.parseExtractedRequirements("not json"), null);
+  assert.equal(C.parseExtractedRequirements(JSON.stringify({ other: 1 })), null);
+  const many = C.parseExtractedRequirements(JSON.stringify({ requirements: Array.from({ length: 80 }, (_, i) => `Requirement number ${i} for a character`) }));
+  assert.equal(many.count, C.MAX_EXTRACTED_REQUIREMENTS);
+  assert.ok(C.requirementsExtractionInstructions().includes("APPROVED CONCEPT wins"));
+  assert.equal(C.REQUIREMENTS_EXTRACT_SCHEMA.properties.requirements.type, "array");
+});
+
 console.log("customer-wording tests done");

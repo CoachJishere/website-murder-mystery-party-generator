@@ -58,7 +58,7 @@ async function spentToday(): Promise<number> {
 
 type CallResult = { item: string; findings: C.RawFinding[]; usage: C.Usage; cost: number; stop: string; error?: string; secs: number };
 
-async function callModel(apiKey: string, system: C.SystemBlock[], userText: string): Promise<{ text: string; usage: C.Usage; stop: string }> {
+async function callModel(apiKey: string, system: C.SystemBlock[], userText: string, opts: { schema?: unknown; effort?: string; maxTokens?: number } = {}): Promise<{ text: string; usage: C.Usage; stop: string }> {
   let lastErr = "";
   for (let attempt = 0; attempt < 3; attempt++) {
     const ctl = new AbortController();
@@ -69,10 +69,10 @@ async function callModel(apiKey: string, system: C.SystemBlock[], userText: stri
         headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
         body: JSON.stringify({
           model: MODEL,
-          max_tokens: 12000,
+          max_tokens: opts.maxTokens ?? 12000,
           system,
           // Sonnet 5.5: thinking is on by default and cannot be sent as "disabled"; depth is controlled with effort.
-          output_config: { effort: EFFORT, format: { type: "json_schema", schema: C.FINDINGS_SCHEMA } },
+          output_config: { effort: opts.effort ?? EFFORT, format: { type: "json_schema", schema: opts.schema ?? C.FINDINGS_SCHEMA } },
           messages: [{ role: "user", content: userText }],
         }),
         signal: ctl.signal,
@@ -109,6 +109,29 @@ async function reviewItem(apiKey: string, system: C.SystemBlock[], name: string,
     return { item: name, findings, usage: r.usage, cost, stop: r.stop, secs: (Date.now() - t0) / 1000 };
   } catch (e) {
     return { item: name, findings: [], usage: {}, cost: 0, stop: "", error: (e as Error).message, secs: (Date.now() - t0) / 1000 };
+  }
+}
+
+/**
+ * ADR-0155: when the Master Doc carries no requirements list, build one from the customer's own words (user_conversation) with one extra
+ * call. Best effort: any failure returns null (the coverage check is then skipped, as before), never throws. The caller adds `cost` to the
+ * package spend and logs it (defect_class llm_review, action requirements_extract).
+ */
+async function extractRequirements(apiKey: string, pkg: Row): Promise<{ reqs: C.CustomerRequirements | null; cost: number; secs: number; note?: string }> {
+  const t0 = Date.now();
+  const userText = C.requirementsExtractionText(pkg.user_conversation);
+  if (!userText) return { reqs: null, cost: 0, secs: 0, note: "no user_conversation" };
+  try {
+    if ((await spentToday()) >= DAILY_CAP_USD) return { reqs: null, cost: 0, secs: 0, note: "daily cost cap" };
+    const r = await callModel(apiKey, [{ type: "text", text: C.requirementsExtractionInstructions() }], userText, { schema: C.REQUIREMENTS_EXTRACT_SCHEMA, effort: "medium", maxTokens: 6000 });
+    const cost = C.costUsd(r.usage);
+    const secs = (Date.now() - t0) / 1000;
+    if (r.stop === "refusal") return { reqs: null, cost, secs, note: "refusal" };
+    const reqs = C.parseExtractedRequirements(r.text);
+    return { reqs, cost, secs, note: reqs ? undefined : `no requirements parsed (stop ${r.stop})` };
+  } catch (e) {
+    console.error(`requirements extraction failed (ignored): ${(e as Error).message}`);
+    return { reqs: null, cost: 0, secs: (Date.now() - t0) / 1000, note: `error: ${(e as Error).message.slice(0, 120)}` };
   }
 }
 
@@ -333,7 +356,7 @@ async function propagate(
   return { rows, cost, calls, candidates: cands.length, anchors };
 }
 
-async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?: boolean; applyClasses?: string[]; version?: string; pass2?: boolean; requirementsOnly?: boolean; remove?: string[] }): Promise<Row> {
+async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?: boolean; applyClasses?: string[]; version?: string; pass2?: boolean; requirementsOnly?: boolean; forceExtract?: boolean; remove?: string[] }): Promise<Row> {
   const version = opts.version ?? C.PROMPT_VERSION;
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
@@ -352,17 +375,31 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
   ];
   // ADR-0150: requirements coverage item (kill switch: pipeline_settings.review_requirements = 'off'); not in the second pass.
   let reqs: C.CustomerRequirements | null = null;
-  if (!opts.pass2 && (opts.requirementsOnly || (await setting("review_requirements", "on")) === "on")) reqs = C.customerRequirements(pkg as Row);
+  let reqSource: "master_context" | "conversation" | "none" = "none";
+  let extractCost = 0, extractSecs = 0, extractNote: string | undefined;
+  if (!opts.pass2 && (opts.requirementsOnly || (await setting("review_requirements", "on")) === "on")) {
+    reqs = opts.forceExtract && opts.requirementsOnly ? null : C.customerRequirements(pkg as Row); // forceExtract: probe-only, proves the fallback on a package that has a Master Doc list
+    if (reqs) reqSource = "master_context";
+    else if (!opts.dryRun) {
+      // ADR-0155: the Master Doc carried no list (about 88 percent of orders); build one from the customer's own words. Logged on its own row.
+      const x = await extractRequirements(apiKey, pkg as Row);
+      reqs = x.reqs; extractCost = x.cost; extractSecs = x.secs; extractNote = x.note;
+      if (reqs) reqSource = "conversation";
+      if (x.cost > 0) await logSpend(packageId, `requirements_extract:${reqs?.count ?? 0}_lines`, reqs ? "escalated" : "failed", x.cost);
+    }
+  }
   const reqText = (chs: Row[]) => C.coverageBlock(reqs!, chs, style, pkg as Row);
   if (reqs && !opts.requirementsOnly) items.push({ name: C.REQUIREMENTS_ITEM_NAME, text: reqText(chars), row: { [C.REQUIREMENTS_FIELD]: reqs.text } });
   if (opts.requirementsOnly) {
     // Read-only probe: runs just the coverage call (optionally with phrases removed from the character text to prove it notices) and writes nothing.
-    if (!reqs) return { package_id: packageId, skipped: "no customer requirements in master_context" };
+    if (!reqs) return { package_id: packageId, skipped: "no customer requirements in master_context or user_conversation", extraction_note: extractNote, extraction_cost_usd: Number(extractCost.toFixed(4)) };
     const strip = (v: unknown) => { let t = typeof v === "string" ? v : ""; for (const ph of opts.remove ?? []) t = t.replace(new RegExp(ph.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), ""); return t; };
     const chs = (opts.remove?.length ? chars.map((c) => ({ ...c, ...Object.fromEntries(C.CHARACTER_FIELDS.map((f) => [f, strip(c[f])])) })) : chars);
     const r = await reviewItem(apiKey, system, C.REQUIREMENTS_ITEM_NAME, reqText(chs));
     const row = { [C.REQUIREMENTS_FIELD]: reqs.text } as Row;
-    return { package_id: packageId, requirements: reqs.count, removed: opts.remove ?? [], cost_usd: Number(r.cost.toFixed(4)), secs: Math.round(r.secs), error: r.error,
+    if (r.cost > 0) await logSpend(packageId, `requirements_probe:${r.findings.length}_findings`, "escalated", r.cost);
+    return { package_id: packageId, requirements: reqs.count, requirements_source: reqSource, requirements_list: reqs.text, extraction_cost_usd: Number(extractCost.toFixed(4)), extraction_secs: Math.round(extractSecs),
+      removed: opts.remove ?? [], cost_usd: Number((r.cost + extractCost).toFixed(4)), coverage_cost_usd: Number(r.cost.toFixed(4)), secs: Math.round(r.secs), error: r.error,
       findings: r.findings.map((f) => ({ ok: C.validateFinding(row, f).ok, severity: f.severity, quote: f.exact_quote.slice(0, 120), explanation: f.explanation })) };
   }
   if (opts.dryRun) return { package_id: packageId, style, items: items.length, requirements: reqs?.count ?? 0, system_chars: system.reduce((n, b) => n + b.text.length, 0), dry_run: true };
@@ -373,7 +410,7 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
   if (re || !review) return { package_id: packageId, skipped: "already reviewed for this prompt version", detail: re?.message };
 
   const started = Date.now();
-  let spent = 0;
+  let spent = extractCost; // the extraction is already logged on its own row; it counts toward the per-package cap
   const results: CallResult[] = [];
   const stopReason = () => {
     if (Date.now() - started > RUN_BUDGET_MS) return "run time budget";
@@ -446,7 +483,7 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
     status, finished_at: new Date().toISOString(), items_reviewed: results.length, findings_count: inserted.length, discarded_count: discarded,
     cost_usd: Number(spent.toFixed(4)), tokens, error: [partialWhy, ...errors].filter(Boolean).join(" | ").slice(0, 1000) || null,
   }).eq("id", review.id);
-  await logSpend(packageId, `review:${inserted.length}_findings:${status}`, status === "failed" ? "failed" : "escalated", spent);
+  await logSpend(packageId, `review:${inserted.length}_findings:${status}`, status === "failed" ? "failed" : "escalated", spent - extractCost);
 
   let apply = { applied: 0, reverted: 0 };
   const applyClasses = opts.applyClasses ?? AUTO_APPLY_CLASSES;
@@ -462,7 +499,7 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
   }
 
   return { package_id: packageId, title: (pkg as Row).title, style, status, items: items.length, reviewed: results.length, findings: inserted.length,
-    high: inserted.filter((f) => f.severity === "high").length, propagated, discarded, cost_usd: Number(spent.toFixed(4)), partial_reason: partialWhy || undefined, errors: errors.slice(0, 5), auto_apply: apply };
+    high: inserted.filter((f) => f.severity === "high").length, propagated, discarded, requirements: reqs?.count ?? 0, requirements_source: reqSource, extraction_cost_usd: Number(extractCost.toFixed(4)), cost_usd: Number(spent.toFixed(4)), partial_reason: partialWhy || undefined, errors: errors.slice(0, 5), auto_apply: apply };
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -857,7 +894,7 @@ serve(async (req) => {
       return new Response(JSON.stringify(await applyOpenFindings(String(body.package_id), classes)), { headers: { "Content-Type": "application/json" } });
     }
     if (mode === "requirements_probe") {
-      return new Response(JSON.stringify(await reviewPackage(String(body.package_id), { requirementsOnly: true, remove: Array.isArray(body.remove) ? body.remove.map(String) : [] })), { headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(await reviewPackage(String(body.package_id), { requirementsOnly: true, forceExtract: body.force_extract === true, remove: Array.isArray(body.remove) ? body.remove.map(String) : [] })), { headers: { "Content-Type": "application/json" } });
     }
     if (mode === "open_digest") {
       return new Response(JSON.stringify(await openDigest(body.dry_run === true)), { headers: { "Content-Type": "application/json" } });

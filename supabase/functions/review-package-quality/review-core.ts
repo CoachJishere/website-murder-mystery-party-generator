@@ -233,9 +233,54 @@ export function customerRequirements(pkg: Row): CustomerRequirements | null {
       if (Array.isArray(v)) { for (const x of v) if (typeof x === "string" && x.trim().length > 8) lines.push(x.trim().replace(/\s+/g, " ")); break; }
     }
   }
+  return requirementsFromLines(lines);
+}
+
+function requirementsFromLines(lines: string[]): CustomerRequirements | null {
   const uniq = [...new Set(lines)];
   if (uniq.length === 0) return null;
   return { text: uniq.map((l) => `- ${l}`).join("\n"), count: uniq.length };
+}
+
+// ---- Requirements from the conversation (ADR-0155) ----
+// `customerRequirements()` above needs the Master Doc to have emitted a list; it does so on only about 3 of 26 paid orders, so the coverage
+// check was skipped on the rest. This builds the list from the customer's own words (`mystery_packages.user_conversation`: their brief plus
+// the approved concept, where the approved concept wins) with one extra call. The coverage call that follows is unchanged.
+export const REQUIREMENTS_EXTRACT_SCHEMA = {
+  type: "object", additionalProperties: false, required: ["requirements"],
+  properties: { requirements: { type: "array", items: { type: "string" } } },
+};
+export const MAX_EXTRACTED_REQUIREMENTS = 40;
+export const EXTRACT_CONVERSATION_MAX_CHARS = 150_000;
+
+export function requirementsExtractionInstructions(): string {
+  return `You read the conversation in which a customer designed a murder-mystery party package, and list what they explicitly asked the finished package to contain.\n\n` +
+    `The text has two parts: the customer's own brief (source material) and the concept the customer approved. Where the two conflict, the APPROVED CONCEPT wins: list the approved version only (for example, a brief that says a guest "may not attend, keep the role optional" is superseded by an approved concept that promises that guest a substantial, fully developed role).\n\n` +
+    `LIST (one line each, self-contained, naming the character or element, 15 to 60 words at most):\n` +
+    `- a named character or role and what they must do or be given (a co-investigator with her own briefing, a character who must be present, a character with a trait or catchphrase);\n` +
+    `- specific lines, catchphrases, running gags, inside jokes and quirks, and which character has them;\n` +
+    `- the climax, the solution reveal and the clue chain the customer specified (who does what, in which round, what is found);\n` +
+    `- relationships, backstory facts and settings the customer fixed that a character's sheet must reflect.\n\n` +
+    `DO NOT LIST: requests about printable materials, formats or delivery (name cards, ballots, props or decoration lists, a host guide layout, file formats); timing or length of the evening; headcount and style choices the package structure already settles; anything the customer left open or optional in the approved concept; generic advice or tone words ("immersive", "fun"). Do not invent requirements and do not paraphrase a name or a quoted line: copy names and quoted lines exactly.\n\n` +
+    `Return at most ${MAX_EXTRACTED_REQUIREMENTS} lines, the most important first (climax and solution, then named roles, then running clues, then quirks). Write in the language of the conversation. If the customer asked for nothing specific, return an empty list.\n`;
+}
+
+/** The user message for the extraction call, or null when the package has no stored conversation. A very long chat keeps its start and its end (the brief and the approved concept). */
+export function requirementsExtractionText(userConversation: unknown): string | null {
+  const t = typeof userConversation === "string" ? userConversation.trim() : "";
+  if (t.length < 40) return null;
+  const max = EXTRACT_CONVERSATION_MAX_CHARS;
+  const body = t.length <= max ? t : t.slice(0, Math.floor(max * 0.4)) + "\n[... middle of the conversation omitted ...]\n" + t.slice(t.length - Math.floor(max * 0.6));
+  return `=== CONVERSATION ===\n${body}\n\n=== END ===\nList the customer's requirements as instructed.`;
+}
+
+/** Parse the extraction answer into the same shape `customerRequirements()` returns. Null on bad JSON or an empty list. */
+export function parseExtractedRequirements(answerText: string): CustomerRequirements | null {
+  let arr: unknown;
+  try { arr = JSON.parse(answerText)?.requirements; } catch { return null; }
+  if (!Array.isArray(arr)) return null;
+  const lines = arr.filter((x): x is string => typeof x === "string").map((x) => x.trim().replace(/^[-*•\s]+/, "").replace(/\s+/g, " ")).filter((x) => x.length > 8);
+  return requirementsFromLines(lines.slice(0, MAX_EXTRACTED_REQUIREMENTS));
 }
 
 const COVERAGE_BUDGET_CHARS = 380_000;
