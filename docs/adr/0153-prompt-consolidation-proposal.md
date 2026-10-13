@@ -1,6 +1,6 @@
 # ADR-0153: Prompt consolidation - stop fixing recurring defects by adding another rule to the end of a prompt (PROPOSED)
 
-**Status:** Proposed. Phase 0 ran 2026-10-13: hypothesis UNSUPPORTED, Phases 1 to 4 on hold (see "Phase 0 result" below)
+**Status:** Closed as a consolidation project 2026-10-13. Phase 0 ran: hypothesis UNSUPPORTED (see "Phase 0 result"); Phases 1 to 4 dropped; two cheap fixes built and two items left open (see "Update 1")
 **Date:** 2026-10-13
 **Related:** ADR-0103 Addendum 91 (the trigger), ADR-0142 (prompt prevention), ADR-0131 (quality-check machinery), ADR-0151 (Parent83 guards)
 
@@ -78,3 +78,15 @@ Jonathan's question was whether the materials bug showed that the scenario is "t
 ## Key files
 
 `temp-files/MM Live - Parent84 (Materials Language Anchor).blueprint.json`, `temp-files/MM Live - Child (Unified)62-DanishSwedishPack.blueprint.json`, `temp-files/build-child-v57.py` and `build-parent-v75.py` (local, gitignored), `docs/adr/0103-new-purchase-coherence-sweep-ritual.md` (Addenda 81, 86, 91), `docs/autonomy-scoreboard.md`.
+
+## Update 1 (2026-10-13): what we do instead, after Phase 0 returned HYPOTHESIS UNSUPPORTED
+
+Jonathan chose to drop Phases 1 to 4 and take only the cheap items Phase 0 surfaced (`docs/adr/0153-phase0/findings.md`, "Candidates found while reading"). Status of the proposal: closed as a consolidation project; the remaining items are tracked below.
+
+1. **Image Prompts R1 to R3 resynced to R0 (done, Parent85, built not imported).** Modules 5006, 5010 and 5014 were an older copy of 5002. Checked every retry family: Game Overview, Themed Materials and Evidence Cards R1 to R3 are identical to R0 after normalising the module references; Detective Script R1 and Investigator Script R3 differ from R0 on purpose (slip routes name no culprit). Only Image Prompts had drifted. Parent85 sets their text to R0's, changing only the three upstream references per route; every other module is byte-identical (the Parent84 file round-trips exactly, so the diff is prompt text and the name).
+2. **Quote conflict removed (done, Child63, built not imported).** Four edits in all 8 Child prompts, counts asserted: the "Verify the closing } and (the) final closing \" ..." line in the JSON rules (3 detective, 5 slip) now says "End the response with the closing brace of the JSON object"; the 409 footer no longer asks to verify "the comma and closing double-quote"; and the sentence in NO STRAY QUOTATION MARKS that existed only to explain those lines away is gone. Kept: the first sentence of that rule, JSON rules 2 to 5, and the strip heal. The rule that remains is one instruction about unmatched quotes instead of one instruction plus two that contradict it. Measure after import: `dangling_quote` strip rows per package against 13 of 36 (36 percent).
+3. **Redacted `master_context` for detective innocents and rumors (not done).** Needs its own ADR: the generator is handed the solution and told not to use it. Solution-visibility is the best-supported lever in the Phase 0 data.
+4. **Prompt version on each package row (not done).** Today the Make prompt version is inferred from dates; logging it would let any later prompt change be compared before and after.
+
+**Decision record.** The accretion hypothesis was tested and not supported on 10 days of reviewer data (n = 8 modules, 312 findings); a causal test needs a paid A/B (about 6 USD) and was declined as not worth it for the expected return. The prompt-rule discipline in Phase 4 (a new rule needs an incident, a reason no detector or heal fits, and a registry entry) is kept as a habit, not a project.
+
