@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Docs: ADR-0155 proposes a heal for a duplicate accomplice and a fix for the requirements check that was skipped on about 88 percent of orders (Proposed, nothing built)
+- **Why:** Blackthorn Manor's customer got a package with a mislabelled second accomplice and no page for Shannon, whom the approved concept promised. A `requirements_probe` (about 0.15 USD, run on Jonathan's yes) returned "skipped: no customer requirements in master_context": only 3 of 26 paid packages since 2026-10-01 carry the list the ADR-0150 check reads, so the check has not been running on most orders since it shipped.
+- **What:** ADR only. Decision 1: heal the unambiguous duplicate-accomplice shape (relabel plus regenerate that one sheet, about 0.15 USD). Decision 2: when the list is missing, extract requirements from the customer's own brief and approved concept (about 0.03 to 0.05 USD per order, estimate).
+- **Not done:** all of it; waits on Jonathan's yes for the recurring cost.
+
 ### Docs: ADR-0154 proposes one customer email when a paid package is held in needs_review (Proposed, nothing built)
 - **Why:** Blackthorn Manor's customer was never told her package was held, and after 10 minutes the page reveals a held package with only a warning banner, so she downloaded the unfixed version and wrote in confused (ADR-0103 Addendum 92).
 - **What:** one localized email after about 60 minutes held, once per package, behind a kill switch. The six-hour internal alert was declined by Jonathan.
