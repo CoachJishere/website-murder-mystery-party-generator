@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Feature: detective redaction switched ON for real purchases (ADR-0156 Phase 3)
+- **What:** `pipeline_settings.child_context_redaction` set to `on` on 2026-10-13 (Jonathan: "do what you reco"). New detective purchases now give each innocent its own slice of the design and a redacted chat through Child64 and `child-context`; murderer, accomplice, intrigue and any doubt keep today's full inputs. `regenerate-child-content` follows the same switch.
+- **Rollback:** `update pipeline_settings set value='off' where key='child_context_redaction';` (no deploy, no import).
+- **Watch (first 5 detective purchases):** reviewer findings per `mystery_packages_prompt_versions` against the baseline of about 13 per English package: `secret_leak` should fall, `wrong_fact` and `cross_field_contradiction` must not rise; `auto_remediation_log` rows with `defect_class = 'child_context'` should be intrigue only plus rare `own-entry-not-found`; no blank or thin sheets; Make execution output for module 414 shows `redacted: true` for innocents. Any alert e-mail "Child kept the full design" names the reason.
+
 ### Test: ADR-0156 Phase 3 paid check, redaction works end to end through Make (switch back to off)
 - **What:** two `is_test` copies of Silver Nightingale, 6 innocents re-fired through the real Child64 (control switch `off`, then `test_only`), one reviewer pass each. Redacted arm: 6 of 6 `redacted=true` in the deployed function, design cut to 13 percent, no fallback rows, no empty fields; other characters' hidden text in the sheets 0 versus 3 in the control; reviewer on the 6 sheets 1 finding (a garbled phrase) versus 2 (including one `secret_leak`), no `wrong_fact` or `cross_field_contradiction`. Package-level counts (3 versus 5) are reviewer noise on untouched sheets.
 - **Found:** the stored role of an innocent now follows the design's `isRedHerring` flag (all `redHerring`); harmless downstream. **Limits:** n = 6 per arm, one package, English, old design without observer text.
