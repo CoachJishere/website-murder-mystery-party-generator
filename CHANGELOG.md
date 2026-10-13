@@ -2,6 +2,12 @@
 
 ## 2026-10-13
 
+### Feature: per-character context function for the detective Child, built and tested (ADR-0156 Phase 1, not wired in)
+- **What:** `supabase/functions/_shared/characterContext.ts` (`buildCharacterContext`, pure allowlist, no LLM) gives a non-culprit character only its own `wrongedEachCharacter` and `characterSpecificDetails` entries, the matrix, the weapon, evidence item descriptions, public timeline facts and the position entries it could observe; murderer and accomplice get the input unchanged. `npm run test:charcontext` (45 tests; real-data ones skip when `temp-files/charctx/` is absent). Findings in `docs/adr/0156-phase1/findings.md`.
+- **Result:** 119 innocents in 12 real packages pass the leak checks; median context is 10.3 percent of the full document. Two intrigue-type designs are refused, 8 of the 12 packages have no position map, and 2 characters of one package are not in the design.
+- **Verdict:** READY WITH CHANGES (replay only map-bearing packages, choose claimed or omitted murderer position, define the caller failure policy). Nothing is wired into Make or an edge function; no paid call or database write.
+- **Not done:** Phase 2 replay (paid, needs a yes with an estimate), `child-context` edge function, Child64, any prompt change.
+
 ### Docs: ADR-0156 proposes a per-character redacted master_context for the detective Child (Proposed, nothing built)
 - **What:** every detective character currently receives the full `master_context` (solution, deception notes, all secrets, about 45k to 77k characters) plus rules telling it not to use them; secret leaks are 52 of 312 reviewer findings and 26 of 93 in the Round Scripts call. The ADR specifies an allowlist-built context per character (edge function, no LLM, role passed explicitly, revertible switch) and four phases; Phase 1 (build and test against 14 real packages) is free.
 - **Not done:** all phases; Phase 2 replay is paid and needs a yes with an estimate.

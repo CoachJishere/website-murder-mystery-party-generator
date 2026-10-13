@@ -1,6 +1,6 @@
 # ADR-0156: Give each detective character only the part of master_context it may know (PROPOSED)
 
-**Status:** Proposed (nothing built; Phase 1 is free and can start on a yes)
+**Status:** Proposed. Phase 1 done 2026-10-13 (pure function and tests only, nothing wired in); Phases 2 to 4 not started
 **Date:** 2026-10-13
 **Related:** ADR-0153 (Phase 0 candidate 4, where this came from), ADR-0103 Addenda 81, 86, 91 (Child51 and the Silver Nightingale leaks), ADR-0142 (prompt prevention), ADR-0140 (propagation)
 
@@ -66,3 +66,14 @@ Jonathan asked to scope this after ADR-0153 Phase 0 rejected prompt accretion as
 ## Key files
 
 `temp-files/MM Live - Child (Unified)63-QuoteTalkRemoved.blueprint.json` (module 142, prompts 401, 405, 409), `docs/adr/0153-phase0/findings.md`, `docs/adr/0103-new-purchase-coherence-sweep-ritual.md` (Addenda 81, 86, 91), `supabase/functions/regenerate-child-content/index.ts`, `supabase/migrations/20261013140000_prompt_version_history.sql`.
+
+## Phase 1 result (2026-10-13)
+
+Built `buildCharacterContext(masterContext, characterName, role, options?)` in `supabase/functions/_shared/characterContext.ts` (pure, allowlist, no LLM) with `npm run test:charcontext` (45 tests; the real-data ones skip cleanly when `temp-files/charctx/` is absent). Full evidence: `docs/adr/0156-phase1/findings.md`. No paid call, database write, edge function, Make edit or prompt change.
+
+- **Verdict: READY WITH CHANGES.** All leak checks pass for 119 innocents in 12 packages (culprit deception, alibi gap, reasoning and secrets; every other character's secret; solution keys). Murderer and accomplice get the input byte for byte. Two of the 14 packages use a different "intrigue" shape and are refused (throws), not guessed.
+- **Median innocent context is 10.3 percent of the full document** (range 8.4 to 16.3, 4,500 to 11,200 characters), not the quarter to a half estimated above: the per-character blocks collapse to one entry in 8 to 21.
+- **Decisions the data forced:** `activitiesAndSchemes`, `murderWindowStart/End` and `keyEventsBeforeMurder` are dropped (they name the culprit or the method); sentences naming the murderer or accomplice are removed from the "public" fields (`specificEvents`, `victimLastSeen`, `bodyDiscovered`, `weapon`) and from other characters' position entries, because even those leaked in 6 to 8 of 12 packages; an unknown or empty role is treated as an innocent; unreadable input throws and never returns the full text for an innocent.
+- **Changes needed before Phase 2 (paid):** (1) replay only packages that carry `keyMomentPositions` (4 of the 12; the other 8 give an innocent no position information); (2) choose how a witness sees the murderer, option `visibleMurderer: "claimed"` (ADR default, contradicts a witness's own entry in 1 of 4 Silver witnesses and uses a field the Child rules call off limits) or `"omit"` (recommended first arm); (3) fix the caller's failure policy for thrown errors and `(NOT FOUND)` own entries (2 characters in El Ultimo Trago); (4) intrigue designs are out of scope.
+- **Known cost:** nobody receives Juliet's corridor confrontation (it lives only in `otherSuspectsAlibis`), so Juliet cannot write her own scene; witnesses Marcus and Harry lose their view of the steward; evidence ownership (`namedItems`) and other characters' occupations are no longer in the context. Phase 4's `whatAnObserverSees` is the structural fix for the first two. Phase 2 must watch wrong_fact and cross_field_contradiction, not only secret_leak.
+- **Not claimed:** that the model leaks less. Phase 1 shows only what it is no longer handed.
