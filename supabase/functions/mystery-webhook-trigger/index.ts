@@ -5,6 +5,7 @@ import {
   type ExtractedCharacter,
   MIN_ROSTER_SIZE,
   MAX_ROSTER_SIZE,
+  applyLaterRenames,
   extractRosterFromMessage,
   isPlausibleRosterCandidate,
   findLatestConceptMessage,
@@ -174,8 +175,11 @@ function extractCharactersFromMessages(rawMessages: any[], approvedMessageId?: s
         // rejected as "implausible" and silently fell through to a legacy scan of
         // the wrong content (Golden Feather Awards, 2026-09-05). Trust the pointer
         // once chosen — this mirrors this function's pre-3d6b694 behavior.
-        console.log(`[CharExtract] Roster from approved message: ${roster.length} characters: ${roster.map(c => c.name).join(', ')}`);
-        return roster;
+        // ADR-0152: a rename the customer asked for AFTER approving (the AI answers with the changed lines only) is applied to the roster.
+        const patched = applyLaterRenames(roster, messages, approvedMessageId);
+        if (patched.renames.length > 0) console.log(`[CharExtract] Applied ${patched.renames.length} later rename(s): ${patched.renames.map(r => `${r.from} -> ${r.to}`).join('; ')}`);
+        console.log(`[CharExtract] Roster from approved message: ${patched.roster.length} characters: ${patched.roster.map(c => c.name).join(', ')}`);
+        return patched.roster;
       }
       console.warn(`[CharExtract] Approved message parsed to ${roster.length} characters (need ${MIN_ROSTER_SIZE}-${MAX_ROSTER_SIZE}) — falling through to legacy scan`);
       // Don't leave latestMessageWithList pointed at a message we just decided

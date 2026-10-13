@@ -428,3 +428,64 @@ export function isRosterExtractionAnomaly(messages: any[], characters: Extracted
     return stated === null || stated >= MIN_ROSTER_SIZE;
   });
 }
+
+/**
+ * ADR-0152: a character the customer renamed AFTER approving the concept ("Agnes Weber efternavn skal ændres" -> the AI answers with the
+ * changed lines only, "5. **Agnes Munk** – <same description>"). ADR-0069 re-captures the snapshot only when a later message restates a
+ * whole roster of a different shape, so a two-line patch never reached the roster, the Child wrote the old name on the sheet and the
+ * package shipped with two names for one person. Parent (Make) reads the whole chat and got it right; the roster did not.
+ *
+ * Rule, deliberately narrow: for each assistant message AFTER the approved one, each numbered/bold character line whose name is not
+ * already in the roster is a rename of roster entry E only when (a) its description is the same text as E's (first 60 normalised
+ * characters equal, or at least 60 percent of the words shared), and (b) it is line number E's position or shares a whole word with E's
+ * name. If two different new names compete for the same entry, or the new name is already another entry's name, nothing changes.
+ */
+const normName = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, "").replace(/\s+/g, " ").trim();
+const wordSet = (s: string) => new Set(normName(s).split(" ").filter((w) => w.length >= 3));
+const descKey = (s: string) => normName(s).slice(0, 60);
+const descSimilar = (a: string, b: string) => {
+  if (!a || !b) return false;
+  if (descKey(a).length >= 40 && descKey(a) === descKey(b)) return true;
+  const x = wordSet(a), y = wordSet(b);
+  if (x.size < 6 || y.size < 6) return false;
+  let shared = 0;
+  for (const w of x) if (y.has(w)) shared++;
+  return shared / Math.max(x.size, y.size) >= 0.6;
+};
+
+export function applyLaterRenames(roster: ExtractedCharacter[], messages: any[], snapshotId: string | null | undefined): { roster: ExtractedCharacter[]; renames: { from: string; to: string }[] } {
+  const out = roster.map((c) => ({ ...c }));
+  const renames: { from: string; to: string }[] = [];
+  if (!snapshotId || out.length === 0) return { roster: out, renames };
+  const at = messages.findIndex((m: any) => m.id === snapshotId);
+  if (at < 0) return { roster: out, renames };
+  const later = messages.slice(at + 1).filter((m: any) => m.role === "assistant" || m.is_ai);
+  for (const msg of later) {
+    const proposals = new Map<number, Set<string>>(); // roster index -> distinct new names
+    const detail = new Map<string, { idx: number; name: string; desc: string }>();
+    for (const raw of String(msg.content || "").split("\n")) {
+      const line = raw.trim();
+      const m = line.match(characterLineRegex) ?? line.match(boldCharRegex);
+      if (!m) continue;
+      const num = /^(\d+)\./.exec(line)?.[1];
+      const name = String(m[1] ?? m[2] ?? "").trim();
+      const desc = String(m[3] ?? m[2] ?? "").trim();
+      const description = line.match(characterLineRegex) ? String(m[3] ?? "").trim() : String(m[2] ?? "").trim();
+      if (!name || isPlaceholderCharacterName(name) || out.some((c) => normName(c.name) === normName(name))) continue;
+      const hits = out.map((c, i) => ({ c, i })).filter(({ c, i }) => descSimilar(c.description, description || desc) &&
+        ((num && Number(num) === i + 1) || [...wordSet(name)].some((w) => wordSet(c.name).has(w))));
+      if (hits.length !== 1) continue;
+      const idx = hits[0].i;
+      proposals.set(idx, (proposals.get(idx) ?? new Set()).add(normName(name)));
+      detail.set(`${idx}|${normName(name)}`, { idx, name, desc: description || desc });
+    }
+    for (const [idx, names] of proposals) {
+      if (names.size !== 1) continue; // two competing new names for one person: ambiguous, leave it
+      const d = detail.get(`${idx}|${[...names][0]}`)!;
+      if (out.some((c, i) => i !== idx && normName(c.name) === normName(d.name))) continue;
+      renames.push({ from: out[idx].name, to: d.name });
+      out[idx] = { ...out[idx], name: d.name, description: d.desc || out[idx].description };
+    }
+  }
+  return { roster: out, renames };
+}

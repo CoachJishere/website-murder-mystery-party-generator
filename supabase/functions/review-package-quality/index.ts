@@ -4,7 +4,9 @@ import * as C from "./review-core.ts";
 import * as LC from "./label-conformity.ts";
 import * as RR from "./roster-reconcile.ts";
 import * as LP from "./leak-probe.ts";
+import * as FC from "./fact-check.ts";
 import { LABELS_BY_CODE } from "./label-tables.ts";
+import { applyLaterRenames, extractRosterFromMessage, mergeRosterContinuations } from "../_shared/rosterExtraction.ts";
 
 /**
  * ADR-0136: production LLM quality reviewer.
@@ -156,7 +158,11 @@ async function secondPass(only?: string, force = false): Promise<Row> {
   if (!r.skipped && (await setting("review_leak_probe", "off")) === "on") {
     try { leak = await leakProbe(id, { write: true }); } catch (e) { console.error(`leak probe failed (ignored): ${(e as Error).message}`); leak = { error: (e as Error).message }; }
   }
-  return { ...r, second_pass: true, applied: applied.applied, reverted: applied.reverted, leak };
+  let fact: Row | undefined;
+  if (!r.skipped && (await setting("review_fact_check", "off")) === "on") {
+    try { fact = await factProbe(id, { write: true }); } catch (e) { console.error(`fact check failed (ignored): ${(e as Error).message}`); fact = { error: (e as Error).message }; }
+  }
+  return { ...r, second_pass: true, applied: applied.applied, reverted: applied.reverted, leak, fact };
 }
 
 /** ADR-0149: one email per UTC day listing packages released in the last 26 hours that still carry unverified open findings. */
@@ -498,6 +504,8 @@ async function healLabels(packageId: string, opts: { dryRun?: boolean; force?: b
   return { ...summary, written: true };
 }
 
+// Detective-style sheets keep the honest round scripts here instead of the innocent/guilty branches.
+const SCRIPT_FIELDS = ["round2_script", "round3_script", "round4_script", "final_statement"];
 const RENAME_SKIP = new Set(["id", "package_id", "character_name", "created_at", "updated_at", "character_role"]);
 
 /** Free heal for a character the customer renamed after approval (ADR-0152). Anything not certain becomes an open high finding. */
@@ -578,6 +586,58 @@ async function runFreeHeals(packageId: string): Promise<Row> {
   return out;
 }
 
+/** ADR-0152 lever 3b: cross-sheet fact check. Paid unless dryRun. `overrides` ({sheet: {field: text}}) replaces text in memory only, to replay a package from before a hand fix. */
+async function factProbe(packageId: string, opts: { dryRun?: boolean; write?: boolean; overrides?: Record<string, Record<string, string>> } = {}): Promise<Row> {
+  const { data: pkg } = await supabase.from("mystery_packages").select("*").eq("id", packageId).single();
+  const { data: charsData } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId).order("character_name");
+  const chars = ((charsData ?? []) as Row[]).map((c) => ({ ...c, ...(opts.overrides?.[String(c.character_name)] ?? {}) }));
+  if (!pkg || chars.length < 3) return { skipped: "package not found or too few characters" };
+  const objs = C.parseMasterContext((pkg as Row).master_context) as Record<string, unknown>[];
+  const sheets: FC.FactSheet[] = chars.map((c) => ({
+    name: String(c.character_name),
+    texts: [...LC.CONFORM_FIELDS, ...SCRIPT_FIELDS].filter((f) => typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
+    own: ["introduction", "round2_innocent", "round3_innocent", "round4_innocent", "final_innocent", ...SCRIPT_FIELDS].map((f) => (typeof c[f] === "string" ? String(c[f]) : "")).filter(Boolean).join("\n\n"),
+    canon: FC.canonFor(String(c.character_name), objs),
+  }));
+  const cands = FC.factCandidates(sheets);
+  const sentences = cands.reduce((n, c) => n + c.hits.length, 0);
+  const promptChars = cands.reduce((n, c) => n + FC.factPromptText(c).length + FC.FACT_INSTRUCTIONS.length, 0);
+  const estimate = { subjects: cands.length, sentences, approx_input_tokens: Math.round(promptChars / 3.2) };
+  if (opts.dryRun || cands.length === 0) return { package_id: packageId, ...estimate, dry_run: true };
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
+  if ((await spentToday()) >= DAILY_CAP_USD) return { skipped: "daily cost cap" };
+  const system: C.SystemBlock[] = [{ type: "text", text: FC.FACT_INSTRUCTIONS }];
+  const found: Row[] = [];
+  let cost = 0, calls = 0, dropped = 0, next = 0;
+  const worker = async () => {
+    while (true) {
+      const idx = next++;
+      if (idx >= cands.length || cost >= 0.9) return;
+      const c = cands[idx];
+      const r = await reviewItem(apiKey, system, `${c.subject} (fact check)`, FC.factPromptText(c));
+      calls++; cost += r.cost;
+      for (const f of r.findings) {
+        const target = FC.resolveFact(c, f);
+        const row = target ? chars.find((x) => String(x.character_name) === target.sheet) : null;
+        const finding = target ? { ...f, field: target.field } : f;
+        if (!target || !row || !C.validateFinding(row, finding).ok || f.category !== "cross_field_contradiction") { dropped++; continue; }
+        found.push({ item_name: target.sheet, field: target.field, category: "cross_field_contradiction", severity: f.severity, exact_quote: f.exact_quote,
+          explanation: `About ${c.subject}: ${(f.explanation ?? "").slice(0, 440)}`, suggested_replacement: f.suggested_replacement ?? "" });
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: 3 }, worker));
+  let stored = 0;
+  if (opts.write && !opts.overrides && found.length > 0) {
+    const version = C.PROMPT_VERSION + "+fact";
+    const { data: rv } = await supabase.from("package_reviews").insert({ package_id: packageId, prompt_version: version, model: MODEL, mystery_style: String((pkg as Row).mystery_style ?? ""), status: "done", finished_at: new Date().toISOString(), items_reviewed: calls, findings_count: found.length, cost_usd: Number(cost.toFixed(4)) }).select("id").single();
+    if (rv) { const { error } = await supabase.from("package_review_findings").insert(found.map((f) => ({ review_id: (rv as { id: string }).id, package_id: packageId, ...f }))); if (!error) stored = found.length; }
+  }
+  if (cost > 0) await logSpend(packageId, `fact_probe:${found.length}_findings`, "escalated", cost);
+  return { package_id: packageId, ...estimate, calls, cost_usd: Number(cost.toFixed(4)), findings: found.length, dropped, stored, preview: opts.write ? undefined : found.map((f) => ({ item: f.item_name, field: f.field, severity: f.severity, quote: String(f.exact_quote).slice(0, 160), why: f.explanation, fix: String(f.suggested_replacement).slice(0, 160) })) };
+}
+
 /** ADR-0152 lever 3: cross-sheet secret check. Paid unless dryRun. write=false returns the findings without storing them. */
 async function leakProbe(packageId: string, opts: { dryRun?: boolean; write?: boolean } = {}): Promise<Row> {
   const { data: pkg } = await supabase.from("mystery_packages").select("*").eq("id", packageId).single();
@@ -586,8 +646,8 @@ async function leakProbe(packageId: string, opts: { dryRun?: boolean; write?: bo
   if (!pkg || chars.length < 3) return { skipped: "package not found or too few characters" };
   const sheets: LP.LeakSheet[] = chars.map((c) => ({
     name: String(c.character_name), secret: typeof c.secret === "string" ? c.secret : "",
-    texts: LC.CONFORM_FIELDS.filter((f) => f !== "secret" && typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
-    open: ["introduction", "round2_innocent", "round3_innocent", "round4_innocent", "final_innocent"].map((f) => (typeof c[f] === "string" ? String(c[f]) : "")).filter(Boolean).join("\n\n"),
+    texts: [...LC.CONFORM_FIELDS, ...SCRIPT_FIELDS].filter((f) => f !== "secret" && typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
+    open: ["introduction", "round2_innocent", "round3_innocent", "round4_innocent", "final_innocent", ...SCRIPT_FIELDS].map((f) => (typeof c[f] === "string" ? String(c[f]) : "")).filter(Boolean).join("\n\n"),
   }));
   const cands = LP.leakCandidates(sheets);
   const sentences = cands.reduce((n, c) => n + c.hits.length, 0);
@@ -703,7 +763,7 @@ async function releaseQueue(): Promise<Row[]> {
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = ["conform_labels", "reconcile_roster", "heal_scan", "leak_probe"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
+    const mode = ["conform_labels", "reconcile_roster", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
     const out: Row[] = [];
     if (mode === "conform_labels" || mode === "reconcile_roster") {
       // ADR-0152: manual run for one package (delivered packages are only changed through here). dry_run:true computes and writes nothing; force:true writes even when the setting is "report".
@@ -725,6 +785,28 @@ serve(async (req) => {
         if (changes) hits.push({ package_id: p.id, title: p.title, labels: l, roster: r });
       }
       return new Response(JSON.stringify({ since, scanned, offset, hits }), { headers: { "Content-Type": "application/json" } });
+    }
+    if (mode === "roster_patch_scan") {
+      // Read-only: which approved concepts would get a later-rename patch (ADR-0152). Used to prove the rule has no false positives.
+      const limit = Math.min(Number(body.limit) || 60, 150), offset = Number(body.offset) || 0;
+      const { data: convs } = await supabase.from("conversations").select("id,title,approved_concept_message_id").not("approved_concept_message_id", "is", null).eq("is_paid", true).order("purchase_date", { ascending: false }).range(offset, offset + limit - 1);
+      const hits: Row[] = []; let scanned = 0;
+      for (const cv of (convs ?? []) as { id: string; title: string | null; approved_concept_message_id: string }[]) {
+        const { data: ms } = await supabase.from("messages").select("id,role,content,created_at").eq("conversation_id", cv.id).order("created_at", { ascending: true });
+        const messages = mergeRosterContinuations((ms ?? []) as never[]);
+        const snap = messages.find((m: { id: string }) => m.id === cv.approved_concept_message_id);
+        if (!snap) continue;
+        scanned++;
+        const roster = extractRosterFromMessage(String((snap as { content?: string }).content ?? ""));
+        const r = applyLaterRenames(roster, messages, cv.approved_concept_message_id);
+        if (r.renames.length > 0) hits.push({ conversation_id: cv.id, title: cv.title, renames: r.renames });
+      }
+      return new Response(JSON.stringify({ scanned, offset, hits }), { headers: { "Content-Type": "application/json" } });
+    }
+    if (mode === "fact_probe") {
+      // Paid only with paid:true. overrides replay a package from before a hand fix (in memory, never written).
+      if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(await factProbe(String(body.package_id), { dryRun: body.paid !== true, write: body.write === true, overrides: body.overrides && typeof body.overrides === "object" ? body.overrides : undefined })), { headers: { "Content-Type": "application/json" } });
     }
     if (mode === "leak_probe") {
       // Paid only when paid:true is sent; otherwise it only retrieves candidates and estimates tokens. write:true stores the findings.

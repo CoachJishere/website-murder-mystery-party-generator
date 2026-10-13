@@ -14,7 +14,7 @@ export type LeakCandidates = { owner: string; secret: string; open: string; hits
 const TITLES = new Set(["dr", "fru", "hr", "herr", "greve", "kaptajn", "baronesse", "officer", "konsul", "lady", "lord", "sir", "mr", "mrs", "miss", "ms", "captain", "count", "baron", "countess", "doctor", "professor", "madame", "monsieur", "señor", "señora", "signor", "signora", "herr", "frau", "kapitän", "graf", "gräfin", "baron", "mevrouw", "meneer", "kapten", "greve"]);
 const STOP = new Set<string>(); // language neutral: rarity (document frequency) does the work, not a stop list
 
-const wordsOf = (s: string): string[] => s.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+export const wordsOf = (s: string): string[] => s.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
 const stem = (w: string) => (w.length > 5 ? w.slice(0, 5) : w);
 
 export function splitSentences(text: string): string[] {
@@ -22,7 +22,7 @@ export function splitSentences(text: string): string[] {
 }
 
 /** Distinctive words of a name: the words only this sheet's name has (so "Castenskiold", shared by mother and daughter, is not one). */
-function distinctiveNameWords(name: string, all: string[]): string[] {
+export function distinctiveNameWords(name: string, all: string[]): string[] {
   const others = new Set(all.filter((n) => n !== name).flatMap((n) => wordsOf(n)));
   return wordsOf(name).filter((w) => w.length >= 3 && !TITLES.has(w) && !others.has(w));
 }

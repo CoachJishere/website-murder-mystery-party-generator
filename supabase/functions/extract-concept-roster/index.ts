@@ -2,6 +2,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
+  applyLaterRenames,
   extractRosterFromMessage,
   findLatestConceptMessage,
   isRosterExtractionAnomaly,
@@ -119,8 +120,9 @@ serve(async (req) => {
 
     const messages = mergeRosterContinuations(conversation.messages || []);
     const latestMessage = findLatestConceptMessage(messages, conversation.player_count);
+    // ADR-0152: same later-rename patch as generation, so the preview shows the names the package will carry.
     const characters = latestMessage
-      ? extractRosterFromMessage(latestMessage.content || '')
+      ? applyLaterRenames(extractRosterFromMessage(latestMessage.content || ''), messages, latestMessage.id).roster
       : [];
 
     // ADR-0130 Addendum 2: distinguishes "customer hasn't finished their concept
