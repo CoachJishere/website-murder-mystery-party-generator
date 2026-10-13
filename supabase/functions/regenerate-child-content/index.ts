@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { buildConversationExcerpt } from "../_shared/conversation-excerpt.ts";
 import { nameVariants, buildVariantRegex } from "../_shared/nameVariants.ts";
+import { inputsForRegeneration, parseMode } from "../_shared/childContext.ts";
 
 /**
  * regenerate-child-content — ADR-0051 layer 3: the child-content regenerator.
@@ -578,13 +579,19 @@ function removedCharacterLeaksIn(
   return hits;
 }
 
-async function loadConversation(conversationId: string): Promise<{ has_accomplice: boolean | null; mystery_type: string | null }> {
+async function loadConversation(conversationId: string): Promise<{ has_accomplice: boolean | null; mystery_type: string | null; is_test: boolean }> {
   const { data } = await supabase
     .from("conversations")
-    .select("has_accomplice, mystery_type")
+    .select("has_accomplice, mystery_type, is_test")
     .eq("id", conversationId)
     .maybeSingle();
-  return { has_accomplice: data?.has_accomplice ?? null, mystery_type: data?.mystery_type ?? null };
+  return { has_accomplice: data?.has_accomplice ?? null, mystery_type: data?.mystery_type ?? null, is_test: data?.is_test === true };
+}
+
+/** ADR-0156 Phase 3 kill switch (pipeline_settings.child_context_redaction: on | off | test_only, default off). A failed read is `off`. */
+async function loadRedactionMode() {
+  const { data } = await supabase.from("pipeline_settings").select("value").eq("key", "child_context_redaction").maybeSingle();
+  return parseMode((data as { value?: string } | null)?.value);
 }
 
 async function loadCharacters(packageId: string): Promise<CharacterRow[]> {
@@ -1079,7 +1086,8 @@ serve(async (req) => {
     if (!pkg.master_context) throw new Error("master_context is empty — cannot regenerate without it");
     const style: MysteryStyle = pkg.mystery_style === "character" ? "character" : "detective";
     const effectiveFields = effectiveFieldsFor(defect_class_hint, style, fields);
-    const { has_accomplice, mystery_type } = await loadConversation(pkg.conversation_id);
+    const { has_accomplice, mystery_type, is_test } = await loadConversation(pkg.conversation_id);
+    const redactionMode = await loadRedactionMode();
     const allCharacters = await loadCharacters(package_id);
 
     const primary = allCharacters.find((c) => c.id === character_id);
@@ -1156,12 +1164,25 @@ serve(async (req) => {
 
     for (const character of targetList) {
       const seedDescription = extractSeedDescription(pkg.extracted_characters, character.character_name);
+      // ADR-0156 Phase 3: with the switch on, a non-culprit detective character is regenerated from its own slice of the design and a
+      // redacted chat, exactly as the Make Child does. Off (the default), or any doubt, returns the original strings unchanged.
+      const redaction = inputsForRegeneration({
+        mode: redactionMode, isTest: is_test, mysteryStyle: pkg.mystery_style, masterContext: masterContextStr,
+        transcript: pkg.user_conversation ?? "", characterName: character.character_name, storedRole: character.character_role,
+      });
+      if (redaction.prep.fallback) {
+        await logRow({
+          package_id, defect_class: "child_context", action: `fallback:${redaction.prep.fallback.reason}:regenerate:${character.character_name}`.slice(0, 200),
+          before_value: null, outcome: "escalated", cost_usd: 0,
+        });
+      }
       // Exclude the character being written about — including self in the "cast
       // names only" roster let the model pick itself as its own ally/rival
       // (e.g. "You are yourself"), seen on dual-gender-variant names.
+      // A redacted character is not told the other characters' roles either: "(murderer)" next to a name is the solution.
       const cast = allCharacters
         .filter((c) => c.id !== character.id)
-        .map((c) => ({ character_name: c.character_name, character_role: c.character_role }));
+        .map((c) => ({ character_name: c.character_name, character_role: redaction.prep.redacted ? null : c.character_role }));
       for (const group of groups) {
         const fieldsToGenerate = group.fields.filter((f) => effectiveFields.includes(f));
         if (fieldsToGenerate.length === 0) continue;
@@ -1169,14 +1190,14 @@ serve(async (req) => {
         let parsed: Record<string, string>;
         try {
           const prompt = buildPrompt({
-            style, group, fieldsToGenerate, masterContext: masterContextStr, character,
+            style, group, fieldsToGenerate, masterContext: redaction.masterContext, character,
             // ADR-0097 Addendum (2026-09-12): windowed to this character's own
             // name rather than sent raw -- see _shared/conversation-excerpt.ts.
             // Doesn't share notify-generation-issue's silent-failure shape
             // (errors here are caught and logged, Sonnet 5's context window
             // easily fits a raw 180K-char transcript) -- this closes an
             // unnecessary token-cost/prompt-dilution gap, not a correctness bug.
-            seedDescription, conversationContent: buildConversationExcerpt(pkg.user_conversation ?? "", character.character_name),
+            seedDescription, conversationContent: buildConversationExcerpt(redaction.transcript, character.character_name),
             hasAccomplice: has_accomplice, mysteryType: mystery_type, cast,
           });
           const { text, costUsd } = await callClaude(prompt, apiKey);

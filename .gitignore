@@ -157,6 +157,9 @@ draft_rewrites/
 !supabase/functions/review-package-quality/fact-check.test.mjs
 !supabase/functions/_shared/readyEmail.test.mjs
 !supabase/functions/_shared/characterContext.test.mjs
+!supabase/functions/_shared/childContext.test.mjs
+!supabase/functions/child-context/child-context.test.mjs
+!supabase/functions/regenerate-child-content/redaction-seam.test.mjs
 
 # ADR-0156 Phase 4 tools (analysis scripts for the paid verification)
 !docs/adr/0156-phase4/tools/*.mjs

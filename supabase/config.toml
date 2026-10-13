@@ -311,3 +311,8 @@ verify_jwt = false
 
 [functions.rescue-unstarted-orders]
 verify_jwt = true
+
+[functions.child-context]
+# ADR-0156 Phase 3: the gateway JWT check stays on (Make sends the anon key like every other Make call); the real gate is the
+# x-child-context-key header inside the function, because the anon key is public.
+verify_jwt = true
