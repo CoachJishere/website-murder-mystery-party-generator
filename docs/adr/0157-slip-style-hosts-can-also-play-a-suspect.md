@@ -19,7 +19,7 @@ In detective style this is not true: the detective script and Detective Guide na
 ## Decision
 
 For `mystery_style = 'character'` (slip) only, add to the guide:
-1. A short block after Option 2, "Host who also plays a suspect (slip-draw mysteries)": take a character page and draw a slip like everyone else; read the narration script aloud between rounds (it never names the guilty player); skip the other characters' pages (you will see each round's evidence at the same time as your guests, and nothing in the guide names who is guilty); fold and shuffle the slips without looking, or let a guest prepare them, so you do not know who drew what.
+1. A short block after Option 2, "Playing a suspect yourself? (slip-draw mysteries only)": take a character page and draw a slip like everyone else; read the narration script aloud between rounds (it never names the guilty player); skip the other characters' pages (you will see each round's evidence at the same time as your guests, and nothing in the guide names who is guilty); fold and shuffle the slips without looking, or let a guest prepare them, so you do not know who drew what.
 2. A character-based variant of checklist item 2 that says to skip the other characters' secrets when you are also playing.
 3. Reword the character-based Option 1 note so it no longer says the host does not participate as a suspect: it now says "if you will not play a suspect...".
 
@@ -38,7 +38,7 @@ The feature already exists in the product; only the guide denies it. Fixing the 
 
 ## Consequences
 
-- 10 new `hostGuide` keys in 13 locales and two reworded keys; the guide for slip-style games grows by one short block.
+- 8 new `hostGuide` keys (6 under `setupChoice`, 2 under `checklist`) in 13 locales and two reworded keys; the guide for slip-style games grows by one short block.
 - The claim "nothing in the guide names who is guilty" now rests on the slip-style leak detectors staying healthy; a regression there is also a regression of this text. Note in the sweep: a slip package whose detective script names a cast member is more serious than before.
 - The Game Overview of packages generated before Parent83 (2026-10-12) still names some characters' hidden motives; the text promises only that the culprit is not named, not that no secrets are.
 
