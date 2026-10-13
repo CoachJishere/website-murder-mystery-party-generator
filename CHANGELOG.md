@@ -2,9 +2,10 @@
 
 ## 2026-10-13
 
-### Feature: contradiction check pilot (2 of 3 known misses found, still off) and pointform resync after fact fixes (ADR-0152 Update 2)
+### Feature: contradiction check pilot (2 of 3 known misses found; clean-package precision about 1 in 3, so still off) and pointform resync after fact fixes (ADR-0152 Update 2)
 - **What:** the cross-sheet fact check now numbers the subject's own statements as peers and reports the odd one out; on The Last Thanksgiving's pre-fix text it found Perry's and Clara's contradictions (and a plausible third) for 0.16 USD, where the first rubric found none. Still off (`review_fact_check`), one clean-package run short of switching on. Reviewer auto-apply now regenerates a character's bullet versions when a `wrong_fact` or `cross_field_contradiction` fix leaves a stale bullet (about 0.05 USD per character, `review_pointform_resync`, default on).
-- **Not done:** the clean-package false-positive run (about 0.2 USD), a live exercise of the pointform resync.
+- **Clean-package run (Champagnens, 0.20 USD):** 3 findings, 1 genuine small slip, 1 false positive (a claim consistent with the canonical alibi gap), 1 culprit deflection that may lie by design; guilty/accomplice branches and confessions are no longer a claim source (deployed). Stays off until a rerun after that change.
+- **Not done:** that rerun, a live exercise of the pointform resync.
 
 ### Fix: a customer's late rename now reaches the roster at generation time; secret check calibrated; cross-sheet fact check built (off) (ADR-0152 Update 1)
 - **What:** (1) `applyLaterRenames` (shared roster extraction): a patch message after the approved concept that restates a character with a new name and the same description renames that roster entry; wired into `mystery-webhook-trigger` (v151) and the preview `extract-concept-roster` (v10). A scan of 155 paid conversations finds only Champagnens (no false positive). (2) Secret check: the model now sees what the owner says openly and a conservative rubric; 21 findings fell to 6 on Champagnens, 8 to 1 on Hedberg Hollow; still off, 0.10 to 0.15 USD per paid package. (3) `fact-check.ts` and `mode: fact_probe`: cross-sheet contradictions about a character, off, paid pilot pending Jonathan's yes. (4) `review-package-quality` v20.

@@ -610,7 +610,8 @@ async function factProbe(packageId: string, opts: { dryRun?: boolean; write?: bo
   const objs = C.parseMasterContext((pkg as Row).master_context) as Record<string, unknown>[];
   const sheets: FC.FactSheet[] = chars.map((c) => ({
     name: String(c.character_name),
-    texts: [...LC.CONFORM_FIELDS, ...SCRIPT_FIELDS].filter((f) => typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
+    // The guilty and accomplice branches and the confessions may lie by design (a culprit deflecting), so they are never a source of claims about others.
+    texts: [...LC.CONFORM_FIELDS, ...SCRIPT_FIELDS].filter((f) => !/_(guilty|accomplice)$|^reveal_confession_/.test(f) && typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
     own: ["introduction", "round2_innocent", "round3_innocent", "round4_innocent", "final_innocent", ...SCRIPT_FIELDS].filter((f) => typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
     canon: FC.canonFor(String(c.character_name), objs),
   }));
