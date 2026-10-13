@@ -44,7 +44,7 @@ def walk(flow):
 tpl = next(m for m in walk(bp['flow']) if m['id'] == module)['mapper']['messages'][0]['content'][0]['text']
 convtext = row['user_conversation'] or ''
 vals = {'63.title': conv['title'] or row['title'], '63.playerCount': str(conv['player_count']), '63.scriptType': str(conv['script_type']),
-        '63.hasAccomplice': str(bool(conv['has_accomplice'])).lower(), '63.mysteryType': pk and 'murder', '164.array': json.dumps(roster, ensure_ascii=False)}
+        '63.hasAccomplice': str(bool(conv['has_accomplice'])).lower(), '63.mysteryType': 'intrigue' if module == 4020 else 'murder', '164.array': json.dumps(roster, ensure_ascii=False)}
 def rep(m):
     k = m.group(1).strip()
     if k.startswith('ifempty(171.') or k.startswith('ifempty(2417.'): return part1

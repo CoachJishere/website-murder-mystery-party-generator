@@ -63,3 +63,52 @@ The model is asked to derive the observer sentence from `truePosition` and inven
 4. **Accept as is and rely on the Child rules and the reviewer.** The culprit result is clean; the added-detail risk is mostly cosmetic with the occasional secret-adjacent prop.
 
 Not run: runs 4 to 7 (about 1.2 USD), Tier 2 (about 0.8 USD).
+
+# Part 3: inverted derivation, runs 4 to 7 and Tier 2 (2026-10-13, same day)
+
+Jonathan approved the recommendation (invert the derivation, re-run Silver, then go on if clean). The final wording is in `design.md` (appendix) and `temp-files/build-parent-v86.py`: `whatAnObserverSees` is the second key of each entry, before `truePosition`; the rule says to write the visible layer first and make `truePosition` begin with it and add what is out of sight; plus rule 1 (no feelings or expressions) and rule 4 (no invented prop). Diff against Parent85 is still pure insertions in modules 3000 and 4020, rule text identical.
+
+## Spend (actual tokens; cost at the assumed 3 and 15 USD per MTok)
+
+| Call | Input | Output | Est. USD |
+|---|---|---|---|
+| Silver, inverted wording (i1) | 27,912 | 25,335 | 0.464 |
+| Blackthorn Manor, module 3000 | 31,992 | 13,005 | 0.291 |
+| The Last Slice, module 3000 | 23,393 | 9,445 | 0.212 |
+| Murder Under Golden Stars (Swedish), module 3000 | 28,933 | 12,784 | 0.279 |
+| The Great S'more Heist (intrigue), module 4020 | 20,187 | 12,630 | 0.250 |
+| Tier 2: 4 characters x 3 Child calls | 173,564 | 16,634 | 0.77 |
+| **This part** | | | **2.27** |
+| **Whole of Phase 4 (parts 1 to 3)** | | | **about 3.90 of 4.5** |
+
+## Silver, inverted wording
+
+- Observer sentences are now exactly the visible prefix of `truePosition` (added-detail 0 of 12 sentences by the script and by reading); no Harry notebook; no feelings; reciprocity breaks 0.
+- `truePosition` now states the act (Simone: "The glass already holds the measured dose Felicity passed to her in the crew corridor ..."), so this run exercised the hard case that the earlier replays did not. Simone's observer sentence: "Stands behind Reginald's chair at the head table and hands him a brandy glass from a silver tray." (18 words; Felicity 18; innocents 12 to 23).
+
+## Generality, runs 4 to 7 (one sample each)
+
+| Package | Culprit / accomplice observer sentence | Hidden in `truePosition` only | Notes |
+|---|---|---|---|
+| Blackthorn Manor (en, accomplice) | Pam: "Walks through the hall carrying a tray and a ring of keys toward the kitchen passage." (16 words) | gave Sheila the vial, sent the forged note | Sheila (unseen) still got a sentence (rule 5 breach, harmless: never passed on) |
+| The Last Slice (en, no accomplice) | Morgan: "Stands near the dessert table, holding a phone and looking at the arrangement of the desserts." (16, innocents' max 15) | "slipped the allergen into Sasha's dessert" | seen by 1 |
+| Murder Under Golden Stars (sv) | Marcel: "Går ut ur salongen mot korridoren med ett skrädderiverktygsbälte runt midjan." (11, innocents 8 to 13) | goes on to the lounge where Xorg is alone | sentences in Swedish; Swedish word list found nothing |
+| The Great S'more Heist (intrigue, module 4020) | Daisy: "Walks along the edge of the clearing near the tree line, pulling a small wheelbarrow with a few flour sacks." (20, innocents' max 19) | takes the spare key, loads the supplies, stages the raccoon trail | seen by 2; 2 unseen entries (Nutmeg, Ruby) also got sentences |
+
+Across the 7 culprit and accomplice sentences of the final wording (Silver 2, Blackthorn 2, Last Slice 1, Swedish 1, S'more 1): **0 act, intent, secrecy or tampering words**, 0 added-detail words, 0 leak flags from the `buildCharacterContext` scan (the 5-word-run scan's earlier false positives on generic phrases did not recur). Two culprit sentences are one word above the innocents' maximum (Last Slice, S'more), one is equal (Silver); the field is present on every entry of all five maps.
+
+Remaining wording defects: (1) rule 5 (empty when nobody can see them) is not always followed: 3 unseen entries across 2 packages carry a sentence; harmless because `buildCharacterContext` only passes entries the viewer is in `canBeSeenBy` of, but the rule is not reliable; (2) the culprit's sentence is not indistinguishable by content: it contains the visible part of the act (hands the victim a glass, pulls a wheelbarrow of sacks), which is exactly the clue a witness needs, so a reader of the 12 sentences could single it out; length and tone are matched; (3) a sentence may name a character the entry looks at who is not in `besideOrNear` (Beatrice and Juliet; three Swedish entries); the rule should say "or already named in truePosition"; (4) reciprocity breaks 3 (Blackthorn), 1, 1, 0, vs 3 in the Parent85 control: noise.
+
+## Tier 2: the Child, with the redacted context and the redacted chat
+
+Contexts from `buildCharacterContext` on the Silver i1 Part 2 (observer field used); chats from `buildCharacterChatSafe` (chat 12,979 characters cut to about 10,700, survivors 0, no strict rerun, no flags). Characters: Marcus Finch, Percival Okafor, Bartholomew Calloway (all three can see Simone in this map; Bartholomew was one of the two Phase 2 chat leakers) and Antonia Rolewicz (the other Phase 2 leaker; cannot see Simone). Harry is not a witness in this sample (he sees only Juliet and Antonia), so the Phase 2 pairing "Marcus and Harry" cannot be reproduced; Marcus can.
+
+**Reported separately, as asked:**
+
+1. **Do the witnesses recover the steward clue? Yes, 3 of 3 witnesses; the non-witness has none.** Marcus: "Simone was the one who put the brandy glass in Reginald's hand at the head table, in full view of everyone." and "You were standing behind Reginald's chair and handed him his glass from the tray." Bartholomew: "You were standing behind Reginald's chair when the brandy was handed round." Percival: "You were standing behind Reginald's chair when the brandy was handed to him." Antonia: no sentence about Simone's position. Caveat: the map is a new Parent sample (Simone behind the chair at the head table, not at the sideboard), so this is the same kind of clue, not the same sentence as in the original; with no stated alibi handed to anyone, the sheets cannot contradict her claim, they can only report what they saw.
+2. **Does any sheet leak a secret or the act? None found.** The words dose, pantry, crew corridor and poison do appear, but all come from the public Round 3 and Round 4 evidence items every character receives (the bottle labelled "Measured Dose Only" in the crew corridor bin by the pantry door, the pantry key). No sheet says Simone or Felicity prepared or handed over the dose, that Felicity passed anything to Simone, or that Harry is a journalist (the only "notebook" is the Round 2 evidence page). Phase 2 baseline: 2 of 10 sheets repeated Harry's secret from the chat; here 0 of 4 (including both earlier leakers), with the caveat of n = 4. Mild invented colour remains (Bartholomew: Harry "watched the head table far more closely than a man enjoying his dinner should"; Antonia: Simone "has a way of smiling at the right people and watching the wrong ones"): not secrets, but not in their contexts either.
+3. The automatic 6-word-run check against other characters' secrets is useless on its own (it fires on "go to great lengths to keep it hidden", used in every secret); the leak findings above are from reading every sentence that names Simone, Felicity, Harry or a profession.
+
+## Verdict
+
+**Parent86 (final wording) passes the verification as designed: no act, intent or secrecy wording in 7 of 7 culprit and accomplice sentences across five packages, three languages' worth of structure (English, Swedish, the intrigue schema), witnesses recover the clue, 0 of 4 sheets leak.** Limits: one sample per package for runs 4 to 7, one for Silver in the final wording, 4 sheets, no reviewer run, no control arm for the Child, the wording check for Swedish was a short hand-written list, and the intrigue map is only checked at the Part 2 level (`buildCharacterContext` still refuses the intrigue design). Recommended before import: add "or already named in truePosition" to rule 4 and make rule 5 firmer ("write exactly an empty string, not a description"); both are wording-only and I would not re-spend to test them. After import: look at the first detective purchase's map as planned in design.md section 6.

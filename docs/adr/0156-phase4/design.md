@@ -1,6 +1,6 @@
 # ADR-0156 Phase 4 design: `whatAnObserverSees`, an observer-safe description of what witnesses saw (2026-10-13)
 
-Status: designed and built locally, nothing imported or deployed. Parent86 exists only as a local, gitignored blueprint; `buildCharacterContext` is still not wired into anything. No paid call, no database write, no Make import.
+Status: designed, built locally and verified on real model output (Tier 1 and Tier 2, see `tier1-findings.md`); nothing imported or deployed. Parent86 exists only as a local, gitignored blueprint; `buildCharacterContext` is still not wired into anything. No database write, no Make import. **Revision after the paid runs:** the first wording asked the model to derive the observer sentence from `truePosition` and it added props (about 60 percent of sentences, once a prop pointing at Harry's hidden identity); the final wording inverts the order: the sentence is written FIRST (it precedes `truePosition` in the entry schema) and `truePosition` must begin with it and add what is out of sight. Sections 3.1, 3.2 and the appendix below describe the final wording.
 
 ## 1. Problem in one paragraph
 
@@ -53,21 +53,21 @@ What the real maps teach the design:
 {"character": "...", "truePosition": "...", "besideOrNear": ["..."], "canBeSeenBy": ["..."], "whatAnObserverSees": "..."}
 ```
 
-- Last, so the model writes it after it has decided who can see whom, and can derive it from the finished entry.
+- Placed right after `character`, i.e. BEFORE `truePosition`: JSON is written in order, so the model writes the visible layer first and `truePosition` then extends it with what is out of sight. This replaced "last, derived from truePosition", which produced invented props (see `tier1-findings.md`).
 - One entry per cast member, as the existing rule already requires. For an entry with empty `canBeSeenBy` the value is `""` (nobody can see them, so nobody can say anything about them). This keeps the field mandatory in structure without inventing sightings.
 - The same key in both schemas (classic and intrigue).
 
 ### 3.2 Wording rules for the Parent prompt (exact text is in `temp-files/build-parent-v86.py`, identical in modules 3000 and 4020)
 
-One plain sentence, 8 to 25 words, written last, saying only what a bystander on `canBeSeenBy` would literally see and could repeat aloud: where the character stands or sits, what they hold or carry, who they speak with or look at, ordinary visible movements. Rules:
+One plain sentence, 8 to 25 words, written FIRST in the entry, saying only what a bystander on `canBeSeenBy` would literally see and could repeat aloud: where the character stands or sits, what they hold or carry, who they speak with or look at, ordinary visible movements. Rules:
 
-1. Observable verbs only.
+1. Observable verbs only; no feelings, moods, expressions or impressions ("only what a camera would record").
 2. No intent, motive, method, secrecy, preparation, concealment or result. No words of secrecy or purpose ("secretly", "quietly", "carefully", "while nobody was looking", "to make sure", "in order to"); no verbs of tampering, hiding or taking (slips, adds, doses, swaps, plants, hides, steals, spikes, removes); nothing about what was done to the victim, a drink, a dish or an object, or what it contained. A visible act is described in its ordinary outward form ("hands the victim a glass").
 3. Same length, tone and detail for every character; the culprit's and accomplice's sentence must be indistinguishable from an innocent's.
-4. True and adding nothing: every fact must already be in `truePosition`; names only cast members listed in `besideOrNear`; covers only what is visible from where the observers stand; the culprit's false claim never appears (it stays in the claimed-location and alibi fields).
+4. `truePosition` must begin with the same facts and then add what is out of sight, so it extends the sentence and never contradicts it; put only what the scene needs into the visible layer (no invented prop, action or state); names only cast members who will be in `besideOrNear`; covers only what is visible from where the observers stand; the culprit's false claim never appears (it stays in the claimed-location and alibi fields).
 5. Empty `canBeSeenBy` means `""`.
 6. Same language as the rest of the document; the English words in the rules are to be taken as examples and the natural equivalents used.
-7. One contrast example in the prompt (a buffet and a swapped bottle, deliberately not a poison at a sideboard so the Parent does not copy it into every story).
+7. One example in the prompt with both layers (a buffet, passing a tray along; the hidden extension is a swapped bottle), deliberately not a poison at a sideboard so the Parent does not copy it into every story.
 
 ### 3.3 Worked examples, one per mystery type found
 
@@ -139,7 +139,7 @@ Known weaknesses:
 4. **Reciprocity edge**: a viewer who sees X but not the culprit standing beside X gets X's text withheld if it names the culprit; this costs a witness sentence in some cases (the same cost Phase 1 had, now smaller because the culprit is usually described by observation instead of by name).
 5. **Parent77-style maps only**: packages made before 2026-10-06 have no map; for them the whole mechanism is a no-op.
 
-## 6. Verification plan (not executed; needs a yes)
+## 6. Verification plan (executed 2026-10-13 after Jonathan's yes; results and the changes they forced are in `tier1-findings.md`; the 4.5 USD cap held, about 3.9 USD spent)
 
 Goal: show that Parent86's prompt makes the model write safe, uniform, true observer sentences, and that the witnesses get the clue back without the Child leaking. Method: a local replay in the style of `docs/adr/0156-phase2/tools/phase2_replay.py`, not through Make and with no database write, outputs in the gitignored `temp-files/charctx/phase4_out/`.
 
@@ -172,30 +172,30 @@ Pass: at least 6 of 7 runs satisfy (a) to (e); zero tamper or secrecy words in a
 
 `temp-files/build-parent-v86.py` and `temp-files/MM Live - Parent86 (Observer Field).blueprint.json` (both local, gitignored by `temp-files/*.py` and `temp-files/**/*.json`; the script is the reproducible record), `supabase/functions/_shared/characterContext.ts` and `.test.mjs`, `docs/adr/0156-per-character-redacted-master-context-for-detective-child.md`, `docs/adr/0156-phase1/findings.md`, `docs/adr/0156-phase2/findings.md`.
 
-## Appendix: the exact text inserted into Parent86
+## Appendix: the exact text inserted into Parent86 (final wording)
 
 Rule paragraph, inserted after the existing KEY-MOMENT POSITIONS paragraph, identical in modules 3000 and 4020:
 
 ```text
-**WHAT AN OBSERVER SEES (field "whatAnObserverSees" on EVERY keyMomentPositions entry):** this is the only part of an entry that other characters' scripts will ever be shown, so it must be safe to say out loud in front of any suspect. Write it last, as one plain sentence of 8 to 25 words that says only what a bystander on this entry's canBeSeenBy list would literally see of this character at the key moment and could repeat aloud: where the character stands or sits, what they hold or carry, who they are speaking with or looking at, and ordinary visible movements.
+**WHAT AN OBSERVER SEES (field "whatAnObserverSees" on EVERY keyMomentPositions entry):** every entry has two layers: what a bystander could see, and the full truth. Write the visible layer FIRST, as "whatAnObserverSees" (it comes before truePosition in each entry), and then write truePosition as that same visible layer followed by anything out of sight (what really happened, why, the culprit's act). The visible layer is the only part of an entry that other characters' scripts will ever be shown, so it must be safe to say out loud in front of any suspect. It is one plain sentence of 8 to 25 words that says only what a bystander on this entry's canBeSeenBy list would literally see of this character at the key moment and could repeat aloud: where the character stands or sits, what they hold or carry, who they are speaking with or looking at, and ordinary visible movements.
 Rules for whatAnObserverSees:
-1. Observable verbs only: stands, sits, holds, carries, hands over, walks, speaks with, looks at, leans, laughs.
+1. Observable verbs only: stands, sits, holds, carries, hands over, walks, speaks with, looks at, leans, laughs. No feelings, moods, expressions or impressions (not "uneasy", "relaxed", "composed", "nervous", "with a worried look"): only what a camera would record.
 2. Never state or hint at intent, motive, method, secrecy, preparation, concealment or a result. No words of secrecy or purpose ("secretly", "quietly", "carefully", "while nobody was looking", "to make sure", "in order to"), no verbs of tampering, hiding or taking (slips, adds, doses, swaps, plants, hides, steals, spikes, removes), and nothing about what was done to the victim, a drink, a dish or any object, or what it contained. Describe a visible act in its ordinary outward form: "hands the victim a glass", never what was done to the glass.
 3. Same length, tone and level of detail for every character. The culprit's and the accomplice's sentence must be indistinguishable from an innocent's: not longer, not more specific, not more suspicious.
-4. It is true and adds nothing new: every fact in it must already be in truePosition, and it may name only cast members listed in besideOrNear. It covers only what is visible from where the observers stand; anything out of sight (behind a door, in another room, in a pocket) is left out. The culprit's false claim never appears here; it stays in the claimed-location and alibi fields.
+4. truePosition must begin with the same facts (same posture, place, objects, people) and then add what is out of sight, so it extends the visible sentence and never contradicts it. Because the visible layer comes first, put into it only what the scene needs: do not invent a prop, action or state to fill the sentence (no glass, notebook, laughing or listening unless the scene calls for it); a short plain sentence is better than a rich one. It may name only cast members who will be listed in this entry's besideOrNear. It covers only what is visible from where the observers stand. The culprit's false claim never appears here; it stays in the claimed-location and alibi fields.
 5. If canBeSeenBy is empty, set whatAnObserverSees to "" (nobody can see this character, so nobody can say anything about them).
 6. Write it in the same language as the rest of this document, using the natural equivalents of the words in these rules.
-Example (do not copy): truePosition "At the buffet, where he swapped the labelled bottle for his own and passed the tray along" becomes whatAnObserverSees "At the buffet, holding a bottle and passing a tray along to the next guest."
+Example (do not copy): whatAnObserverSees "At the buffet, passing a tray along to the next guest." and then truePosition "At the buffet, passing a tray along to the next guest, after swapping the labelled bottle for his own."
 ```
 
-Schema line in module 3000:
+Schema line in module 3000 (the new key follows `character` and precedes `truePosition`; the rest of the line is the existing text):
 
 ```text
-{"character": "[Cast name]", "truePosition": "[Where they really were at the key moment, event-relative]", "besideOrNear": ["[cast names physically beside or near them]"], "canBeSeenBy": ["[cast names who could see them]"], "whatAnObserverSees": "[One plain sentence: only what a bystander would literally see of them at the key moment, no intent, method or result; empty string if canBeSeenBy is empty]"}
+{"character": "[Cast name]", "whatAnObserverSees": "[Written first: one plain sentence, only what a bystander would literally see of them at the key moment, no intent, method or result; empty string if nobody can see them]", "truePosition": "[Where they really were at the key moment, event-relative]", "besideOrNear": ["[cast nam ...
 ```
 
-Schema line in module 4020 (the existing `truePosition` text in this line uses an em dash in the blueprint; shown here with a hyphen):
+Schema line in module 4020 (same placement):
 
 ```text
-{"character": "string", "truePosition": "string - where they really were at the key moment, event-relative", "besideOrNear": ["cast names physically beside or near them"], "canBeSeenBy": ["cast names who could see them"], "whatAnObserverSees": "string: one plain sentence: only what a bystander would literally see of them at the key moment, no intent, method or result; empty string if canBeSeenBy is empty"}
+{"character": "string", "whatAnObserverSees": "string: written first, one plain sentence, only what a bystander would literally see of them at the key moment, no intent, method or result; empty string if nobody can see them", "truePosition": "string - where they really were at the key moment, event-relative", "besideOrNear": ["c ...
 ```
