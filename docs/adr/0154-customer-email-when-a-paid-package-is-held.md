@@ -23,6 +23,8 @@ Add one customer email, and nothing else:
 4. Follow the existing customer email rules: professional and short, no em dashes, no attempt counts, signed "Jonathan" then "Mystery Maker".
 5. Run it from the existing cron path (a new small function or a branch of `notify-generation-issue`), with `pipeline_settings` kill switch `held_customer_email` (`off` default until Jonathan turns it on).
 
+6. **Banner text (Jonathan: "I want this in all languages", 2026-10-13).** Change the held-package banner (`en.json` L1246, "Your mystery was generated but some character content needs attention.") to also say not to print yet and that an email will follow, in all 13 locales (en, es, fr, de, it, pt, nl, da, sv, fi, ko, ja, zh-cn; beware the phantom uppercase zh-CN row). The customer email in Decision 3 is already 13 locales. Wording has had no native review for da, sv, fi, ko, ja, zh-cn.
+
 **Declined (Jonathan, 2026-10-13):** a second internal alert to Jonathan when a paid package has been held for six hours. Not built.
 
 ## Rationale
@@ -32,7 +34,7 @@ The hold itself is correct for blocking defects: a host who prints and distribut
 ## Alternatives considered
 
 - **Hide the package until released (extend the silent window to infinity).** Rejected for now: ADR-0077 deliberately fails open so a package can never be hidden forever, and a package with a cosmetic gate hit would block the customer entirely.
-- **Make the on-screen banner say what to do ("do not print yet").** Cheap and complementary, but a customer who closes the tab never sees it. Not part of this decision; can be added with the same change.
+- **Banner only, no email.** A customer who closes the tab never sees it, so the banner (Decision 6) complements the email and does not replace it.
 - **Second internal alert at six hours.** Declined by Jonathan.
 - **Release and fix after (reviewer `+p2` style) for every gate hit.** Rejected for blocking classes (duplicate accomplice, missing core content): the harm is a printed wrong kit. Remains the right model for small slips, which already work that way.
 
