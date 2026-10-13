@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { getUserLanguage } from "../_shared/email-i18n.ts";
+import { detectLanguage, languageSample } from "../_shared/languageDetect.ts";
+import { buildReadyEmail, pickReadyLocale } from "../_shared/readyEmail.ts";
 
 // ADR-0106: single source of truth for the "your mystery is ready" email.
 // Called exclusively by the notify_package_ready() DB trigger, which already
@@ -14,6 +17,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // with "how was the mystery" (a question that belongs at Day+14/21, after
 // the party, where it already lives via mystery_feedback/guest_feedback).
 // This email's job is just the ready notification now.
+//
+// ADR-0152 follow-up (2026-10-13): the email is written in the language of the package itself (detected from the characters'
+// introductions, because a package's language follows the conversation, not profiles.language), falling back to the profile language and
+// then English. Before this it was English only, even for a Danish package. `preview: true` returns the subject, html and locale without sending.
 
 const ALLOWED_ORIGINS = [
   'https://www.mysterymaker.party',
@@ -43,7 +50,7 @@ serve(async (req) => {
   }
 
   try {
-    const { package_id } = await req.json();
+    const { package_id, preview } = await req.json();
     if (!package_id) {
       throw new Error("package_id is required");
     }
@@ -69,51 +76,30 @@ serve(async (req) => {
     const mysteryTitle = pkg.title || conversation.title || "Your Mystery";
 
     let userEmail: string | null = null;
-    let userName = "there";
+    let nameForEmail: string | null = null;
     if (conversation.user_id) {
       const { data: authUser } = await supabase.auth.admin.getUserById(conversation.user_id);
       userEmail = authUser?.user?.email ?? null;
-      userName = authUser?.user?.user_metadata?.name || userEmail?.split('@')[0] || "there";
+      nameForEmail = authUser?.user?.user_metadata?.name || userEmail?.split('@')[0] || null;
     }
     if (!userEmail) {
       throw new Error(`No email on file for conversation ${pkg.conversation_id}`);
+    }
+
+    // Language: what the customer will read (the package), then their profile language, then English.
+    const { data: chars } = await supabase.from("mystery_characters").select("introduction").eq("package_id", package_id).limit(4);
+    const detected = detectLanguage(languageSample((chars ?? []) as Record<string, unknown>[]));
+    const locale = pickReadyLocale(detected, await getUserLanguage(supabase, conversation.user_id));
+    const mail = buildReadyEmail(locale, { name: nameForEmail, title: mysteryTitle, conversationId: pkg.conversation_id });
+
+    if (preview === true) {
+      return new Response(JSON.stringify({ success: true, preview: true, locale, detected, subject: mail.subject, html: mail.html }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     if (!resendApiKey) {
       throw new Error("RESEND_API_KEY not configured");
     }
-
-    const html = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="color-scheme" content="light dark">
-        <meta name="supported-color-schemes" content="light dark">
-      </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #000000;">
-        <div style="background: #C81400; padding: 40px 30px; text-align: center; border-radius: 8px 8px 0 0;">
-          <img src="https://www.mysterymaker.party/email-assets/wordmark-cream.png" alt="Mystery Maker" width="232" height="40" style="display: block; max-width: 232px; height: auto; margin: 0 auto; border: 0; outline: none; text-decoration: none;" />
-        </div>
-        <div style="background: #111111; padding: 40px 30px; border-radius: 0 0 8px 8px;">
-          <h2 style="font-size: 22px; color: #F5F0E8; margin: 0 0 20px 0; font-weight: 700;">Your Mystery Has Been Generated!</h2>
-          <p style="font-size: 16px; color: rgba(245,240,232,0.7); margin-bottom: 20px; line-height: 1.6;">
-            Hi ${userName}, great news! Your murder mystery "${mysteryTitle}" is ready and waiting for you.
-          </p>
-          <div style="text-align: center; margin: 35px 0;">
-            <a href="https://www.mysterymaker.party/mystery/${pkg.conversation_id}" style="display: inline-block; background: #C81400; color: #F5F0E8; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
-              View Your Mystery
-            </a>
-          </div>
-        </div>
-        <div style="text-align: center; padding: 20px; color: rgba(245,240,232,0.35); font-size: 12px;">
-          <a href="https://www.mysterymaker.party" style="color: rgba(245,240,232,0.5); text-decoration: none;">mysterymaker.party</a>
-        </div>
-      </body>
-      </html>
-    `;
 
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -124,8 +110,8 @@ serve(async (req) => {
       body: JSON.stringify({
         from: "Mystery Maker <support@mysterymaker.party>",
         to: [userEmail],
-        subject: "Your Mystery is Ready!",
-        html,
+        subject: mail.subject,
+        html: mail.html,
       }),
     });
 
@@ -134,7 +120,7 @@ serve(async (req) => {
       throw new Error(`Resend API error: ${response.status} ${errorText}`);
     }
 
-    console.log(`Ready email sent for package ${package_id} to ${userEmail}`);
+    console.log(`Ready email sent for package ${package_id} to ${userEmail} (locale ${locale}, detected ${detected ?? "none"})`);
 
     return new Response(
       JSON.stringify({ success: true, message: "Ready email sent" }),

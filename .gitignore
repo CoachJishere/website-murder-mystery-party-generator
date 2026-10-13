@@ -153,3 +153,4 @@ draft_rewrites/
 !supabase/functions/review-package-quality/leak-probe.test.mjs
 !supabase/functions/_shared/rosterRenames.test.mjs
 !supabase/functions/review-package-quality/fact-check.test.mjs
+!supabase/functions/_shared/readyEmail.test.mjs

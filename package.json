@@ -13,7 +13,7 @@
     "fetch-all-analytics": "./scripts/fetch-all-analytics.sh",
     "fetch-ai-referrals": "GA4_PROPERTY_ID=504442584 node scripts/fetchAIReferrals.mjs",
     "test:reviewer": "node --experimental-strip-types supabase/functions/review-package-quality/review-core.test.mjs && node --experimental-strip-types supabase/functions/review-package-quality/label-conformity.test.mjs && node --experimental-strip-types supabase/functions/review-package-quality/fact-check.test.mjs && node --experimental-strip-types supabase/functions/review-package-quality/roster-reconcile.test.mjs && node --experimental-strip-types supabase/functions/review-package-quality/leak-probe.test.mjs",
-    "test:roster": "node scripts/__tests__/conceptSnapshot.test.mjs && node scripts/__tests__/retargetQuestions.test.mjs && node scripts/__tests__/rosterAnomaly.test.mjs && node scripts/__tests__/preSnapshotBriefs.test.mjs && node scripts/__tests__/alertDedupe.test.mjs && node scripts/__tests__/detectorGuard.test.mjs && node scripts/__tests__/recoveryGuard.test.mjs && node --experimental-strip-types supabase/functions/_shared/rosterRenames.test.mjs"
+    "test:roster": "node scripts/__tests__/conceptSnapshot.test.mjs && node scripts/__tests__/retargetQuestions.test.mjs && node scripts/__tests__/rosterAnomaly.test.mjs && node scripts/__tests__/preSnapshotBriefs.test.mjs && node scripts/__tests__/alertDedupe.test.mjs && node scripts/__tests__/detectorGuard.test.mjs && node scripts/__tests__/recoveryGuard.test.mjs && node --experimental-strip-types supabase/functions/_shared/rosterRenames.test.mjs && node --experimental-strip-types supabase/functions/_shared/readyEmail.test.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
