@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Docs: Parent86 imported by Jonathan, logged in `prompt_version_history` (ADR-0156 Phase 4)
+- **What:** row id 25 (`parent`, 86, `MM Live - Parent86 (Observer Field)`, effective 2026-10-13 11:31 UTC, `approximate = false`). Nothing in production reads `whatAnObserverSees` yet (`buildCharacterContext` is not wired in), so the import only adds the field to new detective and intrigue `master_context` documents.
+- **Fixed on the way:** the seeded rows for Parent85 (id 24) and Child63 (id 11) said 13:00 UTC, later than the real time (looks like 13:00 local time stored as UTC), so any package created after the Parent86 import would have mapped to Parent85 in `mystery_packages_prompt_versions`. Both moved to 11:00 UTC, still `approximate = true`.
+- **Watch:** on the first detective purchase after the import, every `keyMomentPositions` entry carries the field, it is `""` exactly where `canBeSeenBy` is empty, `truePosition` begins with it, and the culprit's sentence reads like the others.
+
 ### Improvement: Parent86 final wording tweaks applied, import-ready (ADR-0156 Phase 4, no paid call)
 - **What:** rule 4 now also allows naming a character already named in `truePosition` (the verification showed sentences naming a character an entry looks at), rule 5 now says the field is exactly an empty string when nobody can see the character (3 unseen entries carried a sentence). Rebuilt `temp-files/MM Live - Parent86 (Observer Field).blueprint.json`; against Parent85 only the prompt text of modules 3000 and 4020 (pure insertions, rule text identical) and the name differ.
 - **Not tested:** the two tweaks were not re-run with a paid call (wording-only, as agreed). **Not done:** Make import (Jonathan); after it, `insert into prompt_version_history (kind, version, name, effective_from, approximate, note) values ('parent', 86, 'MM Live - Parent86 (Observer Field)', now(), false, 'whatAnObserverSees on every keyMomentPositions entry (ADR-0156 Phase 4)');` and check the first detective purchase's map (field on every entry, empty when unseen).
