@@ -2,6 +2,9 @@
 
 ## 2026-10-13
 
+### Docs: Parent86 imported; watch item added (ADR-0156 Phase 4)
+- **What:** Parent86 (observer field on `keyMomentPositions`) imported by Jonathan; row already in `prompt_version_history`. `CLAUDE.md` sweep checklist now lists what to read on the first detective purchase after it. Nothing consumes the field until Child64.
+
 ### Fix: blog prerender retries a page that hits a transient statement timeout
 - **Why:** the "Deploy to GitHub Pages" run for bb045e2 failed in `scripts/prerender-blog.mjs` with Postgres `57014` (statement timeout) while fetching blog posts, about 55 s in. `SUPABASE_SERVICE_KEY` is wired in, so this was database contention, not a missing key; the next two pushes deployed fine.
 - **What:** each 100-row page is retried up to 4 times with 5/10/15 s backoff before the build fails. A persistent error still fails the deploy.
