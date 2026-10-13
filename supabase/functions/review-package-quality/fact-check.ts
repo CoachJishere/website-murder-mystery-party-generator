@@ -10,9 +10,9 @@
 // model question per subject. Pure retrieval + prompt building lives here; the model call lives in index.ts.
 import { distinctiveNameWords, splitSentences, wordsOf } from "./leak-probe.ts";
 
-export type FactSheet = { name: string; texts: { field: string; text: string }[]; own: string; canon: string };
+export type FactSheet = { name: string; texts: { field: string; text: string }[]; own: { field: string; text: string }[]; canon: string };
 export type FactHit = { sheet: string; field: string; sentence: string };
-export type FactCandidates = { subject: string; canon: string; own: string; hits: FactHit[] };
+export type FactCandidates = { subject: string; canon: string; own: FactHit[]; hits: FactHit[] };
 
 /** Compact canonical facts about one character taken from the parsed master_context objects (alibi, location, motive, relationships). */
 export function canonFor(name: string, objs: Record<string, unknown>[], maxChars = 1600): string {
@@ -63,27 +63,33 @@ export function factCandidates(sheets: FactSheet[], opts: { maxPerSubject?: numb
     const score = (h: FactHit) => (/\d/.test(h.sentence) ? 2 : 0) + (/(beside|next to|with|alone|sat|stood|saw|were|was|told|said|næst|ved siden|sammen|var|sad|stod|så|zijn|naast|waren|estaba|junto|était|près)/i.test(h.sentence) ? 1 : 0);
     hits.sort((a, b) => score(b) - score(a));
     const kept = hits.slice(0, Math.min(maxPer, Math.max(0, maxTotal - total)));
-    if (kept.length >= 2) { out.push({ subject: subj.name, canon: subj.canon, own: subj.own.slice(0, 4200), hits: kept }); total += kept.length; }
+    // The subject's own honest statements, as numbered sentences too, so a conflict can be reported on either side.
+    const ownHits: FactHit[] = subj.own.flatMap((t) => splitSentences(t.text || "").map((sentence) => ({ sheet: subj.name, field: t.field, sentence })));
+    ownHits.sort((a, b) => score(b) - score(a));
+    if (kept.length >= 2) { out.push({ subject: subj.name, canon: subj.canon, own: ownHits.slice(0, 30), hits: kept }); total += kept.length; }
   }
   return out;
 }
 
 export const FACT_INSTRUCTIONS = [
   "You check a murder mystery party game for FACTUAL CONTRADICTIONS between character sheets. Every sheet is written separately, so two sheets sometimes state incompatible facts about the same person or event.",
-  "You get ONE character (the SUBJECT), canonical facts about them from the master context, what the subject says in their own sheet, and numbered sentences from OTHER sheets that name the subject.",
-  "A contradiction is a sentence that states a fact about the subject (where they were, who was beside them or vouches for them, what they did, own, earn or are, when something happened, an amount, a relationship) that cannot be true together with the canonical facts or with the subject's own statements. The subject's own statements and the master context win; the other sheet is the one to correct.",
-  "NOT a contradiction: opinions, suspicion, guesses, questions, exaggeration, or a different level of detail. A fact only one sheet mentions is not a contradiction. A statement that the subject themself makes about their own whereabouts may be a lie in a guilty or accomplice branch, so never use those branches as the truth.",
-  "Be conservative: when in doubt, report nothing. For each clear contradiction give: field = 'SHEET NAME | field' written exactly as in the list; exact_quote = the sentence copied exactly; category = cross_field_contradiction; severity = high when it changes who could have done it or who vouches for whom, otherwise medium; explanation = one sentence naming the two conflicting facts; suggested_replacement = the same sentence rewritten to agree with the canonical facts, in the same language and voice. If there is no clear contradiction return an empty list.",
+  "You get ONE character (the SUBJECT), canonical facts about them from the master context, the subject's own honest statements (numbered S1, S2, ...) and numbered sentences from OTHER sheets that name the subject (1, 2, ...).",
+  "A contradiction is a pair of statements that cannot both be true: where the subject was, who was beside them or vouches for them, what they did, own, earn or are, when something happened, an amount, a relationship. Example: one sheet says Seraphina sat beside Perry, while Perry says no family member stood beside him.",
+  "Compare every numbered sentence with the canonical facts, with the subject's own statements and with each other. When two statements conflict, report the one that is the odd one out: the one the canonical facts do not support, or the one that fewer other sentences agree with. If it is a tie, report the sentence from the sheet that is NOT the subject's. You may report a subject statement (S...) when the canon and several other sheets agree against it.",
+  "NOT a contradiction: opinions, suspicion, guesses, questions, exaggeration, or a different level of detail. A fact only one sheet mentions is not a contradiction. Never use a guilty or accomplice branch as the truth about where someone was.",
+  "Report each clear contradiction once. Give: field = 'SHEET NAME | field' written exactly as in the list; exact_quote = the sentence copied exactly; category = cross_field_contradiction; severity = high when it changes who could have done it or who vouches for whom, otherwise medium; explanation = one sentence naming the two conflicting statements (their numbers); suggested_replacement = the reported sentence rewritten to agree with the statements that are supported, in the same language and voice. If there is no clear contradiction return an empty list.",
 ].join("\n");
 
 export function factPromptText(c: FactCandidates): string {
   const lines = c.hits.map((h, i) => `${i + 1}. [${h.sheet} | ${h.field}] ${h.sentence}`);
-  return `SUBJECT: ${c.subject}\nCANONICAL FACTS ABOUT THE SUBJECT (master context):\n${c.canon.trim() || "(none)"}\n\nWHAT THE SUBJECT SAYS IN THEIR OWN SHEET (honest branch):\n${c.own.trim() || "(nothing supplied)"}\n\nSENTENCES FROM OTHER SHEETS THAT NAME THE SUBJECT:\n${lines.join("\n")}`;
+  const own = c.own.map((h, i) => `S${i + 1}. [${h.sheet} | ${h.field}] ${h.sentence}`);
+  return `SUBJECT: ${c.subject}\nCANONICAL FACTS ABOUT THE SUBJECT (master context):\n${c.canon.trim() || "(none)"}\n\nTHE SUBJECT'S OWN STATEMENTS:\n${own.join("\n") || "(nothing supplied)"}\n\nSENTENCES FROM OTHER SHEETS THAT NAME THE SUBJECT:\n${lines.join("\n")}`;
 }
 
 export function resolveFact(c: FactCandidates, f: { exact_quote: string }): { sheet: string; field: string } | null {
   const q = f.exact_quote.trim();
   if (!q) return null;
-  const hit = c.hits.find((h) => h.sentence === q) ?? c.hits.find((h) => h.sentence.includes(q) || q.includes(h.sentence));
+  const all = [...c.hits, ...c.own];
+  const hit = all.find((h) => h.sentence === q) ?? all.find((h) => h.sentence.includes(q) || q.includes(h.sentence));
   return hit ? { sheet: hit.sheet, field: hit.field } : null;
 }

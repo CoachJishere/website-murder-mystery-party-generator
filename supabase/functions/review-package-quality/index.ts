@@ -40,6 +40,8 @@ const DIGEST_MODE = (Deno.env.get("REVIEW_DIGEST") || "off").toLowerCase();
 const ALERT_HIGH = Deno.env.get("REVIEW_ALERT_HIGH") === "1";
 const AUTO_APPLY_CLASSES = (Deno.env.get("REVIEW_AUTO_APPLY_CLASSES") || "").split(",").map((s) => s.trim()).filter(Boolean);
 const PER_PACKAGE_CAP_USD = 2.0;
+const STALE_TWIN_CATEGORIES = ["wrong_fact", "cross_field_contradiction"];
+const POINTFORM_RESYNC_COST_USD = 0.05; // same figure as auto-remediate-packages POINTFORM_REGEN_COST_USD
 const DAILY_CAP_USD = 10.0; // same figure as auto-remediate-packages
 const CONCURRENCY = 4;
 const CALL_TIMEOUT_MS = 170_000;
@@ -221,6 +223,7 @@ async function sendDigest(pkgTitle: string, packageId: string, style: string, ke
 /** Auto-apply tier. OFF unless REVIEW_AUTO_APPLY_CLASSES names a category. Not yet exercised on a live package. */
 async function autoApply(packageId: string, pkg: Row, chars: Row[], findingRows: { id: string; item_name: string; field: string; category: string; exact_quote: string; suggested_replacement: string }[], classes: string[] = AUTO_APPLY_CLASSES) {
   let applied = 0, reverted = 0;
+  const staleTwins = new Set<string>();
   // Customer-wording guard: never auto-rewrite wording the customer typed themselves (they may have asked for it verbatim).
   const { data: userMsgs } = await supabase.from("messages").select("content").eq("conversation_id", String(pkg.conversation_id ?? "")).eq("role", "user");
   const customerTexts = ((userMsgs ?? []) as { content: string | null }[]).map((m) => m.content ?? "").filter(Boolean);
@@ -266,9 +269,21 @@ async function autoApply(packageId: string, pkg: Row, chars: Row[], findingRows:
         if (typeof pf === "string") {
           const pfAfter = C.applyReplacement(pf, raw);
           if (pfAfter !== null) await supabase.from("mystery_characters").update({ [pfField]: pfAfter }).eq("id", rowId);
+          // ADR-0152: a FACT fix whose bullet twin does not quote the span leaves a stale bullet (The Last Thanksgiving, Edmund). Grammar fixes do not.
+          else if (pf.trim() && STALE_TWIN_CATEGORIES.includes(f.category)) staleTwins.add(rowId);
         }
       }
     }
+  }
+  // ADR-0152: regenerate the bullet versions of characters whose fact fix left a stale bullet (about 0.05 USD per character, kill switch review_pointform_resync = off).
+  if (applied > 0 && staleTwins.size > 0 && (await setting("review_pointform_resync", "on")) === "on") {
+    try {
+      const resp = await fetch(`${SUPABASE_URL}/functions/v1/generate-pointform-summaries`, {
+        method: "POST", headers: { Authorization: `Bearer ${SERVICE_ROLE_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ packageId, characterIds: [...staleTwins] }),
+      });
+      await logSpend(packageId, `pointform_resync:${staleTwins.size}_characters:${resp.status}`, resp.ok ? "fixed" : "failed", POINTFORM_RESYNC_COST_USD * staleTwins.size);
+    } catch (e) { console.error(`pointform resync failed (ignored): ${(e as Error).message}`); }
   }
   return { applied, reverted };
 }
@@ -596,7 +611,7 @@ async function factProbe(packageId: string, opts: { dryRun?: boolean; write?: bo
   const sheets: FC.FactSheet[] = chars.map((c) => ({
     name: String(c.character_name),
     texts: [...LC.CONFORM_FIELDS, ...SCRIPT_FIELDS].filter((f) => typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
-    own: ["introduction", "round2_innocent", "round3_innocent", "round4_innocent", "final_innocent", ...SCRIPT_FIELDS].map((f) => (typeof c[f] === "string" ? String(c[f]) : "")).filter(Boolean).join("\n\n"),
+    own: ["introduction", "round2_innocent", "round3_innocent", "round4_innocent", "final_innocent", ...SCRIPT_FIELDS].filter((f) => typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
     canon: FC.canonFor(String(c.character_name), objs),
   }));
   const cands = FC.factCandidates(sheets);

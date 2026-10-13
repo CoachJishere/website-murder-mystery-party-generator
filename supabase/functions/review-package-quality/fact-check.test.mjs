@@ -15,15 +15,15 @@ t("canonFor collects the subject's location entry and relationship lines, not ot
 });
 
 const sheets = [
-  { name: "Perry Beaumont", canon: F.canonFor("Perry Beaumont", ctx), own: "I stood at the far end of the table. Nobody was beside me when the lights went out.", texts: [{ field: "round4_innocent", text: "I stood at the far end of the table. Nobody was beside me." }] },
-  { name: "Seraphina Cole", canon: "", own: "I sat by the window.", texts: [
+  { name: "Perry Beaumont", canon: F.canonFor("Perry Beaumont", ctx), own: [{ field: "round4_innocent", text: "I stood at the far end of the table. Nobody was beside me when the lights went out." }], texts: [{ field: "round4_innocent", text: "I stood at the far end of the table. Nobody was beside me." }] },
+  { name: "Seraphina Cole", canon: "", own: [], texts: [
     { field: "round4_script", text: "I sat right beside Perry the whole time and saw everything he did with the decanter." },
     { field: "final_statement", text: "Perry will tell you I was next to him when the lights failed, and I never moved." },
     { field: "introduction", text: "I am Seraphina and I love the autumn light in this old house." } ] },
-  { name: "Edmund Rowe", canon: "", own: "I was beside Agatha.", texts: [
+  { name: "Edmund Rowe", canon: "", own: [], texts: [
     { field: "round2_questions", text: "**To Perry Beaumont:** 'Where were you when the lights went out?'" },
     { field: "rumors", text: "Perry arrived late and went straight to the far end of the table, quite alone, I thought." } ] },
-  { name: "Clara Penn", canon: "", own: "I counted trays.", texts: [{ field: "rumors", text: "Perry has owed money to three people since the spring of 1921, everyone knows it." }] },
+  { name: "Clara Penn", canon: "", own: [], texts: [{ field: "rumors", text: "Perry has owed money to three people since the spring of 1921, everyone knows it." }] },
 ];
 
 t("sentences that name the subject are retrieved from OTHER sheets, own sheet and bare mentions of nothing are skipped", () => {
@@ -54,15 +54,15 @@ t("fact-bearing sentences (numbers, position verbs) rank first and caps are hono
 t("prompt carries canon, own statements and numbered claims; resolveFact maps a quote back", () => {
   const perry = F.factCandidates(sheets).find((x) => x.subject === "Perry Beaumont");
   const txt = F.factPromptText(perry);
-  assert.ok(txt.includes("CANONICAL FACTS") && txt.includes("far end of the table, alone") && txt.includes("1. ["));
+  assert.ok(txt.includes("CANONICAL FACTS") && txt.includes("far end of the table, alone") && txt.includes("1. [") && txt.includes("S1. [Perry Beaumont | round4_innocent]"));
+  assert.deepEqual(F.resolveFact(perry, { exact_quote: "Nobody was beside me when the lights went out." }), { sheet: "Perry Beaumont", field: "round4_innocent" });
   const r = F.resolveFact(perry, { exact_quote: "I sat right beside Perry the whole time and saw everything he did with the decanter." });
   assert.deepEqual(r, { sheet: "Seraphina Cole", field: "round4_script" });
   assert.equal(F.resolveFact(perry, { exact_quote: "unrelated" }), null);
 });
 
-t("instructions let the master context and the subject win, forbid using guilty branches as truth, and are conservative", () => {
-  assert.ok(F.FACT_INSTRUCTIONS.includes("master context and the subject's own statements win") || F.FACT_INSTRUCTIONS.includes("The subject's own statements and the master context win"));
-  assert.ok(F.FACT_INSTRUCTIONS.includes("guilty or accomplice") && F.FACT_INSTRUCTIONS.includes("when in doubt, report nothing"));
+t("instructions ask for the odd one out on either side and forbid using guilty branches as truth", () => {
+  assert.ok(F.FACT_INSTRUCTIONS.includes("odd one out") && F.FACT_INSTRUCTIONS.includes("guilty or accomplice") && F.FACT_INSTRUCTIONS.includes("NOT a contradiction"));
 });
 
 console.log("fact-check tests passed");
