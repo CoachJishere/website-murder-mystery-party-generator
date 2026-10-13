@@ -2,6 +2,10 @@
 
 ## 2026-10-13
 
+### Feature: prompt version log, materials check in the daily email, ADR-0103 restored (ADR-0153 Update 1, ADR-0103 Addendum 91)
+- **What:** (1) `prompt_version_history` + `package_prompt_versions()` + view `mystery_packages_prompt_versions` (migration `20261013140000`): which Parent and Child blueprint version generated a package, inferred from creation time against a log of import times; seeded 2026-10-01 to 10-13 (date only, approximate). CLAUDE.md now says to insert a row at every import. (2) The daily open-findings email (`review-package-quality` v24, deployed, dry run OK) now includes packages whose props list is in another language than the overview. (3) ADR-0103 had been overwritten with a single Update by commit 485cc6e; restored from git with that Update 6 put back after Addendum 87 Update 3 (the second such truncation, memory note added).
+- **Not done:** the redacted-`master_context` ADR (next).
+
 ### Improvement: Parent85 and Child63 built (not imported): Image Prompt retry copies resynced, quote-verification talk removed from the Child prompts (ADR-0153 Update 1)
 - **Why:** ADR-0153 Phase 0 found the accretion hypothesis unsupported but surfaced two concrete defects: Image Prompts R1 to R3 were an older copy of R0, and the dangling-quote defect (36 percent of paid packages) sits next to instructions that tell the model to verify a "closing quote".
 - **What:** Parent85: modules 5006, 5010, 5014 now carry R0's text (only the upstream module references differ per route). Child63: three "verify the closing quote" instructions and the paragraph that explained them away are removed from all 8 prompts (counts asserted 3, 5, 1, 8); the strip heal stays. Builders: `temp-files/build-parent-v85.py`, `build-child-v63.py` (local, gitignored).
