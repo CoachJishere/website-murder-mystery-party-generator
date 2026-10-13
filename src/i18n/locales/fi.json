@@ -1252,6 +1252,13 @@
     "export": {
       "saveAsPdf": "Tallenna PDF-tiedostona",
       "printTip": "Avaa selaimesi tulostusvalintaikkunan — valitse \"Tallenna PDF-tiedostona\" ladataksesi"
+    },
+    "hostSeal": {
+      "label": "Pelaan myös epäiltyä (piilota vastaus)",
+      "description": "Piilottaa käsikirjoituksen lopun paljastuksen ja todistekorttien «Host Only»-vihjeet, jotta näet vain sen, minkä vieraasikin näkevät. Oletuksena pois päältä.",
+      "scriptSealed": "Paljastus ja kaikki sen jälkeinen on piilotettu. Lue käsikirjoitus ääneen loppulausuntoihin asti ja pyydä sitten syyllistä pelaajaa tai apulaista, joka ei pelaa, lukemaan paljastus isännän linkistä.",
+      "scriptCannotSeal": "Tässä vanhemmassa mysteerissä ei ole erillistä paljastusosiota, joten käsikirjoitusta ei voi piilottaa turvallisesti eikä sitä näytetä. Pyydä apulaista, joka ei pelaa, lukemaan se ääneen.",
+      "evidenceNotice": "Todistekortit näytetään sellaisina kuin vieraasi ne näkevät. «Host Only»-muistiinpanot on piilotettu."
     }
   },
   "chatbot": {
@@ -1746,7 +1753,17 @@
       "hostPlaysItem2_murder": "Lue Etsivän oppaan käsikirjoitus ääneen kierrosten välillä kuten tavallisesti: lippuarvonnan mysteereissä se ei koskaan nimeä syyllistä",
       "hostPlaysItem2_intrigue": "Lue Tutkijan oppaan käsikirjoitus ääneen kierrosten välillä kuten tavallisesti: lippuarvonnan mysteereissä se ei koskaan nimeä syyllistä",
       "hostPlaysItem3": "Ohita muiden hahmojen sivut. Näet kunkin kierroksen todisteet samaan aikaan kuin vieraasi, eikä mikään muu tässä oppaassa kerro, kuka on syyllinen",
-      "hostPlaysItem4": "Taita ja sekoita liput katsomatta, tai anna vieraan valmistella ne, jotta et tiedä kuka nosti minkä"
+      "hostPlaysItem4": "Taita ja sekoita liput katsomatta, tai anna vieraan valmistella ne, jotta et tiedä kuka nosti minkä",
+      "detectivePlaysLabel": "**Haluatko pelata itse epäiltyä? (etsivätyyliset mysteerit)**",
+      "detectivePlaysPointer": "Jos pelaat myös epäiltyä, ohita tämä ja lue alempana kohta «Haluatko pelata itse epäiltyä?».",
+      "detectivePlaysItem1_murder": "Ennen kuin avaat Etsivän oppaan tai Vihjeet-välilehden, ota siellä käyttöön «Pelaan myös epäiltyä (piilota vastaus)». Se piilottaa käsikirjoituksen lopun paljastuksen ja todistekorttien «Host Only»-vihjeet, jotka ovat ainoat paikat, joissa kerrotaan, kuka on syyllinen",
+      "detectivePlaysItem1_intrigue": "Ennen kuin avaat Tutkijan oppaan tai Vihjeet-välilehden, ota siellä käyttöön «Pelaan myös epäiltyä (piilota vastaus)». Se piilottaa käsikirjoituksen lopun paljastuksen ja todistekorttien «Host Only»-vihjeet, jotka ovat ainoat paikat, joissa kerrotaan, kuka on syyllinen",
+      "detectivePlaysItem2_murder": "Ota hahmon sivu kuten kuka tahansa vieras ja ohita muiden sivut (pyydä vaikka vierasta ojentamaan sinulle yksi). Jos saat murhaajan sivun, tiedät sen omasta sivustasi, ja se on reilua",
+      "detectivePlaysItem2_intrigue": "Ota hahmon sivu kuten kuka tahansa vieras ja ohita muiden sivut (pyydä vaikka vierasta ojentamaan sinulle yksi). Jos saat syyllisen sivun, tiedät sen omasta sivustasi, ja se on reilua",
+      "detectivePlaysItem3": "Lue käsikirjoitus ääneen kuten tavallisesti loppulausuntoihin asti. Kaikki, minkä kytkin jättää näkyviin, luetaan tai näytetään koko pöydälle joka tapauksessa",
+      "detectivePlaysItem4_murder": "Pyydä paljastusta varten murhaajaa (joka jo tietää) tai apulaista, joka ei pelaa, avaamaan isännän linkki sähköpostistasi omalla laitteellaan, kytkemään asetus siellä pois päältä ja lukemaan paljastus ääneen",
+      "detectivePlaysItem4_intrigue": "Pyydä paljastusta varten syyllistä (joka jo tietää) tai apulaista, joka ei pelaa, avaamaan isännän linkki sähköpostistasi omalla laitteellaan, kytkemään asetus siellä pois päältä ja lukemaan paljastus ääneen",
+      "detectivePlaysItem5": "Joissakin vanhemmissa mysteereissä ei ole erillistä paljastusosiota. Niissä sovellus piilottaa koko käsikirjoituksen ja apulainen, joka ei pelaa, lukee sen ääneen"
     },
     "runningGame": {
       "heading": "Pelin vetäminen",

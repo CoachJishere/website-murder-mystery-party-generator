@@ -1252,6 +1252,13 @@
     "export": {
       "saveAsPdf": "Salva come PDF",
       "printTip": "Apre la finestra di stampa del browser — scegli \"Salva come PDF\" per scaricare"
+    },
+    "hostSeal": {
+      "label": "Gioco anch'io come sospettato (nascondi la soluzione)",
+      "description": "Nasconde la rivelazione alla fine del copione e gli indizi «Host Only» sulle carte delle prove, così vedi solo ciò che vedono i tuoi ospiti. Disattivato di default.",
+      "scriptSealed": "La rivelazione e tutto ciò che la segue sono nascosti. Leggi il copione ad alta voce fino alle dichiarazioni finali, poi chiedi al giocatore colpevole o a un aiutante che non gioca di leggere la rivelazione dal link host.",
+      "scriptCannotSeal": "Questo mistero più vecchio non ha una sezione di rivelazione separata, quindi il copione non può essere nascosto in sicurezza e non viene mostrato. Chiedi a un aiutante che non gioca di leggerlo ad alta voce.",
+      "evidenceNotice": "Le carte delle prove sono mostrate come le vedono i tuoi ospiti. Le note «Host Only» sono nascoste."
     }
   },
   "chatbot": {
@@ -1746,7 +1753,17 @@
       "hostPlaysItem2_murder": "Leggi ad alta voce il copione della Guida del Detective tra un round e l'altro, come al solito: nei misteri con sorteggio non nomina mai il colpevole",
       "hostPlaysItem2_intrigue": "Leggi ad alta voce il copione della Guida dell'Investigatore tra un round e l'altro, come al solito: nei misteri con sorteggio non nomina mai il colpevole",
       "hostPlaysItem3": "Salta le pagine degli altri personaggi. Vedrai le prove di ogni round nello stesso momento dei tuoi ospiti, e nient'altro in questa guida dice chi è colpevole",
-      "hostPlaysItem4": "Piega e mescola i bigliettini senza guardarli, oppure fai preparare tutto a un ospite, così non saprai chi ha pescato cosa"
+      "hostPlaysItem4": "Piega e mescola i bigliettini senza guardarli, oppure fai preparare tutto a un ospite, così non saprai chi ha pescato cosa",
+      "detectivePlaysLabel": "**Vuoi giocare anche come sospettato? (misteri in stile detective)**",
+      "detectivePlaysPointer": "Se giocherai anche come sospettato, salta questo punto e leggi «Vuoi giocare anche come sospettato?» più avanti.",
+      "detectivePlaysItem1_murder": "Prima di aprire la Guida del Detective o la scheda Indizi, attiva lì «Gioco anch'io come sospettato (nascondi la soluzione)». Nasconde la rivelazione alla fine del copione e gli indizi «Host Only» sulle carte delle prove, gli unici punti che dicono chi è colpevole",
+      "detectivePlaysItem1_intrigue": "Prima di aprire la Guida dell'Investigatore o la scheda Indizi, attiva lì «Gioco anch'io come sospettato (nascondi la soluzione)». Nasconde la rivelazione alla fine del copione e gli indizi «Host Only» sulle carte delle prove, gli unici punti che dicono chi è colpevole",
+      "detectivePlaysItem2_murder": "Prendi la pagina di un personaggio come qualsiasi ospite e salta quelle degli altri (puoi farti passare una pagina da un ospite). Se ti capita la pagina dell'assassino, lo saprai dalla tua stessa pagina, ed è giusto così",
+      "detectivePlaysItem2_intrigue": "Prendi la pagina di un personaggio come qualsiasi ospite e salta quelle degli altri (puoi farti passare una pagina da un ospite). Se ti capita la pagina del colpevole, lo saprai dalla tua stessa pagina, ed è giusto così",
+      "detectivePlaysItem3": "Leggi il copione ad alta voce come al solito, fino alle dichiarazioni finali. Tutto ciò che l'interruttore lascia visibile viene comunque letto o mostrato a tutto il tavolo",
+      "detectivePlaysItem4_murder": "Per la rivelazione, chiedi all'assassino (che lo sa già) o a un aiutante che non gioca di aprire il link host ricevuto via email sul proprio dispositivo, disattivare lì l'opzione e leggere la rivelazione ad alta voce",
+      "detectivePlaysItem4_intrigue": "Per la rivelazione, chiedi al colpevole (che lo sa già) o a un aiutante che non gioca di aprire il link host ricevuto via email sul proprio dispositivo, disattivare lì l'opzione e leggere la rivelazione ad alta voce",
+      "detectivePlaysItem5": "Alcuni misteri più vecchi non hanno una sezione di rivelazione separata. In quel caso l'app nasconde tutto il copione e lo legge ad alta voce un aiutante che non gioca"
     },
     "runningGame": {
       "heading": "Come Condurre la Partita",

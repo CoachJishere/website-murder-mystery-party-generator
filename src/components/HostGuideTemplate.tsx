@@ -71,6 +71,9 @@ const HostGuideTemplate: React.FC<HostGuideTemplateProps> = ({
   const slipCount = playerCount ?? 7;
 
   const tt = (key: string) => t(`hostGuide.${key}`);
+  // ADR-0158: detective-style sentences that tell the host to look up who is guilty get a short
+  // pointer to the "Playing a suspect yourself?" block, so a playing host does not follow them.
+  const dp = (text: string) => (isCharacterBased ? text : `${text} ${tt("setupChoice.detectivePlaysPointer")}`);
 
   // The static template content as one large markdown block, assembled from
   // translated per-section/per-variant keys.
@@ -79,9 +82,9 @@ const HostGuideTemplate: React.FC<HostGuideTemplateProps> = ({
 ${tt(`checklist.intro_${ctx}`)}
 
 - [ ] ${tt("checklist.item1")}
-- [ ] ${isCharacterBased ? tt(`checklist.item2Slip_${ctx}`) : tt(`checklist.item2_${ctx}`)}
+- [ ] ${isCharacterBased ? tt(`checklist.item2Slip_${ctx}`) : dp(tt(`checklist.item2_${ctx}`))}
 - [ ] ${tt("checklist.item3")}
-- [ ] ${isCharacterBased ? tt(`checklist.item4SlipDraw_${actx}`) : tt(`checklist.item4Predetermined_${actx}`)}
+- [ ] ${isCharacterBased ? tt(`checklist.item4SlipDraw_${actx}`) : dp(tt(`checklist.item4Predetermined_${actx}`))}
 - [ ] ${tt("checklist.item5")}
 
 ${tt("checklist.roundOrderNote")}
@@ -101,7 +104,7 @@ ${tt("materials.slipDrawLabel")}
 ## ${tt("prep.heading")}
 
 ${tt("prep.beforeLabel")}
-- ${tt(`prep.item1_${ctx}`)}
+- ${dp(tt(`prep.item1_${ctx}`))}
 - ${tt("prep.item2")}
 - ${tt("prep.item3")}
 - ${tt("prep.item4")}
@@ -132,7 +135,7 @@ ${tt(`setupChoice.intro_${ctx}`)}
 ${tt(`setupChoice.option1Label_${ctx}`)}
 - ${tt(`setupChoice.option1Item1_${ctx}`)}
 - ${tt(`setupChoice.option1Item2_${ctx}`)}
-- ${isCharacterBased ? tt(`setupChoice.option1NoteCharacterBased_${ctx}`) : tt(`setupChoice.option1NoteDetective_${ctx}`)}
+- ${isCharacterBased ? tt(`setupChoice.option1NoteCharacterBased_${ctx}`) : dp(tt(`setupChoice.option1NoteDetective_${ctx}`))}
 
 ${tt(`setupChoice.option2Label_${ctx}`)}
 - ${tt("setupChoice.option2Item1")}
@@ -149,7 +152,14 @@ ${tt("setupChoice.hostPlaysLabel")}
 - ${tt(`setupChoice.hostPlaysItem2_${ctx}`)}
 - ${tt("setupChoice.hostPlaysItem3")}
 - ${tt("setupChoice.hostPlaysItem4")}
-` : ""}
+` : `
+${tt("setupChoice.detectivePlaysLabel")}
+- ${tt(`setupChoice.detectivePlaysItem1_${ctx}`)}
+- ${tt(`setupChoice.detectivePlaysItem2_${ctx}`)}
+- ${tt("setupChoice.detectivePlaysItem3")}
+- ${tt(`setupChoice.detectivePlaysItem4_${ctx}`)}
+- ${tt("setupChoice.detectivePlaysItem5")}
+`}
 ## ${tt("runningGame.heading")}
 
 ${t(`hostGuide.runningGame.intro`, { timeEstimate: tt(`runningGame.${timeGuidelineKey(playerCount)}`), playerCount: players })}
@@ -178,7 +188,7 @@ ${isCharacterBased ? `4. **${tt(`runningGame.step4SlipDrawLabel_${ctx}`)}**
    6. ${tt("runningGame.step4SlipDrawItem6")}
 ` : `4. **${tt(`runningGame.step4PredeterminedLabel_${ctx}`)}**
 
-   ${tt(`runningGame.step4PredeterminedBody_${ctx}`)}
+   ${dp(tt(`runningGame.step4PredeterminedBody_${ctx}`))}
 `}
 ${tt(`runningGame.beforeRound2Note_${ctx}`)}
 

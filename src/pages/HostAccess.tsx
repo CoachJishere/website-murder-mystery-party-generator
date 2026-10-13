@@ -10,6 +10,10 @@ import ReactMarkdown from "react-markdown";
 import { useTranslation } from "react-i18next";
 import HostGuideTemplate from "@/components/HostGuideTemplate";
 import { useIsMobile } from "@/hooks/use-mobile";
+import HostSealSwitch from "@/components/HostSealSwitch";
+import { useHostSealText } from "@/hooks/useHostSealText";
+import { sealDetectiveScript, readHostPlaying, writeHostPlaying } from "@/utils/hostSeal";
+import { playerFacingEvidence } from "@/utils/evidenceCardUtils";
 
 interface HostPackageData {
   title: string;
@@ -36,6 +40,15 @@ const HostAccess: React.FC = () => {
   const [packageData, setPackageData] = useState<HostPackageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // ADR-0158: "I'm also playing" hides the reveal and the Host Only evidence notes. Off by
+  // default, so a helper who reads the reveal aloud opens this page with everything visible.
+  const [hostPlaying, setHostPlayingState] = useState(() => readHostPlaying(token));
+  useEffect(() => { setHostPlayingState(readHostPlaying(token)); }, [token]);
+  const sealText = useHostSealText();
+  const setHostPlaying = (on: boolean) => {
+    setHostPlayingState(on);
+    writeHostPlaying(token, on);
+  };
 
   useEffect(() => {
     if (token) {
@@ -78,15 +91,24 @@ const HostAccess: React.FC = () => {
   const buildDetectiveKitContent = (): string => {
     if (!packageData) return "";
     let content = "";
+    const sealActive = hostPlaying && packageData.mystery_style !== "character";
 
     if (packageData.detective_script) {
-      content += `${packageData.detective_script}\n\n`;
+      if (sealActive) {
+        // Only the part before the reveal; nothing at all when no reveal heading is found.
+        const seal = sealDetectiveScript(packageData.detective_script);
+        if (seal.found && seal.open) content += `${seal.open}\n\n`;
+      } else {
+        content += `${packageData.detective_script}\n\n`;
+      }
     }
 
-    if (packageData.evidence_cards) {
-      const cards = typeof packageData.evidence_cards === "string"
+    // A structured (non-text) evidence value cannot be stripped, so it is left out while sealed.
+    if (packageData.evidence_cards && !(sealActive && typeof packageData.evidence_cards !== "string")) {
+      let cards = typeof packageData.evidence_cards === "string"
         ? packageData.evidence_cards
         : JSON.stringify(packageData.evidence_cards, null, 2);
+      if (sealActive) cards = playerFacingEvidence(cards);
 
       if (cards && cards !== "[]" && cards !== "null") {
         content += `## Evidence Cards\n\n${cards}\n\n`;
@@ -219,6 +241,16 @@ const HostAccess: React.FC = () => {
             <Card>
               <CardContent className="p-6">
                 <div className="mystery-content">
+                  {packageData.mystery_style !== "character" && (
+                    <HostSealSwitch id="host-seal-access" checked={hostPlaying} onCheckedChange={setHostPlaying} isMobile={isMobile} />
+                  )}
+                  {hostPlaying && packageData.mystery_style !== "character" && (
+                    <p className="text-sm font-medium border rounded-md p-3 mb-4">
+                      {packageData.detective_script && sealDetectiveScript(packageData.detective_script).found
+                        ? sealText("scriptSealed")
+                        : sealText("scriptCannotSeal")}
+                    </p>
+                  )}
                   <ReactMarkdown components={markdownComponents}>
                     {buildDetectiveKitContent()}
                   </ReactMarkdown>

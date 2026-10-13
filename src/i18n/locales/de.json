@@ -1252,6 +1252,13 @@
     "export": {
       "saveAsPdf": "Als PDF speichern",
       "printTip": "Öffnet den Druckdialog Ihres Browsers — wählen Sie \"Als PDF speichern\", um herunterzuladen"
+    },
+    "hostSeal": {
+      "label": "Ich spiele auch einen Verdächtigen (Lösung ausblenden)",
+      "description": "Blendet die Enthüllung am Ende des Skripts und die „Host Only“-Hinweise auf den Beweiskarten aus, sodass du nur siehst, was deine Gäste sehen. Standardmäßig aus.",
+      "scriptSealed": "Die Enthüllung und alles danach ist ausgeblendet. Lies das Skript bis zu den Schlussaussagen laut vor und bitte dann den schuldigen Spieler oder einen Helfer, der nicht mitspielt, die Enthüllung über den Host-Link vorzulesen.",
+      "scriptCannotSeal": "Dieses ältere Mysterium hat keinen eigenen Enthüllungsabschnitt, deshalb lässt sich das Skript nicht sicher ausblenden und wird nicht angezeigt. Bitte einen Helfer, der nicht mitspielt, es laut vorzulesen.",
+      "evidenceNotice": "Die Beweiskarten werden so angezeigt, wie deine Gäste sie sehen. Die „Host Only“-Notizen sind ausgeblendet."
     }
   },
   "chatbot": {
@@ -1746,7 +1753,17 @@
       "hostPlaysItem2_murder": "Lies das Skript aus der Detektiv-Anleitung zwischen den Runden wie gewohnt laut vor: Bei Mysterien mit Zettel-Ziehung nennt es den Schuldigen nie beim Namen",
       "hostPlaysItem2_intrigue": "Lies das Skript aus der Ermittler-Anleitung zwischen den Runden wie gewohnt laut vor: Bei Mysterien mit Zettel-Ziehung nennt es den Schuldigen nie beim Namen",
       "hostPlaysItem3": "Überspringe die Seiten der anderen Charaktere. Du siehst die Beweise jeder Runde im selben Moment wie deine Gäste, und nichts sonst in dieser Anleitung verrät, wer schuldig ist",
-      "hostPlaysItem4": "Falte und mische die Zettel, ohne hinzusehen, oder lass einen Gast sie vorbereiten, damit du nicht weißt, wer was gezogen hat"
+      "hostPlaysItem4": "Falte und mische die Zettel, ohne hinzusehen, oder lass einen Gast sie vorbereiten, damit du nicht weißt, wer was gezogen hat",
+      "detectivePlaysLabel": "**Du willst selbst einen Verdächtigen spielen? (Mysterien im Detektiv-Stil)**",
+      "detectivePlaysPointer": "Wenn du auch einen Verdächtigen spielst, überspringe das und lies weiter unten „Du willst selbst einen Verdächtigen spielen?“.",
+      "detectivePlaysItem1_murder": "Bevor du die Detektiv-Anleitung oder den Reiter Beweise öffnest, schalte dort „Ich spiele auch einen Verdächtigen (Lösung ausblenden)“ ein. Das blendet die Enthüllung am Ende des Skripts und die „Host Only“-Hinweise auf den Beweiskarten aus, die einzigen Stellen, die verraten, wer schuldig ist",
+      "detectivePlaysItem1_intrigue": "Bevor du die Ermittler-Anleitung oder den Reiter Beweise öffnest, schalte dort „Ich spiele auch einen Verdächtigen (Lösung ausblenden)“ ein. Das blendet die Enthüllung am Ende des Skripts und die „Host Only“-Hinweise auf den Beweiskarten aus, die einzigen Stellen, die verraten, wer schuldig ist",
+      "detectivePlaysItem2_murder": "Nimm dir die Seite eines Charakters wie jeder Gast und überspringe die Seiten der anderen (lass dir gern von einem Gast eine reichen). Ist es die Seite des Mörders, weißt du es von deiner eigenen Seite, und das ist fair",
+      "detectivePlaysItem2_intrigue": "Nimm dir die Seite eines Charakters wie jeder Gast und überspringe die Seiten der anderen (lass dir gern von einem Gast eine reichen). Ist es die Seite des Täters, weißt du es von deiner eigenen Seite, und das ist fair",
+      "detectivePlaysItem3": "Lies das Skript wie gewohnt bis zu den Schlussaussagen laut vor. Alles, was der Schalter sichtbar lässt, wird ohnehin der ganzen Runde vorgelesen oder gezeigt",
+      "detectivePlaysItem4_murder": "Für die Enthüllung soll der Mörder (der es ja schon weiß) oder ein Helfer, der nicht mitspielt, den Host-Link aus deiner Host-E-Mail auf dem eigenen Gerät öffnen, den Schalter dort ausschalten und die Enthüllung laut vorlesen",
+      "detectivePlaysItem4_intrigue": "Für die Enthüllung soll der Täter (der es ja schon weiß) oder ein Helfer, der nicht mitspielt, den Host-Link aus deiner Host-E-Mail auf dem eigenen Gerät öffnen, den Schalter dort ausschalten und die Enthüllung laut vorlesen",
+      "detectivePlaysItem5": "Manche älteren Mysterien haben keinen eigenen Enthüllungsabschnitt. Dort blendet die App das ganze Skript aus und ein Helfer, der nicht mitspielt, liest es stattdessen laut vor"
     },
     "runningGame": {
       "heading": "Das Spiel leiten",

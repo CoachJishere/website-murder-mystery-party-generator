@@ -1295,6 +1295,13 @@
     "export": {
       "saveAsPdf": "Gem som PDF",
       "printTip": "Åbner browserens udskriftsdialog — vælg \"Gem som PDF\" for at downloade"
+    },
+    "hostSeal": {
+      "label": "Jeg spiller også en mistænkt (skjul svaret)",
+      "description": "Skjuler afsløringen i slutningen af manuskriptet og «Host Only»-hintene på beviskortene, så du kun ser det, dine gæster ser. Slået fra som standard.",
+      "scriptSealed": "Afsløringen og alt efter den er skjult. Læs manuskriptet højt til og med de afsluttende udtalelser, og lad derefter den skyldige spiller eller en hjælper, der ikke spiller med, læse afsløringen fra værtslinket.",
+      "scriptCannotSeal": "Dette ældre mysterium har ingen separat afsløringssektion, så manuskriptet kan ikke skjules sikkert og vises ikke. Bed en hjælper, der ikke spiller med, om at læse det højt.",
+      "evidenceNotice": "Beviskortene vises, som dine gæster ser dem. «Host Only»-noterne er skjult."
     }
   },
   "blog": {
@@ -1746,7 +1753,17 @@
       "hostPlaysItem2_murder": "Læs manuskriptet fra detektivguiden højt mellem runderne som sædvanligt: I mysterier med seddeltrækning nævner det aldrig den skyldige ved navn",
       "hostPlaysItem2_intrigue": "Læs manuskriptet fra efterforskerguiden højt mellem runderne som sædvanligt: I mysterier med seddeltrækning nævner det aldrig den skyldige ved navn",
       "hostPlaysItem3": "Spring de andre karakterers sider over. Du ser hver rundes beviser i samme øjeblik som dine gæster, og intet andet i denne guide afslører, hvem der er skyldig",
-      "hostPlaysItem4": "Fold og bland sedlerne uden at kigge, eller lad en gæst forberede dem, så du ikke ved, hvem der trak hvad"
+      "hostPlaysItem4": "Fold og bland sedlerne uden at kigge, eller lad en gæst forberede dem, så du ikke ved, hvem der trak hvad",
+      "detectivePlaysLabel": "**Vil du selv spille en mistænkt? (mysterier i detektivstil)**",
+      "detectivePlaysPointer": "Hvis du også spiller en mistænkt, så spring dette over og læs «Vil du selv spille en mistænkt?» længere nede.",
+      "detectivePlaysItem1_murder": "Før du åbner detektivguiden eller fanen Beviser, så slå «Jeg spiller også en mistænkt (skjul svaret)» til dér. Det skjuler afsløringen i slutningen af manuskriptet og «Host Only»-hintene på beviskortene, de eneste steder der afslører, hvem der er skyldig",
+      "detectivePlaysItem1_intrigue": "Før du åbner efterforskerguiden eller fanen Beviser, så slå «Jeg spiller også en mistænkt (skjul svaret)» til dér. Det skjuler afsløringen i slutningen af manuskriptet og «Host Only»-hintene på beviskortene, de eneste steder der afslører, hvem der er skyldig",
+      "detectivePlaysItem2_murder": "Tag en karakters side ligesom enhver gæst, og spring de andres sider over (du kan bede en gæst række dig en). Får du morderens side, ved du det fra din egen side, og det er fair",
+      "detectivePlaysItem2_intrigue": "Tag en karakters side ligesom enhver gæst, og spring de andres sider over (du kan bede en gæst række dig en). Får du gerningsmandens side, ved du det fra din egen side, og det er fair",
+      "detectivePlaysItem3": "Læs manuskriptet højt som sædvanligt til og med de afsluttende udtalelser. Alt, hvad kontakten lader være synligt, bliver alligevel læst højt eller vist for hele bordet",
+      "detectivePlaysItem4_murder": "Til afsløringen skal morderen (der allerede ved det) eller en hjælper, der ikke spiller med, åbne værtslinket fra din værts-e-mail på sin egen enhed, slå kontakten fra dér og læse afsløringen højt",
+      "detectivePlaysItem4_intrigue": "Til afsløringen skal gerningsmanden (der allerede ved det) eller en hjælper, der ikke spiller med, åbne værtslinket fra din værts-e-mail på sin egen enhed, slå kontakten fra dér og læse afsløringen højt",
+      "detectivePlaysItem5": "Nogle ældre mysterier har ingen separat afsløringssektion. Dér skjuler appen hele manuskriptet, og en hjælper, der ikke spiller med, læser det højt i stedet"
     },
     "runningGame": {
       "heading": "Sådan leder du spillet",

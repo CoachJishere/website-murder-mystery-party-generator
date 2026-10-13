@@ -1252,6 +1252,13 @@
     "export": {
       "saveAsPdf": "Opslaan als PDF",
       "printTip": "Opent het afdrukvenster van je browser — kies \"Opslaan als PDF\" om te downloaden"
+    },
+    "hostSeal": {
+      "label": "Ik speel ook een verdachte (verberg het antwoord)",
+      "description": "Verbergt de onthulling aan het einde van het script en de «Host Only»-hints op de bewijskaarten, zodat je alleen ziet wat je gasten zien. Standaard uit.",
+      "scriptSealed": "De onthulling en alles erna is verborgen. Lees het script hardop voor tot en met de slotverklaringen en laat dan de schuldige speler of een helper die niet meespeelt de onthulling voorlezen via de hostlink.",
+      "scriptCannotSeal": "Dit oudere mysterie heeft geen aparte onthullingssectie, dus het script kan niet veilig worden verborgen en wordt niet getoond. Vraag een helper die niet meespeelt om het hardop voor te lezen.",
+      "evidenceNotice": "De bewijskaarten worden getoond zoals je gasten ze zien. De «Host Only»-notities zijn verborgen."
     }
   },
   "chatbot": {
@@ -1746,7 +1753,17 @@
       "hostPlaysItem2_murder": "Lees het script uit de Detectivegids tussen de rondes zoals gewoonlijk hardop voor: bij mysteries met briefjestrekking noemt het de schuldige nooit bij naam",
       "hostPlaysItem2_intrigue": "Lees het script uit de Onderzoekersgids tussen de rondes zoals gewoonlijk hardop voor: bij mysteries met briefjestrekking noemt het de schuldige nooit bij naam",
       "hostPlaysItem3": "Sla de pagina's van de andere personages over. Je ziet het bewijs van elke ronde op hetzelfde moment als je gasten, en niets anders in deze gids verraadt wie schuldig is",
-      "hostPlaysItem4": "Vouw en schud de briefjes zonder te kijken, of laat een gast ze voorbereiden, zodat je niet weet wie wat trok"
+      "hostPlaysItem4": "Vouw en schud de briefjes zonder te kijken, of laat een gast ze voorbereiden, zodat je niet weet wie wat trok",
+      "detectivePlaysLabel": "**Wil je zelf een verdachte spelen? (mysteries in detectivestijl)**",
+      "detectivePlaysPointer": "Als je ook een verdachte speelt, sla dit dan over en lees hieronder «Wil je zelf een verdachte spelen?».",
+      "detectivePlaysItem1_murder": "Zet, voordat je de Detectivegids of het tabblad Bewijs opent, daar «Ik speel ook een verdachte (verberg het antwoord)» aan. Dat verbergt de onthulling aan het einde van het script en de «Host Only»-hints op de bewijskaarten, de enige plekken die verraden wie schuldig is",
+      "detectivePlaysItem1_intrigue": "Zet, voordat je de Onderzoekersgids of het tabblad Bewijs opent, daar «Ik speel ook een verdachte (verberg het antwoord)» aan. Dat verbergt de onthulling aan het einde van het script en de «Host Only»-hints op de bewijskaarten, de enige plekken die verraden wie schuldig is",
+      "detectivePlaysItem2_murder": "Pak de pagina van een personage zoals elke gast en sla de pagina's van de anderen over (laat er gerust een aangeven door een gast). Is het de pagina van de moordenaar, dan weet je het van je eigen pagina, en dat is eerlijk",
+      "detectivePlaysItem2_intrigue": "Pak de pagina van een personage zoals elke gast en sla de pagina's van de anderen over (laat er gerust een aangeven door een gast). Is het de pagina van de dader, dan weet je het van je eigen pagina, en dat is eerlijk",
+      "detectivePlaysItem3": "Lees het script zoals gewoonlijk hardop voor, tot de slotverklaringen. Alles wat de schakelaar zichtbaar laat, wordt toch al voorgelezen of aan de hele tafel getoond",
+      "detectivePlaysItem4_murder": "Laat voor de onthulling de moordenaar (die het al weet) of een helper die niet meespeelt de hostlink uit je host-e-mail op het eigen apparaat openen, daar de schakelaar uitzetten en de onthulling hardop voorlezen",
+      "detectivePlaysItem4_intrigue": "Laat voor de onthulling de dader (die het al weet) of een helper die niet meespeelt de hostlink uit je host-e-mail op het eigen apparaat openen, daar de schakelaar uitzetten en de onthulling hardop voorlezen",
+      "detectivePlaysItem5": "Sommige oudere mysteries hebben geen aparte onthullingssectie. Dan verbergt de app het hele script en leest een helper die niet meespeelt het hardop voor"
     },
     "runningGame": {
       "heading": "Het Spel Leiden",

@@ -1295,6 +1295,13 @@
     "export": {
       "saveAsPdf": "Spara som PDF",
       "printTip": "Öppnar webbläsarens utskriftsdialog — välj \"Spara som PDF\" för att ladda ner"
+    },
+    "hostSeal": {
+      "label": "Jag spelar också en misstänkt (dölj svaret)",
+      "description": "Döljer avslöjandet i slutet av manuset och «Host Only»-tipsen på beviskorten, så att du bara ser det dina gäster ser. Av som standard.",
+      "scriptSealed": "Avslöjandet och allt efter det är dolt. Läs upp manuset till och med de avslutande uttalandena och låt sedan den skyldige spelaren eller en hjälpare som inte spelar läsa upp avslöjandet från värdlänken.",
+      "scriptCannotSeal": "Det här äldre mysteriet har ingen separat avslöjandedel, så manuset kan inte döljas på ett säkert sätt och visas inte. Be en hjälpare som inte spelar att läsa upp det.",
+      "evidenceNotice": "Beviskorten visas som dina gäster ser dem. «Host Only»-anteckningarna är dolda."
     }
   },
   "blog": {
@@ -1746,7 +1753,17 @@
       "hostPlaysItem2_murder": "Läs upp manuset ur Detektivguiden mellan rundorna som vanligt: i mysterier med lottning nämner det aldrig den skyldige vid namn",
       "hostPlaysItem2_intrigue": "Läs upp manuset ur Utredarguiden mellan rundorna som vanligt: i mysterier med lottning nämner det aldrig den skyldige vid namn",
       "hostPlaysItem3": "Hoppa över de andra karaktärernas sidor. Du ser varje rundas bevis i samma ögonblick som dina gäster, och inget annat i den här guiden avslöjar vem som är skyldig",
-      "hostPlaysItem4": "Vik och blanda lapparna utan att titta, eller låt en gäst förbereda dem, så att du inte vet vem som drog vad"
+      "hostPlaysItem4": "Vik och blanda lapparna utan att titta, eller låt en gäst förbereda dem, så att du inte vet vem som drog vad",
+      "detectivePlaysLabel": "**Vill du spela en misstänkt själv? (mysterier med detektivstil)**",
+      "detectivePlaysPointer": "Om du också spelar en misstänkt, hoppa över det här och läs «Vill du spela en misstänkt själv?» längre ned.",
+      "detectivePlaysItem1_murder": "Innan du öppnar Detektivguiden eller fliken Bevis, slå på «Jag spelar också en misstänkt (dölj svaret)» där. Det döljer avslöjandet i slutet av manuset och «Host Only»-tipsen på beviskorten, de enda ställen som avslöjar vem som är skyldig",
+      "detectivePlaysItem1_intrigue": "Innan du öppnar Utredarguiden eller fliken Bevis, slå på «Jag spelar också en misstänkt (dölj svaret)» där. Det döljer avslöjandet i slutet av manuset och «Host Only»-tipsen på beviskorten, de enda ställen som avslöjar vem som är skyldig",
+      "detectivePlaysItem2_murder": "Ta en karaktärs sida som vilken gäst som helst och hoppa över de andras sidor (be gärna en gäst räcka dig en). Får du mördarens sida vet du det från din egen sida, och det är rättvist",
+      "detectivePlaysItem2_intrigue": "Ta en karaktärs sida som vilken gäst som helst och hoppa över de andras sidor (be gärna en gäst räcka dig en). Får du gärningspersonens sida vet du det från din egen sida, och det är rättvist",
+      "detectivePlaysItem3": "Läs upp manuset som vanligt till och med de avslutande uttalandena. Allt som reglaget lämnar synligt läses ändå upp eller visas för hela bordet",
+      "detectivePlaysItem4_murder": "Låt mördaren (som redan vet) eller en hjälpare som inte spelar öppna värdlänken från ditt värd-mejl på sin egen enhet, stänga av reglaget där och läsa upp avslöjandet",
+      "detectivePlaysItem4_intrigue": "Låt gärningspersonen (som redan vet) eller en hjälpare som inte spelar öppna värdlänken från ditt värd-mejl på sin egen enhet, stänga av reglaget där och läsa upp avslöjandet",
+      "detectivePlaysItem5": "Vissa äldre mysterier har ingen separat avslöjandedel. Då döljer appen hela manuset och en hjälpare som inte spelar läser upp det i stället"
     },
     "runningGame": {
       "heading": "Att leda spelet",

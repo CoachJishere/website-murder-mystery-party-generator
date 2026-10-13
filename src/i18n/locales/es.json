@@ -1274,6 +1274,13 @@
     "export": {
       "saveAsPdf": "Guardar como PDF",
       "printTip": "Abre el diálogo de impresión de tu navegador — elige \"Guardar como PDF\" para descargarlo"
+    },
+    "hostSeal": {
+      "label": "Estoy jugando también como sospechoso (ocultar la respuesta)",
+      "description": "Oculta La revelación al final del guion y las pistas «Host Only» de las tarjetas de evidencia, para que veas solo lo que ven tus invitados. Desactivado por defecto.",
+      "scriptSealed": "La revelación y todo lo que viene después están ocultos. Lee el guion en voz alta hasta las declaraciones finales y pide al jugador culpable o a un ayudante que no juegue que lea La revelación desde el enlace del anfitrión.",
+      "scriptCannotSeal": "Este misterio antiguo no tiene una sección de revelación separada, así que el guion no se puede ocultar con seguridad y no se muestra. Pide a un ayudante que no juegue que lo lea en voz alta.",
+      "evidenceNotice": "Se muestran las tarjetas de evidencia como las ven tus invitados. Las notas «Host Only» están ocultas."
     }
   },
   "chatbot": {
@@ -1746,7 +1753,17 @@
       "hostPlaysItem2_murder": "Lee en voz alta el guion de la Guía del Detective entre rondas, como siempre: en los misterios con sorteo de papeletas nunca nombra al culpable",
       "hostPlaysItem2_intrigue": "Lee en voz alta el guion de la Guía del Investigador entre rondas, como siempre: en los misterios con sorteo de papeletas nunca nombra al culpable",
       "hostPlaysItem3": "Sáltate las páginas de los demás personajes. Verás las pruebas de cada ronda en el mismo momento que tus invitados, y nada más en esta guía dice quién es el culpable",
-      "hostPlaysItem4": "Dobla y mezcla las papeletas sin mirarlas, o pide a un invitado que las prepare, para que no sepas quién ha sacado cuál"
+      "hostPlaysItem4": "Dobla y mezcla las papeletas sin mirarlas, o pide a un invitado que las prepare, para que no sepas quién ha sacado cuál",
+      "detectivePlaysLabel": "**¿Quieres jugar también como sospechoso? (misterios de estilo detective)**",
+      "detectivePlaysPointer": "Si también vas a jugar como sospechoso, sáltate esto y lee «¿Quieres jugar también como sospechoso?» más abajo.",
+      "detectivePlaysItem1_murder": "Antes de abrir la Guía del Detective o la pestaña Evidencia, activa ahí «Estoy jugando también como sospechoso (ocultar la respuesta)». Oculta La revelación del final del guion y las pistas «Host Only» de las tarjetas de evidencia, los únicos lugares que dicen quién es el culpable",
+      "detectivePlaysItem1_intrigue": "Antes de abrir la Guía del Investigador o la pestaña Evidencia, activa ahí «Estoy jugando también como sospechoso (ocultar la respuesta)». Oculta La revelación del final del guion y las pistas «Host Only» de las tarjetas de evidencia, los únicos lugares que dicen quién es el culpable",
+      "detectivePlaysItem2_murder": "Toma la página de un personaje como cualquier invitado y sáltate las páginas de los demás (puedes pedirle a un invitado que te dé una). Si te toca la página del asesino, lo sabrás por tu propia página, y eso es justo",
+      "detectivePlaysItem2_intrigue": "Toma la página de un personaje como cualquier invitado y sáltate las páginas de los demás (puedes pedirle a un invitado que te dé una). Si te toca la página del culpable, lo sabrás por tu propia página, y eso es justo",
+      "detectivePlaysItem3": "Lee el guion en voz alta como siempre, hasta las declaraciones finales. Todo lo que el interruptor deja visible se lee en voz alta o se muestra de todos modos a toda la mesa",
+      "detectivePlaysItem4_murder": "Para La revelación, pide al asesino (que ya lo sabe) o a un ayudante que no juegue que abra el enlace del anfitrión de tu correo en su propio dispositivo, desactive allí el interruptor y lea La revelación en voz alta",
+      "detectivePlaysItem4_intrigue": "Para La revelación, pide al culpable (que ya lo sabe) o a un ayudante que no juegue que abra el enlace del anfitrión de tu correo en su propio dispositivo, desactive allí el interruptor y lea La revelación en voz alta",
+      "detectivePlaysItem5": "Algunos misterios antiguos no tienen una sección de revelación separada. En esos casos la app oculta todo el guion y lo lee en voz alta un ayudante que no juegue"
     },
     "runningGame": {
       "heading": "Cómo Dirigir la Partida",

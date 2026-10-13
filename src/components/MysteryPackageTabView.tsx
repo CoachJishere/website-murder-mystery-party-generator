@@ -20,7 +20,10 @@ import { useTranslation } from "react-i18next";
 import { trackPackageTabViewed, trackFeedbackPromptShown, trackFeedbackPromptClicked } from "@/lib/analytics";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
-import { parseEvidenceCards } from "@/utils/evidenceCardUtils";
+import { parseEvidenceCards, playerFacingEvidence } from "@/utils/evidenceCardUtils";
+import { sealDetectiveScript, readHostPlaying, writeHostPlaying } from "@/utils/hostSeal";
+import HostSealSwitch from "./HostSealSwitch";
+import { useHostSealText } from "@/hooks/useHostSealText";
 import HostGuideTemplate from "./HostGuideTemplate";
 import { useCharacterGuideCopy } from "@/lib/characterGuideCopy";
 
@@ -204,6 +207,18 @@ const MysteryPackageTabView = React.memo(({
   const guestDropoutAdaptationEnabled = import.meta.env.VITE_ENABLE_GUEST_DROPOUT_ADAPTATION === 'true';
   const isMobile = useIsMobile();
   const { t } = useTranslation();
+
+  // ADR-0158: a host of a detective-style game who also plays a suspect switches this on to
+  // hide the reveal and the Host Only evidence notes. Off by default; slip style never needs it.
+  const isDetectiveStyle = mysteryStyle !== 'character';
+  const [hostPlaying, setHostPlayingState] = useState(() => readHostPlaying(packageId));
+  useEffect(() => { setHostPlayingState(readHostPlaying(packageId)); }, [packageId]);
+  const setHostPlaying = useCallback((on: boolean) => {
+    setHostPlayingState(on);
+    writeHostPlaying(packageId, on);
+  }, [packageId]);
+  const sealActive = hostPlaying && isDetectiveStyle;
+  const sealText = useHostSealText();
   const characterGuideCopy = useCharacterGuideCopy();
 
   // Feedback nudge state
@@ -592,21 +607,29 @@ const MysteryPackageTabView = React.memo(({
     return packageData?.detectiveScript || extractInspectorScript();
   }, [packageData?.detectiveScript, extractInspectorScript]);
 
+  // With the seal on, only the part before the reveal is shown, copied or downloaded; when no
+  // reveal heading is found nothing of the script is shown (fail closed).
+  const scriptSeal = useMemo(
+    () => (sealActive && detectiveScript ? sealDetectiveScript(detectiveScript) : null),
+    [sealActive, detectiveScript]
+  );
+  const visibleDetectiveScript = scriptSeal ? (scriptSeal.found ? scriptSeal.open : '') : detectiveScript;
+
   const handleCopyDetectiveScript = useCallback(async () => {
-    if (!detectiveScript) return;
+    if (!visibleDetectiveScript) return;
     try {
-      await navigator.clipboard.writeText(detectiveScript);
+      await navigator.clipboard.writeText(visibleDetectiveScript);
       toast.success(t('mysteryPackage.detectiveScript.copied'));
     } catch {
       toast.error(t('mysteryPackage.detectiveScript.copyFailed'));
     }
-  }, [detectiveScript, t]);
+  }, [visibleDetectiveScript, t]);
 
   const handleDownloadDetectiveScript = useCallback(() => {
-    if (!detectiveScript) return;
+    if (!visibleDetectiveScript) return;
     const safeTitle = (packageData?.title || mysteryTitle || 'mystery')
       .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'mystery';
-    const blob = new Blob([detectiveScript], { type: 'text/plain;charset=utf-8' });
+    const blob = new Blob([visibleDetectiveScript], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -615,7 +638,7 @@ const MysteryPackageTabView = React.memo(({
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }, [detectiveScript, packageData?.title, mysteryTitle]);
+  }, [visibleDetectiveScript, packageData?.title, mysteryTitle]);
 
 
 
@@ -646,10 +669,12 @@ const MysteryPackageTabView = React.memo(({
       content = stripH4Section(content, /\bDiscovered\b/i);
       content = stripH4Section(content, /What This Reveals/i);
       content = stripH4Section(content, /Who It Implicates/i);
+      // ADR-0158: a host who is also playing sees the cards as the guests do.
+      if (sealActive) content = playerFacingEvidence(content);
     }
 
     return content;
-  }, [packageData?.evidenceCards, packageData?.evidenceCardImages, extractClues]);
+  }, [packageData?.evidenceCards, packageData?.evidenceCardImages, extractClues, sealActive]);
 
   // Check if mystery is complete enough to share
   const canShareMystery = useMemo(() => {
@@ -1116,6 +1141,12 @@ const MysteryPackageTabView = React.memo(({
           )}>
             {evidenceCards ? (
               <>
+                {isDetectiveStyle && (
+                  <HostSealSwitch id="host-seal-clues" checked={hostPlaying} onCheckedChange={setHostPlaying} isMobile={isMobile} />
+                )}
+                {sealActive && (
+                  <p className="text-sm text-muted-foreground mb-3">{sealText('evidenceNotice')}</p>
+                )}
                 {/* Print button when images are available */}
                 {packageData?.evidenceCardImages && Object.keys(packageData.evidenceCardImages).length > 0 && (
                   <div className="flex justify-end mb-4">
@@ -1212,7 +1243,7 @@ const MysteryPackageTabView = React.memo(({
                 <EditableMultiSection
                   content={evidenceCards}
                   onSave={(val) => onPackageFieldUpdate?.('evidence_cards', val) ?? Promise.resolve()}
-                  canEdit={!!onPackageFieldUpdate}
+                  canEdit={!!onPackageFieldUpdate && !sealActive}
                   sectionLabel="Evidence Cards"
                   isMobile={isMobile}
                 />
@@ -1245,6 +1276,16 @@ const MysteryPackageTabView = React.memo(({
           )}>
             {detectiveScript ? (
               <>
+                {isDetectiveStyle && (
+                  <HostSealSwitch id="host-seal-script" checked={hostPlaying} onCheckedChange={setHostPlaying} isMobile={isMobile} />
+                )}
+                {scriptSeal && (
+                  <p className="text-sm font-medium border rounded-md p-3 mb-3">
+                    {scriptSeal.found ? sealText('scriptSealed') : sealText('scriptCannotSeal')}
+                  </p>
+                )}
+                {visibleDetectiveScript && (
+                <>
                 <div className={cn(
                   "flex flex-wrap items-center justify-end gap-2 mb-3",
                   isMobile && "mb-2"
@@ -1269,12 +1310,14 @@ const MysteryPackageTabView = React.memo(({
                   </Button>
                 </div>
                 <EditableMultiSection
-                  content={detectiveScript}
+                  content={visibleDetectiveScript}
                   onSave={(val) => onPackageFieldUpdate?.('detective_script', val) ?? Promise.resolve()}
-                  canEdit={!!onPackageFieldUpdate}
+                  canEdit={!!onPackageFieldUpdate && !sealActive}
                   sectionLabel="Detective Script"
                   isMobile={isMobile}
                 />
+                </>
+                )}
               </>
             ) : isGenerating ? (
               <LoadingTabContent

@@ -1275,6 +1275,13 @@
     "export": {
       "saveAsPdf": "Enregistrer au format PDF",
       "printTip": "Ouvre la boîte de dialogue d'impression de votre navigateur — choisissez \"Enregistrer au format PDF\" pour télécharger"
+    },
+    "hostSeal": {
+      "label": "Je joue aussi un suspect (masquer la réponse)",
+      "description": "Masque la révélation à la fin du script et les indices « Host Only » des cartes de preuve, pour que vous ne voyiez que ce que voient vos invités. Désactivé par défaut.",
+      "scriptSealed": "La révélation et tout ce qui la suit sont masqués. Lisez le script à voix haute jusqu'aux déclarations finales, puis demandez au joueur coupable ou à un assistant qui ne joue pas de lire la révélation depuis le lien hôte.",
+      "scriptCannotSeal": "Ce mystère plus ancien n'a pas de section de révélation distincte : le script ne peut pas être masqué en toute sécurité et n'est donc pas affiché. Demandez à un assistant qui ne joue pas de le lire à voix haute.",
+      "evidenceNotice": "Les cartes de preuve s'affichent comme les voient vos invités. Les notes « Host Only » sont masquées."
     }
   },
   "chatbot": {
@@ -1747,7 +1754,17 @@
       "hostPlaysItem2_murder": "Lisez à voix haute le script du Guide du détective entre les tours, comme d'habitude : dans les mystères avec tirage au sort, il ne nomme jamais le coupable",
       "hostPlaysItem2_intrigue": "Lisez à voix haute le script du Guide de l'enquêteur entre les tours, comme d'habitude : dans les mystères avec tirage au sort, il ne nomme jamais le coupable",
       "hostPlaysItem3": "Passez les pages des autres personnages. Vous verrez les preuves de chaque tour au même moment que vos invités, et rien d'autre dans ce guide ne dit qui est coupable",
-      "hostPlaysItem4": "Pliez et mélangez les papiers sans les regarder, ou laissez un invité les préparer, pour ne pas savoir qui a tiré quoi"
+      "hostPlaysItem4": "Pliez et mélangez les papiers sans les regarder, ou laissez un invité les préparer, pour ne pas savoir qui a tiré quoi",
+      "detectivePlaysLabel": "**Vous voulez jouer un suspect vous-même ? (mystères de style détective)**",
+      "detectivePlaysPointer": "Si vous jouez aussi un suspect, passez ce point et lisez « Vous voulez jouer un suspect vous-même ? » plus bas.",
+      "detectivePlaysItem1_murder": "Avant d'ouvrir le Guide du détective ou l'onglet Indices, activez-y « Je joue aussi un suspect (masquer la réponse) ». Cela masque la révélation à la fin du script et les indices « Host Only » des cartes de preuve, les seuls endroits qui disent qui est coupable",
+      "detectivePlaysItem1_intrigue": "Avant d'ouvrir le Guide de l'enquêteur ou l'onglet Indices, activez-y « Je joue aussi un suspect (masquer la réponse) ». Cela masque la révélation à la fin du script et les indices « Host Only » des cartes de preuve, les seuls endroits qui disent qui est coupable",
+      "detectivePlaysItem2_murder": "Prenez la page d'un personnage comme n'importe quel invité et passez celles des autres (demandez à un invité de vous en tendre une si vous voulez). Si vous tombez sur la page du meurtrier, vous le saurez grâce à votre propre page, et c'est de bonne guerre",
+      "detectivePlaysItem2_intrigue": "Prenez la page d'un personnage comme n'importe quel invité et passez celles des autres (demandez à un invité de vous en tendre une si vous voulez). Si vous tombez sur la page du coupable, vous le saurez grâce à votre propre page, et c'est de bonne guerre",
+      "detectivePlaysItem3": "Lisez le script à voix haute comme d'habitude, jusqu'aux déclarations finales. Tout ce que l'interrupteur laisse visible est de toute façon lu à voix haute ou montré à toute la tablée",
+      "detectivePlaysItem4_murder": "Pour la révélation, demandez au meurtrier (qui sait déjà) ou à un assistant qui ne joue pas d'ouvrir le lien hôte reçu par e-mail sur son propre appareil, d'y désactiver l'option et de lire la révélation à voix haute",
+      "detectivePlaysItem4_intrigue": "Pour la révélation, demandez au coupable (qui sait déjà) ou à un assistant qui ne joue pas d'ouvrir le lien hôte reçu par e-mail sur son propre appareil, d'y désactiver l'option et de lire la révélation à voix haute",
+      "detectivePlaysItem5": "Certains mystères plus anciens n'ont pas de section de révélation distincte. Pour ceux-là, l'application masque tout le script et un assistant qui ne joue pas le lit à voix haute"
     },
     "runningGame": {
       "heading": "Déroulement de la partie",

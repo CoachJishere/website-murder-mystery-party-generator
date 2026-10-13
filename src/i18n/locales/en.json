@@ -1311,6 +1311,13 @@
     "export": {
       "saveAsPdf": "Save as PDF",
       "printTip": "Opens your browser's print dialog — choose \"Save as PDF\" to download"
+    },
+    "hostSeal": {
+      "label": "I'm also playing a suspect (hide the answer)",
+      "description": "Hides the Reveal at the end of the script and the Host Only hints on the evidence cards, so you see only what your guests see. Off by default.",
+      "scriptSealed": "The Reveal and everything after it is hidden. Read the script aloud up to the final statements, then have the guilty player or a helper who is not playing read the Reveal from the Host link.",
+      "scriptCannotSeal": "This older mystery has no separate Reveal section, so the script cannot be hidden safely and is not shown. Ask a helper who is not playing to read it aloud.",
+      "evidenceNotice": "Showing the evidence cards as your guests see them. The Host Only notes are hidden."
     }
   },
   "blog": {
@@ -1824,7 +1831,17 @@
       "hostPlaysItem2_murder": "Read the Detective Guide's script aloud between rounds as usual: in slip-draw mysteries it never names the guilty player",
       "hostPlaysItem2_intrigue": "Read the Investigator Guide's script aloud between rounds as usual: in slip-draw mysteries it never names the guilty player",
       "hostPlaysItem3": "Skip the other characters' pages. You will see each round's evidence at the same moment as your guests, and nothing else in this guide names who is guilty",
-      "hostPlaysItem4": "Fold and shuffle the slips without looking at them, or let a guest prepare them, so you don't know who drew what"
+      "hostPlaysItem4": "Fold and shuffle the slips without looking at them, or let a guest prepare them, so you don't know who drew what",
+      "detectivePlaysLabel": "**Playing a suspect yourself? (detective-style mysteries)**",
+      "detectivePlaysPointer": "If you will also play a suspect, skip this and read \"Playing a suspect yourself?\" below.",
+      "detectivePlaysItem1_murder": "Before you open the Detective Guide or Evidence tab, switch on \"I'm also playing a suspect (hide the answer)\" there. It hides the Reveal at the end of the script and the Host Only hints on the evidence cards, the only places that spell out who is guilty",
+      "detectivePlaysItem1_intrigue": "Before you open the Investigator Guide or Evidence tab, switch on \"I'm also playing a suspect (hide the answer)\" there. It hides the Reveal at the end of the script and the Host Only hints on the evidence cards, the only places that spell out who is guilty",
+      "detectivePlaysItem2_murder": "Take a character page like any guest and skip the other characters' pages (ask a guest to hand you one if you like). If yours turns out to be the murderer's page, you will know from your own page, which is fair",
+      "detectivePlaysItem2_intrigue": "Take a character page like any guest and skip the other characters' pages (ask a guest to hand you one if you like). If yours turns out to be the culprit's page, you will know from your own page, which is fair",
+      "detectivePlaysItem3": "Read the script aloud as usual, up to the final statements. Everything the switch leaves visible is read aloud or shown to the whole table anyway",
+      "detectivePlaysItem4_murder": "For the Reveal, have the murderer (who already knows) or a helper who is not playing open the Host link from your host email on their own device, switch the setting off there, and read the Reveal aloud",
+      "detectivePlaysItem4_intrigue": "For the Reveal, have the culprit (who already knows) or a helper who is not playing open the Host link from your host email on their own device, switch the setting off there, and read the Reveal aloud",
+      "detectivePlaysItem5": "Some older mysteries have no separate Reveal section. For those the app hides the whole script and a helper who is not playing reads it aloud instead"
     },
     "runningGame": {
       "heading": "Running the Game",

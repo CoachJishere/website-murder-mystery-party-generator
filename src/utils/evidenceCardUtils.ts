@@ -12,7 +12,7 @@ export interface EvidenceCard {
 // and several of those sections name the culprit outright.)
 const PRINT_STRIP = /^#{2,4}\s+(Visual Description|Who It Implicates|What This Reveals|Implications|Discovered|Significance)\b/i;
 
-function stripSectionsForPrint(lines: string[]): string[] {
+export function stripSectionsForPrint(lines: string[]): string[] {
   const out: string[] = [];
   let skip = false;
   for (const line of lines) {
@@ -24,6 +24,16 @@ function stripSectionsForPrint(lines: string[]): string[] {
     }
   }
   return out;
+}
+
+/**
+ * Whole evidence-card markdown as the guests see it: the host-only sections (Significance,
+ * Implications, ...) are removed with the same rule the printed card uses, so a host who is
+ * also playing (ADR-0158) sees exactly what the table sees.
+ */
+export function playerFacingEvidence(markdown: string | null | undefined): string {
+  const normalized = (markdown ?? "").replace(/\\n/g, "\n");
+  return stripSectionsForPrint(normalized.split("\n")).join("\n");
 }
 
 function extractParagraphs(lines: string[]): string {
