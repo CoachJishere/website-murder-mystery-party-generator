@@ -26,7 +26,8 @@ Option A (UI and docs only; Jonathan chose it at Gate 1): an opt-in "I'm also pl
 2. **What it hides when on.**
    - `detective_script`: from the first heading (levels 2 to 4) that contains a reveal word (multilingual list) to the end of the script, which includes any CLOSING and ACCOMPLICE CONFESSION sections. Copy and Download output only the visible part.
    - Evidence cards: shown as the guests see them, using the same strip rules as the printed card (Significance, Implications and the other host-only sections removed).
-   - **Fail closed:** if no reveal heading is found (older packages), the whole script is hidden and the switch explains that this older package cannot be separated safely and a helper should read the script.   - While the switch is on, the script and evidence are read-only. Otherwise saving an edit would write the truncated text over the stored reveal.
+   - **Fail closed:** if no reveal heading is found (older packages), the whole script is hidden and the switch explains that this older package cannot be separated safely and a helper should read the script.
+   - While the switch is on, the script and evidence are read-only. Otherwise saving an edit would write the truncated text over the stored reveal.
 3. **Guide block** (detective style only, 13 locales, murder and intrigue variants): "Playing a suspect yourself? (detective-style mysteries)": switch it on; take a character page like a guest and skip the others' pages; read the script aloud up to the final statements; for the reveal, the murderer (who already knows from their own page) or a helper who is not playing opens the Host link and reads it aloud; the Host Only hints are hidden. A one-line pointer to this block is appended to the five places that say "you will know who the murderer is" (checklist items 2 and 4, prep item 1, Option 1 note, step 4).
 4. **Not changed:** Option 2 (audio) text, the slip-style block of ADR-0157, character sheets (the host takes one like a guest; the guide tells them to skip the others), `master_context` (never shown to the host).
 
@@ -70,3 +71,15 @@ Jonathan was shown three options after the measurement and chose A. The trade-of
 - `src/components/HostGuideTemplate.tsx`, `src/i18n/locales/*.json` (`hostGuide.setupChoice.detectivePlays*` including `detectivePlaysPointer`, `mysteryPackage.hostSeal.*`)
 - `.gitignore` (allow the new test, `*.mjs` is ignored by default)
 - `scripts/__tests__/hostSeal.test.mjs` (new)
+
+## Addendum 1 (2026-10-13): independent eval, fixes and open gaps
+
+An independent re-derivation from git, the database (127 paid non-test detective packages) and a Playwright render of the real components confirmed the numbers above (103 reveal found, 22 fail closed, 2 with no script; the split never cut early or left a closing section open in the corpus; owner view and Host link behave as described in en, sv, es and an older-format package; slip package unchanged).
+
+**Fixed in this addendum:** `playerFacingEvidence` only removed `##`-`####` headings named Significance/Implications/...; a bare `SIGNIFICANCE (Host Only)` line (one delivered Latvian package, 2026-08-02), a bold or `#####` label, or a localized label word with "(Host Only)" stayed visible. It now also drops any section labelled "(Host Only)" in any of those shapes (test added). The printed-card strip is unchanged.
+
+**Open gaps, decisions for Jonathan (not fixed here):**
+1. **Extras tab leaks the culprit.** With the switch on, Extras > Remove a Character > Continue lists every character and puts a "Murderer" / "Accomplice" badge next to the culprit (`GuestDropoutPanel.tsx`, live because `deploy.yml` sets `VITE_ENABLE_GUEST_DROPOUT_ADAPTATION`), and selecting a character shows a reassign note naming the role. So the guide's "the only places that spell out who is guilty" is not true. Needs a design call (hide roles while the switch is on and say so in the picker, or name the gap in the guide).
+2. **Host link is not covered by the owner switch and is opt-in.** The switch state is per browser and per key (package id in the owner view, token on `/host/:token`). A playing host who opens the emailed Host link on their own device sees the reveal until they switch it on there too, and the guide only mentions the link for the helper. The link exists only after the host sends the Host kit from the guest manager (`send-host-email`); the guide says "your host email" as if it always exists. The switch text does not say it is remembered per browser.
+3. **Key Points notes.** One package (Death At The Velvet Rose) has host-facing `#### Key Points` bullets before the reveal that name the culprit ("Do NOT name Max directly yet"); the guide's "everything the switch leaves visible is read aloud anyway" is false for it. A `CLOSING` heading placed above the reveal heading would also stay open (none in the corpus).
+4. Pre-existing tab-name mismatches in fr, it, pt, fi (guide says Detective Guide, tab is called Inspector/Investigator Guide); the new strings follow the existing convention.

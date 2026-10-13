@@ -59,6 +59,14 @@ check('older IMPLICATIONS sections and literal \\n escapes are handled', () => {
   const out = playerFacingEvidence('## EVIDENCE: ROUND 2\\n### The Ledger\\nA torn ledger.\\n### IMPLICATIONS\\nIt was Morgan.');
   assert.ok(/A torn ledger\./.test(out) && !/Morgan/.test(out));
 });
+check('Host Only labels in other shapes (bare line, bold, 5 hashes, localized word, CRLF) are dropped too', () => {
+  const card = (label, sep = '\n') => ['## EVIDENCE: ROUND 2', '### Card', '#### DESCRIPTION', 'A jar.', label, 'Quillon did it.', '', '---', '', '## EVIDENCE: ROUND 3', '### C2', '#### DESCRIPTION', 'Fine.'].join(sep);
+  for (const [name, label, sep] of [['bare', 'SIGNIFICANCE (Host Only)'], ['bold', '**SIGNIFICANCE (Host Only)**'], ['5 hashes', '##### SIGNIFICANCE (Host Only)'], ['localized word', '#### SIGNIFIKANS (Host Only)'], ['CRLF', '#### SIGNIFICANCE (Host Only)', '\r\n']]) {
+    const out = playerFacingEvidence(card(label, sep));
+    assert.ok(!/Quillon/.test(out), name);
+    assert.ok(/A jar\./.test(out) && /ROUND 3/.test(out) && /Fine\./.test(out), name + ' keeps the rest');
+  }
+});
 check('storage helpers never throw without a window and default to off', () => {
   assert.strictEqual(readHostPlaying('abc'), false);
   assert.doesNotThrow(() => writeHostPlaying('abc', true));

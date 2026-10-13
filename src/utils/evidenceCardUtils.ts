@@ -33,7 +33,29 @@ export function stripSectionsForPrint(lines: string[]): string[] {
  */
 export function playerFacingEvidence(markdown: string | null | undefined): string {
   const normalized = (markdown ?? "").replace(/\\n/g, "\n");
-  return stripSectionsForPrint(normalized.split("\n")).join("\n");
+  return stripSectionsForPrint(dropHostOnlyBlocks(normalized.split("\n"))).join("\n");
+}
+
+// A line that labels a section "(Host Only)", at any heading level, bold, or as a bare line
+// (one delivered package has bare labels with no "#"), in any language of the label word.
+// The section runs to the next heading or "---" separator. Runs before the heading-based strip.
+const HOST_ONLY_LABEL = /^\s*(?:#{1,6}\s*|\*{1,2})?[^\n]{0,60}\(\s*host only\s*\)\W*$/i;
+
+function dropHostOnlyBlocks(lines: string[]): string[] {
+  const out: string[] = [];
+  let skip = false;
+  for (const line of lines) {
+    if (HOST_ONLY_LABEL.test(line)) {
+      skip = true;
+      continue;
+    }
+    if (skip) {
+      if (/^\s*#{1,6}\s/.test(line) || /^\s*-{3,}\s*$/.test(line)) skip = false;
+      else continue;
+    }
+    out.push(line);
+  }
+  return out;
 }
 
 function extractParagraphs(lines: string[]): string {
