@@ -79,7 +79,7 @@ const HostGuideTemplate: React.FC<HostGuideTemplateProps> = ({
 ${tt(`checklist.intro_${ctx}`)}
 
 - [ ] ${tt("checklist.item1")}
-- [ ] ${tt(`checklist.item2_${ctx}`)}
+- [ ] ${isCharacterBased ? tt(`checklist.item2Slip_${ctx}`) : tt(`checklist.item2_${ctx}`)}
 - [ ] ${tt("checklist.item3")}
 - [ ] ${isCharacterBased ? tt(`checklist.item4SlipDraw_${actx}`) : tt(`checklist.item4Predetermined_${actx}`)}
 - [ ] ${tt("checklist.item5")}
@@ -143,7 +143,13 @@ ${tt(`setupChoice.option2Label_${ctx}`)}
 - ${tt("setupChoice.option2Item3")}
 - ${tt("setupChoice.option2Item4")}
 - ${tt("setupChoice.option2Item5")}
-
+${isCharacterBased ? `
+${tt("setupChoice.hostPlaysLabel")}
+- ${tt("setupChoice.hostPlaysItem1")}
+- ${tt(`setupChoice.hostPlaysItem2_${ctx}`)}
+- ${tt("setupChoice.hostPlaysItem3")}
+- ${tt("setupChoice.hostPlaysItem4")}
+` : ""}
 ## ${tt("runningGame.heading")}
 
 ${t(`hostGuide.runningGame.intro`, { timeEstimate: tt(`runningGame.${timeGuidelineKey(playerCount)}`), playerCount: players })}

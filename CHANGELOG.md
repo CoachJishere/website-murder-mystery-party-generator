@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Improvement: host guide now tells hosts of slip-style games they can also play a suspect (ADR-0157)
+- **Why:** a paying customer (Dead Man's Saddle) wanted to host and play a character without learning the killer or the scripts; the guide said hosts do NOT participate as a suspect in character-based games and told every host to skim all secrets, although slip-style narration never names the culprit.
+- **What:** for slip style only, a new block "Playing a suspect yourself?" after Option 2 (take a character page, draw a slip, read the narration, skip other pages, shuffle slips unseen), a character-based checklist item 2 that says to skip other secrets when playing, and Option 1's note reworded. 10 new and 2 reworded keys in all 13 locales (translated by hand, no paid API); detective style is unchanged (its script names the murderer). Typecheck error count unchanged (959 before and after, all pre-existing), eslint clean, rendered output checked for slip murder/intrigue, detective, German and Japanese.
+- **Not done:** a spoiler-free host version for detective-style games (large, touches generation); no native-speaker review of the new strings.
+
 ### Docs: Child64 imported by Jonathan, logged in `prompt_version_history` (ADR-0156 Phase 3)
 - **What:** row id 26 (`child`, 64, `MM Live - Child (Unified)64-RedactedContext`, effective 2026-10-13 11:54 UTC, `approximate = false`). The switch `child_context_redaction` is `off`, so every detective Child still gets today's inputs; the first execution should show module 414 with `redacted: false`.
 - **Not done:** the paid check (needs a created `is_test` package and a yes on the plan and cap) and moving the switch.
