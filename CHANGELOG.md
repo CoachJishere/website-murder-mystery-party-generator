@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Docs: ADR-0154 proposes one customer email when a paid package is held in needs_review (Proposed, nothing built)
+- **Why:** Blackthorn Manor's customer was never told her package was held, and after 10 minutes the page reveals a held package with only a warning banner, so she downloaded the unfixed version and wrote in confused (ADR-0103 Addendum 92).
+- **What:** one localized email after about 60 minutes held, once per package, behind a kill switch. The six-hour internal alert was declined by Jonathan.
+- **Not done:** all of it; waits on the threshold and wording.
+
 ### Fix: "Blackthorn Manor" (EN detective, 11 characters) held four days in `needs_review` - an innocent journalist was stored as a second accomplice; plus a leaked accomplice name and a missing clue line (ADR-0103 Addendum 92)
 - **Why:** Jonathan pasted the purchase and the generation alert. The gate flagged `accomplice_role_mismatch` (two characters with role `accomplice`) at 2026-10-09 18:10 UTC and the customer has had no package since.
 - **What (data edits only, one package, every replace asserted):** Jackie Winthrop's `character_role` accomplice to redHerring (the concept, `master_context`, the reveal and her own sheet all say Pam is the only accomplice); Jackie's secret no longer says she is protecting Pam; Caroline's Round 4 script (and pointform) now says the chill was "from the cellar stairs", the clue the reveal relies on; `game_overview` no longer states Thorne's, Wendy's and Anna's hidden secrets. Gate (`package_completion_blocking_defects`) is NULL afterwards.
