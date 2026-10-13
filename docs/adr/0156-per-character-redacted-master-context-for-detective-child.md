@@ -63,6 +63,10 @@ Build `buildCharacterContext(masterContext, characterName, role)` and use it so 
 
 Jonathan asked to scope this after ADR-0153 Phase 0 rejected prompt accretion as the cause but found that the best-supported lever was structural: do not hand the call what it must not use. The Silver Nightingale leak made it concrete, because the leaked fact was in a field every sheet received. The main design choice was allowlist versus blocklist, and filtered observation versus removal for positions: removal is safer and loses the eyewitness clues the game relies on, so Phase 1 filters by `canBeSeenBy` and Phase 4 adds an observer-safe description if needed. Whether the model then leaks less is not proven; Phase 2 is the cheap way to find out before any Make change.
 
+## Phase 2 result (2026-10-13)
+
+Replay of the 10 Silver Nightingale innocents with the redacted context (omit variant), about 2.2 USD, nothing written to the database. Verdict: **partly works**. The `master_context` leak (Juliet's confrontation) is gone from every other sheet; 2 of 10 sheets now state Harry's secret, copied from the customer's character list in the chat; Marcus and Harry lost the eyewitness clue about the steward. Recommendation: redact the chat's character list per character (Phase 1b) and add `whatAnObserverSees` (Phase 4) before Child64. Details: `docs/adr/0156-phase2/findings.md`.
+
 ## Key files
 
 `temp-files/MM Live - Child (Unified)63-QuoteTalkRemoved.blueprint.json` (module 142, prompts 401, 405, 409), `docs/adr/0153-phase0/findings.md`, `docs/adr/0103-new-purchase-coherence-sweep-ritual.md` (Addenda 81, 86, 91), `supabase/functions/regenerate-child-content/index.ts`, `supabase/migrations/20261013140000_prompt_version_history.sql`.

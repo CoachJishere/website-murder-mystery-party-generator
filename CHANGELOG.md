@@ -2,6 +2,10 @@
 
 ## 2026-10-13
 
+### Docs: ADR-0156 Phase 2 replay (about 2.2 USD, approved): master_context leak closed, chat is the remaining path
+- **What:** regenerated the 10 Silver Nightingale innocents locally with the Child63 prompts and the per-character redacted context (no database writes). Juliet's corridor confrontation no longer reaches any other sheet; 2 of 10 sheets state Harry's secret via the customer's character list in the chat; Marcus and Harry lose the steward eyewitness clue. Findings in `docs/adr/0156-phase2/findings.md`, scripts in `docs/adr/0156-phase2/tools/`.
+- **Not done:** Child64; chat redaction (Phase 1b) and `whatAnObserverSees` (Phase 4) come first.
+
 ### Feature: per-character context function for the detective Child, built and tested (ADR-0156 Phase 1, not wired in)
 - **What:** `supabase/functions/_shared/characterContext.ts` (`buildCharacterContext`, pure allowlist, no LLM) gives a non-culprit character only its own `wrongedEachCharacter` and `characterSpecificDetails` entries, the matrix, the weapon, evidence item descriptions, public timeline facts and the position entries it could observe; murderer and accomplice get the input unchanged. `npm run test:charcontext` (45 tests; real-data ones skip when `temp-files/charctx/` is absent). Findings in `docs/adr/0156-phase1/findings.md`.
 - **Result:** 119 innocents in 12 real packages pass the leak checks; median context is 10.3 percent of the full document. Two intrigue-type designs are refused, 8 of the 12 packages have no position map, and 2 characters of one package are not in the design.

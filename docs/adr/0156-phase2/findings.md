@@ -1,0 +1,20 @@
+# ADR-0156 Phase 2 findings: replay of the Silver Nightingale innocents with the redacted context (2026-10-13)
+
+Approved by Jonathan: about 2 USD, omit variant only. Spent: **about 2.2 USD** (token-count estimate at an assumed 3/15 USD per MTok: 0.20 pilot, 1.60 for the main run including one character lost to a JSON trailing comma and re-run, 0.41 for the last two). Nothing was written to the database: the 10 innocents of "Murder On The Silver Nightingale" (package `178de25c`) were regenerated locally with the Child63 prompts for modules 401, 405 and 409, each given the 9,000-character context from `buildCharacterContext(..., {visibleMurderer: "omit"})` instead of the 68,782-character master context. Outputs stay in the gitignored `temp-files/charctx/phase2_out/` (customer content). Scripts: `tools/phase2_replay.py`, `tools/phase2_ctx.mjs`.
+
+## Verdict: PARTLY WORKS. The `master_context` leak path is closed; the chat path is now the main leak; two witnesses lost an eyewitness clue
+
+1. **Mechanics fine.** 10 of 10 sheets generated, no prompt errors, 14,000 to 17,000 input tokens per call (down from about 30,000+), about 0.20 USD per character.
+2. **The leak we set out to remove is gone.** Juliet's corridor confrontation appears in no other character's text in the 10 new sheets; Vivian's Round 3 question no longer presumes it (she asks whether Reginald seemed unwell). In the original package it was in two sheets (Vivian, Felicity) and two more were borderline (Nikolai, Marcus).
+3. **A different leak appeared in 2 of 10 sheets.** Bartholomew's and Antonia's `relationships` say "Harry Dunmore - A journalist dressed up as a society guest". Source: the customer's own character list in the chat, which every Child call receives as `conversationContent` ("Harry Dunmore (played by Cole M) - A journalist posing as a society guest"). The original package had 0 of 10 sheets doing this. With n = 10 and one sample each I cannot say whether that is noise or an effect of removing the signals that marked the secret as secret, but it shows the chat is a live path (the earlier check found 6 of 12 recent packages whose chat carries other characters' motives, and 3 whose chat names the killer).
+4. **Over-redaction is real but bounded.** Percival keeps the clue (he stood beside the sideboard with the steward and says Simone handed the glass; his own entry carries it). Marcus and Harry, who in the original said they saw the steward at the sideboard with the tray, now say they saw Percival and cannot "fill the gap"; they can no longer testify to the steward. This is risk 3 of Phase 1 as predicted: one of three witnesses to the key moment is lost, so the case is somewhat harder to solve. No wrong facts, no contradictions about positions, no invented relationships were found on reading Percival, Marcus and Harry in full and scanning all 10 for hidden-fact keywords (one false positive: Nikolai saying he was not in the pantry).
+5. **What this does NOT show.** No reviewer run (that needs a package row and a customer-visible release path), no control arm run on the same prompts (the original sheets came from Child61), one package, one sample per character, 10 sheets. It shows what the model is handed and one real change in what it wrote, not a measured reduction in leaks.
+
+## Recommendation
+
+Do not build Child64 yet. Two things first, both free:
+
+- **Redact the chat as well** (Phase 1b): for each character, keep its own line of the customer's character list and reduce every other line to "name (played by X)" plus the public role, deterministically, and fail open (return the chat unchanged) when the list is not recognised. Without it, the redaction removes one leak path and leaves the larger one.
+- **Phase 4** (`whatAnObserverSees` in `keyMomentPositions`) is needed to give Marcus and Harry back the clue without giving `truePosition`; it is a Parent change and can ship before Child64.
+
+If both are done, a second replay (about 2 USD) on Blackthorn Manor would be a better test than repeating Silver Nightingale: different cast, different chat.
