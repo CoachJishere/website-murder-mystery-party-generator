@@ -1,10 +1,10 @@
 # Site health status
 
-_Last checked: 2026-10-13 00:47 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-10-13 14:19 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ⚠️ Problems found
 
-- 🟠 3 package(s) flagged needs_review in the last 7 days: b880b124-63f8-4fd8-9242-60348c88dcd3, 4b53b965-0230-4faf-bf9b-54dfad225b9e, e0806547-4229-4ab9-a7f4-6f75c3fb1ed6
+- 🟠 1 package(s) flagged needs_review in the last 7 days: b880b124-63f8-4fd8-9242-60348c88dcd3
 - 🔴 1 recent package(s) with model chain-of-thought or template artifacts in delivered text: El Último Trago
 - 🟠 1 recent package(s) where a character asks themselves questions: Lip Sync For Your Life (and Death)
 - 🔴 2 package(s) with a confession leaked into the Final Statements round (should be a denial): Dead Man's Saddle [Dr. Adeline Marsh]; Murder At Montero Manor [Madame Celeste Devereaux]
@@ -13,7 +13,7 @@ _Last checked: 2026-10-13 00:47 UTC (runs every 6 hours; see .github/workflows/h
 |---|---|
 | Website (www.mysterymaker.party) | HTTP 200 |
 | Generations stuck > 2h | 0 |
-| needs_review packages (7 days) | 3 |
+| needs_review packages (7 days) | 1 |
 | Paid packages missing evidence images | 0 |
 | Character identity conflicts (30 days) | 0 |
 | Meta-text / CoT artifacts (14 days) | 1 |
