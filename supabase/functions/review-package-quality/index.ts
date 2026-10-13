@@ -191,6 +191,15 @@ async function openDigest(dryRun: boolean): Promise<Row> {
       }
     }
   }
+  // ADR-0103 Addendum 91: deterministic check that the props list is in the same language as the game overview (SQL detector, free).
+  try {
+    const { data: ml } = await supabase.rpc("list_packages_with_materials_language_mismatch", { _since: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString() });
+    for (const m of (ml ?? []) as { package_id: string; title: string | null; mismatch: string }[]) {
+      if (!titles.has(m.package_id)) continue;
+      rows.push({ package_id: m.package_id, title: titles.get(m.package_id) ?? "", item_name: C.DOC_ITEM_NAME, field: "materials", category: "language_slip", severity: "high",
+        exact_quote: m.mismatch, explanation: "The props list (materials) is in a different language than the game overview (deterministic check, ADR-0103 Addendum 91). Translate the bullets by hand." });
+    }
+  } catch (e) { console.error(`materials language check failed (ignored): ${(e as Error).message}`); }
   const mail = C.openDigestEmail(rows, minSev);
   if (!mail) return { sent: false, packages: pkgs.length, qualifying: 0, min_severity: minSev };
   if (dryRun) return { sent: false, dry_run: true, subject: mail.subject, packages: mail.packages, findings: mail.findings };
