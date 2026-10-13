@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Docs: ADR-0156 Phase 4 Tier 1 part 2 (paid, 0.27 USD, running total about 1.63 of 4.5): tightened wording, Silver once; stopped before runs 4 to 7 and Tier 2
+- **What:** rules 1 and 4 of the Parent86 field tightened in the local build script (no feelings or expressions; add no action, object or state absent from `truePosition`) and Silver re-run once. Culprit and accomplice sentences clean again; feelings and "speaking with" additions gone; added detail still about 7 of 12 sentences (props such as "raising a glass"), including "holding a notebook" for Harry, who is secretly a journalist (2 of 4 Parent runs).
+- **Decision needed:** recommended change is to invert the derivation (Parent writes the observer sentence first, `truePosition` extends it); details in `docs/adr/0156-phase4/tier1-findings.md`.
+- **Not done:** runs 4 to 7, Tier 2, the inversion.
+
 ### Docs: ADR-0156 Phase 4 Tier 1 part 1 (paid, approved, about 1.36 of 4.5 USD): Silver Nightingale x3, control, probes
 - **What:** three Parent86 Part 2 replays, one Parent85 control and three rewrite probes (tools in `docs/adr/0156-phase4/tools/`, findings in `tier1-findings.md`). No act, intent or secrecy word in any culprit or accomplice sentence; the probe on the stored map (which states "dosed the glass") dropped the act, napkin and pantry 3 of 3 and kept the sideboard-and-tray clue. One culprit sentence is one word longer than the longest innocent's, so runs 4 to 7 and Tier 2 were not run, as the stop rule says.
 - **Found:** the Parent's own `truePosition` no longer states the act in either prompt (control included), so the replay alone never exercised the hard case; innocents get embellished with generic actions and 6 of 30 probe sentences carry feelings or expressions (rule tightening proposed, not applied).

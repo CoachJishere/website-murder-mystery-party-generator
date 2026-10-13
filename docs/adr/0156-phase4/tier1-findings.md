@@ -41,3 +41,25 @@ Four "leak" flags came from the 5-word-run check (`in view of the room`, `seated
 ## Status and decision needed
 
 Not run: runs 4 to 7 (Blackthorn, Last Slice, Swedish, intrigue; about 1.2 USD) and Tier 2 (four Child regenerations with `buildCharacterChatSafe`; about 0.8 USD). Projected total if both go ahead: about 3.4 USD, under the 4.5 cap; with a Silver re-run after the wording tightening (about 0.8) still about 4.2.
+
+# Part 2: tightened wording, Silver once (2026-10-13, same day)
+
+Plan approved by Jonathan: tighten rules 1 and 4 in `build-parent-v86.py`, re-run Silver once, stop and report before runs 4 to 7 and Tier 2 if there is a culprit leak or a high added-detail rate. Rule 1 now adds "no feelings, moods, expressions or impressions ... only what a camera would record"; rule 4 adds "do not add any action, object or state that truePosition does not contain (if it says 'with Harry', write 'with Harry', not 'speaking with Harry')". Rebuilt Parent86 (diff against Parent85 is still pure insertions in modules 3000 and 4020, rule text identical in both).
+
+Spend: in 27,795, out 12,409, about 0.27 USD. **Running total about 1.63 of 4.5 USD.**
+
+- **Culprit and accomplice: clean.** Simone 20 words (innocents' maximum 20), Felicity 17; no act, intent, secrecy or tampering word. Simone: "Walks through the dining car carrying a tray of glasses and hands Reginald a glass, near Percival at the bar."
+- **Feelings and expressions: gone** (0 hits; probes before the change had 6 of 30). "Speaking with" embellishments: gone.
+- **Added detail: still high, about 7 of 12 sentences (58 percent), 8 counting a borderline.** Before the change, reading sample 1 the same way, about 6 to 7 of 10 to 12. The tightening changed the kind of addition (props instead of conversation), not the rate: "raising a glass" (Vivian, Josie), "listening to the toast" (Bartholomew), "holding a glass" (Marcus), "with a glass in front of her" (Felicity), "stands and walks toward Vivian with a glass in hand" (Antonia), "laughing" (Josie), **"holding a notebook" (Harry)**. The scripted counter (`added-detail` in the analyzer) is too crude to give a rate (it counts verb inflections); the figures here are by reading.
+- **Why it matters beyond style:** Harry is a journalist posing as a society guest. "Holding a notebook" appeared in samples 1 and t1 (2 of 4 Parent runs) and is a prop that points at his hidden identity: the Parent knows secrets and an invented prop can carry one into a sentence that every witness is given. It is not a culprit leak, but it is the same class as the Harry chat leak found in Phase 2.
+- **Other:** reciprocity breaks 4 in this run (Parent86: 2, 1, 0, 4; Parent85 control: 3), i.e. noise range 0 to 4 on single samples. One sentence (Beatrice) names a character who is in `truePosition` but not `besideOrNear`, so rule 4's "names only cast members listed in besideOrNear" should read "or already named in truePosition".
+
+## Diagnosis and options (not applied)
+
+The model is asked to derive the observer sentence from `truePosition` and invents props because a toast scene "needs" a glass. Telling it not to has not moved the rate. Options:
+1. **Invert the derivation (recommended).** The Parent writes the observer sentence first as the entry's primary text, then `truePosition` as that sentence plus any private additions. The observable layer cannot then contain facts the private layer lacks, and the culprit's act lives only in the extension. Costs one more prompt change and one more Silver run (about 0.3 USD).
+2. **Accept props, forbid only identity-linked ones.** Weak: the model cannot tell which props are linked to a secret without being told each secret.
+3. **Check in code.** A word-overlap filter drops honest sentences (measured in the design: 11 to 34 of 36 flagged) and is not recommended.
+4. **Accept as is and rely on the Child rules and the reviewer.** The culprit result is clean; the added-detail risk is mostly cosmetic with the occasional secret-adjacent prop.
+
+Not run: runs 4 to 7 (about 1.2 USD), Tier 2 (about 0.8 USD).
