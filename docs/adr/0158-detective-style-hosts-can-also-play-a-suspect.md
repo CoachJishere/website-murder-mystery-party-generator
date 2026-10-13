@@ -91,3 +91,16 @@ An independent re-derivation from git, the database (127 paid non-test detective
 3. **Tab names.** The outliers were the tab labels, not the guide strings: fr, it, pt, fi called the murder tab Inspector while 28 to 52 other strings say Detective. `mysteryPackage.tabs.inspector` and `mobileTabs.inspector` now say Detective in those four locales (Italian murder and intrigue tabs were identical before); the new bullet was put back to the detective wording. Loading and placeholder strings still say inspector, as the English ones do.
 
 **Still open:** only the generation-side Key Points cause (deliberately not fixed) and a closing section above the reveal heading (none delivered; adding "closing" as a trigger was tried and rejected, see above).
+
+## Addendum 2 (2026-10-13): third independent eval
+
+Re-derived from git, the database (127 paid non-test detective packages), the deployed edge function and a render of the real components. Counts reproduced exactly (103 found, 22 fail closed, 2 no script; 0 Key Points left in the open part; 0 Host Only labels left in the player-facing evidence of 300 labels). Real components rendered in en, fr, it, pt, fi, de, es with the switch on and off: script, copy, download, evidence, Extras picker and confirm step, guide item 6, host page at 1280 and 390 px, slip package unchanged; no console errors, no raw keys.
+
+**Fixed:** (1) the success page and the completion email still carried the "reassigning who the culprit is ... read the Reveal" notice; a playing host was told a culprit had been removed and advised to read the sealed section. The page now hides it when the switch is on; the email (v9) says to read it only if not playing. (2) `dropKeyPoints` only matched `#`-heading Key Points; bold or bare label lines, a "(Host Only)" suffix and localized words leaked. Now covered, with a test (latent: only the `#### Key Points` shape exists in delivered packages).
+
+**Found and not fixed (documented):**
+- `hosting_tips` names the culprit in 7 older packages (Dec 2025 to Mar 2026) and `materials` in 1 (Apr 2026); the Host Guide tab shows both unsealed, so the guide's "the only places that spell out who is guilty" is false for about 6 percent of packages. None since 2026-04-22. A fix would hide `hosting_tips` for a sealed host, which also hides the harmless tips; not done.
+- Evidence cards of one older format (e.g. "Murder At The Velvet Rose") carry an inline "**What it reveals:**" line that the guests' printed card also shows; parity with the table, not a seal defect.
+- Latent gaps with no corpus instance: localized or reworded Host Only labels ("(Nur fuer den Gastgeber)"), a label over 60 characters, a Host Only label written as "Host Only:" in a colon form, a description line ending in "(Host Only)" (over-deletes), `Key Takeaways` headings.
+- The Host link is emailed with the switch off by default (documented in guide item 6); a host who sends the kit to themselves opens it unsealed.
+- The token behind the Host link exists from package creation (DB default); it is only shown via the email, so "exists only after Send Host Kit" is true for the host's purposes.

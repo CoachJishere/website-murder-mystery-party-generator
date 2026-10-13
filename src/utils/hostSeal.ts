@@ -34,11 +34,23 @@ export interface SealedScript {
 // Some packages follow each script block with a host-facing "#### Key Points" bullet list. One
 // delivered package's bullets name the culprit ("Do NOT name Max directly yet"), which is not
 // read aloud, so the open part drops every Key Points section (to the next heading).
+const KEY_POINTS_WORDS =
+  "key points?|puntos clave|points cl[ée]s|kernpunkte|punti chiave|kernpunten|viktiga punkter|nøglepunkter|keskeiset kohdat|ポイント|要点|핵심 포인트";
+const KEY_POINTS_HEADING = new RegExp(`^\\s*#{1,6}[ \\t]+(?:${KEY_POINTS_WORDS})(?![\\p{L}])`, "iu");
+const KEY_POINTS_LABEL_LINE = new RegExp(`^\\s*[*_]*(?:${KEY_POINTS_WORDS})[*_:\\s]*$`, "iu");
+// "Key Points" as a heading of any level (also "Key Points (Host Only)"), or as a bold or bare label line
+// ("**Key Points:**", "Key Points:"). Only the "#### Key Points" shape occurs in delivered packages; the
+// others and the localized words are cheap insurance against the Parent writing it differently.
+function isKeyPointsLine(line: string): boolean {
+  return KEY_POINTS_HEADING.test(line) || KEY_POINTS_LABEL_LINE.test(line);
+}
+
 function dropKeyPoints(text: string): string {
   const out: string[] = [];
   let skip = false;
   for (const line of text.split("\n")) {
-    if (/^#{1,6}[ \t]+/.test(line)) skip = /^#{1,6}[ \t]+key points\b/i.test(line);
+    if (isKeyPointsLine(line)) skip = true;
+    else if (/^\s*#{1,6}[ \t]+/.test(line)) skip = false;
     if (!skip) out.push(line);
   }
   return out.join("\n");

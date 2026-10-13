@@ -119,7 +119,11 @@ const AdaptationSuccess = () => {
   const doneCount = rows?.filter((r) => isTerminalStatus(r.status)).length ?? 0;
   const totalCount = rows?.length ?? 0;
   const allTerminal = rows !== null && totalCount > 0 && doneCount === totalCount;
-  const anyReviewRecommended = rows?.some((r) => r.transform_result?.host_review_recommended) ?? false;
+  // ADR-0158: this notice says a culprit was reassigned and advises reading the Reveal, so a host who
+  // switched "I'm also playing" on for this package does not get it.
+  const anyReviewRecommended =
+    (rows?.some((r) => r.transform_result?.host_review_recommended) ?? false) &&
+    !(rows?.some((r) => readHostPlaying(r.package_id)) ?? false);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">

@@ -54,6 +54,13 @@ check('host-facing Key Points sections are dropped from the open part (they can 
   assert.ok(!/Quillon|Key Points|Pace/.test(s.open));
   assert.ok(/So, who was in the study/.test(s.open) && /ROUND 4/.test(s.open) && /More\./.test(s.open));
 });
+check('Key Points as bold or bare label, "(Host Only)" suffix and localized words are dropped too', () => {
+  for (const h of ['**Key Points:**', 'Key Points:', '  #### Key Points', '#### Key Points (Host Only)', '#### Puntos clave', '#### Points clés', '#### Kernpunkte', '#### Punti chiave']) {
+    const s = sealDetectiveScript(`## OPENING STATEMENT\n\nHi.\n\n${h}\n\n- Do NOT name Quillon yet\n\n### ROUND 4\n\nMore.\n\n## THE REVEAL\n\nIt was Quillon.`);
+    assert.ok(!/Quillon/.test(s.open), h);
+    assert.ok(/More\./.test(s.open), h + ' keeps the next section');
+  }
+});
 check('empty or missing script is not found, not a crash', () => {
   assert.strictEqual(sealDetectiveScript(null).found, false);
   assert.strictEqual(sealDetectiveScript('').found, false);

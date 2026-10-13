@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Fix: independent eval of ADR-0158 round 3, notice no longer tells a playing host to read the Reveal (ADR-0158 Addendum 2)
+- **What:** (1) `AdaptationSuccess` hides the "Reassigning who the culprit is ... we recommend reading through both" notice when the switch is on for that package (it said a culprit was removed and advised reading the Reveal); (2) `send-adaptation-complete-email` v9 (deployed, `verify_jwt` on, live equals repo) words that notice for detective style as "a key story role ... if you are not playing a suspect yourself, read both; if you are, ask a helper"; (3) `dropKeyPoints` also drops bold or bare "Key Points" label lines, a "(Host Only)" suffix and the localized words (es, fr, de, it, nl, sv, da, fi, ja, zh, ko); test added (12 checks).
+- **Not fixed, recorded:** 7 older packages (2025-12 to 2026-03) have `hosting_tips` that name the culprit and 1 has `materials` doing so, shown in the Host Guide tab and not sealed; none since 2026-04-22. `Key Takeaways` or `Host Notes` style headings would not be dropped (none exist).
+- **Verified:** corpus 127 paid detective packages, 103 found / 22 fail closed / 2 no script, 0 Key Points left, unchanged; tsc 959; real components rendered with the switch on and off in en, fr, it, pt, fi, de, es, host page at 390 px.
+
 ### Chore: ADR-0158 corpus and render checks committed under scripts/host-seal
 - **What:** `scripts/host-seal/seal-corpus.mjs` (reveal heading found vs fail-closed, name hits a sealed host still sees) and `scripts/host-seal/render-check/` (fetch real packages, bundle the real `MysteryPackageTabView` and `HostAccess`, drive them with Playwright over file://). Read-only (GETs with the service key from `.env`), outputs go to the OS temp dir because fixtures hold customer text, README explains the three steps. `.gitignore` allows them (`*.mjs` is ignored by default). The one-off locale inserter was not kept (the locale JSON is the record).
 - **Verified by re-running from the committed location:** corpus 125 packages / 103 reveal found / 22 fail closed (same as ADR-0158); render check English script 6 hits off, 0 on, Swedish and the share link 0 on, the older package fails closed, slip package unchanged.

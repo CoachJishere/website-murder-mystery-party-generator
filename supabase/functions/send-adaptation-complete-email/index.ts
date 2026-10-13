@@ -161,10 +161,15 @@ serve(async (req) => {
         ? `We finished working on <strong>${mysteryTitle}</strong> — most of it went through, but see below for one that didn't.`
         : `We finished working on <strong>${mysteryTitle}</strong>.`;
 
+    // ADR-0158: in detective style the notice must not tell a host who may be playing a suspect to read the
+    // Reveal, so it says to do so only if they are not playing.
+    const reviewNoticeText = isDetectiveStyle
+      ? `reassigning a key story role meant rewriting the Detective Guide's Reveal and a confession. If you are not playing a suspect yourself, we recommend reading both once before hosting; if you are, ask a helper who is not playing to do it.`
+      : `reassigning who the culprit is meant rewriting the detective script's reveal and a confession — we recommend reading through both once before hosting.`;
     const reviewNoticeHtml = anyReviewRecommended
       ? `<div style="background: rgba(217,119,6,0.12); border-left: 4px solid #d97706; padding: 16px 20px; margin: 20px 0; border-radius: 4px;">
            <p style="margin: 0; color: rgba(245,240,232,0.85); font-size: 14px;">
-             <strong style="color: #f0b429;">Worth a skim before the party:</strong> reassigning who the culprit is meant rewriting the detective script's reveal and a confession — we recommend reading through both once before hosting.
+             <strong style="color: #f0b429;">Worth a skim before the party:</strong> ${reviewNoticeText}
            </p>
          </div>`
       : null;
