@@ -2,6 +2,10 @@
 
 ## 2026-10-13
 
+### Feature: materials-language detector, Parent84 prompt anchor (built, not imported), Marcus Finch's twist, 4 packages' materials translated (ADR-0103 Addendum 91 Update 1)
+- **What:** `list_packages_with_materials_language_mismatch` (migration `20261013120000`, applied): flags a package whose props list is in another language than its game overview. Corpus scan since 2026-01-01: 2 hits, both real (a TEST package, and a paid July Portuguese package with an English list). Parent84 adds a mandatory language check to the four Themed Materials modules. Materials of Lip Sync For Your Life, Dead Man's Saddle, Blackthorn Manor and The Last Slice translated from Spanish to English by hand. Marcus Finch on the Silver Nightingale is now a working private inquiry agent hired to recover Reginald's ledger (Jonathan: best guess from the brief).
+- **Not done:** Parent84 import (Jonathan); the Portuguese package "Morte No Topo"; the detector is not part of the completion gate (no free heal exists, a translation is paid or by hand).
+
 ### Fix: "Murder On The Silver Nightingale" (EN detective, 12 characters) swept four days after delivery: Spanish materials list, overview naming hidden motives, two leaked questions; the Spanish-materials regression is on 5 English packages since 2026-10-09 (ADR-0103 Addendum 91)
 - **Why:** Jonathan pasted the purchase. The package was complete and gate-clean, the reviewer had found 6 issues before release (all real; 3 left open), and the full-cast read found the rest.
 - **What (data edits only, one package, every replace asserted):** `materials` translated from Spanish to English; `game_overview` rewritten to public information (it said the physician and the head steward were squeezed, i.e. the accomplice and the murderer); Vivian's and Felicity's questions no longer presume Juliet's hidden confrontation (reviewer findings); two borderline questions softened (Nikolai, Marcus); Josie's relationships now list Harry (matrix omission); a reviewer-applied evidence wording that put the vial on the tray repaired.
