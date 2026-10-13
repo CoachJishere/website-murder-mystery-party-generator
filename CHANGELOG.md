@@ -2,6 +2,10 @@
 
 ## 2026-10-13
 
+### Docs: ADR-0156 Phase 3 scoped against the code (nothing built)
+- **Found:** the Child gets no role as input (it determines `characterRole` itself in Call 1), so `child-context` should derive the role from `master_context`; `regenerate-child-content` is a second consumer of the full design and must be covered or the leak stays open on every heal; the chat reaches the prompts twice (`characterChatExcerpts`, `conversationContent`). Proposed shape, kill switch, failure policy and verification are in the ADR ("Phase 3 scope").
+- **Not done:** all of Phase 3; decisions needed from Jonathan: failure policy, edge-function deployment, the paid Child-only re-fire.
+
 ### Docs: Parent86 imported by Jonathan, logged in `prompt_version_history` (ADR-0156 Phase 4)
 - **What:** row id 25 (`parent`, 86, `MM Live - Parent86 (Observer Field)`, effective 2026-10-13 11:31 UTC, `approximate = false`). Nothing in production reads `whatAnObserverSees` yet (`buildCharacterContext` is not wired in), so the import only adds the field to new detective and intrigue `master_context` documents.
 - **Fixed on the way:** the seeded rows for Parent85 (id 24) and Child63 (id 11) said 13:00 UTC, later than the real time (looks like 13:00 local time stored as UTC), so any package created after the Parent86 import would have mapped to Parent85 in `mystery_packages_prompt_versions`. Both moved to 11:00 UTC, still `approximate = true`.
