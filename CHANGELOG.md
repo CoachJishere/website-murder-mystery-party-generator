@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-13
+
+### Feature: free label and rename heals before release, Danish and Swedish language-pack tables, and a cross-sheet secret check (built, off) (ADR-0152)
+- **Why:** the Champagnens Skygge sweep changed about 120 values on a package the gate and reviewer had passed; the reviewer scorecard shows it is strong on grammar (93 to 95 percent recall) and blind to wrong-language labels (29 percent), customer renames (0) and other sheets stating a secret (0 to 62 percent).
+- **What:** (1) `label-conformity.ts`: wrong-language section labels, close typos and wrong-gender slips of the language's own label are replaced by the canonical wording from `docs/language-pack/header-labels.json` (now with Danish and Swedish); valid variants are never touched. (2) `roster-reconcile.ts`: a character renamed after approval is renamed on its sheet (name, all fields, `extracted_characters`) when `master_context` documents the rename and the other sheets already use the new name; anything less certain is logged or becomes an open high finding. Both run in the release queue before the model review and in the second pass, with the revert guard; settings `label_conformity` and `roster_reconcile` are `on`. (3) `leak-probe.ts`: deterministic retrieval of sentences in other sheets that mention a secret's owner and share words with the secret, then one small model question per owner; built behind `review_leak_probe` = `off` and a read-only `leak_probe` mode. (4) `temp-files/build-child-v62.py` builds Child62 (pack with Danish and Swedish tables) from Child61.
+- **Evidence:** replay on the pre-fix Champagnens rows reproduces every hand edit and both renames; a scan of 120 delivered packages found no unwanted rename and, after two rounds of narrowing, label edits that are almost all English leftovers, register slips or typos (the first round would have turned French "Rôle :", Spanish "LA CÓMPLICE" and Italian "ROUND" into the pack's wording). `npm run test:reviewer` covers all four modules. Live write verified on Champagnens (4 edits, gate clean).
+- **Not done:** Child62 needs Jonathan's import; the paid secret check needs a yes for a measured probe before it is switched on; the cross-field contradiction pass is design only; carrying late renames into the roster before the Child runs is a Make or edge-function change.
+
 ## 2026-10-12
 
 ### Fix: "Champagnens Skygge" (DA slip, 17 characters) swept three days after delivery: the customer's two name changes never reached the character sheets, German and English labels in all 17 sheets (ADR-0103 Addendum 90)

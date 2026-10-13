@@ -147,3 +147,7 @@ draft_rewrites/
 .claude/
 !supabase/functions/auto-remediate-packages/glitch-strip.test.mjs
 !supabase/functions/review-package-quality/review-core.test.mjs
+!docs/language-pack/build-label-tables.mjs
+!supabase/functions/review-package-quality/label-conformity.test.mjs
+!supabase/functions/review-package-quality/roster-reconcile.test.mjs
+!supabase/functions/review-package-quality/leak-probe.test.mjs

@@ -1,6 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import * as C from "./review-core.ts";
+import * as LC from "./label-conformity.ts";
+import * as RR from "./roster-reconcile.ts";
+import * as LP from "./leak-probe.ts";
+import { LABELS_BY_CODE } from "./label-tables.ts";
 
 /**
  * ADR-0136: production LLM quality reviewer.
@@ -15,6 +19,9 @@ import * as C from "./review-core.ts";
  *                            { mode: "release_queue" } - ADR-0138: packages held in status 'reviewing' are reviewed, their findings of the
  *                              classes in pipeline_settings.review_auto_apply_classes are applied (with the revert guard), and they are released.
  *                              A failed, stuck or cost-capped review never holds a customer: the package is released anyway and an alert is sent.
+ * ADR-0152 modes: { mode: "conform_labels" | "reconcile_roster", package_id, dry_run?, force? }  (free heals; dry run by default)
+ *                  { mode: "heal_scan", since?, limit?, offset? }  (read-only corpus check of both heals)
+ *                  { mode: "leak_probe", package_id, paid?, write? }  (cross-sheet secret check; model calls only when paid:true)
  * Spend is logged in auto_remediation_log (defect_class "llm_review") so it counts against the same daily cap as the other heals.
  * Calibration and design: docs/adr/0136-llm-quality-review-pass-for-autonomous-packages.md (Addenda 1-4), docs/adr/0136-pilot/.
  */
@@ -140,10 +147,16 @@ async function secondPass(only?: string, force = false): Promise<Row> {
     id = ids.find((i) => first.has(i) && !second.has(i)) ?? null;
     if (!id) return { skipped: "no package waiting for a second pass" };
   }
+  await runFreeHeals(id); // ADR-0152
   const r = await reviewPackage(id, { version: ver, pass2: true, force, applyClasses: [] });
   const classes = (await setting("review_auto_apply_classes", "")).split(",").map((c) => c.trim()).filter(Boolean);
   const applied = r.skipped ? { applied: 0, reverted: 0 } : await applyOpenFindings(id, classes);
-  return { ...r, second_pass: true, applied: applied.applied, reverted: applied.reverted };
+  // ADR-0152 lever 3: the cross-sheet secret check is paid, so it runs only when pipeline_settings.review_leak_probe = 'on' (default off).
+  let leak: Row | undefined;
+  if (!r.skipped && (await setting("review_leak_probe", "off")) === "on") {
+    try { leak = await leakProbe(id, { write: true }); } catch (e) { console.error(`leak probe failed (ignored): ${(e as Error).message}`); leak = { error: (e as Error).message }; }
+  }
+  return { ...r, second_pass: true, applied: applied.applied, reverted: applied.reverted, leak };
 }
 
 /** ADR-0149: one email per UTC day listing packages released in the last 26 hours that still carry unverified open findings. */
@@ -422,6 +435,199 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
     high: inserted.filter((f) => f.severity === "high").length, propagated, discarded, cost_usd: Number(spent.toFixed(4)), partial_reason: partialWhy || undefined, errors: errors.slice(0, 5), auto_apply: apply };
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
+// ADR-0152: free deterministic heals (label conformity, renamed characters) and the cross-sheet secret check.
+// Settings (pipeline_settings): label_conformity / roster_reconcile = "on" (write), "report" (default: compute and log, write nothing), "off".
+// review_leak_probe = "on" runs the paid cross-sheet secret check in the second pass; default "off".
+// ---------------------------------------------------------------------------------------------------------------------------
+const WRITABLE_MODES = new Set(["on", "report", "off"]);
+async function healMode(key: string): Promise<"on" | "report" | "off"> {
+  const v = (await setting(key, "report")).trim().toLowerCase();
+  return (WRITABLE_MODES.has(v) ? v : "report") as "on" | "report" | "off";
+}
+
+async function logHeal(packageId: string, defectClass: string, action: string, before: unknown, outcome: "fixed" | "escalated" | "failed") {
+  const { error } = await supabase.from("auto_remediation_log").insert({
+    package_id: packageId, defect_class: defectClass, action: action.slice(0, 200), before_value: JSON.stringify(before).slice(0, 4000), outcome, cost_usd: 0,
+  });
+  if (error) console.error(`auto_remediation_log insert failed: ${error.message}`);
+}
+
+/** Free label conformity heal for a non-English package (ADR-0152). dryRun = compute only. */
+async function healLabels(packageId: string, opts: { dryRun?: boolean; force?: boolean } = {}): Promise<Row> {
+  const mode = opts.force ? "on" : await healMode("label_conformity");
+  if (mode === "off") return { skipped: "label_conformity off" };
+  const { data: charsData } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId).order("character_name");
+  const chars = (charsData ?? []) as Row[];
+  const lang = C.detectLanguage(C.languageSample(chars));
+  if (!lang || !LABELS_BY_CODE[lang]) return { skipped: `language ${lang ?? "unclear"} has no label table` };
+  const plan = LC.conformPackage(chars, lang);
+  const agg = new Map<string, number>();
+  for (const c of plan.changes) for (const e of c.edits) agg.set(`${e.from} => ${e.to}`, (agg.get(`${e.from} => ${e.to}`) ?? 0) + 1);
+  const summary = { language: lang, edits: plan.total, characters: plan.changes.length, top: [...agg.entries()].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, n]) => `${n}x ${k}`) };
+  if (plan.total === 0) return summary;
+  if (opts.dryRun || mode === "report") {
+    if (!opts.dryRun) await logHeal(packageId, "label_conformity", `would_conform:${plan.total}_labels:${lang}`, plan.changes.flatMap((c) => c.edits.map((e) => ({ n: c.name, f: e.field, from: e.from, to: e.to }))), "escalated");
+    return { ...summary, written: false, mode: opts.dryRun ? "dry_run" : "report" };
+  }
+  const { data: defBefore } = await supabase.rpc("package_blocking_defects_by_id", { _id: packageId });
+  const written: { id: string; field: string; before: string }[] = [];
+  let failed = "";
+  for (const ch of plan.changes) {
+    const row = chars.find((c) => String(c.id) === ch.id)!;
+    for (const [field, value] of Object.entries(ch.fields)) {
+      const w = await supabase.rpc("remediation_write_field", { _scope: "character", _row_id: ch.id, _field: field, _value: value });
+      if (w.error) { failed = w.error.message; break; }
+      written.push({ id: ch.id, field, before: String(row[field] ?? "") });
+      if (field === "secret") await supabase.from("mystery_characters").update({ secrets: [value] }).eq("id", ch.id);
+    }
+    if (failed) break;
+  }
+  const { data: defAfter } = await supabase.rpc("package_blocking_defects_by_id", { _id: packageId });
+  const beforeSet = new Set((defBefore as string[] | null) ?? []);
+  const introduced = ((defAfter as string[] | null) ?? []).filter((d) => !beforeSet.has(d));
+  if (failed || introduced.length > 0) {
+    for (const w of written.reverse()) {
+      await supabase.rpc("remediation_write_field", { _scope: "character", _row_id: w.id, _field: w.field, _value: w.before });
+      if (w.field === "secret") await supabase.from("mystery_characters").update({ secrets: [w.before] }).eq("id", w.id);
+    }
+    await logHeal(packageId, "label_conformity", `conform_reverted:${failed ? "write_error" : introduced.join("+")}`, { failed, introduced }, "failed");
+    return { ...summary, written: false, reverted: true, why: failed || introduced.join(", ") };
+  }
+  await logHeal(packageId, "label_conformity", `conform:${plan.total}_labels:${lang}`, plan.changes.flatMap((c) => c.edits.map((e) => ({ n: c.name, f: e.field, from: e.from, to: e.to }))), "fixed");
+  return { ...summary, written: true };
+}
+
+const RENAME_SKIP = new Set(["id", "package_id", "character_name", "created_at", "updated_at", "character_role"]);
+
+/** Free heal for a character the customer renamed after approval (ADR-0152). Anything not certain becomes an open high finding. */
+async function healRoster(packageId: string, opts: { dryRun?: boolean; force?: boolean } = {}): Promise<Row> {
+  const mode = opts.force ? "on" : await healMode("roster_reconcile");
+  if (mode === "off") return { skipped: "roster_reconcile off" };
+  const { data: pkg } = await supabase.from("mystery_packages").select("id,master_context,extracted_characters,mystery_style").eq("id", packageId).single();
+  const { data: charsData } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId);
+  const chars = (charsData ?? []) as Row[];
+  const mc = String((pkg as Row | null)?.master_context ?? "");
+  if (!mc || chars.length < 3) return { skipped: "no master_context or too few characters" };
+  const sheets = chars.map((c) => ({ name: String(c.character_name), text: Object.entries(c).filter(([k, v]) => !RENAME_SKIP.has(k) && typeof v === "string").map(([, v]) => String(v)).join("\n") }));
+  const plan = RR.planRenames(mc, sheets);
+  const out: Row = { renames: plan.renames, unresolved: plan.unresolved };
+  if (plan.renames.length === 0 && !plan.unresolved) return out;
+  if (opts.dryRun) return { ...out, written: false, mode: "dry_run" };
+  if (plan.unresolved) await logHeal(packageId, "roster_name_drift", "unresolved", plan.unresolved, "escalated");
+  if (plan.renames.length === 0) return out;
+  if (mode === "report") { await logHeal(packageId, "roster_name_drift", `would_rename:${plan.renames.map((r) => `${r.from}->${r.to}`).join(";")}`, plan.renames, "escalated"); return { ...out, written: false, mode: "report" }; }
+  const { data: defBefore } = await supabase.rpc("package_blocking_defects_by_id", { _id: packageId });
+  const undo: { table: string; id: string; patch: Row }[] = [];
+  for (const r of plan.renames) {
+    const row = chars.find((c) => String(c.character_name) === r.from);
+    if (!row) continue;
+    const patch: Row = {}, back: Row = {};
+    for (const [k, v] of Object.entries(row)) {
+      if (RENAME_SKIP.has(k)) continue;
+      if (typeof v === "string") { const x = RR.replaceName(v, r.from, r.to); if (x.n > 0) { patch[k] = x.text; back[k] = v; } }
+      else if (Array.isArray(v) && v.some((e) => typeof e === "string" && e.includes(r.from))) { patch[k] = v.map((e) => typeof e === "string" ? RR.replaceName(e, r.from, r.to).text : e); back[k] = v; }
+    }
+    patch.character_name = r.to; back.character_name = r.from;
+    const { error } = await supabase.from("mystery_characters").update(patch).eq("id", String(row.id));
+    if (error) { console.error(`rename failed: ${error.message}`); continue; }
+    undo.push({ table: "mystery_characters", id: String(row.id), patch: back });
+  }
+  const ec = (pkg as Row).extracted_characters;
+  if (typeof ec === "string") {
+    let next = ec;
+    for (const r of plan.renames) next = next.split(`"name":${JSON.stringify(r.from)}`).join(`"name":${JSON.stringify(r.to)}`);
+    if (next !== ec) { await supabase.from("mystery_packages").update({ extracted_characters: next }).eq("id", packageId); undo.push({ table: "mystery_packages", id: packageId, patch: { extracted_characters: ec } }); }
+  }
+  const { data: defAfter } = await supabase.rpc("package_blocking_defects_by_id", { _id: packageId });
+  const beforeSet = new Set((defBefore as string[] | null) ?? []);
+  const introduced = ((defAfter as string[] | null) ?? []).filter((d) => !beforeSet.has(d));
+  if (introduced.length > 0) {
+    for (const u of undo.reverse()) await supabase.from(u.table).update(u.patch).eq("id", u.id);
+    await logHeal(packageId, "roster_name_drift", `rename_reverted:${introduced.join("+")}`, plan.renames, "failed");
+    return { ...out, written: false, reverted: true, why: introduced.join(", ") };
+  }
+  await logHeal(packageId, "roster_name_drift", `rename:${plan.renames.map((r) => `${r.from}->${r.to}`).join(";")}`, plan.renames, "fixed");
+  return { ...out, written: true };
+}
+
+/** Records unresolved roster drift as an open high finding so it reaches the daily email (never writes content). */
+async function recordRosterFinding(packageId: string, unresolved: RR.Unresolved) {
+  const version = C.PROMPT_VERSION + "+roster";
+  const { data: ex } = await supabase.from("package_reviews").select("id").eq("package_id", packageId).eq("prompt_version", version).maybeSingle();
+  if (ex) return;
+  const { data: rv } = await supabase.from("package_reviews").insert({ package_id: packageId, prompt_version: version, model: "deterministic", status: "done", finished_at: new Date().toISOString() }).select("id").single();
+  if (!rv) return;
+  await supabase.from("package_review_findings").insert({
+    review_id: (rv as { id: string }).id, package_id: packageId, item_name: C.DOC_ITEM_NAME, field: "master_context", category: "cross_field_contradiction", severity: "high",
+    exact_quote: unresolved.sheetOnly.join(" / ").slice(0, 200) || "(roster)", suggested_replacement: "",
+    explanation: `Character names differ between master_context and the sheets and the automatic rename rule did not hold. Sheets only: ${unresolved.sheetOnly.join(", ") || "none"}. master_context only: ${unresolved.matrixOnly.join(", ") || "none"}. Check the customer's chat for a rename.`.slice(0, 500),
+  });
+}
+
+/** Runs both free heals for one package. Never throws: a heal problem must not hold a customer. */
+async function runFreeHeals(packageId: string): Promise<Row> {
+  const out: Row = {};
+  try { out.labels = await healLabels(packageId); } catch (e) { console.error(`label heal failed (ignored): ${(e as Error).message}`); out.labels = { error: (e as Error).message }; }
+  try {
+    const r = await healRoster(packageId);
+    out.roster = r;
+    // An open finding (which can reach the daily email) is written only once the roster heal is switched on; in "report" mode the evidence is the auto_remediation_log row.
+    if (r.unresolved && !r.dry_run && (await healMode("roster_reconcile")) === "on") await recordRosterFinding(packageId, r.unresolved as RR.Unresolved);
+  } catch (e) { console.error(`roster heal failed (ignored): ${(e as Error).message}`); out.roster = { error: (e as Error).message }; }
+  return out;
+}
+
+/** ADR-0152 lever 3: cross-sheet secret check. Paid unless dryRun. write=false returns the findings without storing them. */
+async function leakProbe(packageId: string, opts: { dryRun?: boolean; write?: boolean } = {}): Promise<Row> {
+  const { data: pkg } = await supabase.from("mystery_packages").select("*").eq("id", packageId).single();
+  const { data: charsData } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId).order("character_name");
+  const chars = (charsData ?? []) as Row[];
+  if (!pkg || chars.length < 3) return { skipped: "package not found or too few characters" };
+  const sheets: LP.LeakSheet[] = chars.map((c) => ({
+    name: String(c.character_name), secret: typeof c.secret === "string" ? c.secret : "",
+    texts: LC.CONFORM_FIELDS.filter((f) => f !== "secret" && typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
+  }));
+  const cands = LP.leakCandidates(sheets);
+  const sentences = cands.reduce((n, c) => n + c.hits.length, 0);
+  const promptChars = cands.reduce((n, c) => n + LP.leakPromptText(c).length + LP.LEAK_INSTRUCTIONS.length, 0);
+  const estimate = { owners: cands.length, sentences, approx_input_tokens: Math.round(promptChars / 3.2) };
+  if (opts.dryRun || cands.length === 0) return { package_id: packageId, ...estimate, dry_run: true };
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
+  if ((await spentToday()) >= DAILY_CAP_USD) return { skipped: "daily cost cap" };
+  const system: C.SystemBlock[] = [{ type: "text", text: LP.LEAK_INSTRUCTIONS }];
+  const found: Row[] = [];
+  let cost = 0, calls = 0, dropped = 0;
+  let next = 0;
+  const worker = async () => {
+    while (true) {
+      const idx = next++;
+      if (idx >= cands.length || cost >= 0.6) return;
+      const c = cands[idx];
+      const r = await reviewItem(apiKey, system, `${c.owner} (secret check)`, LP.leakPromptText(c));
+      calls++; cost += r.cost;
+      for (const f of r.findings) {
+        const target = LP.resolveFinding(c, f);
+        const row = target ? chars.find((x) => String(x.character_name) === target.sheet) : null;
+        const finding = target ? { ...f, field: target.field } : f;
+        if (!target || !row || !C.validateFinding(row, finding).ok || f.category !== "secret_leak") { dropped++; continue; }
+        found.push({ item_name: target.sheet, field: target.field, category: "secret_leak", severity: f.severity, exact_quote: f.exact_quote,
+          explanation: `Owner ${c.owner}: ${(f.explanation ?? "").slice(0, 440)}`, suggested_replacement: f.suggested_replacement ?? "" });
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: 3 }, worker));
+  let stored = 0;
+  if (opts.write && found.length > 0) {
+    const version = C.PROMPT_VERSION + "+leak";
+    const { data: rv } = await supabase.from("package_reviews").insert({ package_id: packageId, prompt_version: version, model: MODEL, mystery_style: String((pkg as Row).mystery_style ?? ""), status: "done", finished_at: new Date().toISOString(), items_reviewed: calls, findings_count: found.length, cost_usd: Number(cost.toFixed(4)) }).select("id").single();
+    if (rv) { const { error } = await supabase.from("package_review_findings").insert(found.map((f) => ({ review_id: (rv as { id: string }).id, package_id: packageId, ...f }))); if (!error) stored = found.length; }
+  }
+  if (cost > 0) await logSpend(packageId, `leak_probe:${found.length}_findings`, "escalated", cost);
+  return { package_id: packageId, ...estimate, calls, cost_usd: Number(cost.toFixed(4)), findings: found.length, dropped, stored, preview: opts.write ? undefined : found.map((f) => ({ item: f.item_name, field: f.field, severity: f.severity, quote: String(f.exact_quote).slice(0, 140), why: f.explanation })) };
+}
+
 async function setting(key: string, fallback: string): Promise<string> {
   const { data } = await supabase.from("pipeline_settings").select("value").eq("key", key).maybeSingle();
   return (data as { value?: string } | null)?.value ?? fallback;
@@ -467,6 +673,7 @@ async function releaseQueue(): Promise<Row[]> {
     let alertWhy = "";
     let applied = { applied: 0, reverted: 0 };
     try {
+      await runFreeHeals(p.id); // ADR-0152: free, before the model reads the text, so the review sees the healed sheets
       const { data: existing } = await supabase.from("package_reviews").select("id,status,started_at").eq("package_id", p.id).eq("prompt_version", C.PROMPT_VERSION).maybeSingle();
       const e = existing as { id: string; status: string; started_at: string } | null;
       if (e?.status === "running" && Date.now() - new Date(e.started_at).getTime() < 10 * 60 * 1000 && ageMin < maxMin) { out.push({ package_id: p.id, waiting: "review running" }); continue; }
@@ -495,8 +702,34 @@ async function releaseQueue(): Promise<Row[]> {
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
+    const mode = ["conform_labels", "reconcile_roster", "heal_scan", "leak_probe"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
     const out: Row[] = [];
+    if (mode === "conform_labels" || mode === "reconcile_roster") {
+      // ADR-0152: manual run for one package (delivered packages are only changed through here). dry_run:true computes and writes nothing; force:true writes even when the setting is "report".
+      if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
+      const f = mode === "conform_labels" ? healLabels : healRoster;
+      return new Response(JSON.stringify(await f(String(body.package_id), { dryRun: body.dry_run !== false && body.force !== true, force: body.force === true })), { headers: { "Content-Type": "application/json" } });
+    }
+    if (mode === "heal_scan") {
+      // Read-only corpus check of both heals over completed packages created since `since` (default 2026-08-01): returns only packages that would change.
+      const since = String(body.since ?? "2026-08-01");
+      const limit = Math.min(Number(body.limit) || 40, 100), offset = Number(body.offset) || 0;
+      const { data: ids } = await supabase.from("mystery_packages").select("id,title,created_at").gte("created_at", since).eq("generation_status->>status", "completed").order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      const hits: Row[] = []; let scanned = 0;
+      for (const p of (ids ?? []) as { id: string; title: string | null }[]) {
+        scanned++;
+        const l = await healLabels(p.id, { dryRun: true, force: true }).catch((e) => ({ error: (e as Error).message }));
+        const r = await healRoster(p.id, { dryRun: true, force: true }).catch((e) => ({ error: (e as Error).message }));
+        const changes = Number((l as Row).edits ?? 0) > 0 || ((r as Row).renames as unknown[] | undefined)?.length || (r as Row).unresolved || (l as Row).error || (r as Row).error;
+        if (changes) hits.push({ package_id: p.id, title: p.title, labels: l, roster: r });
+      }
+      return new Response(JSON.stringify({ since, scanned, offset, hits }), { headers: { "Content-Type": "application/json" } });
+    }
+    if (mode === "leak_probe") {
+      // Paid only when paid:true is sent; otherwise it only retrieves candidates and estimates tokens. write:true stores the findings.
+      if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(await leakProbe(String(body.package_id), { dryRun: body.paid !== true, write: body.write === true })), { headers: { "Content-Type": "application/json" } });
+    }
     if (mode === "propagate_probe") {
       // Read-only check of the propagation pass against a stored package with hand-supplied corrections. Writes nothing.
       const apiKey = Deno.env.get("ANTHROPIC_API_KEY"); if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
