@@ -50,6 +50,8 @@ Blog Database - Master.csv
 !scripts/__tests__/nameVariants.test.mjs
 !scripts/__tests__/rosterAnomaly.test.mjs
 !scripts/__tests__/hostSeal.test.mjs
+!scripts/host-seal/*.mjs
+!scripts/host-seal/render-check/*.mjs
 !scripts/__tests__/preSnapshotBriefs.test.mjs
 !scripts/__tests__/alertDedupe.test.mjs
 !scripts/__tests__/detectorGuard.test.mjs

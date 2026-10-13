@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Chore: ADR-0158 corpus and render checks committed under scripts/host-seal
+- **What:** `scripts/host-seal/seal-corpus.mjs` (reveal heading found vs fail-closed, name hits a sealed host still sees) and `scripts/host-seal/render-check/` (fetch real packages, bundle the real `MysteryPackageTabView` and `HostAccess`, drive them with Playwright over file://). Read-only (GETs with the service key from `.env`), outputs go to the OS temp dir because fixtures hold customer text, README explains the three steps. `.gitignore` allows them (`*.mjs` is ignored by default). The one-off locale inserter was not kept (the locale JSON is the record).
+- **Verified by re-running from the committed location:** corpus 125 packages / 103 reveal found / 22 fail closed (same as ADR-0158); render check English script 6 hits off, 0 on, Swedish and the share link 0 on, the older package fails closed, slip package unchanged.
+- **Found while committing:** a first rewrite joined names with "|" into an escaped count and every multi-name fixture reported a vacuous 0; fixed (per-name sum) and the driver now matches whole words, because the nickname "Honey Boo Boo" matched "book". The corpus script keeps the substring count on purpose so the ADR numbers stay reproducible.
+
 ### Fix: held package swept, "Lip Sync For Your Life (and Death)" (ADR-0103 Addendum 94)
 - **What:** slip-style package held in `needs_review` for about 30 hours on `self_directed_question.Mistress Calamity` (her own name in her Round 2 question header). Fixed that header by exact-match replace, released through the normal reviewer path (no trigger bypass); the ready email went out at 19:18 UTC.
 - **Also changed by hand:** Sapphire's stray `**` at the end of her introduction, and the customer's "graciously stepping aside" requirement added to `game_overview`. The reviewer's own 6 findings plus 1 from the second pass were all real and applied.
