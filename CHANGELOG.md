@@ -2,6 +2,10 @@
 
 ## 2026-10-13
 
+### Docs: ADR-0153 proposes a prompt consolidation project (Proposed, nothing built)
+- **What:** measured the Parent and Child prompts (Child 21,000 to 32,000 characters per module with 25 to 32 emphatic markers; shared rule blocks pasted into 3 to 13 modules each) and scoped a phased, falsifiable plan: rule registry first (free), then dedupe, structure, move-recurring-rules-to-checks, and a rule for adding new prompt text.
+- **Not done:** all phases; waits on Jonathan's yes for Phase 0.
+
 ### Feature: materials-language detector, Parent84 prompt anchor (built, not imported), Marcus Finch's twist, 4 packages' materials translated (ADR-0103 Addendum 91 Update 1)
 - **What:** `list_packages_with_materials_language_mismatch` (migration `20261013120000`, applied): flags a package whose props list is in another language than its game overview. Corpus scan since 2026-01-01: 2 hits, both real (a TEST package, and a paid July Portuguese package with an English list). Parent84 adds a mandatory language check to the four Themed Materials modules. Materials of Lip Sync For Your Life, Dead Man's Saddle, Blackthorn Manor and The Last Slice translated from Spanish to English by hand. Marcus Finch on the Silver Nightingale is now a working private inquiry agent hired to recover Reginald's ledger (Jonathan: best guess from the brief).
 - **Update:** Parent84 imported by Jonathan the same day; "Morte No Topo" (paid, PT) translated to Portuguese by hand.
