@@ -2,6 +2,10 @@
 
 ## 2026-10-13
 
+### Docs: ADR-0156 proposes a per-character redacted master_context for the detective Child (Proposed, nothing built)
+- **What:** every detective character currently receives the full `master_context` (solution, deception notes, all secrets, about 45k to 77k characters) plus rules telling it not to use them; secret leaks are 52 of 312 reviewer findings and 26 of 93 in the Round Scripts call. The ADR specifies an allowlist-built context per character (edge function, no LLM, role passed explicitly, revertible switch) and four phases; Phase 1 (build and test against 14 real packages) is free.
+- **Not done:** all phases; Phase 2 replay is paid and needs a yes with an estimate.
+
 ### Feature: prompt version log, materials check in the daily email, ADR-0103 restored (ADR-0153 Update 1, ADR-0103 Addendum 91)
 - **What:** (1) `prompt_version_history` + `package_prompt_versions()` + view `mystery_packages_prompt_versions` (migration `20261013140000`): which Parent and Child blueprint version generated a package, inferred from creation time against a log of import times; seeded 2026-10-01 to 10-13 (date only, approximate). CLAUDE.md now says to insert a row at every import. (2) The daily open-findings email (`review-package-quality` v24, deployed, dry run OK) now includes packages whose props list is in another language than the overview. (3) ADR-0103 had been overwritten with a single Update by commit 485cc6e; restored from git with that Update 6 put back after Addendum 87 Update 3 (the second such truncation, memory note added).
 - **Not done:** the redacted-`master_context` ADR (next).
