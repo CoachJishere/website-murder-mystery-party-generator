@@ -5,7 +5,8 @@
 ### Improvement: Parent85 and Child63 built (not imported): Image Prompt retry copies resynced, quote-verification talk removed from the Child prompts (ADR-0153 Update 1)
 - **Why:** ADR-0153 Phase 0 found the accretion hypothesis unsupported but surfaced two concrete defects: Image Prompts R1 to R3 were an older copy of R0, and the dangling-quote defect (36 percent of paid packages) sits next to instructions that tell the model to verify a "closing quote".
 - **What:** Parent85: modules 5006, 5010, 5014 now carry R0's text (only the upstream module references differ per route). Child63: three "verify the closing quote" instructions and the paragraph that explained them away are removed from all 8 prompts (counts asserted 3, 5, 1, 8); the strip heal stays. Builders: `temp-files/build-parent-v85.py`, `build-child-v63.py` (local, gitignored).
-- **Not done:** import (Jonathan); redacted `master_context` for detective innocents (needs an ADR); a prompt-version column on `mystery_packages`.
+- **Update:** both imported by Jonathan the same day.
+- **Not done:** redacted `master_context` for detective innocents (needs an ADR); a prompt-version column on `mystery_packages`.
 
 ### Docs: ADR-0153 Phase 0 run, prompt "accretion" hypothesis UNSUPPORTED (rule registry and findings, nothing changed in production)
 - **What:** read-only analysis of the Parent84 and Child62 prompts against all 142 saved blueprint versions, `package_review_findings`, `auto_remediation_log` and the SQL detectors. Added `docs/adr/0153-phase0/` (`rule-registry.csv` with 1,300 rows over 25 modules, `findings.md`, `tools/`) and a "Phase 0 result" section in ADR-0153.
