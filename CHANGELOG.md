@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Fix: held package swept, "Lip Sync For Your Life (and Death)" (ADR-0103 Addendum 94)
+- **What:** slip-style package held in `needs_review` for about 30 hours on `self_directed_question.Mistress Calamity` (her own name in her Round 2 question header). Fixed that header by exact-match replace, released through the normal reviewer path (no trigger bypass); the ready email went out at 19:18 UTC.
+- **Also changed by hand:** Sapphire's stray `**` at the end of her introduction, and the customer's "graciously stepping aside" requirement added to `game_overview`. The reviewer's own 6 findings plus 1 from the second pass were all real and applied.
+- **Why no detector or heal:** one occurrence, and no safe mechanical rewrite (the intended name is unknown). Left for Jonathan, recorded in the addendum: three scripts that volunteer their own secret, and an overview that names hidden secrets.
+
 ### SEO: acted on the 2026-10-12 digest (3 internal links, 1 stop-condition, 3 reminders checked)
 - **Title/meta ("murder mystery characters" + "roles"):** no change. The live title already reads "Murder Mystery Characters & Roles: 7 Character Ideas" (both words present), so per the prompt's own stop condition the lever is authority, not copy. The meta description was left alone too.
 - **Internal links added (Supabase `blog_posts`, en, applied by exact-match replace):** `best-murder-mystery-party-games-review` now links "custom murder mystery game" to the homepage (`/`) and "murder mystery party script" to `murder-mystery-party-script-template-guide`; `murder-mystery-party-drinks-cocktail-recipes` links "custom murder mystery party" to `/`. Fetched the sources first: none linked these targets with that anchor. Recorded the blog-to-blog link in `cross_link_map.json` (homepage links are not tracked there).
