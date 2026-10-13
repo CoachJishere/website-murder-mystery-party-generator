@@ -2,6 +2,11 @@
 
 ## 2026-10-13
 
+### Docs: ADR-0156 Phase 4 Tier 1 part 1 (paid, approved, about 1.36 of 4.5 USD): Silver Nightingale x3, control, probes
+- **What:** three Parent86 Part 2 replays, one Parent85 control and three rewrite probes (tools in `docs/adr/0156-phase4/tools/`, findings in `tier1-findings.md`). No act, intent or secrecy word in any culprit or accomplice sentence; the probe on the stored map (which states "dosed the glass") dropped the act, napkin and pantry 3 of 3 and kept the sideboard-and-tray clue. One culprit sentence is one word longer than the longest innocent's, so runs 4 to 7 and Tier 2 were not run, as the stop rule says.
+- **Found:** the Parent's own `truePosition` no longer states the act in either prompt (control included), so the replay alone never exercised the hard case; innocents get embellished with generic actions and 6 of 30 probe sentences carry feelings or expressions (rule tightening proposed, not applied).
+- **Not done:** runs 4 to 7, Tier 2, the wording tightening and a Silver re-run; waiting for Jonathan.
+
 ### Feature: `whatAnObserverSees` for every mystery (ADR-0156 Phase 4, built and tested, Parent86 not imported)
 - **What:** (1) `temp-files/build-parent-v86.py` builds the local `MM Live - Parent86 (Observer Field)` from Parent85: modules 3000 (classic detective) and 4020 (intrigue) each get a rule paragraph and a schema key so every `keyMomentPositions` entry carries `whatAnObserverSees`, one plain observable sentence (empty when nobody can see the character); the diff is those two prompt texts (pure insertions) and the name. (2) `buildCharacterContext` gives a viewer that sentence for every entry it can see, the culprit's and accomplice's included, instead of omitting them or giving the stated alibi; the viewer's own entry stays `truePosition`; culprit names survive in other entries only for a culprit the viewer can see; a missing, empty or over-45-word field falls back to the Phase 1 rules per entry.
 - **Why:** Marcus and Harry in the Silver Nightingale replay lost the clue "I saw the steward at the sideboard with the tray" because the culprit's `truePosition` contains the act. Real maps: only 4 of 14 recent packages have one, 2 of 6 culprit and accomplice entries are seen by anybody.
