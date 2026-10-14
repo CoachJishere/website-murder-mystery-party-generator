@@ -66,6 +66,19 @@ Three things the first pass did not cover, fixed the same day: (1) the English h
 
 **Parent87 (prompt-level prevention): decided against for the scaffold.** Reasons: the model already copies the template verbatim, which is exactly what makes the exact-match heal 100 percent reliable (0 unmatched lines in the 17 packages generated since July; the only reworded directions were in one July package); asking the model to translate would trade a closed, tested vocabulary for free wording that the consumers (the host-play seal's reveal words, the card strips, the SQL detectors) do not know, so a model-chosen translation of "THE REVEAL" could make the seal fail closed; the four detective modules already carry many rules (naming, register, hygiene, timing), and the character-label history (36 of 36 French headers English until an exact table was injected) says prompt-only translation is the weaker lever. Revisit only if new orders show `unmatched_english_lines` or a `scaffold_localization` revert.
 
+## Update 2 (2026-10-14): localization audit (read-only, nothing changed)
+
+**Locale files:** all 12 non-English files have all 1,388 keys of `en.json`; at most 4 long strings per file are identical to English (ko, ja 4; the rest 1). No gaps there.
+
+**Emails:** every customer-facing transactional email is locale-aware (ready, welcome, host, character, follow-ups, discount reminders, guest feedback, and now the removal completion email). The exception is the **Cold Case buyer confirmation** in `stripe-webhook` ("Your cold case is being assembled", "v1 ships English-only", although the order stores `buyer_language`). Internal alerts to support@ (purchase notices, `notify-*`, SEO digest) are English by design.
+
+**Hard-coded English in the UI** (heuristic scan of JSX text, attributes and toast strings that are not inside `t()`; 176 hits in 30 files, so an upper bound and it misses `.ts` services and hooks):
+- Customer-facing, about 110: Privacy page 22 (a legal text, may be a deliberate English-only decision), Cold Case landing and delivery pages 23, account settings (Billing 8, Profile 4, Password 3, Delete account 3), home page `Index.tsx` 9 and hero 3, `MysteryPackage.tsx` 6 (loading text, feature bullets), Evidence tab 4 ("Print Evidence Cards" button, feedback thanks and question), character role selector and assignment 6, email verification banner 3, About 3, form validation messages in `MysteryForm.tsx` 2, import button 2.
+- Dev or preview routes, about 65, English is fine: `/dark-preview`, `/font-preview`, `/home-parallax`, `/email-preview`, `/evidence-card-preview`, `/guest-dropout-preview`, ColorSystemGuide.
+- Not UI: `ConversationManager.tsx` system prompts (English by design).
+
+**Not yet checked:** strings in `.ts` files (toasts and errors raised by hooks and services), the admin dashboard, and the Cold Case worker's generated documents. Proposed next step if you want it: move the roughly 110 customer-facing strings into `t()` keys with 13 translations (about 1,400 new strings), Privacy and Cold Case as separate decisions.
+
 ## Key files
 
 `docs/language-pack/scaffold-labels.json`, `docs/language-pack/build-scaffold-tables.mjs`, `supabase/functions/_shared/packageScaffold.ts` (+ `packageScaffoldTables.ts`, `packageScaffold.test.mjs`), `supabase/functions/review-package-quality/index.ts` (`healScaffold`), `supabase/functions/auto-remediate-packages/evidence-card.ts`, `supabase/functions/regenerate-parent-content/index.ts`, `supabase/functions/adapt-mystery-apply/index.ts`, `supabase/functions/send-adaptation-complete-email/index.ts`, `src/utils/evidenceCardUtils.ts`, `src/pages/EvidenceCardPrint.tsx`, `src/i18n/locales/*.json` (`evidencePrint`), `supabase/migrations/20261014140000_localized_evidence_markers.sql`.
