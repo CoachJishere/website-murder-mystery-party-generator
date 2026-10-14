@@ -6,6 +6,7 @@ import * as RR from "./roster-reconcile.ts";
 import * as LP from "./leak-probe.ts";
 import * as FC from "./fact-check.ts";
 import { LABELS_BY_CODE } from "./label-tables.ts";
+import * as PS from "../_shared/packageScaffold.ts";
 import { applyLaterRenames, extractRosterFromMessage, mergeRosterContinuations } from "../_shared/rosterExtraction.ts";
 
 /**
@@ -565,6 +566,52 @@ async function healLabels(packageId: string, opts: { dryRun?: boolean; force?: b
   return { ...summary, written: true };
 }
 
+/** Free scaffold localization for a non-English package (ADR-0161): the detective script, evidence card and Game Overview template lines the Parent copies in English. dryRun = compute only. */
+async function healScaffold(packageId: string, opts: { dryRun?: boolean; force?: boolean } = {}): Promise<Row> {
+  const mode = opts.force ? "on" : await healMode("scaffold_localization");
+  if (mode === "off") return { skipped: "scaffold_localization off" };
+  const { data: pkg } = await supabase.from("mystery_packages").select("id,detective_script,evidence_cards,game_overview").eq("id", packageId).maybeSingle();
+  if (!pkg) return { skipped: "package not found" };
+  const { data: charsData } = await supabase.from("mystery_characters").select("introduction").eq("package_id", packageId).order("character_name");
+  const lang = PS.detectScaffoldLanguage(C.languageSample((charsData ?? []) as Row[]));
+  if (!lang || !PS.SCAFFOLD_LANGUAGES.includes(lang)) return { skipped: `language ${lang ?? "unclear"} has no scaffold table` };
+  const plan: { field: PS.ScaffoldField; before: string; after: string; edits: PS.ScaffoldEdit[] }[] = [];
+  const unmatched: string[] = [];
+  for (const field of PS.SCAFFOLD_FIELDS) {
+    const cur = (pkg as Row)[field];
+    if (typeof cur !== "string" || !cur) continue; // evidence_cards can be a non-string jsonb in old packages: never rewritten
+    const r = PS.localizeScaffoldField(field, cur, lang);
+    unmatched.push(...r.unmatched);
+    if (r.edits.length > 0 && r.text !== cur) plan.push({ field, before: cur, after: r.text, edits: r.edits });
+  }
+  const total = plan.reduce((a, f) => a + f.edits.length, 0);
+  const summary = { language: lang, edits: total, fields: Object.fromEntries(plan.map((f) => [f.field, f.edits.length])), unmatched_english_lines: unmatched.slice(0, 10) };
+  if (total === 0) return summary;
+  const edits = plan.flatMap((f) => f.edits.map((e) => ({ f: f.field, from: e.from.slice(0, 120), to: e.to.slice(0, 120) })));
+  if (opts.dryRun || mode === "report") {
+    if (!opts.dryRun) await logHeal(packageId, "scaffold_localization", `would_localize:${total}_lines:${lang}`, edits, "escalated");
+    return { ...summary, written: false, mode: opts.dryRun ? "dry_run" : "report" };
+  }
+  const { data: defBefore } = await supabase.rpc("package_blocking_defects_by_id", { _id: packageId });
+  const written: { field: string; before: string }[] = [];
+  let failed = "";
+  for (const f of plan) {
+    const w = await supabase.rpc("remediation_write_field", { _scope: "package", _row_id: packageId, _field: f.field, _value: f.after });
+    if (w.error) { failed = w.error.message; break; }
+    written.push({ field: f.field, before: f.before });
+  }
+  const { data: defAfter } = await supabase.rpc("package_blocking_defects_by_id", { _id: packageId });
+  const beforeSet = new Set((defBefore as string[] | null) ?? []);
+  const introduced = ((defAfter as string[] | null) ?? []).filter((d) => !beforeSet.has(d));
+  if (failed || introduced.length > 0) {
+    for (const w of written.reverse()) await supabase.rpc("remediation_write_field", { _scope: "package", _row_id: packageId, _field: w.field, _value: w.before });
+    await logHeal(packageId, "scaffold_localization", `localize_reverted:${failed ? "write_error" : introduced.join("+")}`, { failed, introduced }, "failed");
+    return { ...summary, written: false, reverted: true, why: failed || introduced.join(", ") };
+  }
+  await logHeal(packageId, "scaffold_localization", `localize:${total}_lines:${lang}`, edits, "fixed");
+  return { ...summary, written: true };
+}
+
 // Detective-style sheets keep the honest round scripts here instead of the innocent/guilty branches.
 const SCRIPT_FIELDS = ["round2_script", "round3_script", "round4_script", "final_statement"];
 const RENAME_SKIP = new Set(["id", "package_id", "character_name", "created_at", "updated_at", "character_role"]);
@@ -638,6 +685,7 @@ async function recordRosterFinding(packageId: string, unresolved: RR.Unresolved)
 async function runFreeHeals(packageId: string): Promise<Row> {
   const out: Row = {};
   try { out.labels = await healLabels(packageId); } catch (e) { console.error(`label heal failed (ignored): ${(e as Error).message}`); out.labels = { error: (e as Error).message }; }
+  try { out.scaffold = await healScaffold(packageId); } catch (e) { console.error(`scaffold heal failed (ignored): ${(e as Error).message}`); out.scaffold = { error: (e as Error).message }; }
   try {
     const r = await healRoster(packageId);
     out.roster = r;
@@ -825,12 +873,12 @@ async function releaseQueue(): Promise<Row[]> {
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = ["conform_labels", "reconcile_roster", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
+    const mode = ["conform_labels", "reconcile_roster", "localize_scaffold", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
     const out: Row[] = [];
-    if (mode === "conform_labels" || mode === "reconcile_roster") {
+    if (mode === "conform_labels" || mode === "reconcile_roster" || mode === "localize_scaffold") {
       // ADR-0152: manual run for one package (delivered packages are only changed through here). dry_run:true computes and writes nothing; force:true writes even when the setting is "report".
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
-      const f = mode === "conform_labels" ? healLabels : healRoster;
+      const f = mode === "conform_labels" ? healLabels : mode === "localize_scaffold" ? healScaffold : healRoster;
       return new Response(JSON.stringify(await f(String(body.package_id), { dryRun: body.dry_run !== false && body.force !== true, force: body.force === true })), { headers: { "Content-Type": "application/json" } });
     }
     if (mode === "heal_scan") {
@@ -843,8 +891,9 @@ serve(async (req) => {
         scanned++;
         const l = await healLabels(p.id, { dryRun: true, force: true }).catch((e) => ({ error: (e as Error).message }));
         const r = await healRoster(p.id, { dryRun: true, force: true }).catch((e) => ({ error: (e as Error).message }));
-        const changes = Number((l as Row).edits ?? 0) > 0 || ((r as Row).renames as unknown[] | undefined)?.length || (r as Row).unresolved || (l as Row).error || (r as Row).error;
-        if (changes) hits.push({ package_id: p.id, title: p.title, labels: l, roster: r });
+        const sc = await healScaffold(p.id, { dryRun: true, force: true }).catch((e) => ({ error: (e as Error).message }));
+        const changes = Number((l as Row).edits ?? 0) > 0 || ((r as Row).renames as unknown[] | undefined)?.length || (r as Row).unresolved || (l as Row).error || (r as Row).error || Number((sc as Row).edits ?? 0) > 0 || (sc as Row).error;
+        if (changes) hits.push({ package_id: p.id, title: p.title, labels: l, roster: r, scaffold: sc });
       }
       return new Response(JSON.stringify({ since, scanned, offset, hits }), { headers: { "Content-Type": "application/json" } });
     }

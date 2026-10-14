@@ -1178,7 +1178,7 @@ const MysteryPackageTabView = React.memo(({
                 {/* Print-only evidence cards — portalled to body so CSS body > *:not() selector works */}
                 {packageData?.evidenceCardImages && evidenceCards && (() => {
                   const images = packageData.evidenceCardImages as { round2?: string; round3?: string; round4?: string };
-                  const cards = parseEvidenceCards(typeof evidenceCards === 'string' ? evidenceCards : '', images);
+                  const cards = parseEvidenceCards(typeof evidenceCards === 'string' ? evidenceCards : '', images, (n) => t('evidencePrint.roundLabel', { n }));
                   if (cards.length === 0) return null;
                   return createPortal(
                     <div className="evidence-print-inline">

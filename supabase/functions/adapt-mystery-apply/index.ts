@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { nameVariants, buildVariantRegex } from "../_shared/nameVariants.ts";
+import { absentHostNote, languageOfMasterContext } from "../_shared/packageScaffold.ts";
 
 /**
  * adapt-mystery-apply — "Remove a Character" (renamed from "Recast" —
@@ -305,8 +306,9 @@ function jsonbValueMatches(value: unknown, variantRegex: RegExp): boolean {
  *  2026-09-27) it is stripped out of what the reassignment LLM call sees and
  *  re-appended deterministically afterward, never left for the model to
  *  reproduce — see the reassignWithClaude call site. */
-function absentParagraph(characterName: string): string {
-  return `\n\n---\n\n**Note (host only):** ${characterName} could not attend and has been cleared of suspicion ahead of time (never in the house, no opportunity) — proceed without them; no other character's script should reference them.`;
+function absentParagraph(characterName: string, lang: string | null = null): string {
+  // ADR-0161: the note is written in the package language (English only when the language is unclear).
+  return `\n\n---\n\n${absentHostNote(characterName, lang)}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -891,6 +893,8 @@ serve(async (req) => {
       .select("id, mystery_style, detective_script, game_overview, host_guide, materials, timeline, hosting_tips, preparation_instructions, evidence_cards, master_context")
       .eq("id", adaptation.package_id).maybeSingle();
     if (pkgErr || !pkg) throw new Error(`package lookup failed: ${pkgErr?.message ?? "not found"}`);
+    // ADR-0161: one language for the host note, decided once so the append, the reassignment strip and the verify check agree.
+    const noteLang = languageOfMasterContext(pkg.master_context);
 
     const { data: assignment } = await supabase
       .from("character_assignments").select("*").eq("character_id", adaptation.character_id).maybeSingle();
@@ -1112,7 +1116,7 @@ serve(async (req) => {
     {
       const target = packageChanges.find((c) => c.field === "detective_script");
       if (target && typeof target.after === "string") {
-        target.after = target.after + absentParagraph(adaptation.character_name);
+        target.after = target.after + absentParagraph(adaptation.character_name, noteLang);
       }
     }
 
@@ -1168,7 +1172,7 @@ serve(async (req) => {
       // reproducing it conflicts with something else it's told to do —
       // remove it from what the model sees, then re-append it deterministically
       // below, so its survival never depends on model behavior.
-      const noteForRemoved = absentParagraph(adaptation.character_name);
+      const noteForRemoved = absentParagraph(adaptation.character_name, noteLang);
       const detectiveScriptForReassign = currentDetectiveScript.endsWith(noteForRemoved)
         ? currentDetectiveScript.slice(0, -noteForRemoved.length)
         : currentDetectiveScript;
@@ -1323,7 +1327,7 @@ serve(async (req) => {
     {
       const v = (pkgAfter as Record<string, unknown> | null)?.detective_script;
       if (typeof v === "string") {
-        const note = absentParagraph(adaptation.character_name);
+        const note = absentParagraph(adaptation.character_name, noteLang);
         const hasNote = v.endsWith(note);
         const withoutNote = hasNote ? v.slice(0, -note.length) : v;
         if (variantRegex.test(withoutNote)) verifyIssues.push("package.detective_script still references removed character outside the absent-note");

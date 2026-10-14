@@ -14,6 +14,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { detectScaffoldLanguage, localizeScaffoldField, SCAFFOLD_FIELDS, SCAFFOLD_LANGUAGES, type ScaffoldField } from "../_shared/packageScaffold.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL") || "",
@@ -367,6 +368,11 @@ serve(async (req) => {
       ? pkg.master_context
       : JSON.stringify(pkg.master_context);
 
+    // Language of the package for the deterministic scaffold pass: the master_context prose, JSON keys removed.
+    const mcProse = masterContextStr.replace(/"[A-Za-z_]+"\s*:/g, " ").replace(/[{}\[\]",]/g, " ").slice(0, 8000);
+    const detected = detectScaffoldLanguage(mcProse);
+    const scaffoldLang = detected && SCAFFOLD_LANGUAGES.includes(detected) ? detected : null;
+
     const targetFields: string[] = Array.isArray(fields) && fields.length > 0
       ? fields.filter((f) => f in PROMPTS)
       : Object.keys(PROMPTS);
@@ -389,7 +395,7 @@ serve(async (req) => {
         // other short aside/label that might not be shaped as obviously
         // translatable prose.
         const languageRule = `\n\n<language_consistency>
-Write all customer-facing prose in the same language as the master_context above — narrative text, descriptions, and any instructional aside NOT wrapped in the "*[...]*" bracket convention. Do not partially translate a sentence or leave stray English words in prose that should be fully translated. The ONLY exception: text wrapped in "*[...]*" (e.g. "*[Read this when guests are gathered...]*") is a host-only stage direction and stays in English regardless of master_context's language, matching the convention already used for those directions throughout this document.
+Write ALL of the document in the same language as the master_context above: narrative text, descriptions, the section headings, the labels, the recording notes and every bracketed stage direction ("*[...]*"). Do not partially translate a sentence or leave stray English words. Keep only file names (opening.mp3, round1-intro.mp3, ...), URLs and product names unchanged. (ADR-0161: this replaces the earlier rule that kept the "*[...]*" stage directions in English.)
 </language_consistency>`;
         const filled = (promptTemplate + languageRule)
           .replace("{{MASTER_CONTEXT}}", masterContextStr)
@@ -399,7 +405,10 @@ Write all customer-facing prose in the same language as the master_context above
         // Bumped 2026-08-22 alongside the Sonnet 5 switch (was 3500/1500/2000
         // — calibrated for Haiku; Sonnet 5 runs more verbose for the same prompt).
         const maxTokens = field === "detective_script" ? 7000 : field === "game_overview" ? 3000 : 4000;
-        const text = await callClaude(filled, apiKey, maxTokens);
+        let text = await callClaude(filled, apiKey, maxTokens);
+        // ADR-0161: whatever English template lines the model still copied are rewritten deterministically (free, idempotent).
+        const col = DB_COLUMN_OF[field] as ScaffoldField;
+        if (scaffoldLang && (SCAFFOLD_FIELDS as string[]).includes(col)) text = localizeScaffoldField(col, text, scaffoldLang).text;
         updates[DB_COLUMN_OF[field]] = text;
         results.push({ field, status: "ok", preview: text.slice(0, 120) });
       } catch (e) {

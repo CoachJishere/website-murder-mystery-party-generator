@@ -1969,5 +1969,14 @@
         "endsLabel": "Tarjous päättyy 31. joulukuuta"
       }
     }
+  },
+  "evidencePrint": {
+    "loading": "Ladataan todistekortteja...",
+    "empty": "Tälle paketille ei löytynyt todistekorttien kuvia.",
+    "title": "Todistekortit",
+    "hint": "Jokainen kortti tulostuu omalle vaaka-asentoiselle A4-sivulleen.",
+    "button": "Tulosta todistekortit",
+    "roundLabel": "Todiste — Kierros {{n}}",
+    "cardOf": "Kortti {{i}} / {{total}}"
   }
 }

@@ -1970,5 +1970,14 @@
         "endsLabel": "Sale ends December 31"
       }
     }
+  },
+  "evidencePrint": {
+    "loading": "Loading evidence cards...",
+    "empty": "No evidence card images found for this package.",
+    "title": "Evidence Cards",
+    "hint": "Each card prints on its own landscape A4 page.",
+    "button": "Print Evidence Cards",
+    "roundLabel": "Evidence — Round {{n}}",
+    "cardOf": "Card {{i}} of {{total}}"
   }
 }

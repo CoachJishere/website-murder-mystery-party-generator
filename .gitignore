@@ -154,6 +154,8 @@ draft_rewrites/
 !supabase/functions/auto-remediate-packages/player-instruction.test.mjs
 !supabase/functions/review-package-quality/review-core.test.mjs
 !docs/language-pack/build-label-tables.mjs
+!docs/language-pack/build-scaffold-tables.mjs
+!supabase/functions/_shared/packageScaffold.test.mjs
 !supabase/functions/review-package-quality/label-conformity.test.mjs
 !supabase/functions/_shared/characterChat.test.mjs
 !supabase/functions/review-package-quality/roster-reconcile.test.mjs

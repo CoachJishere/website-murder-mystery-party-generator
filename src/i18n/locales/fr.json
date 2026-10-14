@@ -1970,5 +1970,14 @@
         "endsLabel": "L'offre se termine le 31 décembre"
       }
     }
+  },
+  "evidencePrint": {
+    "loading": "Chargement des cartes d'indices...",
+    "empty": "Aucune image de carte d'indice trouvée pour ce pack.",
+    "title": "Cartes d'indices",
+    "hint": "Chaque carte s'imprime sur sa propre page A4 en paysage.",
+    "button": "Imprimer les cartes d'indices",
+    "roundLabel": "Indice — Manche {{n}}",
+    "cardOf": "Carte {{i}} sur {{total}}"
   }
 }

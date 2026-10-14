@@ -1969,5 +1969,14 @@
         "endsLabel": "Actie eindigt 31 december"
       }
     }
+  },
+  "evidencePrint": {
+    "loading": "Bewijskaarten laden...",
+    "empty": "Geen afbeeldingen van bewijskaarten gevonden voor dit pakket.",
+    "title": "Bewijskaarten",
+    "hint": "Elke kaart wordt op een eigen A4-pagina in liggende stand afgedrukt.",
+    "button": "Bewijskaarten afdrukken",
+    "roundLabel": "Bewijs — Ronde {{n}}",
+    "cardOf": "Kaart {{i}} van {{total}}"
   }
 }

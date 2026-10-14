@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { parseEvidenceCards, type EvidenceCard } from "@/utils/evidenceCardUtils";
 
 export default function EvidenceCardPrint() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const packageId = searchParams.get("packageId");
   const [cards, setCards] = useState<EvidenceCard[]>([]);
@@ -27,17 +29,17 @@ export default function EvidenceCardPrint() {
 
       const images = (data.evidence_card_images as any) || {};
       const markdown = typeof data.evidence_cards === "string" ? data.evidence_cards : "";
-      setCards(parseEvidenceCards(markdown, images));
+      setCards(parseEvidenceCards(markdown, images, (n) => t("evidencePrint.roundLabel", { n })));
       setLoading(false);
     }
 
     fetchData();
-  }, [packageId]);
+  }, [packageId, t]);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#2a2a3e] text-white">
-        Loading evidence cards...
+        {t("evidencePrint.loading")}
       </div>
     );
   }
@@ -45,7 +47,7 @@ export default function EvidenceCardPrint() {
   if (cards.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#2a2a3e] text-white">
-        No evidence card images found for this package.
+        {t("evidencePrint.empty")}
       </div>
     );
   }
@@ -54,15 +56,15 @@ export default function EvidenceCardPrint() {
     <>
       {/* Screen UI */}
       <div className="no-print bg-[#1a1a2e] text-white p-6 text-center border-b border-white/10">
-        <h1 className="text-2xl font-bold mb-2">Evidence Cards</h1>
+        <h1 className="text-2xl font-bold mb-2">{t("evidencePrint.title")}</h1>
         <p className="text-white/60 mb-4 text-sm">
-          Each card prints on its own landscape A4 page.
+          {t("evidencePrint.hint")}
         </p>
         <button
           onClick={() => window.print()}
           className="px-6 py-2.5 bg-[#C81400] text-white rounded-lg font-medium hover:bg-[#A01000] transition-colors"
         >
-          Print Evidence Cards
+          {t("evidencePrint.button")}
         </button>
       </div>
 
@@ -78,7 +80,7 @@ export default function EvidenceCardPrint() {
               <p key={pi} className="ec-description">{para.replace(/\n/g, ' ').trim()}</p>
             ))}
             <div className="ec-footer">
-              Card {i + 1} of {cards.length}
+              {t("evidencePrint.cardOf", { i: i + 1, total: cards.length })}
             </div>
           </div>
         ))}

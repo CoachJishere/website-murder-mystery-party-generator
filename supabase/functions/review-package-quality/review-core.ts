@@ -176,7 +176,9 @@ export function packageDocsBlock(pkg: Row): string {
 // only, so it fires on family and company names (3 of its 4 hits since August were a victim's family or business) and stayed advisory. This
 // check matches the character's FULL name (every spelling of a "Pat/Patricia Lee" dual name) in the printed text only, so a family name does
 // not trip it, and it feeds the daily open-findings email as a high finding instead of gating a customer.
-const HOST_ONLY_HEADING = /^#{2,4}[ \t]*(Significance|Implications|What This Reveals|Who It Implicates|Visual Description|Discovered)[^\n]*\n[\s\S]*?(?=^#{2,4}[ \t]|(?![\s\S]))/gim;
+// ADR-0161: the Significance heading is localized in non-English packages; the words are the ones in docs/language-pack/scaffold-labels.json
+// (packageScaffold.test.mjs checks they stay in step).
+const HOST_ONLY_HEADING = /^#{2,4}[ \t]*(Significance|Significado|Signification|Bedeutung|Significato|Betekenis|Betydning|Betydelse|Merkitys|의미|意味|意义|Implications|What This Reveals|Who It Implicates|Visual Description|Discovered)[^\n]*\n[\s\S]*?(?=^#{2,4}[ \t]|(?![\s\S]))/gimu;
 
 /** The printed (guest-facing) part of the evidence cards: host-only sections removed. */
 export function printedEvidenceText(evidence: unknown): string {

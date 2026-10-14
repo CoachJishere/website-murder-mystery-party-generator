@@ -1969,5 +1969,14 @@
         "endsLabel": "La oferta termina el 31 de diciembre"
       }
     }
+  },
+  "evidencePrint": {
+    "loading": "Cargando tarjetas de evidencia...",
+    "empty": "No se encontraron imágenes de tarjetas de evidencia para este paquete.",
+    "title": "Tarjetas de evidencia",
+    "hint": "Cada tarjeta se imprime en su propia página A4 horizontal.",
+    "button": "Imprimir tarjetas de evidencia",
+    "roundLabel": "Evidencia — Ronda {{n}}",
+    "cardOf": "Tarjeta {{i}} de {{total}}"
   }
 }

@@ -1969,5 +1969,14 @@
         "endsLabel": "A promoção termina em 31 de dezembro"
       }
     }
+  },
+  "evidencePrint": {
+    "loading": "Carregando cartões de evidências...",
+    "empty": "Nenhuma imagem de cartão de evidência encontrada para este pacote.",
+    "title": "Cartões de evidências",
+    "hint": "Cada cartão é impresso em sua própria página A4 na horizontal.",
+    "button": "Imprimir cartões de evidências",
+    "roundLabel": "Evidência — Rodada {{n}}",
+    "cardOf": "Cartão {{i}} de {{total}}"
   }
 }

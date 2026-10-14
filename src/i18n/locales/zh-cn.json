@@ -1969,5 +1969,14 @@
         "endsLabel": "促销将于12月31日结束"
       }
     }
+  },
+  "evidencePrint": {
+    "loading": "正在加载证据卡...",
+    "empty": "未找到此套装的证据卡图片。",
+    "title": "证据卡",
+    "hint": "每张卡片将单独打印在一页横向A4纸上。",
+    "button": "打印证据卡",
+    "roundLabel": "证据 — 第{{n}}轮",
+    "cardOf": "第 {{i}} 张，共 {{total}} 张"
   }
 }

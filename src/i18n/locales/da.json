@@ -1969,5 +1969,14 @@
         "endsLabel": "Udsalget slutter 31. december"
       }
     }
+  },
+  "evidencePrint": {
+    "loading": "Indlæser beviskort...",
+    "empty": "Der blev ikke fundet billeder af beviskort til denne pakke.",
+    "title": "Beviskort",
+    "hint": "Hvert kort udskrives på sin egen A4-side i liggende format.",
+    "button": "Udskriv beviskort",
+    "roundLabel": "Bevis — Runde {{n}}",
+    "cardOf": "Kort {{i}} af {{total}}"
   }
 }

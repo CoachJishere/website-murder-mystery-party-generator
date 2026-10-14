@@ -1969,5 +1969,14 @@
         "endsLabel": "Rean slutar 31 december"
       }
     }
+  },
+  "evidencePrint": {
+    "loading": "Laddar beviskort...",
+    "empty": "Inga bilder av beviskort hittades för det här paketet.",
+    "title": "Beviskort",
+    "hint": "Varje kort skrivs ut på en egen A4-sida i liggande format.",
+    "button": "Skriv ut beviskort",
+    "roundLabel": "Bevis — Runda {{n}}",
+    "cardOf": "Kort {{i}} av {{total}}"
   }
 }

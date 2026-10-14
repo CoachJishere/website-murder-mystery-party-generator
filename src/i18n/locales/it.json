@@ -1969,5 +1969,14 @@
         "endsLabel": "L'offerta termina il 31 dicembre"
       }
     }
+  },
+  "evidencePrint": {
+    "loading": "Caricamento delle carte degli indizi...",
+    "empty": "Nessuna immagine delle carte degli indizi trovata per questo pacchetto.",
+    "title": "Carte degli indizi",
+    "hint": "Ogni carta viene stampata su una pagina A4 orizzontale separata.",
+    "button": "Stampa le carte degli indizi",
+    "roundLabel": "Indizio — Turno {{n}}",
+    "cardOf": "Carta {{i}} di {{total}}"
   }
 }

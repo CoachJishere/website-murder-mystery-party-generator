@@ -1969,5 +1969,14 @@
         "endsLabel": "Angebot endet am 31. Dezember"
       }
     }
+  },
+  "evidencePrint": {
+    "loading": "Beweiskarten werden geladen...",
+    "empty": "Für dieses Paket wurden keine Bilder von Beweiskarten gefunden.",
+    "title": "Beweiskarten",
+    "hint": "Jede Karte wird auf einer eigenen A4-Seite im Querformat gedruckt.",
+    "button": "Beweiskarten drucken",
+    "roundLabel": "Beweis — Runde {{n}}",
+    "cardOf": "Karte {{i}} von {{total}}"
   }
 }
