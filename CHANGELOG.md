@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Fix: sweep of "Dead Serious: The Br31 Unveiling" (ADR-0103 Addendum 100)
+- **What:** package `6eb76783` (detective, EN, 17 characters with accomplice, released 2026-10-13 21:45 UTC). Gate and 22 detectors clean (the two "Pure Vanilla Base" hits are the known false-positive shape); the reviewer's 6 findings were all real (5 applied before release, 1 open). Free hand edits, point-form twins kept in step: Cherries Jubilee's Round 2 line mentioning the spoon a round early; Strawberry Cheesecake's "RUINED in red ink" (stamps are black); Butterscotch Ribbon calling French Vanilla "her" and Cotton Candy's "she" in the final statement (both characters are they/them elsewhere); Non-Dairy Mint Choco Chunk's rumor that Baseball Nut bragged about being the Critic's favourite (the opposite of his sheet); four questions that cast The Flavour Man as an organiser; French Vanilla's missing matrix ally Strawberry Cheesecake; title "Br31" to "BR31".
+- **Why:** the reviewer found 6 of 12 (the sibling of a fixed "red ink" wording, pronouns, an invented role and a matrix-ally omission are outside what it reads). First package after Parent86: the observer field held (all 17 entries, no act or intent wording in the murderer's sentence). First real `requirements_extract` row (24 lines, 0 findings, true negative by hand check). `strip_dangling_quote` still healed 2 fields on a Child63-era package.
+- **Not changed:** debatable items left as found (hostile rivals' rumors about French Vanilla, abstract secrets, garbled text and a "Vanillla" typo on the card images); no customer message sent. Open proposals in the addendum: flag relationship-matrix omissions (second sighting), and confirm Child64's status (the DB log says imported 2026-10-13, Child65 does not contain it).
+
 ### Feature: a service-role re-fire can pin the package language (ADR-0103 Addendum 99, Update 1)
 - **What:** `mystery-webhook-trigger` accepts `languageOverride` (a supported code such as "en") from a service-role caller and uses it instead of the chat-language classification. Ignored on the browser path.
 - **Why:** "Murder Under Golden Stars" was delivered in Swedish although the customer wrote "gör det på engelska"; the classifier reads the dominant language of the context, and a re-fire had no way to correct that. Only this conversation was affected since 2026-08-01.
