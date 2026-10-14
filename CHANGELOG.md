@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Docs: paid cross-sheet passes measured, item 6 dropped (ADR-0163 Addendum 6)
+- **What:** ran the existing ADR-0152 `leak_probe` and `fact_probe` (read-only, nothing stored) on three unswept delivered packages for 0.80 USD in total: 11 findings, 6 real (4 distinct defects), 4 debatable, 1 false, none overlapping the reviewer's own findings. Item 6 (claim index) dropped at 19 percent best-case recall. Corrected the ADR: items 7 and 8 already exist and are OFF.
+- **Why:** Jonathan said to run items 6 to 8; spend stayed inside the quoted 1.5 USD probe budget.
+- **Not changed:** `review_leak_probe` and `review_fact_check` stay OFF (turning them on is Jonathan's yes); no code deployed; no package edited.
+
 ### Fix: broken bold markup in five delivered packages (ADR-0163 Addendum 5)
 - **What:** exact-match edits on one character field in each of Love Island Season 8 Reunion, The Hollingsworth Estate (also removed a leaked "wait, that is myself" self-correction), Dead On Arrival: The Blackwood, Attendance For Dinner and The Night The Storm Hit. `list_stray_markup` now returns 0 rows.
 - **Why:** found by the new stray-markup detector (5 of 5 real); Jonathan approved the fixes.
