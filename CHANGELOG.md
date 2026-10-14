@@ -2,6 +2,13 @@
 
 ## 2026-10-14
 
+### Feature: slip game tips no longer name a fixed partner: prompt rule, detector and free heal; "we" rule for two-actor entries (ADR-0103 Addendum 96)
+- **What:** (1) `package_slip_partner_named` / `list_packages_with_slip_partner_named` (migration `20261014120000`) flag guilty-slip tips that name another cast member as the player's accomplice, partner, cover or backup; conditionals ("If George is your accomplice") are not flagged. (2) New auto-remediate class `slip_partner_named` (`partner-tip.ts` + tests) rewrites only the offending sentence, free, through the usual attempt cap and re-detect gate; deployed auto-remediate v34. (3) `remediation_read_field` / `remediation_write_field` now allow `accusations_pointform` (`20261014130000`). (4) `regenerate-child-content` v29 carries the no-named-partner rule and a first-person-plural rule for pair entries. (5) Child65 built (`temp-files/build-child-v65.py`), NOT imported.
+- **Why:** the guilty player was told to cover for a fixed partner on 15 of 22 sheets of "Emma's Honky Tonk Meow-der Mystery" and 4 of 11 of "Murder At Montero Manor", though the accomplice is drawn at the table; a heal-regenerated couple confession switched from "we" to "I" because the only rule said "I".
+- **Fixed on live packages:** Emma's (15 sheets + point-form twins, Garth & Trishkers' confession by hand in "we", Gary's duplicated detail) and Montero Manor (8 fields by the new heal, 0 USD, 2 pronoun leftovers by hand).
+- **Not done:** no detector for the "we"/"I" switch (only 2 pair entries in 4 months; "&" also appears in single role titles). Child65 import is Jonathan's call.
+- **Verified:** 18 unit tests; detector over 270 packages in 4.7 s; dry run then real run of the class on Montero; function list shows v34 / v29, `verify_jwt` true.
+
 ### Fix: new purchase swept, "Emma's Honky Tonk Meow-der Mystery" (ADR-0103 Addendum 95)
 - **What:** slip-style, 22 characters, accomplice; full read of all 22 sheets. Free hand fixes on the live package: stray `}` ending Faith & Tim's `reveal_confession_guilty`, Catsy Cline's five bold first paragraphs (`round2/3/4_accomplice`, `final_accomplice`, `reveal_confession_accomplice`), and "(she/her)" in the first sentence of `game_overview`.
 - **Main finding, not yet fixed (needs Jonathan's call):** the guilty player's `accusations` tips name a fixed partner on 15 of 22 sheets ("Lean on your accomplice, Tracy Catman"), though the accomplice is drawn at the table. The reviewer caught 1 of 15. Seen before only on "Murder At Montero Manor" (3 of 11). Proposed: fix the Child prompt and ship a detector plus a free heal together.
