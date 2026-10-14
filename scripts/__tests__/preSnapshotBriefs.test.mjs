@@ -258,5 +258,10 @@ check('trigger wires the concept base before the approved message, inside the ap
   const fallback = trigger.slice(trigger.indexOf('// Fallback: full conversation'), trigger.indexOf('// Fallback: full conversation') + 700);
   assert.ok(!fallback.includes('conceptBase'));
 });
+check('the trigger lets only a service-role call pin the package language (languageOverride)', () => {
+  assert.ok(trigger.includes('languageOverride = null } = await req.json()'));
+  assert.ok(trigger.includes('isServiceCall && typeof languageOverride === "string" && LANGUAGE_NAMES[languageOverride.trim().toLowerCase()]'));
+  assert.ok(trigger.includes('pinnedLocale ?? (conversationContent'));
+});
 
 console.log(`\n${passed} checks passed.`);

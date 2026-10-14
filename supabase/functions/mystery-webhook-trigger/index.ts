@@ -347,7 +347,7 @@ serve(async (req) => {
 
   try {
     // Parse request body to get conversation ID
-    const { conversationId, testMode = false, operatorNote = null } = await req.json();
+    const { conversationId, testMode = false, operatorNote = null, languageOverride = null } = await req.json();
 
     if (!conversationId) {
       throw new Error("Conversation ID is required");
@@ -795,9 +795,16 @@ serve(async (req) => {
     // (see detectConversationLanguage above). profiles.language is now only
     // the fallback for when detection is inconclusive (e.g. too little text
     // to classify, or no ANTHROPIC_API_KEY set).
-    const detectedLocale = conversationContent
-      ? await detectConversationLanguage(conversationContent)
+    // Language override (ADR-0103 Addendum 99): detection above reads the dominant language of the chat, so a customer who talks
+    // to the assistant in Swedish but writes "gör det på engelska" gets a Swedish package. A service-role re-fire can pin the
+    // language ("en", "sv", ...); ignored on the browser path and for codes the app does not support.
+    const pinnedLocale = isServiceCall && typeof languageOverride === "string" && LANGUAGE_NAMES[languageOverride.trim().toLowerCase()]
+      ? languageOverride.trim().toLowerCase()
       : null;
+    if (pinnedLocale) console.log(`[Language] Pinned to "${pinnedLocale}" by the operator (languageOverride)`);
+    const detectedLocale = pinnedLocale ?? (conversationContent
+      ? await detectConversationLanguage(conversationContent)
+      : null);
 
     let languageName: string;
     if (detectedLocale) {
