@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { DANGLING_QUOTE_RX, deriveBranchHeader, prependHeader, stripStrayGlitches } from "./glitch-strip.ts";
 import { planAccompliceRoleHeal, POINTFORM_TWINS, runWithRoleSwap } from "./accomplice-heal.ts";
+import { healPartnerTips } from "./partner-tip.ts";
 import { type DetectorFailure, detectorFailureAlert, detectorSinceIso, runDetectorGuarded, runWindowDays } from "./detector-guard.ts";
 import { hasPlayerInstruction } from "./player-instruction.ts";
 
@@ -53,6 +54,9 @@ import { hasPlayerInstruction } from "./player-instruction.ts";
  *                                   that whole sheet to regenerate-child-content, then rebuild its
  *                                   bullets; the role is put back if the regeneration does not land.
  *                                   Anything else escalates (ADR-0155 Decision 1)
+ *   slip_partner_named              deterministic rewrite of the sentence(s) in a slip game's guilty-slip
+ *                                   tips (accusations + point-form twin) that name a fixed partner; free
+ *                                   (ADR-0103 Addendum 96, partner-tip.ts)
  *   dangling_quote_mark             deterministic strip of the single
  *                                   trailing stray quote character (ADR-0103
  *                                   Addendum 67/68) — see handler doc comment
@@ -184,7 +188,8 @@ type DefectClass =
   | "missing_branch_header"
   | "empty_pointform"
   | "confession_names_cast_member"
-  | "accomplice_role_mismatch";
+  | "accomplice_role_mismatch"
+  | "slip_partner_named";
 
 /**
  * ADR-0061: the delegated meta_text_leak fallback (character-scope artifacts
@@ -213,6 +218,7 @@ const DETECTOR_RPC: Record<DefectClass, string> = {
   empty_pointform: "list_packages_with_empty_pointform",
   confession_names_cast_member: "list_packages_with_confession_names_cast_member",
   accomplice_role_mismatch: "list_packages_with_accomplice_role_mismatch",
+  slip_partner_named: "list_packages_with_slip_partner_named",
 };
 
 // ---------------------------------------------------------------------------
@@ -1268,6 +1274,56 @@ async function handleDanglingQuoteMark(ctx: RunCtx, row: Record<string, unknown>
   });
 }
 
+/**
+ * ADR-0103 Addendum 96: slip_partner_named — free, deterministic. A slip game draws the culprit and the accomplice at the table, but the guilty
+ * slip's `accusations` tips (and the point-form twin) name a fixed partner. `row.sources` is 'field:character_name' per hit from
+ * list_packages_with_slip_partner_named; healPartnerTips() rewrites only the offending sentence (mirror of the SQL rule, see partner-tip.ts).
+ * A hit the helper cannot isolate is skipped, so the re-detect gate keeps it flagged and it escalates.
+ */
+async function handleSlipPartnerNamed(ctx: RunCtx, row: Record<string, unknown>): Promise<void> {
+  const packageId = row.package_id as string;
+  const sources = (row.sources as string[]) ?? [];
+
+  await runGatedAttempt(ctx, packageId, "slip_partner_named", async () => {
+    const characters = await getCharacters(packageId);
+    const cast = characters.map((c) => c.character_name);
+    const edits: { charId: string; field: string; before: string; after: string }[] = [];
+
+    for (const source of sources) {
+      const sep = source.indexOf(":");
+      if (sep < 0) continue;
+      const field = source.slice(0, sep);
+      if (field !== "accusations" && field !== "accusations_pointform") continue;
+      const charName = source.slice(sep + 1);
+      const character = characters.find((c) => norm(c.character_name) === norm(charName));
+      if (!character) continue;
+      const before = await readField("character", character.id, field);
+      if (!before) continue;
+      const healed = healPartnerTips(before, character.character_name, cast);
+      if (!healed.changed || healed.text === before) continue;
+      edits.push({ charId: character.id, field, before, after: healed.text });
+    }
+
+    if (edits.length === 0) return null;
+
+    return {
+      action: `rewrite_partner_tips:${edits.map((e) => `${e.field}`).join(",")}`,
+      costUsd: 0,
+      apply: async () => {
+        for (const e of edits) await writeField("character", e.charId, e.field, e.after);
+        return {
+          beforeValue: JSON.stringify(edits.map((e) => ({ character_id: e.charId, field: e.field, before: e.before }))),
+          note: `${edits.length} field(s) rewritten`,
+        };
+      },
+      revert: async () => {
+        for (const e of edits) await writeField("character", e.charId, e.field, e.before, { bypassLossGuard: true });
+        return true;
+      },
+    };
+  });
+}
+
 /** ADR-0061: identity_contamination — delegated whole to regenerate-child-content.
  *  `claimants` (character names) comes straight from
  *  list_packages_with_identity_conflicts; the regenerator's own
@@ -1889,6 +1945,13 @@ serve(async (req) => {
     if (shouldRun("dangling_quote_mark")) {
       for (const row of await sweep(DETECTOR_RPC.dangling_quote_mark)) {
         await handleDanglingQuoteMark(ctx, row);
+      }
+    }
+
+    // 2b2. Fixed partner named in a slip game's guilty-slip tips — deterministic sentence rewrite, free (ADR-0103 Addendum 96).
+    if (shouldRun("slip_partner_named")) {
+      for (const row of await sweep(DETECTOR_RPC.slip_partner_named)) {
+        await handleSlipPartnerNamed(ctx, row);
       }
     }
 
