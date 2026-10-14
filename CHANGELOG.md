@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Feature: reviewer twin finder `list_review_twin_candidates` (ADR-0163 item 2)
+- **What:** migration `20261014150000_review_twin_candidates.sql` (applied live): read-only SQL function that lists fields repeating a distinctive three-word phrase of a reviewer finding. Replay on the labelled misses: 13 hits, all genuine; live packages: median 8 candidates, about half relevant on the one package read in full.
+- **Why:** the ADR-0140 propagation pass never fired (0 of 323 findings) because its anchors needed capitalised names; the reviewer fixes one instance and misses its siblings.
+- **Not changed:** no alert, gate, heal or digest uses it (precision too low, no exact verbatim repeats exist to heal); `review-package-quality` untouched. Use it by hand in sweeps (CLAUDE.md 7b).
+
 ### Feature: sweep measurement columns and exit-criteria view (ADR-0163 item 1)
 - **What:** migration `20261014140000_sweep_miss_measurement.sql` (applied live): `package_review_misses.cluster/severity/layer_owner` (128 rows backfilled), `package_review_sweeps.reviewer_ran_before_edit/sweep_started_at`, `found_by` normalised, new view `sweep_exit_metrics` (last 8 valid sweeps per style: recall, median misses, high-severity misses).
 - **Why:** the stop criteria for full-cast sweeps (ADR-0163) were not computable without a severity, an owner and a valid-sweep flag. Today: recall 53 percent, median 7.5 misses per package, 45 high-severity misses.
