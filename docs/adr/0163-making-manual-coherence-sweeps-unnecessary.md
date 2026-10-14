@@ -115,3 +115,14 @@ Nothing changes in production from this ADR. Phase 3 items will each need their 
 
 ## Key files
 `supabase/functions/review-package-quality/review-core.ts` (anchorsFrom 455, PROPAGATION_CATEGORIES 451), `index.ts` (propagate 326), `package_relationship_matrix_contradiction()` (SQL), `docs/autonomy-scoreboard.md`, ADR-0103 Addenda 56/82/86/96/100, ADR-0136/0138/0140/0150/0155/0162.
+
+## Addendum 1 (2026-10-14): item 1 built, measurement hygiene (migration `20261014140000_sweep_miss_measurement.sql`, applied live)
+
+Jonathan chose to proceed in the recommended order. Item 1 shipped, free, additive only:
+
+- `package_review_misses` gained `cluster` (C1..C16), `severity` (high/medium/low) and `layer_owner` (prevent/detect/heal/reviewer/none), all 128 rows backfilled (0 unset). Severity is the cluster default with row overrides (for example the debatable "presumes" questions are low, the paid-heal confession in a final statement is high); it is my judgment and Jonathan can re-rate any row. `found_by` normalised to `hand_sweep` (3 spellings before).
+- `package_review_sweeps` gained `reviewer_ran_before_edit` (true on all 16, each sweep note states the reviewer ran first) and `sweep_started_at` (null; new sweeps set it).
+- New view `sweep_exit_metrics`: last 8 valid sweeps per style plus both together. On the day it was created: all 53 percent recall (146 real findings, 128 misses), slip 57, detective 50; median misses per package 7.5 (slip 8.0, detective 6.5); 45 high-severity misses (slip 27, detective 18); 0 unrated.
+- The view counts only `human_verdict = 'real'`, the same as `review_performance`. The 54 percent in the Context section also counted debatable findings; the view is the canonical number from now on.
+- The earlier "proxy of 55 high-severity rows" in criterion 2 is replaced by the real count, 45. All five Stage 1 criteria now have a query except criterion 5 (cluster owner shipped plus 3 clean packages), which needs the per-cluster post-ship check once owners ship; `layer_owner` is the column to update when one does.
+- Sweep protocol changed in CLAUDE.md step 7c: every new miss row carries `cluster`, `severity`, `layer_owner`; every sweep row sets `reviewer_ran_before_edit`.

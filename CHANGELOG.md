@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Feature: sweep measurement columns and exit-criteria view (ADR-0163 item 1)
+- **What:** migration `20261014140000_sweep_miss_measurement.sql` (applied live): `package_review_misses.cluster/severity/layer_owner` (128 rows backfilled), `package_review_sweeps.reviewer_ran_before_edit/sweep_started_at`, `found_by` normalised, new view `sweep_exit_metrics` (last 8 valid sweeps per style: recall, median misses, high-severity misses).
+- **Why:** the stop criteria for full-cast sweeps (ADR-0163) were not computable without a severity, an owner and a valid-sweep flag. Today: recall 53 percent, median 7.5 misses per package, 45 high-severity misses.
+- **Not changed:** `review_performance`, any detector, any prompt, any Make blueprint. Severity is a first-pass rating and can be re-rated.
+
 ### Feature: Parent87 built (concrete hidden wrongs), Child66 logged as imported, Br31 murderer's secret made concrete (ADR-0162, ADR-0103 Addendum 100)
 - **What:** `temp-files/build-parent-v87.py` builds Parent87 from Parent86: in Part 1 modules 171 and 165 the `howVictimWrongedThem` placeholder now demands one concrete fact (invented once when the concept gives none, no amounts or years) and the hygiene rule gets a one-sentence exception. NOT imported. Child66 (Jonathan: "just imported 66") logged in `prompt_version_history` (id 29, 11:39 UTC). Hand repair on "Dead Serious: The Br31 Unveiling": French Vanilla's secret is now a stolen creamery recipe the Critic could prove (background, secret and `secrets`, final statement and point-form, master design in five places); gate and detectors still clean.
 - **Why:** the abstract-secret class (French Vanilla, Cherries Jubilee, The Flavour Man, Marcus, Jessica) comes from a conflict between "do not invent biographical facts, use qualitative wording" and "concrete details from conversation" when the conversation has none; fixed at the source instead of per package.
