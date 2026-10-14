@@ -98,7 +98,7 @@ Against: it is paid and recurring; the free items 2 to 6 may remove a third of t
 Recommendation: do the free items first, then run a one-off probe of the pass on 3 already-swept packages with labelled misses (about 1.2 to 1.5 USD, needs Jonathan's explicit yes) and decide on measured recall. Do not turn it on by default before that.
 
 ## Decision
-Pending: Jonathan picks which ranked items go to Phase 3. This ADR records the analysis only.
+Resolved 2026-10-14: Jonathan chose to proceed in the recommended order. Items 1 to 4 built, item 5 abandoned, item 6 dropped, items 7 and 8 found to exist already (ADR-0152) and switched on; see Addenda 1 to 9.
 
 ## Discussion
 - Clustering by root pattern rather than by category merged the 20 "other"/"cross_field"/"secret_leak" rows that are really one defect (a sheet speaking about someone else's hidden facts) and split `cross_field_contradiction`, which mixed slip-draw conflicts (21 rows, one cause, already fixed upstream) with real cross-sheet contradictions.
@@ -111,7 +111,7 @@ Pending: Jonathan picks which ranked items go to Phase 3. This ADR records the a
 - Build a gate for every cluster: rejected for C4/C5 (high base rate, semantic); open findings and alerts only.
 
 ## Consequences
-Nothing changes in production from this ADR. Phase 3 items will each need their own tests, a corpus check against the labelled misses and 20 clean packages, alert-only first, and ADR/CHANGELOG/vault entries.
+As proposed, nothing changed in production from the analysis itself; the later work changed production (Addenda 1 to 9: new columns and view, three read-only functions, two paid reviewer passes switched on, review-package-quality v34, hand edits to 10 delivered character rows). Phase 3 items will each need their own tests, a corpus check against the labelled misses and 20 clean packages, alert-only first, and ADR/CHANGELOG/vault entries.
 
 ## Key files
 `supabase/functions/review-package-quality/review-core.ts` (anchorsFrom 455, PROPAGATION_CATEGORIES 451), `index.ts` (propagate 326), `package_relationship_matrix_contradiction()` (SQL), `docs/autonomy-scoreboard.md`, ADR-0103 Addenda 56/82/86/96/100, ADR-0136/0138/0140/0150/0155/0162.
@@ -165,7 +165,7 @@ Conclusion: deciding who a pronoun refers to is a reading task, not a pattern. T
 The prototype function stays in the database because the drop was declined; it is commented as abandoned and recorded in `supabase/migrations/20261014190000_pronoun_scan_prototype_abandoned.sql`. To remove it: `drop function public._pronoun_scan(uuid);`.
 
 ## Status after Addenda 1 to 4
-Built: item 1 (measurement columns and `sweep_exit_metrics`), item 2 (twin finder, sweep aid), item 3 (matrix omission, sweep aid), item 4 (stray markup, alert-only, 5 of 5 real). Abandoned: item 5. Not started, need a yes: item 6 (cross-sheet claim index, deterministic, expected low recall), item 7 (reviewer prompt text, needs paid validation) and item 8 (paid cross-sheet pass, probe first). The unowned clusters C2, C3, C4, C5, C7, C8 (the semantic ones, 55 of the 66 unowned rows) remain with hand sweeps until item 6/7/8 are decided.
+Built: item 1 (measurement columns and `sweep_exit_metrics`), item 2 (twin finder, sweep aid), item 3 (matrix omission, sweep aid), item 4 (stray markup, alert-only, 5 of 5 real). Abandoned: item 5. Not started, need a yes: item 6 (cross-sheet claim index, deterministic, expected low recall), item 7 (reviewer prompt text, needs paid validation) and item 8 (paid cross-sheet pass, probe first). The unowned clusters C2, C3, C4, C5, C7, C8 (the semantic ones, 58 of the 66 unowned rows; first written as 55, corrected in Addendum 9) remain with hand sweeps until item 6/7/8 are decided.
 
 ## Addendum 5 (2026-10-14): the five stray-markup packages fixed (Jonathan: "yes to five delivered")
 
@@ -216,3 +216,22 @@ Left as found: the four debatable findings (Lex/Wendy seating, Danielle/Vivienne
 Validation (paid, 0.0925 USD, one run, Blackthorn Manor, the package where it happened): the secret pass went from 3 findings (Jackie's line about Anna, Wendy's vial remark, Trudy's forged-note question) to 1 (Wendy's vial remark, rated debatable). Jackie's line is gone because it was fixed by hand in Addendum 7, Trudy's question is gone because of this change. Not shown by one run: recall on a leak that restates a LATER round's card. Cumulative spend of this session's paid probes: 0.89 USD (0.80 + 0.09), inside the 3 USD budget.
 
 `_pronoun_scan` (Addendum 4) was dropped by Jonathan; verified absent from `pg_proc`. Its migration file `20261014190000_pronoun_scan_prototype_abandoned.sql` stays in the repo as history and would re-create the function if the migrations were ever replayed; do not replay it.
+
+## Addendum 9 (2026-10-14): independent eval of this ADR, and what it fixed
+
+A fresh-conversation eval re-derived every claim from git, the database, the deployed function and the vault. Verdict: numbers, spend (0.8932 USD), deploy (v34, files byte-identical to the repo) and the nine edited customer rows all hold. Fixed afterwards (Jonathan: "lets go with fixes"):
+
+- **Wrong figure:** "55 of the 66 unowned rows" for C2, C3, C4, C5, C7, C8 is 58 (20+5+10+10+8+5). Corrected in the status paragraph. The "about 45 of 66" for C2 to C5 in Addendum 6 was right.
+- **Stale sections:** Decision (was "Pending") and Consequences (said nothing changes in production) now say what happened.
+- **Stale owners and severity in `package_review_misses`:** three C8 rows (Haggerton secret, Shawna secret, Garth/Trishkers confession "we" then "I") now `layer_owner = prevent`, because Child67 (second-person secrets and relationships, imported 2026-10-14 13:10 UTC) and Child65 (first-person plural) ship the prevention, and `list_packages_with_sheet_wrong_person` detects it; owned but unproven, like C1/C6/C9. The Golden Stars shared-"darling" row (customer asked for distinct quirks) is now `high`, as the severity rule says. `sweep_exit_metrics` after the change: high-severity misses 46 (slip 27, detective 19); recall and medians unchanged (53 percent, 7.5). The 45 in Addendum 1 is the figure at creation.
+- **Twin finder precision:** "about half relevant" rested on one package (Storm, 13 of 23). Eval read 32 non-pointform rows on four other packages (Last Thanksgiving, Montero, Roslyn's Clay, Golden Stars): 9 relevant, about 28 percent; pooled with Storm 22 of 55, 40 percent. Noise: generic phrases ("earlier in the evening"), the same text under `secret` and `secrets` on the twin target (3 of 32), legitimate guilty-branch twins. CLAUDE.md step 7b now says "roughly 30 to 55 percent". Not changed in code (still a sweep aid, not an alert).
+- **Missed twin, fixed:** Blackthorn Manor, Jacqueline "Jackie" Winthrop `round3_questions` #2 still presumed Anna's hidden poison trade ("The vial came from the underground trade ... people like you ... have you sold anything"), the same defect Addendum 7 fixed in `round3_script`. It now reads "You were seen near the back stairs in white. Did you notice anyone carrying a bottle or vial through the back hall, and did anyone speak to you there?" (no pointform column for questions; one row, guarded update).
+- **Unreported real hit, fixed:** `list_stray_markup()` with its default 60-day window returned The Birthday Betrayal (2026-08-19), Quinn/Quincy Lee `final_statement`, a stray `"} ` after the last sentence (the dangling-quote shape). Removed; the function now returns nothing for that package. The check in Addendum 3 used the window from 2026-08-26 and missed it. Older hits outside any window were only listed, not changed: JSON dumps in BEFORE THE NIKAH relationships (April), Death At The Deadwood Saloon accusations (April), two odd-bold question lines in Death At Hollowcrest Manor, one in Death In The Cards; the IMG.LY code snippet is a deliberate false positive. Precision outside the window: 1 false positive in 19 hits.
+- **Documentation:** CLAUDE.md said the two cross-sheet passes were OFF and that auto-apply was OFF; both corrected. The stray-markup migration comment said 4 odd-bold hits; 5 is right.
+
+**Left as found, with the reason:**
+- Julian Blackwood's `round4_guilty` and `round4_accomplice` still say he drifted around the rooms at the dimming, which Scarlet's account contradicts. A guilty player may lie to deflect, so this is probably by design; only the innocent branch was a defect. Revisit if a hand sweep reads it as a leak.
+- **Latent risk, not fixed (code change plus a paid redeploy):** the fact pass writes open findings of category `cross_field_contradiction`, which is in `review_auto_apply_classes`. `applyOpenFindings` applies any open finding of those classes with no filter on its source. Today they are not applied only because the second pass applies before the probes run, once per package. The manual `apply_open` mode or a forced second pass would apply them. "Open findings only, never auto-applied" is therefore true by call order, not enforced. Proposed fix: skip findings whose review `prompt_version` ends in `+fact` or `+leak` in `applyOpenFindings`, plus a test. Needs Jonathan's go (deploy).
+- `review_leak_probe`: its `updated_at` (2026-10-13 05:09) predates the switch-on SQL, so it is unknown whether the row was already `on` earlier; no `+leak` review row exists before today, so no earlier spend came from the second pass.
+- Not built from the rank-1 proposal and not said so in Addendum 1: a `would_machinery_catch` column and recording of "left as found" items. Criterion 5 (3 clean post-ship packages per cluster) stays uncomputable: `layer_owner` has no ship date and nothing counts packages after a ship.
+- No saved before-text exists for the Addendum 7 edits (no script was kept); the original wording is only in the prose of Addendum 6 and 7.

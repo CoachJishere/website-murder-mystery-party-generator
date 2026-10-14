@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Fix: eval of ADR-0163, two delivered packages and the sweep records corrected (ADR-0163 Addendum 9)
+- **What:** Blackthorn Manor, Jackie Winthrop `round3_questions` #2 no longer presumes Anna's hidden poison trade; The Birthday Betrayal, Quinn/Quincy Lee `final_statement` lost a stray `"} ` (one guarded update, one row each). `package_review_misses`: three C8 rows now owner `prevent`, the Golden Stars "darling" row severity `high` (`sweep_exit_metrics` high misses 45 to 46). ADR-0163 figure 55 corrected to 58, Decision and Consequences brought up to date; CLAUDE.md no longer says the cross-sheet passes or auto-apply are OFF and states the measured twin-finder relevance (30 to 55 percent, not "about half").
+- **Why:** independent fresh-conversation eval of ADR-0163; Jonathan: "lets go with fixes".
+- **Not changed:** the `+fact`/`+leak` auto-apply gap in `applyOpenFindings` (code change and paid redeploy, proposed in the Addendum, needs a go), Julian Blackwood's guilty/accomplice branches, older stray-markup hits outside the 2026-08-26 window, no customer email.
+
 ### Fix: public evidence cards no longer reported as secret leaks (ADR-0163 Addendum 8, review-package-quality v34)
 - **What:** the cross-sheet secret pass now receives the evidence cards every guest sees (parsed from `evidence_cards`, any language, description only) and treats a sentence that restates a card of its own or an earlier round as public. 4 new tests; deployed (v33 to v34, `verify_jwt` kept); validated once on Blackthorn Manor (3 findings to 1, the forged-note false positive gone, 0.09 USD).
 - **Why:** the first probe's only false positive (ADR-0163 Addendum 6); Jonathan approved the fix.

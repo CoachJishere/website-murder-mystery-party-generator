@@ -1,7 +1,7 @@
 -- ADR-0163 item 4: string-level artefacts that the hand sweeps keep finding and no detector covers.
 -- Labelled misses: stray closing bold `not a confession.**` (Lip Sync), stray `}` at the end of a confession (Emma), paragraphs indented four
 -- spaces that render as a code block (Vellacourt), a combining acute accent inside a word (Tijdcapsule). Alert-only: read-only function, not in
--- the completion gate and not in any heal. Corpus 2026-08-26 to 2026-10-14: 4 odd-bold hits (all unswept packages), 0 for the other three.
+-- the completion gate and not in any heal. Corpus 2026-08-26 to 2026-10-14: 5 odd-bold hits (all unswept packages), 0 for the other three.
 -- Deliberately NOT included: "first paragraph bold" (1120 legitimate bold lines in the same window).
 
 create or replace function public.list_stray_markup(_pkg uuid default null, _since timestamptz default (now() - interval '60 days'))
