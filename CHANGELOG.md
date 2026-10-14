@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Fix: sweep of "The Last Slice: A Cake Swap To Die For" (ADR-0103 Addendum 98)
+- **What:** package `20ab2a21` (detective, EN, 7 characters, released 2026-10-11). All detectors and the completion gate were clean; the full-cast read found the story coherent. Four free edits: Priya/Prem's Round 2 question no longer states Alex/Alexandra's hidden arrangement as fact (reviewer finding, real); Robin's five point-form fields rewritten from third person "he/his/him" to the "you" voice every other sheet uses (Robin has no stated gender); Morgan's point-form "her grudge" about the dual-named Sasha/Sacha changed to "their"; Robin's garbled "unsent-turned-sent message" fixed in `secret` and `secrets`.
+- **Why:** point-form is what the table reads from in `pointForm` games, and neither the reviewer nor any detector looks at pronouns there. The reviewer found 2 of 7 spots (baseline about 20 findings for a detective package).
+- **Not changed (open, for Jonathan):** Robin's final statement volunteers the secret the sheet says to hide; two Round 4 questions to Morgan presuppose the alibi Morgan only gives in answer. Recorded in `package_review_misses`; `package_review_sweeps` row added.
+
 ### Fix: daily encrypted backup survives a database statement timeout
 - **What:** the 2026-10-14 09:41 UTC run failed on `mystery_characters` at offset 600 (HTTP 500, Postgres 57014 "canceling statement due to statement timeout"); the 5 runs before it passed. `.github/workflows/weekly-backup.yml` now pages by key (`id=gt.<last id>&limit=N`) instead of Range/OFFSET, and a failed page is retried up to 5 times with backoff and a halved page size before the job fails.
 - **Why:** OFFSET re-scans every skipped wide row (character sheets carry full round scripts), so it gets slower as the table grows and times out when cron jobs compete for the free-plan database. Keyset paging costs the same at any depth. This is the only database backup (free plan), so a transient timeout should not lose a day.
