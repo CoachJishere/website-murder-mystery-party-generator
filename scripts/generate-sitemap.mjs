@@ -30,14 +30,23 @@ async function fetchAllPublishedPosts() {
   const PAGE_SIZE = 1000;
   let all = [];
   for (let from = 0; ; from += PAGE_SIZE) {
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .select('slug, language, updated_at, post_date')
-      .eq('status', 'published')
-      .order('post_date', { ascending: false })
-      .order('id', { ascending: true })
-      .range(from, from + PAGE_SIZE - 1);
-
+    // A page can hit a transient statement timeout (57014) while cron jobs
+    // or the daily backup load the database (deploy run 38548702154,
+    // 2026-10-14). Retry the page instead of failing the whole deploy, same
+    // as prerender-blog.mjs.
+    let data, error;
+    for (let attempt = 1; attempt <= 4; attempt++) {
+      ({ data, error } = await supabase
+        .from('blog_posts')
+        .select('slug, language, updated_at, post_date')
+        .eq('status', 'published')
+        .order('post_date', { ascending: false })
+        .order('id', { ascending: true })
+        .range(from, from + PAGE_SIZE - 1));
+      if (!error) break;
+      console.error(`  Page at offset ${from} failed (attempt ${attempt}/4): ${error.message}`);
+      if (attempt < 4) await new Promise(r => setTimeout(r, attempt * 5000));
+    }
     if (error) throw error;
     if (!data || data.length === 0) break;
     all = all.concat(data);
