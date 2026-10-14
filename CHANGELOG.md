@@ -2,6 +2,12 @@
 
 ## 2026-10-14
 
+### Fix: new purchase swept, "Emma's Honky Tonk Meow-der Mystery" (ADR-0103 Addendum 95)
+- **What:** slip-style, 22 characters, accomplice; full read of all 22 sheets. Free hand fixes on the live package: stray `}` ending Faith & Tim's `reveal_confession_guilty`, Catsy Cline's five bold first paragraphs (`round2/3/4_accomplice`, `final_accomplice`, `reveal_confession_accomplice`), and "(she/her)" in the first sentence of `game_overview`.
+- **Main finding, not yet fixed (needs Jonathan's call):** the guilty player's `accusations` tips name a fixed partner on 15 of 22 sheets ("Lean on your accomplice, Tracy Catman"), though the accomplice is drawn at the table. The reviewer caught 1 of 15. Seen before only on "Murder At Montero Manor" (3 of 11). Proposed: fix the Child prompt and ship a detector plus a free heal together.
+- **Reviewer:** 5 findings, all real (4 applied before release, 1 open); 19 misses recorded in `package_review_misses`, sweep row in `package_review_sweeps`.
+- **Also open:** Garth & Trishkers' accomplice confession switches from "we" to "I" (after the heal regenerated it), Gary's duplicated "three things" detail, `master_context.victimProfile.name` still carries "(she/her)" (left on purpose, ADR-0107 precedent).
+
 ### Feature: alert-only sweep check for detective narration that names the culprit before the reveal (ADR-0160)
 - **What:** new `package_pre_reveal_culprit_named(mystery_packages)` and `list_packages_with_pre_reveal_culprit_name(_since)` (service_role only, migration `20261014090000`). A murderer or accomplice name part appearing at all in a Round 3 or Round 4 section of a detective script is listed. Not part of `package_completion_blocking_defects()`: no hold, no email. Run in step 3 of the New Purchase sweep (CLAUDE.md).
 - **Why alert-only:** moderate impact (the game still works), no free heal (a fix is a paid regeneration), and 0 real cases in the 59 packages since 2026-08-26. Jonathan chose the alert-only option over a gate or declining.
