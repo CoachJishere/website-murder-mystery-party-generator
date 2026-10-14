@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 export function EmailVerificationBanner() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [dismissed, setDismissed] = useState(false);
   const [resending, setResending] = useState(false);
@@ -27,12 +29,12 @@ export function EmailVerificationBanner() {
       });
 
       if (error) {
-        toast.error(`Failed to resend email: ${error.message}`);
+        toast.error(t("emailVerification.resendFailed", { message: error.message }));
       } else {
-        toast.success("Verification email sent! Check your inbox.");
+        toast.success(t("emailVerification.resendSent"));
       }
     } catch (error: any) {
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(t("emailVerification.unexpected"));
     } finally {
       setResending(false);
     }
@@ -43,7 +45,7 @@ export function EmailVerificationBanner() {
       <button
         onClick={() => setDismissed(true)}
         className="absolute top-2 right-2 text-blue-700 hover:text-blue-900"
-        aria-label="Dismiss notification"
+        aria-label={t("emailVerification.dismiss")}
       >
         <X className="h-4 w-4" />
       </button>
@@ -54,10 +56,10 @@ export function EmailVerificationBanner() {
         </div>
         <div className="ml-3 flex-1">
           <h3 className="text-sm font-medium text-blue-800">
-            Verify your email to unlock all features
+            {t("emailVerification.title")}
           </h3>
           <p className="mt-1 text-sm text-blue-700">
-            You can explore and create mysteries now, but you'll need to verify your email to purchase and download mystery packages.
+            {t("emailVerification.body")}
           </p>
           <div className="mt-3">
             <Button
@@ -70,12 +72,12 @@ export function EmailVerificationBanner() {
               {resending ? (
                 <>
                   <div className="h-3 w-3 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
-                  Sending...
+                  {t("emailVerification.sending")}
                 </>
               ) : (
                 <>
                   <Mail className="h-3 w-3 mr-2" />
-                  Resend Verification Email
+                  {t("emailVerification.resend")}
                 </>
               )}
             </Button>

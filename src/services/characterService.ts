@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { MysteryCharacter } from "@/interfaces/mystery";
 import { toast } from "sonner";
 
+import i18n from "@/i18n";
 // Parse a character script section from raw text
 export function parseCharacterSection(text: string, sectionName: string): string | null {
   // Handle both uppercase and proper case section headers
@@ -99,7 +100,7 @@ export async function saveCharacterInfo(
   try {
     // Ensure we have a character name
     if (!character.character_name) {
-      toast.error("Character must have a name");
+      toast.error(i18n.t("toastsUi.character.needName"));
       return null;
     }
     
@@ -124,14 +125,14 @@ export async function saveCharacterInfo(
     
     if (error) {
       console.error('Error saving character:', error);
-      toast.error(`Failed to save character: ${error.message}`);
+      toast.error(i18n.t("toastsUi.character.saveFailed", { message: error.message }));
       return null;
     }
     
     return data.id;
   } catch (error) {
     console.error('Error saving character:', error);
-    toast.error('Failed to save character due to an unexpected error');
+    toast.error(i18n.t("toastsUi.character.saveUnexpected"));
     return null;
   }
 }
@@ -173,7 +174,7 @@ export async function processAndSaveCharacter(
       }
       
       if (!characterInfo.character_name) {
-        toast.error("Could not determine character name from text");
+        toast.error(i18n.t("toastsUi.character.nameNotFound"));
         return null;
       }
     }
@@ -181,7 +182,7 @@ export async function processAndSaveCharacter(
     return await saveCharacterInfo(packageId, characterInfo);
   } catch (error) {
     console.error('Error processing character text:', error);
-    toast.error('Failed to process character text');
+    toast.error(i18n.t("toastsUi.character.processFailed"));
     return null;
   }
 }

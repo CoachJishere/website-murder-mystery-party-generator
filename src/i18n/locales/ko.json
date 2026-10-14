@@ -690,7 +690,12 @@
     "mysteryStyleDetectiveLabel": "탐정 스타일 (클래식)",
     "mysteryStyleDetectiveDescription": "호스트는 처음부터 정답을 알고 있으며 탐정 역할로 단서와 힌트를 통해 플레이어들을 해결로 안내합니다.",
     "startChat": "AI 채팅 시작",
-    "startingChat": "채팅 시작 중..."
+    "startingChat": "채팅 시작 중...",
+    "validation": {
+      "minPlayers": "최소 4명의 플레이어가 필요합니다",
+      "maxPlayers": "플레이어는 최대 35명까지 가능합니다",
+      "scriptType": "대본 유형을 선택하세요"
+    }
   },
   "supportPage": {
     "title": "지원 센터",
@@ -1141,6 +1146,7 @@
       "items": [
         "이것은 이 특정 미스터리 패키지에 대한 일회성 구매입니다",
         "출연진 규모는 미스터리가 생성될 때 정해집니다 — 각 캐릭터는 이후에 자유롭게 편집할 수 있지만, 용의자 캐릭터를 추가하거나 제거하려면 재생성이 필요합니다. 캐릭터보다 게스트가 더 많나요? 그들은 탐정 팀의 공동 수사관으로 참여할 수 있습니다(호스트 가이드 참조).",
+        "캐릭터 이름을 바꾸면 캐릭터 목록만 업데이트됩니다. 라운드 대본, 단서, 진행자 가이드 안의 이름은 바뀌지 않습니다. 첫 번째 읽기 전에 바꾸는 것이 가장 좋으며, 뒤늦은 수정으로는 권장하지 않습니다.",
         "모든 자료를 다운로드할 수 있는 영구 액세스 권한이 있습니다",
         "콘텐츠는 개인 사용만 가능하며 상업적 재배포는 불가합니다",
         "도움이 필요하신가요? {{email}}로 문의하세요"
@@ -1978,5 +1984,144 @@
     "button": "증거 카드 인쇄",
     "roundLabel": "증거 — 라운드 {{n}}",
     "cardOf": "카드 {{i}} / {{total}}"
+  },
+  "accountSettings": {
+    "profile": {
+      "title": "프로필 정보",
+      "description": "개인 정보와 계정에 표시되는 방식을 업데이트하세요",
+      "fullName": "이름",
+      "namePlaceholder": "이름을 입력하세요",
+      "nameRequired": "이름은 필수입니다",
+      "nameTooShort": "이름은 2자 이상이어야 합니다",
+      "nameTooLong": "이름은 50자 미만이어야 합니다",
+      "nameGood": "이름이 좋습니다!",
+      "email": "이메일",
+      "emailNote": "이메일 주소는 로그인에 사용되며 변경할 수 없습니다",
+      "save": "변경 사항 저장",
+      "saving": "저장 중...",
+      "updated": "프로필이 업데이트되었습니다",
+      "updateFailed": "프로필을 업데이트하지 못했습니다: {{message}}"
+    },
+    "password": {
+      "title": "비밀번호",
+      "description": "계정을 안전하게 지키려면 비밀번호를 업데이트하세요",
+      "current": "현재 비밀번호",
+      "new": "새 비밀번호",
+      "confirm": "새 비밀번호 확인",
+      "requirementsTitle": "비밀번호 요구 사항:",
+      "reqLength": "8자 이상",
+      "reqUpper": "대문자 포함",
+      "reqLower": "소문자 포함",
+      "reqNumber": "숫자 포함",
+      "reqSpecial": "특수 문자 포함",
+      "match": "비밀번호가 일치합니다",
+      "update": "비밀번호 업데이트",
+      "updating": "업데이트 중...",
+      "allRequired": "모든 비밀번호 항목을 입력해야 합니다",
+      "meetReqs": "비밀번호 요구 사항을 모두 충족해 주세요",
+      "currentWrong": "현재 비밀번호가 올바르지 않습니다",
+      "updated": "비밀번호가 업데이트되었습니다!",
+      "failed": "비밀번호를 업데이트하지 못했습니다"
+    },
+    "delete": {
+      "title": "계정 삭제",
+      "description": "계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다",
+      "confirmTitle": "정말 삭제하시겠습니까?",
+      "confirmBody": "이 작업은 되돌릴 수 없습니다. 계정이 영구적으로 삭제되고 모든 데이터가 서버에서 제거됩니다.",
+      "cancel": "취소",
+      "deleting": "삭제 중...",
+      "failed": "계정을 삭제하지 못했습니다"
+    },
+    "billing": {
+      "title": "결제 및 구매 내역",
+      "loading": "구매 내역을 불러오는 중...",
+      "description": "이전 구매 내역을 확인하고 영수증을 다운로드하세요",
+      "empty": "아직 구매한 미스터리 패키지가 없습니다.",
+      "createFirst": "첫 미스터리 만들기",
+      "viewPackage": "패키지 보기",
+      "helpTitle": "결제에 도움이 필요하신가요?",
+      "helpBody": "환불 요청이나 결제 관련 문의는 고객 지원팀에 연락해 주세요.",
+      "contactSupport": "고객 지원 문의",
+      "fallbackTitle": "미스터리 패키지"
+    }
+  },
+  "emailVerification": {
+    "title": "모든 기능을 사용하려면 이메일을 인증하세요",
+    "body": "지금도 미스터리를 둘러보고 만들 수 있지만, 패키지를 구매하고 다운로드하려면 이메일 인증이 필요합니다.",
+    "resend": "인증 이메일 다시 보내기",
+    "sending": "보내는 중...",
+    "dismiss": "알림 닫기",
+    "resendFailed": "이메일을 다시 보내지 못했습니다: {{message}}",
+    "resendSent": "인증 이메일을 보냈습니다! 받은편지함을 확인하세요.",
+    "unexpected": "예기치 않은 오류가 발생했습니다. 다시 시도해 주세요."
+  },
+  "a11y": {
+    "skipToContent": "본문으로 건너뛰기"
+  },
+  "dashboardFilters": {
+    "searchPlaceholder": "제목이나 테마로 검색...",
+    "sortBy": "정렬:",
+    "newest": "최신순",
+    "oldest": "오래된순",
+    "lastUpdated": "최근 업데이트순",
+    "filterByStatus": "상태별 필터:",
+    "all": "전체",
+    "draft": "초안",
+    "published": "게시됨",
+    "archived": "보관됨"
+  },
+  "homeSections": {
+    "howItWorks": "이용 방법",
+    "howItWorksSubtitle": "완벽한 머더 미스터리까지 단 네 단계",
+    "ctaBlurb": "테마와 손님 명단에 맞춘 나만의 머더 미스터리 파티를 만들어 보세요.",
+    "freeLead": "무료로 시작하고 싶으신가요?",
+    "freeLink": "무료 머더 미스터리 템플릿 둘러보기",
+    "corporateLead": "사무실 행사를 준비 중이신가요?",
+    "corporateLink": "기업용 머더 미스터리 파티 가이드 보기",
+    "scriptLead": "처음부터 직접 쓰고 싶으신가요?",
+    "scriptLink": "머더 미스터리 템플릿 가이드 활용하기",
+    "castLead": "배역 정하기가 고민이신가요?",
+    "castLink": "머더 미스터리 파티 캐릭터 아이디어 살펴보기"
+  },
+  "packageFeedback": {
+    "thanks": "의견을 남겨 주셔서 감사합니다!",
+    "title": "미스터리 파티는 어떠셨나요?",
+    "subtitle": "의견은 서비스 개선에 큰 도움이 됩니다!"
+  },
+  "toastsUi": {
+    "auth": {
+      "wrongCredentials": "이메일 또는 비밀번호가 올바르지 않습니다. 다시 시도해 주세요.",
+      "signInFailed": "로그인하지 못했습니다: {{message}}",
+      "signedIn": "로그인했습니다!",
+      "invalidEmail": "올바른 이메일 주소를 입력하세요.",
+      "alreadyRegistered": "이미 가입된 이메일입니다. 로그인해 보세요.",
+      "signUpFailed": "계정을 만들지 못했습니다: {{message}}",
+      "accountCreatedVerify": "계정이 만들어졌습니다! 이메일을 확인해 인증하면 모든 기능을 사용할 수 있습니다.",
+      "accountCreated": "계정이 만들어졌습니다! 이제 로그인된 상태입니다.",
+      "resetFailed": "비밀번호를 재설정하지 못했습니다: {{message}}",
+      "resetSent": "비밀번호 재설정 안내를 이메일로 보냈습니다.",
+      "signOutFailed": "로그아웃하지 못했습니다: {{message}}",
+      "signedOut": "로그아웃했습니다.",
+      "oauthError": "OAuth 오류: {{message}}",
+      "authFailed": "인증하지 못했습니다: {{message}}"
+    },
+    "hero": {
+      "needDescription": "미스터리에 대한 설명을 입력하세요"
+    },
+    "generic": {
+      "somethingWrong": "문제가 발생했습니다. 다시 시도해 주세요."
+    },
+    "mystery": {
+      "purchaseSuccess": "구매가 완료되었습니다! 이제 이 미스터리 패키지를 모두 이용할 수 있습니다.",
+      "loadFailed": "미스터리를 불러오지 못했습니다",
+      "loadAssignmentsFailed": "기존 배정을 불러오지 못했습니다"
+    },
+    "character": {
+      "needName": "캐릭터에는 이름이 필요합니다",
+      "saveFailed": "캐릭터를 저장하지 못했습니다: {{message}}",
+      "saveUnexpected": "예기치 않은 오류로 캐릭터를 저장하지 못했습니다",
+      "nameNotFound": "텍스트에서 캐릭터 이름을 확인할 수 없습니다",
+      "processFailed": "캐릭터 텍스트를 처리하지 못했습니다"
+    }
   }
 }

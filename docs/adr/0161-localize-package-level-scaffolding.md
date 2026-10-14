@@ -79,6 +79,20 @@ Three things the first pass did not cover, fixed the same day: (1) the English h
 
 **Not yet checked:** strings in `.ts` files (toasts and errors raised by hooks and services), the admin dashboard, and the Cold Case worker's generated documents. Proposed next step if you want it: move the roughly 110 customer-facing strings into `t()` keys with 13 translations (about 1,400 new strings), Privacy and Cold Case as separate decisions.
 
+## Update 3 (2026-10-14): customer-facing UI strings moved to i18n (Jonathan: yes)
+
+**Done (109 new keys in all 13 locale files, one commit):**
+- Account settings, all four live components (`ProfileSettings`, `PasswordSettings`, `DeleteAccount`, `BillingSettings`: the page had no `useTranslation` at all) under `accountSettings.*`; purchase dates now use the active language through `src/utils/dateLocale.ts` (date-fns locales) instead of `MMM d, yyyy`.
+- `EmailVerificationBanner`, `SkipToContent`, dashboard `MysteryFilters`, the feedback nudge on the package page ("How was your mystery party?"), the home page headings and SEO link blurbs in `Index.tsx` (`features.title` and `testimonials.title` reused), and the form validation messages in `MysteryForm` (the zod schema is now built with `t`).
+- Toasts raised outside components, through `i18n.t`: sign in, sign up, reset, sign out (`AuthContext`), OAuth callback, purchase success and load failure (`MysteryView`), the home prompt box, guest manager, `characterService`.
+- A gap found by the parity check: the purchase page's list of notes had one extra English-only item (renaming a character does not update scripts) that the 12 other locales never had; added.
+
+**Checked:** key parity (1,521 keys, every locale complete, every `{{placeholder}}` identical to English), production bundle builds, and the home page rendered in a real browser in French, German, Japanese and Chinese with no English heading left. The account pages need a signed-in session and were not rendered.
+
+**Not done, on purpose:** Privacy page (legal text, own decision), Cold Case pages and buyer email (own decision), About page (founder bio, long-form content), dev and preview routes, the admin dashboard, and dead code (`MysteryPackage.tsx`, `CharacterRoleSelector`, `CharacterRoleAssignment`, `ImportCharactersButton`, which nothing imports). Still English: the character import dialog toasts (`ImportCharactersDialog`, `batchCharacterImport`).
+
+**Found, not changed:** `BillingSettings` shows every purchase as a fixed "$24.99" (`amount: 24.99, // Fixed price` and a literal `$`), although the real prices differ by currency and discount (the French sweep customer paid USD 19.99). A purchase history that shows the wrong amount is a separate bug.
+
 ## Key files
 
 `docs/language-pack/scaffold-labels.json`, `docs/language-pack/build-scaffold-tables.mjs`, `supabase/functions/_shared/packageScaffold.ts` (+ `packageScaffoldTables.ts`, `packageScaffold.test.mjs`), `supabase/functions/review-package-quality/index.ts` (`healScaffold`), `supabase/functions/auto-remediate-packages/evidence-card.ts`, `supabase/functions/regenerate-parent-content/index.ts`, `supabase/functions/adapt-mystery-apply/index.ts`, `supabase/functions/send-adaptation-complete-email/index.ts`, `src/utils/evidenceCardUtils.ts`, `src/pages/EvidenceCardPrint.tsx`, `src/i18n/locales/*.json` (`evidencePrint`), `supabase/migrations/20261014140000_localized_evidence_markers.sql`.

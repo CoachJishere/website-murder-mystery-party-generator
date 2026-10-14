@@ -6,12 +6,14 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { useTranslation } from "react-i18next";
 
 interface DeleteAccountProps {
   onDeleteAccount: () => Promise<void>;
 }
 
 const DeleteAccount = ({ onDeleteAccount }: DeleteAccountProps) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -20,7 +22,7 @@ const DeleteAccount = ({ onDeleteAccount }: DeleteAccountProps) => {
       await onDeleteAccount();
     } catch (error) {
       console.error("Error deleting account:", error);
-      toast.error("Failed to delete account");
+      toast.error(t("accountSettings.delete.failed"));
     } finally {
       setLoading(false);
     }
@@ -31,31 +33,31 @@ const DeleteAccount = ({ onDeleteAccount }: DeleteAccountProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-destructive">
           <Trash2 className="h-5 w-5" />
-          <span>Delete Account</span>
+          <span>{t("accountSettings.delete.title")}</span>
         </CardTitle>
         <CardDescription>
-          Once you delete your account, all of your data will be permanently removed
+          {t("accountSettings.delete.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="destructive">Delete Account</Button>
+            <Button variant="destructive">{t("accountSettings.delete.title")}</Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>{t("accountSettings.delete.confirmTitle")}</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your account and remove all of your data from our servers.
+                {t("accountSettings.delete.confirmBody")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>{t("accountSettings.delete.cancel")}</AlertDialogCancel>
               <AlertDialogAction 
                 onClick={handleDelete}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
-                {loading ? "Deleting..." : "Delete Account"}
+                {loading ? t("accountSettings.delete.deleting") : t("accountSettings.delete.title")}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

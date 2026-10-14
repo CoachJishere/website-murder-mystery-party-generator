@@ -690,7 +690,12 @@
     "mysteryStyleDetectiveLabel": "Estilo Detetive (Clássico)",
     "mysteryStyleDetectiveDescription": "O anfitrião conhece a solução desde o início e joga como detetive, guiando os jogadores com pistas e dicas até a revelação.",
     "startChat": "Iniciar Chat com IA",
-    "startingChat": "Iniciando chat..."
+    "startingChat": "Iniciando chat...",
+    "validation": {
+      "minPlayers": "É necessário no mínimo 4 jogadores",
+      "maxPlayers": "São permitidos no máximo 35 jogadores",
+      "scriptType": "Selecione um tipo de roteiro"
+    }
   },
   "supportPage": {
     "title": "Central de Suporte",
@@ -1186,6 +1191,7 @@
       "items": [
         "Esta é uma compra única para este pacote de mistério específico",
         "O tamanho do seu elenco é definido quando o mistério é gerado — cada personagem é totalmente editável depois, mas adicionar ou remover personagens suspeitos exige uma nova geração. Tem mais convidados do que personagens? Eles podem participar como co-investigadores na equipe do detetive (consulte o guia do anfitrião).",
+        "Renomear um personagem atualiza apenas a lista de personagens: o nome não muda nos roteiros das rodadas, nas pistas nem no guia do anfitrião. O ideal é fazer isso antes da primeira leitura, não como uma correção de última hora.",
         "Você terá acesso permanente para baixar todos os materiais",
         "O conteúdo é apenas para uso pessoal, não para redistribuição comercial",
         "Precisa de ajuda? Entre em contato com nosso suporte via {{email}}"
@@ -1978,5 +1984,144 @@
     "button": "Imprimir cartões de evidências",
     "roundLabel": "Evidência — Rodada {{n}}",
     "cardOf": "Cartão {{i}} de {{total}}"
+  },
+  "accountSettings": {
+    "profile": {
+      "title": "Informações do perfil",
+      "description": "Atualize suas informações pessoais e como elas aparecem na sua conta",
+      "fullName": "Nome completo",
+      "namePlaceholder": "Seu nome",
+      "nameRequired": "O nome é obrigatório",
+      "nameTooShort": "O nome deve ter pelo menos 2 caracteres",
+      "nameTooLong": "O nome deve ter menos de 50 caracteres",
+      "nameGood": "O nome está ótimo!",
+      "email": "E-mail",
+      "emailNote": "Seu e-mail é usado para entrar na conta e não pode ser alterado",
+      "save": "Salvar alterações",
+      "saving": "Salvando...",
+      "updated": "Perfil atualizado com sucesso",
+      "updateFailed": "Não foi possível atualizar o perfil: {{message}}"
+    },
+    "password": {
+      "title": "Senha",
+      "description": "Atualize sua senha para manter sua conta segura",
+      "current": "Senha atual",
+      "new": "Nova senha",
+      "confirm": "Confirme a nova senha",
+      "requirementsTitle": "Requisitos da senha:",
+      "reqLength": "Pelo menos 8 caracteres",
+      "reqUpper": "Contém uma letra maiúscula",
+      "reqLower": "Contém uma letra minúscula",
+      "reqNumber": "Contém um número",
+      "reqSpecial": "Contém um caractere especial",
+      "match": "As senhas coincidem",
+      "update": "Atualizar senha",
+      "updating": "Atualizando...",
+      "allRequired": "Todos os campos de senha são obrigatórios",
+      "meetReqs": "Atenda a todos os requisitos da senha",
+      "currentWrong": "A senha atual está incorreta",
+      "updated": "Senha atualizada com sucesso!",
+      "failed": "Não foi possível atualizar a senha"
+    },
+    "delete": {
+      "title": "Excluir conta",
+      "description": "Ao excluir sua conta, todos os seus dados serão removidos permanentemente",
+      "confirmTitle": "Você tem certeza absoluta?",
+      "confirmBody": "Esta ação não pode ser desfeita. Sua conta será excluída permanentemente e todos os seus dados serão removidos dos nossos servidores.",
+      "cancel": "Cancelar",
+      "deleting": "Excluindo...",
+      "failed": "Não foi possível excluir a conta"
+    },
+    "billing": {
+      "title": "Cobrança e histórico de compras",
+      "loading": "Carregando seu histórico de compras...",
+      "description": "Veja suas compras anteriores e baixe os recibos",
+      "empty": "Você ainda não comprou nenhum pacote de mistério.",
+      "createFirst": "Crie seu primeiro mistério",
+      "viewPackage": "Ver pacote",
+      "helpTitle": "Precisa de ajuda com a cobrança?",
+      "helpBody": "Para pedidos de reembolso ou dúvidas sobre cobrança, entre em contato com o suporte.",
+      "contactSupport": "Falar com o suporte",
+      "fallbackTitle": "Pacote de mistério"
+    }
+  },
+  "emailVerification": {
+    "title": "Verifique seu e-mail para liberar todos os recursos",
+    "body": "Você já pode explorar e criar mistérios, mas precisará verificar seu e-mail para comprar e baixar pacotes.",
+    "resend": "Reenviar e-mail de verificação",
+    "sending": "Enviando...",
+    "dismiss": "Dispensar aviso",
+    "resendFailed": "Não foi possível reenviar o e-mail: {{message}}",
+    "resendSent": "E-mail de verificação enviado! Confira sua caixa de entrada.",
+    "unexpected": "Ocorreu um erro inesperado. Tente novamente."
+  },
+  "a11y": {
+    "skipToContent": "Pular para o conteúdo principal"
+  },
+  "dashboardFilters": {
+    "searchPlaceholder": "Buscar por título ou tema...",
+    "sortBy": "Ordenar por:",
+    "newest": "Mais recentes",
+    "oldest": "Mais antigos",
+    "lastUpdated": "Última atualização",
+    "filterByStatus": "Filtrar por status:",
+    "all": "Todos",
+    "draft": "Rascunho",
+    "published": "Publicado",
+    "archived": "Arquivado"
+  },
+  "homeSections": {
+    "howItWorks": "Como funciona",
+    "howItWorksSubtitle": "Quatro passos simples para o seu mistério de assassinato perfeito",
+    "ctaBlurb": "Crie uma festa de mistério de assassinato sob medida para o seu tema e a sua lista de convidados.",
+    "freeLead": "Prefere começar de graça?",
+    "freeLink": "Veja nossos modelos gratuitos de mistério de assassinato",
+    "corporateLead": "Está planejando algo para o escritório?",
+    "corporateLink": "Veja nosso guia de mistério de assassinato corporativo",
+    "scriptLead": "Quer escrever o seu do zero?",
+    "scriptLink": "Use nosso guia de modelos de mistério de assassinato",
+    "castLead": "Precisa de ajuda com o elenco?",
+    "castLink": "Descubra ideias de personagens para sua festa de mistério de assassinato"
+  },
+  "packageFeedback": {
+    "thanks": "Obrigado por compartilhar seu feedback!",
+    "title": "Como foi a sua festa de mistério?",
+    "subtitle": "Seu feedback nos ajuda a melhorar!"
+  },
+  "toastsUi": {
+    "auth": {
+      "wrongCredentials": "O e-mail ou a senha informada está incorreta. Tente novamente.",
+      "signInFailed": "Não foi possível entrar: {{message}}",
+      "signedIn": "Login realizado com sucesso!",
+      "invalidEmail": "Informe um e-mail válido.",
+      "alreadyRegistered": "Este e-mail já está cadastrado. Tente entrar na sua conta.",
+      "signUpFailed": "Não foi possível criar a conta: {{message}}",
+      "accountCreatedVerify": "Conta criada! Verifique seu e-mail para confirmar e liberar todos os recursos.",
+      "accountCreated": "Conta criada com sucesso! Você já está conectado.",
+      "resetFailed": "Não foi possível redefinir a senha: {{message}}",
+      "resetSent": "As instruções para redefinir a senha foram enviadas para o seu e-mail.",
+      "signOutFailed": "Não foi possível sair: {{message}}",
+      "signedOut": "Você saiu da conta.",
+      "oauthError": "Erro de OAuth: {{message}}",
+      "authFailed": "Falha na autenticação: {{message}}"
+    },
+    "hero": {
+      "needDescription": "Escreva uma descrição para o seu mistério"
+    },
+    "generic": {
+      "somethingWrong": "Algo deu errado. Tente novamente."
+    },
+    "mystery": {
+      "purchaseSuccess": "Compra concluída! Agora você tem acesso completo a este pacote de mistério.",
+      "loadFailed": "Não foi possível carregar o mistério",
+      "loadAssignmentsFailed": "Não foi possível carregar as atribuições existentes"
+    },
+    "character": {
+      "needName": "O personagem precisa ter um nome",
+      "saveFailed": "Não foi possível salvar o personagem: {{message}}",
+      "saveUnexpected": "Não foi possível salvar o personagem por causa de um erro inesperado",
+      "nameNotFound": "Não foi possível identificar o nome do personagem no texto",
+      "processFailed": "Não foi possível processar o texto do personagem"
+    }
   }
 }

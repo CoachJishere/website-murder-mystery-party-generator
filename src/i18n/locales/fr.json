@@ -691,7 +691,12 @@
     "mysteryStyleDetectiveLabel": "Style Détective",
     "mysteryStyleDetectiveDescription": "L'hôte connaît la solution dès le départ et joue le détective, guidant les joueurs avec des indices vers la révélation.",
     "startChat": "Commencer le chat avec l'IA",
-    "startingChat": "Démarrage du chat..."
+    "startingChat": "Démarrage du chat...",
+    "validation": {
+      "minPlayers": "Minimum 4 joueurs requis",
+      "maxPlayers": "Maximum 35 joueurs autorisés",
+      "scriptType": "Veuillez choisir un type de script"
+    }
   },
   "supportPage": {
     "title": "Centre d'aide",
@@ -1176,6 +1181,7 @@
       "items": [
         "Il s'agit d'un achat unique pour ce package mystère spécifique",
         "La taille de votre distribution est fixée lors de la génération du mystère — chaque personnage est entièrement modifiable ensuite, mais ajouter ou supprimer des personnages suspects nécessite une régénération. Vous avez plus d'invités que de personnages ? Ils peuvent participer comme co-enquêteurs dans l'équipe du détective (voir le guide de l'hôte).",
+        "Renommer un personnage ne met à jour que la liste des personnages : le nom n'est pas modifié dans les scripts des manches, les indices ni le guide de l'hôte. Mieux vaut le faire avant la première lecture, pas comme correction de dernière minute.",
         "Vous bénéficierez d'un accès permanent aux téléchargements de tous les matériaux",
         "Le contenu est destiné à un usage personnel uniquement, pas à une distribution commerciale",
         "Besoin d'aide ? Contactez notre support à {{email}}"
@@ -1979,5 +1985,144 @@
     "button": "Imprimer les cartes d'indices",
     "roundLabel": "Indice — Manche {{n}}",
     "cardOf": "Carte {{i}} sur {{total}}"
+  },
+  "accountSettings": {
+    "profile": {
+      "title": "Informations du profil",
+      "description": "Mettez à jour vos informations personnelles et leur affichage sur votre compte",
+      "fullName": "Nom complet",
+      "namePlaceholder": "Votre nom",
+      "nameRequired": "Le nom est obligatoire",
+      "nameTooShort": "Le nom doit comporter au moins 2 caractères",
+      "nameTooLong": "Le nom doit comporter moins de 50 caractères",
+      "nameGood": "Le nom est valide !",
+      "email": "E-mail",
+      "emailNote": "Votre adresse e-mail sert à vous connecter et ne peut pas être modifiée",
+      "save": "Enregistrer les modifications",
+      "saving": "Enregistrement...",
+      "updated": "Profil mis à jour",
+      "updateFailed": "Échec de la mise à jour du profil : {{message}}"
+    },
+    "password": {
+      "title": "Mot de passe",
+      "description": "Mettez à jour votre mot de passe pour sécuriser votre compte",
+      "current": "Mot de passe actuel",
+      "new": "Nouveau mot de passe",
+      "confirm": "Confirmez le nouveau mot de passe",
+      "requirementsTitle": "Exigences du mot de passe :",
+      "reqLength": "Au moins 8 caractères",
+      "reqUpper": "Contient une majuscule",
+      "reqLower": "Contient une minuscule",
+      "reqNumber": "Contient un chiffre",
+      "reqSpecial": "Contient un caractère spécial",
+      "match": "Les mots de passe correspondent",
+      "update": "Mettre à jour le mot de passe",
+      "updating": "Mise à jour...",
+      "allRequired": "Tous les champs de mot de passe sont obligatoires",
+      "meetReqs": "Veuillez respecter toutes les exigences du mot de passe",
+      "currentWrong": "Le mot de passe actuel est incorrect",
+      "updated": "Mot de passe mis à jour !",
+      "failed": "Échec de la mise à jour du mot de passe"
+    },
+    "delete": {
+      "title": "Supprimer le compte",
+      "description": "Une fois votre compte supprimé, toutes vos données seront définitivement effacées",
+      "confirmTitle": "Êtes-vous absolument sûr(e) ?",
+      "confirmBody": "Cette action est irréversible. Votre compte sera définitivement supprimé et toutes vos données seront effacées de nos serveurs.",
+      "cancel": "Annuler",
+      "deleting": "Suppression...",
+      "failed": "Échec de la suppression du compte"
+    },
+    "billing": {
+      "title": "Facturation et historique des achats",
+      "loading": "Chargement de votre historique d'achats...",
+      "description": "Consultez vos achats passés et téléchargez vos reçus",
+      "empty": "Vous n'avez pas encore acheté de pack mystère.",
+      "createFirst": "Créez votre premier mystère",
+      "viewPackage": "Voir le pack",
+      "helpTitle": "Besoin d'aide pour la facturation ?",
+      "helpBody": "Pour une demande de remboursement ou une question de facturation, contactez le support.",
+      "contactSupport": "Contacter le support",
+      "fallbackTitle": "Pack mystère"
+    }
+  },
+  "emailVerification": {
+    "title": "Vérifiez votre e-mail pour débloquer toutes les fonctionnalités",
+    "body": "Vous pouvez déjà explorer et créer des mystères, mais vous devrez vérifier votre e-mail pour acheter et télécharger des packs.",
+    "resend": "Renvoyer l'e-mail de vérification",
+    "sending": "Envoi...",
+    "dismiss": "Fermer la notification",
+    "resendFailed": "Échec du renvoi de l'e-mail : {{message}}",
+    "resendSent": "E-mail de vérification envoyé ! Consultez votre boîte de réception.",
+    "unexpected": "Une erreur inattendue s'est produite. Veuillez réessayer."
+  },
+  "a11y": {
+    "skipToContent": "Aller au contenu principal"
+  },
+  "dashboardFilters": {
+    "searchPlaceholder": "Rechercher par titre ou thème...",
+    "sortBy": "Trier par :",
+    "newest": "Plus récents",
+    "oldest": "Plus anciens",
+    "lastUpdated": "Dernière mise à jour",
+    "filterByStatus": "Filtrer par statut :",
+    "all": "Tous",
+    "draft": "Brouillon",
+    "published": "Publié",
+    "archived": "Archivé"
+  },
+  "homeSections": {
+    "howItWorks": "Comment ça marche",
+    "howItWorksSubtitle": "Quatre étapes simples pour votre murder party parfaite",
+    "ctaBlurb": "Créez une murder party sur mesure, adaptée à votre thème et à vos invités.",
+    "freeLead": "Vous préférez commencer gratuitement ?",
+    "freeLink": "Parcourez nos modèles de murder party gratuits",
+    "corporateLead": "Vous organisez quelque chose pour le bureau ?",
+    "corporateLink": "Découvrez notre guide de murder party d'entreprise",
+    "scriptLead": "Vous préférez écrire le vôtre de zéro ?",
+    "scriptLink": "Utilisez notre guide de modèles de murder party",
+    "castLead": "Besoin d'aide pour distribuer les rôles ?",
+    "castLink": "Découvrez des idées de personnages pour votre murder party"
+  },
+  "packageFeedback": {
+    "thanks": "Merci d'avoir partagé votre avis !",
+    "title": "Comment était votre murder party ?",
+    "subtitle": "Votre avis nous aide à nous améliorer !"
+  },
+  "toastsUi": {
+    "auth": {
+      "wrongCredentials": "L'e-mail ou le mot de passe saisi est incorrect. Veuillez réessayer.",
+      "signInFailed": "Échec de la connexion : {{message}}",
+      "signedIn": "Connexion réussie !",
+      "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
+      "alreadyRegistered": "Cet e-mail est déjà enregistré. Essayez de vous connecter.",
+      "signUpFailed": "Échec de la création du compte : {{message}}",
+      "accountCreatedVerify": "Compte créé ! Consultez votre e-mail pour le vérifier et débloquer toutes les fonctionnalités.",
+      "accountCreated": "Compte créé avec succès ! Vous êtes maintenant connecté(e).",
+      "resetFailed": "Échec de la réinitialisation du mot de passe : {{message}}",
+      "resetSent": "Les instructions de réinitialisation du mot de passe ont été envoyées par e-mail.",
+      "signOutFailed": "Échec de la déconnexion : {{message}}",
+      "signedOut": "Vous êtes déconnecté(e).",
+      "oauthError": "Erreur OAuth : {{message}}",
+      "authFailed": "Échec de l'authentification : {{message}}"
+    },
+    "hero": {
+      "needDescription": "Veuillez saisir une description pour votre mystère"
+    },
+    "generic": {
+      "somethingWrong": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "mystery": {
+      "purchaseSuccess": "Achat réussi ! Vous avez maintenant un accès complet à ce pack mystère.",
+      "loadFailed": "Impossible de charger le mystère",
+      "loadAssignmentsFailed": "Impossible de charger les attributions existantes"
+    },
+    "character": {
+      "needName": "Le personnage doit avoir un nom",
+      "saveFailed": "Échec de l'enregistrement du personnage : {{message}}",
+      "saveUnexpected": "Échec de l'enregistrement du personnage à cause d'une erreur inattendue",
+      "nameNotFound": "Impossible de déterminer le nom du personnage à partir du texte",
+      "processFailed": "Impossible de traiter le texte du personnage"
+    }
   }
 }

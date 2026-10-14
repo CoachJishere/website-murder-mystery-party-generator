@@ -690,7 +690,12 @@
     "mysteryStyleDetectiveLabel": "探偵スタイル（クラシック）",
     "mysteryStyleDetectiveDescription": "ホストは最初から真相を知っており、探偵役として手がかりやヒントを与えながらプレイヤーを解決へ導きます。",
     "startChat": "AIチャットを開始",
-    "startingChat": "チャットを開始中..."
+    "startingChat": "チャットを開始中...",
+    "validation": {
+      "minPlayers": "最低4人のプレイヤーが必要です",
+      "maxPlayers": "プレイヤーは最大35人までです",
+      "scriptType": "台本の種類を選択してください"
+    }
   },
   "supportPage": {
     "title": "サポートセンター",
@@ -1141,6 +1146,7 @@
       "items": [
         "これはこの特定のミステリーパッケージの一回限りの購入です",
         "配役の人数はミステリー生成時に決まります — 各キャラクターは後から自由に編集できますが、容疑者キャラクターの追加や削除には再生成が必要です。キャラクターよりゲストが多いですか？その場合は探偵チームの共同捜査員として参加できます（ホストガイドをご覧ください）。",
+        "キャラクター名を変更しても更新されるのはキャラクター一覧だけで、ラウンドの台本、手がかり、ホストガイド内の名前は変わりません。最初の通し読みの前に行うのがおすすめで、直前の修正には向きません。",
         "すべての素材をダウンロードする永久アクセスが可能です",
         "コンテンツは個人使用のみで、商業的な再配布は不可です",
         "サポートが必要ですか？{{email}}までお問い合わせください"
@@ -1978,5 +1984,144 @@
     "button": "証拠カードを印刷",
     "roundLabel": "証拠 — ラウンド{{n}}",
     "cardOf": "カード {{i}} / {{total}}"
+  },
+  "accountSettings": {
+    "profile": {
+      "title": "プロフィール情報",
+      "description": "個人情報とアカウントでの表示方法を更新します",
+      "fullName": "氏名",
+      "namePlaceholder": "お名前",
+      "nameRequired": "名前は必須です",
+      "nameTooShort": "名前は2文字以上で入力してください",
+      "nameTooLong": "名前は50文字未満で入力してください",
+      "nameGood": "名前は問題ありません。",
+      "email": "メールアドレス",
+      "emailNote": "メールアドレスはログインに使用され、変更できません",
+      "save": "変更を保存",
+      "saving": "保存中...",
+      "updated": "プロフィールを更新しました",
+      "updateFailed": "プロフィールを更新できませんでした: {{message}}"
+    },
+    "password": {
+      "title": "パスワード",
+      "description": "アカウントを安全に保つため、パスワードを更新してください",
+      "current": "現在のパスワード",
+      "new": "新しいパスワード",
+      "confirm": "新しいパスワードの確認",
+      "requirementsTitle": "パスワードの要件:",
+      "reqLength": "8文字以上",
+      "reqUpper": "大文字を含む",
+      "reqLower": "小文字を含む",
+      "reqNumber": "数字を含む",
+      "reqSpecial": "特殊文字を含む",
+      "match": "パスワードが一致しました",
+      "update": "パスワードを更新",
+      "updating": "更新中...",
+      "allRequired": "すべてのパスワード欄を入力してください",
+      "meetReqs": "パスワードの要件をすべて満たしてください",
+      "currentWrong": "現在のパスワードが正しくありません",
+      "updated": "パスワードを更新しました！",
+      "failed": "パスワードを更新できませんでした"
+    },
+    "delete": {
+      "title": "アカウントを削除",
+      "description": "アカウントを削除すると、すべてのデータが完全に削除されます",
+      "confirmTitle": "本当によろしいですか？",
+      "confirmBody": "この操作は元に戻せません。アカウントは完全に削除され、すべてのデータがサーバーから消去されます。",
+      "cancel": "キャンセル",
+      "deleting": "削除中...",
+      "failed": "アカウントを削除できませんでした"
+    },
+    "billing": {
+      "title": "請求と購入履歴",
+      "loading": "購入履歴を読み込み中...",
+      "description": "過去の購入を確認し、領収書をダウンロードできます",
+      "empty": "まだミステリーパッケージを購入していません。",
+      "createFirst": "最初のミステリーを作成",
+      "viewPackage": "パッケージを見る",
+      "helpTitle": "請求についてお困りですか？",
+      "helpBody": "返金のご希望や請求に関するご質問は、サポートまでご連絡ください。",
+      "contactSupport": "サポートに連絡",
+      "fallbackTitle": "ミステリーパッケージ"
+    }
+  },
+  "emailVerification": {
+    "title": "すべての機能を使うには、メールアドレスを認証してください",
+    "body": "今でもミステリーを探したり作成したりできますが、パッケージの購入とダウンロードにはメール認証が必要です。",
+    "resend": "認証メールを再送信",
+    "sending": "送信中...",
+    "dismiss": "通知を閉じる",
+    "resendFailed": "メールを再送信できませんでした: {{message}}",
+    "resendSent": "認証メールを送信しました。受信トレイをご確認ください。",
+    "unexpected": "予期しないエラーが発生しました。もう一度お試しください。"
+  },
+  "a11y": {
+    "skipToContent": "メインコンテンツへ移動"
+  },
+  "dashboardFilters": {
+    "searchPlaceholder": "タイトルまたはテーマで検索...",
+    "sortBy": "並べ替え:",
+    "newest": "新しい順",
+    "oldest": "古い順",
+    "lastUpdated": "最終更新順",
+    "filterByStatus": "ステータスで絞り込み:",
+    "all": "すべて",
+    "draft": "下書き",
+    "published": "公開済み",
+    "archived": "アーカイブ済み"
+  },
+  "homeSections": {
+    "howItWorks": "ご利用の流れ",
+    "howItWorksSubtitle": "完璧な謎解きマーダーミステリーまで、4つの簡単なステップ",
+    "ctaBlurb": "テーマとゲストリストに合わせた、あなただけのマーダーミステリーパーティーを作成できます。",
+    "freeLead": "まずは無料で始めたいですか？",
+    "freeLink": "無料のマーダーミステリーテンプレートを見る",
+    "corporateLead": "職場でのイベントをお考えですか？",
+    "corporateLink": "企業向けマーダーミステリーパーティーのガイドを見る",
+    "scriptLead": "ゼロから自分で作りたいですか？",
+    "scriptLink": "マーダーミステリーのテンプレートガイドを使う",
+    "castLead": "配役にお困りですか？",
+    "castLink": "マーダーミステリーパーティーのキャラクター案を見る"
+  },
+  "packageFeedback": {
+    "thanks": "ご意見をお寄せいただきありがとうございます！",
+    "title": "ミステリーパーティーはいかがでしたか？",
+    "subtitle": "ご意見はサービス向上に役立ちます！"
+  },
+  "toastsUi": {
+    "auth": {
+      "wrongCredentials": "メールアドレスまたはパスワードが正しくありません。もう一度お試しください。",
+      "signInFailed": "ログインできませんでした: {{message}}",
+      "signedIn": "ログインしました！",
+      "invalidEmail": "有効なメールアドレスを入力してください。",
+      "alreadyRegistered": "このメールアドレスはすでに登録されています。ログインをお試しください。",
+      "signUpFailed": "アカウントを作成できませんでした: {{message}}",
+      "accountCreatedVerify": "アカウントを作成しました。メールを確認して認証すると、すべての機能が使えます。",
+      "accountCreated": "アカウントを作成しました。ログイン済みです。",
+      "resetFailed": "パスワードをリセットできませんでした: {{message}}",
+      "resetSent": "パスワードのリセット手順をメールで送信しました。",
+      "signOutFailed": "ログアウトできませんでした: {{message}}",
+      "signedOut": "ログアウトしました。",
+      "oauthError": "OAuthエラー: {{message}}",
+      "authFailed": "認証に失敗しました: {{message}}"
+    },
+    "hero": {
+      "needDescription": "ミステリーの説明を入力してください"
+    },
+    "generic": {
+      "somethingWrong": "問題が発生しました。もう一度お試しください。"
+    },
+    "mystery": {
+      "purchaseSuccess": "購入が完了しました。このミステリーパッケージをすべてご利用いただけます。",
+      "loadFailed": "ミステリーを読み込めませんでした",
+      "loadAssignmentsFailed": "既存の割り当てを読み込めませんでした"
+    },
+    "character": {
+      "needName": "キャラクターには名前が必要です",
+      "saveFailed": "キャラクターを保存できませんでした: {{message}}",
+      "saveUnexpected": "予期しないエラーのため、キャラクターを保存できませんでした",
+      "nameNotFound": "テキストからキャラクター名を特定できませんでした",
+      "processFailed": "キャラクターのテキストを処理できませんでした"
+    }
   }
 }

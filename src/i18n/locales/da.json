@@ -690,7 +690,12 @@
     "mysteryStyleDetectiveLabel": "Detektivstil (Klassisk)",
     "mysteryStyleDetectiveDescription": "Værten kender løsningen fra starten og spiller detektiven, der guider spillerne med spor og hints mod afsløringen.",
     "startChat": "Start AI-chat",
-    "startingChat": "Starter chat..."
+    "startingChat": "Starter chat...",
+    "validation": {
+      "minPlayers": "Mindst 4 spillere påkrævet",
+      "maxPlayers": "Højst 35 spillere tilladt",
+      "scriptType": "Vælg en manustype"
+    }
   },
   "supportPage": {
     "title": "Supportcenter",
@@ -1141,6 +1146,7 @@
       "items": [
         "Dette er et engangskøb for netop denne mysteriepakke",
         "Din rollebesætnings størrelse fastlægges, når mysteriet genereres — hver karakter kan redigeres fuldt ud bagefter, men at tilføje eller fjerne mistænkte-karakterer kræver en ny generering. Har du flere gæster end karakterer? De kan deltage som med-efterforskere på detektivens hold (se værtsguiden).",
+        "Hvis du omdøber en karakter, opdateres kun karakterlisten – navnet ændres ikke i rundemanuskripterne, beviserne eller værtsguiden. Det gøres bedst før din første gennemlæsning, ikke som en sen rettelse.",
         "Du får permanent adgang til at downloade alle materialer",
         "Indholdet er kun til personlig brug, ikke til kommerciel videredistribution",
         "Brug for hjælp? Kontakt vores support på {{email}}"
@@ -1978,5 +1984,144 @@
     "button": "Udskriv beviskort",
     "roundLabel": "Bevis — Runde {{n}}",
     "cardOf": "Kort {{i}} af {{total}}"
+  },
+  "accountSettings": {
+    "profile": {
+      "title": "Profiloplysninger",
+      "description": "Opdater dine personlige oplysninger, og hvordan de vises på din konto",
+      "fullName": "Fulde navn",
+      "namePlaceholder": "Dit navn",
+      "nameRequired": "Navn er påkrævet",
+      "nameTooShort": "Navnet skal være mindst 2 tegn",
+      "nameTooLong": "Navnet skal være kortere end 50 tegn",
+      "nameGood": "Navnet ser godt ud!",
+      "email": "E-mail",
+      "emailNote": "Din e-mailadresse bruges til login og kan ikke ændres",
+      "save": "Gem ændringer",
+      "saving": "Gemmer...",
+      "updated": "Profilen er opdateret",
+      "updateFailed": "Profilen kunne ikke opdateres: {{message}}"
+    },
+    "password": {
+      "title": "Adgangskode",
+      "description": "Opdater din adgangskode for at holde din konto sikker",
+      "current": "Nuværende adgangskode",
+      "new": "Ny adgangskode",
+      "confirm": "Bekræft ny adgangskode",
+      "requirementsTitle": "Krav til adgangskoden:",
+      "reqLength": "Mindst 8 tegn",
+      "reqUpper": "Indeholder et stort bogstav",
+      "reqLower": "Indeholder et lille bogstav",
+      "reqNumber": "Indeholder et tal",
+      "reqSpecial": "Indeholder et specialtegn",
+      "match": "Adgangskoderne er ens",
+      "update": "Opdater adgangskode",
+      "updating": "Opdaterer...",
+      "allRequired": "Alle adgangskodefelter er påkrævet",
+      "meetReqs": "Opfyld alle krav til adgangskoden",
+      "currentWrong": "Den nuværende adgangskode er forkert",
+      "updated": "Adgangskoden er opdateret!",
+      "failed": "Adgangskoden kunne ikke opdateres"
+    },
+    "delete": {
+      "title": "Slet konto",
+      "description": "Når du sletter din konto, fjernes alle dine data permanent",
+      "confirmTitle": "Er du helt sikker?",
+      "confirmBody": "Denne handling kan ikke fortrydes. Din konto slettes permanent, og alle dine data fjernes fra vores servere.",
+      "cancel": "Annuller",
+      "deleting": "Sletter...",
+      "failed": "Kontoen kunne ikke slettes"
+    },
+    "billing": {
+      "title": "Fakturering og købshistorik",
+      "loading": "Indlæser din købshistorik...",
+      "description": "Se dine tidligere køb og download kvitteringer",
+      "empty": "Du har endnu ikke købt nogen mysteriepakker.",
+      "createFirst": "Opret dit første mysterium",
+      "viewPackage": "Se pakke",
+      "helpTitle": "Brug for hjælp med fakturering?",
+      "helpBody": "Kontakt support ved anmodninger om refusion eller spørgsmål om fakturering.",
+      "contactSupport": "Kontakt support",
+      "fallbackTitle": "Mysteriepakke"
+    }
+  },
+  "emailVerification": {
+    "title": "Bekræft din e-mail for at låse alle funktioner op",
+    "body": "Du kan allerede nu udforske og oprette mysterier, men du skal bekræfte din e-mail for at købe og downloade pakker.",
+    "resend": "Send bekræftelsesmail igen",
+    "sending": "Sender...",
+    "dismiss": "Luk beskeden",
+    "resendFailed": "E-mailen kunne ikke sendes igen: {{message}}",
+    "resendSent": "Bekræftelsesmail sendt! Tjek din indbakke.",
+    "unexpected": "Der opstod en uventet fejl. Prøv igen."
+  },
+  "a11y": {
+    "skipToContent": "Gå til hovedindholdet"
+  },
+  "dashboardFilters": {
+    "searchPlaceholder": "Søg efter titel eller tema...",
+    "sortBy": "Sortér efter:",
+    "newest": "Nyeste",
+    "oldest": "Ældste",
+    "lastUpdated": "Senest opdateret",
+    "filterByStatus": "Filtrér efter status:",
+    "all": "Alle",
+    "draft": "Kladde",
+    "published": "Udgivet",
+    "archived": "Arkiveret"
+  },
+  "homeSections": {
+    "howItWorks": "Sådan fungerer det",
+    "howItWorksSubtitle": "Fire enkle trin til dit perfekte mordmysterium",
+    "ctaBlurb": "Skab en skræddersyet mordmysterie-fest, der passer til dit tema og din gæsteliste.",
+    "freeLead": "Vil du hellere starte gratis?",
+    "freeLink": "Se vores gratis mordmysterie-skabeloner",
+    "corporateLead": "Planlægger du noget til kontoret?",
+    "corporateLink": "Se vores guide til mordmysterie-fest for virksomheder",
+    "scriptLead": "Vil du skrive dit eget fra bunden?",
+    "scriptLink": "Brug vores guide til mordmysterie-skabeloner",
+    "castLead": "Brug for hjælp til rollefordelingen?",
+    "castLink": "Udforsk idéer til karakterer til din mordmysterie-fest"
+  },
+  "packageFeedback": {
+    "thanks": "Tak for din feedback!",
+    "title": "Hvordan var din mordmysterie-fest?",
+    "subtitle": "Din feedback hjælper os med at blive bedre!"
+  },
+  "toastsUi": {
+    "auth": {
+      "wrongCredentials": "E-mailen eller adgangskoden er forkert. Prøv igen.",
+      "signInFailed": "Login mislykkedes: {{message}}",
+      "signedIn": "Du er logget ind!",
+      "invalidEmail": "Indtast en gyldig e-mailadresse.",
+      "alreadyRegistered": "Denne e-mail er allerede registreret. Prøv at logge ind i stedet.",
+      "signUpFailed": "Kontoen kunne ikke oprettes: {{message}}",
+      "accountCreatedVerify": "Konto oprettet! Tjek din e-mail for at bekræfte og låse alle funktioner op.",
+      "accountCreated": "Kontoen er oprettet! Du er nu logget ind.",
+      "resetFailed": "Adgangskoden kunne ikke nulstilles: {{message}}",
+      "resetSent": "Vejledning til at nulstille adgangskoden er sendt til din e-mail.",
+      "signOutFailed": "Log ud mislykkedes: {{message}}",
+      "signedOut": "Du er logget ud.",
+      "oauthError": "OAuth-fejl: {{message}}",
+      "authFailed": "Godkendelse mislykkedes: {{message}}"
+    },
+    "hero": {
+      "needDescription": "Skriv en beskrivelse af dit mysterium"
+    },
+    "generic": {
+      "somethingWrong": "Noget gik galt. Prøv igen."
+    },
+    "mystery": {
+      "purchaseSuccess": "Købet er gennemført! Du har nu fuld adgang til denne mysteriepakke.",
+      "loadFailed": "Mysteriet kunne ikke indlæses",
+      "loadAssignmentsFailed": "Eksisterende tildelinger kunne ikke indlæses"
+    },
+    "character": {
+      "needName": "Karakteren skal have et navn",
+      "saveFailed": "Karakteren kunne ikke gemmes: {{message}}",
+      "saveUnexpected": "Karakteren kunne ikke gemmes på grund af en uventet fejl",
+      "nameNotFound": "Karakterens navn kunne ikke udledes af teksten",
+      "processFailed": "Karakterteksten kunne ikke behandles"
+    }
   }
 }

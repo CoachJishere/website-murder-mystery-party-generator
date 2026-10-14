@@ -167,7 +167,7 @@ function StatsSection() {
 // HOW IT WORKS — Horizontal Scroll (desktop) / Stacked (mobile)
 // ═══════════════════════════════════════════════════════════════
 function HorizontalHowItWorks() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -239,10 +239,10 @@ function HorizontalHowItWorks() {
     return (
       <section className="py-16 px-4" style={{ backgroundColor: CHARCOAL }}>
         <h2 className="text-2xl sm:text-3xl text-center mb-4" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
-          HOW IT WORKS
+          {t("homeSections.howItWorks").toLocaleUpperCase(i18n.language)}
         </h2>
         <p className="text-base text-center mb-10" style={{ color: CREAM_70 }}>
-          Four simple steps to your perfect murder mystery
+          {t("homeSections.howItWorksSubtitle")}
         </p>
         <div className="relative max-w-sm mx-auto">
           <div className="space-y-8">
@@ -284,10 +284,10 @@ function HorizontalHowItWorks() {
       <div className="h-screen flex flex-col justify-center">
         <div className="px-6 mb-8">
           <h2 className="text-2xl sm:text-3xl md:text-5xl text-center mb-4" style={{ color: CREAM, fontFamily: "var(--font-display)" }}>
-            HOW IT WORKS
+            {t("homeSections.howItWorks").toLocaleUpperCase(i18n.language)}
           </h2>
           <p className="text-lg text-center" style={{ color: CREAM_70 }}>
-            Four simple steps to your perfect murder mystery
+            {t("homeSections.howItWorksSubtitle")}
           </p>
         </div>
         <div ref={trackRef} className="flex gap-8 px-6 will-change-transform">
@@ -302,7 +302,7 @@ function HorizontalHowItWorks() {
 // FEATURES — Staggered Zigzag Scroll Reveal
 // ═══════════════════════════════════════════════════════════════
 function FeaturesStaggered() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const features = [
     {
       title: t("features.step1.title"),
@@ -332,7 +332,7 @@ function FeaturesStaggered() {
           className="text-2xl sm:text-3xl md:text-5xl text-center mb-10 sm:mb-16"
           style={{ color: CREAM, fontFamily: "var(--font-display)" }}
         >
-          EVERYTHING YOU NEED INCLUDED
+          {t("features.title").toLocaleUpperCase(i18n.language)}
         </motion.h2>
         <div className="space-y-12 sm:space-y-24">
           {features.map((feature, i) => (
@@ -428,7 +428,7 @@ function TiltTestimonialCard({ text, author, initial: initChar, stars }: { text:
 }
 
 function TestimonialsParallax() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const testimonials = [
     {
       text: t("home.parallaxTestimonials.sophia.text"),
@@ -460,7 +460,7 @@ function TestimonialsParallax() {
           className="text-2xl sm:text-3xl md:text-5xl text-center mb-8 sm:mb-12"
           style={{ color: CREAM, fontFamily: "var(--font-display)" }}
         >
-          WHAT OTHERS ARE SAYING
+          {t("testimonials.title").toLocaleUpperCase(i18n.language)}
         </motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6" style={{ perspective: "1000px" }}>
           {testimonials.map((t, i) => <TiltTestimonialCard key={i} {...t} />)}
@@ -494,33 +494,33 @@ function SupportCTA() {
           {t("support.button")}
         </Link>
         <p className="mt-6 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
-          Build a custom murder mystery party tailored to your theme and guest list.
+          {t("homeSections.ctaBlurb")}
         </p>
         <p className="mt-2 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
-          Prefer to start free?{" "}
+          {t("homeSections.freeLead")}{" "}
           <Link to="/blog/free-murder-mystery-games-printable" className="underline" style={{ color: CREAM }}>
-            Browse our free murder mystery templates
+            {t("homeSections.freeLink")}
           </Link>
           .
         </p>
         <p className="mt-2 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
-          Planning something for the office?{" "}
+          {t("homeSections.corporateLead")}{" "}
           <Link to="/blog/murder-mystery-party-for-corporate-events" className="underline" style={{ color: CREAM }}>
-            See our corporate murder mystery party guide
+            {t("homeSections.corporateLink")}
           </Link>
           .
         </p>
         <p className="mt-2 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
-          Writing your own from scratch?{" "}
+          {t("homeSections.scriptLead")}{" "}
           <Link to="/blog/murder-mystery-party-script-template-guide" className="underline" style={{ color: CREAM }}>
-            Use our murder mystery template guide
+            {t("homeSections.scriptLink")}
           </Link>
           .
         </p>
         <p className="mt-2 text-sm sm:text-base" style={{ color: CREAM_70, fontFamily: "var(--font-body)" }}>
-          Need help casting the cast?{" "}
+          {t("homeSections.castLead")}{" "}
           <Link to="/blog/murder-mystery-party-character-ideas" className="underline" style={{ color: CREAM }}>
-            Explore murder mystery party character ideas
+            {t("homeSections.castLink")}
           </Link>
           .
         </p>

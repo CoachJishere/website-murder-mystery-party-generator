@@ -690,7 +690,12 @@
     "mysteryStyleDetectiveLabel": "Detektiv-Stil",
     "mysteryStyleDetectiveDescription": "Der Gastgeber kennt die Lösung von Anfang an und spielt den Detektiv, der die Spieler mit Hinweisen und Tipps zur Auflösung führt.",
     "startChat": "Chat mit KI starten",
-    "startingChat": "Chat wird gestartet..."
+    "startingChat": "Chat wird gestartet...",
+    "validation": {
+      "minPlayers": "Mindestens 4 Spieler erforderlich",
+      "maxPlayers": "Höchstens 35 Spieler erlaubt",
+      "scriptType": "Bitte wähle eine Skriptart"
+    }
   },
   "supportPage": {
     "title": "Support-Center",
@@ -1153,6 +1158,7 @@
       "items": [
         "Dies ist ein einmaliger Kauf für dieses spezifische Mysterienpaket",
         "Die Größe Ihrer Besetzung wird bei der Generierung des Mysteriums festgelegt — jeder Charakter ist danach vollständig bearbeitbar, aber das Hinzufügen oder Entfernen von Verdächtigen-Charakteren erfordert eine erneute Generierung. Mehr Gäste als Charaktere? Sie können als Mit-Ermittler im Team des Detektivs mitmachen (siehe Gastgeberanleitung).",
+        "Das Umbenennen eines Charakters ändert nur die Charakterliste – der Name wird nicht in den Rundenskripten, Hinweisen oder im Gastgeber-Leitfaden angepasst. Am besten vor dem ersten Durchlesen erledigen, nicht als späte Korrektur.",
         "Sie haben dauerhaften Zugang zum Herunterladen aller Materialien",
         "Der Inhalt ist nur für den persönlichen Gebrauch bestimmt, nicht für die kommerzielle Weitergabe",
         "Benötigen Sie Hilfe? Kontaktieren Sie unseren Support unter {{email}}"
@@ -1978,5 +1984,144 @@
     "button": "Beweiskarten drucken",
     "roundLabel": "Beweis — Runde {{n}}",
     "cardOf": "Karte {{i}} von {{total}}"
+  },
+  "accountSettings": {
+    "profile": {
+      "title": "Profilinformationen",
+      "description": "Aktualisiere deine persönlichen Daten und wie sie in deinem Konto erscheinen",
+      "fullName": "Vollständiger Name",
+      "namePlaceholder": "Dein Name",
+      "nameRequired": "Der Name ist erforderlich",
+      "nameTooShort": "Der Name muss mindestens 2 Zeichen lang sein",
+      "nameTooLong": "Der Name muss kürzer als 50 Zeichen sein",
+      "nameGood": "Der Name sieht gut aus!",
+      "email": "E-Mail",
+      "emailNote": "Deine E-Mail-Adresse wird für die Anmeldung verwendet und kann nicht geändert werden",
+      "save": "Änderungen speichern",
+      "saving": "Wird gespeichert...",
+      "updated": "Profil erfolgreich aktualisiert",
+      "updateFailed": "Profil konnte nicht aktualisiert werden: {{message}}"
+    },
+    "password": {
+      "title": "Passwort",
+      "description": "Aktualisiere dein Passwort, um dein Konto zu schützen",
+      "current": "Aktuelles Passwort",
+      "new": "Neues Passwort",
+      "confirm": "Neues Passwort bestätigen",
+      "requirementsTitle": "Passwortanforderungen:",
+      "reqLength": "Mindestens 8 Zeichen",
+      "reqUpper": "Enthält einen Großbuchstaben",
+      "reqLower": "Enthält einen Kleinbuchstaben",
+      "reqNumber": "Enthält eine Zahl",
+      "reqSpecial": "Enthält ein Sonderzeichen",
+      "match": "Die Passwörter stimmen überein",
+      "update": "Passwort aktualisieren",
+      "updating": "Wird aktualisiert...",
+      "allRequired": "Alle Passwortfelder sind erforderlich",
+      "meetReqs": "Bitte erfülle alle Passwortanforderungen",
+      "currentWrong": "Das aktuelle Passwort ist falsch",
+      "updated": "Passwort erfolgreich aktualisiert!",
+      "failed": "Passwort konnte nicht aktualisiert werden"
+    },
+    "delete": {
+      "title": "Konto löschen",
+      "description": "Wenn du dein Konto löschst, werden alle deine Daten endgültig entfernt",
+      "confirmTitle": "Bist du ganz sicher?",
+      "confirmBody": "Diese Aktion kann nicht rückgängig gemacht werden. Dein Konto wird endgültig gelöscht und alle deine Daten werden von unseren Servern entfernt.",
+      "cancel": "Abbrechen",
+      "deleting": "Wird gelöscht...",
+      "failed": "Konto konnte nicht gelöscht werden"
+    },
+    "billing": {
+      "title": "Abrechnung und Kaufverlauf",
+      "loading": "Dein Kaufverlauf wird geladen...",
+      "description": "Sieh dir deine bisherigen Käufe an und lade Belege herunter",
+      "empty": "Du hast noch keine Krimi-Pakete gekauft.",
+      "createFirst": "Erstelle dein erstes Rätsel",
+      "viewPackage": "Paket ansehen",
+      "helpTitle": "Hilfe bei der Abrechnung?",
+      "helpBody": "Bei Erstattungswünschen oder Fragen zur Abrechnung wende dich bitte an den Support.",
+      "contactSupport": "Support kontaktieren",
+      "fallbackTitle": "Krimi-Paket"
+    }
+  },
+  "emailVerification": {
+    "title": "Bestätige deine E-Mail, um alle Funktionen freizuschalten",
+    "body": "Du kannst schon jetzt Rätsel entdecken und erstellen, musst aber deine E-Mail bestätigen, um Pakete zu kaufen und herunterzuladen.",
+    "resend": "Bestätigungs-E-Mail erneut senden",
+    "sending": "Wird gesendet...",
+    "dismiss": "Hinweis schließen",
+    "resendFailed": "E-Mail konnte nicht erneut gesendet werden: {{message}}",
+    "resendSent": "Bestätigungs-E-Mail gesendet! Prüfe dein Postfach.",
+    "unexpected": "Es ist ein unerwarteter Fehler aufgetreten. Bitte versuche es erneut."
+  },
+  "a11y": {
+    "skipToContent": "Zum Hauptinhalt springen"
+  },
+  "dashboardFilters": {
+    "searchPlaceholder": "Nach Titel oder Thema suchen...",
+    "sortBy": "Sortieren nach:",
+    "newest": "Neueste",
+    "oldest": "Älteste",
+    "lastUpdated": "Zuletzt aktualisiert",
+    "filterByStatus": "Nach Status filtern:",
+    "all": "Alle",
+    "draft": "Entwurf",
+    "published": "Veröffentlicht",
+    "archived": "Archiviert"
+  },
+  "homeSections": {
+    "howItWorks": "So funktioniert's",
+    "howItWorksSubtitle": "Vier einfache Schritte zu deinem perfekten Mordrätsel",
+    "ctaBlurb": "Erstelle eine maßgeschneiderte Mordrätsel-Party für dein Thema und deine Gästeliste.",
+    "freeLead": "Lieber kostenlos starten?",
+    "freeLink": "Stöbere in unseren kostenlosen Mordrätsel-Vorlagen",
+    "corporateLead": "Planst du etwas für das Büro?",
+    "corporateLink": "Lies unseren Leitfaden für Mordrätsel-Partys im Unternehmen",
+    "scriptLead": "Möchtest du ein eigenes von Grund auf schreiben?",
+    "scriptLink": "Nutze unseren Leitfaden für Mordrätsel-Vorlagen",
+    "castLead": "Brauchst du Hilfe bei der Rollenverteilung?",
+    "castLink": "Entdecke Charakterideen für deine Mordrätsel-Party"
+  },
+  "packageFeedback": {
+    "thanks": "Danke für dein Feedback!",
+    "title": "Wie war deine Mordrätsel-Party?",
+    "subtitle": "Dein Feedback hilft uns, besser zu werden!"
+  },
+  "toastsUi": {
+    "auth": {
+      "wrongCredentials": "Die eingegebene E-Mail oder das Passwort ist falsch. Bitte versuche es erneut.",
+      "signInFailed": "Anmeldung fehlgeschlagen: {{message}}",
+      "signedIn": "Erfolgreich angemeldet!",
+      "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
+      "alreadyRegistered": "Diese E-Mail ist bereits registriert. Versuche dich stattdessen anzumelden.",
+      "signUpFailed": "Konto konnte nicht erstellt werden: {{message}}",
+      "accountCreatedVerify": "Konto erstellt! Bestätige deine E-Mail, um alle Funktionen freizuschalten.",
+      "accountCreated": "Konto erfolgreich erstellt! Du bist jetzt angemeldet.",
+      "resetFailed": "Passwort konnte nicht zurückgesetzt werden: {{message}}",
+      "resetSent": "Die Anleitung zum Zurücksetzen des Passworts wurde an deine E-Mail gesendet.",
+      "signOutFailed": "Abmeldung fehlgeschlagen: {{message}}",
+      "signedOut": "Du wurdest abgemeldet.",
+      "oauthError": "OAuth-Fehler: {{message}}",
+      "authFailed": "Authentifizierung fehlgeschlagen: {{message}}"
+    },
+    "hero": {
+      "needDescription": "Bitte gib eine Beschreibung für dein Rätsel ein"
+    },
+    "generic": {
+      "somethingWrong": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    },
+    "mystery": {
+      "purchaseSuccess": "Kauf erfolgreich! Du hast jetzt vollen Zugriff auf dieses Krimi-Paket.",
+      "loadFailed": "Das Rätsel konnte nicht geladen werden",
+      "loadAssignmentsFailed": "Bestehende Zuweisungen konnten nicht geladen werden"
+    },
+    "character": {
+      "needName": "Der Charakter braucht einen Namen",
+      "saveFailed": "Charakter konnte nicht gespeichert werden: {{message}}",
+      "saveUnexpected": "Der Charakter konnte wegen eines unerwarteten Fehlers nicht gespeichert werden",
+      "nameNotFound": "Der Charaktername konnte nicht aus dem Text ermittelt werden",
+      "processFailed": "Der Charaktertext konnte nicht verarbeitet werden"
+    }
   }
 }

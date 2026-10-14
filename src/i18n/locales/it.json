@@ -690,7 +690,12 @@
     "mysteryStyleDetectiveLabel": "Stile Investigativo (Classico)",
     "mysteryStyleDetectiveDescription": "L'host conosce la soluzione dall'inizio e gioca come detective, guidando i giocatori con indizi e suggerimenti verso la rivelazione.",
     "startChat": "Avvia chat con AI",
-    "startingChat": "Avvio chat..."
+    "startingChat": "Avvio chat...",
+    "validation": {
+      "minPlayers": "Servono almeno 4 giocatori",
+      "maxPlayers": "Sono ammessi al massimo 35 giocatori",
+      "scriptType": "Seleziona un tipo di copione"
+    }
   },
   "supportPage": {
     "title": "Centro assistenza",
@@ -1153,6 +1158,7 @@
       "items": [
         "Questo è un acquisto una tantum per questo specifico pacchetto mistero",
         "La dimensione del cast viene fissata quando il mistero viene generato — ogni personaggio è completamente modificabile in seguito, ma aggiungere o rimuovere personaggi sospettati richiede una rigenerazione. Hai più ospiti che personaggi? Possono partecipare come co-investigatori nella squadra dell'investigatore (vedi la guida per l'organizzatore).",
+        "Rinominare un personaggio aggiorna solo l'elenco dei personaggi: il nome non cambia nei copioni dei turni, negli indizi o nella guida dell'ospite. Meglio farlo prima della prima lettura, non come correzione dell'ultimo minuto.",
         "Avrai accesso permanente ai download di tutti i materiali",
         "Il contenuto è solo per uso personale, non per distribuzione commerciale",
         "Hai bisogno di aiuto? Contatta il nostro supporto a {{email}}"
@@ -1978,5 +1984,144 @@
     "button": "Stampa le carte degli indizi",
     "roundLabel": "Indizio — Turno {{n}}",
     "cardOf": "Carta {{i}} di {{total}}"
+  },
+  "accountSettings": {
+    "profile": {
+      "title": "Informazioni del profilo",
+      "description": "Aggiorna le tue informazioni personali e come appaiono sul tuo account",
+      "fullName": "Nome completo",
+      "namePlaceholder": "Il tuo nome",
+      "nameRequired": "Il nome è obbligatorio",
+      "nameTooShort": "Il nome deve contenere almeno 2 caratteri",
+      "nameTooLong": "Il nome deve contenere meno di 50 caratteri",
+      "nameGood": "Il nome va bene!",
+      "email": "E-mail",
+      "emailNote": "Il tuo indirizzo e-mail serve per accedere e non può essere modificato",
+      "save": "Salva modifiche",
+      "saving": "Salvataggio...",
+      "updated": "Profilo aggiornato con successo",
+      "updateFailed": "Impossibile aggiornare il profilo: {{message}}"
+    },
+    "password": {
+      "title": "Password",
+      "description": "Aggiorna la password per proteggere il tuo account",
+      "current": "Password attuale",
+      "new": "Nuova password",
+      "confirm": "Conferma la nuova password",
+      "requirementsTitle": "Requisiti della password:",
+      "reqLength": "Almeno 8 caratteri",
+      "reqUpper": "Contiene una lettera maiuscola",
+      "reqLower": "Contiene una lettera minuscola",
+      "reqNumber": "Contiene un numero",
+      "reqSpecial": "Contiene un carattere speciale",
+      "match": "Le password coincidono",
+      "update": "Aggiorna password",
+      "updating": "Aggiornamento...",
+      "allRequired": "Tutti i campi password sono obbligatori",
+      "meetReqs": "Soddisfa tutti i requisiti della password",
+      "currentWrong": "La password attuale non è corretta",
+      "updated": "Password aggiornata con successo!",
+      "failed": "Impossibile aggiornare la password"
+    },
+    "delete": {
+      "title": "Elimina account",
+      "description": "Dopo l'eliminazione dell'account, tutti i tuoi dati verranno rimossi definitivamente",
+      "confirmTitle": "Sei assolutamente sicuro?",
+      "confirmBody": "Questa azione non può essere annullata. L'account verrà eliminato definitivamente e tutti i tuoi dati verranno rimossi dai nostri server.",
+      "cancel": "Annulla",
+      "deleting": "Eliminazione...",
+      "failed": "Impossibile eliminare l'account"
+    },
+    "billing": {
+      "title": "Fatturazione e cronologia acquisti",
+      "loading": "Caricamento della cronologia acquisti...",
+      "description": "Consulta gli acquisti passati e scarica le ricevute",
+      "empty": "Non hai ancora acquistato nessun pacchetto mistero.",
+      "createFirst": "Crea il tuo primo mistero",
+      "viewPackage": "Vedi pacchetto",
+      "helpTitle": "Hai bisogno di aiuto con la fatturazione?",
+      "helpBody": "Per richieste di rimborso o domande sulla fatturazione, contatta l'assistenza.",
+      "contactSupport": "Contatta l'assistenza",
+      "fallbackTitle": "Pacchetto mistero"
+    }
+  },
+  "emailVerification": {
+    "title": "Verifica la tua e-mail per sbloccare tutte le funzioni",
+    "body": "Puoi già esplorare e creare misteri, ma dovrai verificare la tua e-mail per acquistare e scaricare i pacchetti.",
+    "resend": "Reinvia e-mail di verifica",
+    "sending": "Invio...",
+    "dismiss": "Chiudi la notifica",
+    "resendFailed": "Impossibile reinviare l'e-mail: {{message}}",
+    "resendSent": "E-mail di verifica inviata! Controlla la posta in arrivo.",
+    "unexpected": "Si è verificato un errore imprevisto. Riprova."
+  },
+  "a11y": {
+    "skipToContent": "Vai al contenuto principale"
+  },
+  "dashboardFilters": {
+    "searchPlaceholder": "Cerca per titolo o tema...",
+    "sortBy": "Ordina per:",
+    "newest": "Più recenti",
+    "oldest": "Più vecchi",
+    "lastUpdated": "Ultimo aggiornamento",
+    "filterByStatus": "Filtra per stato:",
+    "all": "Tutti",
+    "draft": "Bozza",
+    "published": "Pubblicato",
+    "archived": "Archiviato"
+  },
+  "homeSections": {
+    "howItWorks": "Come funziona",
+    "howItWorksSubtitle": "Quattro semplici passi verso il tuo murder mystery perfetto",
+    "ctaBlurb": "Crea una serata murder mystery su misura per il tuo tema e i tuoi ospiti.",
+    "freeLead": "Preferisci iniziare gratis?",
+    "freeLink": "Sfoglia i nostri modelli murder mystery gratuiti",
+    "corporateLead": "Stai organizzando qualcosa per l'ufficio?",
+    "corporateLink": "Leggi la nostra guida al murder mystery aziendale",
+    "scriptLead": "Vuoi scrivere il tuo da zero?",
+    "scriptLink": "Usa la nostra guida ai modelli murder mystery",
+    "castLead": "Hai bisogno di aiuto per il cast?",
+    "castLink": "Scopri idee di personaggi per il tuo murder mystery"
+  },
+  "packageFeedback": {
+    "thanks": "Grazie per aver condiviso il tuo feedback!",
+    "title": "Com'è andata la tua serata murder mystery?",
+    "subtitle": "Il tuo feedback ci aiuta a migliorare!"
+  },
+  "toastsUi": {
+    "auth": {
+      "wrongCredentials": "L'e-mail o la password inserita non è corretta. Riprova.",
+      "signInFailed": "Accesso non riuscito: {{message}}",
+      "signedIn": "Accesso effettuato!",
+      "invalidEmail": "Inserisci un indirizzo e-mail valido.",
+      "alreadyRegistered": "Questa e-mail è già registrata. Prova ad accedere.",
+      "signUpFailed": "Impossibile creare l'account: {{message}}",
+      "accountCreatedVerify": "Account creato! Controlla la tua e-mail per verificarlo e sbloccare tutte le funzioni.",
+      "accountCreated": "Account creato con successo! Hai effettuato l'accesso.",
+      "resetFailed": "Impossibile reimpostare la password: {{message}}",
+      "resetSent": "Le istruzioni per reimpostare la password sono state inviate alla tua e-mail.",
+      "signOutFailed": "Disconnessione non riuscita: {{message}}",
+      "signedOut": "Disconnessione effettuata.",
+      "oauthError": "Errore OAuth: {{message}}",
+      "authFailed": "Autenticazione non riuscita: {{message}}"
+    },
+    "hero": {
+      "needDescription": "Inserisci una descrizione per il tuo mistero"
+    },
+    "generic": {
+      "somethingWrong": "Qualcosa è andato storto. Riprova."
+    },
+    "mystery": {
+      "purchaseSuccess": "Acquisto completato! Ora hai accesso completo a questo pacchetto mistero.",
+      "loadFailed": "Impossibile caricare il mistero",
+      "loadAssignmentsFailed": "Impossibile caricare le assegnazioni esistenti"
+    },
+    "character": {
+      "needName": "Il personaggio deve avere un nome",
+      "saveFailed": "Impossibile salvare il personaggio: {{message}}",
+      "saveUnexpected": "Impossibile salvare il personaggio a causa di un errore imprevisto",
+      "nameNotFound": "Impossibile determinare il nome del personaggio dal testo",
+      "processFailed": "Impossibile elaborare il testo del personaggio"
+    }
   }
 }

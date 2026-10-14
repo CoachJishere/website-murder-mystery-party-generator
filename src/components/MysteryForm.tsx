@@ -12,25 +12,25 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
 
-// Define the schema validation with updated scriptType enum:
-const formSchema = z.object({
+// Define the schema validation with updated scriptType enum. Messages are translated (ADR-0161), so the schema is built with t.
+const buildFormSchema = (t: (key: string) => string) => z.object({
   userRequest: z.string().optional(),
   theme: z.string().optional(),
   playerCount: z.coerce.number().int().min(4, {
-    message: "Minimum 4 players required"
+    message: t("mysteryForm.validation.minPlayers")
   }).max(35, {
-    message: "Maximum 35 players allowed"
+    message: t("mysteryForm.validation.maxPlayers")
   }),
   mysteryType: z.enum(["murder", "intrigue"]).default("murder"),
   mysteryStyle: z.enum(["character", "detective"]).default("detective"),
   hasAccomplice: z.boolean().default(false),
   scriptType: z.enum(["full", "pointForm", "both"], {
-    required_error: "Please select a script type"
+    required_error: t("mysteryForm.validation.scriptType")
   }),
   additionalDetails: z.string().optional()
 });
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<ReturnType<typeof buildFormSchema>>;
 
 interface MysteryFormProps {
   onSave: (data: FormData) => void;
@@ -49,7 +49,7 @@ const MysteryForm = ({
   console.log("initialData received:", initialData);
   
   const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(buildFormSchema(t)),
     defaultValues: {
       userRequest: initialData?.userRequest || "",
       theme: initialData?.theme || "",

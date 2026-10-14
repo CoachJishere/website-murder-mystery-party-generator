@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { persistAttributionToProfile } from "@/lib/attribution";
 import { useTranslation } from "react-i18next";
 
+import i18n from "@/i18n";
 const AuthCallback = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -32,7 +33,7 @@ const AuthCallback = () => {
         
         if (error) {
           console.error("OAuth error from URL:", { error, errorDescription });
-          toast.error(`OAuth error: ${errorDescription || error}`);
+          toast.error(i18n.t("toastsUi.auth.oauthError", { message: errorDescription || error }));
           navigate("/sign-in");
           return;
         }
@@ -64,7 +65,7 @@ const AuthCallback = () => {
         
         if (sessionError) {
           console.error("Session retrieval error:", sessionError);
-          toast.error(`Authentication failed: ${sessionError.message}`);
+          toast.error(i18n.t("toastsUi.auth.authFailed", { message: sessionError.message }));
           navigate("/sign-in");
           return;
         }

@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { toast } from "sonner";
 import { User, Check, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { useTranslation } from "react-i18next";
 
 interface ProfileSettingsProps {
   initialName: string;
@@ -13,6 +14,7 @@ interface ProfileSettingsProps {
 }
 
 const ProfileSettings = ({ initialName, email }: ProfileSettingsProps) => {
+  const { t } = useTranslation();
   const [name, setName] = useState(initialName);
   const [loading, setLoading] = useState(false);
   const [nameError, setNameError] = useState("");
@@ -20,13 +22,13 @@ const ProfileSettings = ({ initialName, email }: ProfileSettingsProps) => {
 
   const validateName = (value: string) => {
     if (!value.trim()) {
-      return "Name is required";
+      return t("accountSettings.profile.nameRequired");
     }
     if (value.trim().length < 2) {
-      return "Name must be at least 2 characters";
+      return t("accountSettings.profile.nameTooShort");
     }
     if (value.trim().length > 50) {
-      return "Name must be less than 50 characters";
+      return t("accountSettings.profile.nameTooLong");
     }
     return "";
   };
@@ -70,9 +72,9 @@ const ProfileSettings = ({ initialName, email }: ProfileSettingsProps) => {
       
       if (error) throw error;
       
-      toast.success("Profile updated successfully");
+      toast.success(t("accountSettings.profile.updated"));
     } catch (error: any) {
-      toast.error(`Failed to update profile: ${error.message}`);
+      toast.error(t("accountSettings.profile.updateFailed", { message: error.message }));
       console.error(error);
     } finally {
       setLoading(false);
@@ -85,23 +87,23 @@ const ProfileSettings = ({ initialName, email }: ProfileSettingsProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <User className="h-5 w-5" />
-          <span>Profile Information</span>
+          <span>{t("accountSettings.profile.title")}</span>
         </CardTitle>
         <CardDescription>
-          Update your personal information and how it appears on your account
+          {t("accountSettings.profile.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleProfileUpdate} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
+            <Label htmlFor="name">{t("accountSettings.profile.fullName")}</Label>
             <div className="relative">
               <Input
                 id="name"
                 value={name}
                 onChange={handleNameChange}
                 onBlur={handleNameBlur}
-                placeholder="Your name"
+                placeholder={t("accountSettings.profile.namePlaceholder")}
                 className={
                   nameTouched
                     ? nameError
@@ -131,13 +133,13 @@ const ProfileSettings = ({ initialName, email }: ProfileSettingsProps) => {
             {!nameError && nameTouched && (
               <p className="text-sm text-green-700 flex items-center gap-1">
                 <Check className="h-3 w-3" />
-                Name looks good!
+                {t("accountSettings.profile.nameGood")}
               </p>
             )}
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("accountSettings.profile.email")}</Label>
             <Input
               id="email"
               value={email}
@@ -145,12 +147,12 @@ const ProfileSettings = ({ initialName, email }: ProfileSettingsProps) => {
               className="bg-muted"
             />
             <p className="text-xs text-muted-foreground">
-              Your email address is used for login and cannot be changed
+              {t("accountSettings.profile.emailNote")}
             </p>
           </div>
           
           <Button type="submit" disabled={loading}>
-            {loading ? "Saving..." : "Save Changes"}
+            {loading ? t("accountSettings.profile.saving") : t("accountSettings.profile.save")}
           </Button>
         </form>
       </CardContent>

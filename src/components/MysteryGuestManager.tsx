@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { Loader2 } from "lucide-react";
 import { trackCharacterAssignment } from "@/lib/analytics";
 
+import i18n from "@/i18n";
 interface CharacterAssignment {
   id?: string;
   character_id: string;
@@ -166,7 +167,7 @@ const MysteryGuestManager: React.FC<MysteryGuestManagerProps> = ({
       setAssignments(newAssignments);
     } catch (error) {
       console.error('Error loading assignments:', error);
-      toast.error('Failed to load existing assignments');
+      toast.error(i18n.t("toastsUi.mystery.loadAssignmentsFailed"));
     }
   };
 

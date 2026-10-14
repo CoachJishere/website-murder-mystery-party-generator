@@ -690,7 +690,12 @@
     "mysteryStyleDetectiveLabel": "Detektivstil (Klassisk)",
     "mysteryStyleDetectiveDescription": "Värden känner till lösningen från början och spelar detektiven, som guidar spelarna med ledtrådar och tips mot avslöjandet.",
     "startChat": "Starta AI-chatt",
-    "startingChat": "Startar chatt..."
+    "startingChat": "Startar chatt...",
+    "validation": {
+      "minPlayers": "Minst 4 spelare krävs",
+      "maxPlayers": "Högst 35 spelare tillåts",
+      "scriptType": "Välj en manustyp"
+    }
   },
   "supportPage": {
     "title": "Supportcenter",
@@ -1141,6 +1146,7 @@
       "items": [
         "Detta är ett engångsköp för just detta mysteriepaket",
         "Rollbesättningens storlek fastställs när mysteriet genereras — varje karaktär går att redigera fullt ut efteråt, men att lägga till eller ta bort misstänkta karaktärer kräver en ny generering. Har du fler gäster än karaktärer? De kan delta som medutredare i detektivens team (se värdguiden).",
+        "Att byta namn på en karaktär uppdaterar bara karaktärslistan – namnet ändras inte i rundmanusen, bevisen eller värdguiden. Gör det helst före din första genomläsning, inte som en sen rättelse.",
         "Du får permanent åtkomst till att ladda ner allt material",
         "Innehållet är endast för personligt bruk, inte för kommersiell vidaredistribution",
         "Behöver du hjälp? Kontakta vår support på {{email}}"
@@ -1978,5 +1984,144 @@
     "button": "Skriv ut beviskort",
     "roundLabel": "Bevis — Runda {{n}}",
     "cardOf": "Kort {{i}} av {{total}}"
+  },
+  "accountSettings": {
+    "profile": {
+      "title": "Profilinformation",
+      "description": "Uppdatera dina personuppgifter och hur de visas på ditt konto",
+      "fullName": "Fullständigt namn",
+      "namePlaceholder": "Ditt namn",
+      "nameRequired": "Namn krävs",
+      "nameTooShort": "Namnet måste vara minst 2 tecken",
+      "nameTooLong": "Namnet måste vara kortare än 50 tecken",
+      "nameGood": "Namnet ser bra ut!",
+      "email": "E-post",
+      "emailNote": "Din e-postadress används för inloggning och kan inte ändras",
+      "save": "Spara ändringar",
+      "saving": "Sparar...",
+      "updated": "Profilen har uppdaterats",
+      "updateFailed": "Det gick inte att uppdatera profilen: {{message}}"
+    },
+    "password": {
+      "title": "Lösenord",
+      "description": "Uppdatera ditt lösenord för att skydda ditt konto",
+      "current": "Nuvarande lösenord",
+      "new": "Nytt lösenord",
+      "confirm": "Bekräfta nytt lösenord",
+      "requirementsTitle": "Lösenordskrav:",
+      "reqLength": "Minst 8 tecken",
+      "reqUpper": "Innehåller en versal",
+      "reqLower": "Innehåller en gemen",
+      "reqNumber": "Innehåller en siffra",
+      "reqSpecial": "Innehåller ett specialtecken",
+      "match": "Lösenorden matchar",
+      "update": "Uppdatera lösenord",
+      "updating": "Uppdaterar...",
+      "allRequired": "Alla lösenordsfält krävs",
+      "meetReqs": "Uppfyll alla lösenordskrav",
+      "currentWrong": "Nuvarande lösenord är felaktigt",
+      "updated": "Lösenordet har uppdaterats!",
+      "failed": "Det gick inte att uppdatera lösenordet"
+    },
+    "delete": {
+      "title": "Radera konto",
+      "description": "När du raderar ditt konto tas alla dina data bort permanent",
+      "confirmTitle": "Är du helt säker?",
+      "confirmBody": "Det här kan inte ångras. Ditt konto raderas permanent och alla dina data tas bort från våra servrar.",
+      "cancel": "Avbryt",
+      "deleting": "Raderar...",
+      "failed": "Det gick inte att radera kontot"
+    },
+    "billing": {
+      "title": "Fakturering och köphistorik",
+      "loading": "Laddar din köphistorik...",
+      "description": "Se dina tidigare köp och ladda ner kvitton",
+      "empty": "Du har inte köpt några mysteriepaket än.",
+      "createFirst": "Skapa ditt första mysterium",
+      "viewPackage": "Visa paket",
+      "helpTitle": "Behöver du hjälp med faktureringen?",
+      "helpBody": "Kontakta supporten för återbetalningar eller frågor om fakturering.",
+      "contactSupport": "Kontakta supporten",
+      "fallbackTitle": "Mysteriepaket"
+    }
+  },
+  "emailVerification": {
+    "title": "Verifiera din e-post för att låsa upp alla funktioner",
+    "body": "Du kan utforska och skapa mysterier redan nu, men du måste verifiera din e-post för att köpa och ladda ner paket.",
+    "resend": "Skicka verifieringsmejlet igen",
+    "sending": "Skickar...",
+    "dismiss": "Stäng meddelandet",
+    "resendFailed": "Det gick inte att skicka mejlet igen: {{message}}",
+    "resendSent": "Verifieringsmejl skickat! Kolla din inkorg.",
+    "unexpected": "Ett oväntat fel inträffade. Försök igen."
+  },
+  "a11y": {
+    "skipToContent": "Hoppa till huvudinnehållet"
+  },
+  "dashboardFilters": {
+    "searchPlaceholder": "Sök efter titel eller tema...",
+    "sortBy": "Sortera efter:",
+    "newest": "Nyaste",
+    "oldest": "Äldsta",
+    "lastUpdated": "Senast uppdaterad",
+    "filterByStatus": "Filtrera efter status:",
+    "all": "Alla",
+    "draft": "Utkast",
+    "published": "Publicerad",
+    "archived": "Arkiverad"
+  },
+  "homeSections": {
+    "howItWorks": "Så fungerar det",
+    "howItWorksSubtitle": "Fyra enkla steg till ditt perfekta mordmysterium",
+    "ctaBlurb": "Skapa en skräddarsydd mordmysteriefest anpassad efter ditt tema och din gästlista.",
+    "freeLead": "Vill du hellre börja gratis?",
+    "freeLink": "Bläddra bland våra gratis mordmysterie-mallar",
+    "corporateLead": "Planerar du något för kontoret?",
+    "corporateLink": "Se vår guide till mordmysteriefest för företag",
+    "scriptLead": "Vill du skriva ditt eget från grunden?",
+    "scriptLink": "Använd vår guide till mordmysterie-mallar",
+    "castLead": "Behöver du hjälp med rollbesättningen?",
+    "castLink": "Utforska karaktärsidéer till din mordmysteriefest"
+  },
+  "packageFeedback": {
+    "thanks": "Tack för din feedback!",
+    "title": "Hur var din mordmysteriefest?",
+    "subtitle": "Din feedback hjälper oss att bli bättre!"
+  },
+  "toastsUi": {
+    "auth": {
+      "wrongCredentials": "E-postadressen eller lösenordet är felaktigt. Försök igen.",
+      "signInFailed": "Inloggningen misslyckades: {{message}}",
+      "signedIn": "Du är inloggad!",
+      "invalidEmail": "Ange en giltig e-postadress.",
+      "alreadyRegistered": "Den här e-postadressen är redan registrerad. Försök logga in i stället.",
+      "signUpFailed": "Det gick inte att skapa kontot: {{message}}",
+      "accountCreatedVerify": "Kontot har skapats! Kolla din e-post för att verifiera och låsa upp alla funktioner.",
+      "accountCreated": "Kontot har skapats! Du är nu inloggad.",
+      "resetFailed": "Det gick inte att återställa lösenordet: {{message}}",
+      "resetSent": "Instruktioner för att återställa lösenordet har skickats till din e-post.",
+      "signOutFailed": "Utloggningen misslyckades: {{message}}",
+      "signedOut": "Du är utloggad.",
+      "oauthError": "OAuth-fel: {{message}}",
+      "authFailed": "Autentiseringen misslyckades: {{message}}"
+    },
+    "hero": {
+      "needDescription": "Skriv en beskrivning av ditt mysterium"
+    },
+    "generic": {
+      "somethingWrong": "Något gick fel. Försök igen."
+    },
+    "mystery": {
+      "purchaseSuccess": "Köpet lyckades! Du har nu full åtkomst till det här mysteriepaketet.",
+      "loadFailed": "Det gick inte att ladda mysteriet",
+      "loadAssignmentsFailed": "Det gick inte att ladda befintliga tilldelningar"
+    },
+    "character": {
+      "needName": "Karaktären måste ha ett namn",
+      "saveFailed": "Det gick inte att spara karaktären: {{message}}",
+      "saveUnexpected": "Det gick inte att spara karaktären på grund av ett oväntat fel",
+      "nameNotFound": "Det gick inte att avgöra karaktärens namn utifrån texten",
+      "processFailed": "Det gick inte att bearbeta karaktärstexten"
+    }
   }
 }

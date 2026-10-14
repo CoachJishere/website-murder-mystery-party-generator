@@ -690,7 +690,12 @@
     "mysteryStyleDetectiveLabel": "Detective-Style",
     "mysteryStyleDetectiveDescription": "The host knows the solution from the start and plays the detective, guiding players with clues and hints toward the reveal.",
     "startChat": "Start AI Chat",
-    "startingChat": "Starting Chat..."
+    "startingChat": "Starting Chat...",
+    "validation": {
+      "minPlayers": "Minimum 4 players required",
+      "maxPlayers": "Maximum 35 players allowed",
+      "scriptType": "Please select a script type"
+    }
   },
   "supportPage": {
     "title": "Support Center",
@@ -1979,5 +1984,144 @@
     "button": "Print Evidence Cards",
     "roundLabel": "Evidence — Round {{n}}",
     "cardOf": "Card {{i}} of {{total}}"
+  },
+  "accountSettings": {
+    "profile": {
+      "title": "Profile Information",
+      "description": "Update your personal information and how it appears on your account",
+      "fullName": "Full Name",
+      "namePlaceholder": "Your name",
+      "nameRequired": "Name is required",
+      "nameTooShort": "Name must be at least 2 characters",
+      "nameTooLong": "Name must be less than 50 characters",
+      "nameGood": "Name looks good!",
+      "email": "Email",
+      "emailNote": "Your email address is used for login and cannot be changed",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "updated": "Profile updated successfully",
+      "updateFailed": "Failed to update profile: {{message}}"
+    },
+    "password": {
+      "title": "Password",
+      "description": "Update your password to keep your account secure",
+      "current": "Current Password",
+      "new": "New Password",
+      "confirm": "Confirm New Password",
+      "requirementsTitle": "Password Requirements:",
+      "reqLength": "At least 8 characters",
+      "reqUpper": "Contains uppercase letter",
+      "reqLower": "Contains lowercase letter",
+      "reqNumber": "Contains number",
+      "reqSpecial": "Contains special character",
+      "match": "Passwords match",
+      "update": "Update Password",
+      "updating": "Updating...",
+      "allRequired": "All password fields are required",
+      "meetReqs": "Please meet all password requirements",
+      "currentWrong": "Current password is incorrect",
+      "updated": "Password updated successfully!",
+      "failed": "Failed to update password"
+    },
+    "delete": {
+      "title": "Delete Account",
+      "description": "Once you delete your account, all of your data will be permanently removed",
+      "confirmTitle": "Are you absolutely sure?",
+      "confirmBody": "This action cannot be undone. This will permanently delete your account and remove all of your data from our servers.",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "failed": "Failed to delete account"
+    },
+    "billing": {
+      "title": "Billing & Purchase History",
+      "loading": "Loading your purchase history...",
+      "description": "View your past purchases and download receipts",
+      "empty": "You haven't purchased any mystery packages yet.",
+      "createFirst": "Create Your First Mystery",
+      "viewPackage": "View Package",
+      "helpTitle": "Need help with billing?",
+      "helpBody": "For refund requests or billing questions, please contact support.",
+      "contactSupport": "Contact Support",
+      "fallbackTitle": "Mystery Package"
+    }
+  },
+  "emailVerification": {
+    "title": "Verify your email to unlock all features",
+    "body": "You can explore and create mysteries now, but you'll need to verify your email to purchase and download mystery packages.",
+    "resend": "Resend Verification Email",
+    "sending": "Sending...",
+    "dismiss": "Dismiss notification",
+    "resendFailed": "Failed to resend email: {{message}}",
+    "resendSent": "Verification email sent! Check your inbox.",
+    "unexpected": "An unexpected error occurred. Please try again."
+  },
+  "a11y": {
+    "skipToContent": "Skip to main content"
+  },
+  "dashboardFilters": {
+    "searchPlaceholder": "Search by title or theme...",
+    "sortBy": "Sort by:",
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "lastUpdated": "Last Updated",
+    "filterByStatus": "Filter by Status:",
+    "all": "All",
+    "draft": "Draft",
+    "published": "Published",
+    "archived": "Archived"
+  },
+  "homeSections": {
+    "howItWorks": "How it works",
+    "howItWorksSubtitle": "Four simple steps to your perfect murder mystery",
+    "ctaBlurb": "Build a custom murder mystery party tailored to your theme and guest list.",
+    "freeLead": "Prefer to start free?",
+    "freeLink": "Browse our free murder mystery templates",
+    "corporateLead": "Planning something for the office?",
+    "corporateLink": "See our corporate murder mystery party guide",
+    "scriptLead": "Writing your own from scratch?",
+    "scriptLink": "Use our murder mystery template guide",
+    "castLead": "Need help casting the cast?",
+    "castLink": "Explore murder mystery party character ideas"
+  },
+  "packageFeedback": {
+    "thanks": "Thanks for sharing your feedback!",
+    "title": "How was your mystery party?",
+    "subtitle": "Your feedback helps us improve!"
+  },
+  "toastsUi": {
+    "auth": {
+      "wrongCredentials": "The email or password you entered is incorrect. Please try again.",
+      "signInFailed": "Failed to sign in: {{message}}",
+      "signedIn": "Signed in successfully!",
+      "invalidEmail": "Please enter a valid email address.",
+      "alreadyRegistered": "This email is already registered. Try signing in instead.",
+      "signUpFailed": "Failed to create account: {{message}}",
+      "accountCreatedVerify": "Account created! Check your email to verify and unlock all features.",
+      "accountCreated": "Account created successfully! You're now logged in.",
+      "resetFailed": "Failed to reset password: {{message}}",
+      "resetSent": "Password reset instructions sent to your email.",
+      "signOutFailed": "Failed to sign out: {{message}}",
+      "signedOut": "Signed out successfully.",
+      "oauthError": "OAuth error: {{message}}",
+      "authFailed": "Authentication failed: {{message}}"
+    },
+    "hero": {
+      "needDescription": "Please enter a description for your mystery"
+    },
+    "generic": {
+      "somethingWrong": "Something went wrong. Please try again."
+    },
+    "mystery": {
+      "purchaseSuccess": "Purchase successful! You now have full access to this mystery package.",
+      "loadFailed": "Failed to load mystery",
+      "loadAssignmentsFailed": "Failed to load existing assignments"
+    },
+    "character": {
+      "needName": "Character must have a name",
+      "saveFailed": "Failed to save character: {{message}}",
+      "saveUnexpected": "Failed to save character due to an unexpected error",
+      "nameNotFound": "Could not determine character name from text",
+      "processFailed": "Failed to process character text"
+    }
   }
 }

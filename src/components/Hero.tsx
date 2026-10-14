@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
 
+import i18n from "@/i18n";
 const Hero = () => {
   const { t } = useTranslation();
 
@@ -178,7 +179,7 @@ const Hero = () => {
 
   const handleSubmit = (value: string) => {
     if (!value.trim()) {
-      toast.error("Please enter a description for your mystery");
+      toast.error(i18n.t("toastsUi.hero.needDescription"));
       return;
     }
 
@@ -191,7 +192,7 @@ const Hero = () => {
         navigate(`/mystery/create?input=${encodeURIComponent(value)}`);
       } catch (error) {
         console.error("Error:", error);
-        toast.error("Something went wrong. Please try again.");
+        toast.error(i18n.t("toastsUi.generic.somethingWrong"));
       } finally {
         setIsCreating(false);
       }

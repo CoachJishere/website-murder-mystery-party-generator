@@ -2,6 +2,12 @@
 
 ## 2026-10-14
 
+### Feature: customer-facing UI strings moved to i18n in 13 languages (ADR-0161 Update 3)
+- **What:** 109 new keys in every locale file. Account settings (profile, password, delete account, billing; none of it used `useTranslation`), the email verification banner, skip link, dashboard filters, the package page feedback nudge, home page headings and SEO blurbs, form validation messages (`MysteryForm` schema built with `t`) and the toasts raised in `AuthContext`, `AuthCallback`, `MysteryView`, `Hero`, `MysteryGuestManager` and `characterService` (through `i18n.t`). Purchase dates use the active language (`src/utils/dateLocale.ts`).
+- **Also fixed:** the 12 non-English purchase pages were missing one note that English has (renaming a character does not update scripts); added.
+- **Verified:** key and placeholder parity across 13 locales, bundle builds, home page rendered in fr, de, ja and zh-CN with no English heading. Account pages not rendered (need a session).
+- **Not done:** Privacy, Cold Case, About, admin, previews, dead components. **Found, not changed:** the billing history shows every purchase as a fixed "$24.99".
+
 ### Improvement: reviewer finds wrong victim pronouns in any language; leftover-English report fixed (ADR-0103 Addendum 97 Update 1, ADR-0161)
 - **What:** the reviewer (`review-core.ts`) now gets a "VICTIM GENDER: neutral" line when the customer's concept writes the victim with a dual name, and its pronoun rule lists the masculine and feminine forms of the package language and says to read every sentence that mentions the victim. It found 5 of 38 wrong pronouns on the French sweep package because it judged from `master_context`, which slips into "il" itself, and had an English-only list. No new API call, `PROMPT_VERSION` deliberately unchanged (a bump would queue paid re-reviews of every package). Unit-tested, not yet validated live.
 - **Also:** the scaffold heal's `unmatched_english_lines` report now flags short reworded English directions ("Read before the reveal.") that the old 3-word test missed; none of our own 12 translations trips it; all 18 localized packages report 0.

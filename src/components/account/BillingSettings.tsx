@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
+import { dateLocaleFor } from "@/utils/dateLocale";
 
 interface Purchase {
   id: string;
@@ -15,6 +17,7 @@ interface Purchase {
 }
 
 const BillingSettings = () => {
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +43,7 @@ const BillingSettings = () => {
       // Map to purchase format
       const purchaseData: Purchase[] = (data || []).map((conv) => ({
         id: conv.id,
-        mystery_title: conv.title || 'Mystery Package',
+        mystery_title: conv.title || t('accountSettings.billing.fallbackTitle'),
         created_at: conv.created_at,
         amount: 24.99, // Fixed price
         conversation_id: conv.id
@@ -62,8 +65,8 @@ const BillingSettings = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Billing & Purchase History</CardTitle>
-          <CardDescription>Loading your purchase history...</CardDescription>
+          <CardTitle>{t("accountSettings.billing.title")}</CardTitle>
+          <CardDescription>{t("accountSettings.billing.loading")}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -72,19 +75,19 @@ const BillingSettings = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Billing & Purchase History</CardTitle>
+        <CardTitle>{t("accountSettings.billing.title")}</CardTitle>
         <CardDescription>
-          View your past purchases and download receipts
+          {t("accountSettings.billing.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {purchases.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground mb-4">
-              You haven't purchased any mystery packages yet.
+              {t("accountSettings.billing.empty")}
             </p>
             <Button asChild>
-              <a href="/mystery/create">Create Your First Mystery</a>
+              <a href="/mystery/create">{t("accountSettings.billing.createFirst")}</a>
             </Button>
           </div>
         ) : (
@@ -97,7 +100,7 @@ const BillingSettings = () => {
                 <div className="space-y-1 mb-4 md:mb-0">
                   <h3 className="font-semibold">{purchase.mystery_title}</h3>
                   <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm text-muted-foreground">
-                    <span>{format(new Date(purchase.created_at), 'MMM d, yyyy')}</span>
+                    <span>{format(new Date(purchase.created_at), 'PP', { locale: dateLocaleFor(i18n.language) })}</span>
                     <span className="hidden md:inline">•</span>
                     <span className="font-medium text-foreground">
                       ${purchase.amount.toFixed(2)}
@@ -111,7 +114,7 @@ const BillingSettings = () => {
                     onClick={() => handleViewMystery(purchase.conversation_id)}
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
-                    View Package
+                    {t("accountSettings.billing.viewPackage")}
                   </Button>
                 </div>
               </div>
@@ -121,12 +124,12 @@ const BillingSettings = () => {
 
         {purchases.length > 0 && (
           <div className="mt-8 pt-6 border-t">
-            <h4 className="font-semibold mb-2">Need help with billing?</h4>
+            <h4 className="font-semibold mb-2">{t("accountSettings.billing.helpTitle")}</h4>
             <p className="text-sm text-muted-foreground mb-4">
-              For refund requests or billing questions, please contact support.
+              {t("accountSettings.billing.helpBody")}
             </p>
             <Button variant="outline" asChild>
-              <a href="/support">Contact Support</a>
+              <a href="/support">{t("accountSettings.billing.contactSupport")}</a>
             </Button>
           </div>
         )}

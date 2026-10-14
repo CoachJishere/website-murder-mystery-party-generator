@@ -690,7 +690,12 @@
     "mysteryStyleDetectiveLabel": "Detective Stijl (Klassiek)",
     "mysteryStyleDetectiveDescription": "De gastheer kent de oplossing vanaf het begin en speelt de detective, die spelers met aanwijzingen en hints naar de ontknoping leidt.",
     "startChat": "Start AI Chat",
-    "startingChat": "Chat starten..."
+    "startingChat": "Chat starten...",
+    "validation": {
+      "minPlayers": "Minimaal 4 spelers vereist",
+      "maxPlayers": "Maximaal 35 spelers toegestaan",
+      "scriptType": "Kies een scripttype"
+    }
   },
   "supportPage": {
     "title": "Supportcentrum",
@@ -1153,6 +1158,7 @@
       "items": [
         "Dit is een eenmalige aankoop voor dit specifieke mysteriepakket",
         "De omvang van je cast wordt bepaald wanneer het mysterie wordt gegenereerd — elk personage is daarna volledig te bewerken, maar het toevoegen of verwijderen van verdachte personages vereist opnieuw genereren. Meer gasten dan personages? Ze kunnen meedoen als mede-onderzoekers in het team van de detective (zie de hostgids).",
+        "Een personage hernoemen werkt alleen de personagelijst bij: de naam wordt niet aangepast in de rondescripts, aanwijzingen of de gastgeversgids. Doe dit het best vóór je eerste doorlezing, niet als late correctie.",
         "U heeft permanent toegang om alle materialen te downloaden",
         "Inhoud is alleen voor persoonlijk gebruik, niet voor commerciële herdistributie",
         "Hulp nodig? Neem contact op met onze support via {{email}}"
@@ -1978,5 +1984,144 @@
     "button": "Bewijskaarten afdrukken",
     "roundLabel": "Bewijs — Ronde {{n}}",
     "cardOf": "Kaart {{i}} van {{total}}"
+  },
+  "accountSettings": {
+    "profile": {
+      "title": "Profielgegevens",
+      "description": "Werk je persoonlijke gegevens bij en hoe ze in je account worden weergegeven",
+      "fullName": "Volledige naam",
+      "namePlaceholder": "Je naam",
+      "nameRequired": "Naam is verplicht",
+      "nameTooShort": "Naam moet minstens 2 tekens bevatten",
+      "nameTooLong": "Naam moet korter zijn dan 50 tekens",
+      "nameGood": "Naam ziet er goed uit!",
+      "email": "E-mail",
+      "emailNote": "Je e-mailadres wordt gebruikt om in te loggen en kan niet worden gewijzigd",
+      "save": "Wijzigingen opslaan",
+      "saving": "Opslaan...",
+      "updated": "Profiel succesvol bijgewerkt",
+      "updateFailed": "Profiel bijwerken mislukt: {{message}}"
+    },
+    "password": {
+      "title": "Wachtwoord",
+      "description": "Werk je wachtwoord bij om je account veilig te houden",
+      "current": "Huidig wachtwoord",
+      "new": "Nieuw wachtwoord",
+      "confirm": "Bevestig nieuw wachtwoord",
+      "requirementsTitle": "Wachtwoordvereisten:",
+      "reqLength": "Minstens 8 tekens",
+      "reqUpper": "Bevat een hoofdletter",
+      "reqLower": "Bevat een kleine letter",
+      "reqNumber": "Bevat een cijfer",
+      "reqSpecial": "Bevat een speciaal teken",
+      "match": "Wachtwoorden komen overeen",
+      "update": "Wachtwoord bijwerken",
+      "updating": "Bijwerken...",
+      "allRequired": "Alle wachtwoordvelden zijn verplicht",
+      "meetReqs": "Voldoe aan alle wachtwoordvereisten",
+      "currentWrong": "Het huidige wachtwoord is onjuist",
+      "updated": "Wachtwoord succesvol bijgewerkt!",
+      "failed": "Wachtwoord bijwerken mislukt"
+    },
+    "delete": {
+      "title": "Account verwijderen",
+      "description": "Zodra je je account verwijdert, worden al je gegevens definitief gewist",
+      "confirmTitle": "Weet je het zeker?",
+      "confirmBody": "Dit kan niet ongedaan worden gemaakt. Je account wordt definitief verwijderd en al je gegevens worden van onze servers gewist.",
+      "cancel": "Annuleren",
+      "deleting": "Verwijderen...",
+      "failed": "Account verwijderen mislukt"
+    },
+    "billing": {
+      "title": "Facturatie en aankoopgeschiedenis",
+      "loading": "Je aankoopgeschiedenis wordt geladen...",
+      "description": "Bekijk je eerdere aankopen en download bonnetjes",
+      "empty": "Je hebt nog geen mysteriepakketten gekocht.",
+      "createFirst": "Maak je eerste mysterie",
+      "viewPackage": "Pakket bekijken",
+      "helpTitle": "Hulp nodig bij de facturatie?",
+      "helpBody": "Neem voor terugbetalingen of vragen over facturatie contact op met de support.",
+      "contactSupport": "Contact opnemen met support",
+      "fallbackTitle": "Mysteriepakket"
+    }
+  },
+  "emailVerification": {
+    "title": "Verifieer je e-mail om alle functies te ontgrendelen",
+    "body": "Je kunt nu al mysteries ontdekken en maken, maar je moet je e-mail verifiëren om pakketten te kopen en te downloaden.",
+    "resend": "Verificatiemail opnieuw versturen",
+    "sending": "Versturen...",
+    "dismiss": "Melding sluiten",
+    "resendFailed": "E-mail opnieuw versturen mislukt: {{message}}",
+    "resendSent": "Verificatiemail verstuurd! Controleer je inbox.",
+    "unexpected": "Er is een onverwachte fout opgetreden. Probeer het opnieuw."
+  },
+  "a11y": {
+    "skipToContent": "Ga naar de hoofdinhoud"
+  },
+  "dashboardFilters": {
+    "searchPlaceholder": "Zoek op titel of thema...",
+    "sortBy": "Sorteren op:",
+    "newest": "Nieuwste",
+    "oldest": "Oudste",
+    "lastUpdated": "Laatst bijgewerkt",
+    "filterByStatus": "Filteren op status:",
+    "all": "Alle",
+    "draft": "Concept",
+    "published": "Gepubliceerd",
+    "archived": "Gearchiveerd"
+  },
+  "homeSections": {
+    "howItWorks": "Hoe het werkt",
+    "howItWorksSubtitle": "Vier eenvoudige stappen naar je perfecte moordmysterie",
+    "ctaBlurb": "Maak een moordmysterieparty op maat, afgestemd op jouw thema en gastenlijst.",
+    "freeLead": "Liever gratis beginnen?",
+    "freeLink": "Bekijk onze gratis moordmysterie-sjablonen",
+    "corporateLead": "Organiseer je iets voor op kantoor?",
+    "corporateLink": "Lees onze gids voor een moordmysterieparty op kantoor",
+    "scriptLead": "Wil je er zelf een helemaal vanaf nul schrijven?",
+    "scriptLink": "Gebruik onze gids voor moordmysterie-sjablonen",
+    "castLead": "Hulp nodig bij de rolverdeling?",
+    "castLink": "Ontdek ideeën voor personages voor je moordmysterieparty"
+  },
+  "packageFeedback": {
+    "thanks": "Bedankt voor je feedback!",
+    "title": "Hoe was je moordmysterieparty?",
+    "subtitle": "Je feedback helpt ons verbeteren!"
+  },
+  "toastsUi": {
+    "auth": {
+      "wrongCredentials": "Het e-mailadres of wachtwoord is onjuist. Probeer het opnieuw.",
+      "signInFailed": "Inloggen mislukt: {{message}}",
+      "signedIn": "Je bent ingelogd!",
+      "invalidEmail": "Voer een geldig e-mailadres in.",
+      "alreadyRegistered": "Dit e-mailadres is al geregistreerd. Probeer in te loggen.",
+      "signUpFailed": "Account aanmaken mislukt: {{message}}",
+      "accountCreatedVerify": "Account aangemaakt! Controleer je e-mail om te verifiëren en alle functies te ontgrendelen.",
+      "accountCreated": "Account succesvol aangemaakt! Je bent nu ingelogd.",
+      "resetFailed": "Wachtwoord opnieuw instellen mislukt: {{message}}",
+      "resetSent": "De instructies om je wachtwoord opnieuw in te stellen zijn naar je e-mail gestuurd.",
+      "signOutFailed": "Uitloggen mislukt: {{message}}",
+      "signedOut": "Je bent uitgelogd.",
+      "oauthError": "OAuth-fout: {{message}}",
+      "authFailed": "Authenticatie mislukt: {{message}}"
+    },
+    "hero": {
+      "needDescription": "Voer een beschrijving in voor je mysterie"
+    },
+    "generic": {
+      "somethingWrong": "Er ging iets mis. Probeer het opnieuw."
+    },
+    "mystery": {
+      "purchaseSuccess": "Aankoop gelukt! Je hebt nu volledige toegang tot dit mysteriepakket.",
+      "loadFailed": "Mysterie laden mislukt",
+      "loadAssignmentsFailed": "Bestaande toewijzingen laden mislukt"
+    },
+    "character": {
+      "needName": "Het personage moet een naam hebben",
+      "saveFailed": "Personage opslaan mislukt: {{message}}",
+      "saveUnexpected": "Personage opslaan mislukt door een onverwachte fout",
+      "nameNotFound": "De naam van het personage kon niet uit de tekst worden afgeleid",
+      "processFailed": "Verwerken van de personagetekst mislukt"
+    }
   }
 }

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase";
+import i18n from "@/i18n";
 import { User, Session } from "@supabase/supabase-js";
 
 // Define the User type with additional fields
@@ -172,15 +173,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
-          toast.error("The email or password you entered is incorrect. Please try again.");
+          toast.error(i18n.t("toastsUi.auth.wrongCredentials"));
         } else {
-          toast.error(`Failed to sign in: ${error.message}`);
+          toast.error(i18n.t("toastsUi.auth.signInFailed", { message: error.message }));
         }
         throw error;
       }
       
       if (data?.user) {
-        toast.success("Signed in successfully!");
+        toast.success(i18n.t("toastsUi.auth.signedIn"));
         navigate("/dashboard");
       }
     } catch (error: any) {
@@ -196,7 +197,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       
       if (!email.includes('@') || !email.includes('.')) {
-        toast.error("Please enter a valid email address.");
+        toast.error(i18n.t("toastsUi.auth.invalidEmail"));
         return;
       }
       
@@ -211,9 +212,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (error) {
         if (error.message.includes("already registered")) {
-          toast.error("This email is already registered. Try signing in instead.");
+          toast.error(i18n.t("toastsUi.auth.alreadyRegistered"));
         } else {
-          toast.error(`Failed to create account: ${error.message}`);
+          toast.error(i18n.t("toastsUi.auth.signUpFailed", { message: error.message }));
         }
         throw error;
       }
@@ -224,13 +225,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (!hasSession) {
           // Email confirmation required by Supabase, but we'll let them explore anyway
-          toast.success("Account created! Check your email to verify and unlock all features.");
+          toast.success(i18n.t("toastsUi.auth.accountCreatedVerify"));
           // Manual session creation not needed - Supabase handles this
           // Just navigate to dashboard and let them explore
           navigate("/dashboard");
         } else {
           // Instant confirmation (OAuth or disabled email confirmation)
-          toast.success("Account created successfully! You're now logged in.");
+          toast.success(i18n.t("toastsUi.auth.accountCreated"));
           navigate("/dashboard");
         }
       }
@@ -251,11 +252,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       
       if (error) {
-        toast.error(`Failed to reset password: ${error.message}`);
+        toast.error(i18n.t("toastsUi.auth.resetFailed", { message: error.message }));
         throw error;
       }
       
-      toast.success("Password reset instructions sent to your email.");
+      toast.success(i18n.t("toastsUi.auth.resetSent"));
     } catch (error: any) {
       console.error("Password reset error:", error);
     } finally {
@@ -271,12 +272,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { error } = await supabase.auth.signOut();
       
       if (error) {
-        toast.error(`Failed to sign out: ${error.message}`);
+        toast.error(i18n.t("toastsUi.auth.signOutFailed", { message: error.message }));
         throw error;
       }
       
       navigate("/");
-      toast.success("Signed out successfully.");
+      toast.success(i18n.t("toastsUi.auth.signedOut"));
     } catch (error: any) {
       console.error("Sign-out error:", error);
     } finally {

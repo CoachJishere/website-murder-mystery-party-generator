@@ -27,6 +27,7 @@ import { trackMysteryCreation, trackGenerationCompleted, trackGenerationFailed }
 import GenerationProgress from "@/components/GenerationProgress";
 import { getGenerationTiming } from "@/utils/generationTiming";
 
+import i18n from "@/i18n";
 interface MysteryPackageData {
   title?: string;
   gameOverview?: string;
@@ -875,7 +876,7 @@ const MysteryView = () => {
         const purchaseStatus = urlParams.get('purchase');
         
         if (purchaseStatus === 'success') {
-          toast.success("Purchase successful! You now have full access to this mystery package.");
+          toast.success(i18n.t("toastsUi.mystery.purchaseSuccess"));
 
           // is_paid is set server-side by the Stripe webhook only (ADR-0033) —
           // client writes to it are blocked at the DB. The webhook almost always
@@ -904,7 +905,7 @@ const MysteryView = () => {
 
         if (error) {
           console.error("❌ [DEBUG] Error fetching mystery:", error);
-          toast.error("Failed to load mystery");
+          toast.error(i18n.t("toastsUi.mystery.loadFailed"));
           return;
         }
 
@@ -980,7 +981,7 @@ const MysteryView = () => {
         }
       } catch (error) {
         console.error("❌ [DEBUG] Error in fetchMystery:", error);
-        toast.error("Failed to load mystery");
+        toast.error(i18n.t("toastsUi.mystery.loadFailed"));
       } finally {
         setLoading(false);
       }

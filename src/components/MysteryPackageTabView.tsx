@@ -1170,7 +1170,7 @@ const MysteryPackageTabView = React.memo(({
                       style={{ backgroundColor: 'var(--color-red)', color: 'var(--color-cream)' }}
                     >
                       <Printer className="h-4 w-4 mr-2" />
-                      Print Evidence Cards
+                      {t('evidencePrint.button')}
                     </Button>
                   </div>
                 )}
@@ -1360,7 +1360,7 @@ const MysteryPackageTabView = React.memo(({
           "mt-6 text-center text-sm text-muted-foreground",
           isMobile && "mt-4 px-2"
         )}>
-          Thanks for sharing your feedback!
+          {t('packageFeedback.thanks')}
         </div>
       )}
 
@@ -1380,10 +1380,10 @@ const MysteryPackageTabView = React.memo(({
               <MessageSquare className="h-5 w-5 shrink-0" style={{ color: 'var(--color-red)' }} />
               <div>
                 <p className={cn("font-medium", isMobile && "text-sm")} style={{ color: 'var(--color-cream)' }}>
-                  How was your mystery party?
+                  {t('packageFeedback.title')}
                 </p>
                 <p className={cn("text-sm", isMobile && "text-xs")} style={{ color: 'var(--color-cream-muted)' }}>
-                  Your feedback helps us improve!
+                  {t('packageFeedback.subtitle')}
                 </p>
               </div>
             </div>

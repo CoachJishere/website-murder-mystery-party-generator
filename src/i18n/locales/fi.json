@@ -690,7 +690,12 @@
     "mysteryStyleDetectiveLabel": "Etsivä-Tyyli (Klassinen)",
     "mysteryStyleDetectiveDescription": "Isäntä tietää ratkaisun alusta asti ja pelaa etsivää, ohjaten pelaajia vihjeillä ja vinkeillä kohti paljastusta.",
     "startChat": "Aloita chat tekoälyn kanssa",
-    "startingChat": "Aloitetaan chat..."
+    "startingChat": "Aloitetaan chat...",
+    "validation": {
+      "minPlayers": "Vähintään 4 pelaajaa vaaditaan",
+      "maxPlayers": "Enintään 35 pelaajaa sallitaan",
+      "scriptType": "Valitse käsikirjoituksen tyyppi"
+    }
   },
   "supportPage": {
     "title": "Tukikeskus",
@@ -1153,6 +1158,7 @@
       "items": [
         "Tämä on kertaluonteinen osto tälle tietylle mysteeripaketille",
         "Hahmojen määrä lukitaan, kun mysteeri luodaan — jokaista hahmoa voi muokata täysin jälkikäteen, mutta epäiltyhahmojen lisääminen tai poistaminen vaatii uuden luomisen. Onko sinulla enemmän vieraita kuin hahmoja? He voivat liittyä apututkijoiksi etsivän tiimiin (katso isännöintiopas).",
+        "Hahmon nimen vaihtaminen päivittää vain hahmoluettelon – nimi ei muutu kierrosten käsikirjoituksissa, vihjeissä eikä isännän oppaassa. Se kannattaa tehdä ennen ensimmäistä läpilukua, ei myöhäisenä korjauksena.",
         "Saat pysyvän käyttöoikeuden kaikkien materiaalien lataamiseen",
         "Sisältö on tarkoitettu vain henkilökohtaiseen käyttöön, ei kaupalliseen jakeluun",
         "Tarvitsetko apua? Ota yhteyttä tukeemme osoitteessa {{email}}"
@@ -1978,5 +1984,144 @@
     "button": "Tulosta todistekortit",
     "roundLabel": "Todiste — Kierros {{n}}",
     "cardOf": "Kortti {{i}} / {{total}}"
+  },
+  "accountSettings": {
+    "profile": {
+      "title": "Profiilin tiedot",
+      "description": "Päivitä henkilötietosi ja se, miten ne näkyvät tililläsi",
+      "fullName": "Koko nimi",
+      "namePlaceholder": "Nimesi",
+      "nameRequired": "Nimi vaaditaan",
+      "nameTooShort": "Nimessä on oltava vähintään 2 merkkiä",
+      "nameTooLong": "Nimessä saa olla alle 50 merkkiä",
+      "nameGood": "Nimi näyttää hyvältä!",
+      "email": "Sähköposti",
+      "emailNote": "Sähköpostiosoitettasi käytetään kirjautumiseen, eikä sitä voi muuttaa",
+      "save": "Tallenna muutokset",
+      "saving": "Tallennetaan...",
+      "updated": "Profiili päivitetty",
+      "updateFailed": "Profiilin päivitys epäonnistui: {{message}}"
+    },
+    "password": {
+      "title": "Salasana",
+      "description": "Päivitä salasanasi pitääksesi tilisi turvassa",
+      "current": "Nykyinen salasana",
+      "new": "Uusi salasana",
+      "confirm": "Vahvista uusi salasana",
+      "requirementsTitle": "Salasanan vaatimukset:",
+      "reqLength": "Vähintään 8 merkkiä",
+      "reqUpper": "Sisältää ison kirjaimen",
+      "reqLower": "Sisältää pienen kirjaimen",
+      "reqNumber": "Sisältää numeron",
+      "reqSpecial": "Sisältää erikoismerkin",
+      "match": "Salasanat täsmäävät",
+      "update": "Päivitä salasana",
+      "updating": "Päivitetään...",
+      "allRequired": "Kaikki salasanakentät ovat pakollisia",
+      "meetReqs": "Täytä kaikki salasanan vaatimukset",
+      "currentWrong": "Nykyinen salasana on väärä",
+      "updated": "Salasana päivitetty!",
+      "failed": "Salasanan päivitys epäonnistui"
+    },
+    "delete": {
+      "title": "Poista tili",
+      "description": "Kun poistat tilisi, kaikki tietosi poistetaan pysyvästi",
+      "confirmTitle": "Oletko aivan varma?",
+      "confirmBody": "Tätä toimintoa ei voi perua. Tilisi poistetaan pysyvästi ja kaikki tietosi poistetaan palvelimiltamme.",
+      "cancel": "Peruuta",
+      "deleting": "Poistetaan...",
+      "failed": "Tilin poisto epäonnistui"
+    },
+    "billing": {
+      "title": "Laskutus ja ostohistoria",
+      "loading": "Ladataan ostohistoriaa...",
+      "description": "Katso aiemmat ostoksesi ja lataa kuitit",
+      "empty": "Et ole vielä ostanut yhtään mysteeripakettia.",
+      "createFirst": "Luo ensimmäinen mysteerisi",
+      "viewPackage": "Näytä paketti",
+      "helpTitle": "Tarvitsetko apua laskutukseen?",
+      "helpBody": "Ota yhteyttä tukeen hyvityspyynnöissä tai laskutuskysymyksissä.",
+      "contactSupport": "Ota yhteyttä tukeen",
+      "fallbackTitle": "Mysteeripaketti"
+    }
+  },
+  "emailVerification": {
+    "title": "Vahvista sähköpostisi avataksesi kaikki ominaisuudet",
+    "body": "Voit jo tutustua mysteereihin ja luoda niitä, mutta sinun on vahvistettava sähköpostisi ostaaksesi ja ladataksesi paketteja.",
+    "resend": "Lähetä vahvistussähköposti uudelleen",
+    "sending": "Lähetetään...",
+    "dismiss": "Sulje ilmoitus",
+    "resendFailed": "Sähköpostin uudelleenlähetys epäonnistui: {{message}}",
+    "resendSent": "Vahvistussähköposti lähetetty! Tarkista saapuneet.",
+    "unexpected": "Tapahtui odottamaton virhe. Yritä uudelleen."
+  },
+  "a11y": {
+    "skipToContent": "Siirry pääsisältöön"
+  },
+  "dashboardFilters": {
+    "searchPlaceholder": "Hae otsikolla tai teemalla...",
+    "sortBy": "Järjestä:",
+    "newest": "Uusimmat",
+    "oldest": "Vanhimmat",
+    "lastUpdated": "Viimeksi päivitetty",
+    "filterByStatus": "Suodata tilan mukaan:",
+    "all": "Kaikki",
+    "draft": "Luonnos",
+    "published": "Julkaistu",
+    "archived": "Arkistoitu"
+  },
+  "homeSections": {
+    "howItWorks": "Näin se toimii",
+    "howItWorksSubtitle": "Neljä helppoa vaihetta täydelliseen murhamysteeriisi",
+    "ctaBlurb": "Luo räätälöity murhamysteeri-illanvietto teemasi ja vieraslistasi mukaan.",
+    "freeLead": "Haluatko aloittaa ilmaiseksi?",
+    "freeLink": "Selaa ilmaisia murhamysteeripohjiamme",
+    "corporateLead": "Suunnitteletko jotain toimistolle?",
+    "corporateLink": "Katso yrityksille tarkoitettu murhamysteeri-opas",
+    "scriptLead": "Haluatko kirjoittaa omasi alusta alkaen?",
+    "scriptLink": "Käytä murhamysteeripohjien opastamme",
+    "castLead": "Tarvitsetko apua roolijakoon?",
+    "castLink": "Tutustu hahmoideoihin murhamysteeri-illanviettoosi"
+  },
+  "packageFeedback": {
+    "thanks": "Kiitos palautteestasi!",
+    "title": "Millainen illanvietto oli?",
+    "subtitle": "Palautteesi auttaa meitä kehittymään!"
+  },
+  "toastsUi": {
+    "auth": {
+      "wrongCredentials": "Sähköposti tai salasana on väärä. Yritä uudelleen.",
+      "signInFailed": "Kirjautuminen epäonnistui: {{message}}",
+      "signedIn": "Kirjautuminen onnistui!",
+      "invalidEmail": "Anna kelvollinen sähköpostiosoite.",
+      "alreadyRegistered": "Tämä sähköposti on jo rekisteröity. Yritä kirjautua sisään.",
+      "signUpFailed": "Tilin luominen epäonnistui: {{message}}",
+      "accountCreatedVerify": "Tili luotu! Vahvista sähköpostisi avataksesi kaikki ominaisuudet.",
+      "accountCreated": "Tili luotu! Olet nyt kirjautunut sisään.",
+      "resetFailed": "Salasanan palautus epäonnistui: {{message}}",
+      "resetSent": "Salasanan palautusohjeet on lähetetty sähköpostiisi.",
+      "signOutFailed": "Uloskirjautuminen epäonnistui: {{message}}",
+      "signedOut": "Olet kirjautunut ulos.",
+      "oauthError": "OAuth-virhe: {{message}}",
+      "authFailed": "Todennus epäonnistui: {{message}}"
+    },
+    "hero": {
+      "needDescription": "Kirjoita mysteerillesi kuvaus"
+    },
+    "generic": {
+      "somethingWrong": "Jokin meni pieleen. Yritä uudelleen."
+    },
+    "mystery": {
+      "purchaseSuccess": "Osto onnistui! Sinulla on nyt täysi pääsy tähän mysteeripakettiin.",
+      "loadFailed": "Mysteerin lataus epäonnistui",
+      "loadAssignmentsFailed": "Olemassa olevien määritysten lataus epäonnistui"
+    },
+    "character": {
+      "needName": "Hahmolla on oltava nimi",
+      "saveFailed": "Hahmon tallennus epäonnistui: {{message}}",
+      "saveUnexpected": "Hahmon tallennus epäonnistui odottamattoman virheen vuoksi",
+      "nameNotFound": "Hahmon nimeä ei voitu päätellä tekstistä",
+      "processFailed": "Hahmotekstin käsittely epäonnistui"
+    }
   }
 }

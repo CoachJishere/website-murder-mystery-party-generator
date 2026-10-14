@@ -7,21 +7,23 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { toast } from "sonner";
 import { KeyRound, Check, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { useTranslation } from "react-i18next";
 
 interface PasswordRequirement {
-  label: string;
+  labelKey: string;
   test: (password: string) => boolean;
 }
 
 const passwordRequirements: PasswordRequirement[] = [
-  { label: "At least 8 characters", test: (p) => p.length >= 8 },
-  { label: "Contains uppercase letter", test: (p) => /[A-Z]/.test(p) },
-  { label: "Contains lowercase letter", test: (p) => /[a-z]/.test(p) },
-  { label: "Contains number", test: (p) => /\d/.test(p) },
-  { label: "Contains special character", test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p) },
+  { labelKey: "accountSettings.password.reqLength", test: (p) => p.length >= 8 },
+  { labelKey: "accountSettings.password.reqUpper", test: (p) => /[A-Z]/.test(p) },
+  { labelKey: "accountSettings.password.reqLower", test: (p) => /[a-z]/.test(p) },
+  { labelKey: "accountSettings.password.reqNumber", test: (p) => /\d/.test(p) },
+  { labelKey: "accountSettings.password.reqSpecial", test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p) },
 ];
 
 const PasswordSettings = ({ email }: { email: string }) => {
+  const { t } = useTranslation();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -48,17 +50,17 @@ const PasswordSettings = ({ email }: { email: string }) => {
     e.preventDefault();
 
     if (!oldPassword || !newPassword || !confirmPassword) {
-      toast.error("All password fields are required");
+      toast.error(t("accountSettings.password.allRequired"));
       return;
     }
 
     if (!isPasswordValid) {
-      toast.error("Please meet all password requirements");
+      toast.error(t("accountSettings.password.meetReqs"));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      toast.error("New passwords do not match");
+      toast.error(t("accountSettings.password.newNoMatch"));
       return;
     }
 
@@ -70,7 +72,7 @@ const PasswordSettings = ({ email }: { email: string }) => {
         password: oldPassword,
       });
 
-      if (signInError) throw new Error("Current password is incorrect");
+      if (signInError) throw new Error(t("accountSettings.password.currentWrong"));
 
       // Update to new password
       const { error } = await supabase.auth.updateUser({
@@ -82,9 +84,9 @@ const PasswordSettings = ({ email }: { email: string }) => {
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      toast.success("Password updated successfully!");
+      toast.success(t("accountSettings.password.updated"));
     } catch (error: any) {
-      toast.error(error.message || "Failed to update password");
+      toast.error(error.message || t("accountSettings.password.failed"));
       console.error(error);
     } finally {
       setLoading(false);
@@ -96,16 +98,16 @@ const PasswordSettings = ({ email }: { email: string }) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <KeyRound className="h-5 w-5" />
-          <span>Password</span>
+          <span>{t("accountSettings.password.title")}</span>
         </CardTitle>
         <CardDescription>
-          Update your password to keep your account secure
+          {t("accountSettings.password.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handlePasswordUpdate} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="oldPassword">Current Password</Label>
+            <Label htmlFor="oldPassword">{t("accountSettings.password.current")}</Label>
             <Input
               id="oldPassword"
               type="password"
@@ -116,7 +118,7 @@ const PasswordSettings = ({ email }: { email: string }) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="newPassword">New Password</Label>
+            <Label htmlFor="newPassword">{t("accountSettings.password.new")}</Label>
             <Input
               id="newPassword"
               type="password"
@@ -130,7 +132,7 @@ const PasswordSettings = ({ email }: { email: string }) => {
             {newPassword && (
               <div className="mt-3 p-3 bg-muted/50 rounded-md space-y-2">
                 <p className="text-sm font-medium text-muted-foreground mb-2">
-                  Password Requirements:
+                  {t("accountSettings.password.requirementsTitle")}
                 </p>
                 {passwordStrength.requirements.map((req, index) => (
                   <div key={index} className="flex items-center gap-2 text-sm">
@@ -140,7 +142,7 @@ const PasswordSettings = ({ email }: { email: string }) => {
                       <X className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                     )}
                     <span className={req.met ? "text-green-700" : "text-muted-foreground"}>
-                      {req.label}
+                      {t(req.labelKey)}
                     </span>
                   </div>
                 ))}
@@ -149,7 +151,7 @@ const PasswordSettings = ({ email }: { email: string }) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm New Password</Label>
+            <Label htmlFor="confirmPassword">{t("accountSettings.password.confirm")}</Label>
             <Input
               id="confirmPassword"
               type="password"
@@ -169,12 +171,12 @@ const PasswordSettings = ({ email }: { email: string }) => {
                 {passwordsMatch ? (
                   <>
                     <Check className="h-4 w-4 text-green-600" />
-                    <span className="text-green-700">Passwords match</span>
+                    <span className="text-green-700">{t("accountSettings.password.match")}</span>
                   </>
                 ) : (
                   <>
                     <X className="h-4 w-4 text-red-600" />
-                    <span className="text-red-700">Passwords do not match</span>
+                    <span className="text-red-700">{t("common.validation.passwordMismatch")}</span>
                   </>
                 )}
               </div>
@@ -182,7 +184,7 @@ const PasswordSettings = ({ email }: { email: string }) => {
           </div>
           
           <Button type="submit" disabled={loading}>
-            {loading ? "Updating..." : "Update Password"}
+            {loading ? t("accountSettings.password.updating") : t("accountSettings.password.update")}
           </Button>
         </form>
       </CardContent>
