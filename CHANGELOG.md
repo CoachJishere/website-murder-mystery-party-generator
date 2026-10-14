@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Docs: neutral-pronoun detector tried and abandoned (ADR-0163 item 5)
+- **What:** a regex "pronoun within 30 characters after the name" check was prototyped two ways and measured; both are noise (37 names flagged in 20 packages; dual-name variant 2 to 68 hits per package, nearly all about another person). Not shipped; the prototype `_pronoun_scan` stays in the database (drop declined), commented as abandoned, with its migration file for parity.
+- **Why:** who a pronoun refers to is not a pattern. Pronoun drift stays with the reviewer and the Child prompt.
+- **Not changed:** gate, reviewer, prompts.
+
 ### Feature: matrix omission aid and stray-markup detector (ADR-0163 items 3 and 4)
 - **What:** migrations `20261014170000_relationship_matrix_omission.sql` and `20261014180000_stray_markup_detector.sql` (applied live): `package_relationship_matrix_omission(package)` (advisory; 48 percent of packages have hits, so not an alert) and `list_stray_markup(package, since)` (odd `**`, stray braces, 4-space indents, combining marks; 5 hits since 2026-08-26, all real, all in delivered paid packages: Love Island, Hollingsworth Estate, Dead On Arrival, Attendance For Dinner, The Night The Storm Hit).
 - **Why:** matrix omissions were 3 sightings in 16 sweeps and stray markup 4 labelled misses; both had no detector.

@@ -154,3 +154,15 @@ Not done and why: no change to `review-package-quality` (a paid-path change that
 Four of the five are the same shape (a bold label closed with `:'` or never closed), which renders as stray asterisks to the guest. The "first paragraph bold" check was left out: it matched 1120 legitimate bold lines in the same window.
 
 None of the five has been edited; they are customer-visible packages and the edit is Jonathan's call (the fixes are free, exact-match hand edits). Neither function is in the completion gate or any heal. If the stray-markup check stays at 100 percent precision over the next 5 purchases, the next step is a free deterministic heal for the `:'` header shape and a gate check on `odd_bold`.
+
+## Addendum 4 (2026-10-14): item 5 (neutral-pronoun detector) tried and abandoned
+
+Two regex designs were prototyped as `_pronoun_scan(package)` (a gendered pronoun within 30 characters after a character's first name, no sentence break, no capitalised word in between):
+- **Per-name consistency** (flag a name that is followed by more than one pronoun class): 37 names flagged in 20 packages created since 2026-10-01, most of them "the majority class plus one stray" (Vincent 18 masculine / 2 feminine, Shania 9 / 1), which is what ordinary prose with a second person in the sentence looks like.
+- **Dual-name only** (`X/Y` names): 31 packages since 2026-08-26 with 2 to 68 hits each. Read on Death And Dumplings and Last Thanksgiving, essentially every hit was noise ("Toni/Tony needed the hours she took" - the pronoun is the victim; "Perry has always been kind to her" - the pronoun is the sheet owner; the sheet's own `**Name:** Sebastian Beaumont III` header line). The hand sweeps flagged 1 of these packages' pronouns.
+Conclusion: deciding who a pronoun refers to is a reading task, not a pattern. The labelled pronoun rows (C7, 8 rows) stay with the reviewer (it received a "VICTIM GENDER" line and package-language pronoun forms on 2026-10-14, still unvalidated live) and with prevention in the Child prompt (Child54, which did not hold on the first French package). Evidence that would justify revisiting: the next 3 dual-named-victim packages, comparing `pronoun_drift` findings with the hand count.
+
+The prototype function stays in the database because the drop was declined; it is commented as abandoned and recorded in `supabase/migrations/20261014190000_pronoun_scan_prototype_abandoned.sql`. To remove it: `drop function public._pronoun_scan(uuid);`.
+
+## Status after Addenda 1 to 4
+Built: item 1 (measurement columns and `sweep_exit_metrics`), item 2 (twin finder, sweep aid), item 3 (matrix omission, sweep aid), item 4 (stray markup, alert-only, 5 of 5 real). Abandoned: item 5. Not started, need a yes: item 6 (cross-sheet claim index, deterministic, expected low recall), item 7 (reviewer prompt text, needs paid validation) and item 8 (paid cross-sheet pass, probe first). The unowned clusters C2, C3, C4, C5, C7, C8 (the semantic ones, 55 of the 66 unowned rows) remain with hand sweeps until item 6/7/8 are decided.
