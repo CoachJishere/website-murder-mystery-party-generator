@@ -567,13 +567,14 @@ async function healLabels(packageId: string, opts: { dryRun?: boolean; force?: b
 }
 
 /** Free scaffold localization for a non-English package (ADR-0161): the detective script, evidence card and Game Overview template lines the Parent copies in English. dryRun = compute only. */
-async function healScaffold(packageId: string, opts: { dryRun?: boolean; force?: boolean } = {}): Promise<Row> {
+async function healScaffold(packageId: string, opts: { dryRun?: boolean; force?: boolean; language?: string } = {}): Promise<Row> {
   const mode = opts.force ? "on" : await healMode("scaffold_localization");
   if (mode === "off") return { skipped: "scaffold_localization off" };
   const { data: pkg } = await supabase.from("mystery_packages").select("id,detective_script,evidence_cards,game_overview").eq("id", packageId).maybeSingle();
   if (!pkg) return { skipped: "package not found" };
   const { data: charsData } = await supabase.from("mystery_characters").select("introduction").eq("package_id", packageId).order("character_name");
-  const lang = PS.detectScaffoldLanguage(C.languageSample((charsData ?? []) as Row[]));
+  // `language` is a manual override for a package the detector cannot place (a manual run only).
+  const lang = opts.language && opts.force ? opts.language : PS.detectScaffoldLanguage(C.languageSample((charsData ?? []) as Row[]));
   if (!lang || !PS.SCAFFOLD_LANGUAGES.includes(lang)) return { skipped: `language ${lang ?? "unclear"} has no scaffold table` };
   const plan: { field: PS.ScaffoldField; before: string; after: string; edits: PS.ScaffoldEdit[] }[] = [];
   const unmatched: string[] = [];
@@ -879,7 +880,7 @@ serve(async (req) => {
       // ADR-0152: manual run for one package (delivered packages are only changed through here). dry_run:true computes and writes nothing; force:true writes even when the setting is "report".
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
       const f = mode === "conform_labels" ? healLabels : mode === "localize_scaffold" ? healScaffold : healRoster;
-      return new Response(JSON.stringify(await f(String(body.package_id), { dryRun: body.dry_run !== false && body.force !== true, force: body.force === true })), { headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(await f(String(body.package_id), { dryRun: body.dry_run !== false && body.force !== true, force: body.force === true, ...(mode === "localize_scaffold" && typeof body.language === "string" ? { language: body.language } : {}) } as never)), { headers: { "Content-Type": "application/json" } });
     }
     if (mode === "heal_scan") {
       // Read-only corpus check of both heals over completed packages created since `since` (default 2026-08-01): returns only packages that would change.

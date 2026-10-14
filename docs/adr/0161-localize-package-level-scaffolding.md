@@ -1,6 +1,6 @@
 # ADR-0161: Localize the package-level scaffolding (detective script, evidence cards, Game Overview, removal note and email)
 
-- **Status:** Accepted (heal, consumers, tables, removal note, removal email and print page live 2026-10-14; backfill of delivered packages and a Parent prompt fix pending, see Consequences)
+- **Status:** Accepted (heal, consumers, tables, removal note, removal email, print page and the backfill of delivered packages live 2026-10-14; Parent prompt fix decided against, see Update 1)
 - **Date:** 2026-10-14
 
 ## Context
@@ -55,6 +55,16 @@ Earlier policy pointed the other way: `regenerate-parent-content` told the model
 ## Discussion
 
 The sweep that surfaced this was reading a French package whose detective script was English from header to stage direction. Jonathan's answer to the question "worth localizing?" was a product rule, not a one-off. The risky part turned out not to be the translation but the readers of the English words: the guest-facing card strip, the host-play seal, three SQL detectors and the image recovery all key on them. The test file enumerates each consumer for each language so a future edit to either side fails loudly.
+
+## Update 1 (2026-10-14): backfill done, Parent87 not built
+
+**Backfill (Jonathan: yes).** The heal was run with `force` on the 18 delivered non-English paid packages (sv 11, da 32, nl 22 and 50, es 21/30/49/50/11, fr 14/46, it 25/14/49, de 50/52/51, pt 23; the French sweep package had been done earlier). Every run passed the before/after gate check, none reverted, and the three SQL detectors returned the same counts afterwards (20 missing-image packages, 15 spoiler flags). A second dry run now finds nothing to change in any of them.
+
+Three things the first pass did not cover, fixed the same day: (1) the English host note that earlier removals had appended (`**Note (host only):** X could not attend ...`, 7 notes in 2 packages) is now matched by the localizer and rewritten with the same text a new removal writes; (2) the Portuguese package "Morte No Topo" was detected as English by the stopword detector, so the heal gained a manual `language` override (manual `force` runs only) and its 10 one-off stage directions ("Read after approximately 12-15 minutes...") were translated by hand; (3) `unmatched_english_lines` undercounts short directions (it needs 3 English words), so the corpus scan above used a wider regex instead.
+
+**Left English on purpose:** in "Morte No Topo" the three `*[Present Round N Evidence: <long English description>]*` cues carry the evidence description itself in English; that is content, not scaffolding, and rewriting it is a regeneration decision.
+
+**Parent87 (prompt-level prevention): decided against for the scaffold.** Reasons: the model already copies the template verbatim, which is exactly what makes the exact-match heal 100 percent reliable (0 unmatched lines in the 17 packages generated since July; the only reworded directions were in one July package); asking the model to translate would trade a closed, tested vocabulary for free wording that the consumers (the host-play seal's reveal words, the card strips, the SQL detectors) do not know, so a model-chosen translation of "THE REVEAL" could make the seal fail closed; the four detective modules already carry many rules (naming, register, hygiene, timing), and the character-label history (36 of 36 French headers English until an exact table was injected) says prompt-only translation is the weaker lever. Revisit only if new orders show `unmatched_english_lines` or a `scaffold_localization` revert.
 
 ## Key files
 

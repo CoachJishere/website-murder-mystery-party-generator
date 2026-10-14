@@ -110,6 +110,16 @@ export function localizeScaffoldField(field: ScaffoldField, text: string, lang: 
       }
     }
 
+    // 2b. The English host note the "Remove a Character" feature appended before ADR-0161 (it now writes it in the package language).
+    if (field === "detective_script") {
+      const a = line.match(/^(\s*)\*\*Note \(host only\):\*\* (.+?) could not attend and has been cleared of suspicion ahead of time \(never in the house, no opportunity\) — proceed without them; no other character's script should reference them\.\s*$/);
+      if (a && table.absent) {
+        const to = `${a[1]}${table.absent.replace("{name}", a[2])}${cr}`;
+        edits.push({ field, from: t.slice(0, 90), to: to.trim().slice(0, 90) });
+        return to;
+      }
+    }
+
     // 3. Whole template lines (audio notes, card legend).
     const lk = lineByNorm.get(unInvestigator(t)) ?? lineByNorm.get(unInvestigator(t).replace("skip the bracketed stage directions", "skip the [bracketed stage directions]"))
       ?? (field === "evidence_cards" && EVIDENCE_LEGEND.test(t) ? lineKeys.find((k) => k.startsWith("*Display these")) : undefined);

@@ -314,4 +314,15 @@ t("removal host note: localized in every language, English fallback, name insert
   assert.equal(languageOfMasterContext("{}"), null);
 });
 
+t("old English removal note is localized with the same text a new removal writes", () => {
+  const old = "Fin.\n\n---\n\n**Note (host only):** Dr. Sasha/Sascha Kowalski could not attend and has been cleared of suspicion ahead of time (never in the house, no opportunity) — proceed without them; no other character's script should reference them.";
+  for (const code of SCAFFOLD_LANGUAGES) {
+    const r = localizeScaffoldField("detective_script", old, code);
+    assert.equal(r.edits.length, 1, code);
+    assert.ok(r.text.endsWith(absentHostNote("Dr. Sasha/Sascha Kowalski", code)), code);
+    assert.equal(localizeScaffoldField("detective_script", r.text, code).edits.length, 0, code);
+  }
+  assert.equal(localizeScaffoldField("detective_script", old, "en").text, old);
+});
+
 console.log("done");
