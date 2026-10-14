@@ -1,7 +1,7 @@
 # ADR-0163: Making manual coherence sweeps unnecessary (miss clustering, ranked owners, exit criteria)
 
 ## Status
-Proposed (Phase 1 and 2 only; nothing built; Phase 3 starts when Jonathan picks from the ranked list)
+Accepted 2026-10-14 (Addenda 1 to 8 record what was built: items 1 to 4 and the two paid cross-sheet passes live, items 5 and 6 abandoned; the Stage 1 and Stage 2 exit criteria stay as written and are checked with `select * from sweep_exit_metrics`)
 
 ## Date
 2026-10-14
