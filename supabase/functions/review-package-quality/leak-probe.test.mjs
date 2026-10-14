@@ -69,4 +69,38 @@ t("instructions are conservative, treat rumours and open text as public, and ask
   assert.ok(P.LEAK_INSTRUCTIONS.includes("when in doubt, it is not a leak") && P.LEAK_INSTRUCTIONS.includes("OPEN") && P.LEAK_INSTRUCTIONS.includes("Rumour sections") && P.LEAK_INSTRUCTIONS.includes("same language"));
 });
 
+const EV = "## EVIDENCE CARDS\n\n*Display these one per round.*\n\n## EVIDENCE: ROUND 2\n\n### The Ledger of Secrets\n\n#### DESCRIPTION\nA locked ledger lies open beside letters.\n\n#### SIGNIFICANCE (Host Only)\nShows who held secrets; everyone has a motive.\n\n## EVIDENCE: ROUND 4\n\n### The Forged Cellar Note\n\n#### DESCRIPTION\nA forged note invites Eleanora to the cellar alone.\n\n#### SIGNIFICANCE (Host Only)\nPam wrote it.\n";
+t("parseEvidenceCards keeps title, round and the description only, never the host-only significance", () => {
+  const cards = P.parseEvidenceCards(EV);
+  assert.deepEqual(cards.map((c) => c.round), [2, 4]);
+  assert.equal(cards[1].title, "The Forged Cellar Note");
+  assert.ok(cards[1].description.includes("invites Eleanora to the cellar alone"));
+  assert.ok(!JSON.stringify(cards).includes("Pam wrote it") && !JSON.stringify(cards).includes("held secrets"));
+});
+
+t("parseEvidenceCards works on a translated heading and gives nothing for a non-string or an unparsable value", () => {
+  const nl = "## BEWIJS: RONDE 3\n\n### De Lege Flacon\n\n#### BESCHRIJVING\nEen lege flacon met een gebroken zegel.\n\n#### BETEKENIS (alleen voor de gastheer)\nGeheim.\n";
+  assert.deepEqual(P.parseEvidenceCards(nl).map((c) => [c.round, c.title]), [[3, "De Lege Flacon"]]);
+  assert.deepEqual(P.parseEvidenceCards([{ a: 1 }]), []);
+  assert.deepEqual(P.parseEvidenceCards(null), []);
+  assert.deepEqual(P.parseEvidenceCards("no cards here"), []);
+});
+
+t("fieldRound maps round fields, finals and confessions to a round and others to null", () => {
+  assert.equal(P.fieldRound("round3_questions"), 3);
+  assert.equal(P.fieldRound("final_statement"), 4);
+  assert.equal(P.fieldRound("reveal_confession_guilty"), 4);
+  assert.equal(P.fieldRound("rumors"), null);
+});
+
+t("the prompt carries a PUBLIC EVIDENCE block only when cards exist, and the instructions say a restated card is never a leak", () => {
+  const withCards = P.leakCandidates(sheets, { evidence: P.parseEvidenceCards(EV) }).find((x) => x.owner === "Ingrid Castenskiold");
+  const txt = P.leakPromptText(withCards);
+  assert.ok(txt.includes("PUBLIC EVIDENCE") && txt.includes("[round 4] The Forged Cellar Note: A forged note invites Eleanora"));
+  assert.ok(!txt.includes("held secrets"));
+  const without = P.leakCandidates(sheets).find((x) => x.owner === "Ingrid Castenskiold");
+  assert.ok(!P.leakPromptText(without).includes("PUBLIC EVIDENCE") && without.evidence === undefined);
+  assert.ok(P.LEAK_INSTRUCTIONS.includes("PUBLIC EVIDENCE") && P.LEAK_INSTRUCTIONS.includes("LATER round"));
+});
+
 console.log("leak-probe tests passed");

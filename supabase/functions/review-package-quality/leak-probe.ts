@@ -9,7 +9,36 @@
 
 export type LeakSheet = { name: string; secret: string; texts: { field: string; text: string }[]; open?: string };
 export type LeakHit = { sheet: string; field: string; sentence: string; overlap: string[]; mentionsOwner: boolean };
-export type LeakCandidates = { owner: string; secret: string; open: string; hits: LeakHit[] };
+export type EvidenceCard = { round: number; title: string; description: string };
+export type LeakCandidates = { owner: string; secret: string; open: string; hits: LeakHit[]; evidence?: EvidenceCard[] };
+
+/**
+ * The evidence cards every guest is shown, one per round (ADR-0163 Addendum 6): a question about "the forged note" in Round 4 restates a card
+ * that is public by then, and the pass wrongly reported it as a leak of Pam's secret. Parses the stored `evidence_cards` text in any language:
+ * a "## ..." heading ending in the round number starts a card, "### " is its title, and only the FIRST "#### " section (the description) is
+ * kept, never the host-only significance that follows. Anything that is not a string, or does not parse, gives no cards (old behaviour).
+ */
+export function parseEvidenceCards(raw: unknown): EvidenceCard[] {
+  if (typeof raw !== "string" || !raw.trim()) return [];
+  const out: EvidenceCard[] = [];
+  const blocks = raw.split(/^##\s+(?=[^#\n]*\b[2-9]\s*$)/m).slice(1);
+  for (const b of blocks) {
+    const head = b.split("\n", 1)[0];
+    const round = Number(head.match(/([2-9])\s*$/)?.[1]);
+    const title = (b.match(/^###\s+(.+)$/m)?.[1] ?? "").trim();
+    const parts = b.split(/^####\s+.*$/m);
+    const description = (parts[1] ?? "").replace(/\s+/g, " ").trim().slice(0, 700);
+    if (round && title && description) out.push({ round, title, description });
+  }
+  return out;
+}
+
+/** The round a sheet field belongs to (round2_* to 4, final_* and the confessions after every round), or null for a field with no round. */
+export function fieldRound(field: string): number | null {
+  const m = field.match(/^round([2-4])_/);
+  if (m) return Number(m[1]);
+  return /^(final_|reveal_confession_)/.test(field) ? 4 : null;
+}
 
 const TITLES = new Set(["dr", "fru", "hr", "herr", "greve", "kaptajn", "baronesse", "officer", "konsul", "lady", "lord", "sir", "mr", "mrs", "miss", "ms", "captain", "count", "baron", "countess", "doctor", "professor", "madame", "monsieur", "señor", "señora", "signor", "signora", "herr", "frau", "kapitän", "graf", "gräfin", "baron", "mevrouw", "meneer", "kapten", "greve"]);
 const STOP = new Set<string>(); // language neutral: rarity (document frequency) does the work, not a stop list
@@ -27,7 +56,7 @@ export function distinctiveNameWords(name: string, all: string[]): string[] {
   return wordsOf(name).filter((w) => w.length >= 3 && !TITLES.has(w) && !others.has(w));
 }
 
-export function leakCandidates(sheets: LeakSheet[], opts: { maxPerOwner?: number; maxTotal?: number; minOverlapWithName?: number; minOverlapWithoutName?: number } = {}): LeakCandidates[] {
+export function leakCandidates(sheets: LeakSheet[], opts: { maxPerOwner?: number; maxTotal?: number; minOverlapWithName?: number; minOverlapWithoutName?: number; evidence?: EvidenceCard[] } = {}): LeakCandidates[] {
   const maxPer = opts.maxPerOwner ?? 14, maxTotal = opts.maxTotal ?? 120;
   const minWith = opts.minOverlapWithName ?? 1, minWithout = opts.minOverlapWithoutName ?? 4;
   const names = sheets.map((s) => s.name);
@@ -68,7 +97,7 @@ export function leakCandidates(sheets: LeakSheet[], opts: { maxPerOwner?: number
     }
     hits.sort((a, b) => Number(b.mentionsOwner) - Number(a.mentionsOwner) || b.overlap.length - a.overlap.length);
     const kept = hits.slice(0, Math.min(maxPer, Math.max(0, maxTotal - total)));
-    if (kept.length) { out.push({ owner: owner.name, secret: owner.secret, open: (owner.open ?? "").slice(0, 3600), hits: kept }); total += kept.length; }
+    if (kept.length) { out.push({ owner: owner.name, secret: owner.secret, open: (owner.open ?? "").slice(0, 3600), hits: kept, ...(opts.evidence?.length ? { evidence: opts.evidence } : {}) }); total += kept.length; }
   }
   return out;
 }
@@ -78,12 +107,16 @@ export const LEAK_INSTRUCTIONS = [
   "You get ONE character's hidden secret, the text that character says OPENLY (their introduction and honest scripts, which every guest hears), and a numbered list of sentences from OTHER characters' sheets.",
   "Think first about what the secret's core is: the one fact the owner most wants hidden and that would ruin them if known (usually what the 'why this matters' part says is at stake). Surface facts, rumours the owner spreads or admits themselves, and anything the OPEN text already says are public and NEVER a leak.",
   "A sentence is a leak ONLY when it states the core hidden fact (or a specific hidden detail of it that is not in the open text) as established fact, and the speaker has no stated way of knowing it. Rumour sections are meant to carry gossip, so a rumour is a leak only if it states the core fact as certain, not a hint, question or suspicion. Relationship descriptions may state what the two characters witnessed together or were told; that is not a leak. A character the secret itself involves may know it.",
+  "You may also get PUBLIC EVIDENCE: the cards shown to every guest, one per round. What a card shows or says is public and NEVER a leak. A sentence from a round-N field (the field name says the round; final statements and confessions count as round 4) may restate any card of round N or earlier; a field with no round may restate any card. A sentence that goes beyond the card, or relies on a card of a LATER round, is judged as usual.",
   "Be conservative: when in doubt, it is not a leak. Report at most the clear cases. For each give: field = 'SHEET NAME | field' written exactly as in the list; exact_quote = the sentence copied exactly; category = secret_leak; severity = high only if it states the core fact, otherwise medium; explanation = one sentence naming the hidden core fact and why the open text does not already say it; suggested_replacement = the same sentence rewritten to keep its role (a pointer, suspicion or question about the person) without stating the hidden fact, in the same language and voice. If nothing is a clear leak return an empty list.",
 ].join("\n");
 
 export function leakPromptText(c: LeakCandidates): string {
   const lines = c.hits.map((h, i) => `${i + 1}. [${h.sheet} | ${h.field}] ${h.sentence}`);
-  return `OWNER OF THE SECRET: ${c.owner}\nTHE SECRET (hidden from everyone else):\n${c.secret.trim()}\n\nWHAT THE OWNER SAYS OPENLY (public, not secret):\n${c.open.trim() || "(nothing supplied)"}\n\nSENTENCES FROM OTHER SHEETS:\n${lines.join("\n")}`;
+  const cards = c.evidence?.length
+    ? `\n\nPUBLIC EVIDENCE (shown to every guest; round in brackets):\n${c.evidence.map((e) => `[round ${e.round}] ${e.title}: ${e.description}`).join("\n")}`
+    : "";
+  return `OWNER OF THE SECRET: ${c.owner}\nTHE SECRET (hidden from everyone else):\n${c.secret.trim()}\n\nWHAT THE OWNER SAYS OPENLY (public, not secret):\n${c.open.trim() || "(nothing supplied)"}${cards}\n\nSENTENCES FROM OTHER SHEETS:\n${lines.join("\n")}`;
 }
 
 /** Map a model finding back to the sheet and field it points at, using the sentence it quoted. null when it quotes nothing we sent. */

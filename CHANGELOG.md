@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Fix: public evidence cards no longer reported as secret leaks (ADR-0163 Addendum 8, review-package-quality v34)
+- **What:** the cross-sheet secret pass now receives the evidence cards every guest sees (parsed from `evidence_cards`, any language, description only) and treats a sentence that restates a card of its own or an earlier round as public. 4 new tests; deployed (v33 to v34, `verify_jwt` kept); validated once on Blackthorn Manor (3 findings to 1, the forged-note false positive gone, 0.09 USD).
+- **Why:** the first probe's only false positive (ADR-0163 Addendum 6); Jonathan approved the fix.
+- **Not changed:** the contradiction pass, the main reviewer prompt, any package.
+
 ### Fix: four real cross-sheet defects fixed; both cross-sheet reviewer passes switched on (ADR-0163 Addendum 7)
 - **What:** Jonathan set `review_leak_probe` and `review_fact_check` to `on` (open findings only, shared 10 USD daily cap, about 0.27 USD per package). Fixed one defect each in Murder At Montero Manor (Julian vs Scarlet alibi), The Night The Storm Hit (Shane's question about Marcus; Marcus's tips presuming Max's identity) and Blackthorn Manor (Jackie stating Anna's hidden trade), with pointform twins.
 - **Why:** found by the paid probes in Addendum 6; Jonathan approved the switch-on and the fixes.

@@ -760,7 +760,7 @@ async function leakProbe(packageId: string, opts: { dryRun?: boolean; write?: bo
     texts: [...LC.CONFORM_FIELDS, ...SCRIPT_FIELDS].filter((f) => f !== "secret" && typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
     open: ["introduction", "round2_innocent", "round3_innocent", "round4_innocent", "final_innocent", ...SCRIPT_FIELDS].map((f) => (typeof c[f] === "string" ? String(c[f]) : "")).filter(Boolean).join("\n\n"),
   }));
-  const cands = LP.leakCandidates(sheets);
+  const cands = LP.leakCandidates(sheets, { evidence: LP.parseEvidenceCards((pkg as Row).evidence_cards) });
   const sentences = cands.reduce((n, c) => n + c.hits.length, 0);
   const promptChars = cands.reduce((n, c) => n + LP.leakPromptText(c).length + LP.LEAK_INSTRUCTIONS.length, 0);
   const estimate = { owners: cands.length, sentences, approx_input_tokens: Math.round(promptChars / 3.2) };
