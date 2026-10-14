@@ -150,6 +150,7 @@ draft_rewrites/
 .claude/
 !supabase/functions/auto-remediate-packages/glitch-strip.test.mjs
 !supabase/functions/auto-remediate-packages/accomplice-heal.test.mjs
+!supabase/functions/auto-remediate-packages/partner-tip.test.mjs
 !supabase/functions/auto-remediate-packages/player-instruction.test.mjs
 !supabase/functions/review-package-quality/review-core.test.mjs
 !docs/language-pack/build-label-tables.mjs
