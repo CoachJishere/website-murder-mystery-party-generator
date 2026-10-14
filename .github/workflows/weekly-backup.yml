@@ -1,6 +1,7 @@
 # Daily encrypted off-platform backup (2026-07-04; daily since 2026-07-05).
-# Why: the project is on the Supabase FREE plan (discovered 2026-07-05), which
-# has NO platform backups at all — this export is the ONLY database backup.
+# Why: written 2026-07-05 when the project was on the Supabase FREE plan (no
+# platform backups). The project has since been upgraded to Pro (platform
+# backups exist); this export is kept for account-level failure cover.
 # It exports the customer-critical tables daily and stores them as an
 # ENCRYPTED GitHub artifact (30-day retention). The repo is PUBLIC, so
 # encryption is mandatory — artifacts on public repos are downloadable by

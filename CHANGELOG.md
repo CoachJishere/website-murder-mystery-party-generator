@@ -10,11 +10,11 @@
 
 ### Fix: sitemap generation retries a statement timeout (deploy no longer fails on a busy database)
 - **What:** `scripts/generate-sitemap.mjs` retries each blog_posts page up to 4 times with backoff (same pattern `prerender-blog.mjs` already had). Deploy run 38548702154 (2026-10-14 10:19 UTC) failed at "Error fetching blog posts" with Postgres 57014; the next push deployed fine, so it was transient.
-- **Why:** it coincided with the daily backup export hammering the same free-plan database; the sitemap step was the one build step without a retry.
+- **Why:** it coincided with the daily backup export loading the same database (the project is on the Supabase Pro plan, so plan limits are not the explanation); the sitemap step was the one build step without a retry.
 
 ### Fix: daily encrypted backup survives a database statement timeout
 - **What:** the 2026-10-14 09:41 UTC run failed on `mystery_characters` at offset 600 (HTTP 500, Postgres 57014 "canceling statement due to statement timeout"); the 5 runs before it passed. `.github/workflows/weekly-backup.yml` now pages by key (`id=gt.<last id>&limit=N`) instead of Range/OFFSET, and a failed page is retried up to 5 times with backoff and a halved page size before the job fails.
-- **Why:** OFFSET re-scans every skipped wide row (character sheets carry full round scripts), so it gets slower as the table grows and times out when cron jobs compete for the free-plan database. Keyset paging costs the same at any depth. This is the only database backup (free plan), so a transient timeout should not lose a day.
+- **Why:** OFFSET re-scans every skipped wide row (character sheets carry full round scripts), so it gets slower as the table grows and times out when cron jobs compete for the database. Keyset paging costs the same at any depth. The project is on the Pro plan (the "free plan" wording in the workflow header is stale, corrected the same day); the root cause of the timeout is unconfirmed, only that it was transient and the retry recovers it. A GitHub-side export is still kept for account-level failure cover.
 - **Not changed:** table list, encryption, retention.
 
 ### Improvement: guard against new hard-coded English (ADR-0161)
