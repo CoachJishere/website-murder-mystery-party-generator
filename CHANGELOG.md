@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Fix: final-statement confession detector no longer flags two denial shapes (ADR-0103 Addendum 102)
+- **Why:** health-check issue #5 listed Dead Man's Saddle (Dr. Adeline Marsh) and Murder At Montero Manor (Madame Celeste Devereaux). Both final statements are denials: "I did not ... I did it because he deserved better" (speaking up) and "I hid none of it" (negation after the verb).
+- **What:** `list_packages_with_final_statement_confession_leak` ignores `I did it because/for/so` when `I did not` precedes it within 250 characters, and `I hid ` now needs a lookahead excluding none/nothing/no/nobody. Migration `20261014210000` applied; function returns 0 rows now. Corpus check since 2026-08-06: only the two false positives changed; real-confession controls still flag.
+- **Not changed:** no package content (both sheets were correct), the unconfessed-culprit detector, or the alert-only status. El Último Trago stays flagged until it ages out of the 14-day window (held and refunded on purpose).
+
 ### Improvement: "detector failed" alert emails only when one detector keeps failing (ADR-0103 Addendum 87 Update 7, auto-remediate-packages v36)
 - **Why:** the 14-day cap on the two slowest detectors (v28) did not reduce timeouts (15 retries and 6 skips in about 26 h, about 3 emails a day, now also on other detectors). It is contention at the shared cron minutes and harmless, so Jonathan chose to quiet the email rather than chase it.
 - **What:** each skipped detector is recorded in new table `detector_failure_log`; an email is sent only when the same detector failed 4 or more times in 3 hours, at most once per 6 hours. Skips stay in the function logs. Fallback if the bookkeeping fails: email as before. Test added (12 checks); migration applied, worker deployed v36 with `verify_jwt` on.

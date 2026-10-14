@@ -2301,3 +2301,21 @@ Checked and fine: the customer's other requirements (22 entries, pronouns per pl
 **Signal.** This is the third or fourth post-delivery request about cast, names or round count; recorded as a product signal, not yet sized: `00_INBOX/customers-want-more-control-signal-2026-10-14-mystery-maker.md`.
 
 **Open.** (1) Send the customer the "new version ready, please download again" note with the combined script attached. (2) `conversations.mystery_data` still has the old name (above). (3) After the customer's changes are finished, count post-delivery change requests (Jonathan's call, 2026-10-14).
+
+## Addendum 102 (2026-10-14): `list_packages_with_final_statement_confession_leak` - two false-positive shapes removed (health-check issue #5)
+
+**Trigger.** The scheduled health check (issue #5) listed two slip-style packages for a confession in the Final Statements round: Dead Man's Saddle (Dr. Adeline Marsh) and Murder At Montero Manor (Madame Celeste Devereaux). The same comment also listed a `needs_review` package and a self-directed-question hit; both were already cleared (the package `b880b124` is the Lip Sync For Your Life conversation, released 2026-10-13, and the health table read 0 for both). El Último Trago stays flagged until it ages out of the 14-day meta-text window; it is the package held on purpose since 2026-10-06 (customer declined the adaptation, full refund 2026-10-06), nothing owed.
+
+**Finding.** Read both flagged sheets in full: both are denials, and the real confessions sit in `reveal_confession_*`. Two regex shapes caused the hits.
+1. Adeline Marsh `final_guilty`: "I could have left that tox screen in a drawer ... and I did not. ... I did it because he deserved better" - "I did it" means speaking up, not the killing.
+2. Celeste Devereaux `final_accomplice`: "I hid none of it" - the negation comes after the verb, the negation list only looks before it.
+
+**Decision (Jonathan: "yeah lets do that change").** Two narrow exclusions, no change to anything else: (a) `final_guilty` is ignored when "I did not" precedes "I did it because/for/so" within 250 characters; (b) the accomplice pattern `hid ` gets a lookahead excluding none/nothing/no/nobody. Migration `20261014210000_final_statement_confession_leak_fp_shapes.sql`, applied through the MCP after diffing the live function against the repo file (identical).
+
+**Why not the broader fix.** Excluding every "I did it because" would hide real confessions ("I did it because she threatened me"), so the guilty exclusion needs the earlier "I did not" as evidence that "it" is something else. Residual risk accepted: a guilty statement that denies first and then confesses with "I did it because" within 250 characters is missed. The detector is alert-only, and the reveal-round fields and the unconfessed-culprit detector are untouched.
+
+**Verification.** Corpus check over every slip-style character since 2026-08-06 before applying: only the two known false positives flipped to clean, no other row changed. Synthetic controls after the change: plain "I did it", "I did it because she threatened me", "I killed him", "I hid the body", "I helped hide the knife" and "I chose them over the truth" all still flag; the two false-positive shapes do not. The live function now returns 0 rows. Pre-existing and not changed: "Do not think I killed him" still flags (bare "do not" is not in the negation list).
+
+**Known behaviour, not a bug.** GitHub issue #5 is still open on the El Último Trago meta-text line; do not close it earlier (the next run reopens a new one, see the 2026-10-06 alert-policy note).
+
+**Key files.** `supabase/migrations/20261014210000_final_statement_confession_leak_fp_shapes.sql`.
