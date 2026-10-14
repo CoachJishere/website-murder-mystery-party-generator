@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Fix: cross-sheet probe findings are never auto-applied, enforced in code (ADR-0163 Addendum 10, review-package-quality v35)
+- **What:** `applyOpenFindings` applies an open finding only when its review is the main review or its `+p2` pass (`isAutoApplyReview`, allowlist). Findings from the `+fact` and `+leak` probes, and any probe added later, stay open for a human. Test added; deployed v35.
+- **Why:** the fact pass writes `cross_field_contradiction` findings, a class that is auto-applied; they were safe only by call order. Eval of ADR-0163 (Addendum 9); Jonathan: "yes".
+- **Not changed:** the fresh-review auto-apply path, the auto-apply class list, any package, any setting.
+
 ### Fix: Blackthorn Manor, accomplice renamed Shannon Ridgewood and the co-investigator removed at the customer's request; Rounds 3 and 4 combined by a separate script (ADR-0103 Addendum 101)
 - **Why:** the customer's cast changed after delivery (the guest playing the co-investigator would play the housekeeper-accomplice instead) and she wanted three rounds.
 - **What:** data edits only, one package, dry-run then applied in one asserted transaction: 16 character columns, detective script, master context, evidence cards, extracted characters renamed; co-investigator mentions removed from the script, overview and master context. Gate and detectors clean afterwards. A one-page combined Round 3 script was written as a separate attachment.

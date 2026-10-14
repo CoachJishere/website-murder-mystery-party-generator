@@ -3,6 +3,14 @@
 // plus the two fixes the pilot called for: the dual-name rule in the detective prompt, and `accomplicePairings` kept out of the context.
 
 export const PROMPT_VERSION = "v4-2026-10-03"; // the propagation pass below adds no field to the main prompt, so the version is unchanged
+/**
+ * ADR-0163 Addendum 10: which stored reviews may have their open findings auto-applied later (applyOpenFindings). Allowlist: the main review
+ * and its +p2 pass only. The cross-sheet probes (+leak, +fact) write open findings in classes that ARE auto-applied (cross_field_contradiction),
+ * with about half precision and a replacement that can target another sheet, so they stay open for a human, and so does any probe added later.
+ */
+export const isAutoApplyReview = (promptVersion: string | null | undefined): boolean =>
+  promptVersion === PROMPT_VERSION || promptVersion === PROMPT_VERSION + "+p2";
+
 export const DEFAULT_MODEL = "claude-sonnet-5-5";
 // USD per million tokens for the default model (Anthropic price table, 2026-10). Used for the running cost estimate only.
 export const PRICE = { in: 2.0, cacheWrite: 2.5, cacheRead: 0.2, out: 10.0 };

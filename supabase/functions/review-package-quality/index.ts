@@ -822,9 +822,15 @@ async function applyOpenFindings(packageId: string, classes: string[]): Promise<
   const langGate = await languageAllowedForAutoApply((chars ?? []) as Row[]);
   if (!langGate.ok) return { applied: 0, reverted: 0, skipped: `language ${langGate.lang ?? "unclear"} not enabled for auto-apply` };
   const { data: open } = await supabase.from("package_review_findings")
-    .select("id,item_name,field,category,exact_quote,suggested_replacement").eq("package_id", packageId).eq("status", "open").in("category", classes);
+    .select("id,item_name,field,category,exact_quote,suggested_replacement,review_id").eq("package_id", packageId).eq("status", "open").in("category", classes);
   if (!pkg || !open || open.length === 0) return { applied: 0, reverted: 0 };
-  return autoApply(packageId, pkg as Row, (chars ?? []) as Row[], open as never, classes);
+  // ADR-0163 Addendum 10: only findings of the main review and its +p2 pass; the +leak / +fact probes stay open for a human.
+  const reviewIds = [...new Set((open as { review_id: string | null }[]).map((f) => f.review_id).filter((x): x is string => !!x))];
+  const { data: revs } = reviewIds.length ? await supabase.from("package_reviews").select("id,prompt_version").in("id", reviewIds) : { data: [] };
+  const allowed = new Set(((revs ?? []) as { id: string; prompt_version: string }[]).filter((r) => C.isAutoApplyReview(r.prompt_version)).map((r) => r.id));
+  const eligible = (open as { review_id: string | null }[]).filter((f) => f.review_id && allowed.has(f.review_id));
+  if (eligible.length === 0) return { applied: 0, reverted: 0 };
+  return autoApply(packageId, pkg as Row, (chars ?? []) as Row[], eligible as never, classes);
 }
 
 /**

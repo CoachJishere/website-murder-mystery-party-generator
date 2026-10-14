@@ -236,3 +236,9 @@ t("victim gender note: a dual name in the customer's concept makes the victim ne
 });
 
 console.log("customer-wording tests done");
+
+t("auto-apply allowlist: only the main review and its +p2 pass; the +leak / +fact probes (and any future suffix) stay open (ADR-0163 Add. 10)", () => {
+  assert.equal(C.isAutoApplyReview(C.PROMPT_VERSION), true);
+  assert.equal(C.isAutoApplyReview(C.PROMPT_VERSION + "+p2"), true);
+  for (const v of [C.PROMPT_VERSION + "+fact", C.PROMPT_VERSION + "+leak", C.PROMPT_VERSION + "+p2+fact", C.PROMPT_VERSION + "+req", "v3-2026-09-01", "", null, undefined]) assert.equal(C.isAutoApplyReview(v), false, String(v));
+});
