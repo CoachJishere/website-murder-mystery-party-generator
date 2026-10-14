@@ -2129,4 +2129,6 @@ Checked and fine: the customer's other requirements (22 entries, pronouns per pl
 
 **Decisions.** No gate change for either class (reasons above). The Montero Manor heal rewrote a delivered customer package without asking: it is free, reversible from `auto_remediation_log.before_value`, and the same change Jonathan approved for Emma's. Child65 and the regen function are the only prompt changes; nothing else in the Child lineage was touched.
 
-**Open.** (1) Child65 import is Jonathan's call; after it, log it in `prompt_version_history`, and on the next 3 slip purchases run `list_packages_with_slip_partner_named` (it should stay empty) and compare with the 2 of 13 slip packages since 2026-10-01 that had it. (2) First purchase with a couple entry after Child65: read its confessions for "I".
+**Update (2026-10-14, close of session).** Jonathan imported Child65 ("65 imported"); logged in `prompt_version_history`. He expects to build Child64 on top of 65 (as Child66), not the reverse.
+
+**Open.** (1) On the next 3 slip purchases after Child65 run `list_packages_with_slip_partner_named` (it should stay empty) and compare with the 2 of 13 slip packages since 2026-10-01 that had it. (2) First purchase with a couple entry after Child65: read its confessions for "I".
