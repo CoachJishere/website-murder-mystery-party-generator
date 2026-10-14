@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Feature: matrix omission aid and stray-markup detector (ADR-0163 items 3 and 4)
+- **What:** migrations `20261014170000_relationship_matrix_omission.sql` and `20261014180000_stray_markup_detector.sql` (applied live): `package_relationship_matrix_omission(package)` (advisory; 48 percent of packages have hits, so not an alert) and `list_stray_markup(package, since)` (odd `**`, stray braces, 4-space indents, combining marks; 5 hits since 2026-08-26, all real, all in delivered paid packages: Love Island, Hollingsworth Estate, Dead On Arrival, Attendance For Dinner, The Night The Storm Hit).
+- **Why:** matrix omissions were 3 sightings in 16 sweeps and stray markup 4 labelled misses; both had no detector.
+- **Not changed:** gate, heals, reviewer, the 5 affected packages (unedited, waiting on Jonathan).
+
 ### Feature: reviewer twin finder `list_review_twin_candidates` (ADR-0163 item 2)
 - **What:** migration `20261014150000_review_twin_candidates.sql` (applied live): read-only SQL function that lists fields repeating a distinctive three-word phrase of a reviewer finding. Replay on the labelled misses: 13 hits, all genuine; live packages: median 8 candidates, about half relevant on the one package read in full.
 - **Why:** the ADR-0140 propagation pass never fired (0 of 323 findings) because its anchors needed capitalised names; the reviewer fixes one instance and misses its siblings.
