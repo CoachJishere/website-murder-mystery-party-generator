@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Fix: broken bold markup in five delivered packages (ADR-0163 Addendum 5)
+- **What:** exact-match edits on one character field in each of Love Island Season 8 Reunion, The Hollingsworth Estate (also removed a leaked "wait, that is myself" self-correction), Dead On Arrival: The Blackwood, Attendance For Dinner and The Night The Storm Hit. `list_stray_markup` now returns 0 rows.
+- **Why:** found by the new stray-markup detector (5 of 5 real); Jonathan approved the fixes.
+- **Not changed:** any other field, the reviewer findings, customer emails.
+
 ### Docs: neutral-pronoun detector tried and abandoned (ADR-0163 item 5)
 - **What:** a regex "pronoun within 30 characters after the name" check was prototyped two ways and measured; both are noise (37 names flagged in 20 packages; dual-name variant 2 to 68 hits per package, nearly all about another person). Not shipped; the prototype `_pronoun_scan` stays in the database (drop declined), commented as abandoned, with its migration file for parity.
 - **Why:** who a pronoun refers to is not a pattern. Pronoun drift stays with the reviewer and the Child prompt.

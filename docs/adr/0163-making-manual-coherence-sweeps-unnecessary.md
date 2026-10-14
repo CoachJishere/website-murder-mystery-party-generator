@@ -166,3 +166,12 @@ The prototype function stays in the database because the drop was declined; it i
 
 ## Status after Addenda 1 to 4
 Built: item 1 (measurement columns and `sweep_exit_metrics`), item 2 (twin finder, sweep aid), item 3 (matrix omission, sweep aid), item 4 (stray markup, alert-only, 5 of 5 real). Abandoned: item 5. Not started, need a yes: item 6 (cross-sheet claim index, deterministic, expected low recall), item 7 (reviewer prompt text, needs paid validation) and item 8 (paid cross-sheet pass, probe first). The unowned clusters C2, C3, C4, C5, C7, C8 (the semantic ones, 55 of the 66 unowned rows) remain with hand sweeps until item 6/7/8 are decided.
+
+## Addendum 5 (2026-10-14): the five stray-markup packages fixed (Jonathan: "yes to five delivered")
+
+Applied through the Supabase MCP as one guarded transaction (every replace had to hit exactly one row; script in `temp-files/stray-markup-fixes-2026-10-14.sql`, gitignored). Verified afterwards: `list_stray_markup(null, '2026-08-26')` returns 0 rows and each edited line reads correctly.
+- Love Island Season 8 Reunion, Kenzie Annis `final_innocent`: removed the stray trailing `**`.
+- The Hollingsworth Estate, Ghost `round4_questions`: "3. **To Marcus Sinclair - wait, that is myself. To William Gray:' You are known" became "3. **To William Gray:** 'You are known" (the self-correction is gone; the question was always for William Gray).
+- Dead On Arrival, Ms. Wendalynne Rose `relationships`: the unclosed bold line "**Mrs. Ivy Sable and I have spoken more honestly..." was merged into Ivy's entry as "We have spoken more honestly...".
+- Attendance For Dinner, Jameson To `rumors`, and The Night The Storm Hit, Desmond Hartley `rumors`: the `:'` header closers became `:**`.
+No pointform column holds these lines, so none went stale. No customer email was sent; the "package updated" note is Jonathan's call (these five were delivered 2026-08-29 to 2026-10-01 and are unlikely to still be in use).
