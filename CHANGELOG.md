@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Feature: a service-role re-fire can pin the package language (ADR-0103 Addendum 99, Update 1)
+- **What:** `mystery-webhook-trigger` accepts `languageOverride` (a supported code such as "en") from a service-role caller and uses it instead of the chat-language classification. Ignored on the browser path.
+- **Why:** "Murder Under Golden Stars" was delivered in Swedish although the customer wrote "gör det på engelska"; the classifier reads the dominant language of the context, and a re-fire had no way to correct that. Only this conversation was affected since 2026-08-01.
+- **Not changed:** the customer path (an in-chat language request is still not honoured; needs a paid classifier change and an ADR). The paid re-fire of that package was started and stopped by Jonathan; the package was restored from backup and the customer was asked whether they want English or Swedish before it is rebuilt.
+
 ### Fix: a non-English "everything else stays as before" approved message now brings in the full concept (ADR-0103 Addendum 99)
 - **What:** `selectConceptBase` (`_shared/conversation-briefs.ts`) recognised the "this message only amends the earlier concept" idiom and the premise/victim headings in English only. Added the same stems for sv, da, fi, nl, de, fr, es, it, pt, ko, ja and zh; the heading test uses a letter lookahead instead of `\b` so it works next to CJK. `mystery-webhook-trigger` redeployed (v153, verify_jwt false). 6 new checks in `preSnapshotBriefs.test.mjs` (29 pass).
 - **Why:** "Murder Under Golden Stars" (Swedish, paid 2026-10-12) was approved on a delta ("Allt annat ... kvarstår exakt som tidigare etablerat"), so the Parent saw 8,344 chars with no premise, victim or murder method and built a strangling mystery instead of the customer's inflatable-alien victim deflated with a sewing pin, without Moa and Julia as the detective pair. All detectors and the gate were clean; the full-cast read found it. Across all paid conversations the widened guard newly activates on this one only.
