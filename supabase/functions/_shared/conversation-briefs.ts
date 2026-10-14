@@ -86,8 +86,11 @@ export function formatPreSnapshotBrief(content: string): string {
  * pre-pivot contamination guard (Madysn, April 2026) still holds for every complete concept.
  */
 export const CONCEPT_BASE_MIN_CHARS = 1500;
+// ADR-0103 Addendum 99: the concept chat writes its summaries in the customer's language ("## Premiss", "## Offer"), so the
+// premise/victim headings of the other 12 app languages count too. The tail is a "not followed by a letter" lookahead instead
+// of \b, because \b never fires next to Korean/Japanese/Chinese characters.
 const CONCEPT_SECTION_RE =
-  /^[ \t]*#{1,4}[ \t]*\**[ \t]*(premise|victim|the victim|synopsis|setting|the setting|plot|the plot|story|the story|the mystery|concept|the concept)\b/im;
+  /^[ \t]*#{1,4}[ \t]*\**[ \t]*(premise|victim|the victim|synopsis|setting|the setting|plot|the plot|story|the story|the mystery|concept|the concept|premiss(en)?|offer(et)?|præmis(sen)?|lähtökohta|uhri|uitgangspunt|slachtoffer|prämisse|ausgangslage|opfer|prémisse|victime|premisa|víctima|premessa|vittima|premissa|vítima|전제|설정|피해자|前提|設定|被害者|设定|受害者)(?![A-Za-zÀ-ÿ])/im;
 
 // The approved message must also SAY it only amends something ("everything else stays exactly as before").
 // A corpus check (132 paid conversations, 2026-10-07) found 11 approved messages with no concept header but a full
@@ -97,8 +100,31 @@ const CONCEPT_SECTION_RE =
 const AMENDS_EARLIER_RE =
   /(as before|stays? (exactly )?(the same|as)|unchanged|everything else|rest (of the [a-z ]+ )?(stays|remains)|remains? (exactly )?(the same|as)|no other changes)/i;
 
+// ADR-0103 Addendum 99: the English-only list above let "Murder Under Golden Stars" (Swedish, 2026-10-12, paid USD 19.99)
+// through. Its approved message said "Allt annat (premiss, offer, mordmetod, ...) kvarstår exakt som tidigare etablerat",
+// matched nothing, and the Parent got an 8,344-char snapshot with no premise, victim or method (the inflatable-alien victim
+// and sewing-pin murder never reached the package). Same intent as the English list, one stem per language of the app.
+// No \b: it does not work next to non-ASCII letters. Stems are deliberately short ("oförändrad" also matches "oförändrade").
+const AMENDS_EARLIER_I18N_RE = new RegExp(
+  "(" + [
+    "kvarst[åa]r", "oförändrad", "allt annat", "som tidigare", "resten (är|förblir)", // sv
+    "uændret", "uforandret", "alt andet", "som før", "som tidligere", "forbliver", // da
+    "ennallaan", "muuttumaton", "kaikki muu", "pysyy samana", "pysyvät samoina", // fi
+    "ongewijzigd", "al het andere", "alles anders", "blijft hetzelfde", "blijft zoals", "zoals eerder", // nl
+    "unverändert", "alles andere", "bleibt (wie|gleich)", "wie zuvor", "wie bisher", "bleiben (wie|gleich)", // de
+    "inchangé", "tout le reste", "reste (identique|comme|inchangé)", "comme avant", "comme précédemment", "sans changement", // fr
+    "sin cambios", "todo lo demás", "se mantiene", "permanece igual", "queda igual", "igual que antes", "como antes", // es
+    "invariat", "tutto il resto", "resta (invariat|uguale)", "rimane (uguale|invariat)", "come prima", "come in precedenza", // it
+    "inalterad", "todo o resto", "continua igual", "sem alterações", "permanece (igual|inalterad)", // pt
+    "그대로", "변경 없", "나머지는", // ko
+    "そのまま", "変更なし", "その他は", "それ以外は", // ja
+    "保持不变", "保持原样", "其余", "其他保持", "和之前一样", "与之前相同", // zh
+  ].join("|") + ")",
+  "i",
+);
+
 export function amendsEarlierConcept(content: string | null | undefined): boolean {
-  return typeof content === "string" && AMENDS_EARLIER_RE.test(content);
+  return typeof content === "string" && (AMENDS_EARLIER_RE.test(content) || AMENDS_EARLIER_I18N_RE.test(content));
 }
 
 export function hasConceptSection(content: string | null | undefined): boolean {

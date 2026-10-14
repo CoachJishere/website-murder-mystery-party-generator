@@ -184,6 +184,52 @@ check('the base label says the approved message wins on conflict', () => {
   assert.ok(/the approved message below wins/.test(label));
 });
 
+// --- ADR-0103 Addendum 99: the same delta, in a language other than English ("Murder Under Golden Stars", Swedish, 2026-10-12) ---
+const SV_DELTA = '# SAMMANFATTNING: MURDER UNDER GOLDEN STARS (uppdaterad)\n\n## Rollista med fullständiga kopplingar\n1. **Christoph/Christine Haggerton** - Studioledare\n\nAllt annat (premiss, offer, mordmetod, de tre red herrings) **kvarstår exakt som tidigare etablerat**.';
+const SV_SUMMARY = '# SAMMANFATTNING: MURDER UNDER GOLDEN STARS\n\n## Premiss\nGolden Star Awards, 1940. Xorg, en uppblåsbar alien, hittas död.\n\n## Offer\n**Xorg** - Hollywoods första utomjordiska filmstjärna.\n\n## Mordmetod\nEn sykostymnål.\n' + 'x'.repeat(1800);
+
+check('Golden Stars shape: a Swedish delta ("kvarstår exakt som tidigare") pulls in the earlier full concept', () => {
+  const approved = aMsg('delta', SV_DELTA, '2026-10-12T12:09:05Z');
+  assert.strictEqual(hasConceptSection(approved.content), false);
+  assert.strictEqual(amendsEarlierConcept(approved.content), true);
+  const msgs = [aMsg('en-full', FULL, '2026-10-12T12:02:38Z'), approved];
+  assert.strictEqual(selectConceptBase(msgs, approved)?.id, 'en-full');
+});
+
+check('a Swedish summary with "## Premiss" / "## Offer" counts as a full concept and, being newer, wins as the base', () => {
+  assert.strictEqual(hasConceptSection(SV_SUMMARY), true);
+  const approved = aMsg('delta', SV_DELTA, '2026-10-12T12:09:05Z');
+  const msgs = [aMsg('en-full', FULL, '2026-10-12T12:02:38Z'), aMsg('sv-full', SV_SUMMARY, '2026-10-12T12:03:32Z'), approved];
+  assert.strictEqual(selectConceptBase(msgs, approved)?.id, 'sv-full');
+});
+
+check('a Swedish approved message that carries its own "## Premiss" section is left alone', () => {
+  const approved = aMsg('whole', SV_SUMMARY, '2026-10-12T12:09:05Z');
+  assert.strictEqual(selectConceptBase([aMsg('en-full', FULL, '2026-10-12T12:00:00Z'), approved], approved), null);
+});
+
+check('a complete Swedish concept that does not say it amends anything has no base', () => {
+  const approved = aMsg('complete', 'Här är rollistan.\n\nRollista (6 spelare)\n1. A - x\n2. B - y\n' + 'x'.repeat(2500), '2026-10-12T12:09:05Z');
+  assert.strictEqual(amendsEarlierConcept(approved.content), false);
+});
+
+check('the "everything else stays as before" idiom is recognised in every app language', () => {
+  const phrases = {
+    sv: 'Allt annat kvarstår som tidigare.', da: 'Alt andet er uændret.', fi: 'Kaikki muu pysyy samana.', nl: 'Al het andere blijft zoals het was.',
+    de: 'Alles andere bleibt wie zuvor.', fr: 'Tout le reste reste identique.', es: 'Todo lo demás se mantiene igual.', it: 'Tutto il resto rimane uguale.',
+    pt: 'Todo o resto permanece igual.', ko: '나머지는 그대로입니다.', ja: 'その他はそのままです。', zh: '其余保持不变。',
+  };
+  for (const [lang, text] of Object.entries(phrases)) assert.strictEqual(amendsEarlierConcept(text), true, lang);
+  assert.strictEqual(amendsEarlierConcept('Here is the plan for the evening.'), false);
+});
+
+check('premise/victim headings of the other app languages count as a concept section', () => {
+  for (const h of ['## Premiss', '## Offer', '## Præmis', '## Uhri', '## Slachtoffer', '## Prämisse', '## Opfer', '## Prémisse', '## Victime', '## Premisa', '## Víctima', '## Premessa', '## Vittima', '## Premissa', '## Vítima', '## 전제', '## 피해자', '## 前提', '## 被害者', '## 受害者']) {
+    assert.strictEqual(hasConceptSection(h + '\ntext'), true, h);
+  }
+  assert.strictEqual(hasConceptSection('## Rollista med fullständiga kopplingar\n1. A'), false);
+});
+
 // --- wiring guard: the trigger must actually use it, and only inside the approved branch ---
 const trigger = readFileSync(TRIGGER, 'utf8');
 
