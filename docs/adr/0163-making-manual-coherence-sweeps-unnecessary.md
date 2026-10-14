@@ -195,3 +195,16 @@ So precision (real) 6 of 11, real or debatable 10 of 11, false 1 of 11; 4 genuin
 Off again: the same with `'off'`. Not done without a yes (standing rule on paid use).
 
 **Phase 2 criteria impact.** The passes target C2, C3, C4 and C5 (about 45 of the 66 unowned rows). If enabled, re-measure per cluster on the next 8 valid sweeps; the exit criteria in this ADR then apply unchanged.
+
+## Addendum 7 (2026-10-14): both cross-sheet passes switched ON; the four real defects fixed
+
+**Decision (Jonathan, "let's turn them both on, just ran the SQL"):** `pipeline_settings.review_leak_probe = 'on'` and `review_fact_check = 'on'` (verified in the table). They run in the second pass (cron every 5 minutes after release), write open findings only (never auto-applied), and share the 10 USD daily cap. Expected extra cost about 0.27 USD per package (measured 0.08 to 0.10 for the secret check, 0.13 to 0.24 for the contradiction check). Kill switch: set either value to `off`.
+
+**Fixes (Jonathan: "fix the 4 real defects if they are packages within the last 90 days"; all four packages are 2 to 12 days old).** One guarded transaction through the Supabase MCP, every replace asserted to hit exactly one row, pointform twins in step, verified by reading the text back and `list_stray_markup` = 0:
+- Murder At Montero Manor, Julian Blackwood `round4_innocent` and `round4_innocent_pointform`: at the dimming of the lamps Julian now says he and Scarlet stood talking quietly about what Vivienne might announce before he drifted off, matching Scarlet's own account.
+- The Night The Storm Hit, Shane Prescott `round3_questions`: the question to Marcus now reads "near the side door for a while tonight" instead of "around the time the cake was being cut" (Marcus and four other sheets place his step outside before the cake).
+- Blackthorn Manor, Jackie Winthrop `round3_script` and pointform: dropped the statement that Anna and Chain move goods no honest shop would sell (Anna's hidden trade); Jackie now says the trade that sells a vial like this is one no honest shop would touch.
+- The Night The Storm Hit, Marcus Calloway `accusations` and pointform: the tips no longer presume Marcus knows Max is Dennis Voss or has a false identity; they keep steering at Max's needling about the Della Voss case, and "if fake IDs ever come up" present Marcus's own expertise (he is a forger) as a neutral service.
+Left as found: the four debatable findings (Lex/Wendy seating, Danielle/Vivienne kitchen, Wendy's vial remark, Isabella's tip) and the false positive (the forged note is public Round 4 evidence). No customer email sent.
+
+**To watch on the first real orders (delete once seen working):** the second pass should write `package_reviews` rows with `prompt_version` ending `+leak` and `+fact` and open `secret_leak` / `cross_field_contradiction` findings; record a `human_verdict` on each (precision so far: 6 real, 4 debatable, 1 false of 11); check `auto_remediation_log` shows `leak_probe:` and `fact_probe:` spend rows of about 0.1 to 0.25 USD; the evidence-card false-positive shape (a question about a card revealed in the same round) is the first thing to look for; do not mark a package swept for recall if those findings were applied before your read.

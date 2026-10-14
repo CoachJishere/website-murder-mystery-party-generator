@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Fix: four real cross-sheet defects fixed; both cross-sheet reviewer passes switched on (ADR-0163 Addendum 7)
+- **What:** Jonathan set `review_leak_probe` and `review_fact_check` to `on` (open findings only, shared 10 USD daily cap, about 0.27 USD per package). Fixed one defect each in Murder At Montero Manor (Julian vs Scarlet alibi), The Night The Storm Hit (Shane's question about Marcus; Marcus's tips presuming Max's identity) and Blackthorn Manor (Jackie stating Anna's hidden trade), with pointform twins.
+- **Why:** found by the paid probes in Addendum 6; Jonathan approved the switch-on and the fixes.
+- **Not changed:** the four debatable findings, any other field, customer emails.
+
 ### Docs: paid cross-sheet passes measured, item 6 dropped (ADR-0163 Addendum 6)
 - **What:** ran the existing ADR-0152 `leak_probe` and `fact_probe` (read-only, nothing stored) on three unswept delivered packages for 0.80 USD in total: 11 findings, 6 real (4 distinct defects), 4 debatable, 1 false, none overlapping the reviewer's own findings. Item 6 (claim index) dropped at 19 percent best-case recall. Corrected the ADR: items 7 and 8 already exist and are OFF.
 - **Why:** Jonathan said to run items 6 to 8; spend stayed inside the quoted 1.5 USD probe budget.
