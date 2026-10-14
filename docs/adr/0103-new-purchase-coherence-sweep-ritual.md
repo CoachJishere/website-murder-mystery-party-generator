@@ -2132,3 +2132,24 @@ Checked and fine: the customer's other requirements (22 entries, pronouns per pl
 **Update (2026-10-14, close of session).** Jonathan imported Child65 ("65 imported"); logged in `prompt_version_history`. He expects to build Child64 on top of 65 (as Child66), not the reverse.
 
 **Open.** (1) On the next 3 slip purchases after Child65 run `list_packages_with_slip_partner_named` (it should stay empty) and compare with the 2 of 13 slip packages since 2026-10-01 that had it. (2) First purchase with a couple entry after Child65: read its confessions for "I".
+
+## Addendum 97 (2026-10-14): New-Purchase sweep - "La Malédiction Du Rang Du Vieux Moulin" (FR, slip style, 6 characters, no accomplice) - victim pronouns failed again, a hidden love leaked through the guilty branches, and the English scaffolding in non-English packages became a product decision
+
+**Package:** `30c8252a-b113-420d-873d-6d8ba3a61b8e`, conversation `52601cc2-d160-41bc-ace6-fbafce637a0d`, purchased and released 2026-10-09 23:37 UTC (Parent81 / Child61, so before Parent83, Parent84 to 86 and Child62 to 65). The purchase notification reached the sweep five days after release. Quality review ran before release: 13 findings, all applied.
+
+**Detectors:** all 22 per-package detectors and `package_completion_blocking_defects` were empty, before and after the fixes.
+
+**Reviewer:** 13 findings, 12 real, 1 debatable (Alex's rumor changed to "n'en a parlé à personne", which makes the rumor self-contradicting; reworded to "paraît-il, n'en a parlé à personne"). 9 misses recorded in `package_review_misses`, sweep row in `package_review_sweeps`. The reviewer ran only before release, so the recall number is valid.
+
+**What the full-cast read found that nothing caught (all fixed free by hand, one transaction per character, every replacement required to match):**
+1. **Victim pronouns (Child54 watch item b):** the victim "Rémi/Romy" is gender-neutral, but all six sheets called Rémi "il" in 38 sentences (round 2 speeches, final statements, confessions, "je l'ai tué"), plus disjunctive "contre lui / de lui / chez lui" (masculine in French), "lui-même", "lui qui". The reviewer had fixed 5 or 6 in the detective script. Rewritten with the name or a neutral construction; the point-form twins and the `secrets` jsonb copy were re-synced; re-scan clean (remaining "lui" are the invariable indirect pronoun). **Child54 did not hold on this package.**
+2. **Secret leak (hidden love):** Pat's secret love for Rémi was named by Jo (`final_guilty`: "un sentiment secret"), Sam (`final_guilty`: "son cœur") and Alex (both finals: "un secret de cœur"). The reviewer fixed only the innocent branch of Jo and Sam. The same line sits in two branches, so a fix to one branch needs the sibling branch checked.
+3. **Game Overview** named Charlie's hidden map and Pat's secret love (package predates Parent83). Paragraph rewritten to public roles only.
+4. **Register:** all 9 of Pat's question lines used formal "vous" to single guests; the language-pack rule is tu for one person. Rewritten with tu.
+5. Smaller: "iel" in Pat's background and relationships (convention is il/elle), a few "elle" / "restée" for dual-gender names, an authoring note left in the detective backstory ("Son registre est celui du vouvoiement, poli mais ferme...", 1 of 7 comparable packages).
+
+**Post-import watch results:** Child53 language pack held on its first real French package (every header of all 18 branch fields matches `header-labels.json`; tu for one person, vous for the group except item 4); Child54 failed (item 1). Parent83 not exercised (package predates it). No `+p2` pass edits were present.
+
+**Decision (Jonathan, 2026-10-14): all package-level scaffolding must be localized.** The detective script's headers ("## NOTE FOR HOST", "## RECORDING GUIDELINES FOR AUDIO OPTION", "## ROUND 2: MOTIVES"), its audio-recording text and every bracketed stage direction, the evidence card scaffolding ("## EVIDENCE CARDS", "#### SIGNIFICANCE (Host Only)") and "## Game Overview" are English in every non-English package (20 of 20 paid non-English packages since June). Cause: the Parent prompts (modules 5000, 5004, 5008, 5012 and the evidence module) hold the template as literal English and the model translates the prose but copies the template. Recorded and designed in ADR-0161.
+
+**Open:** a reviewer or detector for victim pronouns on a gender-neutral victim (the class is semantic, "il" can also be another character, so no cheap detector; the reviewer prompt is the candidate, paid, needs a yes).
