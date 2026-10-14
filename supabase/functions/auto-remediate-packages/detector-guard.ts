@@ -54,11 +54,33 @@ export function runWindowDays(
   return onlyNeedsReview ? Math.min(days, HELD_RUN_WINDOW_DAYS) : days;
 }
 
-/** One plain-text body for the single per-run alert, or null when nothing failed. */
-export function detectorFailureAlert(failures: DetectorFailure[]): string | null {
+/**
+ * Update 7: a single skipped detector is contention noise (about 3 emails a day, nothing wrong). Each skip is now
+ * recorded and an email goes out only when the SAME detector has failed ALERT_FAILURE_THRESHOLD times within
+ * ALERT_WINDOW_MS, and at most once per ALERT_COOLDOWN_MS per detector. The skip is still logged either way.
+ */
+export const ALERT_FAILURE_THRESHOLD = 4;
+export const ALERT_WINDOW_MS = 3 * 60 * 60 * 1000;
+export const ALERT_COOLDOWN_MS = 6 * 60 * 60 * 1000;
+
+/** Failures (this run included) to alert on, given each failed rpc's recent failure count and whether it alerted lately. */
+export function failuresToAlert(
+  failures: DetectorFailure[],
+  recentCount: Record<string, number>,
+  recentlyAlerted: Set<string>,
+): DetectorFailure[] {
+  return failures.filter(
+    (f) => (recentCount[f.rpc] ?? 0) >= ALERT_FAILURE_THRESHOLD && !recentlyAlerted.has(f.rpc),
+  );
+}
+
+/** One plain-text body for the per-run alert, or null when nothing is worth an email. */
+export function detectorFailureAlert(failures: DetectorFailure[], recentCount: Record<string, number> = {}): string | null {
   if (failures.length === 0) return null;
-  const lines = failures.map((f) => `- ${f.rpc}: ${f.message}`);
-  return `${failures.length} detector(s) failed in this auto-remediate run and were skipped (the other classes ran):\n${lines.join("\n")}`;
+  const lines = failures.map(
+    (f) => `- ${f.rpc} (${recentCount[f.rpc] ?? "?"} failures in the last ${ALERT_WINDOW_MS / 3600000} h): ${f.message}`,
+  );
+  return `${failures.length} detector(s) keep failing in auto-remediate-packages and were skipped (the other classes ran):\n${lines.join("\n")}`;
 }
 
 /**

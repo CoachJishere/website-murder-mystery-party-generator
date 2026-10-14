@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Improvement: "detector failed" alert emails only when one detector keeps failing (ADR-0103 Addendum 87 Update 7, auto-remediate-packages v36)
+- **Why:** the 14-day cap on the two slowest detectors (v28) did not reduce timeouts (15 retries and 6 skips in about 26 h, about 3 emails a day, now also on other detectors). It is contention at the shared cron minutes and harmless, so Jonathan chose to quiet the email rather than chase it.
+- **What:** each skipped detector is recorded in new table `detector_failure_log`; an email is sent only when the same detector failed 4 or more times in 3 hours, at most once per 6 hours. Skips stay in the function logs. Fallback if the bookkeeping fails: email as before. Test added (12 checks); migration applied, worker deployed v36 with `verify_jwt` on.
+- **Not changed:** retry, 14-day cap, re-detect gates, the fatal path. Staggering the cron minutes stays the next step if skips need to go down.
+
 ### Fix: cross-sheet probe findings are never auto-applied, enforced in code (ADR-0163 Addendum 10, review-package-quality v35)
 - **What:** `applyOpenFindings` applies an open finding only when its review is the main review or its `+p2` pass (`isAutoApplyReview`, allowlist). Findings from the `+fact` and `+leak` probes, and any probe added later, stay open for a human. Test added; deployed v35.
 - **Why:** the fact pass writes `cross_field_contradiction` findings, a class that is auto-applied; they were safe only by call order. Eval of ADR-0163 (Addendum 9); Jonathan: "yes".

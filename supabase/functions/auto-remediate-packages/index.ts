@@ -3,7 +3,16 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { DANGLING_QUOTE_RX, deriveBranchHeader, prependHeader, stripStrayGlitches } from "./glitch-strip.ts";
 import { planAccompliceRoleHeal, POINTFORM_TWINS, runWithRoleSwap } from "./accomplice-heal.ts";
 import { healPartnerTips } from "./partner-tip.ts";
-import { type DetectorFailure, detectorFailureAlert, detectorSinceIso, runDetectorGuarded, runWindowDays } from "./detector-guard.ts";
+import {
+  ALERT_COOLDOWN_MS,
+  ALERT_WINDOW_MS,
+  type DetectorFailure,
+  detectorFailureAlert,
+  detectorSinceIso,
+  failuresToAlert,
+  runDetectorGuarded,
+  runWindowDays,
+} from "./detector-guard.ts";
 import { hasPlayerInstruction } from "./player-instruction.ts";
 import { extractCard } from "./evidence-card.ts";
 
@@ -1798,6 +1807,51 @@ async function sendDetectorFailureAlert(text: string): Promise<void> {
   }
 }
 
+/**
+ * ADR-0103 Addendum 87 Update 7: record this run's skipped detectors and return the ones that have now failed often
+ * enough to deserve an email (and were not already emailed in the cooldown). Best effort: if the bookkeeping itself
+ * fails, fall back to alerting on everything rather than hiding a real problem.
+ */
+async function detectorsWorthAlerting(failures: DetectorFailure[]): Promise<{ alert: DetectorFailure[]; counts: Record<string, number> }> {
+  if (failures.length === 0) return { alert: [], counts: {} };
+  try {
+    const { error: insErr } = await supabase
+      .from("detector_failure_log")
+      .insert(failures.map((f) => ({ rpc: f.rpc, message: f.message.slice(0, 500) })));
+    if (insErr) throw new Error(insErr.message);
+    const now = Date.now();
+    const rpcs = [...new Set(failures.map((f) => f.rpc))];
+    const { data, error } = await supabase
+      .from("detector_failure_log")
+      .select("rpc, alerted, created_at")
+      .in("rpc", rpcs)
+      .gte("created_at", new Date(now - Math.max(ALERT_WINDOW_MS, ALERT_COOLDOWN_MS)).toISOString());
+    if (error) throw new Error(error.message);
+    const counts: Record<string, number> = {};
+    const recentlyAlerted = new Set<string>();
+    for (const row of (data ?? []) as { rpc: string; alerted: boolean; created_at: string }[]) {
+      const age = now - Date.parse(row.created_at);
+      if (age <= ALERT_WINDOW_MS) counts[row.rpc] = (counts[row.rpc] ?? 0) + 1;
+      if (row.alerted && age <= ALERT_COOLDOWN_MS) recentlyAlerted.add(row.rpc);
+    }
+    const alert = failuresToAlert(failures, counts, recentlyAlerted);
+    if (alert.length > 0) {
+      // Mark this run's rows for the alerted detectors so the cooldown starts now.
+      await supabase
+        .from("detector_failure_log")
+        .update({ alerted: true })
+        .in("rpc", alert.map((f) => f.rpc))
+        .gte("created_at", new Date(now - 60 * 1000).toISOString());
+    }
+    // Housekeeping: keep a week.
+    await supabase.from("detector_failure_log").delete().lt("created_at", new Date(now - 7 * 24 * 3600 * 1000).toISOString());
+    return { alert, counts };
+  } catch (e) {
+    console.error(`auto-remediate: detector failure bookkeeping failed, alerting on all: ${(e as Error).message}`);
+    return { alert: failures, counts: {} };
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Entry point
 // ---------------------------------------------------------------------------
@@ -2015,9 +2069,13 @@ serve(async (req) => {
       }
     }
 
-    // One alert per run, only when a detector failed. Never fatal: a missing key or a failed send is only logged.
-    const failureAlert = detectorFailureAlert(detectorFailures);
-    if (failureAlert && !dryRun) await sendDetectorFailureAlert(failureAlert);
+    // Skips are recorded; an email goes out only when the same detector keeps failing (Update 7). Never fatal: a
+    // missing key or a failed send is only logged. A dry run writes and sends nothing.
+    if (!dryRun) {
+      const { alert, counts } = await detectorsWorthAlerting(detectorFailures);
+      const failureAlert = detectorFailureAlert(alert, counts);
+      if (failureAlert) await sendDetectorFailureAlert(failureAlert);
+    }
 
     const spentThisRun = ctx.results.reduce((sum, r) => sum + (r.outcome === "planned" ? 0 : r.cost_usd), 0);
     const summary = {

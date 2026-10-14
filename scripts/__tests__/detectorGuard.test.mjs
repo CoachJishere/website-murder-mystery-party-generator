@@ -11,7 +11,7 @@ const load = async (rel) => {
   const js = transformSync(src, { loader: 'ts', format: 'esm' }).code;
   return import('data:text/javascript;base64,' + Buffer.from(js).toString('base64'));
 };
-const { runDetectorGuarded, detectorFailureAlert, runWindowDays, HELD_RUN_WINDOW_DAYS, detectorSinceIso } = await load('../../supabase/functions/auto-remediate-packages/detector-guard.ts');
+const { runDetectorGuarded, detectorFailureAlert, runWindowDays, HELD_RUN_WINDOW_DAYS, detectorSinceIso, failuresToAlert, ALERT_FAILURE_THRESHOLD } = await load('../../supabase/functions/auto-remediate-packages/detector-guard.ts');
 let passed = 0;
 const check = async (n, fn) => { await fn(); passed++; console.log(`  ok - ${n}`); };
 const quiet = async (fn) => { const e = console.error; console.error = () => {}; try { return await fn(); } finally { console.error = e; } };
@@ -79,7 +79,15 @@ await check('non-Error throws are recorded as text', async () => {
 await check('one alert body per run, none when nothing failed', () => {
   assert.strictEqual(detectorFailureAlert([]), null);
   const body = detectorFailureAlert([{ rpc: 'a', message: 'm1' }, { rpc: 'b', message: 'm2' }]);
-  assert.match(body, /^2 detector\(s\) failed/); assert.match(body, /- a: m1/); assert.match(body, /- b: m2/);
+  assert.match(body, /^2 detector\(s\) keep failing/); assert.match(body, /- a \(.*\): m1/); assert.match(body, /- b \(.*\): m2/);
+});
+await check('Update 7: a single skip never alerts; the same detector failing repeatedly does, once per cooldown', () => {
+  const f = [{ rpc: 'a', message: 'm' }, { rpc: 'b', message: 'm' }];
+  assert.deepStrictEqual(failuresToAlert(f, { a: 1, b: 1 }, new Set()), []);
+  assert.deepStrictEqual(failuresToAlert(f, { a: ALERT_FAILURE_THRESHOLD - 1 }, new Set()), []);
+  assert.deepStrictEqual(failuresToAlert(f, { a: ALERT_FAILURE_THRESHOLD, b: 1 }, new Set()).map((x) => x.rpc), ['a']);
+  assert.deepStrictEqual(failuresToAlert(f, { a: 9 }, new Set(['a'])), []);
+  assert.deepStrictEqual(failuresToAlert([], {}, new Set()), []);
 });
 await check('index.ts: class sweeps go through sweep(); only the two re-detect gates call callDetector directly', () => {
   const src = readFileSync(new URL('../../supabase/functions/auto-remediate-packages/index.ts', import.meta.url), 'utf8');
