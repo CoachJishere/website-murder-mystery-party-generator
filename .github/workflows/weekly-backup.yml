@@ -58,26 +58,39 @@ jobs:
           SUMMARY="| Table | Rows |\n|---|---|\n"
           for t in $TABLES; do
             : > "backup/${t}.jsonl"
-            offset=0
+            # Keyset pagination (id > last id) instead of Range/OFFSET: OFFSET
+            # re-scans every skipped wide row, which hit the Supabase statement
+            # timeout (57014 -> HTTP 500) on mystery_characters at offset 600
+            # on 2026-10-14 while the cron jobs were busy. A failed page is
+            # retried with backoff and a halved page size before giving up.
+            last=""
+            size=$PAGE_SIZE
+            attempt=0
             while :; do
+              filter=""
+              [ -n "$last" ] && filter="&id=gt.${last}"
               http=$(curl -s --max-time 120 -o page.json -w '%{http_code}' \
                 -H "apikey: ${SUPABASE_SERVICE_KEY}" \
                 -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
-                -H "Range-Unit: items" -H "Range: ${offset}-$((offset+PAGE_SIZE-1))" \
-                "${SUPABASE_URL}/rest/v1/${t}?select=*&order=id")
-              # 416 = requested range is past the end (row count is an exact
-              # multiple of PAGE_SIZE). That means we're done, not an error.
-              [ "$http" = "416" ] && break
-              if [ "$http" != "200" ] && [ "$http" != "206" ]; then
-                echo "::error::${t} export failed at offset ${offset}: HTTP ${http}"
-                cat page.json
-                exit 1
+                "${SUPABASE_URL}/rest/v1/${t}?select=*&order=id&limit=${size}${filter}") || http=000
+              if [ "$http" != "200" ]; then
+                attempt=$((attempt+1))
+                if [ "$attempt" -ge 5 ]; then
+                  echo "::error::${t} export failed after last id '${last}': HTTP ${http}"
+                  cat page.json
+                  exit 1
+                fi
+                echo "::warning::${t} page failed (HTTP ${http}), retry ${attempt} with page size $((size>25 ? size/2 : size))"
+                [ "$size" -gt 25 ] && size=$((size/2))
+                sleep $((attempt*10))
+                continue
               fi
+              attempt=0
               count=$(jq 'length' page.json)
               [ "$count" -eq 0 ] && break
               jq -c '.[]' page.json >> "backup/${t}.jsonl"
-              offset=$((offset+PAGE_SIZE))
-              [ "$count" -lt "$PAGE_SIZE" ] && break
+              last=$(jq -r '.[-1].id' page.json)
+              [ "$count" -lt "$size" ] && break
             done
             rows=$(wc -l < "backup/${t}.jsonl" | tr -d ' ')
             echo "${t}: ${rows} rows"

@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Fix: daily encrypted backup survives a database statement timeout
+- **What:** the 2026-10-14 09:41 UTC run failed on `mystery_characters` at offset 600 (HTTP 500, Postgres 57014 "canceling statement due to statement timeout"); the 5 runs before it passed. `.github/workflows/weekly-backup.yml` now pages by key (`id=gt.<last id>&limit=N`) instead of Range/OFFSET, and a failed page is retried up to 5 times with backoff and a halved page size before the job fails.
+- **Why:** OFFSET re-scans every skipped wide row (character sheets carry full round scripts), so it gets slower as the table grows and times out when cron jobs compete for the free-plan database. Keyset paging costs the same at any depth. This is the only database backup (free plan), so a transient timeout should not lose a day.
+- **Not changed:** table list, encryption, retention.
+
 ### Improvement: guard against new hard-coded English (ADR-0161)
 - **What:** `npm run audit:i18n` (`scripts/auditI18n.mjs`, TypeScript parser over JSX text, text attributes and toasts; exits 1 on a hit; baseline is clean) and `npm run test:i18n` (every key in every locale with the same placeholders and tags, plus scanner tests). A CLAUDE.md section tells agents to run both before committing UI changes.
 - **Why not an ESLint rule:** the stock `no-literal-string` rule is noisy here (class names, brands, handles, emails) and lint is not a gate in this repo, so the scan script plus the parity test give the same protection without the allowlist tuning.
