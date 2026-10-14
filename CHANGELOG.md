@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-14
+
+### Feature: alert-only sweep check for detective narration that names the culprit before the reveal (ADR-0160)
+- **What:** new `package_pre_reveal_culprit_named(mystery_packages)` and `list_packages_with_pre_reveal_culprit_name(_since)` (service_role only, migration `20261014090000`). A murderer or accomplice name part appearing at all in a Round 3 or Round 4 section of a detective script is listed. Not part of `package_completion_blocking_defects()`: no hold, no email. Run in step 3 of the New Purchase sweep (CLAUDE.md).
+- **Why alert-only:** moderate impact (the game still works), no free heal (a fix is a paid regeneration), and 0 real cases in the 59 packages since 2026-08-26. Jonathan chose the alert-only option over a gate or declining.
+- **Measurement:** 125 paid detective packages, every one of 24 flagged read: 17 real pointers (not "about 6"), 2 debatable, 6 Round 2 roster false positives. All 17 real are dated before 2026-08-26. e7cc3117 (listed in ADR-0158 as an accusation by name) has no pre-reveal hit; the name sits in the sealed reveal.
+- **Verified:** whole detective corpus (270 packages, 244 ms): 19 flags = 17 real + 1 debatable + 1 false positive (6eb76783, ice-cream cast, murderer "French Vanilla", a "Pure Vanilla Base" jar); 23 synthetic cases pass; grants service_role only.
+- **Correction:** ADR-0158 said the Key Points leak "needs a Make import"; it does not (Key Points exist only in Parent26 and older, none in Parent85/86 or any Child). Fixed in ADR-0158 and the vault.
+
 ## 2026-10-13
 
 ### Fix: independent eval of ADR-0158 round 3, notice no longer tells a playing host to read the Reveal (ADR-0158 Addendum 2)

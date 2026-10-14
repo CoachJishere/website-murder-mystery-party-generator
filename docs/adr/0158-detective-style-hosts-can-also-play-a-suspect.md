@@ -90,6 +90,8 @@ An independent re-derivation from git, the database (127 paid non-test detective
 2. **Completion email.** `send-adaptation-complete-email` (deployed as v8, `verify_jwt` on, live source diffed equal to the repo) no longer says "X is now the murderer" for detective-style packages: it says a key story role was reassigned and the updated Detective Guide has the details. The server cannot know the switch state, so detective style is always silent; slip style is unchanged. This makes the picker note (`adaptation.picker.sealedNote`, 13 locales) say that a removal does not announce who takes over a guilty role instead of warning about the email. Trade-off: a non-playing host who removes the culprit no longer gets the new culprit's name in the email (it is on the success page and in the Detective Guide).
 3. **Tab names.** The outliers were the tab labels, not the guide strings: fr, it, pt, fi called the murder tab Inspector while 28 to 52 other strings say Detective. `mysteryPackage.tabs.inspector` and `mobileTabs.inspector` now say Detective in those four locales (Italian murder and intrigue tabs were identical before); the new bullet was put back to the detective wording. Loading and placeholder strings still say inspector, as the English ones do.
 
+**Pre-reveal pointers in the narration (ADR-0160, 2026-10-14):** re-measured as 17 real packages (not 6), all before 2026-08-26, none since; an alert-only sweep check now exists. The "accusation by name" in e7cc3117 was a boundary artefact (the name is in the sealed reveal).
+
 **Still open:** only a closing section above the reveal heading (none delivered; adding "closing" as a trigger was tried and rejected, see above).
 
 ## Addendum 2 (2026-10-13): third independent eval
