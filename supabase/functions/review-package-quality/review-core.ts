@@ -76,6 +76,7 @@ const SLIP_SECRET_LEAK = `- secret_leak: an INNOCENT-branch statement shows know
 const DETECTIVE_SECRET_LEAK = `- secret_leak: an INNOCENT character's text, or any shared document read before the reveal, shows or hints at the solution (who the murderer is, the murderer's secret or hidden method) or at another character's hidden secret that this speaker could not know. In round 2 a script must not rely on round 3 or 4 evidence.`;
 
 const PRONOUNS_AND_IGNORE = `VICTIM PRONOUN CONVENTION: use the victim's name. Use a pronoun only if master_context refers to the victim with one consistent gender. If master_context uses no pronoun, mixes genders, or never states a gender, the victim is gender-neutral (they/them/their) and any he/she/him/her/his/hers/man/woman/boy/girl/guy/lady for the victim is pronoun_drift. Other characters keep their own pronouns.
+This applies in the package's own language: for a neutral victim, every masculine or feminine form of that language that stands for the victim is pronoun_drift, e.g. French il/elle, le/la/l', lui after a preposition (contre lui, chez lui), lui-même, celui-ci, un homme/une femme, prêt/prête; Spanish él/ella, lo/la, un hombre; German er/sie, ihn/ihr, ein Mann; Italian lui/lei, lo/la, un uomo; Portuguese ele/ela, um homem; Dutch hij/zij, hem/haar; Danish/Swedish han/hon, ham/henne, en mand/man; the same in Finnish, Korean, Japanese and Chinese. A neutral victim is written with the name (or "that person" in the language's neutral wording), never with a pronoun. The slips cluster in the speeches and confessions, where a sentence about the victim starts with the pronoun right after the name ("Rémi me menaçait. Il avait ..."): read EVERY sentence of EVERY field that mentions the victim by name or pronoun, and list each wrong form separately.
 
 IGNORE THESE (handled by other tools or by design, never report them): (a) which character a confession names as the murderer or accomplice; (b) any ally or rival listed in a relationships field compared with the relationship matrix; (c) section headers, missing headers, pointform, markdown, quote marks, tags and other stray characters; (d) a name written like "Osric/Osryth" is the deliberate dual-gender naming convention, so never report it nor the gendered words around it; (e) writing style, tone or length.
 READ EVERY FIELD WITH EQUAL CARE: the description, background and relationships fields are short, but a slip there is as visible to a guest as a slip in a script. Check each of them sentence by sentence for garbled wording, wrong facts and stray paragraphs.`;
@@ -133,7 +134,28 @@ export function contextText(pkg: Row, chars: Row[], style: Style): string {
     `### ${c.character_name}\nrole: ${c.character_role ?? ""}\ndescription: ${String(c.description ?? "").trim()}\nsecret: ${String(c.secret ?? "").trim()}`
   ).join("\n\n");
   const gameStyle = style === "detective" ? "detective style" : "slip style (murderer and accomplice drawn at the table)";
-  return `PACKAGE: ${pkg.title ?? ""}\nVICTIM: ${victim}\nGAME STYLE: ${gameStyle}\n${solution}\n=== master_context (canonical facts for this package) ===\n${mc}\n\n=== ROSTER DOSSIER (every character: description and secret) ===\n${roster}`;
+  const genderNote = victimGenderNote(pkg, victim);
+  return `PACKAGE: ${pkg.title ?? ""}\nVICTIM: ${victim}\n${genderNote}GAME STYLE: ${gameStyle}\n${solution}\n=== master_context (canonical facts for this package) ===\n${mc}\n\n=== ROSTER DOSSIER (every character: description and secret) ===\n${roster}`;
+}
+
+/**
+ * ADR-0103 Addendum 97: the reviewer decided "neutral or not" from master_context alone, and master_context itself slips into "il" for the
+ * victim, so it found 5 of 38 wrong pronouns in a French package. The customer's concept is the better evidence: a victim written with a dual
+ * name ("Rémi/Romy Castonguay") is gender-neutral by the product convention. Returns a context line, or "" when the concept does not say so.
+ */
+export function victimGenderNote(pkg: Row, victimName: string): string {
+  const hay = `${asText(pkg.user_conversation)}\n${asText(pkg.extracted_characters)}`;
+  if (!hay.trim() || !victimName || victimName.startsWith("(")) return "";
+  const esc = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  for (const tok of victimName.split(/[\s/]+/).filter((x) => x.replace(/[^\p{L}]/gu, "").length >= 3)) {
+    const e = esc(tok);
+    const m = hay.match(new RegExp(`(?<![\\p{L}])(${e})\\s*/\\s*([\\p{L}'-]{2,})|(?<![\\p{L}])([\\p{L}'-]{2,})\\s*/\\s*(${e})(?![\\p{L}])`, "u"));
+    if (m) {
+      const pair = m[1] ? `${m[1]}/${m[2]}` : `${m[3]}/${m[4]}`;
+      return `VICTIM GENDER: neutral. The customer's concept names the victim with the dual name "${pair}", so the victim is gender-neutral whatever pronouns master_context itself slips into.\n`;
+    }
+  }
+  return "";
 }
 
 export type SystemBlock = { type: "text"; text: string; cache_control?: { type: "ephemeral" } };

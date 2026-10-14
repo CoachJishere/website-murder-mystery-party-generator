@@ -13,7 +13,7 @@
 //   - the wrapper of the source line (*[ ]*, [ ], heading level, leading indent) is kept.
 // It is idempotent: a second run finds no English template line and changes nothing.
 import { SCAFFOLD_BY_CODE } from "./packageScaffoldTables.ts";
-import { detectLanguage } from "./languageDetect.ts";
+import { detectLanguage, LANG_STOPWORDS } from "./languageDetect.ts";
 
 export type ScaffoldField = "detective_script" | "evidence_cards" | "game_overview";
 export const SCAFFOLD_FIELDS: ScaffoldField[] = ["detective_script", "evidence_cards", "game_overview"];
@@ -54,9 +54,19 @@ export function roundNumberOf(heading: string): number | null {
   return m ? Number(m[1]) : null;
 }
 
-/** Lines that still look like an English template line after localization (stage directions and bullets with several common English words). Report only. */
-const ENGLISH_HINT = /\b(the|and|each|read|let|guests?|steps?|then|player|reconvene|evidence|before|after)\b/gi;
-function looksEnglish(s: string): boolean { return (s.match(ENGLISH_HINT) ?? []).length >= 3; }
+/** English function words and the vocabulary of the template's stage directions. One hit is enough when the line has no word of the target language. */
+const ENGLISH_HINT = /\b(the|and|each|read|then|after|before|their|they|with|until|when|your|that|this|steps?|guests?|players?|statement|approximately|reconvene|tally|slowly|lower)\b/gi;
+/**
+ * A leftover English line (report only). Latin-script targets: English vocabulary and none of that language's own stopwords.
+ * Other scripts (and Finnish): English vocabulary and no non-ASCII letter at all.
+ */
+export function looksEnglish(text: string, lang: string): boolean {
+  const en = (text.match(ENGLISH_HINT) ?? []).length;
+  if (en === 0) return false;
+  const own = LANG_STOPWORDS[lang];
+  if (own && lang !== "en") return (text.match(own) ?? []).length === 0;
+  return !/[^\x00-\x7F]/.test(text);
+}
 
 export function localizeScaffoldField(field: ScaffoldField, text: string, lang: string): ScaffoldResult {
   const table = SCAFFOLD_BY_CODE[lang];
@@ -106,7 +116,7 @@ export function localizeScaffoldField(field: ScaffoldField, text: string, lang: 
           edits.push({ field, from: line.trim(), to: to.trim() });
           return to;
         }
-        if (looksEnglish(d[3]) && !/Present Round \d Evidence/.test(d[3])) unmatched.push(t.slice(0, 160));
+        if (looksEnglish(d[3], lang) && !/Present Round \d Evidence/.test(d[3])) unmatched.push(t.slice(0, 160));
       }
     }
 
@@ -129,7 +139,7 @@ export function localizeScaffoldField(field: ScaffoldField, text: string, lang: 
       if (to !== raw) { edits.push({ field, from: t, to: to.trim() }); return to; }
       return raw;
     }
-    if (field === "detective_script" && /^\s*- /.test(line) && looksEnglish(line)) unmatched.push(t.slice(0, 160));
+    if (field === "detective_script" && /^\s*- /.test(line) && looksEnglish(line, lang)) unmatched.push(t.slice(0, 160));
     return raw;
   });
 

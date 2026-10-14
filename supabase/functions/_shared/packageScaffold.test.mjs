@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import { SCAFFOLD_BY_CODE } from "./packageScaffoldTables.ts";
-import { localizeScaffoldField, detectScaffoldLanguage, roundNumberOf, SCAFFOLD_LANGUAGES, absentHostNote, languageOfMasterContext } from "./packageScaffold.ts";
+import { localizeScaffoldField, detectScaffoldLanguage, roundNumberOf, SCAFFOLD_LANGUAGES, absentHostNote, languageOfMasterContext, looksEnglish } from "./packageScaffold.ts";
 import { sealDetectiveScript } from "../../../src/utils/hostSeal.ts";
 import { playerFacingEvidence, parseEvidenceCards } from "../../../src/utils/evidenceCardUtils.ts";
 import { printedEvidenceText } from "../review-package-quality/review-core.ts";
@@ -323,6 +323,21 @@ t("old English removal note is localized with the same text a new removal writes
     assert.equal(localizeScaffoldField("detective_script", r.text, code).edits.length, 0, code);
   }
   assert.equal(localizeScaffoldField("detective_script", old, "en").text, old);
+});
+
+t("leftover-English report: short reworded English directions are flagged, none of our own translations is", () => {
+  const leftovers = ["Read after the opening statement.", "Each player makes a final statement.", "Read before the reveal.", "Build the moment with deliberate pauses.", "Read after approximately 12-15 minutes of debate in Round 2.", "Each player in turn names their suspect with one-sentence reasoning. Tally votes."];
+  for (const code of SCAFFOLD_LANGUAGES) {
+    for (const l of leftovers) assert.equal(looksEnglish(l, code), true, `${code}: ${l}`);
+    const tb = SCAFFOLD_BY_CODE[code];
+    for (const v of [...Object.values(tb.directions), ...Object.values(tb.lines), tb.absent]) {
+      // the audio-tool bullet carries two English product names by design
+      if (v.includes("Google") || v.includes("mp3")) continue;
+      assert.equal(looksEnglish(v, code), false, `${code} false positive: ${v}`);
+    }
+  }
+  const r = localizeScaffoldField("detective_script", "*[Read before the reveal.]*\n*[Each player makes a final statement.]*\n", "pt");
+  assert.deepEqual(r.unmatched, ["*[Read before the reveal.]*", "*[Each player makes a final statement.]*"]);
 });
 
 console.log("done");

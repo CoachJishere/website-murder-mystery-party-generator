@@ -218,4 +218,21 @@ t("requirements extraction: text is null without a conversation, long chats keep
   assert.equal(C.REQUIREMENTS_EXTRACT_SCHEMA.properties.requirements.type, "array");
 });
 
+t("victim gender note: a dual name in the customer's concept makes the victim neutral; instructions carry the multilingual pronoun forms (ADR-0103 Add. 97)", () => {
+  const conv = "AI: ## Victime\n\n**Rémi/Romy Castonguay** – Médium autoproclamé(e)";
+  assert.ok(C.victimGenderNote({ user_conversation: conv }, "Rémi Castonguay").includes('"Rémi/Romy"'));
+  assert.ok(C.victimGenderNote({ user_conversation: "**Dusty/Dani Divine** was found" }, "Dusty Divine").includes("Dusty/Dani"));
+  assert.ok(C.victimGenderNote({ extracted_characters: '{"name":"Alex/Alexie Bérubé"} Rémi/Romy' }, "Rémi Castonguay").includes("Rémi/Romy"));
+  assert.equal(C.victimGenderNote({ user_conversation: "**Rémi Castonguay** the medium. Max/Maxine is the heir." }, "Rémi Castonguay"), "");
+  assert.equal(C.victimGenderNote({ user_conversation: "x" }, "(see master_context)"), "");
+  assert.equal(C.victimGenderNote({}, "Rémi Castonguay"), "");
+  const ctx = C.contextText({ title: "T", master_context: JSON.stringify({ victimProfile: { name: "Rémi Castonguay" } }), user_conversation: conv }, [], "character");
+  assert.ok(ctx.includes("VICTIM GENDER: neutral") && ctx.indexOf("VICTIM GENDER") < ctx.indexOf("GAME STYLE"));
+  const plain = C.contextText({ title: "T", master_context: JSON.stringify({ victimProfile: { name: "Dusty Divine" } }) }, [], "character");
+  assert.ok(!plain.includes("VICTIM GENDER"));
+  const ins = C.instructionsFor("character");
+  for (const w of ["il/elle", "lui-même", "él/ella", "er/sie", "lui/lei", "ele/ela", "hij/zij", "han/hon", "EVERY sentence"]) assert.ok(ins.includes(w), w);
+  assert.equal(C.PROMPT_VERSION, "v4-2026-10-03", "the version must not change: list_packages_needing_review would queue a paid re-review of every package");
+});
+
 console.log("customer-wording tests done");
