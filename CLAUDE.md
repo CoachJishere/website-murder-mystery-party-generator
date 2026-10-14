@@ -35,6 +35,10 @@
   4. If a row is stuck non-terminal, root cause fixed, and safe to retry: complete it directly — a new `$0`, pre-`'paid'` single-row `mystery_adaptations` batch + a direct call to `adapt-mystery-apply`, no second charge (the customer already paid for this as part of the original batch). Confirm zero verify issues on the retry.
   5. Found something → fix it, re-verify, CHANGELOG entry + an addendum to **ADR-0088** (the ADR that owns this feature's batching/verify design). Clean → report in chat only, no permanent document for a routine "nothing found."
 
+## Localization of the UI (ADR-0161)
+
+Every new user-facing string goes through `t()` with all 13 locale files updated in the same change (en, es, fr, de, it, pt, nl, da, sv, fi, ko, ja, zh-cn); toasts and messages raised outside components use `i18n.t` from `@/i18n`. Before committing UI changes run `npm run audit:i18n` (finds hard-coded English in JSX and toasts; skips Cold Case, admin, previews, dead components) and `npm run test:i18n` (every key in every locale, same `{{placeholders}}` and `<tags>`). Generated package text is covered separately by the scaffold heal and `npm run test:scaffold`. Cold Case stays English until it launches.
+
 ## Changelog
 
 After every meaningful code change, update `CHANGELOG.md` with a dated entry.

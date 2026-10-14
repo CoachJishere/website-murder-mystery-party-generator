@@ -2,6 +2,10 @@
 
 ## 2026-10-14
 
+### Improvement: guard against new hard-coded English (ADR-0161)
+- **What:** `npm run audit:i18n` (`scripts/auditI18n.mjs`, TypeScript parser over JSX text, text attributes and toasts; exits 1 on a hit; baseline is clean) and `npm run test:i18n` (every key in every locale with the same placeholders and tags, plus scanner tests). A CLAUDE.md section tells agents to run both before committing UI changes.
+- **Why not an ESLint rule:** the stock `no-literal-string` rule is noisy here (class names, brands, handles, emails) and lint is not a gate in this repo, so the scan script plus the parity test give the same protection without the allowlist tuning.
+
 ### Feature: Privacy, About, blog chrome and the rest of the UI translated; billing shows the regular price (ADR-0161 Update 4)
 - **What:** 76 more keys in all 13 locale files: the full Privacy page (machine translation, no legal review), About, blog chrome (dates localized), package page captions and notes, removal result page, footer, nav and loading labels, dashboard filter tabs; three broken chat sign-in prompts (fr, it, fi) repaired. Everything except Cold Case, admin, previews and dead components.
 - **Billing history** shows "USD 24.99" (the regular price, formatted per language) instead of "$24.99", at Jonathan's request; it is not the amount charged.

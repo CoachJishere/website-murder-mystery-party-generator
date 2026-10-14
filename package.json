@@ -16,6 +16,8 @@
     "test:charcontext": "node --experimental-strip-types supabase/functions/_shared/characterContext.test.mjs",
     "test:charchat": "node --experimental-strip-types supabase/functions/_shared/characterChat.test.mjs",
     "test:childctx": "node --experimental-strip-types supabase/functions/_shared/childContext.test.mjs && node --experimental-strip-types supabase/functions/child-context/child-context.test.mjs && node --experimental-strip-types supabase/functions/regenerate-child-content/redaction-seam.test.mjs",
+    "audit:i18n": "node scripts/auditI18n.mjs",
+    "test:i18n": "node scripts/__tests__/localeParity.test.mjs",
     "test:scaffold": "node --experimental-strip-types supabase/functions/_shared/packageScaffold.test.mjs",
     "test:partnertip": "node --experimental-strip-types supabase/functions/auto-remediate-packages/partner-tip.test.mjs",
     "test:metaleak": "node --experimental-strip-types supabase/functions/auto-remediate-packages/player-instruction.test.mjs",
