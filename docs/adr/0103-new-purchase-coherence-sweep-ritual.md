@@ -2276,3 +2276,21 @@ Checked and fine: the customer's other requirements (22 entries, pronouns per pl
 ### Addendum 99, Update 4 (2026-10-14, close of session)
 
 - **Child67 imported** by Jonathan ("I imported 67"), logged in `prompt_version_history` (version 67, real time). Prevention for the wrong-person sheets is therefore live for every purchase generated from now on; delivered packages are unchanged. Watch: `list_packages_with_sheet_wrong_person(<date>)` on the next 3 English purchases (expect 0 or near 0) and that the spoken fields did not drift to second person. The customer note sent by Jonathan was written before this import and does not mention it (it is not customer-facing).
+
+## Addendum 101 (2026-10-14): Blackthorn Manor - the customer's post-delivery change request: the accomplice renamed Shannon Ridgewood, the co-investigator removed, three rounds by combining Rounds 3 and 4 (related to Addendum 92)
+
+**Trigger.** The customer (Amy Ross) wrote after delivery: Shannon will attend, Pam will not; then asked to "change Shannon to Pam", remove Pamela altogether, have one detective only and three rounds instead of four. Jonathan sent a draft that restated the reading (Shannon plays the housekeeper-accomplice, renamed Shannon; Stephanie the only detective) and she confirmed: "Shannon Ridgewood is fine."
+
+**Done by hand (one transaction, every replace asserted; dry-run first with a forced rollback, then Jonathan's go).**
+1. **Co-investigator removed** before the rename: five lines of `detective_script` (backstory, opening statement, Round 1 and Round 2 intros, closing "will see them both safely from the manor", now "I will"), one sentence of `game_overview`, two places in `master_context`. 0 co-investigator mentions remain.
+2. **Pam to Shannon Ridgewood.** Rule: "Pamela 'Pam' Ridgewood" and "Pamela Ridgewood" to "Shannon Ridgewood", then "Pamela" and the word "Pam" to "Shannon", then a cleanup for doubled forms. Applied to 16 character columns (name, description, background, relationships, secret and secrets, intro, round 3 and 4 questions, round 4 script, accusations, final statement and the pointform twins), `detective_script`, `master_context` (including the relationship matrix), `evidence_cards`, `extracted_characters`. After: 0 cells with Pam or Pamela, 0 doubled names, `secrets` equals `[secret]` for all 11, gate NULL, meta text, role tag, dangling quote and relationship-matrix checks clean.
+3. **Not edited:** `user_conversation` (the customer's own words) and `conversations.mystery_data`, which still contains "Pam" and the co-investigator; a future regeneration of this package would bring both back and would need the same edit.
+4. **Rounds: not changed in the package.** Round count is not configurable (see the round-count note in the vault), and Round 4 is the elimination round: it holds the forged note and the mourning ring, the clues that name the guilty. Deleting it makes the mystery unsolvable. The customer was told to run Rounds 3 and 4 together instead, and a one-page combined Round 3 script (the original wording of both sections joined, no new clue text) was written for Stephanie as a separate attachment, `00_INBOX/blackthorn-manor-combined-round-3-script-2026-10-14-mystery-maker.md`. The package, the character sheets and the host guide still say four rounds.
+
+**Why no package edit for the rounds.** A combined section in the package would no longer match the character sheets (labelled Round 3 and Round 4) or the compiled host guide, and the original wording stays valid if she runs four rounds after all.
+
+**Superseded.** The hand-written Shannon co-investigator briefing sent on 2026-10-13 is now moot; the customer was told to discard it.
+
+**Signal.** This is the third or fourth post-delivery request about cast, names or round count; recorded as a product signal, not yet sized: `00_INBOX/customers-want-more-control-signal-2026-10-14-mystery-maker.md`.
+
+**Open.** (1) Send the customer the "new version ready, please download again" note with the combined script attached. (2) `conversations.mystery_data` still has the old name (above). (3) After the customer's changes are finished, count post-delivery change requests (Jonathan's call, 2026-10-14).

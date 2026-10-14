@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Fix: Blackthorn Manor, accomplice renamed Shannon Ridgewood and the co-investigator removed at the customer's request; Rounds 3 and 4 combined by a separate script (ADR-0103 Addendum 101)
+- **Why:** the customer's cast changed after delivery (the guest playing the co-investigator would play the housekeeper-accomplice instead) and she wanted three rounds.
+- **What:** data edits only, one package, dry-run then applied in one asserted transaction: 16 character columns, detective script, master context, evidence cards, extracted characters renamed; co-investigator mentions removed from the script, overview and master context. Gate and detectors clean afterwards. A one-page combined Round 3 script was written as a separate attachment.
+- **Not done:** the round count in the package (not configurable; Round 4 carries the forged note and the ring and cannot be deleted); `conversations.mystery_data` still names the old character.
+
 ### Fix: eval of ADR-0163, two delivered packages and the sweep records corrected (ADR-0163 Addendum 9)
 - **What:** Blackthorn Manor, Jackie Winthrop `round3_questions` #2 no longer presumes Anna's hidden poison trade; The Birthday Betrayal, Quinn/Quincy Lee `final_statement` lost a stray `"} ` (one guarded update, one row each). `package_review_misses`: three C8 rows now owner `prevent`, the Golden Stars "darling" row severity `high` (`sweep_exit_metrics` high misses 45 to 46). ADR-0163 figure 55 corrected to 58, Decision and Consequences brought up to date; CLAUDE.md no longer says the cross-sheet passes or auto-apply are OFF and states the measured twin-finder relevance (30 to 55 percent, not "about half").
 - **Why:** independent fresh-conversation eval of ADR-0163; Jonathan: "lets go with fixes".
