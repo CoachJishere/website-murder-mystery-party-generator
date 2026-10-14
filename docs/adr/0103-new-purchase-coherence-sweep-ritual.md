@@ -2179,3 +2179,5 @@ Checked and fine: the customer's other requirements (22 entries, pronouns per pl
 **Scoreboard:** hand edits 4 spot groups (8 fields), reviewer 2 of 2 real (1 already fixed before the sweep), misses 5 (3 fixed, 2 open). `package_review_sweeps` row inserted.
 
 **Open for Jonathan:** items 4 and 5 above (reword Robin's final statement or accept it; whether to touch the Round 4 questions).
+
+**Update 1 (2026-10-14, Jonathan: yes to the recommendation).** Item 4 fixed: Robin's `final_statement` and `final_statement_pointform` no longer volunteer the bakery's earlier failure; Robin now admits only lasting bitterness over the closure, and the real reason stays on the secret sheet for the player to reveal if cornered. Item 5 left as is (low severity, reads naturally in table order; revisit as a Child prompt rule if the pattern recurs in the next few detective sweeps). Completion gate still clean.
