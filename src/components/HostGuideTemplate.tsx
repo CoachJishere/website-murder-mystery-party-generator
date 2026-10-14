@@ -266,7 +266,7 @@ ${tt("keepingOnTrack.closing")}
       {materials && (
         <div>
           <h3 className={cn("font-semibold mb-3", isMobile ? "text-base" : "text-lg")}>
-            Theme-Specific Props (Optional)
+            {t("hostGuide.themeProps")}
           </h3>
           <EditableSection
             content={materials}

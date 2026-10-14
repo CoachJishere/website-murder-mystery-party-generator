@@ -338,7 +338,8 @@
       "corporateEvents": "Firmen- & Büro-Events",
       "cookieSettings": "Cookie-Einstellungen"
     },
-    "copyright": "Mystery Maker, Inc. Alle Rechte vorbehalten."
+    "copyright": "Mystery Maker, Inc. Alle Rechte vorbehalten.",
+    "rights": "Alle Rechte vorbehalten."
   },
   "trustpilot": {
     "linkText": "Unsere Bewertungen auf Trustpilot ansehen",
@@ -1649,12 +1650,19 @@
       "rowFailed": "dieser Charakter konnte nicht sicher fertiggestellt werden und wurde unverändert gelassen.",
       "reassignmentNotice": "Die Neuzuweisung des Täters erforderte, die Auflösung im Detektiv-Skript und ein Geständnis neu zu schreiben - wir empfehlen, beides vor dem Hosten einmal durchzulesen.",
       "missingId": "Wir konnten diese Neubesetzungsanfrage nicht finden.",
-      "backToMystery": "Zurück zu deinem Mysterium"
+      "backToMystery": "Zurück zu deinem Mysterium",
+      "doneOf": "{{done}} von {{total}} erledigt",
+      "removedRow": "<b>{{name}}</b> wurde aus allen Charakterbögen, dem Detektiv-Skript und den Beweiskarten entfernt.",
+      "nowRole": "{{name}} ist jetzt der/die {{role}}."
     },
     "toasts": {
       "createdNoCheckout": "Anfrage für {{count}} Charakter(e) erstellt (Staging-Modus - keine Zahlung konfiguriert).",
       "createFailed": "Diese Anfrage konnte nicht gestartet werden. Bitte versuche es erneut.",
       "alreadyInProgress": "Für einen dieser Charaktere läuft bereits eine Anfrage."
+    },
+    "roles": {
+      "murderer": "Mörder(in)",
+      "accomplice": "Komplize/Komplizin"
     }
   },
   "hostGuide": {
@@ -1854,7 +1862,8 @@
       "tip7": "**Lass die Gruppe sich bewegen.** Kleine Gesprächsgrüppchen und ein großer Kreis für die Anklagen funktionieren beide gut — zwing niemanden, die ganze Zeit sitzend in einer Formation zu bleiben.",
       "tip8": "**Improvisiere.** Wenn ein Spieler nach etwas fragt, das nicht in seinen Skriptoptionen steht, ermutige zur Improvisation in der Rolle.",
       "tip9": "**Hab Spaß mit der Atmosphäre.** Musik und ein thematischer Snack bringen viel — alles andere ist nicht erforderlich."
-    }
+    },
+    "themeProps": "Themenspezifische Requisiten (optional)"
   },
   "characterGuide": {
     "fieldLabels": {
@@ -2068,7 +2077,8 @@
     "all": "Alle",
     "draft": "Entwurf",
     "published": "Veröffentlicht",
-    "archived": "Archiviert"
+    "archived": "Archiviert",
+    "purchased": "Gekauft"
   },
   "homeSections": {
     "howItWorks": "So funktioniert's",
@@ -2122,6 +2132,100 @@
       "saveUnexpected": "Der Charakter konnte wegen eines unerwarteten Fehlers nicht gespeichert werden",
       "nameNotFound": "Der Charaktername konnte nicht aus dem Text ermittelt werden",
       "processFailed": "Der Charaktertext konnte nicht verarbeitet werden"
+    }
+  },
+  "ui": {
+    "loading": "Wird geladen...",
+    "mobileNav": "Mobile Navigation",
+    "scrollToExplore": "scrolle zum Entdecken",
+    "stars5": "5 Sterne"
+  },
+  "packageTab": {
+    "evidenceCardAlt": "Beweiskarte",
+    "loadingTime": "Das dauert normalerweise {{time}}.",
+    "fixedCast": "Du kannst jeden Charakter unten bearbeiten, aber die Anzahl der Verdächtigen steht für dieses Rätsel fest – einen Charakter hinzuzufügen oder zu entfernen bedeutet, neu zu generieren.",
+    "coInvestigators": "Mehr Gäste als Charaktere? Sie können als <b>Co-Ermittler</b> im Team des Detektivs mitspielen (siehe Gastgeber-Leitfaden) – gib ihnen aber nicht das Detektiv-Skript, denn darin steht der Täter.",
+    "shareFeedback": "Feedback geben"
+  },
+  "blogUi": {
+    "back": "Zurück zum Blog",
+    "by": "Von",
+    "updated": "Aktualisiert am",
+    "minRead": "{{count}} Min. Lesezeit",
+    "related": "Das könnte dir auch gefallen",
+    "ctaTitle": "Bereit, dein eigenes Mordrätsel zu erstellen?",
+    "ctaBody": "Erstelle mit unseren einfachen Werkzeugen eine einzigartige, mitreißende Mordrätsel-Party.",
+    "ctaButton": "Erstelle dein Rätsel",
+    "stickyTitle": "Bereit, dein eigenes Rätsel zu erstellen?",
+    "stickyBody": "Leg noch heute los und schaffe ein unvergessliches Erlebnis für Freunde und Familie.",
+    "stickyButton": "Jetzt starten",
+    "indexTitle": "Ideen, Themen und Gastgeber-Leitfäden für Mordrätsel-Partys",
+    "indexMeta": "Kostenlose Anleitungen für Mordrätsel-Partys: über 40 Themen, Charakterideen, Tipps zu Ablauf und Dekoration sowie Vergleiche druckbarer Kits. Plane einen unvergesslichen Abend.",
+    "indexIntro": "Du möchtest ein Spiel für deine eigene Gruppe? <c>Erstelle eine individuelle Mordrätsel-Party</c>. Planst du etwas für die Arbeit? Probiere eine <o>Mordrätsel-Party im Büro</o> aus oder lies unseren Leitfaden zu <g>Mordrätsel-Partys für Unternehmen und Büros</g>.",
+    "noPosts": "Keine Blogbeiträge gefunden."
+  },
+  "about": {
+    "title": "Über Jonathan Miller | Mystery Maker",
+    "metaDescription": "Jonathan Miller ist der Gründer von Mystery Maker. Er hat Dutzende Mordrätsel-Partys veranstaltet und den Generator gebaut, den er sich gewünscht hätte.",
+    "ogDescription": "Gründer von Mystery Maker. Improvisationskünstler. Gastgeber von Dutzenden Mordrätsel-Partys.",
+    "photoAlt": "Jonathan Miller, Gründer von Mystery Maker",
+    "role": "Gründer von Mystery Maker",
+    "connect": "Kontakt",
+    "bio": "Jonathan Miller ist der Gründer von Mystery Maker, einem Generator für individuelle Mordrätsel-Partys. Er hat Dutzende Mordrätsel veranstaltet, bringt das Gespür eines erfahrenen Improvisationskünstlers in die Charaktergestaltung ein und hat Mystery Maker gegründet, weil er keine fertigen Kits fand, die zu den Gruppen passten, mit denen er tatsächlich spielte – jedes vorhandene Thema wirkte entweder beliebig oder aufgesetzt. Er veranstaltet weiterhin regelmäßig Mordrätsel-Partys, woher die meisten praktischen Gastgebertipps in diesem Blog stammen. Außerhalb von Mystery Maker ist Jonathan Mitgründer des Narrativa Improv Festival."
+  },
+  "privacy": {
+    "title": "Datenschutzerklärung",
+    "metaDescription": "Unser Versprechen, deine Privatsphäre und deine persönlichen Daten bei der Nutzung des Mordrätsel-Party-Generators zu schützen.",
+    "lastUpdated": "Zuletzt aktualisiert: 5. April 2025",
+    "s1": {
+      "title": "1. Einleitung",
+      "body": "Willkommen bei Murder Mystery Generator. Wir respektieren deine Privatsphäre und setzen uns für den Schutz deiner personenbezogenen Daten ein. Diese Datenschutzerklärung informiert dich darüber, wie wir mit deinen personenbezogenen Daten umgehen, wenn du unsere Website besuchst, und über deine Datenschutzrechte und den gesetzlichen Schutz."
+    },
+    "s2": {
+      "title": "2. Welche Daten wir über dich erheben",
+      "body": "Personenbezogene Daten sind alle Informationen über eine Person, anhand derer sie identifiziert werden kann. Wir können verschiedene Arten personenbezogener Daten über dich erheben, verwenden, speichern und übermitteln, die wir wie folgt gruppiert haben:",
+      "i1": "Identitätsdaten umfassen Vor- und Nachname, Benutzernamen oder ähnliche Kennungen.",
+      "i2": "Kontaktdaten umfassen E-Mail-Adresse und Telefonnummern.",
+      "i3": "Technische Daten umfassen die IP-Adresse, deine Anmeldedaten, Browsertyp und -version, Zeitzoneneinstellung und Standort, Typen und Versionen von Browser-Plug-ins, Betriebssystem und Plattform sowie weitere Technologien auf den Geräten, mit denen du auf diese Website zugreifst.",
+      "i4": "Nutzungsdaten umfassen Informationen darüber, wie du unsere Website, Produkte und Dienstleistungen nutzt.",
+      "i5": "Marketing- und Kommunikationsdaten umfassen deine Präferenzen beim Erhalt von Werbung von uns und unseren Drittanbietern sowie deine Kommunikationspräferenzen."
+    },
+    "s3": {
+      "title": "3. Wie wir deine personenbezogenen Daten verwenden",
+      "body": "Wir verwenden deine personenbezogenen Daten nur, wenn das Gesetz es uns erlaubt. Am häufigsten verwenden wir sie in folgenden Fällen:",
+      "i1": "Wenn wir den Vertrag erfüllen müssen, den wir mit dir schließen wollen oder geschlossen haben.",
+      "i2": "Wenn es für unsere berechtigten Interessen (oder die eines Dritten) erforderlich ist und deine Interessen und Grundrechte diese Interessen nicht überwiegen.",
+      "i3": "Wenn wir eine rechtliche Verpflichtung erfüllen müssen."
+    },
+    "s4": {
+      "title": "4. Datensicherheit",
+      "body": "Wir haben angemessene Sicherheitsmaßnahmen getroffen, um zu verhindern, dass deine personenbezogenen Daten versehentlich verloren gehen, unbefugt verwendet, abgerufen, verändert oder offengelegt werden. Außerdem beschränken wir den Zugriff auf deine personenbezogenen Daten auf Mitarbeiter, Beauftragte, Auftragnehmer und sonstige Dritte, die sie geschäftlich kennen müssen."
+    },
+    "s5": {
+      "title": "5. Aufbewahrung der Daten",
+      "body": "Wir speichern deine personenbezogenen Daten nur so lange, wie es für die Zwecke, für die wir sie erhoben haben, vernünftigerweise erforderlich ist, einschließlich der Erfüllung gesetzlicher, regulatorischer, steuerlicher, buchhalterischer oder berichtspflichtiger Anforderungen."
+    },
+    "s6": {
+      "title": "6. Deine gesetzlichen Rechte",
+      "body": "Unter bestimmten Umständen stehen dir nach dem Datenschutzrecht Rechte in Bezug auf deine personenbezogenen Daten zu, darunter das Recht auf:",
+      "i1": "Auskunft über deine personenbezogenen Daten zu verlangen.",
+      "i2": "Berichtigung deiner personenbezogenen Daten zu verlangen.",
+      "i3": "Löschung deiner personenbezogenen Daten zu verlangen.",
+      "i4": "der Verarbeitung deiner personenbezogenen Daten zu widersprechen.",
+      "i5": "die Einschränkung der Verarbeitung deiner personenbezogenen Daten zu verlangen.",
+      "i6": "die Übertragung deiner personenbezogenen Daten zu verlangen.",
+      "i7": "Recht, deine Einwilligung zu widerrufen."
+    },
+    "s7": {
+      "title": "7. Cookies",
+      "body1": "Wir verwenden Cookies und ähnliche Technologien für drei Zwecke: um die Website zu betreiben (unbedingt erforderlich, immer aktiv), um zu verstehen, wie die Website genutzt wird (Analyse), und um Werbung zu messen und zu personalisieren. Wenn du aus dem EWR, dem Vereinigten Königreich oder der Schweiz zugreifst, sind Analyse- und Werbe-Cookies standardmäßig deaktiviert, bis du sie aktivierst.",
+      "body2Lead": "Du kannst deine Auswahl jederzeit überprüfen und ändern über",
+      "cookieSettings": "Cookie-Einstellungen",
+      "body2Tail": ", die auch in der Fußzeile jeder Seite verfügbar sind."
+    },
+    "s8": {
+      "title": "8. Kontakt",
+      "body": "Wenn du Fragen zu dieser Datenschutzerklärung oder zu unseren Datenschutzpraktiken hast, schreib uns an support@mysterymaker.party."
     }
   }
 }

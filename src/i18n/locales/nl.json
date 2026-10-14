@@ -338,7 +338,8 @@
       "corporateEvents": "Bedrijfs- en Kantoorevenementen",
       "cookieSettings": "Cookie-instellingen"
     },
-    "copyright": "Mystery Maker, Inc. Alle rechten voorbehouden."
+    "copyright": "Mystery Maker, Inc. Alle rechten voorbehouden.",
+    "rights": "Alle rechten voorbehouden."
   },
   "trustpilot": {
     "linkText": "Bekijk onze beoordelingen op Trustpilot",
@@ -1649,12 +1650,19 @@
       "rowFailed": "dit personage kon niet veilig worden afgerond en is ongewijzigd gelaten.",
       "reassignmentNotice": "Opnieuw bepalen wie de dader is, betekende dat de onthulling in het detectivescript en een bekentenis herschreven moesten worden - we raden aan beide een keer door te lezen voordat je gaat hosten.",
       "missingId": "We konden dat herbezettingsverzoek niet vinden.",
-      "backToMystery": "Terug naar je mysterie"
+      "backToMystery": "Terug naar je mysterie",
+      "doneOf": "{{done}} van {{total}} klaar",
+      "removedRow": "<b>{{name}}</b> verwijderd uit alle personagebladen, het detectivescript en de bewijskaarten.",
+      "nowRole": "{{name}} is nu de {{role}}."
     },
     "toasts": {
       "createdNoCheckout": "Verzoek aangemaakt voor {{count}} personage(s) (staging-modus - geen betaling geconfigureerd).",
       "createFailed": "Kon dit verzoek niet starten. Probeer het opnieuw.",
       "alreadyInProgress": "Voor een van deze personages loopt al een verzoek."
+    },
+    "roles": {
+      "murderer": "moordenaar",
+      "accomplice": "handlanger"
     }
   },
   "hostGuide": {
@@ -1854,7 +1862,8 @@
       "tip7": "**Laat de groep bewegen.** Kleine gespreksgroepjes en één grote kring voor de beschuldigingen werken allebei goed — dwing niemand om de hele tijd in dezelfde zitopstelling te blijven.",
       "tip8": "**Improviseer.** Als een speler iets vraagt dat niet in zijn scriptopties staat, moedig dan improvisatie in het personage aan.",
       "tip9": "**Speel met de sfeer.** Muziek en een themasnack doen al veel; verder is niets verplicht."
-    }
+    },
+    "themeProps": "Themagebonden rekwisieten (optioneel)"
   },
   "characterGuide": {
     "fieldLabels": {
@@ -2068,7 +2077,8 @@
     "all": "Alle",
     "draft": "Concept",
     "published": "Gepubliceerd",
-    "archived": "Gearchiveerd"
+    "archived": "Gearchiveerd",
+    "purchased": "Gekocht"
   },
   "homeSections": {
     "howItWorks": "Hoe het werkt",
@@ -2122,6 +2132,100 @@
       "saveUnexpected": "Personage opslaan mislukt door een onverwachte fout",
       "nameNotFound": "De naam van het personage kon niet uit de tekst worden afgeleid",
       "processFailed": "Verwerken van de personagetekst mislukt"
+    }
+  },
+  "ui": {
+    "loading": "Laden...",
+    "mobileNav": "Mobiele navigatie",
+    "scrollToExplore": "scroll om te ontdekken",
+    "stars5": "5 sterren"
+  },
+  "packageTab": {
+    "evidenceCardAlt": "Bewijskaart",
+    "loadingTime": "Dit duurt meestal {{time}}.",
+    "fixedCast": "Je kunt elk personage hieronder bewerken, maar het aantal verdachten ligt vast voor dit mysterie: een personage toevoegen of verwijderen betekent opnieuw genereren.",
+    "coInvestigators": "Heb je meer gasten dan personages? Ze kunnen als <b>co-onderzoekers</b> meedoen in het team van de detective (zie de Gastgeversgids), maar deel het detectivescript niet met hen, want daarin staat de dader.",
+    "shareFeedback": "Feedback delen"
+  },
+  "blogUi": {
+    "back": "Terug naar de blog",
+    "by": "Door",
+    "updated": "Bijgewerkt op",
+    "minRead": "{{count}} min leestijd",
+    "related": "Misschien vind je dit ook leuk",
+    "ctaTitle": "Klaar om je eigen moordmysterie te maken?",
+    "ctaBody": "Maak met onze gebruiksvriendelijke tools een unieke en meeslepende moordmysterieparty.",
+    "ctaButton": "Maak je mysterie",
+    "stickyTitle": "Klaar om je eigen mysterie te maken?",
+    "stickyBody": "Begin vandaag en maak een onvergetelijke ervaring voor je vrienden en familie.",
+    "stickyButton": "Nu beginnen",
+    "indexTitle": "Ideeën, thema's en gidsen voor moordmysterieparty's",
+    "indexMeta": "Gratis gidsen voor het organiseren van een moordmysterieparty: meer dan 40 thema's, ideeën voor personages, tips voor timing en decoratie en vergelijkingen van printbare kits. Plan een avond om nooit te vergeten.",
+    "indexIntro": "Wil je een spel dat rond je eigen groep is gebouwd? <c>Maak een moordmysterieparty op maat</c>. Of organiseer je iets voor werk? Probeer een <o>moordmysterieparty op kantoor</o> of lees onze gids over <g>moordmysterieparty's voor bedrijven en kantoren</g>.",
+    "noPosts": "Geen blogberichten gevonden."
+  },
+  "about": {
+    "title": "Over Jonathan Miller | Mystery Maker",
+    "metaDescription": "Jonathan Miller is de oprichter van Mystery Maker. Hij organiseerde tientallen moordmysterieparty's en bouwde de generator die hij zelf miste.",
+    "ogDescription": "Oprichter van Mystery Maker. Improvisator. Gastheer van tientallen moordmysterieparty's.",
+    "photoAlt": "Jonathan Miller, oprichter van Mystery Maker",
+    "role": "Oprichter van Mystery Maker",
+    "connect": "Contact",
+    "bio": "Jonathan Miller is de oprichter van Mystery Maker, een generator voor moordmysterieparty's op maat. Hij organiseerde tientallen moordmysteries, brengt het instinct van een ervaren improvisator mee in het ontwerpen van personages en richtte Mystery Maker op nadat hij geen kant-en-klare kits kon vinden die pasten bij de groepen waarmee hij echt speelde: elk bestaand thema voelde generiek of geforceerd. Hij organiseert nog steeds regelmatig moordmysterieparty's, en daar komt het merendeel van de praktische gastheertips op deze blog vandaan. Naast Mystery Maker is Jonathan medeoprichter van het Narrativa Improv Festival."
+  },
+  "privacy": {
+    "title": "Privacybeleid",
+    "metaDescription": "Onze belofte om je privacy en persoonlijke gegevens te beschermen wanneer je de generator voor moordmysterieparty's gebruikt.",
+    "lastUpdated": "Laatst bijgewerkt: 5 april 2025",
+    "s1": {
+      "title": "1. Inleiding",
+      "body": "Welkom bij Murder Mystery Generator. Wij respecteren je privacy en zetten ons in voor de bescherming van je persoonsgegevens. Dit privacybeleid vertelt je hoe wij met je persoonsgegevens omgaan wanneer je onze website bezoekt, en informeert je over je privacyrechten en hoe de wet je beschermt."
+    },
+    "s2": {
+      "title": "2. De gegevens die wij over je verzamelen",
+      "body": "Persoonsgegevens zijn alle gegevens over een persoon aan de hand waarvan die persoon kan worden geïdentificeerd. Wij kunnen verschillende soorten persoonsgegevens over je verzamelen, gebruiken, opslaan en doorgeven, die we als volgt hebben gegroepeerd:",
+      "i1": "Identiteitsgegevens omvatten voornaam, achternaam, gebruikersnaam of een vergelijkbare identificatie.",
+      "i2": "Contactgegevens omvatten e-mailadres en telefoonnummers.",
+      "i3": "Technische gegevens omvatten het IP-adres, je inloggegevens, het type en de versie van je browser, tijdzone-instelling en locatie, typen en versies van browserplug-ins, besturingssysteem en platform, en andere technologie op de apparaten waarmee je deze website bezoekt.",
+      "i4": "Gebruiksgegevens omvatten informatie over hoe je onze website, producten en diensten gebruikt.",
+      "i5": "Marketing- en communicatiegegevens omvatten je voorkeuren voor het ontvangen van marketing van ons en van derden en je communicatievoorkeuren."
+    },
+    "s3": {
+      "title": "3. Hoe wij je persoonsgegevens gebruiken",
+      "body": "Wij gebruiken je persoonsgegevens alleen wanneer de wet dat toestaat. Meestal gebruiken we je persoonsgegevens in de volgende situaties:",
+      "i1": "Wanneer wij de overeenkomst moeten uitvoeren die we met je gaan sluiten of hebben gesloten.",
+      "i2": "Wanneer dit nodig is voor onze gerechtvaardigde belangen (of die van een derde) en jouw belangen en grondrechten daar niet zwaarder wegen.",
+      "i3": "Wanneer wij moeten voldoen aan een wettelijke verplichting."
+    },
+    "s4": {
+      "title": "4. Gegevensbeveiliging",
+      "body": "Wij hebben passende beveiligingsmaatregelen genomen om te voorkomen dat je persoonsgegevens per ongeluk verloren gaan, op onbevoegde wijze worden gebruikt, ingezien, gewijzigd of bekendgemaakt. Daarnaast beperken we de toegang tot je persoonsgegevens tot medewerkers, agenten, aannemers en andere derden die ze zakelijk moeten kennen."
+    },
+    "s5": {
+      "title": "5. Bewaartermijn van gegevens",
+      "body": "Wij bewaren je persoonsgegevens alleen zolang als redelijkerwijs nodig is om de doeleinden te vervullen waarvoor we ze hebben verzameld, onder meer om te voldoen aan wettelijke, regelgevende, fiscale, boekhoudkundige of rapportagevereisten."
+    },
+    "s6": {
+      "title": "6. Je wettelijke rechten",
+      "body": "Onder bepaalde omstandigheden heb je op grond van de privacywetgeving rechten met betrekking tot je persoonsgegevens, waaronder het recht om:",
+      "i1": "Toegang tot je persoonsgegevens te vragen.",
+      "i2": "Correctie van je persoonsgegevens te vragen.",
+      "i3": "Verwijdering van je persoonsgegevens te vragen.",
+      "i4": "Bezwaar te maken tegen de verwerking van je persoonsgegevens.",
+      "i5": "Beperking van de verwerking van je persoonsgegevens te vragen.",
+      "i6": "Overdracht van je persoonsgegevens te vragen.",
+      "i7": "Het recht om je toestemming in te trekken."
+    },
+    "s7": {
+      "title": "7. Cookies",
+      "body1": "Wij gebruiken cookies en vergelijkbare technologieën voor drie doelen: om de site te laten werken (strikt noodzakelijk, altijd aan), om te begrijpen hoe de site wordt gebruikt (analyse) en om advertenties te meten en te personaliseren. Als je vanuit de EER, het Verenigd Koninkrijk of Zwitserland bezoekt, staan analyse- en advertentiecookies standaard uit totdat je ervoor kiest ze in te schakelen.",
+      "body2Lead": "Je kunt je keuze op elk moment bekijken en wijzigen via",
+      "cookieSettings": "Cookie-instellingen",
+      "body2Tail": ", ook beschikbaar onderaan elke pagina."
+    },
+    "s8": {
+      "title": "8. Contact",
+      "body": "Heb je vragen over dit privacybeleid of onze privacypraktijken, neem dan contact met ons op via support@mysterymaker.party."
     }
   }
 }

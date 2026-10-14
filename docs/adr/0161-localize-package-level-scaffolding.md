@@ -93,6 +93,16 @@ Three things the first pass did not cover, fixed the same day: (1) the English h
 
 **Found, not changed:** `BillingSettings` shows every purchase as a fixed "$24.99" (`amount: 24.99, // Fixed price` and a literal `$`), although the real prices differ by currency and discount (the French sweep customer paid USD 19.99). A purchase history that shows the wrong amount is a separate bug.
 
+## Update 4 (2026-10-14): everything except Cold Case translated (Jonathan: yes); billing price
+
+**Billing history:** now shows the regular price, "USD 24.99" formatted per language (`24,99 USD` in fr, de, sv), as Jonathan decided: a sale does not change the history. It is the list price, not the amount charged; the charged amount is in `conversations.mystery_data.payment` if a truthful history is wanted later.
+
+**Translated (76 more keys in 13 locale files):** the Privacy page in full (all 8 sections; machine translation with **no legal review**, worth a lawyer's look before relying on it in the EEA languages), the About page (title, meta, bio, labels), blog chrome (back link, byline, dates through `dateLocale`, "min read", related, both CTAs, the blog index title, meta description, intro with its three links through `Trans`, empty state), the package page (evidence card captions and alt text, loading-time line, the fixed-cast note with its co-investigator sentence, Share Feedback, "Card i of n"), the removal result page (progress, row text with the role word), footer rights line, mobile nav label, loading text, Trustpilot alt, theme props heading, "scroll to explore", and the dashboard filter tabs. Three chat sign-in prompts that had lost their link markup in fr, it, fi were repaired.
+
+**Verified:** key, `{{placeholder}}` and `<tag>` parity across 13 locales (1,597 keys); bundle builds; real-browser renders of /privacy in fr and ja, /about in de, /blog in es show no English leftovers.
+
+**Left English on purpose:** Cold Case (not launched), the admin dashboard and dev preview routes (Jonathan only), brand names and the social handles, and four dead components nothing imports (`ImportCharactersDialog`, `CharacterImportSection`, `CharacterImportButton`, `MysteryPackage`). The audit script is a throwaway; a lasting guard against new hard-coded English would be an ESLint rule (not built).
+
 ## Key files
 
 `docs/language-pack/scaffold-labels.json`, `docs/language-pack/build-scaffold-tables.mjs`, `supabase/functions/_shared/packageScaffold.ts` (+ `packageScaffoldTables.ts`, `packageScaffold.test.mjs`), `supabase/functions/review-package-quality/index.ts` (`healScaffold`), `supabase/functions/auto-remediate-packages/evidence-card.ts`, `supabase/functions/regenerate-parent-content/index.ts`, `supabase/functions/adapt-mystery-apply/index.ts`, `supabase/functions/send-adaptation-complete-email/index.ts`, `src/utils/evidenceCardUtils.ts`, `src/pages/EvidenceCardPrint.tsx`, `src/i18n/locales/*.json` (`evidencePrint`), `supabase/migrations/20261014140000_localized_evidence_markers.sql`.

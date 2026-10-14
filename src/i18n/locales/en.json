@@ -338,7 +338,8 @@
       "corporateEvents": "Corporate & Office Events",
       "cookieSettings": "Cookie Settings"
     },
-    "copyright": "Mystery Maker, Inc. All rights reserved."
+    "copyright": "Mystery Maker, Inc. All rights reserved.",
+    "rights": "All rights reserved."
   },
   "trustpilot": {
     "linkText": "See our reviews on Trustpilot",
@@ -1649,12 +1650,19 @@
       "rowFailed": "this one couldn't be safely completed and was left unchanged.",
       "reassignmentNotice": "Reassigning who the culprit is meant rewriting the detective script's reveal and a confession - we recommend reading through both once before hosting.",
       "missingId": "We couldn't find that adaptation request.",
-      "backToMystery": "Back to your mystery"
+      "backToMystery": "Back to your mystery",
+      "doneOf": "{{done}} of {{total}} done",
+      "removedRow": "<b>{{name}}</b> removed from every character sheet, the detective script, and evidence cards.",
+      "nowRole": "{{name}} is now the {{role}}."
     },
     "toasts": {
       "createdNoCheckout": "Request created for {{count}} character(s) (staging mode - no payment configured).",
       "createFailed": "Couldn't start that request. Please try again.",
       "alreadyInProgress": "One of these characters already has a request in progress."
+    },
+    "roles": {
+      "murderer": "murderer",
+      "accomplice": "accomplice"
     }
   },
   "characterGuide": {
@@ -1931,7 +1939,8 @@
       "tip7": "**Let the group move.** Small clusters of conversation and one big circle for the accusations both work well — don't force everyone to stay in one seated formation the whole time.",
       "tip8": "**Improvise.** If a player asks something not in their script options, encourage in-character improvisation.",
       "tip9": "**Have fun with atmosphere.** Music and a themed snack go a long way; nothing else is required."
-    }
+    },
+    "themeProps": "Theme-Specific Props (Optional)"
   },
   "consent": {
     "ariaLabel": "Cookie consent",
@@ -2068,7 +2077,8 @@
     "all": "All",
     "draft": "Draft",
     "published": "Published",
-    "archived": "Archived"
+    "archived": "Archived",
+    "purchased": "Purchased"
   },
   "homeSections": {
     "howItWorks": "How it works",
@@ -2122,6 +2132,100 @@
       "saveUnexpected": "Failed to save character due to an unexpected error",
       "nameNotFound": "Could not determine character name from text",
       "processFailed": "Failed to process character text"
+    }
+  },
+  "ui": {
+    "loading": "Loading...",
+    "mobileNav": "Mobile navigation",
+    "scrollToExplore": "scroll to explore",
+    "stars5": "5 stars"
+  },
+  "packageTab": {
+    "evidenceCardAlt": "Evidence card",
+    "loadingTime": "This typically takes {{time}} to complete.",
+    "fixedCast": "You can edit every character below, but the number of suspects is fixed for this mystery — adding or removing a character means regenerating.",
+    "coInvestigators": "Have more guests than characters? They can join as <b>co-investigators</b> on the detective's team (see the Host Guide) — just don't share the detective script with them, as it names the culprit.",
+    "shareFeedback": "Share Feedback"
+  },
+  "blogUi": {
+    "back": "Back to Blog",
+    "by": "By",
+    "updated": "Updated",
+    "minRead": "{{count}} min read",
+    "related": "You might also like",
+    "ctaTitle": "Ready to create your own murder mystery?",
+    "ctaBody": "Create a unique and engaging murder mystery party with our easy-to-use tools.",
+    "ctaButton": "Create Your Mystery",
+    "stickyTitle": "Ready to create your own mystery?",
+    "stickyBody": "Get started today and create an unforgettable experience for your friends and family.",
+    "stickyButton": "Start Now",
+    "indexTitle": "Murder Mystery Party Ideas, Themes & Host Guides",
+    "indexMeta": "Free guides to hosting a murder mystery party — 40+ themes, character ideas, timing and decoration tips, plus printable kit comparisons. Plan a night they'll remember.",
+    "indexIntro": "Want a game built around your own group? <c>Create a custom murder mystery party</c>, or planning for work? Try an <o>office murder mystery party</o> or read our guide to <g>corporate & office murder mystery parties</g>.",
+    "noPosts": "No blog posts found."
+  },
+  "about": {
+    "title": "About Jonathan Miller | Mystery Maker",
+    "metaDescription": "Jonathan Miller is the founder of Mystery Maker. He's hosted dozens of murder mystery parties and built the generator he wished existed.",
+    "ogDescription": "Founder of Mystery Maker. Improviser. Host of dozens of murder mystery parties.",
+    "photoAlt": "Jonathan Miller, founder of Mystery Maker",
+    "role": "Founder, Mystery Maker",
+    "connect": "Connect",
+    "bio": "Jonathan Miller is the founder of Mystery Maker, a custom murder mystery party generator. He's hosted dozens of murder mysteries, brings an experienced improviser's instincts to character design, and built Mystery Maker after struggling to find pre-made kits that fit the groups he was actually playing with — every existing theme felt either generic or shoehorned. He still runs murder mystery parties regularly, which is where most of the practical hosting advice on this blog comes from. Outside Mystery Maker, Jonathan is co-founder of the Narrativa Improv Festival."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "metaDescription": "Our commitment to protecting your privacy and personal information when using the Murder Mystery Party Generator.",
+    "lastUpdated": "Last updated: April 5, 2025",
+    "s1": {
+      "title": "1. Introduction",
+      "body": "Welcome to Murder Mystery Generator. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you."
+    },
+    "s2": {
+      "title": "2. The Data We Collect About You",
+      "body": "Personal data, or personal information, means any information about an individual from which that person can be identified. We may collect, use, store and transfer different kinds of personal data about you which we have grouped together as follows:",
+      "i1": "Identity Data includes first name, last name, username or similar identifier.",
+      "i2": "Contact Data includes email address and telephone numbers.",
+      "i3": "Technical Data includes internet protocol (IP) address, your login data, browser type and version, time zone setting and location, browser plug-in types and versions, operating system and platform, and other technology on the devices you use to access this website.",
+      "i4": "Usage Data includes information about how you use our website, products and services.",
+      "i5": "Marketing and Communications Data includes your preferences in receiving marketing from us and our third parties and your communication preferences."
+    },
+    "s3": {
+      "title": "3. How We Use Your Personal Data",
+      "body": "We will only use your personal data when the law allows us to. Most commonly, we will use your personal data in the following circumstances:",
+      "i1": "Where we need to perform the contract we are about to enter into or have entered into with you.",
+      "i2": "Where it is necessary for our legitimate interests (or those of a third party) and your interests and fundamental rights do not override those interests.",
+      "i3": "Where we need to comply with a legal obligation."
+    },
+    "s4": {
+      "title": "4. Data Security",
+      "body": "We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorized way, altered or disclosed. In addition, we limit access to your personal data to those employees, agents, contractors and other third parties who have a business need to know."
+    },
+    "s5": {
+      "title": "5. Data Retention",
+      "body": "We will only retain your personal data for as long as reasonably necessary to fulfill the purposes we collected it for, including for the purposes of satisfying any legal, regulatory, tax, accounting or reporting requirements."
+    },
+    "s6": {
+      "title": "6. Your Legal Rights",
+      "body": "Under certain circumstances, you have rights under data protection laws in relation to your personal data, including the right to:",
+      "i1": "Request access to your personal data.",
+      "i2": "Request correction of your personal data.",
+      "i3": "Request erasure of your personal data.",
+      "i4": "Object to processing of your personal data.",
+      "i5": "Request restriction of processing your personal data.",
+      "i6": "Request transfer of your personal data.",
+      "i7": "Right to withdraw consent."
+    },
+    "s7": {
+      "title": "7. Cookies",
+      "body1": "We use cookies and similar technologies for three purposes: to run the site (strictly necessary, always on), to understand how the site is used (analytics), and to measure and personalize advertising. If you're visiting from the EEA, UK, or Switzerland, analytics and advertising cookies are off by default until you choose to turn them on.",
+      "body2Lead": "You can review and change your choice at any time via",
+      "cookieSettings": "Cookie Settings",
+      "body2Tail": ", also available in the footer of every page."
+    },
+    "s8": {
+      "title": "8. Contact Us",
+      "body": "If you have any questions about this privacy policy or our privacy practices, please contact us at support@mysterymaker.party."
     }
   }
 }

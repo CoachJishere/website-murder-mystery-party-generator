@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 interface MysteryFilterTabsProps {
   activeTab: string;
@@ -21,24 +22,25 @@ export function MysteryFilterTabs({
   counts,
   displayCounts = true
 }: MysteryFilterTabsProps) {
+  const { t } = useTranslation();
   return (
     <div className="mb-6">
       <Tabs defaultValue={activeTab} onValueChange={onTabChange} className="w-full">
         <TabsList className="w-full">
           <TabsTrigger value="all" className="flex-1">
-            All
+            {t("dashboardFilters.all")}
             {displayCounts && <Badge variant="secondary" className="ml-2">{counts.all}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="draft" className="flex-1">
-            Draft
+            {t("dashboardFilters.draft")}
             {displayCounts && <Badge variant="secondary" className="ml-2">{counts.draft}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="purchased" className="flex-1">
-            Purchased
+            {t("dashboardFilters.purchased")}
             {displayCounts && <Badge variant="secondary" className="ml-2">{counts.purchased}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="archived" className="flex-1">
-            Archived
+            {t("dashboardFilters.archived")}
             {displayCounts && <Badge variant="secondary" className="ml-2">{counts.archived}</Badge>}
           </TabsTrigger>
         </TabsList>

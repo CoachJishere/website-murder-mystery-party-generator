@@ -8,6 +8,9 @@ import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { dateLocaleFor } from "@/utils/dateLocale";
 
+// Regular price of a mystery package in USD (every checkout is in USD).
+const LIST_PRICE_USD = 24.99;
+
 interface Purchase {
   id: string;
   mystery_title: string;
@@ -45,7 +48,7 @@ const BillingSettings = () => {
         id: conv.id,
         mystery_title: conv.title || t('accountSettings.billing.fallbackTitle'),
         created_at: conv.created_at,
-        amount: 24.99, // Fixed price
+        amount: LIST_PRICE_USD, // Shown as the regular price, not the amount charged: sales and discounts do not change this history (Jonathan, 2026-10-14)
         conversation_id: conv.id
       }));
 
@@ -103,7 +106,7 @@ const BillingSettings = () => {
                     <span>{format(new Date(purchase.created_at), 'PP', { locale: dateLocaleFor(i18n.language) })}</span>
                     <span className="hidden md:inline">•</span>
                     <span className="font-medium text-foreground">
-                      ${purchase.amount.toFixed(2)}
+                      {new Intl.NumberFormat(i18n.language, { style: "currency", currency: "USD", currencyDisplay: "code" }).format(purchase.amount)}
                     </span>
                   </div>
                 </div>

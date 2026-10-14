@@ -338,7 +338,8 @@
       "corporateEvents": "Yritys- ja toimistotapahtumat",
       "cookieSettings": "Evästeasetukset"
     },
-    "copyright": "Mystery Maker, Inc. Kaikki oikeudet pidätetään."
+    "copyright": "Mystery Maker, Inc. Kaikki oikeudet pidätetään.",
+    "rights": "Kaikki oikeudet pidätetään."
   },
   "trustpilot": {
     "linkText": "Katso arvostelumme Trustpilotissa",
@@ -802,7 +803,7 @@
     "private": "Yksityinen",
     "initialGreeting": "Hei! Olen tekoälykehitysavustajasi. Anna minun auttaa sinua luomaan murhamysteeri. Kuinka monta pelaajaa haluaisit murhamysteeriisi?",
     "inputPlaceholder": "Kirjoita viestisi...",
-    "signInPrompt": "Kirjaudu sisään käyttääksesi yksityistä tilaa",
+    "signInPrompt": "<1>Kirjaudu sisään</1> käyttääksesi yksityistä tilaa",
     "errorResponse": "Minulla on tällä hetkellä vaikeuksia vastata. Yritä uudelleen.",
     "errorResponseWithFallback": "Minulla on teknisiä vaikeuksia. Kuinka monta pelaajaa haluaisit murhamysteeriisi?",
     "connectionErrorResponse": "Minulla on tällä hetkellä yhteysongelmia. Kuinka monta pelaajaa haluaisit murhamysteeriisi?",
@@ -1649,12 +1650,19 @@
       "rowFailed": "tätä ei voitu viimeistellä turvallisesti, joten se jätettiin ennalleen.",
       "reassignmentNotice": "Syyllisen vaihtaminen vaati etsivän käsikirjoituksen paljastuksen ja tunnustuksen uudelleenkirjoittamisen - suosittelemme lukemaan molemmat kertaalleen ennen illan vetämistä.",
       "missingId": "Emme löytäneet kyseistä roolinvaihtopyyntöä.",
-      "backToMystery": "Takaisin mysteeriisi"
+      "backToMystery": "Takaisin mysteeriisi",
+      "doneOf": "{{done}} / {{total}} valmista",
+      "removedRow": "<b>{{name}}</b> poistettiin kaikista hahmolomakkeista, etsivän käsikirjoituksesta ja todistekorteista.",
+      "nowRole": "{{name}} on nyt {{role}}."
     },
     "toasts": {
       "createdNoCheckout": "Pyyntö luotu {{count}} hahmolle (staging-tila - maksua ei ole määritetty).",
       "createFailed": "Pyyntöä ei voitu käynnistää. Yritä uudelleen.",
       "alreadyInProgress": "Yhdellä näistä hahmoista on jo käynnissä oleva pyyntö."
+    },
+    "roles": {
+      "murderer": "murhaaja",
+      "accomplice": "rikoskumppani"
     }
   },
   "hostGuide": {
@@ -1854,7 +1862,8 @@
       "tip7": "**Anna ryhmän liikkua.** Pienet keskusteluryhmät ja yksi iso piiri syytöksiä varten toimivat molemmat hyvin – älä pakota kaikkia pysymään samassa istuma-asetelmassa koko aikaa.",
       "tip8": "**Improvisoi.** Jos pelaaja kysyy jotain, mitä ei ole käsikirjoitusvaihtoehdoissa, kannusta hahmon roolissa improvisointiin.",
       "tip9": "**Nauti tunnelmasta.** Musiikki ja teemanmukainen naposteltava vievät pitkälle; mitään muuta ei tarvita."
-    }
+    },
+    "themeProps": "Teemakohtaiset rekvisiitat (valinnainen)"
   },
   "characterGuide": {
     "fieldLabels": {
@@ -2068,7 +2077,8 @@
     "all": "Kaikki",
     "draft": "Luonnos",
     "published": "Julkaistu",
-    "archived": "Arkistoitu"
+    "archived": "Arkistoitu",
+    "purchased": "Ostetut"
   },
   "homeSections": {
     "howItWorks": "Näin se toimii",
@@ -2122,6 +2132,100 @@
       "saveUnexpected": "Hahmon tallennus epäonnistui odottamattoman virheen vuoksi",
       "nameNotFound": "Hahmon nimeä ei voitu päätellä tekstistä",
       "processFailed": "Hahmotekstin käsittely epäonnistui"
+    }
+  },
+  "ui": {
+    "loading": "Ladataan...",
+    "mobileNav": "Mobiilinavigointi",
+    "scrollToExplore": "vieritä tutkiaksesi",
+    "stars5": "5 tähteä"
+  },
+  "packageTab": {
+    "evidenceCardAlt": "Todistekortti",
+    "loadingTime": "Tämä kestää yleensä {{time}}.",
+    "fixedCast": "Voit muokata jokaista alla olevaa hahmoa, mutta epäiltyjen määrä on tässä mysteerissä kiinteä – hahmon lisääminen tai poistaminen vaatii uudelleengeneroinnin.",
+    "coInvestigators": "Onko vieraita enemmän kuin hahmoja? He voivat liittyä etsivän tiimiin <b>apututkijoina</b> (katso isännän opas) – älä kuitenkaan jaa heille etsivän käsikirjoitusta, koska siinä kerrotaan syyllinen.",
+    "shareFeedback": "Anna palautetta"
+  },
+  "blogUi": {
+    "back": "Takaisin blogiin",
+    "by": "Kirjoittaja:",
+    "updated": "Päivitetty",
+    "minRead": "{{count}} min lukuaika",
+    "related": "Saatat pitää myös näistä",
+    "ctaTitle": "Valmis luomaan oman murhamysteerisi?",
+    "ctaBody": "Luo ainutlaatuinen ja mukaansatempaava murhamysteeri-illanvietto helppokäyttöisillä työkaluillamme.",
+    "ctaButton": "Luo mysteerisi",
+    "stickyTitle": "Valmis luomaan oman mysteerisi?",
+    "stickyBody": "Aloita jo tänään ja luo unohtumaton elämys ystävillesi ja perheellesi.",
+    "stickyButton": "Aloita nyt",
+    "indexTitle": "Murhamysteeri-illanviettojen ideoita, teemoja ja isännän oppaita",
+    "indexMeta": "Ilmaisia oppaita murhamysteeri-illanvieton järjestämiseen: yli 40 teemaa, hahmoideoita, vinkkejä ajoitukseen ja koristeluun sekä tulostettavien pakettien vertailuja. Suunnittele illasta mieleenpainuva.",
+    "indexIntro": "Haluatko pelin, joka on rakennettu oman porukkasi ympärille? <c>Luo räätälöity murhamysteeri-illanvietto</c>. Suunnitteletko jotain työpaikalle? Kokeile <o>toimiston murhamysteeri-illanviettoa</o> tai lue oppaamme <g>yritysten ja toimistojen murhamysteeri-illanvietoista</g>.",
+    "noPosts": "Blogikirjoituksia ei löytynyt."
+  },
+  "about": {
+    "title": "Tietoa Jonathan Millerista | Mystery Maker",
+    "metaDescription": "Jonathan Miller on Mystery Makerin perustaja. Hän on isännöinyt kymmeniä murhamysteeri-illanviettoja ja rakentanut generaattorin, jollaista olisi itse kaivannut.",
+    "ogDescription": "Mystery Makerin perustaja. Improvisoija. Kymmenien murhamysteeri-illanviettojen isäntä.",
+    "photoAlt": "Jonathan Miller, Mystery Makerin perustaja",
+    "role": "Mystery Makerin perustaja",
+    "connect": "Yhteystiedot",
+    "bio": "Jonathan Miller on Mystery Makerin perustaja, räätälöityjen murhamysteeri-illanviettojen generaattorin. Hän on isännöinyt kymmeniä murhamysteereitä, tuo kokeneen improvisoijan vaiston hahmosuunnitteluun ja perusti Mystery Makerin, koska ei löytänyt valmiita paketteja, jotka sopisivat ryhmille, joiden kanssa hän todella pelasi – jokainen olemassa oleva teema tuntui joko geneeriseltä tai väkinäiseltä. Hän järjestää edelleen säännöllisesti murhamysteeri-illanviettoja, ja suurin osa tämän blogin käytännön isännän vinkeistä tulee sieltä. Mystery Makerin ulkopuolella Jonathan on Narrativa Improv Festivalin perustaja."
+  },
+  "privacy": {
+    "title": "Tietosuojakäytäntö",
+    "metaDescription": "Murhamysteeri-illanviettogeneraattorin käyttöön liittyvä sitoumuksemme suojella yksityisyyttäsi ja henkilötietojasi.",
+    "lastUpdated": "Viimeksi päivitetty: 5. huhtikuuta 2025",
+    "s1": {
+      "title": "1. Johdanto",
+      "body": "Tervetuloa Murder Mystery Generatoriin. Kunnioitamme yksityisyyttäsi ja sitoudumme suojaamaan henkilötietojasi. Tämä tietosuojakäytäntö kertoo, miten käsittelemme henkilötietojasi vieraillessasi verkkosivustollamme, sekä tietosuojaoikeuksistasi ja lain tarjoamasta suojasta."
+    },
+    "s2": {
+      "title": "2. Keräämämme tiedot sinusta",
+      "body": "Henkilötiedoilla tarkoitetaan kaikkea tietoa henkilöstä, jonka perusteella hänet voidaan tunnistaa. Voimme kerätä, käyttää, tallentaa ja siirtää sinua koskevia erilaisia henkilötietoja, jotka olemme ryhmitelleet seuraavasti:",
+      "i1": "Henkilöllisyystietoihin kuuluvat etunimi, sukunimi, käyttäjänimi tai vastaava tunniste.",
+      "i2": "Yhteystietoihin kuuluvat sähköpostiosoite ja puhelinnumerot.",
+      "i3": "Teknisiin tietoihin kuuluvat IP-osoite, kirjautumistietosi, selaimen tyyppi ja versio, aikavyöhykeasetus ja sijainti, selaimen lisäosien tyypit ja versiot, käyttöjärjestelmä ja alusta sekä muu teknologia laitteissa, joilla käytät tätä verkkosivustoa.",
+      "i4": "Käyttötietoihin kuuluvat tiedot siitä, miten käytät verkkosivustoamme, tuotteitamme ja palveluitamme.",
+      "i5": "Markkinointi- ja viestintätietoihin kuuluvat mieltymyksesi markkinointiviestien vastaanottamisesta meiltä ja kolmansilta osapuolilta sekä viestintämieltymyksesi."
+    },
+    "s3": {
+      "title": "3. Miten käytämme henkilötietojasi",
+      "body": "Käytämme henkilötietojasi vain silloin, kun laki sen sallii. Yleisimmin käytämme henkilötietojasi seuraavissa tilanteissa:",
+      "i1": "Kun meidän on täytettävä sopimus, jonka olemme tekemässä tai olemme tehneet kanssasi.",
+      "i2": "Kun se on tarpeen oikeutettujen etujemme (tai kolmannen osapuolen etujen) vuoksi eivätkä sinun etusi ja perusoikeutesi syrjäytä näitä etuja.",
+      "i3": "Kun meidän on noudatettava lakisääteistä velvoitetta."
+    },
+    "s4": {
+      "title": "4. Tietoturva",
+      "body": "Olemme ottaneet käyttöön asianmukaiset turvatoimet estääksemme henkilötietojesi vahingossa tapahtuvan katoamisen, luvattoman käytön tai pääsyn niihin, muuttamisen ja paljastamisen. Lisäksi rajoitamme pääsyn henkilötietoihisi niihin työntekijöihin, edustajiin, urakoitsijoihin ja muihin kolmansiin osapuoliin, joiden on liiketoiminnallisista syistä tiedettävä ne."
+    },
+    "s5": {
+      "title": "5. Tietojen säilytys",
+      "body": "Säilytämme henkilötietojasi vain niin kauan kuin on kohtuullisesti tarpeen niiden keräämisen tarkoitusten täyttämiseksi, mukaan lukien lakisääteisten, viranomais-, vero-, kirjanpito- tai raportointivaatimusten täyttäminen."
+    },
+    "s6": {
+      "title": "6. Lailliset oikeutesi",
+      "body": "Tietosuojalainsäädännön mukaan sinulla on tietyissä tilanteissa oikeuksia henkilötietoihisi, mukaan lukien oikeus:",
+      "i1": "Pyytää pääsyä henkilötietoihisi.",
+      "i2": "Pyytää henkilötietojesi oikaisua.",
+      "i3": "Pyytää henkilötietojesi poistamista.",
+      "i4": "Vastustaa henkilötietojesi käsittelyä.",
+      "i5": "Pyytää henkilötietojesi käsittelyn rajoittamista.",
+      "i6": "Pyytää henkilötietojesi siirtämistä.",
+      "i7": "Oikeus peruuttaa suostumus."
+    },
+    "s7": {
+      "title": "7. Evästeet",
+      "body1": "Käytämme evästeitä ja vastaavia tekniikoita kolmeen tarkoitukseen: sivuston toiminnan mahdollistamiseen (ehdottoman välttämättömät, aina käytössä), sivuston käytön ymmärtämiseen (analytiikka) sekä mainonnan mittaamiseen ja personointiin. Jos vierailet ETA-alueelta, Isosta-Britanniasta tai Sveitsistä, analytiikka- ja mainosevästeet ovat oletuksena pois päältä, kunnes otat ne käyttöön.",
+      "body2Lead": "Voit tarkistaa ja muuttaa valintasi milloin tahansa kohdasta",
+      "cookieSettings": "Evästeasetukset",
+      "body2Tail": ", joka on myös jokaisen sivun alatunnisteessa."
+    },
+    "s8": {
+      "title": "8. Ota yhteyttä",
+      "body": "Jos sinulla on kysyttävää tästä tietosuojakäytännöstä tai tietosuojakäytännöistämme, ota yhteyttä osoitteeseen support@mysterymaker.party."
     }
   }
 }

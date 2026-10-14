@@ -2,8 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-const BIO = `Jonathan Miller is the founder of Mystery Maker, a custom murder mystery party generator. He's hosted dozens of murder mysteries, brings an experienced improviser's instincts to character design, and built Mystery Maker after struggling to find pre-made kits that fit the groups he was actually playing with — every existing theme felt either generic or shoehorned. He still runs murder mystery parties regularly, which is where most of the practical hosting advice on this blog comes from. Outside Mystery Maker, Jonathan is co-founder of the Narrativa Improv Festival.`;
+import { useTranslation } from "react-i18next";
 
 const SAME_AS = [
   "https://www.linkedin.com/in/millerdjonathan/",
@@ -13,6 +12,8 @@ const SAME_AS = [
 const PHOTO_URL = "https://www.mysterymaker.party/images/MMbiopic.png";
 
 export default function About() {
+  const { t } = useTranslation();
+  const BIO = t("about.bio");
   const { lang } = useParams<{ lang?: string }>();
   const canonical = `https://www.mysterymaker.party${lang ? `/${lang}` : ""}/about`;
 
@@ -35,17 +36,17 @@ export default function About() {
   return (
     <div className="min-h-screen flex flex-col bg-[#000000]">
       <Helmet>
-        <title>About Jonathan Miller | Mystery Maker</title>
+        <title>{t("about.title")}</title>
         <meta
           name="description"
-          content="Jonathan Miller is the founder of Mystery Maker. He's hosted dozens of murder mystery parties and built the generator he wished existed."
+          content={t("about.metaDescription")}
         />
         <link rel="canonical" href={canonical} />
         <meta property="og:type" content="profile" />
-        <meta property="og:title" content="About Jonathan Miller | Mystery Maker" />
+        <meta property="og:title" content={t("about.title")} />
         <meta
           property="og:description"
-          content="Founder of Mystery Maker. Improviser. Host of dozens of murder mystery parties."
+          content={t("about.ogDescription")}
         />
         <meta property="og:image" content={PHOTO_URL} />
         <meta property="og:url" content={canonical} />
@@ -62,7 +63,7 @@ export default function About() {
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start mb-12">
             <img
               src="/images/MMbiopic.png"
-              alt="Jonathan Miller, founder of Mystery Maker"
+              alt={t("about.photoAlt")}
               className="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-2 border-[#C81400]"
               loading="eager"
             />
@@ -71,7 +72,7 @@ export default function About() {
                 Jonathan Miller
               </h1>
               <p className="text-muted-foreground text-lg">
-                Founder, Mystery Maker
+                {t("about.role")}
               </p>
             </div>
           </div>
@@ -81,7 +82,7 @@ export default function About() {
           </div>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#C81400] mb-4">Connect</h2>
+            <h2 className="text-2xl font-bold text-[#C81400] mb-4">{t("about.connect")}</h2>
             <ul className="space-y-2">
               <li>
                 <a

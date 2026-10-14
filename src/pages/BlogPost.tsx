@@ -13,6 +13,7 @@ import { ArrowRight, Clock, Users, BookOpen, ChevronRight, Copy, Check } from 'l
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import i18n from 'i18next'; // Import i18n directly to avoid type issues
+import { dateLocaleFor } from '@/utils/dateLocale';
 import { useTranslation } from 'react-i18next';
 
 const calculateReadingTime = (content: string): number => {
@@ -55,17 +56,17 @@ const CTA_SECTION = ({ theme = 'light' as 'light' | 'dark' } = {}) => {
   return (
     <div className="rounded-xl p-8 my-12 text-center" style={{ backgroundColor: 'var(--color-charcoal)', border: '1px solid var(--color-cream-border)' }}>
       <h3 className="text-2xl font-bold mb-4 text-[#C81400]">
-        Ready to create your own murder mystery?
+        {i18n.t('blogUi.ctaTitle')}
       </h3>
       <p className="mb-6 text-muted-foreground">
-        Create a unique and engaging murder mystery party with our easy-to-use tools.
+        {i18n.t('blogUi.ctaBody')}
       </p>
       <Button 
         asChild 
         className="bg-[#C81400] hover:bg-[#A01000] text-white py-6 px-8 text-lg font-medium transition-colors mx-auto"
       >
         <Link to="/mystery/create">
-          Create Your Mystery
+          {i18n.t('blogUi.ctaButton')}
           <ArrowRight className="ml-2 h-5 w-5" />
         </Link>
       </Button>
@@ -672,7 +673,7 @@ export default function BlogPost() {
               className="inline-flex items-center text-[#C81400] hover:underline mb-4"
             >
               <ChevronRight className="h-4 w-4 rotate-180 mr-1" />
-              Back to Blog
+              {t('blogUi.back')}
             </Link>
             
             <h1 className="text-4xl md:text-5xl font-bold text-[#C81400] mb-6">
@@ -681,22 +682,22 @@ export default function BlogPost() {
             
             <div className="flex flex-wrap items-center text-muted-foreground text-sm gap-4 mb-6">
               <div className="flex items-center">
-                By&nbsp;
+                {t('blogUi.by')}&nbsp;
                 <Link to={lang ? `/${lang}/about` : '/about'} className="text-[#C81400] hover:underline">
                   {authorName}
                 </Link>
               </div>
               {(post.updated_at || post.published_at) && (
                 <div className="flex items-center">
-                  <span className="text-muted-foreground/70">Updated&nbsp;</span>
+                  <span className="text-muted-foreground/70">{t('blogUi.updated')}&nbsp;</span>
                   <time dateTime={post.updated_at || post.published_at}>
-                    {format(new Date(post.updated_at || post.published_at), 'MMM d, yyyy')}
+                    {format(new Date(post.updated_at || post.published_at), 'PP', { locale: dateLocaleFor(effectiveLanguage) })}
                   </time>
                 </div>
               )}
               <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-1 text-[#C81400]" />
-                {post.reading_time || calculateReadingTime(post.content || '')} min read
+                {t('blogUi.minRead', { count: post.reading_time || calculateReadingTime(post.content || '') })}
               </div>
               <button
                 type="button"
@@ -761,7 +762,7 @@ export default function BlogPost() {
           {post.related_posts && post.related_posts.length > 0 && (
             <section className="mt-16">
               <h2 className="text-2xl font-bold text-[#C81400] mb-6">
-                You might also like
+                {t('blogUi.related')}
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {post.related_posts.map((related) => (
@@ -774,7 +775,7 @@ export default function BlogPost() {
                       </h3>
                       <div className="flex items-center text-sm text-muted-foreground mt-2">
                         <Clock className="h-3 w-3 mr-1" />
-                        {related.reading_time || calculateReadingTime(related.content || '')} min read
+                        {t('blogUi.minRead', { count: related.reading_time || calculateReadingTime(related.content || '') })}
                       </div>
                     </CardContent>
                   </Card>
@@ -792,10 +793,10 @@ export default function BlogPost() {
           <div className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-center sm:text-left">
               <h3 className="font-bold" style={{ color: 'var(--color-cream)' }}>
-                Ready to create your own mystery?
+                {t('blogUi.stickyTitle')}
               </h3>
               <p className="text-sm" style={{ color: 'rgba(245, 240, 232, 0.85)' }}>
-                Get started today and create an unforgettable experience for your friends and family.
+                {t('blogUi.stickyBody')}
               </p>
             </div>
             <Button
@@ -804,7 +805,7 @@ export default function BlogPost() {
               style={{ backgroundColor: 'var(--color-cream)', color: 'var(--color-red)' }}
             >
               <Link to="/mystery/create">
-                Start Now
+                {t('blogUi.stickyButton')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>

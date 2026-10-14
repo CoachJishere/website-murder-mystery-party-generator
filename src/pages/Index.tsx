@@ -97,7 +97,7 @@ function ParallaxHero({ isAuthenticated }: { isAuthenticated: boolean }) {
             className="text-sm uppercase tracking-widest"
             style={{ color: "rgba(245,240,232,0.5)", fontFamily: "var(--font-body)" }}
           >
-            scroll to explore
+            {t("ui.scrollToExplore")}
           </motion.div>
         </div>
       )}

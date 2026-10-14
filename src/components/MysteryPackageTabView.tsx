@@ -16,7 +16,7 @@ import EditableSection from "./EditableSection";
 import EditableMultiSection from "./EditableMultiSection";
 import "../styles/mystery-package.css";
 import "../styles/print.css";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { trackPackageTabViewed, trackFeedbackPromptShown, trackFeedbackPromptClicked } from "@/lib/analytics";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
@@ -123,6 +123,7 @@ function bustCache(url: string, version: number): string {
 }
 
 function EvidenceCardImageGrid({ images, isMobile }: { images: { round2?: string; round3?: string; round4?: string }; isMobile: boolean }) {
+  const { t } = useTranslation();
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const cacheVersion = useMemo(() => Date.now(), []);
 
@@ -133,7 +134,7 @@ function EvidenceCardImageGrid({ images, isMobile }: { images: { round2?: string
           const url = images[round];
           if (!url) return null;
           const bustedUrl = bustCache(url, cacheVersion);
-          const roundLabel = round === 'round2' ? 'Round 2' : round === 'round3' ? 'Round 3' : 'Round 4';
+          const roundLabel = t('evidencePrint.roundLabel', { n: round === 'round2' ? 2 : round === 'round3' ? 3 : 4 });
           return (
             <div
               key={round}
@@ -142,11 +143,11 @@ function EvidenceCardImageGrid({ images, isMobile }: { images: { round2?: string
             >
               <img
                 src={bustedUrl}
-                alt={`Evidence - ${roundLabel}`}
+                alt={roundLabel}
                 className="w-full aspect-video object-cover"
               />
               <div className="px-3 py-2 text-xs text-muted-foreground font-medium">
-                Evidence — {roundLabel}
+                {roundLabel}
               </div>
             </div>
           );
@@ -167,7 +168,7 @@ function EvidenceCardImageGrid({ images, isMobile }: { images: { round2?: string
           </button>
           <img
             src={lightboxUrl}
-            alt="Evidence card"
+            alt={t('packageTab.evidenceCardAlt')}
             className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
             onClick={(e) => e.stopPropagation()}
           />
@@ -699,12 +700,12 @@ const MysteryPackageTabView = React.memo(({
         )}>
           <div dangerouslySetInnerHTML={{ __html: message }} />
           <p className="mt-2 text-sm">
-            This typically takes {loadingTime} to complete.
+            {t('packageTab.loadingTime', { time: loadingTime })}
           </p>
         </div>
       </div>
     </div>
-  ), [isMobile]);
+  ), [isMobile, t]);
 
   return (
     <div className="w-full">
@@ -904,8 +905,8 @@ const MysteryPackageTabView = React.memo(({
                 )}>
                   {guestDropoutAdaptationEnabled
                     ? t('adaptation.entryPoint.notice')
-                    : <>You can edit every character below, but the number of suspects is fixed for this mystery — adding or removing a character means regenerating.</>}
-                  {' '}Have more guests than characters? They can join as <strong>co-investigators</strong> on the detective's team (see the Host Guide) — just don't share the detective script with them, as it names the culprit.
+                    : t('packageTab.fixedCast')}
+                  {' '}<Trans i18nKey="packageTab.coInvestigators" components={{ b: <strong /> }} />
                 </div>
                 {charactersList.map((character, index) => {
                   // Detective-style uses round_script fields (with headers); character-based uses innocent/guilty fields
@@ -1227,7 +1228,7 @@ const MysteryPackageTabView = React.memo(({
                           {card.description.split(/\n\n+/).map((para, pi) => (
                             <p key={pi} className="epi-desc">{para.replace(/\n/g, ' ').trim()}</p>
                           ))}
-                          <div className="epi-footer">Card {i + 1} of {cards.length}</div>
+                          <div className="epi-footer">{t('evidencePrint.cardOf', { i: i + 1, total: cards.length })}</div>
                         </div>
                       ))}
                     </div>,
@@ -1401,7 +1402,7 @@ const MysteryPackageTabView = React.memo(({
                   className={cn(isMobile && "w-full")}
                   style={{ backgroundColor: 'var(--color-red)', color: 'var(--color-cream)' }}
                 >
-                  Share Feedback
+                  {t('packageTab.shareFeedback')}
                 </Button>
               </Link>
               <Button

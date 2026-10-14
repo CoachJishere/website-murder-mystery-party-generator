@@ -23,7 +23,7 @@ const TrustpilotBadge = () => {
 
       <img
         src="/images/trustpilot-stars.png"
-        alt="5 stars"
+        alt={t('ui.stars5')}
         className="h-7 sm:h-8 w-auto"
       />
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { Loader2, CheckCircle2, XCircle, Circle, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -134,7 +134,7 @@ const AdaptationSuccess = () => {
             <h1 className="text-2xl font-bold">{t("adaptation.processing.title")}</h1>
             <p className="text-muted-foreground">{t("adaptation.processing.waiting")}</p>
             {totalCount > 1 && (
-              <p className="text-sm text-muted-foreground">{doneCount} of {totalCount} done</p>
+              <p className="text-sm text-muted-foreground">{t("adaptation.result.doneOf", { done: doneCount, total: totalCount })}</p>
             )}
             {rows && rows.length > 0 && (
               <ul className="text-left space-y-1.5 text-sm bg-muted/30 rounded-md p-3 mt-2">
@@ -169,10 +169,9 @@ const AdaptationSuccess = () => {
                   <li key={r.id}>
                     {r.status === "verified" ? (
                       <>
-                        <span className="font-medium">{r.character_name}</span> removed from every character sheet,
-                        the detective script, and evidence cards.
+                        <Trans i18nKey="adaptation.result.removedRow" values={{ name: r.character_name }} components={{ b: <span className="font-medium" /> }} />
                         {promoted && (
-                          <span className="text-muted-foreground"> {promoted} is now the {r.character_role}.</span>
+                          <span className="text-muted-foreground"> {t("adaptation.result.nowRole", { name: promoted, role: r.character_role === "murderer" || r.character_role === "accomplice" ? t(`adaptation.roles.${r.character_role}`) : r.character_role })}</span>
                         )}
                       </>
                     ) : (

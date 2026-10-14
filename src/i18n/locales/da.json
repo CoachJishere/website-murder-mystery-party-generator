@@ -338,7 +338,8 @@
       "corporateEvents": "Firma- og Kontorevents",
       "cookieSettings": "Cookie-indstillinger"
     },
-    "copyright": "Mystery Maker, Inc. Alle rettigheder forbeholdes."
+    "copyright": "Mystery Maker, Inc. Alle rettigheder forbeholdes.",
+    "rights": "Alle rettigheder forbeholdes."
   },
   "trustpilot": {
     "linkText": "Se vores anmeldelser på Trustpilot",
@@ -1649,12 +1650,19 @@
       "rowFailed": "denne kunne ikke gennemføres sikkert og blev efterladt uændret.",
       "reassignmentNotice": "At omfordele, hvem gerningsmanden er, krævede en omskrivning af afsløringen i detektivmanuskriptet samt en tilståelse - vi anbefaler at læse begge dele igennem én gang inden aftenen.",
       "missingId": "Vi kunne ikke finde den ombesætningsanmodning.",
-      "backToMystery": "Tilbage til dit mysterie"
+      "backToMystery": "Tilbage til dit mysterie",
+      "doneOf": "{{done}} af {{total}} færdige",
+      "removedRow": "<b>{{name}}</b> er fjernet fra alle karakterark, detektivmanuskriptet og beviskortene.",
+      "nowRole": "{{name}} er nu {{role}}."
     },
     "toasts": {
       "createdNoCheckout": "Anmodning oprettet for {{count}} karakter(er) (staging-tilstand - ingen betaling konfigureret).",
       "createFailed": "Kunne ikke starte den anmodning. Prøv igen.",
       "alreadyInProgress": "En af disse karakterer har allerede en anmodning i gang."
+    },
+    "roles": {
+      "murderer": "morderen",
+      "accomplice": "medskyldig"
     }
   },
   "hostGuide": {
@@ -1854,7 +1862,8 @@
       "tip7": "**Lad gruppen bevæge sig.** Små samtaleklynger og én stor rundkreds til anklagerne fungerer begge godt — tving ikke alle til at blive siddende i samme opstilling hele tiden.",
       "tip8": "**Improviser.** Hvis en spiller spørger om noget, der ikke er blandt deres manuskriptmuligheder, så opfordr til improvisation i karakter.",
       "tip9": "**Nyd stemningen.** Musik og en tematisk snack gør en stor forskel; ellers er intet påkrævet."
-    }
+    },
+    "themeProps": "Temaspecifikke rekvisitter (valgfrit)"
   },
   "characterGuide": {
     "fieldLabels": {
@@ -2068,7 +2077,8 @@
     "all": "Alle",
     "draft": "Kladde",
     "published": "Udgivet",
-    "archived": "Arkiveret"
+    "archived": "Arkiveret",
+    "purchased": "Købt"
   },
   "homeSections": {
     "howItWorks": "Sådan fungerer det",
@@ -2122,6 +2132,100 @@
       "saveUnexpected": "Karakteren kunne ikke gemmes på grund af en uventet fejl",
       "nameNotFound": "Karakterens navn kunne ikke udledes af teksten",
       "processFailed": "Karakterteksten kunne ikke behandles"
+    }
+  },
+  "ui": {
+    "loading": "Indlæser...",
+    "mobileNav": "Mobilnavigation",
+    "scrollToExplore": "scroll for at udforske",
+    "stars5": "5 stjerner"
+  },
+  "packageTab": {
+    "evidenceCardAlt": "Beviskort",
+    "loadingTime": "Det tager typisk {{time}}.",
+    "fixedCast": "Du kan redigere alle karakterer herunder, men antallet af mistænkte er fast for dette mysterium – at tilføje eller fjerne en karakter kræver, at det genereres igen.",
+    "coInvestigators": "Har du flere gæster end karakterer? De kan deltage som <b>medefterforskere</b> på detektivens hold (se Værtsguiden) – men del ikke detektivmanuskriptet med dem, for det nævner gerningsmanden.",
+    "shareFeedback": "Del din feedback"
+  },
+  "blogUi": {
+    "back": "Tilbage til bloggen",
+    "by": "Af",
+    "updated": "Opdateret",
+    "minRead": "{{count}} min. læsning",
+    "related": "Du vil måske også kunne lide",
+    "ctaTitle": "Klar til at skabe dit eget mordmysterium?",
+    "ctaBody": "Skab en unik og medrivende mordmysterie-fest med vores letanvendelige værktøjer.",
+    "ctaButton": "Opret dit mysterium",
+    "stickyTitle": "Klar til at skabe dit eget mysterium?",
+    "stickyBody": "Kom i gang i dag og skab en uforglemmelig oplevelse for venner og familie.",
+    "stickyButton": "Start nu",
+    "indexTitle": "Idéer, temaer og værtsguider til mordmysterie-fester",
+    "indexMeta": "Gratis guides til at holde en mordmysterie-fest: over 40 temaer, karakteridéer, tips til timing og dekoration samt sammenligninger af printbare kits. Planlæg en aften, de ikke glemmer.",
+    "indexIntro": "Vil du have et spil bygget op omkring din egen gruppe? <c>Opret en skræddersyet mordmysterie-fest</c>. Planlægger du noget til arbejdet? Prøv en <o>mordmysterie-fest på kontoret</o> eller læs vores guide til <g>mordmysterie-fester for virksomheder og kontorer</g>.",
+    "noPosts": "Ingen blogindlæg fundet."
+  },
+  "about": {
+    "title": "Om Jonathan Miller | Mystery Maker",
+    "metaDescription": "Jonathan Miller er grundlæggeren af Mystery Maker. Han har holdt snesevis af mordmysterie-fester og bygget den generator, han selv savnede.",
+    "ogDescription": "Grundlægger af Mystery Maker. Improvisationsskuespiller. Vært for snesevis af mordmysterie-fester.",
+    "photoAlt": "Jonathan Miller, grundlægger af Mystery Maker",
+    "role": "Grundlægger af Mystery Maker",
+    "connect": "Kontakt",
+    "bio": "Jonathan Miller er grundlæggeren af Mystery Maker, en generator til skræddersyede mordmysterie-fester. Han har holdt snesevis af mordmysterier, bringer en erfaren improvisators instinkt ind i karakterdesignet og skabte Mystery Maker, efter han havde svært ved at finde færdige kits, der passede til de grupper, han faktisk spillede med – hvert eksisterende tema føltes enten generisk eller tvunget. Han afholder stadig jævnligt mordmysterie-fester, og det er derfra, de fleste praktiske værtstips på denne blog kommer. Uden for Mystery Maker er Jonathan medstifter af Narrativa Improv Festival."
+  },
+  "privacy": {
+    "title": "Privatlivspolitik",
+    "metaDescription": "Vores løfte om at beskytte dit privatliv og dine personlige oplysninger, når du bruger generatoren til mordmysterie-fester.",
+    "lastUpdated": "Senest opdateret: 5. april 2025",
+    "s1": {
+      "title": "1. Indledning",
+      "body": "Velkommen til Murder Mystery Generator. Vi respekterer dit privatliv og er forpligtet til at beskytte dine personoplysninger. Denne privatlivspolitik fortæller dig, hvordan vi passer på dine personoplysninger, når du besøger vores hjemmeside, og om dine rettigheder og den beskyttelse, loven giver dig."
+    },
+    "s2": {
+      "title": "2. De oplysninger, vi indsamler om dig",
+      "body": "Personoplysninger er enhver oplysning om en person, som personen kan identificeres ud fra. Vi kan indsamle, bruge, opbevare og overføre forskellige typer personoplysninger om dig, som vi har grupperet således:",
+      "i1": "Identitetsoplysninger omfatter fornavn, efternavn, brugernavn eller lignende identifikator.",
+      "i2": "Kontaktoplysninger omfatter e-mailadresse og telefonnumre.",
+      "i3": "Tekniske oplysninger omfatter IP-adresse, dine logindata, browsertype og -version, tidszoneindstilling og placering, typer og versioner af browser-plugins, operativsystem og platform samt anden teknologi på de enheder, du bruger til at tilgå denne hjemmeside.",
+      "i4": "Brugsoplysninger omfatter oplysninger om, hvordan du bruger vores hjemmeside, produkter og tjenester.",
+      "i5": "Marketing- og kommunikationsoplysninger omfatter dine præferencer for at modtage markedsføring fra os og tredjeparter samt dine kommunikationspræferencer."
+    },
+    "s3": {
+      "title": "3. Hvordan vi bruger dine personoplysninger",
+      "body": "Vi bruger kun dine personoplysninger, når loven tillader det. Oftest bruger vi dine personoplysninger i følgende situationer:",
+      "i1": "Når vi skal opfylde den kontrakt, vi er ved at indgå eller har indgået med dig.",
+      "i2": "Når det er nødvendigt for vores legitime interesser (eller en tredjeparts), og dine interesser og grundlæggende rettigheder ikke går forud for disse interesser.",
+      "i3": "Når vi skal overholde en retlig forpligtelse."
+    },
+    "s4": {
+      "title": "4. Datasikkerhed",
+      "body": "Vi har indført passende sikkerhedsforanstaltninger for at forhindre, at dine personoplysninger ved et uheld går tabt, bruges eller tilgås uautoriseret, ændres eller videregives. Derudover begrænser vi adgangen til dine personoplysninger til de medarbejdere, agenter, leverandører og andre tredjeparter, der har et forretningsmæssigt behov for at kende dem."
+    },
+    "s5": {
+      "title": "5. Opbevaring af data",
+      "body": "Vi opbevarer kun dine personoplysninger, så længe det med rimelighed er nødvendigt for at opfylde de formål, de er indsamlet til, herunder for at opfylde retlige, regulatoriske, skattemæssige, regnskabsmæssige eller rapporteringsmæssige krav."
+    },
+    "s6": {
+      "title": "6. Dine juridiske rettigheder",
+      "body": "Under visse omstændigheder har du efter databeskyttelseslovgivningen rettigheder i forhold til dine personoplysninger, herunder retten til at:",
+      "i1": "Anmode om indsigt i dine personoplysninger.",
+      "i2": "Anmode om berigtigelse af dine personoplysninger.",
+      "i3": "Anmode om sletning af dine personoplysninger.",
+      "i4": "Gøre indsigelse mod behandlingen af dine personoplysninger.",
+      "i5": "Anmode om begrænsning af behandlingen af dine personoplysninger.",
+      "i6": "Anmode om overførsel af dine personoplysninger.",
+      "i7": "Ret til at trække dit samtykke tilbage."
+    },
+    "s7": {
+      "title": "7. Cookies",
+      "body1": "Vi bruger cookies og lignende teknologier til tre formål: at drive hjemmesiden (strengt nødvendige, altid aktive), at forstå, hvordan hjemmesiden bruges (analyse), og at måle og tilpasse annoncering. Hvis du besøger os fra EØS, Storbritannien eller Schweiz, er analyse- og annonceringscookies slået fra som standard, indtil du vælger at slå dem til.",
+      "body2Lead": "Du kan til enhver tid gennemgå og ændre dit valg via",
+      "cookieSettings": "Cookieindstillinger",
+      "body2Tail": ", som også findes i bunden af hver side."
+    },
+    "s8": {
+      "title": "8. Kontakt os",
+      "body": "Hvis du har spørgsmål om denne privatlivspolitik eller vores privatlivspraksis, er du velkommen til at kontakte os på support@mysterymaker.party."
     }
   }
 }

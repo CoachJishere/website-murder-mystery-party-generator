@@ -2,6 +2,11 @@
 
 ## 2026-10-14
 
+### Feature: Privacy, About, blog chrome and the rest of the UI translated; billing shows the regular price (ADR-0161 Update 4)
+- **What:** 76 more keys in all 13 locale files: the full Privacy page (machine translation, no legal review), About, blog chrome (dates localized), package page captions and notes, removal result page, footer, nav and loading labels, dashboard filter tabs; three broken chat sign-in prompts (fr, it, fi) repaired. Everything except Cold Case, admin, previews and dead components.
+- **Billing history** shows "USD 24.99" (the regular price, formatted per language) instead of "$24.99", at Jonathan's request; it is not the amount charged.
+- **Verified:** key, placeholder and tag parity (1,597 keys), bundle builds, /privacy (fr, ja), /about (de) and /blog (es) rendered in a browser with no English left.
+
 ### Feature: customer-facing UI strings moved to i18n in 13 languages (ADR-0161 Update 3)
 - **What:** 109 new keys in every locale file. Account settings (profile, password, delete account, billing; none of it used `useTranslation`), the email verification banner, skip link, dashboard filters, the package page feedback nudge, home page headings and SEO blurbs, form validation messages (`MysteryForm` schema built with `t`) and the toasts raised in `AuthContext`, `AuthCallback`, `MysteryView`, `Hero`, `MysteryGuestManager` and `characterService` (through `i18n.t`). Purchase dates use the active language (`src/utils/dateLocale.ts`).
 - **Also fixed:** the 12 non-English purchase pages were missing one note that English has (renaming a character does not update scripts); added.

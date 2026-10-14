@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
+import { Trans } from 'react-i18next';
 import { format, parseISO } from 'date-fns';
 import { ko, es, fr, de, ja, zhCN, nl, da, sv, fi, it, pt } from 'date-fns/locale';
 
@@ -119,8 +120,8 @@ export default function BlogIndex() {
       <Header />
       <main className="flex-grow py-12 px-4">
         <Helmet>
-          <title>Murder Mystery Party Ideas, Themes & Host Guides</title>
-          <meta name="description" content="Free guides to hosting a murder mystery party — 40+ themes, character ideas, timing and decoration tips, plus printable kit comparisons. Plan a night they'll remember." />
+          <title>{t('blogUi.indexTitle')}</title>
+          <meta name="description" content={t('blogUi.indexMeta')} />
           <link rel="canonical" href={`https://www.mysterymaker.party${lang ? `/${lang}` : ''}/blog`} />
           <meta property="og:title" content="Murder Mystery Party Ideas, Themes & Host Guides" />
           <meta property="og:description" content="Free guides to hosting a murder mystery party — 40+ themes, character ideas, timing tips, and printable kit comparisons." />
@@ -139,19 +140,14 @@ export default function BlogIndex() {
             <h1 className="text-3xl md:text-4xl font-bold text-[#C81400] mb-2">{t('blog.title')}</h1>
             <p className="text-muted-foreground">{t('blog.subtitle')}</p>
             <p className="text-muted-foreground mt-3">
-              Want a game built around your own group?{' '}
-              <Link to="/custom-murder-mystery-party" className="text-[#C81400] hover:underline font-medium">
-                Create a custom murder mystery party
-              </Link>
-              , or planning for work? Try an{' '}
-              <Link to="/office-murder-mystery-party" className="text-[#C81400] hover:underline font-medium">
-                office murder mystery party
-              </Link>
-              {' '}or read our guide to{' '}
-              <Link to="/blog/murder-mystery-party-for-corporate-events/" className="text-[#C81400] hover:underline font-medium">
-                corporate &amp; office murder mystery parties
-              </Link>
-              .
+              <Trans
+                i18nKey="blogUi.indexIntro"
+                components={{
+                  c: <Link to="/custom-murder-mystery-party" className="text-[#C81400] hover:underline font-medium" />,
+                  o: <Link to="/office-murder-mystery-party" className="text-[#C81400] hover:underline font-medium" />,
+                  g: <Link to="/blog/murder-mystery-party-for-corporate-events/" className="text-[#C81400] hover:underline font-medium" />,
+                }}
+              />
             </p>
           </div>
 
@@ -209,7 +205,7 @@ export default function BlogIndex() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <h2 className="text-xl text-foreground">No blog posts found.</h2>
+              <h2 className="text-xl text-foreground">{t('blogUi.noPosts')}</h2>
             </div>
           )}
         </div>

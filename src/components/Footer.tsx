@@ -102,7 +102,7 @@ const Footer = () => {
 
         <div className="mt-12 pt-8 flex flex-col md:flex-row justify-between items-center" style={{ borderTop: '1px solid var(--color-cream-border)' }}>
           <p className="text-sm" style={{ color: 'var(--color-cream-faint)', fontFamily: 'var(--font-body)' }}>
-            &copy; {currentYear} Mystery Maker. All rights reserved.
+            &copy; {currentYear} Mystery Maker. {t('footer.rights')}
           </p>
         </div>
       </div>

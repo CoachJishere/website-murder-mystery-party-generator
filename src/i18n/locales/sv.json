@@ -338,7 +338,8 @@
       "corporateEvents": "Företags- och Kontorsevent",
       "cookieSettings": "Cookie-inställningar"
     },
-    "copyright": "Mystery Maker, Inc. Alla rättigheter förbehållna."
+    "copyright": "Mystery Maker, Inc. Alla rättigheter förbehållna.",
+    "rights": "Alla rättigheter förbehållna."
   },
   "trustpilot": {
     "linkText": "Se våra omdömen på Trustpilot",
@@ -1649,12 +1650,19 @@
       "rowFailed": "den här kunde inte slutföras säkert och lämnades oförändrad.",
       "reassignmentNotice": "Att omfördela vem gärningspersonen är innebar att skriva om avslöjandet i detektivmanuset och en bekännelse - vi rekommenderar att läsa igenom båda en gång innan du är värd för kvällen.",
       "missingId": "Vi kunde inte hitta den där omcastningsförfrågan.",
-      "backToMystery": "Tillbaka till ditt mysterium"
+      "backToMystery": "Tillbaka till ditt mysterium",
+      "doneOf": "{{done}} av {{total}} klara",
+      "removedRow": "<b>{{name}}</b> har tagits bort från alla karaktärsblad, detektivmanuset och beviskorten.",
+      "nowRole": "{{name}} är nu {{role}}."
     },
     "toasts": {
       "createdNoCheckout": "Förfrågan skapad för {{count}} karaktär(er) (staging-läge - ingen betalning konfigurerad).",
       "createFailed": "Kunde inte starta den förfrågan. Försök igen.",
       "alreadyInProgress": "En av dessa karaktärer har redan en förfrågan pågående."
+    },
+    "roles": {
+      "murderer": "mördaren",
+      "accomplice": "medhjälparen"
     }
   },
   "hostGuide": {
@@ -1854,7 +1862,8 @@
       "tip7": "**Låt gruppen röra sig.** Både små samtalsklungor och en stor ring för anklagelserna fungerar bra — tvinga inte alla att sitta kvar i samma formation hela tiden.",
       "tip8": "**Improvisera.** Om en spelare frågar något som inte finns bland manusalternativen, uppmuntra improvisation i karaktär.",
       "tip9": "**Ha kul med stämningen.** Musik och ett temasnack räcker långt; inget annat krävs."
-    }
+    },
+    "themeProps": "Temaspecifika rekvisita (valfritt)"
   },
   "characterGuide": {
     "fieldLabels": {
@@ -2068,7 +2077,8 @@
     "all": "Alla",
     "draft": "Utkast",
     "published": "Publicerad",
-    "archived": "Arkiverad"
+    "archived": "Arkiverad",
+    "purchased": "Köpta"
   },
   "homeSections": {
     "howItWorks": "Så fungerar det",
@@ -2122,6 +2132,100 @@
       "saveUnexpected": "Det gick inte att spara karaktären på grund av ett oväntat fel",
       "nameNotFound": "Det gick inte att avgöra karaktärens namn utifrån texten",
       "processFailed": "Det gick inte att bearbeta karaktärstexten"
+    }
+  },
+  "ui": {
+    "loading": "Laddar...",
+    "mobileNav": "Mobilnavigering",
+    "scrollToExplore": "scrolla för att utforska",
+    "stars5": "5 stjärnor"
+  },
+  "packageTab": {
+    "evidenceCardAlt": "Beviskort",
+    "loadingTime": "Det tar vanligtvis {{time}}.",
+    "fixedCast": "Du kan redigera alla karaktärer nedan, men antalet misstänkta är fast för det här mysteriet – att lägga till eller ta bort en karaktär innebär att det måste genereras om.",
+    "coInvestigators": "Har du fler gäster än karaktärer? De kan vara med som <b>medutredare</b> i detektivens team (se Värdguiden) – men dela inte detektivmanuset med dem, eftersom det namnger gärningspersonen.",
+    "shareFeedback": "Dela feedback"
+  },
+  "blogUi": {
+    "back": "Tillbaka till bloggen",
+    "by": "Av",
+    "updated": "Uppdaterad",
+    "minRead": "{{count}} min läsning",
+    "related": "Du kanske också gillar",
+    "ctaTitle": "Redo att skapa ditt eget mordmysterium?",
+    "ctaBody": "Skapa en unik och engagerande mordmysteriefest med våra lättanvända verktyg.",
+    "ctaButton": "Skapa ditt mysterium",
+    "stickyTitle": "Redo att skapa ditt eget mysterium?",
+    "stickyBody": "Kom igång i dag och skapa en oförglömlig upplevelse för vänner och familj.",
+    "stickyButton": "Börja nu",
+    "indexTitle": "Idéer, teman och värdguider för mordmysteriefester",
+    "indexMeta": "Gratis guider för att arrangera en mordmysteriefest: över 40 teman, karaktärsidéer, tips om timing och dekoration samt jämförelser av utskrivbara kit. Planera en kväll de aldrig glömmer.",
+    "indexIntro": "Vill du ha ett spel byggt kring din egen grupp? <c>Skapa en skräddarsydd mordmysteriefest</c>. Planerar du något för jobbet? Prova en <o>mordmysteriefest på kontoret</o> eller läs vår guide till <g>mordmysteriefester för företag och kontor</g>.",
+    "noPosts": "Inga blogginlägg hittades."
+  },
+  "about": {
+    "title": "Om Jonathan Miller | Mystery Maker",
+    "metaDescription": "Jonathan Miller är grundaren av Mystery Maker. Han har arrangerat dussintals mordmysteriefester och byggt den generator han själv saknade.",
+    "ogDescription": "Grundare av Mystery Maker. Improvisatör. Värd för dussintals mordmysteriefester.",
+    "photoAlt": "Jonathan Miller, grundare av Mystery Maker",
+    "role": "Grundare av Mystery Maker",
+    "connect": "Kontakt",
+    "bio": "Jonathan Miller är grundaren av Mystery Maker, en generator för skräddarsydda mordmysteriefester. Han har arrangerat dussintals mordmysterier, tar med sig en erfaren improvisatörs instinkt i karaktärsdesignen och skapade Mystery Maker efter att ha haft svårt att hitta färdiga kit som passade de grupper han faktiskt spelade med – varje befintligt tema kändes antingen generiskt eller påtvingat. Han arrangerar fortfarande mordmysteriefester regelbundet, och det är därifrån de flesta av de praktiska värdtipsen på den här bloggen kommer. Utanför Mystery Maker är Jonathan medgrundare av Narrativa Improv Festival."
+  },
+  "privacy": {
+    "title": "Integritetspolicy",
+    "metaDescription": "Vårt åtagande att skydda din integritet och dina personuppgifter när du använder generatorn för mordmysteriefester.",
+    "lastUpdated": "Senast uppdaterad: 5 april 2025",
+    "s1": {
+      "title": "1. Inledning",
+      "body": "Välkommen till Murder Mystery Generator. Vi respekterar din integritet och är fast beslutna att skydda dina personuppgifter. Den här integritetspolicyn berättar hur vi hanterar dina personuppgifter när du besöker vår webbplats och informerar dig om dina integritetsrättigheter och hur lagen skyddar dig."
+    },
+    "s2": {
+      "title": "2. De uppgifter vi samlar in om dig",
+      "body": "Personuppgifter är all information om en person som gör att personen kan identifieras. Vi kan samla in, använda, lagra och överföra olika typer av personuppgifter om dig, som vi har grupperat så här:",
+      "i1": "Identitetsuppgifter omfattar förnamn, efternamn, användarnamn eller liknande identifierare.",
+      "i2": "Kontaktuppgifter omfattar e-postadress och telefonnummer.",
+      "i3": "Tekniska uppgifter omfattar IP-adress, dina inloggningsuppgifter, webbläsartyp och -version, tidszoninställning och plats, typer och versioner av webbläsarinsticksprogram, operativsystem och plattform samt annan teknik på de enheter du använder för att besöka webbplatsen.",
+      "i4": "Användningsuppgifter omfattar information om hur du använder vår webbplats, våra produkter och tjänster.",
+      "i5": "Marknadsförings- och kommunikationsuppgifter omfattar dina preferenser för att ta emot marknadsföring från oss och tredje part samt dina kommunikationspreferenser."
+    },
+    "s3": {
+      "title": "3. Hur vi använder dina personuppgifter",
+      "body": "Vi använder bara dina personuppgifter när lagen tillåter det. Oftast använder vi dina personuppgifter i följande situationer:",
+      "i1": "När vi behöver fullgöra det avtal vi är på väg att ingå eller har ingått med dig.",
+      "i2": "När det är nödvändigt för våra berättigade intressen (eller en tredje parts) och dina intressen och grundläggande rättigheter inte väger tyngre.",
+      "i3": "När vi behöver uppfylla en rättslig förpliktelse."
+    },
+    "s4": {
+      "title": "4. Datasäkerhet",
+      "body": "Vi har infört lämpliga säkerhetsåtgärder för att förhindra att dina personuppgifter av misstag går förlorade, används eller nås på obehörigt sätt, ändras eller röjs. Dessutom begränsar vi åtkomsten till dina personuppgifter till de anställda, ombud, entreprenörer och andra tredje parter som har ett affärsmässigt behov av att känna till dem."
+    },
+    "s5": {
+      "title": "5. Lagring av data",
+      "body": "Vi sparar bara dina personuppgifter så länge det rimligen behövs för att uppfylla de ändamål för vilka vi samlade in dem, bland annat för att uppfylla rättsliga, regulatoriska, skattemässiga, redovisningsmässiga eller rapporteringsmässiga krav."
+    },
+    "s6": {
+      "title": "6. Dina lagliga rättigheter",
+      "body": "Under vissa omständigheter har du enligt dataskyddslagstiftningen rättigheter avseende dina personuppgifter, bland annat rätten att:",
+      "i1": "Begära tillgång till dina personuppgifter.",
+      "i2": "Begära rättelse av dina personuppgifter.",
+      "i3": "Begära radering av dina personuppgifter.",
+      "i4": "Invända mot behandlingen av dina personuppgifter.",
+      "i5": "Begära begränsning av behandlingen av dina personuppgifter.",
+      "i6": "Begära överföring av dina personuppgifter.",
+      "i7": "Rätt att återkalla ditt samtycke."
+    },
+    "s7": {
+      "title": "7. Cookies",
+      "body1": "Vi använder cookies och liknande tekniker för tre ändamål: för att driva webbplatsen (absolut nödvändiga, alltid på), för att förstå hur webbplatsen används (analys) och för att mäta och anpassa reklam. Om du besöker oss från EES, Storbritannien eller Schweiz är analys- och reklamcookies avstängda som standard tills du väljer att slå på dem.",
+      "body2Lead": "Du kan när som helst se över och ändra ditt val via",
+      "cookieSettings": "Cookieinställningar",
+      "body2Tail": ", som också finns i sidfoten på varje sida."
+    },
+    "s8": {
+      "title": "8. Kontakta oss",
+      "body": "Om du har frågor om den här integritetspolicyn eller vår integritetspraxis är du välkommen att kontakta oss på support@mysterymaker.party."
     }
   }
 }

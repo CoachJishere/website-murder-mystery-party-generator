@@ -338,7 +338,8 @@
       "corporateEvents": "Événements d'entreprise et de bureau",
       "cookieSettings": "Paramètres des cookies"
     },
-    "copyright": "Mystery Maker, Inc. Tous droits réservés."
+    "copyright": "Mystery Maker, Inc. Tous droits réservés.",
+    "rights": "Tous droits réservés."
   },
   "trustpilot": {
     "linkText": "Voir nos avis sur Trustpilot",
@@ -803,7 +804,7 @@
     "private": "Privé",
     "initialGreeting": "Bonjour ! Je suis votre assistant de développement IA. Laissez-moi vous aider à créer un mystère de meurtre. Combien de joueurs aimeriez-vous pour votre mystère de meurtre ?",
     "inputPlaceholder": "Tapez votre message...",
-    "signInPrompt": "Connectez-vous pour accéder au mode privé",
+    "signInPrompt": "Veuillez <1>vous connecter</1> pour utiliser le mode privé",
     "errorResponse": "J'ai du mal à vous répondre pour le moment. Veuillez réessayer.",
     "errorResponseWithFallback": "J'ai des difficultés techniques. Combien de joueurs aimeriez-vous pour votre mystère de meurtre ?",
     "connectionErrorResponse": "J'ai actuellement des problèmes de connexion. Combien de joueurs aimeriez-vous pour votre mystère de meurtre ?",
@@ -1650,12 +1651,19 @@
       "rowFailed": "celui-ci n'a pas pu être finalisé en toute sécurité et a été laissé inchangé.",
       "reassignmentNotice": "Réattribuer le rôle du coupable a impliqué de réécrire la révélation du scénario du détective ainsi qu'une confession - nous vous recommandons de lire les deux une fois avant d'animer la soirée.",
       "missingId": "Nous n'avons pas trouvé cette demande de changement.",
-      "backToMystery": "Retour à votre mystère"
+      "backToMystery": "Retour à votre mystère",
+      "doneOf": "{{done}} sur {{total}} terminés",
+      "removedRow": "<b>{{name}}</b> retiré(e) de toutes les fiches de personnage, du script du détective et des cartes d'indices.",
+      "nowRole": "{{name}} est désormais le/la {{role}}."
     },
     "toasts": {
       "createdNoCheckout": "Demande créée pour {{count}} personnage(s) (mode test - aucun paiement configuré).",
       "createFailed": "Impossible de démarrer cette demande. Veuillez réessayer.",
       "alreadyInProgress": "L'un de ces personnages a déjà une demande en cours."
+    },
+    "roles": {
+      "murderer": "meurtrier(ère)",
+      "accomplice": "complice"
     }
   },
   "hostGuide": {
@@ -1855,7 +1863,8 @@
       "tip7": "**Laissez le groupe bouger.** De petits groupes de conversation et un grand cercle pour les accusations fonctionnent bien tous les deux — ne forcez pas tout le monde à rester assis dans la même formation pendant toute la partie.",
       "tip8": "**Improvisez.** Si un joueur pose une question qui ne figure pas dans ses options de script, encouragez l'improvisation dans la peau du personnage.",
       "tip9": "**Amusez-vous avec l'ambiance.** Un peu de musique et des collations à thème font déjà beaucoup ; rien d'autre n'est requis."
-    }
+    },
+    "themeProps": "Accessoires thématiques (facultatif)"
   },
   "characterGuide": {
     "fieldLabels": {
@@ -2069,7 +2078,8 @@
     "all": "Tous",
     "draft": "Brouillon",
     "published": "Publié",
-    "archived": "Archivé"
+    "archived": "Archivé",
+    "purchased": "Achetés"
   },
   "homeSections": {
     "howItWorks": "Comment ça marche",
@@ -2123,6 +2133,100 @@
       "saveUnexpected": "Échec de l'enregistrement du personnage à cause d'une erreur inattendue",
       "nameNotFound": "Impossible de déterminer le nom du personnage à partir du texte",
       "processFailed": "Impossible de traiter le texte du personnage"
+    }
+  },
+  "ui": {
+    "loading": "Chargement...",
+    "mobileNav": "Navigation mobile",
+    "scrollToExplore": "faites défiler pour explorer",
+    "stars5": "5 étoiles"
+  },
+  "packageTab": {
+    "evidenceCardAlt": "Carte d'indice",
+    "loadingTime": "Cela prend généralement {{time}}.",
+    "fixedCast": "Vous pouvez modifier chaque personnage ci-dessous, mais le nombre de suspects est fixé pour ce mystère : ajouter ou retirer un personnage oblige à le régénérer.",
+    "coInvestigators": "Vous avez plus d'invités que de personnages ? Ils peuvent rejoindre l'équipe du détective comme <b>co-enquêteurs</b> (voir le Guide de l'hôte), mais ne leur montrez pas le script du détective : il nomme le coupable.",
+    "shareFeedback": "Donner mon avis"
+  },
+  "blogUi": {
+    "back": "Retour au blog",
+    "by": "Par",
+    "updated": "Mis à jour le",
+    "minRead": "{{count}} min de lecture",
+    "related": "Vous aimerez aussi",
+    "ctaTitle": "Prêt à créer votre propre murder party ?",
+    "ctaBody": "Créez une murder party unique et captivante avec nos outils simples d'utilisation.",
+    "ctaButton": "Créez votre mystère",
+    "stickyTitle": "Prêt à créer votre propre mystère ?",
+    "stickyBody": "Lancez-vous dès aujourd'hui et offrez à vos proches une expérience inoubliable.",
+    "stickyButton": "Commencer",
+    "indexTitle": "Idées, thèmes et guides pour organiser une murder party",
+    "indexMeta": "Guides gratuits pour organiser une murder party : plus de 40 thèmes, idées de personnages, conseils de timing et de décoration, et comparatifs de kits imprimables. Préparez une soirée mémorable.",
+    "indexIntro": "Envie d'un jeu construit autour de votre groupe ? <c>Créez une murder party sur mesure</c>. Pour le travail ? Essayez une <o>murder party de bureau</o> ou lisez notre guide des <g>murder parties d'entreprise et de bureau</g>.",
+    "noPosts": "Aucun article de blog trouvé."
+  },
+  "about": {
+    "title": "À propos de Jonathan Miller | Mystery Maker",
+    "metaDescription": "Jonathan Miller est le fondateur de Mystery Maker. Il a organisé des dizaines de murder parties et a créé le générateur qu'il aurait aimé avoir.",
+    "ogDescription": "Fondateur de Mystery Maker. Improvisateur. Hôte de dizaines de murder parties.",
+    "photoAlt": "Jonathan Miller, fondateur de Mystery Maker",
+    "role": "Fondateur de Mystery Maker",
+    "connect": "Restons en contact",
+    "bio": "Jonathan Miller est le fondateur de Mystery Maker, un générateur de murder parties sur mesure. Il a organisé des dizaines de murder parties, apporte l'instinct d'un improvisateur expérimenté à la conception des personnages, et a créé Mystery Maker après avoir peiné à trouver des kits prêts à l'emploi adaptés aux groupes avec lesquels il jouait réellement : chaque thème existant lui semblait soit générique, soit plaqué. Il organise toujours régulièrement des murder parties, ce qui nourrit l'essentiel des conseils pratiques de ce blog. En dehors de Mystery Maker, Jonathan est cofondateur du Narrativa Improv Festival."
+  },
+  "privacy": {
+    "title": "Politique de confidentialité",
+    "metaDescription": "Notre engagement à protéger votre vie privée et vos données personnelles lorsque vous utilisez le générateur de murder parties.",
+    "lastUpdated": "Dernière mise à jour : 5 avril 2025",
+    "s1": {
+      "title": "1. Introduction",
+      "body": "Bienvenue sur Murder Mystery Generator. Nous respectons votre vie privée et nous nous engageons à protéger vos données personnelles. Cette politique de confidentialité vous explique comment nous traitons vos données personnelles lorsque vous visitez notre site, et vous informe de vos droits en matière de vie privée et de la protection que vous accorde la loi."
+    },
+    "s2": {
+      "title": "2. Les données que nous collectons à votre sujet",
+      "body": "Les données personnelles désignent toute information concernant une personne physique permettant de l'identifier. Nous pouvons collecter, utiliser, stocker et transférer différentes catégories de données personnelles vous concernant, regroupées comme suit :",
+      "i1": "Les données d'identité comprennent le prénom, le nom, le nom d'utilisateur ou un identifiant similaire.",
+      "i2": "Les données de contact comprennent l'adresse e-mail et les numéros de téléphone.",
+      "i3": "Les données techniques comprennent l'adresse IP, vos identifiants de connexion, le type et la version du navigateur, le fuseau horaire et la localisation, les types et versions des modules complémentaires du navigateur, le système d'exploitation et la plateforme, ainsi que les autres technologies des appareils que vous utilisez pour accéder à ce site.",
+      "i4": "Les données d'utilisation comprennent des informations sur la façon dont vous utilisez notre site, nos produits et nos services.",
+      "i5": "Les données de marketing et de communication comprennent vos préférences pour recevoir de la publicité de notre part et de celle de tiers, ainsi que vos préférences de communication."
+    },
+    "s3": {
+      "title": "3. Comment nous utilisons vos données personnelles",
+      "body": "Nous n'utilisons vos données personnelles que lorsque la loi nous y autorise. Le plus souvent, nous les utilisons dans les circonstances suivantes :",
+      "i1": "Lorsque nous devons exécuter le contrat que nous sommes sur le point de conclure ou que nous avons conclu avec vous.",
+      "i2": "Lorsque cela est nécessaire à nos intérêts légitimes (ou à ceux d'un tiers) et que vos intérêts et droits fondamentaux ne prévalent pas sur ces intérêts.",
+      "i3": "Lorsque nous devons respecter une obligation légale."
+    },
+    "s4": {
+      "title": "4. Sécurité des données",
+      "body": "Nous avons mis en place des mesures de sécurité appropriées pour empêcher que vos données personnelles ne soient perdues accidentellement, utilisées ou consultées de manière non autorisée, modifiées ou divulguées. En outre, nous limitons l'accès à vos données personnelles aux employés, agents, sous-traitants et autres tiers qui ont besoin d'en connaître dans le cadre de leur activité."
+    },
+    "s5": {
+      "title": "5. Conservation des données",
+      "body": "Nous ne conservons vos données personnelles que le temps raisonnablement nécessaire pour atteindre les finalités pour lesquelles nous les avons collectées, y compris pour satisfaire à toute exigence légale, réglementaire, fiscale, comptable ou de déclaration."
+    },
+    "s6": {
+      "title": "6. Vos droits légaux",
+      "body": "Dans certaines circonstances, la législation sur la protection des données vous confère des droits sur vos données personnelles, notamment le droit de :",
+      "i1": "Demander l'accès à vos données personnelles.",
+      "i2": "Demander la rectification de vos données personnelles.",
+      "i3": "Demander l'effacement de vos données personnelles.",
+      "i4": "Vous opposer au traitement de vos données personnelles.",
+      "i5": "Demander la limitation du traitement de vos données personnelles.",
+      "i6": "Demander le transfert de vos données personnelles.",
+      "i7": "Droit de retirer votre consentement."
+    },
+    "s7": {
+      "title": "7. Cookies",
+      "body1": "Nous utilisons des cookies et des technologies similaires à trois fins : faire fonctionner le site (strictement nécessaires, toujours actifs), comprendre comment le site est utilisé (mesure d'audience) et mesurer et personnaliser la publicité. Si vous nous visitez depuis l'EEE, le Royaume-Uni ou la Suisse, les cookies de mesure d'audience et de publicité sont désactivés par défaut jusqu'à ce que vous choisissiez de les activer.",
+      "body2Lead": "Vous pouvez revoir et modifier votre choix à tout moment via",
+      "cookieSettings": "Paramètres des cookies",
+      "body2Tail": ", également disponibles en bas de chaque page."
+    },
+    "s8": {
+      "title": "8. Nous contacter",
+      "body": "Si vous avez des questions sur cette politique de confidentialité ou sur nos pratiques en matière de vie privée, contactez-nous à support@mysterymaker.party."
     }
   }
 }
