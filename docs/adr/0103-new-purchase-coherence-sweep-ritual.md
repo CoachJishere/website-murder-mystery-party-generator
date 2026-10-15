@@ -2324,3 +2324,45 @@ Checked and fine: the customer's other requirements (22 entries, pronouns per pl
 **Known behaviour, not a bug.** GitHub issue #5 is still open on the El Último Trago meta-text line; do not close it earlier (the next run reopens a new one, see the 2026-10-06 alert-policy note).
 
 **Key files.** `supabase/migrations/20261014210000_final_statement_confession_leak_fp_shapes.sql`.
+
+## Addendum 103 (2026-10-15): New-Purchase sweep - "Thrifted To Death" (EN, slip style, 8 characters, no accomplice) - first purchase on Parent87 + Child66 + Child67
+
+**Package.** `545860b6-7199-4eb7-9dfc-8de6e6c34236`, conversation `c35afa15-df6a-4b26-a90e-145f2685d362`, paid 19.99 USD 2026-10-14 23:32 UTC, released with the ready email 23:40:44 (review-before-release held it 90 s). `mystery_packages_prompt_versions`: Parent87, Child67 (Child66 imported 11:39, Child67 13:10, so every call on the live versions). Customer brief: op-shop glam dinner, victim Jo/Josie Gawn, 5 old acquaintances plus 3 newcomers, co-hosts Dez and Max, Wren arrives late, stolen pearls as a red herring "woven through dialogue and rumor", 3 evidence cards (brooch, second glass, footprint), no accomplice.
+
+**Detectors.** 31 `list_packages_with_*` functions plus `list_stray_markup` and `package_completion_blocking_defects`, all scoped to this package: 0 hits, 0 blocking defects. `list_packages_with_sheet_wrong_person`: 0. Passive probe check: `applied` 0, `total` 0 (the leak and fact probes ran on this package with 0 findings each, so the passive check has still not seen a finding; keep the note).
+
+**Reviewer.** 2 findings against a slip baseline of about 13 per package: 1 open at release (`secret_leak`, Max `final_innocent`, "Remy had an exposure hanging over their head, and Wren's name was used on a fake") and 1 applied by the `+p2` pass at 23:45 (Vic `accusations`, "Your accomplice, whoever drew that slip, does not exist in this game" rewritten to "You have no accomplice in this game", read in context, good). Verdicts: the open one is `false` by my read: Remy states the reviews fact in Round 2 (both branches), Wren says the fake in her own introduction, and Max's own rumor 3 already carries the Remy fact, so all of it is public in the game by the final statements; applied one `real`. The cost log: review 0.48 + p2 0.31 + requirements extract 0.017 + leak probe 0.063 + fact probe 0.107 = about 0.98 USD, plus 0.04 for the image re-roll below. Twin candidates: the same Max sentence in `final_guilty` and a shorter one in `round2_guilty`, fine for the same reason.
+
+**Full-cast read (all 8 sheets, prose and point-form, plus detective script, overview, evidence cards, materials, `master_context`).** Matrix vs relationship blocks: 0 contradictions. Confessions: all 8 consistent with the three cards (brooch torn and put in a velvet coat on the hooks, second glass behind the wine rack, footprint from the garden path), none names another cast member as helper. Guilty tips: all carry the no-accomplice line. Detective reveal and closing say "the guilty player" and name nobody. Alibi claims agree across sheets (Vic's call in the garden, Blair's photographs, Dez's lights check, Max's bottles). Victim is "Jo" everywhere, "she" everywhere. English throughout, materials English.
+
+**Hand-found defects the reviewer did not flag (9, all recorded in `package_review_misses`, 8 fixed by hand, free):**
+1. Wren `introduction` ended with a stray HTML `<br/>` (C11; `list_stray_markup` does not look for HTML tags).
+2. Wren `accusations` tip (and its point-form twin) told the culprit to say they had "no history with her to settle", contradicting Wren's own introduction and Round 2 (C5).
+3. Blair `reveal_confession_guilty_pointform` stuffed "a loose stone" into the coat, prose says the brooch (C5).
+4. Remy `rumors_pointform` gave Ash a "gardening background", prose says muddy market grounds (C5).
+5. Remy `reveal_confession_guilty_pointform` dropped the second-glass beat the prose has (C5).
+6. Max `introduction_pointform` said Dez invited Jo, Max's own secret and background say Max did (C5).
+7. Max `round2_innocent` "Ash lost his name" for the dual-name Ash, the same sheet says "their" elsewhere (C7). Other gendered self-words (woman, hostess, businesswoman) left: the host picks a side per player.
+8. The stolen-pearls red herring was in one character's rumors (Vic), the detective Round 1 and a prop, so "woven through rumor" was thin (C6, medium). `requirements_extract` ran (17 lines) and produced no `REQUIREMENTS` finding, so this is a reviewer miss. Added one neutral pearl line to Remy's and Charlie's rumors (prose and point-form) that points at Ash, consistent with Vic's existing rumor.
+9. Dez's secret is abstract (see Parent87 below). **Not fixed.**
+Also logged, not fixed: Max's relationships block omits Dez (matrix Friendly; the background carries it; C4 low).
+
+**Evidence image.** Round 4 showed a bare human foot with toes, while the card and the story say a shoe sole print ("too smeared to match any shoe", Ash in thrifted boots). Re-rolled once under the standing yes (about 0.04 USD): the new image is a boot sole with a ruler, no letters, kept. Rounds 2 and 3 are fine (brooch on velvet, filled gold-rimmed coupe).
+
+**Post-import watch results (first purchase of each):**
+- **Child67 (second-person secrets and relationships): HELD.** All 8 secrets and relationship blocks are second person, `sheet_wrong_person` 0, spoken fields stayed first person. 1 of 3 clean.
+- **Parent87 (concrete hidden wrongs): partly held.** 7 of 8 `howVictimWrongedThem` / `specificMotive` entries name a concrete fact (Vic moved partners' money into the loan, Ash skimmed the shared stall takings, Blair begged for credit and is broke, Wren's name put to a fake). Dez's stayed abstract: "Jo knew a secret from their shared vintage-collecting days", in `wrongedEachCharacter`, `motiveDistribution`, the secret, Round 2 and the guilty confession (which never says what the secret was). The customer's concept gave only "history neither of them talks about", which is the case the Parent87 placeholder wording was meant to cover, so it did not hold for that entry. Reported in ADR-0162 Update 1; not rewritten here (6 fields, the customer's own concept keeps it a mystery, no complaint). 1 of 3.
+- **Child66 (redaction):** slip package, redaction applies to detective innocents only, so its suspected cost was not testable. Counting statements about another character that contradict that character's sheet (rumors, questions): none found.
+- **Child65 `slip_partner_named`:** empty, but with no accomplice there is no pair entry and no partner to name, so this is a weak data point. The first-person-plural check for couple entries still waits for a slip purchase with an accomplice.
+- **Requirements extract:** ran, 0 findings, and missed the thin pearls requirement (above). First data point that the extract can be a false negative on a "woven through" style requirement.
+- **Review-before-release:** held 90 s, released clean; `+p2` ran before my edits, so `reviewer_ran_before_edit = true` and the recall numbers are valid.
+
+**Recall for the scoreboard.** Reviewer true positives 1 (the applied `+p2` fix); hand-found 9 reviewer misses; reviewer false positives 1. Recall about 1 in 10. Every miss is low severity except the pearls (medium) and Dez's abstract secret (medium).
+
+**Decisions and scope calls.**
+- **No detector for stray HTML tags yet.** Test from ADR-0131: detection is cheap and deterministic, but the impact is low (a `<br/>` at the end of a read-aloud line) and it is the first sighting in this class; so it stays a hand check (`jsonb_each_text(to_jsonb(mc))` values `~ '<[a-zA-Z/][^>]{0,20}>'`, added to the sweep text in CLAUDE.md) and gets a detector on the second sighting.
+- **Dez's abstract secret left as found** (reason above); **the Max/Dez relationship omission left**; **gendered self-words left**.
+- **Pearls:** edited by hand because the customer asked for it in plain words and the edit invents nothing (a neutral rumor line, no owner of the pearls).
+- **New cluster `C17`** in `package_review_misses` for "hidden wrong left abstract" (one row, Parent87). `layer_owner = prevent` (Parent87 owns it, unproven so far).
+
+**Key files.** None changed in the repo; package content edited by SQL (5 characters touched: Wren, Blair, Remy, Max, Charlie), evidence image `round4.png` replaced via `generate-evidence-images`.

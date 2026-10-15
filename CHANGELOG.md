@@ -2,6 +2,12 @@
 
 ## 2026-10-15
 
+### Fix: "Thrifted To Death" sweep - 8 hand fixes, first purchase on Parent87 + Child66 + Child67 (ADR-0103 Addendum 103, ADR-0162 Update 1)
+- **Why:** new-purchase sweep (slip, English, 8 characters, no accomplice). All detectors clean and 0 blocking defects, but the full-cast read found 9 defects the reviewer (2 findings, 1 applied, 1 false positive) did not.
+- **What (free, by SQL):** removed a stray `<br/>` from Wren's introduction; rewrote Wren's deflection tip that said "no history to settle" (prose and point-form), contradicting her own grievance; fixed point-form drifts (Blair confession stone vs brooch, Remy rumor "gardening" vs market grounds, Max intro "Dez invited Jo", Remy confession missing the second glass); "his" to "their" for the dual-name Ash; added a neutral stolen-pearls line to Remy's and Charlie's rumors (the customer asked for the red herring "woven through rumor", only one character carried it). Re-rolled the round 4 evidence image once (bare foot instead of a shoe print, about 0.04 USD, standing yes).
+- **Not changed:** Dez's secret stays abstract (Parent87 only partly held: 7 of 8 hidden wrongs concrete; the customer's concept gave only "history neither talks about"); logged as new cluster C17 and reported in ADR-0162 Update 1. No detector for stray HTML tags yet (low severity, first sighting; hand regex added to the sweep text). Child67 held (all secrets and relationships second person). 
+- Bookkeeping: verdicts on 2 findings, 10 rows in `package_review_misses`, one `package_review_sweeps` row, scoreboard row added.
+
 ### Docs: Sonnet 5.5 medium adaptive measured for latency; cost unmeasured; stale edge-function models listed (ADR-0145 Addendum 2)
 - **Why:** ADR-0145 never measured the cost and latency effect of the 2026-10-06 move to Sonnet 5.5 with adaptive thinking. Report-only task: no blueprint, function or prompt changed, no paid API call made.
 - **Latency (9-day windows each side of the real cutover, 2026-10-06 20:50 UTC):** Make executions show no slowdown. Child median 91.6 s (n=284) to 84.5 s (n=201); Parent 558.9 s (n=23) to 474.5 s (n=18); operations and transfer flat. Package wall-clock is underpowered and style-mixed (n=17 vs 8), so read it as "no evidence of a slowdown". Packages excluded as re-fired or over 120 minutes rose from 3 of 20 to 5 of 13 (documented empty-read incidents and gate holds).
