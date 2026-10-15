@@ -2,6 +2,11 @@
 
 ## 2026-10-15
 
+### Change: roster-extraction fallback in `mystery-webhook-trigger` moved from Haiku 4.5 to Sonnet 5.5 (ADR-0164)
+- **What:** `extractCharactersWithClaude` now uses `claude-sonnet-5-5` with `thinking: between_tools`, effort `low`, `max_tokens` 4000, no `temperature`, and reads the first text block. The language classifier in the same file stays on Haiku (ADR-0112). Reverses ADR-0145 Addendum 2's "deliberate Haiku" verdict on Jonathan's instruction.
+- **Verified:** one paid call (about 0.01 USD, approved) on the real 8-player concept "Thrifted To Death": HTTP 200, 3.8 s, text block only, all 8 names equal to the stored roster, victim not listed. That also confirms the raw API accepts `between_tools` + effort `low` without tools; it does not cover `effort: medium` with `json_schema` output.
+- **Safety:** a failed call returns null and keeps the regex roster (unchanged guard).
+
 ### Change: five Sonnet 5 edge functions moved to Sonnet 5.5 in code, not deployed (ADR-0145 Addendum 3)
 - **What:** `mystery-ai`, `regenerate-child-content`, `regenerate-parent-content`, `adapt-mystery-apply` and `generate-pointform-summaries` now name `claude-sonnet-5-5` (same price as Sonnet 5). `thinking: disabled` (a 400 on 5.5) became `thinking: between_tools`, and the text reads look the text block up by type instead of `content[0]`.
 - **Status:** NOT deployed (edge functions deploy manually; a push only deploys Pages) and not tested against the live API. The risky combination is `between_tools` with `effort: medium` plus json_schema output in `adapt-mystery-apply`. Needs a paid shape probe (about 0.01 USD) and one call per function first, each with Jonathan's yes.

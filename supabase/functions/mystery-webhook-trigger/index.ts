@@ -297,9 +297,15 @@ async function extractCharactersWithClaude(
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 2000,
-        temperature: 0,
+        // Moved from Haiku 4.5 to Sonnet 5.5 on 2026-10-15 (ADR-0164): this call picks which characters a
+        // paid order gets, so it should follow instructions at least as well as the Make calls it feeds.
+        // Sonnet 5.5 rejects temperature (non-default 400s) and thinking {type:"disabled"}; between_tools is
+        // its lowest thinking setting and needs effort <= high. Effort "low" is Anthropic's guidance for
+        // extraction. The language classifier above deliberately stays on Haiku (ADR-0112).
+        model: "claude-sonnet-5-5",
+        max_tokens: 4000,
+        thinking: { type: "between_tools" },
+        output_config: { effort: "low" },
         system: "You are a strict JSON extraction tool. Output ONLY a valid JSON array of objects with 'name' and 'description' fields. Extract the playable character names and descriptions. Never continue the story. Never output anything except the JSON array. CRITICAL: only include a character if their name is explicitly present in the provided content. The 'expected count' is a hint about how many characters SHOULD be findable, not a target to hit - if the content only names fewer than that, output only those. NEVER invent, guess, or fabricate an additional character to make the count match.",
         messages: [{
           role: "user",
@@ -314,7 +320,8 @@ async function extractCharactersWithClaude(
     }
 
     const result = await response.json();
-    const text = result.content?.[0]?.text || '';
+    // First text block, not content[0]: a thinking block can come first (ADR-0145 Addendum 1).
+    const text = result.content?.find((b: { type: string }) => b.type === 'text')?.text || '';
 
     // Extract JSON array from response
     const jsonMatch = text.match(/\[[\s\S]*\]/);
