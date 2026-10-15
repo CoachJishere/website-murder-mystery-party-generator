@@ -145,7 +145,7 @@ Jonathan approved the probe, one real call per function on a test package, and a
 
 **Still open:** quality of the Sonnet 5.5 concept-chat replies over many conversations is unmeasured (one reply read, looked fine); the Console key for these functions is unidentified, so the 5.5 spend of these functions cannot yet be separated from the reviewer's.
 
-### Addendum 3, Update 2 (2026-10-15): regenerate-child-content brought in line with Child67's second-person rule (code committed, NOT deployed, NOT verified)
+### Addendum 3, Update 2 (2026-10-15): regenerate-child-content brought in line with Child67's second-person rule (deployed and verified on one secret)
 
 **Found by:** the Update 1 test call. The regenerated `secret` came back in first person ("I have been quietly taking small sums..."), where Child67 (imported 2026-10-14, ADR-0103 Addendum 99 Update 3) wants `secret` and `relationships` written to the player in second person ("You ...") and `description` / `background` in third person. `regenerate-child-content` mirrors the Child prompt but had no such rule, so any paid heal that regenerated those fields would put them back in the wrong person. Not caused by the model change (the prompt never had the rule); it would have happened on Sonnet 5 too.
 
@@ -155,3 +155,6 @@ Jonathan approved the probe, one real call per function on a test package, and a
 - Not touched: the spoken fields (introduction, round scripts, final statements, confessions), which stay first person.
 
 **Not done:** deploy and a live check. Proposed: deploy, then regenerate the same TEST secret once (0.10 USD flat estimate, needs Jonathan's yes) and run `select * from list_packages_with_sheet_wrong_person(...)` for that package; expect no hit for that character. Existing delivered packages are not rewritten (Update 3 of Addendum 99 left them alone by decision). Rollback: revert the commit.
+
+**Result (same day, Jonathan approved the deploy and one 0.10 USD call):** deployed `regenerate-child-content` (CLI). The first call returned a 500 `list_packages_with_meta_text_leak failed: canceling statement due to statement timeout`, the known detector contention timeout (ADR-0103 Addendum 87), before reaching Claude: no write, no `auto_remediation_log` row, no spend. The retry returned `fixed` in 13.9 s and the regenerated Winnifred Voss `secret` is entirely in second person ("You already know what your uncle recorded in his logbook, because you wrote the first draft of it yourself..."), concrete and coherent. `list_packages_with_sheet_wrong_person('2026-08-23')` still lists the TEST package, but the hits are the other characters: 2 bad secrets (Absalom Reyes first person, Rosalind Hart third person, both untouched) and 2 bad relationships (Absalom, and Winnifred's old third-person relationships, which this call did not regenerate). Winnifred's secret is no longer a hit. A regeneration of `relationships` was not tested.
+

@@ -5,7 +5,7 @@
 ### Fix: regenerate-child-content now writes secret and relationships in second person like Child67 (ADR-0145 Addendum 3 Update 2)
 - **Why:** the Update 1 test regenerated a `secret` in first person. Child67 (2026-10-14) requires second person for `secret` and `relationships` and third person for `description` and `background`; the standalone regeneration prompt never had that rule, so a paid heal would have put those fields back in the wrong person.
 - **What:** the Child67 bullet added to the shared coherence rules and "second person" hints added to the `secret` and `relationships` schema lines, in `regenerate-child-content/index.ts`. Spoken fields unchanged.
-- **Status:** committed, NOT deployed and not verified live (needs one 0.10 USD regeneration of the TEST secret, with Jonathan's yes).
+- **Status:** deployed and verified: the regenerated TEST secret comes back in second person (one call after a harmless detector-timeout 500 that wrote and spent nothing). `relationships` regeneration not tested.
 - Full detail: ADR-0145 Addendum 3 Update 2.
 
 ### Change: roster-extraction fallback in `mystery-webhook-trigger` moved from Haiku 4.5 to Sonnet 5.5 (ADR-0164)
