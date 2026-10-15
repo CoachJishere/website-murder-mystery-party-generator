@@ -329,7 +329,8 @@ function absentParagraph(characterName: string, lang: string | null = null): str
 // entirely rather than adding a repair regex for it.
 // ---------------------------------------------------------------------------
 
-const ANTHROPIC_MODEL = "claude-sonnet-5";
+// Moved to Sonnet 5.5 on 2026-10-15 (ADR-0145 Addendum 3), same price as Sonnet 5.
+const ANTHROPIC_MODEL = "claude-sonnet-5-5";
 // One call, ~10-15 short fields in and out, well under 4000 output tokens —
 // flat per-call estimate in the same style as regenerate-child-content's
 // CLAUDE_CALL_COST_USD, not metered actual spend. Updated 2026-09-06: Sonnet
@@ -459,10 +460,11 @@ async function polishWithClaude(
       // max_tokens:4000 (~9,250-char offset), non-blocking both times
       // (degrades to deterministic-only output by design) but same bug.
       max_tokens: 16000,
-      // Bounded rewrite task, no tools — disabled thinking keeps cost/latency
-      // down. Allowed: disabling thinking requires effort <= "high", and
-      // "medium" is well below that ceiling.
-      thinking: { type: "disabled" },
+      // Bounded rewrite task, no tools — thinking kept off keeps cost/latency
+      // down. Sonnet 5.5 rejects {type:"disabled"} (400); {type:"between_tools"}
+      // is its lowest setting and, like disabled, needs effort <= "high", and
+      // "medium" is well below that ceiling (ADR-0145 Addendum 3, 2026-10-15).
+      thinking: { type: "between_tools" },
       // No temperature/top_p/top_k: Sonnet 5 rejects non-default sampling
       // params outright (400) — steer via the prompt instead.
       output_config: {
@@ -484,7 +486,7 @@ async function polishWithClaude(
     console.warn("polishWithClaude: model refused, falling back to deterministic-only output");
     return { fields: [], reviewItems: [], costUsd: 0 };
   }
-  const text = data.content?.[0]?.text;
+  const text = data.content?.find((b: { type: string }) => b.type === "text")?.text;
   if (!text) throw new Error("polishWithClaude: no content in Anthropic response");
 
   // Guaranteed valid JSON by output_config.format — no repair pass needed
@@ -661,7 +663,7 @@ async function reassignWithClaude(params: {
     body: JSON.stringify({
       model: ANTHROPIC_MODEL,
       max_tokens: maxTokens,
-      thinking: { type: "disabled" },
+      thinking: { type: "between_tools" }, // 5.5 rejects "disabled" (ADR-0145 Addendum 3)
       output_config: {
         effort: "medium",
         format: { type: "json_schema", schema: REASSIGN_OUTPUT_SCHEMA },
@@ -679,7 +681,7 @@ async function reassignWithClaude(params: {
   if (data.stop_reason === "refusal") {
     throw new Error("reassignWithClaude: model refused — cannot proceed without a real reassignment (unlike the polish pass, there is no safe deterministic-only fallback for inventing guilt content)");
   }
-  const text = data.content?.[0]?.text;
+  const text = data.content?.find((b: { type: string }) => b.type === "text")?.text;
   if (!text) throw new Error("reassignWithClaude: no content in Anthropic response");
 
   const parsed = JSON.parse(text) as {

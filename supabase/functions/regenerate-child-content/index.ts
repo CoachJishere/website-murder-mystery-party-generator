@@ -119,7 +119,9 @@ import { inputsForRegeneration, parseMode } from "../_shared/childContext.ts";
 // real backfill attempt, the exact defect class ADR-0074 named Haiku for.
 // regenerate-parent-content (index.ts) has the same staleness — not fixed
 // here, flagged in the ADR as a follow-up.
-const MODEL = "claude-sonnet-5";
+// Moved to Sonnet 5.5 on 2026-10-15 (ADR-0145 Addendum 3), same price as Sonnet 5, matching the
+// live Child blueprint again. thinking is {type:"between_tools"} below because 5.5 rejects "disabled".
+const MODEL = "claude-sonnet-5-5";
 const ANTHROPIC_VERSION = "2023-06-01";
 // Was 4000 (calibrated for Haiku). Bumped 2026-08-22 alongside the Sonnet 5
 // switch — caught live: Sonnet 5 produces more verbose output than Haiku for
@@ -970,7 +972,10 @@ async function callClaude(prompt: string, apiKey: string): Promise<{ text: strin
       // Sonnet 5 calls (ADR-0074); this file just hadn't matched it.
       model: MODEL,
       max_tokens: MAX_TOKENS,
-      thinking: { type: "disabled" },
+      // ADR-0145 Addendum 3 (2026-10-15): Sonnet 5.5 rejects thinking {type:"disabled"} with a 400.
+      // {type:"between_tools"} is its lowest setting (no extended thinking on a no-tools call, so the
+      // reply is still one text block); it allows no other field inside thinking and needs effort <= high.
+      thinking: { type: "between_tools" },
       messages: [{ role: "user", content: prompt }],
     }),
   });
@@ -979,7 +984,7 @@ async function callClaude(prompt: string, apiKey: string): Promise<{ text: strin
     throw new Error(`Anthropic API ${resp.status}: ${errText}`);
   }
   const data = await resp.json();
-  const text = data.content?.[0]?.text;
+  const text = data.content?.find((b: { type: string }) => b.type === "text")?.text;
   if (!text) throw new Error("No content in Anthropic response");
   // Flat estimate (see CLAUDE_CALL_COST_USD) rather than metering actual
   // usage — consistent with the flat-rate cost accounting auto-remediate-

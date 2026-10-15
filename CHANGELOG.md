@@ -2,6 +2,11 @@
 
 ## 2026-10-15
 
+### Change: five Sonnet 5 edge functions moved to Sonnet 5.5 in code, not deployed (ADR-0145 Addendum 3)
+- **What:** `mystery-ai`, `regenerate-child-content`, `regenerate-parent-content`, `adapt-mystery-apply` and `generate-pointform-summaries` now name `claude-sonnet-5-5` (same price as Sonnet 5). `thinking: disabled` (a 400 on 5.5) became `thinking: between_tools`, and the text reads look the text block up by type instead of `content[0]`.
+- **Status:** NOT deployed (edge functions deploy manually; a push only deploys Pages) and not tested against the live API. The risky combination is `between_tools` with `effort: medium` plus json_schema output in `adapt-mystery-apply`. Needs a paid shape probe (about 0.01 USD) and one call per function first, each with Jonathan's yes.
+- Full detail: ADR-0145 Addendum 3.
+
 ### Fix: "Thrifted To Death" sweep - 8 hand fixes, first purchase on Parent87 + Child66 + Child67 (ADR-0103 Addendum 103, ADR-0162 Update 1)
 - **Why:** new-purchase sweep (slip, English, 8 characters, no accomplice). All detectors clean and 0 blocking defects, but the full-cast read found 9 defects the reviewer (2 findings, 1 applied, 1 false positive) did not.
 - **What (free, by SQL):** removed a stray `<br/>` from Wren's introduction; rewrote Wren's deflection tip that said "no history to settle" (prose and point-form), contradicting her own grievance; fixed point-form drifts (Blair confession stone vs brooch, Remy rumor "gardening" vs market grounds, Max intro "Dez invited Jo", Remy confession missing the second glass); "his" to "their" for the dual-name Ash; added a neutral stolen-pearls line to Remy's and Charlie's rumors (the customer asked for the red herring "woven through rumor", only one character carried it). Re-rolled the round 4 evidence image once (bare foot instead of a shoe print, about 0.04 USD, standing yes).

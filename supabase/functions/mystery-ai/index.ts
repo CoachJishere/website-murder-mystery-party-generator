@@ -730,7 +730,7 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
           'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-5',
+          model: 'claude-sonnet-5-5',
           // Raised from 2000 (2026-09-10): 2000 was never a deliberate budget
           // for this prompt, just a value carried forward unexamined through
           // every model swap since the original 3.5-sonnet integration. It's
@@ -739,12 +739,14 @@ IMPORTANT: Always end your response by asking if the concept works for them. Men
           // happens on the rare reply that still exceeds even this. Raising
           // the cap costs nothing unless a reply actually needs the tokens.
           max_tokens: 4000,
-          // Sonnet 5 removed temperature/top_p/top_k (400 if sent) and runs
-          // adaptive thinking by default unless explicitly disabled. This is a
-          // fast conversational concept chat with strict format instructions,
-          // not a reasoning task, so thinking is turned off to keep latency/cost
-          // and response shape matching the prior sonnet-4-5 behavior.
-          thinking: { type: 'disabled' },
+          // Sonnet 5+ removed temperature/top_p/top_k (400 if sent) and runs
+          // adaptive thinking by default. This is a fast conversational concept
+          // chat with strict format instructions, not a reasoning task, so
+          // thinking is kept off to hold latency/cost and the response shape.
+          // ADR-0145 Addendum 3 (2026-10-15): Sonnet 5.5 rejects thinking {type:"disabled"} with a 400.
+          // {type:"between_tools"} is its lowest setting (no extended thinking on a no-tools call, so the
+          // reply is still one text block); it allows no other field inside thinking and needs effort <= high.
+          thinking: { type: 'between_tools' },
           // Automatic prompt caching: caches the system prompt + growing
           // conversation history so each follow-up turn reads the prefix from
           // cache (~90% cheaper, faster TTFT) instead of reprocessing it. The

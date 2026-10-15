@@ -108,3 +108,21 @@ ADR-0145 itself says (Consequences, last bullet) that these hand-written calls "
 - `prompt_version_history` rows for 76, 77 and 58 still carry approximate times (not matchable to a single Make edit).
 - Token and cost capture not built (needs a yes).
 - Eval prompt for this work: see the kickoff conversation; not run.
+
+## Addendum 3 (2026-10-15): the five Sonnet 5 edge functions moved to Sonnet 5.5 in code, NOT deployed, NOT tested live
+
+**Why:** Jonathan's call after Addendum 2 listed them as left behind. Sonnet 5.5 costs the same per token as Sonnet 5 ($2 / $10 per MTok), so there is no cost reason to stay, and the Make pipeline, the reviewer and these functions now run one model generation again (`regenerate-child-content` and `regenerate-parent-content` exist to mirror the live blueprints, ADR-0098 Addenda 6/7).
+
+**Changed (code only, `main`, not deployed):**
+- `mystery-ai` (customer concept chat), `regenerate-child-content`, `regenerate-parent-content`, `adapt-mystery-apply` (polish and reassign calls), `generate-pointform-summaries` (`MAIN_MODEL`, `REVEAL_MODEL`): `claude-sonnet-5` becomes `claude-sonnet-5-5`.
+- `thinking: {type: "disabled"}` (a 400 on 5.5) becomes `thinking: {type: "between_tools"}`, the model's lowest thinking setting. Chosen over adaptive because every one of these is a single no-tools call: no thinking blocks come back, so the response is still one text block, `max_tokens` budgets mean what they meant before, and none of the ADR-0145 Addendum 1 blank-read risk appears. Constraints from the Claude API reference: no other field inside `thinking`, effort `high` or below (the default is `high`; `adapt-mystery-apply` already sends `medium`), no per-message effort. `generate-pointform-summaries` sends `between_tools` only for the 5.5 model string and keeps `disabled` for other Sonnet/Opus strings.
+- The five text reads that used `data.content?.[0]?.text` now look the text block up by type (as `mystery-ai` already did), so a leading non-text block can never blank a field.
+- No sampling parameter, prefill, forced `tool_choice` or system field was present in any of them, so nothing else breaks. `mystery-ai` keeps its top-level `cache_control`.
+
+**Not done / unknown (do not deploy until these are checked):**
+1. **Unverified against the live API.** The syntax check and `npm run test:childctx` pass, but no request has been sent. The least certain combination is `between_tools` with `effort: medium` and `output_config.format` (json_schema) in `adapt-mystery-apply`. Proposed check: a shape probe of three tiny calls (plain; effort medium plus json_schema; top-level `cache_control`), about 0.01 USD total, then one real call per function on a test package (flat estimates from the code: chat about 0.03, pointform about 0.05 per character, `regenerate-child-content` 0.10, `regenerate-parent-content` about 0.2 to 0.3, polish 0.075, reassign 0.525). Paid, so each needs Jonathan's yes first.
+2. **Quality is unmeasured.** Effort levels are recalibrated on 5.5, and for the concept chat the reply style may differ. Compare a handful of chat replies and one regeneration against the Sonnet 5 output before and after.
+3. **Refusals:** 5.5 declines in more categories (`general_harms` can hit benign work). `adapt-mystery-apply` handles `stop_reason: "refusal"`; the other four fail with "No content" and write nothing, which is the existing behaviour for an empty reply.
+4. **Deploy is manual** (`supabase functions deploy <name>` with the existing `verify_jwt` setting preserved; a push to `main` only deploys Pages). Deploy one function at a time, `mystery-ai` last because it is customer-facing, and use the CLI, not the MCP inline-content route (see the stale-deploy memory).
+5. **Rollback:** revert the commit and redeploy; the Sonnet 5 values are in git history.
+6. The Anthropic Console key for these functions was not identified. The 5.5 traffic from them (and from the reviewer) will appear on the Supabase key once deployed.

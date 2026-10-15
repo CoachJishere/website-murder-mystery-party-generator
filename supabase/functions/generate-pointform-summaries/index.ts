@@ -49,8 +49,9 @@ const SOURCE_FIELDS = [...MAIN_FIELDS, ...REVEAL_FIELDS] as const;
 // to SUMMARIZER_SYSTEM_PROMPT below, Haiku still produced English pointform bullets for 2 of 7
 // characters across 4 consecutive retries on a French source package — the same instruction-
 // following gap already documented for REVEAL_FIELDS above, now also hitting MAIN_FIELDS.
-const MAIN_MODEL = 'claude-sonnet-5';
-const REVEAL_MODEL = 'claude-sonnet-5';
+// Moved to Sonnet 5.5 on 2026-10-15 (ADR-0145 Addendum 3), same price as Sonnet 5.
+const MAIN_MODEL = 'claude-sonnet-5-5';
+const REVEAL_MODEL = 'claude-sonnet-5-5';
 
 type SourceField = typeof SOURCE_FIELDS[number];
 
@@ -193,7 +194,10 @@ async function summarizeFields(
       // never-tuned-cap shape as the Terminus 13 incident elsewhere in this repo —
       // raising it costs nothing unless a reply actually needs the tokens.
       max_tokens: 8000,
-      ...(isSonnet ? { thinking: { type: 'disabled' } } : { temperature: 0.5 }),
+      // Sonnet 5.5 rejects {type:'disabled'} (400); between_tools is its lowest thinking setting (ADR-0145 Addendum 3).
+      ...(isSonnet
+        ? { thinking: { type: model.startsWith('claude-sonnet-5-5') ? 'between_tools' : 'disabled' } }
+        : { temperature: 0.5 }),
       system: SUMMARIZER_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],
     }),
@@ -205,7 +209,7 @@ async function summarizeFields(
   }
 
   const data = await resp.json();
-  const text = data.content?.[0]?.text;
+  const text = data.content?.find((b: { type: string }) => b.type === 'text')?.text;
   if (!text) throw new Error('No content in Anthropic response');
 
   const cleaned = text.trim().replace(/^```json\s*/, '').replace(/\s*```$/, '');

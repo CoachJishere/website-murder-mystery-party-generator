@@ -28,7 +28,9 @@ const supabase = createClient(
 // proven live: model, drop temperature (Sonnet 5 rejects it), add
 // thinking:disabled (its absence silently breaks Sonnet 5 responses), bump
 // max_tokens (Sonnet 5 is more verbose than Haiku for the same prompt).
-const MODEL = "claude-sonnet-5";
+// Moved to Sonnet 5.5 on 2026-10-15 (ADR-0145 Addendum 3), same price as Sonnet 5. thinking is
+// {type:"between_tools"} below because 5.5 rejects "disabled".
+const MODEL = "claude-sonnet-5-5";
 const ANTHROPIC_VERSION = "2023-06-01";
 
 const PROMPTS: Record<string, string> = {
@@ -319,7 +321,10 @@ async function callClaude(prompt: string, apiKey: string, maxTokens: number): Pr
     body: JSON.stringify({
       model: MODEL,
       max_tokens: maxTokens,
-      thinking: { type: "disabled" },
+      // ADR-0145 Addendum 3 (2026-10-15): Sonnet 5.5 rejects thinking {type:"disabled"} with a 400.
+      // {type:"between_tools"} is its lowest setting (no extended thinking on a no-tools call, so the
+      // reply is still one text block); it allows no other field inside thinking and needs effort <= high.
+      thinking: { type: "between_tools" },
       messages: [{ role: "user", content: prompt }],
     }),
   });
@@ -328,7 +333,7 @@ async function callClaude(prompt: string, apiKey: string, maxTokens: number): Pr
     throw new Error(`Anthropic API ${resp.status}: ${errText}`);
   }
   const data = await resp.json();
-  const text = data.content?.[0]?.text;
+  const text = data.content?.find((b: { type: string }) => b.type === "text")?.text;
   if (!text) throw new Error("No content in Anthropic response");
   return text.trim();
 }
