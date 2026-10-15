@@ -144,3 +144,14 @@ Jonathan approved the probe, one real call per function on a test package, and a
 **Not exercised: `adapt-mystery-apply`.** A real call removes a character from a package, so it was left to the next real Remove-a-Character order; the probe covers its exact request shape and response parse (`find` text block, `JSON.parse`). Passive check: after the next such order, `mystery_adaptations.status` should be `verified` and the function log should show no `Anthropic API 400`. Rollback for any of the five: redeploy the previous commit's file (`git show 2e5763e3:supabase/functions/<name>/index.ts`, i.e. the Sonnet 5 version).
 
 **Still open:** quality of the Sonnet 5.5 concept-chat replies over many conversations is unmeasured (one reply read, looked fine); the Console key for these functions is unidentified, so the 5.5 spend of these functions cannot yet be separated from the reviewer's.
+
+### Addendum 3, Update 2 (2026-10-15): regenerate-child-content brought in line with Child67's second-person rule (code committed, NOT deployed, NOT verified)
+
+**Found by:** the Update 1 test call. The regenerated `secret` came back in first person ("I have been quietly taking small sums..."), where Child67 (imported 2026-10-14, ADR-0103 Addendum 99 Update 3) wants `secret` and `relationships` written to the player in second person ("You ...") and `description` / `background` in third person. `regenerate-child-content` mirrors the Child prompt but had no such rule, so any paid heal that regenerated those fields would put them back in the wrong person. Not caused by the model change (the prompt never had the rule); it would have happened on Sonnet 5 too.
+
+**Changed (`supabase/functions/regenerate-child-content/index.ts` only):**
+- `contentCoherenceRules`: added the Child67 bullet "SHEET FIELDS ARE WRITTEN TO THE PLAYER, NOT AS A SPEECH" verbatim (second person for `relationships` and `secret`, third person for `description` and `background`, other cast members stay third person under their bold name, and the first-person rule below it applies only to the spoken fields), placed before the existing GRAMMATICAL PERSON bullet as in Child67.
+- Identity-group output schema: `secret` now says "written TO the player in second person", and both the ally and rival lines of `relationships` say "written to the player as you and your wherever this character is involved", the same hints Child67 carries.
+- Not touched: the spoken fields (introduction, round scripts, final statements, confessions), which stay first person.
+
+**Not done:** deploy and a live check. Proposed: deploy, then regenerate the same TEST secret once (0.10 USD flat estimate, needs Jonathan's yes) and run `select * from list_packages_with_sheet_wrong_person(...)` for that package; expect no hit for that character. Existing delivered packages are not rewritten (Update 3 of Addendum 99 left them alone by decision). Rollback: revert the commit.

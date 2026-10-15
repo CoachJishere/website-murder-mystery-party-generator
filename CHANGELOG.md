@@ -2,6 +2,12 @@
 
 ## 2026-10-15
 
+### Fix: regenerate-child-content now writes secret and relationships in second person like Child67 (ADR-0145 Addendum 3 Update 2)
+- **Why:** the Update 1 test regenerated a `secret` in first person. Child67 (2026-10-14) requires second person for `secret` and `relationships` and third person for `description` and `background`; the standalone regeneration prompt never had that rule, so a paid heal would have put those fields back in the wrong person.
+- **What:** the Child67 bullet added to the shared coherence rules and "second person" hints added to the `secret` and `relationships` schema lines, in `regenerate-child-content/index.ts`. Spoken fields unchanged.
+- **Status:** committed, NOT deployed and not verified live (needs one 0.10 USD regeneration of the TEST secret, with Jonathan's yes).
+- Full detail: ADR-0145 Addendum 3 Update 2.
+
 ### Change: roster-extraction fallback in `mystery-webhook-trigger` moved from Haiku 4.5 to Sonnet 5.5 (ADR-0164)
 - **What:** `extractCharactersWithClaude` now uses `claude-sonnet-5-5` with `thinking: between_tools`, effort `low`, `max_tokens` 4000, no `temperature`, and reads the first text block. The language classifier in the same file stays on Haiku (ADR-0112). Reverses ADR-0145 Addendum 2's "deliberate Haiku" verdict on Jonathan's instruction.
 - **Verified:** one paid call (about 0.01 USD, approved) on the real 8-player concept "Thrifted To Death": HTTP 200, 3.8 s, text block only, all 8 names equal to the stored roster, victim not listed. That also confirms the raw API accepts `between_tools` + effort `low` without tools; it does not cover `effort: medium` with `json_schema` output.
