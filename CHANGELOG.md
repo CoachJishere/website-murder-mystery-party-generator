@@ -10,6 +10,7 @@
 ### Change: five Sonnet 5 edge functions moved to Sonnet 5.5 in code, not deployed (ADR-0145 Addendum 3)
 - **What:** `mystery-ai`, `regenerate-child-content`, `regenerate-parent-content`, `adapt-mystery-apply` and `generate-pointform-summaries` now name `claude-sonnet-5-5` (same price as Sonnet 5). `thinking: disabled` (a 400 on 5.5) became `thinking: between_tools`, and the text reads look the text block up by type instead of `content[0]`.
 - **Status:** NOT deployed (edge functions deploy manually; a push only deploys Pages) and not tested against the live API. The risky combination is `between_tools` with `effort: medium` plus json_schema output in `adapt-mystery-apply`. Needs a paid shape probe (about 0.01 USD) and one call per function first, each with Jonathan's yes.
+- **Update:** shape probe passed (incl. effort medium + json_schema); all five deployed by CLI (v16, v19, v30, v28, v192) and each exercised once on a TEST package except `adapt-mystery-apply` (left to the next real Remove-a-Character order). Details: ADR-0145 Addendum 3 Update 1.
 - Full detail: ADR-0145 Addendum 3.
 
 ### Fix: "Thrifted To Death" sweep - 8 hand fixes, first purchase on Parent87 + Child66 + Child67 (ADR-0103 Addendum 103, ADR-0162 Update 1)

@@ -126,3 +126,21 @@ ADR-0145 itself says (Consequences, last bullet) that these hand-written calls "
 4. **Deploy is manual** (`supabase functions deploy <name>` with the existing `verify_jwt` setting preserved; a push to `main` only deploys Pages). Deploy one function at a time, `mystery-ai` last because it is customer-facing, and use the CLI, not the MCP inline-content route (see the stale-deploy memory).
 5. **Rollback:** revert the commit and redeploy; the Sonnet 5 values are in git history.
 6. The Anthropic Console key for these functions was not identified. The 5.5 traffic from them (and from the reviewer) will appear on the Supabase key once deployed.
+
+### Addendum 3, Update 1 (2026-10-15): shape probe passed, five functions deployed and tested, adapt-mystery-apply not exercised end to end
+
+Jonathan approved the probe, one real call per function on a test package, and a CLI deploy. Paid calls made (all approved): the three-call shape probe (a few hundredths of a cent), then the function calls below, about 0.2 USD in total by the code's own flat estimates (actual spend will show on the Console key for these functions, which is still not identified).
+
+**Shape probe (raw API, `claude-sonnet-5-5`, `thinking: between_tools`):** (A) plain request, (B) `output_config: {effort: "medium", format: json_schema}` (the `adapt-mystery-apply` combination), (C) top-level `cache_control` plus `system` (the `mystery-ai` combination). All three returned HTTP 200, `stop_reason: end_turn`, content `[text]` only, and B returned valid schema JSON. ADR-0164 had already shown `between_tools` with effort `low` works. So the open question in Addendum 3 item 1 is closed.
+
+**Deploy (CLI, one function at a time, `verify_jwt` unchanged):** `generate-pointform-summaries` v16, `regenerate-parent-content` v19, `regenerate-child-content` v30, `adapt-mystery-apply` v28, `mystery-ai` v192. Each live version was within minutes of its last commit before the change, so only this change shipped. `mystery-webhook-trigger` (v155) was deployed by a parallel session for ADR-0164 and is not part of this.
+
+**Real calls (TEST package `862e60e6`, "TEST - ADR-0106 Parent58 Re-verification", slip style, 4 characters; its content was overwritten by these tests):**
+- `generate-pointform-summaries`, one character (Desmond Cole): 200 in 15 s; bullets well formed and in the source language (Spanish source, Spanish bullets).
+- `regenerate-parent-content`, field `materials`: 200 in 5.7 s; sensible English props list.
+- `regenerate-child-content`, one character, field `secret` (dry run first, planned 1 call at 0.10 USD): outcome `fixed` in 17.7 s; concrete, coherent secret (1,105 to 1,599 characters). It is written in first person, where Child67 wants second person for secrets; the regeneration prompt predates that rule, so this is an existing gap, not caused by the model change.
+- `mystery-ai`, one concept-chat message: 200 in 4.1 s; on-format reply that asks the next question.
+
+**Not exercised: `adapt-mystery-apply`.** A real call removes a character from a package, so it was left to the next real Remove-a-Character order; the probe covers its exact request shape and response parse (`find` text block, `JSON.parse`). Passive check: after the next such order, `mystery_adaptations.status` should be `verified` and the function log should show no `Anthropic API 400`. Rollback for any of the five: redeploy the previous commit's file (`git show 2e5763e3:supabase/functions/<name>/index.ts`, i.e. the Sonnet 5 version).
+
+**Still open:** quality of the Sonnet 5.5 concept-chat replies over many conversations is unmeasured (one reply read, looked fine); the Console key for these functions is unidentified, so the 5.5 spend of these functions cannot yet be separated from the reviewer's.
