@@ -53,7 +53,7 @@ Report only. No blueprint, edge function or prompt was changed, and no paid API 
 
 ### Cutover time was wrong in `prompt_version_history`
 
-Make's scenario log (type `modify`, unlabelled) shows the edits that most likely put Parent79 and Child59 live at **2026-10-06 20:34 UTC (Parent 9106101; Child 9061052 at 20:34 and 20:50)**; they are the only edits that day after a 09:23 Parent edit, which fits Jonathan's hand edit of module 171 into Parent78, then Parent80/Child60 on 2026-10-07 07:27 and Parent81/Child61 on 2026-10-08 07:01. The rows seeded in `prompt_version_history` say 12:19 and 12:59 on 2026-10-06 (`approximate = true`), which is about 8 hours early. Packages created 10-06 19:52 and 20:04 therefore ran on Sonnet 5, not 5.5. Not corrected in the table (report-only task); correcting versions 79/59 to the Make times is a one-line UPDATE if Jonathan agrees.
+Make's scenario log (type `modify`, unlabelled) shows the edits that most likely put Parent79 and Child59 live at **2026-10-06 20:34 UTC (Parent 9106101; Child 9061052 at 20:34 and 20:50)**; they are the only edits that day after a 09:23 Parent edit, which fits Jonathan's hand edit of module 171 into Parent78, then Parent80/Child60 on 2026-10-07 07:27 and Parent81/Child61 on 2026-10-08 07:01. The rows seeded in `prompt_version_history` say 12:19 and 12:59 on 2026-10-06 (`approximate = true`), which is about 8 hours early. Packages created 10-06 19:52 and 20:04 therefore ran on Sonnet 5, not 5.5. **Corrected 2026-10-15 with Jonathan's go-ahead:** rows 79, 59, 80, 60, 81, 61 now carry the Make edit times (79 at 10-06 20:49:41, 59 at 20:50:18, 80/60 at 10-07 07:27, 81/61 at 10-08 07:01; `approximate = false`, original value kept in `note`). Parent76, Parent77 and Child58 were left approximate: Make logged several unlabelled edits that day and they cannot be matched to a single version with confidence. After the fix `mystery_packages_prompt_versions` maps the two 10-06 evening packages (created 19:52 and 20:04) to Parent77/Child58, i.e. Sonnet 5, as intended.
 
 ### What data exists
 
@@ -105,6 +105,6 @@ ADR-0145 itself says (Consequences, last bullet) that these hand-written calls "
 
 ### Not done / open
 
-- `prompt_version_history` rows for 79/59 (and 80/60, 81/61) still carry the approximate times.
+- `prompt_version_history` rows for 76, 77 and 58 still carry approximate times (not matchable to a single Make edit).
 - Token and cost capture not built (needs a yes).
 - Eval prompt for this work: see the kickoff conversation; not run.
