@@ -2,6 +2,11 @@
 
 ## 2026-10-15
 
+### Fix: health check crashed on a stale-model allowlist entry (2 consecutive scheduled failures, 2026-10-15)
+- **Why:** moving the roster-extraction fallback to Sonnet 5.5 (ADR-0164) left `detect-stale-models.mjs` expecting two Haiku call sites in `mystery-webhook-trigger` and finding one, so it printed its JSON finding and exited 1 as designed. The workflow's `$(node ... || echo "QUERY_FAILED")` then appended `QUERY_FAILED` to that JSON, the `= "QUERY_FAILED"` test missed, and the next `jq` died (`parse error ... line 3, column 0`), failing the whole "Run checks" step at 11:37 and 17:06 UTC. The stale-model and status-predicate-drift scripts both exit 1 whenever they have findings, so the same crash would have hit any future finding.
+- **What:** removed the retired roster-fallback entry from the `ALLOWLIST` in `scripts/detect-stale-models.mjs`; in `.github/workflows/health-check.yml`, checks 16 and 17 now use `|| true` and treat only unparseable output (`jq -e .` fails) as a failed check, so a real finding becomes an alert line instead of crashing the run. Tested the pattern with JSON-plus-exit-1 and with garbage output.
+- **Not done / note:** this is the pattern to remember whenever a model call site is retired or moved, update the allowlist in the same commit.
+
 ### Fix: regenerate-child-content now writes secret and relationships in second person like Child67 (ADR-0145 Addendum 3 Update 2)
 - **Why:** the Update 1 test regenerated a `secret` in first person. Child67 (2026-10-14) requires second person for `secret` and `relationships` and third person for `description` and `background`; the standalone regeneration prompt never had that rule, so a paid heal would have put those fields back in the wrong person.
 - **What:** the Child67 bullet added to the shared coherence rules and "second person" hints added to the `secret` and `relationships` schema lines, in `regenerate-child-content/index.ts`. Spoken fields unchanged.

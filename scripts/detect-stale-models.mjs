@@ -43,16 +43,12 @@ const FUNCTIONS_DIR = path.join(__dirname, '..', 'supabase', 'functions');
  * (not the check's logic) when a new deliberately-different model is added —
  * that edit IS the documentation of the decision.
  */
+// The roster-extraction fallback (ADR-0064) moved to Sonnet 5.5 on 2026-10-15 (ADR-0164), so only the language classifier remains here.
 const ALLOWLIST = [
   {
     file: 'mystery-webhook-trigger',
     model: 'claude-haiku-4-5-20251001',
     reason: 'detectConversationLanguage(): a strict single-word language classifier, max_tokens=10, temperature=0 — narrow, deterministic, cheap by design, not a generation call.',
-  },
-  {
-    file: 'mystery-webhook-trigger',
-    model: 'claude-haiku-4-5-20251001',
-    reason: 'Claude-fallback roster JSON extraction (legacy-scan path, ADR-0064): a strict JSON-array extraction tool, temperature=0 — narrow deterministic extraction, not a generation call.',
   },
 ];
 

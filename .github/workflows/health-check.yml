@@ -426,8 +426,10 @@ jobs:
           # Pure static analysis, no DB/API call — greps supabase/functions/
           # */index.ts for a Claude model string and diffs against the
           # in-script allowlist. ESCALATE-ONLY.
-          STALEMODEL=$(node scripts/detect-stale-models.mjs --json 2>/tmp/stalemodel-err.log || echo "QUERY_FAILED")
-          if [ "$STALEMODEL" = "QUERY_FAILED" ]; then
+          # This script exits 1 when it HAS findings (stdout is still valid JSON), so a non-zero exit alone is not a failure; only unparseable output is.
+          # (`|| echo QUERY_FAILED` used to append to that JSON and crash the step at the next jq, 2026-10-15.)
+          STALEMODEL=$(node scripts/detect-stale-models.mjs --json 2>/tmp/stalemodel-err.log || true)
+          if ! echo "$STALEMODEL" | jq -e . >/dev/null 2>&1; then
             PROBLEMS="${PROBLEMS}- 🟠 Could not run the stale-model detector: $(tr '\n' ' ' < /tmp/stalemodel-err.log)\n"
             STALEMODEL_COUNT="?"
           else
@@ -442,8 +444,10 @@ jobs:
           # 17. Detector status-predicate drift (ADR-0131 item 3 detector).
           # Requires SUPABASE_URL/SUPABASE_SERVICE_KEY (live DB introspection,
           # not local source). ESCALATE-ONLY.
-          PREDDRIFT=$(node scripts/detect-status-predicate-drift.mjs --json 2>/tmp/preddrift-err.log || echo "QUERY_FAILED")
-          if [ "$PREDDRIFT" = "QUERY_FAILED" ]; then
+          # This script exits 1 when it HAS findings (stdout is still valid JSON), so a non-zero exit alone is not a failure; only unparseable output is.
+          # (`|| echo QUERY_FAILED` used to append to that JSON and crash the step at the next jq, 2026-10-15.)
+          PREDDRIFT=$(node scripts/detect-status-predicate-drift.mjs --json 2>/tmp/preddrift-err.log || true)
+          if ! echo "$PREDDRIFT" | jq -e . >/dev/null 2>&1; then
             PROBLEMS="${PROBLEMS}- 🟠 Could not run the status-predicate-drift detector: $(tr '\n' ' ' < /tmp/preddrift-err.log)\n"
             PREDDRIFT_COUNT="?"
           else
