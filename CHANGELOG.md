@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-15
+
+### Docs: Child prompt caching parked after re-deriving the savings with current data (ADR-0019 Addendum 1)
+Jonathan had approved pursuing caching on 2026-10-02. Redone on the last 30 days (54 paid packages, 648 characters, $2 per MTok, detective contexts now redacted per ADR-0156): Child `master_context` costs about $53 per month, caching would save about $39 per month (about $470 per year), not the $100 quoted earlier (which assumed $3 pricing and full contexts). The swap to "Make an API Call" would drop `textResponse` and hit the adaptive-thinking block problem behind the ADR-0145 to 0147 incidents, so nothing was built. Revisit conditions are in the ADR. Also confirmed intact: the Child49 rule in Child67, the `mystery-ai` 4-character guardrail, the roster-anomaly fix; noted that the notify allowlist lacks `missing_branch_header` and `empty_pointform` (not changed).
+- Full detail: ADR-0019 Addendum 1.
+
 ## 2026-10-14
 
 ### Fix: final-statement confession detector no longer flags two denial shapes (ADR-0103 Addendum 102)
