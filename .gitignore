@@ -162,6 +162,7 @@ draft_rewrites/
 !supabase/functions/_shared/characterChat.test.mjs
 !supabase/functions/review-package-quality/roster-reconcile.test.mjs
 !supabase/functions/review-package-quality/leak-probe.test.mjs
+!supabase/functions/review-package-quality/image-judge.test.mjs
 !supabase/functions/_shared/rosterRenames.test.mjs
 !supabase/functions/review-package-quality/fact-check.test.mjs
 !supabase/functions/_shared/readyEmail.test.mjs

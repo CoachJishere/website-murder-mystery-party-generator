@@ -5,6 +5,8 @@ import * as LC from "./label-conformity.ts";
 import * as RR from "./roster-reconcile.ts";
 import * as LP from "./leak-probe.ts";
 import * as FC from "./fact-check.ts";
+import * as IJ from "./image-judge.ts";
+import { encode as b64encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 import { LABELS_BY_CODE } from "./label-tables.ts";
 import * as PS from "../_shared/packageScaffold.ts";
 import { applyLaterRenames, extractRosterFromMessage, mergeRosterContinuations } from "../_shared/rosterExtraction.ts";
@@ -188,7 +190,12 @@ async function secondPass(only?: string, force = false): Promise<Row> {
   if (!r.skipped && (await setting("review_fact_check", "off")) === "on") {
     try { fact = await factProbe(id, { write: true }); } catch (e) { console.error(`fact check failed (ignored): ${(e as Error).message}`); fact = { error: (e as Error).message }; }
   }
-  return { ...r, second_pass: true, applied: applied.applied, reverted: applied.reverted, leak, fact };
+  // ADR-0165: the +fact findings only exist now, so the apply step runs again; it is a no-op unless review_apply_fact_findings = on.
+  let factApplied = { applied: 0, reverted: 0 };
+  if (!r.skipped && fact && !fact.error && Number(fact.stored ?? 0) > 0 && (await setting("review_apply_fact_findings", "off")) === "on") {
+    try { factApplied = await applyOpenFindings(id, classes); } catch (e) { console.error(`fact apply failed (ignored): ${(e as Error).message}`); }
+  }
+  return { ...r, second_pass: true, applied: applied.applied + factApplied.applied, reverted: applied.reverted + factApplied.reverted, leak, fact };
 }
 
 /** ADR-0149: one email per UTC day listing packages released in the last 26 hours that still carry unverified open findings. */
@@ -696,6 +703,141 @@ async function runFreeHeals(packageId: string): Promise<Row> {
   return out;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------------
+// ADR-0165: evidence-image judge. A vision model reads each of the three images against its evidence card BEFORE the customer is released
+// to see it; a failing image is re-rolled (up to 2 per round, the standing yes) and the best candidate is kept. Never holds a package.
+// ---------------------------------------------------------------------------------------------------------------------------------
+const IMAGE_BUCKET = "evidence-images";
+const IMAGE_JUDGE_MODEL = Deno.env.get("IMAGE_JUDGE_MODEL") || IJ.DEFAULT_JUDGE_MODEL;
+
+async function downloadImage(packageId: string, round: string): Promise<Uint8Array | null> {
+  // The storage endpoint with a unique query string: the CDN keys on the full URL, so this is never a cached copy of the file before a re-roll overwrote it.
+  const resp = await fetch(`${SUPABASE_URL}/storage/v1/object/authenticated/${IMAGE_BUCKET}/${packageId}/${round}.png?t=${Date.now()}${Math.floor(Math.random() * 1e6)}`, {
+    headers: { Authorization: `Bearer ${SERVICE_ROLE_KEY}`, apikey: SERVICE_ROLE_KEY, "Cache-Control": "no-cache" },
+  });
+  if (!resp.ok) return null;
+  return new Uint8Array(await resp.arrayBuffer());
+}
+
+async function shortHash(bytes: Uint8Array): Promise<string> {
+  const h = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+  return [...h.slice(0, 4)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function callImageJudge(apiKey: string, bytes: Uint8Array, card: { title: string; description: string }): Promise<{ judge: IJ.Judge | null; cost: number }> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 60_000);
+    try {
+      const resp = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
+        body: JSON.stringify({
+          model: IMAGE_JUDGE_MODEL, max_tokens: 900, system: IJ.JUDGE_SYSTEM, tools: [IJ.JUDGE_TOOL], tool_choice: { type: "tool", name: "report" },
+          messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: "image/png", data: b64encode(bytes) } }, { type: "text", text: IJ.judgeUserText(card) }] }],
+        }),
+        signal: ctl.signal,
+      });
+      if (resp.status === 429 || resp.status >= 500) { await new Promise((r) => setTimeout(r, 2000 * (attempt + 1))); continue; }
+      if (!resp.ok) throw new Error(`Anthropic HTTP ${resp.status}: ${(await resp.text()).slice(0, 200)}`);
+      const j = await resp.json();
+      const tu = (j.content ?? []).find((b: { type: string }) => b.type === "tool_use");
+      return { judge: IJ.parseJudge(tu?.input), cost: IJ.judgeCostUsd(j.usage ?? {}) };
+    } catch (e) {
+      if ((e as Error).name !== "AbortError" && attempt === 1) throw e;
+    } finally { clearTimeout(timer); }
+  }
+  return { judge: null, cost: 0 };
+}
+
+async function rerollImage(packageId: string, round: string, prompt: string): Promise<{ ok: boolean; error?: string }> {
+  for (const tolerance of [2, 4]) { // a false NSFW rejection (found with "lipstick smudge") is retried once at a more permissive setting (ADR-0066)
+    const resp = await fetch(`${SUPABASE_URL}/functions/v1/generate-evidence-images`, {
+      method: "POST", headers: { Authorization: `Bearer ${SERVICE_ROLE_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ package_id: packageId, prompts: { [round]: prompt }, safety_tolerance: tolerance, no_suffix: true }),
+    });
+    const j = await resp.json().catch(() => ({}));
+    if (resp.ok && Array.isArray(j.generated) && j.generated.includes(round)) return { ok: true };
+    const err = JSON.stringify(j.failed ?? j.error ?? resp.status).slice(0, 200);
+    if (!/NSFW/i.test(err)) return { ok: false, error: err };
+    if (tolerance === 4) return { ok: false, error: err };
+  }
+  return { ok: false, error: "unreachable" };
+}
+
+/**
+ * Judge (and, with apply:true, repair) the evidence images of one package. apply:false judges only and writes nothing. Returns a per-round report.
+ * Idempotent per package: a package that already has an image_judge row in auto_remediation_log is skipped unless force.
+ */
+async function judgeImages(packageId: string, opts: { apply?: boolean; force?: boolean } = {}): Promise<Row> {
+  if ((await setting("image_judge", "on")) !== "on") return { skipped: "image_judge off" };
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) return { skipped: "ANTHROPIC_API_KEY not configured" };
+  if ((await spentToday()) >= DAILY_CAP_USD) return { skipped: "daily cost cap" };
+  if (!opts.force) {
+    const { data: done } = await supabase.from("auto_remediation_log").select("id").eq("package_id", packageId).like("action", "image_judge:%").limit(1);
+    if ((done ?? []).length > 0) return { skipped: "already judged" };
+  }
+  const { data: pkg } = await supabase.from("mystery_packages").select("evidence_cards,evidence_card_images").eq("id", packageId).single();
+  if (!pkg) return { skipped: "package not found" };
+  const images = ((pkg as Row).evidence_card_images ?? {}) as Record<string, string>;
+  const cards = LP.parseEvidenceCards((pkg as Row).evidence_cards);
+  const rounds = ["round2", "round3", "round4"].filter((r) => images[r] && cards.some((c) => `round${c.round}` === r));
+  if (rounds.length === 0) return { skipped: "no images with a matching card" };
+  if (opts.apply) await logSpend(packageId, "image_judge:started", "escalated", 0); // claims the package so a second cron tick does not repeat it
+  const started = Date.now();
+  let cost = 0;
+  const report: Row = {};
+  await Promise.all(rounds.map(async (round) => {
+    const card = cards.find((c) => `round${c.round}` === round)!;
+    const cands: IJ.Candidate[] = [];
+    const bytesByCand: Uint8Array[] = [];
+    const note: string[] = [];
+    try {
+      let bytes = await downloadImage(packageId, round);
+      if (!bytes) { report[round] = { error: "image not in storage" }; return; }
+      for (let attempt = 0; attempt <= IJ.MAX_REROLLS_PER_ROUND; attempt++) {
+        const { judge, cost: c } = await callImageJudge(apiKey, bytes, card);
+        cost += c;
+        if (!judge) { note.push(`attempt${attempt}:unparsed`); break; }
+        const cand: IJ.Candidate = { judge, pass: IJ.judgePasses(judge), score: IJ.judgeScore(judge), label: attempt === 0 ? "original" : `reroll${attempt}` };
+        cands.push(cand); bytesByCand.push(bytes);
+        note.push(`${cand.label}#${await shortHash(bytes)}:${cand.pass ? "pass" : "fail"}(${judge.readable_text}${judge.watermark_or_logo ? ",watermark" : ""},${judge.subject_matches_card})`);
+        if (cand.pass || !opts.apply || attempt === IJ.MAX_REROLLS_PER_ROUND || Date.now() - started > IJ.JUDGE_BUDGET_MS) break;
+        const r = await rerollImage(packageId, round, IJ.rerollPrompt(judge, card, attempt + 1));
+        cost += IJ.REROLL_COST_USD;
+        if (!r.ok) { note.push(`reroll${attempt + 1}:generation_failed ${r.error ?? ""}`.slice(0, 160)); break; }
+        const nb = await downloadImage(packageId, round);
+        if (!nb) break;
+        bytes = nb;
+      }
+      const best = cands.length ? IJ.pickBest(cands) : -1;
+      const lastStored = cands.length - 1;
+      let restored = false;
+      if (opts.apply && best >= 0 && best !== lastStored) { // a later re-roll was worse: put the best candidate back
+        const up = await supabase.storage.from(IMAGE_BUCKET).upload(`${packageId}/${round}.png`, bytesByCand[best], { contentType: "image/png", upsert: true });
+        restored = !up.error;
+      }
+      let versioned = false;
+      if (opts.apply && cands.length > 1) { // the file at this path was replaced: bust any CDN copy of the old one
+        const { data: u } = supabase.storage.from(IMAGE_BUCKET).getPublicUrl(`${packageId}/${round}.png`);
+        const { data: cur } = await supabase.from("mystery_packages").select("evidence_card_images").eq("id", packageId).single();
+        const merged = { ...(((cur as Row | null)?.evidence_card_images as Record<string, string>) ?? {}), [round]: `${u.publicUrl}?v=${Date.now()}` };
+        const { error } = await supabase.from("mystery_packages").update({ evidence_card_images: merged }).eq("id", packageId);
+        versioned = !error;
+      }
+      report[round] = { attempts: note, final_pass: best >= 0 ? cands[best].pass : null, best: best >= 0 ? cands[best].label : null, restored_best: restored, url_versioned: versioned, problems: best >= 0 ? cands[best].judge.problems : "" };
+    } catch (e) { report[round] = { error: (e as Error).message.slice(0, 200) }; }
+  }));
+  const failedRounds = Object.entries(report).filter(([, v]) => (v as Row).final_pass === false || (v as Row).error).map(([k]) => k);
+  if (opts.apply) {
+    const summary = rounds.map((r) => `${r.replace("round", "r")}=${(report[r] as Row)?.error ? "error" : (report[r] as Row)?.final_pass ? ((report[r] as Row).attempts as string[]).length > 1 ? "rerolled" : "pass" : "fail"}`).join(",");
+    await logSpend(packageId, `image_judge:${summary}`, failedRounds.length ? "escalated" : "fixed", Number(cost.toFixed(4)));
+    if (failedRounds.length) await sendAlert(`Evidence image still not clean after re-rolls: ${packageId}`, `Rounds ${failedRounds.join(", ")} of package ${packageId} still fail the image check (or errored) after up to ${IJ.MAX_REROLLS_PER_ROUND} re-rolls; the best candidate was kept and the package was released. Details: ${JSON.stringify(report).slice(0, 1500)}`);
+  }
+  return { package_id: packageId, applied: !!opts.apply, cost_usd: Number(cost.toFixed(4)), rounds: report };
+}
+
 /** ADR-0152 lever 3b: cross-sheet fact check. Paid unless dryRun. `overrides` ({sheet: {field: text}}) replaces text in memory only, to replay a package from before a hand fix. */
 async function factProbe(packageId: string, opts: { dryRun?: boolean; write?: boolean; overrides?: Record<string, Record<string, string>> } = {}): Promise<Row> {
   const { data: pkg } = await supabase.from("mystery_packages").select("*").eq("id", packageId).single();
@@ -750,13 +892,13 @@ async function factProbe(packageId: string, opts: { dryRun?: boolean; write?: bo
 }
 
 /** ADR-0152 lever 3: cross-sheet secret check. Paid unless dryRun. write=false returns the findings without storing them. */
-async function leakProbe(packageId: string, opts: { dryRun?: boolean; write?: boolean } = {}): Promise<Row> {
+async function leakProbe(packageId: string, opts: { dryRun?: boolean; write?: boolean; overrides?: Record<string, Record<string, string>> } = {}): Promise<Row> {
   const { data: pkg } = await supabase.from("mystery_packages").select("*").eq("id", packageId).single();
   const { data: charsData } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId).order("character_name");
-  const chars = (charsData ?? []) as Row[];
+  const chars = ((charsData ?? []) as Row[]).map((c) => ({ ...c, ...(opts.overrides?.[String(c.character_name)] ?? {}) })); // overrides replay a package from before a hand fix (in memory only, ADR-0165)
   if (!pkg || chars.length < 3) return { skipped: "package not found or too few characters" };
   const sheets: LP.LeakSheet[] = chars.map((c) => ({
-    name: String(c.character_name), secret: typeof c.secret === "string" ? c.secret : "",
+    name: String(c.character_name), secret: typeof c.secret === "string" ? c.secret : "", role: LP.culpritRole(c.character_role),
     texts: [...LC.CONFORM_FIELDS, ...SCRIPT_FIELDS].filter((f) => f !== "secret" && typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
     open: ["introduction", "round2_innocent", "round3_innocent", "round4_innocent", "final_innocent", ...SCRIPT_FIELDS].map((f) => (typeof c[f] === "string" ? String(c[f]) : "")).filter(Boolean).join("\n\n"),
   }));
@@ -791,7 +933,7 @@ async function leakProbe(packageId: string, opts: { dryRun?: boolean; write?: bo
   };
   await Promise.all(Array.from({ length: 3 }, worker));
   let stored = 0;
-  if (opts.write && found.length > 0) {
+  if (opts.write && !opts.overrides && found.length > 0) {
     const version = C.PROMPT_VERSION + "+leak";
     const { data: rv } = await supabase.from("package_reviews").insert({ package_id: packageId, prompt_version: version, model: MODEL, mystery_style: String((pkg as Row).mystery_style ?? ""), status: "done", finished_at: new Date().toISOString(), items_reviewed: calls, findings_count: found.length, cost_usd: Number(cost.toFixed(4)) }).select("id").single();
     if (rv) { const { error } = await supabase.from("package_review_findings").insert(found.map((f) => ({ review_id: (rv as { id: string }).id, package_id: packageId, ...f }))); if (!error) stored = found.length; }
@@ -825,10 +967,12 @@ async function applyOpenFindings(packageId: string, classes: string[]): Promise<
     .select("id,item_name,field,category,exact_quote,suggested_replacement,review_id").eq("package_id", packageId).eq("status", "open").in("category", classes);
   if (!pkg || !open || open.length === 0) return { applied: 0, reverted: 0 };
   // ADR-0163 Addendum 10: only findings of the main review and its +p2 pass; the +leak / +fact probes stay open for a human.
+  // ADR-0165: unless pipeline_settings.review_apply_fact_findings = on, which also lets +fact findings through (never +leak) with a usable replacement, 8 per package at most.
+  const allowFact = (await setting("review_apply_fact_findings", "off")) === "on";
   const reviewIds = [...new Set((open as { review_id: string | null }[]).map((f) => f.review_id).filter((x): x is string => !!x))];
   const { data: revs } = reviewIds.length ? await supabase.from("package_reviews").select("id,prompt_version").in("id", reviewIds) : { data: [] };
-  const allowed = new Set(((revs ?? []) as { id: string; prompt_version: string }[]).filter((r) => C.isAutoApplyReview(r.prompt_version)).map((r) => r.id));
-  const eligible = (open as { review_id: string | null }[]).filter((f) => f.review_id && allowed.has(f.review_id));
+  const versionByReview = new Map(((revs ?? []) as { id: string; prompt_version: string }[]).map((r) => [r.id, r.prompt_version]));
+  const eligible = C.selectEligibleFindings(open as { review_id: string | null; suggested_replacement: string | null }[], versionByReview, allowFact);
   if (eligible.length === 0) return { applied: 0, reverted: 0 };
   return autoApply(packageId, pkg as Row, (chars ?? []) as Row[], eligible as never, classes);
 }
@@ -860,7 +1004,10 @@ async function releaseQueue(): Promise<Row[]> {
         if (ageMin >= maxMin) { alertWhy = `review not started within ${maxMin} minutes`; }
         else if ((await spentToday()) >= DAILY_CAP_USD) { alertWhy = "daily cost cap reached, released without review"; }
         else {
+          // ADR-0165: judge (and re-roll) the evidence images in parallel with the review, so a bad image is fixed before the ready email fires.
+          const imgP = judgeImages(p.id, { apply: true }).catch((e) => { console.error(`image judge failed (ignored): ${(e as Error).message}`); return null; });
           const r = await reviewPackage(p.id, { applyClasses: [] });
+          await imgP;
           if (r.skipped) { out.push({ package_id: p.id, waiting: "review started elsewhere" }); continue; }
           if (r.status !== "done") releaseReason = `review ${String(r.status)}`; // reviewPackage already sent its own alert
         }
@@ -880,7 +1027,7 @@ async function releaseQueue(): Promise<Row[]> {
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = ["conform_labels", "reconcile_roster", "localize_scaffold", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
+    const mode = ["conform_labels", "reconcile_roster", "localize_scaffold", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe", "judge_images"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
     const out: Row[] = [];
     if (mode === "conform_labels" || mode === "reconcile_roster" || mode === "localize_scaffold") {
       // ADR-0152: manual run for one package (delivered packages are only changed through here). dry_run:true computes and writes nothing; force:true writes even when the setting is "report".
@@ -926,10 +1073,15 @@ serve(async (req) => {
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
       return new Response(JSON.stringify(await factProbe(String(body.package_id), { dryRun: body.paid !== true, write: body.write === true, overrides: body.overrides && typeof body.overrides === "object" ? body.overrides : undefined })), { headers: { "Content-Type": "application/json" } });
     }
+    if (mode === "judge_images") {
+      // ADR-0165: paid (about 0.012 USD for three images). apply:false only judges; apply:true re-rolls failing rounds (0.04 USD each) and writes. force:true repeats a package already judged.
+      if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(await judgeImages(String(body.package_id), { apply: body.apply === true, force: body.force === true })), { headers: { "Content-Type": "application/json" } });
+    }
     if (mode === "leak_probe") {
       // Paid only when paid:true is sent; otherwise it only retrieves candidates and estimates tokens. write:true stores the findings.
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
-      return new Response(JSON.stringify(await leakProbe(String(body.package_id), { dryRun: body.paid !== true, write: body.write === true })), { headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(await leakProbe(String(body.package_id), { dryRun: body.paid !== true, write: body.write === true, overrides: body.overrides && typeof body.overrides === "object" ? body.overrides : undefined })), { headers: { "Content-Type": "application/json" } });
     }
     if (mode === "propagate_probe") {
       // Read-only check of the propagation pass against a stored package with hand-supplied corrections. Writes nothing.

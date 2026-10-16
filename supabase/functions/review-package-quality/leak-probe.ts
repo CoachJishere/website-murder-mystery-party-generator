@@ -7,10 +7,14 @@
 // How it stays cheap: for each character's secret, retrieve DETERMINISTICALLY the few sentences in OTHER sheets that mention the owner and
 // share rare words with the secret, then ask the model one small question per owner about those sentences only.
 
-export type LeakSheet = { name: string; secret: string; texts: { field: string; text: string }[]; open?: string };
+export type LeakSheet = { name: string; secret: string; texts: { field: string; text: string }[]; open?: string; role?: string };
 export type LeakHit = { sheet: string; field: string; sentence: string; overlap: string[]; mentionsOwner: boolean };
 export type EvidenceCard = { round: number; title: string; description: string };
-export type LeakCandidates = { owner: string; secret: string; open: string; hits: LeakHit[]; evidence?: EvidenceCard[] };
+export type LeakCandidates = { owner: string; secret: string; open: string; hits: LeakHit[]; evidence?: EvidenceCard[]; role?: CulpritRole };
+export type CulpritRole = "murderer" | "accomplice";
+
+/** ADR-0165: only the culprit and the accomplice have a position that must stay out of Round 1 and 2 sheet text. */
+export const culpritRole = (role: unknown): CulpritRole | undefined => (role === "murderer" || role === "accomplice" ? role : undefined);
 
 /**
  * The evidence cards every guest is shown, one per round (ADR-0163 Addendum 6): a question about "the forged note" in Round 4 restates a card
@@ -63,7 +67,9 @@ export function leakCandidates(sheets: LeakSheet[], opts: { maxPerOwner?: number
   const stemsBySheet = sheets.map((s) => new Set([s.secret, ...s.texts.map((t) => t.text)].flatMap((t) => wordsOf(t || "").filter((w) => w.length >= 4).map(stem))));
   const out: LeakCandidates[] = [];
   let total = 0;
-  for (let oi = 0; oi < sheets.length; oi++) {
+  // ADR-0165: the culprit and the accomplice are served first, so the total cap cannot starve them (sheets arrive alphabetically and a murderer named Zoya came last).
+  const order = sheets.map((_, i) => i).sort((a, b) => Number(!!culpritRole(sheets[b].role)) - Number(!!culpritRole(sheets[a].role)));
+  for (const oi of order) {
     const owner = sheets[oi];
     if (!owner.secret || owner.secret.length < 40) continue;
     const secretStems = [...new Set(wordsOf(owner.secret).filter((w) => w.length >= 4 && !STOP.has(w)).map(stem))];
@@ -97,13 +103,14 @@ export function leakCandidates(sheets: LeakSheet[], opts: { maxPerOwner?: number
     }
     hits.sort((a, b) => Number(b.mentionsOwner) - Number(a.mentionsOwner) || b.overlap.length - a.overlap.length);
     const kept = hits.slice(0, Math.min(maxPer, Math.max(0, maxTotal - total)));
-    if (kept.length) { out.push({ owner: owner.name, secret: owner.secret, open: (owner.open ?? "").slice(0, 3600), hits: kept, ...(opts.evidence?.length ? { evidence: opts.evidence } : {}) }); total += kept.length; }
+    if (kept.length) { out.push({ owner: owner.name, secret: owner.secret, open: (owner.open ?? "").slice(0, 3600), hits: kept, ...(opts.evidence?.length ? { evidence: opts.evidence } : {}), ...(culpritRole(owner.role) ? { role: culpritRole(owner.role) } : {}) }); total += kept.length; }
   }
   return out;
 }
 
 export const LEAK_INSTRUCTIONS = [
   "You check a murder mystery party game for SECRET LEAKS across character sheets. Each guest reads only their own sheet, so the DEEPEST hidden fact of one character's secret must not be stated in another character's sheet.",
+  "EXCEPTION THAT COMES FIRST AND OVERRIDES THE TWO RULES BELOW (\"ONLY when it states the core hidden fact\" and \"when in doubt\"), applied only when the prompt says OWNER ROLE is murderer or accomplice: CULPRIT POSITION. Where the owner stood, that they were away from their stated alibi, or that they were at or near the crime scene or the murder weapon stays hidden until Round 3. Any sentence from a field named introduction, rumors or round2_* (rounds 1 and 2) that places the owner at or near the crime scene or the weapon, or away from their stated alibi, IS a leak, even as a plain eyewitness observation, even when the speaker could really have seen it, and even though the owner or other sheets repeat it in Round 4. The same observation in a round3_*, round4_*, final_*, reveal or accusations field is allowed (the witnesses give it in Round 4). Report it with severity high, category secret_leak; explanation says it belongs in Round 4 only; suggested_replacement = the sentence with that observation removed, keeping the rest and the speaker's voice.",
   "You get ONE character's hidden secret, the text that character says OPENLY (their introduction and honest scripts, which every guest hears), and a numbered list of sentences from OTHER characters' sheets.",
   "Think first about what the secret's core is: the one fact the owner most wants hidden and that would ruin them if known (usually what the 'why this matters' part says is at stake). Surface facts, rumours the owner spreads or admits themselves, and anything the OPEN text already says are public and NEVER a leak.",
   "A sentence is a leak ONLY when it states the core hidden fact (or a specific hidden detail of it that is not in the open text) as established fact, and the speaker has no stated way of knowing it. Rumour sections are meant to carry gossip, so a rumour is a leak only if it states the core fact as certain, not a hint, question or suspicion. Relationship descriptions may state what the two characters witnessed together or were told; that is not a leak. A character the secret itself involves may know it.",
@@ -116,7 +123,7 @@ export function leakPromptText(c: LeakCandidates): string {
   const cards = c.evidence?.length
     ? `\n\nPUBLIC EVIDENCE (shown to every guest; round in brackets):\n${c.evidence.map((e) => `[round ${e.round}] ${e.title}: ${e.description}`).join("\n")}`
     : "";
-  return `OWNER OF THE SECRET: ${c.owner}\nTHE SECRET (hidden from everyone else):\n${c.secret.trim()}\n\nWHAT THE OWNER SAYS OPENLY (public, not secret):\n${c.open.trim() || "(nothing supplied)"}${cards}\n\nSENTENCES FROM OTHER SHEETS:\n${lines.join("\n")}`;
+  return `OWNER OF THE SECRET: ${c.owner}${c.role ? `\nOWNER ROLE: ${c.role} (the culprit side of the game)` : ""}\nTHE SECRET (hidden from everyone else):\n${c.secret.trim()}\n\nWHAT THE OWNER SAYS OPENLY (public, not secret):\n${c.open.trim() || "(nothing supplied)"}${cards}\n\nSENTENCES FROM OTHER SHEETS:\n${lines.join("\n")}`;
 }
 
 /** Map a model finding back to the sheet and field it points at, using the sentence it quoted. null when it quotes nothing we sent. */

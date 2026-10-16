@@ -235,6 +235,22 @@ t("victim gender note: a dual name in the customer's concept makes the victim ne
   assert.equal(C.PROMPT_VERSION, "v4-2026-10-03", "the version must not change: list_packages_needing_review would queue a paid re-review of every package");
 });
 
+t("ADR-0165: +fact findings are eligible only when the switch is on, with a usable replacement, 8 at most; +leak never", () => {
+  const V = C.PROMPT_VERSION;
+  assert.equal(C.isAutoApplyReview(V + "+fact"), false);
+  assert.equal(C.isAutoApplyReview(V + "+fact", true), true);
+  assert.equal(C.isAutoApplyReview(V + "+leak", true), false);
+  assert.equal(C.isAutoApplyReview(V + "+p2+fact", true), false);
+  const versions = new Map([["m", V], ["p", V + "+p2"], ["f", V + "+fact"], ["l", V + "+leak"]]);
+  const mk = (review_id, suggested_replacement, n) => ({ id: n, review_id, suggested_replacement });
+  const open = [mk("m", "a", 1), mk("p", "b", 2), mk("f", "c", 3), mk("f", "", 4), mk("f", "   ", 5), mk("l", "d", 6), mk(null, "e", 7)];
+  assert.deepEqual(C.selectEligibleFindings(open, versions, false).map((x) => x.id), [1, 2]);
+  assert.deepEqual(C.selectEligibleFindings(open, versions, true).map((x) => x.id), [1, 2, 3]);
+  const many = Array.from({ length: 12 }, (_, i) => mk("f", "x", 100 + i));
+  assert.equal(C.selectEligibleFindings(many, versions, true).length, C.MAX_FACT_APPLY_PER_PACKAGE);
+  assert.equal(C.MAX_FACT_APPLY_PER_PACKAGE, 8);
+});
+
 console.log("customer-wording tests done");
 
 t("auto-apply allowlist: only the main review and its +p2 pass; the +leak / +fact probes (and any future suffix) stay open (ADR-0163 Add. 10)", () => {

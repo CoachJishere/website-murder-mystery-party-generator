@@ -8,8 +8,30 @@ export const PROMPT_VERSION = "v4-2026-10-03"; // the propagation pass below add
  * and its +p2 pass only. The cross-sheet probes (+leak, +fact) write open findings in classes that ARE auto-applied (cross_field_contradiction),
  * with about half precision and a replacement that can target another sheet, so they stay open for a human, and so does any probe added later.
  */
-export const isAutoApplyReview = (promptVersion: string | null | undefined): boolean =>
-  promptVersion === PROMPT_VERSION || promptVersion === PROMPT_VERSION + "+p2";
+export const isAutoApplyReview = (promptVersion: string | null | undefined, allowFact = false): boolean =>
+  promptVersion === PROMPT_VERSION || promptVersion === PROMPT_VERSION + "+p2" || (allowFact && promptVersion === PROMPT_VERSION + "+fact");
+
+/** ADR-0165: at most this many cross-sheet fact findings are applied automatically per package. */
+export const MAX_FACT_APPLY_PER_PACKAGE = 8;
+
+/** ADR-0165: from the open findings of allowed reviews, keep every main/+p2 finding and only the +fact findings that carry a usable replacement, capped. */
+export function selectEligibleFindings<T extends { review_id: string | null; suggested_replacement: string | null }>(
+  open: T[], versionByReview: Map<string, string>, allowFact: boolean,
+): T[] {
+  let factKept = 0;
+  const out: T[] = [];
+  for (const f of open) {
+    const pv = f.review_id ? versionByReview.get(f.review_id) : undefined;
+    if (!isAutoApplyReview(pv, allowFact)) continue;
+    if (pv === PROMPT_VERSION + "+fact") {
+      if (!f.suggested_replacement || !f.suggested_replacement.trim()) continue;
+      if (factKept >= MAX_FACT_APPLY_PER_PACKAGE) continue;
+      factKept++;
+    }
+    out.push(f);
+  }
+  return out;
+}
 
 export const DEFAULT_MODEL = "claude-sonnet-5-5";
 // USD per million tokens for the default model (Anthropic price table, 2026-10). Used for the running cost estimate only.

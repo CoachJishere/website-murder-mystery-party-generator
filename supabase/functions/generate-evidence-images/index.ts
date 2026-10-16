@@ -20,6 +20,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
  * {
  *   "package_id": "uuid",
  *   "prompts": { "round2": "<prompt>", "round3": "<prompt>", "round4": "<prompt>" },
+ *   "no_suffix": true,    // optional (ADR-0165 v16): skip the no-handwriting prompt suffix (the image judge's re-roll prompts already forbid all lettering)
  *   "safety_tolerance": 2   // optional, 1-6, defaults to 2 (Flux's safety_tolerance
  *                           // input). Higher = more permissive. For recovering a
  *                           // round that failed with "NSFW content detected" on an
@@ -50,6 +51,11 @@ const REPLICATE_MODEL_URL =
 //       and retry the POST on 5xx / network errors too — not just 429.
 //       ("The Cognitive Dissonance Incident", 2026-07-28: round2 dropped on a
 //       healthy-credit account after a 27s run — this path.)
+// ADR-0165 (v16): Flux turns "handwriting" into pseudo-words (Till Death Do Us Part-y, 2026-10-16: Leverage List and seating chart). Every prompt gets this
+// suffix so fewer images reach the judge in review-package-quality (image-judge.ts keeps a copy, keep them in step). Free: no Make import.
+const NO_HANDWRITING_SUFFIX =
+  " Any handwriting or small print is rendered as loose illegible ink scribble marks, never as readable words; at most one short printed heading; no paragraphs of text; no watermark.";
+
 const MAX_PREDICTION_ATTEMPTS = 5;
 const DEFAULT_RETRY_AFTER_SECONDS = 10;
 const POLL_INTERVAL_MS = 3000;
@@ -248,7 +254,7 @@ serve(async (req) => {
   }
 
   try {
-    const { package_id, prompts, safety_tolerance } = await req.json();
+    const { package_id, prompts, safety_tolerance, no_suffix } = await req.json();
 
     if (!package_id || !prompts || typeof prompts !== "object") {
       return new Response(
@@ -294,7 +300,7 @@ serve(async (req) => {
         }
 
         try {
-          const imageBuffer = await callFlux11Pro(prompt, replicateToken, safetyTolerance);
+          const imageBuffer = await callFlux11Pro(no_suffix === true ? prompt.trim() : prompt.trim() + NO_HANDWRITING_SUFFIX, replicateToken, safetyTolerance);
           const filePath = `${package_id}/${round}.png`;
 
           const { error: uploadError } = await retrySupabaseOp(() =>
