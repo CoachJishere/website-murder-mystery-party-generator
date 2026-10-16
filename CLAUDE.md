@@ -42,10 +42,6 @@
 
 Every new user-facing string goes through `t()` with all 13 locale files updated in the same change (en, es, fr, de, it, pt, nl, da, sv, fi, ko, ja, zh-cn); toasts and messages raised outside components use `i18n.t` from `@/i18n`. Before committing UI changes run `npm run audit:i18n` (finds hard-coded English in JSX and toasts; skips Cold Case, admin, previews, dead components) and `npm run test:i18n` (every key in every locale, same `{{placeholders}}` and `<tags>`). Generated package text is covered separately by the scaffold heal and `npm run test:scaffold`. Cold Case stays English until it launches.
 
-## Watch: "detector failed" alert emails (ADR-0103 Addendum 87 Update 7, added 2026-10-14)
-
-`auto-remediate-packages` v36 emails "detector failed" only when one detector failed 4 or more times in 3 hours (once per 6 h per detector); isolated statement-timeout skips are harmless contention and only logged. Passive check on the first session after 2026-10-15: `select rpc, count(*), count(*) filter (where alerted) from detector_failure_log group by 1;` (expect a few rows, 0 alerted) and no alert emails reported by Jonathan. An `alerted` row means a real repeat failure: check cron load at :00/:10/:50, then that detector. If skips need to go down rather than just go quiet, stagger the cron minutes. Delete this section after one clean day.
-
 ## Changelog
 
 After every meaningful code change, update `CHANGELOG.md` with a dated entry.
