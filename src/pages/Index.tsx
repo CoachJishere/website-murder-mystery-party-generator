@@ -59,6 +59,7 @@ function useSmoothScroll(enabled: boolean) {
 // HERO — Single screen with parallax image
 // ═══════════════════════════════════════════════════════════════
 function ParallaxHero({ isAuthenticated }: { isAuthenticated: boolean }) {
+  const { t } = useTranslation();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,

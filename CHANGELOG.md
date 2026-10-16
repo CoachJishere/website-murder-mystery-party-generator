@@ -2,6 +2,11 @@
 
 ## 2026-10-16
 
+### Fix: homepage crashed for logged-out visitors (`t is not defined` in ParallaxHero)
+- **Why:** the ADR-0161 i18n commit (2026-10-14, 1ba685b9) replaced the hero's "Scroll to explore" string with `t("ui.scrollToExplore")` but `ParallaxHero` never called `useTranslation()`. The line only renders when not authenticated, so the whole homepage threw a ReferenceError for every logged-out visitor (blank page) while signed-in views looked fine. Live from roughly 2026-10-14 12:12 CEST until this fix deploys.
+- **What:** added `const { t } = useTranslation();` to `ParallaxHero` in `src/pages/Index.tsx`. `tsc` reports no other undeclared-name errors.
+- **Not done / note:** `npm run audit:i18n` and `test:i18n` do not catch a missing hook; a render check of the logged-out homepage before pushing i18n sweeps would have.
+
 ### Fix: new-purchase sweep of "Till Death Do Us Part-y" (detective, 23 characters, accomplice), 39 content edits (ADR-0103 Addendum 104)
 - **Why:** the full 23-sheet read found 18 defects the reviewer (24 findings, 23 real) did not flag. Three were spoilers: the murderer's position at the head table was named in Lord Baron's read-aloud Round 1 introduction, in Lulu's Round 1 rumor and in Lulu's Round 2 question, two rounds before the evidence that makes it a clue.
 - **What:** 39 exact-match edits on 15 characters (every prose edit mirrored into its point-form twin by hand, no paid resync); the will-changes and baby hints reworded to the Leverage List line; Zoya's Round 3 script no longer contradicts her own alibi; 6 position claims about other characters corrected; the detective script opening statement now quotes the victim's last words and "the night everything comes out" (the customer's own wording, two real `REQUIREMENTS` findings). Evidence image round 4 re-rolled (clean); round 2 kept as the original after two failed re-rolls.
