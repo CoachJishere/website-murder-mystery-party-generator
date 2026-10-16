@@ -153,6 +153,7 @@ draft_rewrites/
 !supabase/functions/auto-remediate-packages/partner-tip.test.mjs
 !supabase/functions/auto-remediate-packages/player-instruction.test.mjs
 !supabase/functions/review-package-quality/review-core.test.mjs
+!supabase/functions/review-package-quality/mode-whitelist.test.mjs
 !docs/language-pack/build-label-tables.mjs
 !scripts/auditI18n.mjs
 !scripts/checkUndeclaredNames.mjs
