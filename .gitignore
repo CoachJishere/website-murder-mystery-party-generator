@@ -155,6 +155,7 @@ draft_rewrites/
 !supabase/functions/review-package-quality/review-core.test.mjs
 !docs/language-pack/build-label-tables.mjs
 !scripts/auditI18n.mjs
+!scripts/checkUndeclaredNames.mjs
 !scripts/__tests__/localeParity.test.mjs
 !docs/language-pack/build-scaffold-tables.mjs
 !supabase/functions/_shared/packageScaffold.test.mjs

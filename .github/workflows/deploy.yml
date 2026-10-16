@@ -42,7 +42,12 @@ jobs:
 
       - name: Install dependencies with npm
         run: npm install
-        
+
+      # Vite does not typecheck, so an undeclared name (a t() with no useTranslation())
+      # would ship and blank the page. Blocks the deploy; see scripts/checkUndeclaredNames.mjs.
+      - name: Check for undeclared names
+        run: npm run check:names
+
       - name: Build project
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

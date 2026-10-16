@@ -2,6 +2,11 @@
 
 ## 2026-10-16
 
+### Improvement: deploy now blocks on undeclared names (`npm run check:names`)
+- **Why:** the homepage crash (`t is not defined`, fix `df2b4298`) shipped because Vite builds without typechecking and CI ran no `tsc`. A blank homepage sat live for about 2 days with no alert.
+- **What:** `scripts/checkUndeclaredNames.mjs` runs `tsc --noEmit -p tsconfig.app.json` and fails only on TS2304/TS2552 (undeclared names); a new "Check for undeclared names" step in `deploy.yml` runs it before the build. Verified: passes on current code, fails with the exact original error when the `useTranslation()` line is removed.
+- **Not done / note:** the other tsc errors (typed i18n keys, TS2345) are pre-existing noise and deliberately ignored. It only catches undeclared names, not other runtime crashes, so a browser render check of the logged-out homepage is still needed after big i18n sweeps. Cost: about a minute of CI, no paid APIs.
+
 ### Fix: homepage crashed for logged-out visitors (`t is not defined` in ParallaxHero)
 - **Why:** the ADR-0161 i18n commit (2026-10-14, 1ba685b9) replaced the hero's "Scroll to explore" string with `t("ui.scrollToExplore")` but `ParallaxHero` never called `useTranslation()`. The line only renders when not authenticated, so the whole homepage threw a ReferenceError for every logged-out visitor (blank page) while signed-in views looked fine. Live from roughly 2026-10-14 12:12 CEST until this fix deploys.
 - **What:** added `const { t } = useTranslation();` to `ParallaxHero` in `src/pages/Index.tsx`. `tsc` reports no other undeclared-name errors.
