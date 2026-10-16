@@ -8,6 +8,7 @@ import * as FC from "./fact-check.ts";
 import * as IJ from "./image-judge.ts";
 import * as DP from "./doc-probe.ts";
 import * as RI from "./req-insert.ts";
+import * as RM from "./reminders.ts";
 import { encode as b64encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 import { LABELS_BY_CODE } from "./label-tables.ts";
 import * as PS from "../_shared/packageScaffold.ts";
@@ -208,8 +209,30 @@ async function secondPass(only?: string, force = false): Promise<Row> {
   return { ...r, second_pass: true, applied: applied.applied + factApplied.applied, reverted: applied.reverted + factApplied.reverted, leak, fact, doc, req };
 }
 
+/**
+ * Push reminders (Jonathan, 2026-10-16: "never count on me to remember anything"). Called from the daily digest cron, so a condition that becomes true
+ * is emailed to support@ once, with no session needed. The sent marker is pipeline_settings key reminder_sent:<key>. dryRun lists what is due and sends nothing.
+ */
+async function runReminders(dryRun: boolean): Promise<Row> {
+  const { data: hist } = await supabase.from("prompt_version_history").select("kind,version,effective_from").in("version", [68, 88]);
+  const history = (hist ?? []) as RM.HistoryRow[];
+  const since = history.map((h) => h.effective_from).sort()[0];
+  if (!since) return { due: [] };
+  const { data: pk } = await supabase.from("mystery_packages").select("created_at,mystery_style,quality_review_released_at").gte("created_at", since);
+  const { data: sentRows } = await supabase.from("pipeline_settings").select("key").like("key", "reminder_sent:%");
+  const sent = new Set(((sentRows ?? []) as { key: string }[]).map((r) => r.key.replace("reminder_sent:", "")));
+  const due = RM.dueReminders({ history, pkgs: (pk ?? []) as RM.PkgRow[], sent });
+  if (dryRun) return { due: due.map((d) => d.key), dry_run: true };
+  for (const d of due) {
+    await sendAlert(d.subject, d.body);
+    await supabase.from("pipeline_settings").upsert({ key: `reminder_sent:${d.key}`, value: new Date().toISOString() }, { onConflict: "key" });
+  }
+  return { due: due.map((d) => d.key), sent: due.length };
+}
+
 /** ADR-0149: one email per UTC day listing packages released in the last 26 hours that still carry unverified open findings. */
 async function openDigest(dryRun: boolean): Promise<Row> {
+  try { await runReminders(dryRun); } catch (e) { console.error(`reminders failed (ignored): ${(e as Error).message}`); }
   const minSev = (await setting("review_open_digest_min_severity", "high")).trim().toLowerCase();
   if (!["high", "medium"].includes(minSev)) return { skipped: `review_open_digest_min_severity=${minSev}` };
   const since = new Date(Date.now() - 26 * 3600 * 1000).toISOString();
@@ -1136,7 +1159,7 @@ async function releaseQueue(): Promise<Row[]> {
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = ["conform_labels", "reconcile_roster", "localize_scaffold", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe", "judge_images", "doc_probe", "requirement_insert"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
+    const mode = ["conform_labels", "reconcile_roster", "localize_scaffold", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe", "judge_images", "doc_probe", "requirement_insert", "reminders"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
     const out: Row[] = [];
     if (mode === "conform_labels" || mode === "reconcile_roster" || mode === "localize_scaffold") {
       // ADR-0152: manual run for one package (delivered packages are only changed through here). dry_run:true computes and writes nothing; force:true writes even when the setting is "report".
@@ -1182,6 +1205,7 @@ serve(async (req) => {
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
       return new Response(JSON.stringify(await factProbe(String(body.package_id), { dryRun: body.paid !== true, write: body.write === true, overrides: body.overrides && typeof body.overrides === "object" ? body.overrides : undefined })), { headers: { "Content-Type": "application/json" } });
     }
+    if (mode === "reminders") return new Response(JSON.stringify(await runReminders(body.dry_run !== false)), { headers: { "Content-Type": "application/json" } });
     if (mode === "doc_probe" || mode === "requirement_insert") {
       // ADR-0166: paid only with paid:true (doc_probe about 0.1 to 0.2 USD, requirement_insert about 0.02). write:true stores the shadow findings. docOverrides replays a document.
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });

@@ -166,6 +166,7 @@ draft_rewrites/
 !supabase/functions/review-package-quality/image-judge.test.mjs
 !supabase/functions/review-package-quality/doc-probe.test.mjs
 !supabase/functions/review-package-quality/req-insert.test.mjs
+!supabase/functions/review-package-quality/reminders.test.mjs
 !supabase/functions/_shared/rosterRenames.test.mjs
 !supabase/functions/review-package-quality/fact-check.test.mjs
 !supabase/functions/_shared/readyEmail.test.mjs

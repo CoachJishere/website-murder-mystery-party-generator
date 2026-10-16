@@ -1,5 +1,18 @@
 # Murder Mystery Party Generator — Claude Code Instructions
 
+## Open reminders: RAISE THESE WITH JONATHAN, he never has to remember (rule set 2026-10-16)
+
+**At the start of every session, and as the FIRST lines of every sweep reply, tell Jonathan which of these are due, running the passive query yourself.** Never leave a "remember to ..." for him. Delete an item when its condition is done and say so. Items that can be detected from data are also emailed to support@ automatically by the daily digest cron (07:30 UTC, `reminders.ts`), so the push does not depend on a session.
+
+1. **Parent88 ready to import?** (held until Child68 has 2 detective purchases; ADR-0166 decision 5). Query: `select count(*) from mystery_packages p, prompt_version_history h where h.kind = 'child' and h.version = 68 and p.mystery_style = 'detective' and p.quality_review_released_at is not null and p.created_at >= h.effective_from;` and `select * from prompt_version_history where kind = 'parent' and version = 88;`. Count 2 or more and no Parent88 row means SAY: "Parent88 is ready to import: temp-files/MM Live - Parent88 (Contents Of The Hidden Thing).blueprint.json". When Jonathan says it is imported, insert the `prompt_version_history` row at once (kind parent, version 88, name from the blueprint) and start the check in the ADR-0166 watch. Automatic email: `reminder_sent:parent88_import` in `pipeline_settings`.
+2. **Child68 measurement** (imported 2026-10-16 08:09 UTC): on each of the first 2 detective purchases after it, count statements about where another character was that contradict `keyMomentPositions` and Round 1/2 text that places any character at the scene, against the Till Death baseline of 17 and 3; report the numbers in the sweep reply. Delete after 2 packages.
+3. **`+fact` auto-apply verdicts** (on since 2026-10-16 08:09 UTC): after the 5th package since then, report how many applied `+fact` findings were real, debatable, wrong, and recommend keep or off. Query: `select r.prompt_version, f.status, f.human_verdict, count(*) from package_review_findings f join package_reviews r on r.id = f.review_id where r.prompt_version like '%+fact' and f.created_at >= '2026-10-16T08:09:50Z' group by 1,2,3;`.
+4. **Shadow checks `+doc` / `+req2`** (ADR-0166): after 8 judged findings over 5 packages, report precision and recommend promote, rewrite or drop. Query as in the ADR-0166 watch.
+5. **Image judge first real order**, **Child67 third clean English purchase**, **Parent87 third purchase** (2 of 3 each): report when seen; delete each once seen.
+6. **Fact registry build** (ADR-0166 decision 6): kickoff prompt written 2026-10-16 at `/Users/jonathanmiller/Obsidian Vault/00_INBOX/kickoff-fact-registry-2026-10-16-mystery-maker.md`; status: waiting for Jonathan to start the fresh tab. Ask once per session until it is started; then track its imports here (Parent89 and Child69 only AFTER Parent88 has data).
+7. **Child66 redaction cost** needs a no-redaction comparison before any rollback decision; raise it when Child68 data is reported.
+8. **GitHub reports 5 dependency vulnerabilities (2 high)** on the default branch (seen 2026-10-16); not looked at. Offer to look once per session until done.
+
 ## Shorthand Commands
 
 - **"sweep"** = Run a coherence sweep on a pasted purchase notification. Trigger: Jonathan pastes a purchase notification into a fresh session and says "sweep" — no other setup required, this file is auto-loaded. Branch on the notification's header/fields:
