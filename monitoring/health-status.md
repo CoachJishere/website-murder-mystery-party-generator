@@ -1,6 +1,6 @@
 # Site health status
 
-_Last checked: 2026-10-15 21:28 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-10-16 04:38 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ⚠️ Problems found
 
@@ -26,4 +26,4 @@ _Last checked: 2026-10-15 21:28 UTC (runs every 6 hours; see .github/workflows/h
 | Stale hardcoded models — escalate only | 0 |
 | Detector status-predicate drift — escalate only | 0 |
 | Checkout roster-extraction anomalies — escalate only (24h) | 0 |
-| Ally/rival lists contradicting the relationship matrix — info only (30 days) | 6 |
+| Ally/rival lists contradicting the relationship matrix — info only (30 days) | 5 |
