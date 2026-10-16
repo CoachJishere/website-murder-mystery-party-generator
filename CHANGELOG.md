@@ -2,6 +2,13 @@
 
 ## 2026-10-16
 
+### Feature: `+pub` shadow check for a hidden fact announced in a named character's Round 1 text, and ADR-0167 (do we need a fact registry?)
+- **Why:** Eddie's Round 1 introduction said "Tyson owes me $500,000, and I'm not shy about it" while Tyson's secret called the same debt hidden (Till Death Do Us Part-y, ADR-0103 Addendum 104). The leak probe skips every character the owner's secret names, so no layer saw it. ADR-0166 Update 2 asked for a small read-only check before any registry blueprint is built.
+- **What (deployed, `review-package-quality` v48, `verify_jwt` true):** `+pub` reads ONLY the characters a secret names and ONLY their `introduction` and `rumors`, and flags a sentence that states a fact the owner's secret treats as hidden unless the owner's own open text already says it. Shadow: findings are OPEN under review version `+pub` (added to `SHADOW_SUFFIXES`, so never auto-applied and never in the daily email). Second-pass hook after the other probes, kill switch `pipeline_settings.review_pub_probe` (default on), manual mode `pub_probe` (dry run unless `paid:true`; `overrides` replays sheets in memory; `only` limits owners). `+leak` retrieval and findings are unchanged (new `namedRound1` option, off by default).
+- **Validation (0.133 USD of the 0.8 USD approved):** Tyson's original secret replayed: the exact Eddie sentence flagged (high); control where Tyson's own introduction states the debt: 0 findings; the full real package (18 owners): 0 findings, 0.1165 USD, so about 0.0065 USD per owner. 7 new tests, `npm run test:reviewer` passes. A first deploy missed the mode whitelist (`pub_probe` fell through to the default sweep path and reviewed nothing); fixed in v48.
+- **Not done / note:** Parent89, Child69 and the `characterContext.ts` whitelist change are deliberately NOT built; the trigger (Parent88 with two detective purchases of its own data AND 3 real sightings or `+pub` precision of 70 percent with 2 real findings) is in ADR-0167 and CLAUDE.md reminder 6. Recall beyond the one motivating case is unmeasured.
+- Full detail: ADR-0167 (and ADR-0166 Update 3).
+
 ### Improvement: deploy now blocks on undeclared names (`npm run check:names`)
 - **Why:** the homepage crash (`t is not defined`, fix `df2b4298`) shipped because Vite builds without typechecking and CI ran no `tsc`. A blank homepage sat live for about 2 days with no alert.
 - **What:** `scripts/checkUndeclaredNames.mjs` runs `tsc --noEmit -p tsconfig.app.json` and fails only on TS2304/TS2552 (undeclared names); a new "Check for undeclared names" step in `deploy.yml` runs it before the build. Verified: passes on current code, fails with the exact original error when the `useTranslation()` line is removed.
