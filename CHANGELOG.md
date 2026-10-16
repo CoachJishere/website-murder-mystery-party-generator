@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-16
+
+### Fix: new-purchase sweep of "Till Death Do Us Part-y" (detective, 23 characters, accomplice), 39 content edits (ADR-0103 Addendum 104)
+- **Why:** the full 23-sheet read found 18 defects the reviewer (24 findings, 23 real) did not flag. Three were spoilers: the murderer's position at the head table was named in Lord Baron's read-aloud Round 1 introduction, in Lulu's Round 1 rumor and in Lulu's Round 2 question, two rounds before the evidence that makes it a clue.
+- **What:** 39 exact-match edits on 15 characters (every prose edit mirrored into its point-form twin by hand, no paid resync); the will-changes and baby hints reworded to the Leverage List line; Zoya's Round 3 script no longer contradicts her own alibi; 6 position claims about other characters corrected; the detective script opening statement now quotes the victim's last words and "the night everything comes out" (the customer's own wording, two real `REQUIREMENTS` findings). Evidence image round 4 re-rolled (clean); round 2 kept as the original after two failed re-rolls.
+- **Not done / note:** Eddie's publicly announced $500,000 debt vs Tyson's secret (starts in the concept), the reveal line "Own what you have already admitted", and two abstract secrets (Benito's envelope, Collette's remarks) left as found. No detector for "culprit's position named in Round 1/2 sheet text" yet (first sighting, scenario-specific wording). Measurement: 23 findings judged real, 18 misses recorded (clusters C2, C4, C5, C17, new C18 for image text), scoreboard row added.
+- Full detail: ADR-0103 Addendum 104.
+
 ## 2026-10-15
 
 ### Fix: health check crashed on a stale-model allowlist entry (2 consecutive scheduled failures, 2026-10-15)
