@@ -1,10 +1,11 @@
 # Site health status
 
-_Last checked: 2026-10-16 11:31 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
+_Last checked: 2026-10-16 16:44 UTC (runs every 6 hours; see .github/workflows/health-check.yml)_
 
 ## ⚠️ Problems found
 
 - 🔴 1 recent package(s) with model chain-of-thought or template artifacts in delivered text: El Último Trago
+- 🔴 1 package(s) with structural defects — NOT auto-fixable, needs regeneration: Dead Serious: The BR31 Unveiling [paid=true] name_background_mismatch: Madame Vanille -> background says "French Vanilla"
 
 | Check | Result |
 |---|---|
@@ -18,7 +19,7 @@ _Last checked: 2026-10-16 11:31 UTC (runs every 6 hours; see .github/workflows/h
 | Slip-culprit leak (30 days) | 0 |
 | Self-directed questions (30 days) | 0 |
 | Completed-but-empty packages (30 days) | 0 |
-| Structural defects — escalate only (30 days) | 0 |
+| Structural defects — escalate only (30 days) | 1 |
 | Roster-count mismatches — escalate only (30 days) | 0 |
 | Final-statement confession leaks — escalate only (30 days) | 0 |
 | Unconfessed detective-style culprits — escalate only (30 days) | 0 |
