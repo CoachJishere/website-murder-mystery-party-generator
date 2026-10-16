@@ -12,6 +12,13 @@
 - **What:** added `const { t } = useTranslation();` to `ParallaxHero` in `src/pages/Index.tsx`. `tsc` reports no other undeclared-name errors.
 - **Not done / note:** `npm run audit:i18n` and `test:i18n` do not catch a missing hook; a render check of the logged-out homepage before pushing i18n sweeps would have.
 
+### Feature: shadow checks for the creative and cross-document classes, Parent88 built (ADR-0166)
+- **Why:** goal is a pipeline that finds and fixes what a hand sweep finds, because Jonathan never reads a package. The Till Death sweep showed classes no layer owned: a shared document claiming something the cast does not back, a culprit contradicting their own alibi, a customer quote missing from the script, hidden things whose content is never stated.
+- **What (deployed, `review-package-quality`):** (1) `+doc` probe: documents against a digest of every sheet, about 0.07 USD, shadow; (2) own-alibi sentence in the main prompt (Zoya's contradiction: old prompt 0 findings, new 1); (3) `+req2`: a validated one-sentence insertion that carries a missing customer quote verbatim, about 0.006 USD, shadow; shadow findings (`+doc`, `+req2`) are never auto-applied and never emailed. Kill switches `review_doc_probe`, `review_req_insert`. Parent88 (what an envelope or remark contained) is built in `temp-files/build-parent-v88.py`, not imported: held until Child68 has two detective purchases of data.
+- **Validation:** 13 new tests; doc probe found 3 of 3 planted defects (and 0 on the real original script, arguably correct); insertion proposals valid after a merge fix. Promotion bar: 8 judged findings over 5 packages at 90 percent.
+- **Not done / note:** the fact registry (a canonical list of what is public) waits for shadow data; a permanent 1-in-5 sampling audit is part of the plan (ADR-0166 decision 7).
+- Full detail: ADR-0166 (and Update 1).
+
 ### Fix: Till Death sweep follow-ups decided and applied, and the sweep rule changed (ADR-0103 Addendum 104 Update 1)
 - **Why:** the first pass left three creative calls "for Jonathan" and a tumbler image; Jonathan never reads customer packages and wants those decisions made inside the fixes.
 - **What:** Tyson's secret now treats the $500,000 debt as openly known (matching Eddie's sheet), the reveal line no longer claims Willy admitted something, the Round 3 image is an engraved champagne flute (re-rolled once, 0.04 USD); Benito's and Collette's vague secrets deliberately left (concept is vague, concreteness would invent facts about others). CLAUDE.md sweep step 7d: creative and content calls are the sweep's to decide and record, never a list for Jonathan.
