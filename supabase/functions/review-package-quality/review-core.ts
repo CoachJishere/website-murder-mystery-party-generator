@@ -12,7 +12,7 @@ export const isAutoApplyReview = (promptVersion: string | null | undefined, allo
   promptVersion === PROMPT_VERSION || promptVersion === PROMPT_VERSION + "+p2" || (allowFact && promptVersion === PROMPT_VERSION + "+fact");
 
 /** ADR-0166: shadow checks write open findings that only the sweep reads (measurement); they are never auto-applied and never emailed. */
-export const SHADOW_SUFFIXES = ["+doc", "+req2"];
+export const SHADOW_SUFFIXES = ["+doc", "+req2", "+pub"];
 export const isShadowReview = (promptVersion: string | null | undefined): boolean =>
   !!promptVersion && SHADOW_SUFFIXES.some((s) => promptVersion === PROMPT_VERSION + s);
 

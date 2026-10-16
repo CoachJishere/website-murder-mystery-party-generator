@@ -258,9 +258,9 @@ t("ADR-0166: the main prompt tells the reviewer a culprit's lie must be the same
   }
 });
 
-t("ADR-0166: shadow reviews (+doc, +req2) are never auto-applied and are recognised for the digest", () => {
+t("ADR-0166/0167: shadow reviews (+doc, +req2, +pub) are never auto-applied and are recognised for the digest", () => {
   const V = C.PROMPT_VERSION;
-  for (const s of ["+doc", "+req2"]) { assert.equal(C.isShadowReview(V + s), true, s); assert.equal(C.isAutoApplyReview(V + s, true), false, s); }
+  for (const s of ["+doc", "+req2", "+pub"]) { assert.equal(C.isShadowReview(V + s), true, s); assert.equal(C.isAutoApplyReview(V + s, true), false, s); }
   for (const v of [V, V + "+p2", V + "+fact", V + "+leak", "", null, undefined, "v3-2026-09-01+doc"]) assert.equal(C.isShadowReview(v), false, String(v));
 });
 

@@ -193,7 +193,7 @@ async function secondPass(only?: string, force = false): Promise<Row> {
   if (!r.skipped && (await setting("review_fact_check", "off")) === "on") {
     try { fact = await factProbe(id, { write: true }); } catch (e) { console.error(`fact check failed (ignored): ${(e as Error).message}`); fact = { error: (e as Error).message }; }
   }
-  // ADR-0166 shadow checks: findings stay open (`+doc`, `+req2` are not in the auto-apply allowlist). Kill switches review_doc_probe / review_req_insert.
+  // ADR-0166 shadow checks: findings stay open (`+doc`, `+req2`, `+pub` are not in the auto-apply allowlist). Kill switches review_doc_probe / review_req_insert / review_pub_probe.
   let doc: Row | undefined, req: Row | undefined;
   if (!r.skipped && (await setting("review_doc_probe", "on")) === "on") {
     try { doc = await docProbe(id, { write: true }); } catch (e) { console.error(`doc probe failed (ignored): ${(e as Error).message}`); doc = { error: (e as Error).message }; }
@@ -201,12 +201,17 @@ async function secondPass(only?: string, force = false): Promise<Row> {
   if (!r.skipped && (await setting("review_req_insert", "on")) === "on") {
     try { req = await requirementInsert(id, { write: true }); } catch (e) { console.error(`requirement insert failed (ignored): ${(e as Error).message}`); req = { error: (e as Error).message }; }
   }
+  // ADR-0167 shadow check +pub: a fact one sheet calls hidden, announced in a named character's Round 1 text. Kill switch review_pub_probe.
+  let pub: Row | undefined;
+  if (!r.skipped && (await setting("review_pub_probe", "on")) === "on") {
+    try { pub = await pubProbe(id, { write: true }); } catch (e) { console.error(`pub probe failed (ignored): ${(e as Error).message}`); pub = { error: (e as Error).message }; }
+  }
   // ADR-0165: the +fact findings only exist now, so the apply step runs again; it is a no-op unless review_apply_fact_findings = on.
   let factApplied = { applied: 0, reverted: 0 };
   if (!r.skipped && fact && !fact.error && Number(fact.stored ?? 0) > 0 && (await setting("review_apply_fact_findings", "off")) === "on") {
     try { factApplied = await applyOpenFindings(id, classes); } catch (e) { console.error(`fact apply failed (ignored): ${(e as Error).message}`); }
   }
-  return { ...r, second_pass: true, applied: applied.applied + factApplied.applied, reverted: applied.reverted + factApplied.reverted, leak, fact, doc, req };
+  return { ...r, second_pass: true, applied: applied.applied + factApplied.applied, reverted: applied.reverted + factApplied.reverted, leak, fact, doc, req, pub };
 }
 
 /**
@@ -242,7 +247,7 @@ async function openDigest(dryRun: boolean): Promise<Row> {
   const titles = new Map(pkgs.map((p) => [p.id, p.title ?? ""]));
   const { data: fs } = await supabase.from("package_review_findings")
     .select("package_id,item_name,field,category,severity,exact_quote,explanation,review_id").in("package_id", [...titles.keys()]).eq("status", "open").is("human_verdict", null);
-  // ADR-0166: shadow checks (+doc, +req2) are measured by the sweep and never emailed.
+  // ADR-0166: shadow checks (+doc, +req2, +pub) are measured by the sweep and never emailed.
   const shadowIds = new Set<string>();
   const digestReviewIds = [...new Set(((fs ?? []) as { review_id: string | null }[]).map((f) => f.review_id).filter((x): x is string => !!x))];
   if (digestReviewIds.length) {
@@ -1023,6 +1028,59 @@ async function factProbe(packageId: string, opts: { dryRun?: boolean; write?: bo
   return { package_id: packageId, ...estimate, calls, cost_usd: Number(cost.toFixed(4)), findings: found.length, dropped, stored, preview: opts.write ? undefined : found.map((f) => ({ item: f.item_name, field: f.field, severity: f.severity, quote: String(f.exact_quote).slice(0, 160), why: f.explanation, fix: String(f.suggested_replacement).slice(0, 160) })) };
 }
 
+/**
+ * ADR-0167 `+pub` (shadow): a character a secret names may know it, but may not announce it in a Round 1 field read to the whole table unless the
+ * owner's own open text already says it. +leak skips named characters, so this is the only layer that reads them. One small call per owner with
+ * candidates. SHADOW: stored under `+pub`, never auto-applied, never emailed. `overrides` ({sheet: {field: text}}) replays a package in memory only.
+ */
+async function pubProbe(packageId: string, opts: { dryRun?: boolean; write?: boolean; overrides?: Record<string, Record<string, string>>; only?: string[] } = {}): Promise<Row> {
+  const { data: pkg } = await supabase.from("mystery_packages").select("id,mystery_style").eq("id", packageId).single();
+  const { data: charsData } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId).order("character_name");
+  const chars = ((charsData ?? []) as Row[]).map((c) => ({ ...c, ...(opts.overrides?.[String(c.character_name)] ?? {}) }));
+  if (!pkg || chars.length < 3) return { skipped: "package not found or too few characters" };
+  const sheets: LP.LeakSheet[] = chars.map((c) => ({
+    name: String(c.character_name), secret: typeof c.secret === "string" ? c.secret : "",
+    texts: LP.PUBLIC_ROUND1_FIELDS.filter((f) => typeof c[f] === "string" && c[f]).map((f) => ({ field: f, text: String(c[f]) })),
+    open: ["introduction", "round2_innocent", "round3_innocent", "round4_innocent", "final_innocent", ...SCRIPT_FIELDS].map((f) => (typeof c[f] === "string" ? String(c[f]) : "")).filter(Boolean).join("\n\n"),
+  }));
+  const cands = LP.pubCandidates(sheets).filter((c) => !opts.only?.length || opts.only.includes(c.owner)); // `only` limits a manual replay to named owners
+  const sentences = cands.reduce((n, c) => n + c.hits.length, 0);
+  const promptChars = cands.reduce((n, c) => n + LP.pubPromptText(c).length + LP.PUB_INSTRUCTIONS.length, 0);
+  const estimate = { owners: cands.length, sentences, approx_input_tokens: Math.round(promptChars / 3.2) };
+  if (opts.dryRun || cands.length === 0) return { package_id: packageId, ...estimate, dry_run: true, owner_names: cands.map((c) => c.owner) };
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
+  if ((await spentToday()) >= DAILY_CAP_USD) return { skipped: "daily cost cap" };
+  const system: C.SystemBlock[] = [{ type: "text", text: LP.PUB_INSTRUCTIONS }];
+  const found: Row[] = [];
+  let cost = 0, calls = 0, dropped = 0, next = 0;
+  const worker = async () => {
+    while (true) {
+      const idx = next++;
+      if (idx >= cands.length || cost >= 0.4) return;
+      const c = cands[idx];
+      const r = await reviewItem(apiKey, system, `${c.owner} (public-fact check)`, LP.pubPromptText(c));
+      calls++; cost += r.cost;
+      for (const f of r.findings) {
+        const target = LP.resolveFinding(c, f);
+        const row = target ? chars.find((x) => String(x.character_name) === target.sheet) : null;
+        const finding = target ? { ...f, field: target.field } : f;
+        if (!target || !row || !C.validateFinding(row, finding).ok || f.category !== "cross_field_contradiction") { dropped++; continue; }
+        found.push({ item_name: target.sheet, field: target.field, category: "cross_field_contradiction", severity: f.severity, exact_quote: f.exact_quote,
+          explanation: `Hidden in ${c.owner}'s secret, announced in Round 1: ${(f.explanation ?? "").slice(0, 420)}`, suggested_replacement: f.suggested_replacement ?? "" });
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: 3 }, worker));
+  let stored = 0;
+  if (opts.write && !opts.overrides && !opts.only?.length && found.length > 0) {
+    const { data: rv } = await supabase.from("package_reviews").insert({ package_id: packageId, prompt_version: C.PROMPT_VERSION + "+pub", model: MODEL, mystery_style: String((pkg as Row).mystery_style ?? ""), status: "done", finished_at: new Date().toISOString(), items_reviewed: calls, findings_count: found.length, cost_usd: Number(cost.toFixed(4)) }).select("id").single();
+    if (rv) { const { error } = await supabase.from("package_review_findings").insert(found.map((f) => ({ review_id: (rv as { id: string }).id, package_id: packageId, ...f }))); if (!error) stored = found.length; }
+  }
+  if (cost > 0) await logSpend(packageId, `pub_probe:${found.length}_findings`, "escalated", cost);
+  return { package_id: packageId, ...estimate, calls, cost_usd: Number(cost.toFixed(4)), findings: found.length, dropped, stored, preview: opts.write ? undefined : found.map((f) => ({ item: f.item_name, field: f.field, severity: f.severity, quote: String(f.exact_quote).slice(0, 160), why: f.explanation, fix: String(f.suggested_replacement).slice(0, 200) })) };
+}
+
 /** ADR-0152 lever 3: cross-sheet secret check. Paid unless dryRun. write=false returns the findings without storing them. */
 async function leakProbe(packageId: string, opts: { dryRun?: boolean; write?: boolean; overrides?: Record<string, Record<string, string>> } = {}): Promise<Row> {
   const { data: pkg } = await supabase.from("mystery_packages").select("*").eq("id", packageId).single();
@@ -1159,7 +1217,7 @@ async function releaseQueue(): Promise<Row[]> {
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = ["conform_labels", "reconcile_roster", "localize_scaffold", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe", "judge_images", "doc_probe", "requirement_insert", "reminders"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
+    const mode = ["conform_labels", "reconcile_roster", "localize_scaffold", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe", "judge_images", "doc_probe", "requirement_insert", "pub_probe", "reminders"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
     const out: Row[] = [];
     if (mode === "conform_labels" || mode === "reconcile_roster" || mode === "localize_scaffold") {
       // ADR-0152: manual run for one package (delivered packages are only changed through here). dry_run:true computes and writes nothing; force:true writes even when the setting is "report".
@@ -1219,6 +1277,11 @@ serve(async (req) => {
       // ADR-0165: paid (about 0.012 USD for three images). apply:false only judges; apply:true re-rolls failing rounds (0.04 USD each) and writes. force:true repeats a package already judged.
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
       return new Response(JSON.stringify(await judgeImages(String(body.package_id), { apply: body.apply === true, force: body.force === true })), { headers: { "Content-Type": "application/json" } });
+    }
+    if (mode === "pub_probe") {
+      // ADR-0167: paid only with paid:true (one small call per owner, about 0.01 to 0.03 USD each). write:true stores shadow findings. overrides replays sheets in memory.
+      if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(await pubProbe(String(body.package_id), { dryRun: body.paid !== true, write: body.write === true, overrides: body.overrides && typeof body.overrides === "object" ? body.overrides : undefined, only: Array.isArray(body.only) ? body.only.map(String) : undefined })), { headers: { "Content-Type": "application/json" } });
     }
     if (mode === "leak_probe") {
       // Paid only when paid:true is sent; otherwise it only retrieves candidates and estimates tokens. write:true stores the findings.

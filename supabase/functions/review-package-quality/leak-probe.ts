@@ -60,7 +60,10 @@ export function distinctiveNameWords(name: string, all: string[]): string[] {
   return wordsOf(name).filter((w) => w.length >= 3 && !TITLES.has(w) && !others.has(w));
 }
 
-export function leakCandidates(sheets: LeakSheet[], opts: { maxPerOwner?: number; maxTotal?: number; minOverlapWithName?: number; minOverlapWithoutName?: number; evidence?: EvidenceCard[] } = {}): LeakCandidates[] {
+/** ADR-0167: the fields every guest hears in Round 1. A character a secret names may KNOW the fact, but may not announce it to the table here. */
+export const PUBLIC_ROUND1_FIELDS = ["introduction", "rumors"];
+
+export function leakCandidates(sheets: LeakSheet[], opts: { maxPerOwner?: number; maxTotal?: number; minOverlapWithName?: number; minOverlapWithoutName?: number; evidence?: EvidenceCard[]; namedRound1?: boolean } = {}): LeakCandidates[] {
   const maxPer = opts.maxPerOwner ?? 14, maxTotal = opts.maxTotal ?? 120;
   const minWith = opts.minOverlapWithName ?? 1, minWithout = opts.minOverlapWithoutName ?? 4;
   const names = sheets.map((s) => s.name);
@@ -81,22 +84,25 @@ export function leakCandidates(sheets: LeakSheet[], opts: { maxPerOwner?: number
     const dfs = new Map(secretStems.map((st) => [st, df(st)]));
     const broad = new Set(secretStems.filter((st) => (dfs.get(st) ?? 0) >= 1 && (dfs.get(st) ?? 0) <= broadMax));
     const rare = new Set(secretStems.filter((st) => (dfs.get(st) ?? 0) >= 1 && (dfs.get(st) ?? 0) <= rareMax));
-    if (broad.size === 0) continue;
+    if (broad.size === 0 && !opts.namedRound1) continue;
     const ownerWords = distinctiveNameWords(owner.name, names);
     const secretWords = new Set(wordsOf(owner.secret));
     const hits: LeakHit[] = [];
     for (let j = 0; j < sheets.length; j++) {
       if (j === oi) continue;
       const other = sheets[j];
-      // A character the secret itself names may legitimately know it.
-      if (distinctiveNameWords(other.name, names).some((w) => secretWords.has(w))) continue;
+      // A character the secret itself names may legitimately know it. +leak skips them; +pub (namedRound1) reads ONLY them, and only their Round 1 fields.
+      const named = distinctiveNameWords(other.name, names).some((w) => secretWords.has(w));
+      if (named !== !!opts.namedRound1) continue;
       for (const tx of other.texts) {
+        if (opts.namedRound1 && !PUBLIC_ROUND1_FIELDS.includes(tx.field)) continue;
         for (const sentence of splitSentences(tx.text || "")) {
           const sw = wordsOf(sentence);
           const sentenceStems = [...new Set(sw.filter((w) => w.length >= 4).map(stem))];
           const mentions = ownerWords.some((w) => sw.includes(w));
           const overlap = sentenceStems.filter((st) => (mentions ? broad : rare).has(st));
-          if (mentions ? overlap.length < minWith : overlap.length < minWithout) continue;
+          // A named character's announcement often shares no word with the secret ("Tyson owes me $500,000" vs "in debt to Eddie"), so naming the owner is enough.
+          if (opts.namedRound1 ? !mentions && overlap.length < 2 : mentions ? overlap.length < minWith : overlap.length < minWithout) continue;
           hits.push({ sheet: other.name, field: tx.field, sentence, overlap, mentionsOwner: mentions });
         }
       }
@@ -133,3 +139,25 @@ export function resolveFinding(c: LeakCandidates, f: { field: string; exact_quot
   const hit = c.hits.find((h) => h.sentence === q) ?? c.hits.find((h) => h.sentence.includes(q) || q.includes(h.sentence));
   return hit ? { sheet: hit.sheet, field: hit.field } : null;
 }
+
+/**
+ * ADR-0167 (`+pub`, shadow): the case the secret check cannot see. Eddie, whom Tyson's secret names, said in his Round 1 introduction "Tyson owes me
+ * $500,000, and I'm not shy about it" while Tyson's secret called the same debt hidden. A named character may know the fact; announcing it to the
+ * whole table in Round 1 contradicts a secret that says it is hidden, unless the owner's own open text already says it.
+ */
+export const PUB_INSTRUCTIONS = [
+  "You check a murder mystery party game for ONE kind of contradiction between two character sheets: a fact one sheet treats as HIDDEN is announced as open knowledge by another sheet.",
+  "You get ONE character's hidden secret, the text that character says OPENLY (their introduction and honest scripts, which every guest hears), and a numbered list of sentences taken from the ROUND 1 fields (introduction, rumors) of characters whose names appear in that secret. Those characters may KNOW the secret, but Round 1 introductions and rumors are read aloud to the whole table, so they are public.",
+  "Report a sentence ONLY when ALL of these hold: (1) it states or clearly presupposes as established fact a specific hidden fact of the secret (a debt, an affair, a payment, a past act, a relationship, an amount), not a hint, question or suspicion; (2) the secret says or implies the owner wants that fact hidden from the table, and does not itself say it is openly known or openly discussed; (3) the OPEN text of the owner does not already say it. A sentence that only mentions the owner, repeats something the OPEN text says, or states a fact the secret calls public is NOT a finding.",
+  "Be conservative: when in doubt, do not report. Knowing a secret privately is fine; only announcing it to the table in Round 1 is the problem.",
+  "For each finding give: field = 'SHEET NAME | field' written exactly as in the list; exact_quote = the sentence copied exactly; category = cross_field_contradiction; severity = high if it states the core hidden fact, otherwise medium; explanation = one sentence naming the hidden fact, where the owner's secret treats it as hidden, and that the owner's open text does not say it (the fix is either to soften this sentence or to make the owner's secret acknowledge the fact as open); suggested_replacement = the same sentence rewritten in the same language and voice so that it no longer states the hidden fact (a pointer, suspicion or question about the person instead). If nothing qualifies return an empty list.",
+].join("\n");
+
+export function pubPromptText(c: LeakCandidates): string {
+  const lines = c.hits.map((h, i) => `${i + 1}. [${h.sheet} | ${h.field}] ${h.sentence}`);
+  return `OWNER OF THE SECRET: ${c.owner}\nTHE SECRET (hidden from everyone else):\n${c.secret.trim()}\n\nWHAT THE OWNER SAYS OPENLY (public, not secret):\n${c.open.trim() || "(nothing supplied)"}\n\nROUND 1 SENTENCES FROM CHARACTERS THE SECRET NAMES (read aloud to the whole table):\n${lines.join("\n")}`;
+}
+
+/** The +pub candidates: only characters a secret names, only their Round 1 fields (ADR-0167). Capped lower than +leak because each owner costs one call. */
+export const pubCandidates = (sheets: LeakSheet[], opts: { maxPerOwner?: number; maxTotal?: number } = {}): LeakCandidates[] =>
+  leakCandidates(sheets.map((s) => ({ ...s, role: undefined })), { maxPerOwner: opts.maxPerOwner ?? 8, maxTotal: opts.maxTotal ?? 80, namedRound1: true });

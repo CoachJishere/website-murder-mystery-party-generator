@@ -138,4 +138,60 @@ t("ADR-0165: culprit owners are served first, so the total cap cannot starve a m
   assert.equal(noRole[0].owner, "Aaron Førstmand", "without roles the old (list) order stands");
 });
 
+// ADR-0167 (+pub): the Eddie/Tyson case, Till Death Do Us Part-y 2026-10-16. Wording is Tyson's ORIGINAL secret and Eddie's Round 1 introduction.
+const TYSON_ORIGINAL = "You are having an affair with Emerald, your ex-girlfriend, and she is pregnant. She knows you are the father. You still love her, you told her so, and you are in debt to Eddie Millions for half a million dollars on top of it. Gino knew all of it and promised you a 'toast to remember'. You will dodge, deflect, and lie to keep it buried.";
+const EDDIE_INTRO = "Eddie Millions, ladies and gentlemen. Casino money, good suits, and a standing weakness for a good bet.\n\nEveryone might as well hear it from me. Tyson owes me $500,000, and I'm not shy about it. That's business, and it's the kind of thing a man doesn't forget.";
+const pubSheets = (tysonOpen = "I'm Tyson de Luca, the groom, and tonight was supposed to be the happiest night of my life.") => [
+  { name: "Tyson de Luca", secret: TYSON_ORIGINAL, open: tysonOpen, texts: [{ field: "introduction", text: tysonOpen }] },
+  { name: "Eddie Millions", secret: "You have been telling everyone the debt is a friendly matter, but you are in real trouble if Tyson cannot pay.", texts: [
+    { field: "introduction", text: EDDIE_INTRO },
+    { field: "rumors", text: "1. About Lulu Lombardi: 'Lulu has been snapping photos all night, and I noticed she kept her camera trained on the head table.'" },
+    { field: "round3_script", text: "I heard Tyson owes me more than I ever admitted to anybody in this room tonight." },
+  ] },
+  { name: "Lulu Lombardi", secret: "You photographed the groom kissing Emerald once, and you keep the picture on your phone.", texts: [{ field: "rumors", text: "Tyson has looked nervous all evening, and he keeps glancing at the bar." }, { field: "introduction", text: "I take the photographs at weddings, and I see everything." }] },
+  { name: "Gino Gherkin", secret: "You planned a surprise toast to embarrass the family at the wedding reception tonight.", texts: [{ field: "introduction", text: "I run the wedding and the toast, and I will make it unforgettable for everyone." }] },
+];
+
+t("ADR-0167: +leak still skips the character the secret names (today's behaviour is unchanged)", () => {
+  const plain = P.leakCandidates(pubSheets());
+  assert.ok(!plain.some((c) => c.hits.some((h) => h.sheet === "Eddie Millions" && /owes me/.test(h.sentence))));
+});
+
+t("ADR-0167: +pub retrieves Eddie's Round 1 sentence naming Tyson, though it shares no word with the secret", () => {
+  const c = P.pubCandidates(pubSheets()).find((x) => x.owner === "Tyson de Luca");
+  assert.ok(c, "Tyson has +pub candidates");
+  assert.ok(c.hits.some((h) => h.sheet === "Eddie Millions" && h.field === "introduction" && /Tyson owes me \$500,000/.test(h.sentence)));
+});
+
+t("ADR-0167: +pub reads ONLY named characters and ONLY Round 1 fields", () => {
+  const cs = P.pubCandidates(pubSheets());
+  for (const c of cs) for (const h of c.hits) {
+    assert.ok(P.PUBLIC_ROUND1_FIELDS.includes(h.field), `field ${h.field}`);
+    assert.ok(c.secret.includes(h.sheet.split(" ")[0]), `${h.sheet} is named in the secret of ${c.owner}`);
+  }
+  const tyson = cs.find((x) => x.owner === "Tyson de Luca");
+  assert.ok(!tyson.hits.some((h) => h.field === "round3_script"), "a Round 3 script is not Round 1");
+  assert.ok(!tyson.hits.some((h) => h.sheet === "Lulu Lombardi"), "Lulu is not named in Tyson's secret");
+});
+
+t("ADR-0167: the +pub prompt carries the secret, the owner's open text and the numbered Round 1 sentences, with no culprit role or evidence block", () => {
+  const c = P.pubCandidates(pubSheets("I'm Tyson. Yes, I owe Eddie half a million dollars and everybody knows it, he never lets me forget."))[0];
+  const txt = P.pubPromptText(c);
+  assert.ok(txt.includes("THE SECRET") && txt.includes("SAYS OPENLY") && txt.includes("I owe Eddie half a million dollars") && txt.includes("1. [Eddie Millions | introduction]"));
+  assert.ok(!txt.includes("OWNER ROLE") && !txt.includes("PUBLIC EVIDENCE"));
+});
+
+t("ADR-0167: the +pub instructions flag an announced hidden fact, spare what the owner says openly, and stay conservative", () => {
+  for (const k of ["HIDDEN", "ROUND 1", "read aloud to the whole table", "does not already say it", "OPEN text", "when in doubt, do not report", "cross_field_contradiction", "same language"]) assert.ok(P.PUB_INSTRUCTIONS.includes(k), k);
+  assert.ok(P.resolveFinding(P.pubCandidates(pubSheets())[0], { field: "x", exact_quote: "Tyson owes me $500,000, and I'm not shy about it." })?.sheet === "Eddie Millions");
+});
+
+t("ADR-0167: pubCandidates ignores culprit roles and caps per owner", () => {
+  const withRole = pubSheets().map((s) => (s.name === "Tyson de Luca" ? { ...s, role: "murderer" } : s));
+  assert.equal(P.pubCandidates(withRole)[0].role, undefined);
+  const many = pubSheets();
+  many[1].texts.push({ field: "rumors", text: Array.from({ length: 20 }, (_, i) => `Tyson was seen near the bar number ${i} with a drink in his hand.`).join(" ") });
+  assert.ok(P.pubCandidates(many, { maxPerOwner: 3 })[0].hits.length <= 3);
+});
+
 console.log("leak-probe tests passed");
