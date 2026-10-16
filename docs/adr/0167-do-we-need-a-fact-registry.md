@@ -75,7 +75,7 @@ Jonathan's question that led here (ADR-0166 Update 2): "Shouldn't we just build 
 
 ## Update 1 (2026-10-16, same day): `+pub` built, deployed and validated
 
-**Deployed** (`review-package-quality` v48, `verify_jwt` true, `npm run test:reviewer` passes with 7 new tests; commit eb75852a). One slip found during validation: the manual-mode whitelist in `index.ts` (the `mode` ternary) did not list `pub_probe`, so the first call fell through to the default sweep path (it returned an empty result and reviewed nothing); fixed and redeployed (v47 to v48).
+**Deployed** (`review-package-quality` v49, `verify_jwt` true, `npm run test:reviewer` passes with 7 new tests; commit eb75852a). One slip found during validation: the manual-mode whitelist in `index.ts` (the `mode` ternary) did not list `pub_probe`, so the first call fell through to the default sweep path (it returned an empty result and reviewed nothing); fixed and redeployed (v47 to v48 for the whitelist, v49 for the later `only` filter).
 
 **Validation (replays in memory, nothing stored; total spend 0.133 USD of the 0.8 USD approved):**
 - **Positive:** Tyson's ORIGINAL secret (recovered from the earlier sweep transcript; it differs from today's only in "you are in debt to Eddie Millions for half a million dollars on top of it" and "keep it buried") via `overrides`, owner limited to Tyson: 1 finding, `Eddie Millions | introduction`, high, quote "Tyson owes me $500,000, and I'm not shy about it.", explanation "announces the hidden $500,000 debt ... Tyson's open text never mentions it", with a valid softer replacement. 0.0081 USD.

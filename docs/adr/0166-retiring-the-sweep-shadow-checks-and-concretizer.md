@@ -78,4 +78,4 @@ Jonathan: "Shouldn't we just build those once we're ready to actually import the
 
 ## Update 3 (2026-10-16, later): the `+pub` shadow check is built; the registry question moved to ADR-0167
 
-The small read-only check named in Update 2 is deployed as `+pub` (`review-package-quality` v48, shadow, kill switch `review_pub_probe`) and validated on the Eddie/Tyson case; the count of how often the class has occurred, the registry trigger (unchanged from Update 2) and the reasons Parent89, Child69 and the whitelist change are still not built are in ADR-0167.
+The small read-only check named in Update 2 is deployed as `+pub` (`review-package-quality` v49, shadow, kill switch `review_pub_probe`) and validated on the Eddie/Tyson case; the count of how often the class has occurred, the registry trigger (unchanged from Update 2) and the reasons Parent89, Child69 and the whitelist change are still not built are in ADR-0167.
