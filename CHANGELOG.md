@@ -2,6 +2,11 @@
 
 ## 2026-10-16
 
+### Decision: `+pub` stays on for a measurement window (ADR-0167 Update 3)
+- **Why:** `review_pub_probe` is default on and the 0.8 USD approval covered validation only. Jonathan: a small spend is fine if it makes better mysteries, otherwise follow the recommendation.
+- **What:** stays on for about 10 detective or slip packages (about 0.3 to 1.2 USD); then promote, rewrite or switch off. No code change.
+- Full detail: ADR-0167 Update 3.
+
 ### Improvement: `+pub` hardening after an independent review (ADR-0167 Update 2)
 - **Why:** a fresh-conversation review of the `+pub` build found documentation drift and no test on the wiring in `index.ts`, where the build's one slip (a mode missing from the whitelist) had happened.
 - **What:** new `mode-whitelist.test.mjs` (4 tests, part of `npm run test:reviewer`; fails when a handled mode is not whitelisted, when `pub_probe` is not paid-only, when the second pass loses its switch or error guard, or when a replay could store findings); the Tyson fixture in `leak-probe.test.mjs` is now the verbatim original; ADR-0167 counts corrected (same-sheet cousins 5 packages, document cousins 3, strict class still 1) and Update 2 added; CLAUDE.md reminder 6 says v49, its passive C5 query covers 2026-10-16 onwards, shadow-check lettering fixed; the "7 new tests" wording is now "6 new plus 1 extended".
