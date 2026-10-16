@@ -11,6 +11,11 @@ export const PROMPT_VERSION = "v4-2026-10-03"; // the propagation pass below add
 export const isAutoApplyReview = (promptVersion: string | null | undefined, allowFact = false): boolean =>
   promptVersion === PROMPT_VERSION || promptVersion === PROMPT_VERSION + "+p2" || (allowFact && promptVersion === PROMPT_VERSION + "+fact");
 
+/** ADR-0166: shadow checks write open findings that only the sweep reads (measurement); they are never auto-applied and never emailed. */
+export const SHADOW_SUFFIXES = ["+doc", "+req2"];
+export const isShadowReview = (promptVersion: string | null | undefined): boolean =>
+  !!promptVersion && SHADOW_SUFFIXES.some((s) => promptVersion === PROMPT_VERSION + s);
+
 /** ADR-0165: at most this many cross-sheet fact findings are applied automatically per package. */
 export const MAX_FACT_APPLY_PER_PACKAGE = 8;
 
@@ -97,7 +102,7 @@ const DETECTIVE_RULES = `HOW THE GAME WORKS (these are by design, never defects)
 const WHAT_TO_REPORT_COMMON = `WHAT TO REPORT (category):
 - single_generation_slip: a garbled or ungrammatical sentence, a wrong or doubled word, a typo or non-word, a sentence that contradicts itself inside one field, stray text that does not belong (including a leaked self-correction such as "sorry, I mean"), a time reference that is wrong for the game (the whole game is one night).
 - wrong_fact: a statement that contradicts master_context or the roster dossier: another character's job or relationship, a location, an amount, a date, who did what to whom, the victim's name, or the speaker's own role. For the shared documents also: evidence described differently from master_context (what it is, who owns it, where it was found), or two shared documents that disagree.
-- cross_field_contradiction: two fields of THIS character disagree on a concrete fact (years of service, who did what, an amount), not a difference between versions and not the murderer's deliberate lies.
+- cross_field_contradiction: two fields of THIS character disagree on a concrete fact (years of service, who did what, an amount), not a difference between versions and not the murderer's deliberate lies. A culprit's lie is allowed only when every field of the same version tells the SAME lie (one claimed alibi, one claimed location): an alibi stated in one script ("I never went near the head table") and given up in another field of the same version ("I walked past the head table") is a contradiction, and so is a claim the character's own secret or later script makes impossible.
 - pronoun_drift: the victim is referred to with a pronoun or gendered noun that breaks the package convention (below).
 - language_slip: English words or another script inside prose written in another language, or formal/informal address (tu/vous, tú/usted, du/Sie, vosotros/ustedes) that changes inside one character's text.
 - other: anything else a careful reader would call plainly wrong. Use sparingly.`;

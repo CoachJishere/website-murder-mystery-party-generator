@@ -6,6 +6,8 @@ import * as RR from "./roster-reconcile.ts";
 import * as LP from "./leak-probe.ts";
 import * as FC from "./fact-check.ts";
 import * as IJ from "./image-judge.ts";
+import * as DP from "./doc-probe.ts";
+import * as RI from "./req-insert.ts";
 import { encode as b64encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 import { LABELS_BY_CODE } from "./label-tables.ts";
 import * as PS from "../_shared/packageScaffold.ts";
@@ -190,12 +192,20 @@ async function secondPass(only?: string, force = false): Promise<Row> {
   if (!r.skipped && (await setting("review_fact_check", "off")) === "on") {
     try { fact = await factProbe(id, { write: true }); } catch (e) { console.error(`fact check failed (ignored): ${(e as Error).message}`); fact = { error: (e as Error).message }; }
   }
+  // ADR-0166 shadow checks: findings stay open (`+doc`, `+req2` are not in the auto-apply allowlist). Kill switches review_doc_probe / review_req_insert.
+  let doc: Row | undefined, req: Row | undefined;
+  if (!r.skipped && (await setting("review_doc_probe", "on")) === "on") {
+    try { doc = await docProbe(id, { write: true }); } catch (e) { console.error(`doc probe failed (ignored): ${(e as Error).message}`); doc = { error: (e as Error).message }; }
+  }
+  if (!r.skipped && (await setting("review_req_insert", "on")) === "on") {
+    try { req = await requirementInsert(id, { write: true }); } catch (e) { console.error(`requirement insert failed (ignored): ${(e as Error).message}`); req = { error: (e as Error).message }; }
+  }
   // ADR-0165: the +fact findings only exist now, so the apply step runs again; it is a no-op unless review_apply_fact_findings = on.
   let factApplied = { applied: 0, reverted: 0 };
   if (!r.skipped && fact && !fact.error && Number(fact.stored ?? 0) > 0 && (await setting("review_apply_fact_findings", "off")) === "on") {
     try { factApplied = await applyOpenFindings(id, classes); } catch (e) { console.error(`fact apply failed (ignored): ${(e as Error).message}`); }
   }
-  return { ...r, second_pass: true, applied: applied.applied + factApplied.applied, reverted: applied.reverted + factApplied.reverted, leak, fact };
+  return { ...r, second_pass: true, applied: applied.applied + factApplied.applied, reverted: applied.reverted + factApplied.reverted, leak, fact, doc, req };
 }
 
 /** ADR-0149: one email per UTC day listing packages released in the last 26 hours that still carry unverified open findings. */
@@ -208,8 +218,17 @@ async function openDigest(dryRun: boolean): Promise<Row> {
   if (pkgs.length === 0) return { sent: false, packages: 0 };
   const titles = new Map(pkgs.map((p) => [p.id, p.title ?? ""]));
   const { data: fs } = await supabase.from("package_review_findings")
-    .select("package_id,item_name,field,category,severity,exact_quote,explanation").in("package_id", [...titles.keys()]).eq("status", "open").is("human_verdict", null);
-  const rows: C.OpenFindingRow[] = ((fs ?? []) as Omit<C.OpenFindingRow, "title">[]).map((f) => ({ ...f, title: titles.get(f.package_id) ?? "" }));
+    .select("package_id,item_name,field,category,severity,exact_quote,explanation,review_id").in("package_id", [...titles.keys()]).eq("status", "open").is("human_verdict", null);
+  // ADR-0166: shadow checks (+doc, +req2) are measured by the sweep and never emailed.
+  const shadowIds = new Set<string>();
+  const digestReviewIds = [...new Set(((fs ?? []) as { review_id: string | null }[]).map((f) => f.review_id).filter((x): x is string => !!x))];
+  if (digestReviewIds.length) {
+    const { data: dv } = await supabase.from("package_reviews").select("id,prompt_version").in("id", digestReviewIds);
+    for (const r of (dv ?? []) as { id: string; prompt_version: string }[]) if (C.isShadowReview(r.prompt_version)) shadowIds.add(r.id);
+  }
+  const rows: C.OpenFindingRow[] = ((fs ?? []) as (Omit<C.OpenFindingRow, "title"> & { review_id: string | null })[])
+    .filter((f) => !(f.review_id && shadowIds.has(f.review_id)))
+    .map(({ review_id: _r, ...f }) => ({ ...f, title: titles.get(f.package_id) ?? "" }));
   // ADR-0151: deterministic check that no printed evidence card names the murderer or accomplice (detective style only).
   const detective = pkgs.filter((p) => p.mystery_style === "detective");
   if (detective.length > 0) {
@@ -838,6 +857,96 @@ async function judgeImages(packageId: string, opts: { apply?: boolean; force?: b
   return { package_id: packageId, applied: !!opts.apply, cost_usd: Number(cost.toFixed(4)), rounds: report };
 }
 
+/**
+ * ADR-0166 cheap row 1: shared documents against the cast. One model call per package. SHADOW: findings are stored under `+doc`, which
+ * isAutoApplyReview never allows, so they stay open until a human or a later promotion decides. `docOverrides` replays a document (in memory only).
+ */
+async function docProbe(packageId: string, opts: { dryRun?: boolean; write?: boolean; docOverrides?: Partial<Record<string, string>> } = {}): Promise<Row> {
+  const { data: pkg } = await supabase.from("mystery_packages").select("*").eq("id", packageId).single();
+  const { data: charsData } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId).order("character_name");
+  const chars = (charsData ?? []) as Row[];
+  if (!pkg || chars.length < 3) return { skipped: "package not found or too few characters" };
+  const merged: Row = { ...(pkg as Row), ...(opts.docOverrides ?? {}) };
+  const docs: Partial<Record<DP.DocField, string>> = {};
+  for (const f of DP.DOC_PROBE_FIELDS) if (typeof merged[f] === "string") docs[f] = String(merged[f]);
+  if (!docs.detective_script && !docs.game_overview) return { skipped: "no shared documents" };
+  const objs = C.parseMasterContext((pkg as Row).master_context) as Record<string, unknown>[];
+  const digests = chars.map((c) => DP.digestSheet(c, FC.canonFor(String(c.character_name), objs, 600)));
+  const estimate = { characters: digests.length, approx_input_tokens: DP.estimateTokens(docs, digests) };
+  if (opts.dryRun) return { package_id: packageId, ...estimate, dry_run: true };
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
+  if ((await spentToday()) >= DAILY_CAP_USD) return { skipped: "daily cost cap" };
+  const r = await reviewItem(apiKey, [{ type: "text", text: DP.DOC_INSTRUCTIONS }], "shared documents (doc probe)", DP.docPromptText(docs, digests));
+  const found: Row[] = [];
+  let dropped = 0;
+  for (const f of r.findings) {
+    if (!DP.isDocField(f.field) || (f.category !== "cross_field_contradiction" && f.category !== "wrong_fact") || !C.validateFinding(merged, f).ok) { dropped++; continue; }
+    found.push({ item_name: C.DOC_ITEM_NAME, field: f.field, category: f.category, severity: f.severity, exact_quote: f.exact_quote,
+      explanation: `Documents vs cast: ${(f.explanation ?? "").slice(0, 440)}`, suggested_replacement: f.suggested_replacement ?? "" });
+  }
+  let stored = 0;
+  if (opts.write && !opts.docOverrides && found.length > 0) {
+    const { data: rv } = await supabase.from("package_reviews").insert({ package_id: packageId, prompt_version: C.PROMPT_VERSION + "+doc", model: MODEL, mystery_style: String((pkg as Row).mystery_style ?? ""), status: "done", finished_at: new Date().toISOString(), items_reviewed: 1, findings_count: found.length, cost_usd: Number(r.cost.toFixed(4)) }).select("id").single();
+    if (rv) { const { error } = await supabase.from("package_review_findings").insert(found.map((f) => ({ review_id: (rv as { id: string }).id, package_id: packageId, ...f }))); if (!error) stored = found.length; }
+  }
+  if (r.cost > 0) await logSpend(packageId, `doc_probe:${found.length}_findings`, "escalated", r.cost);
+  return { package_id: packageId, ...estimate, cost_usd: Number(r.cost.toFixed(4)), findings: found.length, dropped, stored, preview: opts.write ? undefined : found.map((f) => ({ field: f.field, severity: f.severity, quote: String(f.exact_quote).slice(0, 160), why: f.explanation, replacement: String(f.suggested_replacement).slice(0, 200) })) };
+}
+
+/**
+ * ADR-0166 cheap row 3: for an open REQUIREMENTS finding that is a customer quote, ask one small call for one rewritten sentence of the detective
+ * script's opening statement that carries the quote verbatim. SHADOW: stored as an open finding under `+req2` (never auto-applied).
+ */
+async function requirementInsert(packageId: string, opts: { dryRun?: boolean; write?: boolean; scriptOverride?: string } = {}): Promise<Row> {
+  const { data: pkg } = await supabase.from("mystery_packages").select("detective_script,mystery_style").eq("id", packageId).single();
+  const script = typeof opts.scriptOverride === "string" ? opts.scriptOverride : String((pkg as Row | null)?.detective_script ?? ""); // scriptOverride replays a script from before a hand fix (in memory, nothing stored)
+  const opening = RI.openingStatement(script);
+  if (!opening) return { skipped: "no opening statement in the detective script" };
+  const { data: open } = await supabase.from("package_review_findings").select("id,exact_quote").eq("package_id", packageId).eq("item_name", C.REQUIREMENTS_ITEM_NAME).eq("status", "open");
+  const plan = ((open ?? []) as { id: string; exact_quote: string }[])
+    .map((f) => ({ id: f.id, requirement: f.exact_quote, spans: RI.quotedSpans(f.exact_quote) }))
+    .filter((x) => x.spans.length > 0 && !x.spans.every((s) => script.toLowerCase().includes(s.toLowerCase().replace(/\.{3}$/, "").trim())))
+    .slice(0, 3);
+  if (plan.length === 0) return { skipped: "no open quoted requirement missing from the script" };
+  if (opts.dryRun) return { package_id: packageId, requirements: plan.length, dry_run: true };
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
+  if ((await spentToday()) >= DAILY_CAP_USD) return { skipped: "daily cost cap" };
+  const found: Row[] = [];
+  const rejected: string[] = [];
+  let cost = 0;
+  let working = script;
+  for (const x of plan) {
+    // Each requirement sees the opening as it stands after the earlier proposals, so two quotes never fight over the same sentence unseen.
+    const openNow = RI.openingStatement(working) ?? opening;
+    const a = await callModel(apiKey, [{ type: "text", text: RI.INSERT_SYSTEM }], RI.insertPromptText(openNow, x.requirement, x.spans), { schema: RI.INSERT_SCHEMA, effort: "low", maxTokens: 2000 });
+    cost += C.costUsd(a.usage);
+    let j: { old_sentence?: string; new_sentence?: string } = {};
+    try { j = JSON.parse(a.text); } catch { rejected.push("unparseable"); continue; }
+    const oldS = String(j.old_sentence ?? ""), newS = String(j.new_sentence ?? "");
+    const chk = RI.validateInsert(working, oldS, newS, x.spans);
+    if (!chk.ok) { rejected.push(chk.reason ?? "invalid"); continue; }
+    working = working.replace(oldS, newS);
+    // A proposal that rewrites a sentence an earlier proposal introduced is merged into that proposal, so every stored finding applies to the REAL script on its own.
+    const parent = found.find((f) => String(f.suggested_replacement).includes(oldS));
+    if (parent) {
+      parent.suggested_replacement = String(parent.suggested_replacement).replace(oldS, newS);
+      parent.explanation = `${String(parent.explanation)} | and: ${x.requirement.slice(0, 200)}`.slice(0, 700);
+    } else {
+      found.push({ item_name: C.DOC_ITEM_NAME, field: "detective_script", category: "other", severity: "medium", exact_quote: oldS,
+        explanation: `Customer line missing from the script (proposed insertion): ${x.requirement.slice(0, 300)}`, suggested_replacement: newS });
+    }
+  }
+  let stored = 0;
+  if (opts.write && !opts.scriptOverride && found.length > 0) {
+    const { data: rv } = await supabase.from("package_reviews").insert({ package_id: packageId, prompt_version: C.PROMPT_VERSION + "+req2", model: MODEL, mystery_style: String((pkg as Row).mystery_style ?? ""), status: "done", finished_at: new Date().toISOString(), items_reviewed: plan.length, findings_count: found.length, cost_usd: Number(cost.toFixed(4)) }).select("id").single();
+    if (rv) { const { error } = await supabase.from("package_review_findings").insert(found.map((f) => ({ review_id: (rv as { id: string }).id, package_id: packageId, ...f }))); if (!error) stored = found.length; }
+  }
+  if (cost > 0) await logSpend(packageId, `requirement_insert:${found.length}_of_${plan.length}`, "escalated", cost);
+  return { package_id: packageId, requirements: plan.length, proposals: found.length, rejected, cost_usd: Number(cost.toFixed(4)), stored, preview: opts.write ? undefined : found.map((f) => ({ old: String(f.exact_quote).slice(0, 200), new: String(f.suggested_replacement).slice(0, 400) })) };
+}
+
 /** ADR-0152 lever 3b: cross-sheet fact check. Paid unless dryRun. `overrides` ({sheet: {field: text}}) replaces text in memory only, to replay a package from before a hand fix. */
 async function factProbe(packageId: string, opts: { dryRun?: boolean; write?: boolean; overrides?: Record<string, Record<string, string>> } = {}): Promise<Row> {
   const { data: pkg } = await supabase.from("mystery_packages").select("*").eq("id", packageId).single();
@@ -1027,7 +1136,7 @@ async function releaseQueue(): Promise<Row[]> {
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = ["conform_labels", "reconcile_roster", "localize_scaffold", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe", "judge_images"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
+    const mode = ["conform_labels", "reconcile_roster", "localize_scaffold", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe", "judge_images", "doc_probe", "requirement_insert"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
     const out: Row[] = [];
     if (mode === "conform_labels" || mode === "reconcile_roster" || mode === "localize_scaffold") {
       // ADR-0152: manual run for one package (delivered packages are only changed through here). dry_run:true computes and writes nothing; force:true writes even when the setting is "report".
@@ -1072,6 +1181,15 @@ serve(async (req) => {
       // Paid only with paid:true. overrides replay a package from before a hand fix (in memory, never written).
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
       return new Response(JSON.stringify(await factProbe(String(body.package_id), { dryRun: body.paid !== true, write: body.write === true, overrides: body.overrides && typeof body.overrides === "object" ? body.overrides : undefined })), { headers: { "Content-Type": "application/json" } });
+    }
+    if (mode === "doc_probe" || mode === "requirement_insert") {
+      // ADR-0166: paid only with paid:true (doc_probe about 0.1 to 0.2 USD, requirement_insert about 0.02). write:true stores the shadow findings. docOverrides replays a document.
+      if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
+      const o = { dryRun: body.paid !== true, write: body.write === true };
+      const res = mode === "doc_probe"
+        ? await docProbe(String(body.package_id), { ...o, docOverrides: body.docOverrides && typeof body.docOverrides === "object" ? body.docOverrides : undefined })
+        : await requirementInsert(String(body.package_id), { ...o, scriptOverride: typeof body.scriptOverride === "string" ? body.scriptOverride : undefined });
+      return new Response(JSON.stringify(res), { headers: { "Content-Type": "application/json" } });
     }
     if (mode === "judge_images") {
       // ADR-0165: paid (about 0.012 USD for three images). apply:false only judges; apply:true re-rolls failing rounds (0.04 USD each) and writes. force:true repeats a package already judged.

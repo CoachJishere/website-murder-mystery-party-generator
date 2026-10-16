@@ -251,6 +251,19 @@ t("ADR-0165: +fact findings are eligible only when the switch is on, with a usab
   assert.equal(C.MAX_FACT_APPLY_PER_PACKAGE, 8);
 });
 
+t("ADR-0166: the main prompt tells the reviewer a culprit's lie must be the same in every field", () => {
+  for (const style of ["detective", "character"]) {
+    const txt = C.instructionsFor(style);
+    assert.ok(txt.includes("tells the SAME lie") && txt.includes("one claimed alibi") && txt.includes("is a contradiction"), style);
+  }
+});
+
+t("ADR-0166: shadow reviews (+doc, +req2) are never auto-applied and are recognised for the digest", () => {
+  const V = C.PROMPT_VERSION;
+  for (const s of ["+doc", "+req2"]) { assert.equal(C.isShadowReview(V + s), true, s); assert.equal(C.isAutoApplyReview(V + s, true), false, s); }
+  for (const v of [V, V + "+p2", V + "+fact", V + "+leak", "", null, undefined, "v3-2026-09-01+doc"]) assert.equal(C.isShadowReview(v), false, String(v));
+});
+
 console.log("customer-wording tests done");
 
 t("auto-apply allowlist: only the main review and its +p2 pass; the +leak / +fact probes (and any future suffix) stay open (ADR-0163 Add. 10)", () => {
