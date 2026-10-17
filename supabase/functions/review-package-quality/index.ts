@@ -569,7 +569,7 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
 // review_leak_probe = "on" runs the paid cross-sheet secret check in the second pass; default "off".
 // ---------------------------------------------------------------------------------------------------------------------------
 const WRITABLE_MODES = new Set(["on", "report", "off"]);
-// ADR-0170: the Portuguese variant a package was generated in (conversations.language_variant, written by mystery-webhook-trigger); null for every
+// ADR-0169: the Portuguese variant a package was generated in (conversations.language_variant, written by mystery-webhook-trigger); null for every
 // other language and for packages generated before the variant existed, which keeps the Brazilian tables.
 async function packageLanguageVariant(packageId: string): Promise<string | null> {
   const { data: pkg } = await supabase.from("mystery_packages").select("conversation_id").eq("id", packageId).maybeSingle();
@@ -597,7 +597,7 @@ async function healLabels(packageId: string, opts: { dryRun?: boolean; force?: b
   if (mode === "off") return { skipped: "label_conformity off" };
   const { data: charsData } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId).order("character_name");
   const chars = (charsData ?? []) as Row[];
-  const lang = tableCode(C.detectLanguage(C.languageSample(chars)), await packageLanguageVariant(packageId)); // ADR-0170: "pt" becomes "pt-pt" for a European Portuguese package
+  const lang = tableCode(C.detectLanguage(C.languageSample(chars)), await packageLanguageVariant(packageId)); // ADR-0169: "pt" becomes "pt-pt" for a European Portuguese package
   if (!lang || !LABELS_BY_CODE[lang]) return { skipped: `language ${lang ?? "unclear"} has no label table` };
   const plan = LC.conformPackage(chars, lang);
   const agg = new Map<string, number>();

@@ -15,6 +15,7 @@ import {
 import {
   selectPreSnapshotBriefs, formatPreSnapshotBrief, selectConceptBase, formatConceptBase,
 } from "../_shared/conversation-briefs.ts";
+import { resolvePortugueseVariant } from "../_shared/languageVariant.ts";
 
 // CORS: restrict to production domains
 const ALLOWED_ORIGINS = [
@@ -805,15 +806,20 @@ serve(async (req) => {
     // Language override (ADR-0103 Addendum 99): detection above reads the dominant language of the chat, so a customer who talks
     // to the assistant in Swedish but writes "gör det på engelska" gets a Swedish package. A service-role re-fire can pin the
     // language ("en", "sv", ...); ignored on the browser path and for codes the app does not support.
-    const pinnedLocale = isServiceCall && typeof languageOverride === "string" && LANGUAGE_NAMES[languageOverride.trim().toLowerCase()]
-      ? languageOverride.trim().toLowerCase()
-      : null;
+    // ADR-0169: a re-fire can also pin the Portuguese variant ("pt-pt" / "pt-br"); either one pins the language to "pt".
+    const variantOverride = isServiceCall && typeof languageOverride === "string" && /^pt[-_](pt|br)$/i.test(languageOverride.trim()) ? languageOverride.trim() : null;
+    const pinnedLocale = variantOverride
+      ? "pt"
+      : isServiceCall && typeof languageOverride === "string" && LANGUAGE_NAMES[languageOverride.trim().toLowerCase()]
+        ? languageOverride.trim().toLowerCase()
+        : null;
     if (pinnedLocale) console.log(`[Language] Pinned to "${pinnedLocale}" by the operator (languageOverride)`);
     const detectedLocale = pinnedLocale ?? (conversationContent
       ? await detectConversationLanguage(conversationContent)
       : null);
 
     let languageName: string;
+    let resolvedLanguageCode: string | null = detectedLocale;
     if (detectedLocale) {
       languageName = LANGUAGE_NAMES[detectedLocale];
       console.log(`[Language] Detected "${detectedLocale}" from conversationContent`);
@@ -824,9 +830,35 @@ serve(async (req) => {
         .eq("id", userId)
         .maybeSingle();
       languageName = LANGUAGE_NAMES[profile?.language ?? ""] || DEFAULT_LANGUAGE_NAME;
+      resolvedLanguageCode = LANGUAGE_NAMES[profile?.language ?? ""] ? (profile?.language ?? null) : null;
       console.log(`[Language] Detection inconclusive, falling back to profiles.language ("${profile?.language}") -> ${languageName}`);
     } else {
       languageName = DEFAULT_LANGUAGE_NAME;
+    }
+
+    // ADR-0169: European vs Brazilian Portuguese. Behind pipeline_settings.portuguese_variants (off = today's behaviour: "Portuguese", the Brazilian
+    // pack). When on, the customer's browser region (profiles.language_region) decides, European Portuguese when it is unknown. The variant is also
+    // stored on the conversation so the label and scaffold heals use the matching table; it is written (null included) on every generation so a
+    // re-fire after the switch changes never leaves a stale value behind. A failure here never blocks generation.
+    let languageVariant: string | null = null;
+    try {
+      if (resolvedLanguageCode === "pt") {
+        const { data: sw } = await supabase.from("pipeline_settings").select("value").eq("key", "portuguese_variants").maybeSingle();
+        let region: string | null = null;
+        if (userId) {
+          const { data: prof } = await supabase.from("profiles").select("language_region").eq("id", userId).maybeSingle();
+          region = (prof as { language_region?: string | null } | null)?.language_region ?? null;
+        }
+        const v = resolvePortugueseVariant({ enabled: sw?.value === "on", override: variantOverride, region });
+        if (v) {
+          languageName = v.name;
+          languageVariant = v.variant;
+          console.log(`[Language] Portuguese variant ${v.variant} (region ${region ?? "unknown"}, override ${variantOverride ?? "none"}) -> ${languageName}`);
+        }
+      }
+      await supabase.from("conversations").update({ language_variant: languageVariant }).eq("id", conversationId);
+    } catch (variantErr) {
+      console.warn("[Language] Portuguese variant step failed (non-fatal):", variantErr);
     }
 
     // Extract character names before sending to Make.com.

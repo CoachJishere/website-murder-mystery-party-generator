@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase";
+import { detectPortugueseRegion } from '@/lib/portugueseRegion';
 import i18n from "@/i18n";
 import { User, Session } from "@supabase/supabase-js";
 
@@ -139,13 +140,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const { data: existing } = await supabase
           .from('profiles')
-          .select('language')
+          .select('language, language_region')
           .eq('id', user.id)
           .maybeSingle();
-        if (existing?.language !== lang) {
+        // ADR-0169: European or Brazilian Portuguese from the browser's language list. Only written when the browser says which one,
+        // so a bare "pt" or a non-Portuguese browser never overwrites an earlier explicit value.
+        const region = detectPortugueseRegion(typeof navigator !== 'undefined' ? navigator.languages : undefined);
+        const updates: Record<string, string> = {};
+        if (existing?.language !== lang) updates.language = lang;
+        if (region && (existing as { language_region?: string | null } | null)?.language_region !== region) updates.language_region = region;
+        if (Object.keys(updates).length > 0) {
           await supabase
             .from('profiles')
-            .update({ language: lang })
+            .update(updates)
             .eq('id', user.id);
         }
       } catch (err) {

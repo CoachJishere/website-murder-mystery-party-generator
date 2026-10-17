@@ -376,7 +376,7 @@ serve(async (req) => {
 
     // Language of the package for the deterministic scaffold pass: the master_context prose, JSON keys removed.
     const mcProse = masterContextStr.replace(/"[A-Za-z_]+"\s*:/g, " ").replace(/[{}\[\]",]/g, " ").slice(0, 8000);
-    const detected = tableCode(detectScaffoldLanguage(mcProse), conv?.language_variant); // ADR-0170: "pt" becomes "pt-pt" for a European Portuguese package
+    const detected = tableCode(detectScaffoldLanguage(mcProse), conv?.language_variant); // ADR-0169: "pt" becomes "pt-pt" for a European Portuguese package
     const scaffoldLang = detected && SCAFFOLD_LANGUAGES.includes(detected) ? detected : null;
 
     const targetFields: string[] = Array.isArray(fields) && fields.length > 0

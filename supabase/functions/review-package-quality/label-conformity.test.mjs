@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import * as L from "./label-conformity.ts";
 import { LABELS_BY_CODE } from "./label-tables.ts";
-import { tableCode, normalizeVariant } from "../_shared/languageVariant.ts";
+import { tableCode, normalizeVariant, resolvePortugueseVariant } from "../_shared/languageVariant.ts";
 
 const t = (n, fn) => { fn(); console.log("ok  ", n); };
 const DA = LABELS_BY_CODE.da;
@@ -105,7 +105,7 @@ t("conformPackage reports per character and counts edits", () => {
   assert.ok(r.changes[1].fields.secret.startsWith("## DIN HEMMELIGHED"));
 });
 
-// ADR-0170: European Portuguese is its own table ("pt-pt"); Brazilian keeps "pt". The detectors only know "pt", so tableCode() picks the variant.
+// ADR-0169: European Portuguese is its own table ("pt-pt"); Brazilian keeps "pt". The detectors only know "pt", so tableCode() picks the variant.
 t("tableCode: only a pt detection with a pt-PT variant becomes pt-pt; Brazil, null and every other language are unchanged", () => {
   assert.equal(tableCode("pt", "pt-PT"), "pt-pt");
   assert.equal(tableCode("pt", "PT_pt"), "pt-pt");
@@ -133,6 +133,16 @@ t("Brazilian sheet is unchanged by the European table existing; a European label
   assert.equal(L.conformField("round2_questions", br, "pt").edits.length, 0);
   const pp = L.conformField("round2_questions", "## RONDA 2: MOTIVOS\n\n### PERGUNTAS A FAZER\n\n**O TEU GUIÃO**\n\nTexto.", "pt");
   assert.ok(pp.text.includes("## RODADA 2: MOTIVOS") && pp.text.includes("**SEU ROTEIRO**"), pp.text);
+});
+
+t("resolvePortugueseVariant: off changes nothing; on picks operator override, then browser region, then European Portuguese", () => {
+  assert.equal(resolvePortugueseVariant({ enabled: false, region: "pt-PT" }), null);
+  assert.deepEqual(resolvePortugueseVariant({ enabled: true, region: "pt-BR" }), { variant: "pt-BR", name: "Portuguese" });
+  assert.deepEqual(resolvePortugueseVariant({ enabled: true, region: "pt-PT" }), { variant: "pt-PT", name: "European Portuguese" });
+  assert.deepEqual(resolvePortugueseVariant({ enabled: true, region: null }), { variant: "pt-PT", name: "European Portuguese" });
+  assert.deepEqual(resolvePortugueseVariant({ enabled: true, region: "garbage" }), { variant: "pt-PT", name: "European Portuguese" });
+  assert.deepEqual(resolvePortugueseVariant({ enabled: true, override: "pt-br", region: "pt-PT" }), { variant: "pt-BR", name: "Portuguese" });
+  assert.deepEqual(resolvePortugueseVariant({ enabled: true, override: "pt_pt", region: "pt-BR" }), { variant: "pt-PT", name: "European Portuguese" });
 });
 
 console.log("label-conformity tests passed");
