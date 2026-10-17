@@ -2,6 +2,10 @@
 
 ## 2026-10-17
 
+### Feature: Parent89 built, the Parent's language pinned to the trigger's `language` (not imported yet; ADR-0103 Addendum 108 Update 2)
+- **Why:** The Great Pumpkin Heist's Detective Intrigue Part 1 module wrote Portuguese on an English order and the four guest-facing modules copied it. Detecting the language is left to the model in every Parent module; the Child already uses `{{63.language}}`.
+- **What:** `temp-files/build-parent-v89.py` (local, gitignored) builds Parent89 from Parent88: the `<language_instruction>` block of 24 Claude modules now says to write in `{{63.language}}`; Image Prompts modules and everything else unchanged, verified reversible. Contains all of Parent88, so the Parent88 measurement continues across both versions. Rollback: re-import Parent88.
+
 ### Improvement: Parent88 imported into Make (ADR-0166 e)
 - **What:** Jonathan imported `MM Live - Parent88 (Contents Of The Hidden Thing)` at 18:01 UTC (logged in `prompt_version_history`); the Parent now says what a hidden envelope, photo, message or remark contained. Rollback is re-importing Parent87.
 - **Which packages carry it:** only those created after 18:01 UTC. The two orders placed before the import, The Triwizard Tournament Murder (`4b0f83c9`) and Dead Men's Cove (`c3d57320`), ran on Parent87 and Child68 and were swept in separate tabs; they do not count for the Parent88 measurement (CLAUDE.md item 1).
