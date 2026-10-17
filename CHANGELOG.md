@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-17
+
+### Fix: health-check alert on "Dead Serious: The BR31 Unveiling", stray rename reverted (ADR-0103 Addendum 105)
+- **What:** `name_background_mismatch` flagged package `6eb76783`: one character row had been renamed to "Madame Vanille" (2026-10-16 16:41 UTC, source unknown, no customer request in the chat) while its own text and the rest of the package (about 115 references) say "French Vanilla". Reverted the single `character_name` back to "French Vanilla" (free, no regeneration). Structural and blocking detectors clean afterwards.
+- **Why revert and not propagate:** no sign the customer asked for it; one row versus about 120 replacements across 16 sheets.
+
 ## 2026-10-16
 
 ### Decision: `+pub` stays on for a measurement window (ADR-0167 Update 3)
