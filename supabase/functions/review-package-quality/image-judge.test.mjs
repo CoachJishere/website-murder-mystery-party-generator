@@ -71,3 +71,11 @@ t("judgeCostUsd matches the price table and the caps stay as decided in ADR-0165
   assert.equal(J.JUDGE_BUDGET_MS, 120000);
 });
 console.log("image-judge tests passed");
+
+// ADR-0103 Addendum 106: the judge passed a Jack of Diamonds court card where the card text says the Joker belongs to no court card.
+{
+  const J = await import("./image-judge.ts");
+  assert.ok(J.JUDGE_SYSTEM.includes("specific identity detail") && J.JUDGE_SYSTEM.includes("A Joker is a jester figure"), "subject rule names identity details and the Joker");
+  assert.ok(J.JUDGE_SYSTEM.includes("full-bleed illustration") && J.JUDGE_SYSTEM.includes("never mention indices"), "retry prompt guidance for playing cards");
+  console.log("ok   judge prompt checks identity details and steers playing-card re-rolls");
+}

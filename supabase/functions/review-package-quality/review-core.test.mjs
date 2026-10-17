@@ -260,7 +260,7 @@ t("ADR-0166: the main prompt tells the reviewer a culprit's lie must be the same
 
 t("ADR-0166/0167: shadow reviews (+doc, +req2, +pub) are never auto-applied and are recognised for the digest", () => {
   const V = C.PROMPT_VERSION;
-  for (const s of ["+doc", "+req2", "+pub"]) { assert.equal(C.isShadowReview(V + s), true, s); assert.equal(C.isAutoApplyReview(V + s, true), false, s); }
+  for (const s of ["+doc", "+req2", "+pub", "+sweep"]) { assert.equal(C.isShadowReview(V + s), true, s); assert.equal(C.isAutoApplyReview(V + s, true), false, s); }
   for (const v of [V, V + "+p2", V + "+fact", V + "+leak", "", null, undefined, "v3-2026-09-01+doc"]) assert.equal(C.isShadowReview(v), false, String(v));
 });
 
@@ -271,3 +271,18 @@ t("auto-apply allowlist: only the main review and its +p2 pass; the +leak / +fac
   assert.equal(C.isAutoApplyReview(C.PROMPT_VERSION + "+p2"), true);
   for (const v of [C.PROMPT_VERSION + "+fact", C.PROMPT_VERSION + "+leak", C.PROMPT_VERSION + "+p2+fact", C.PROMPT_VERSION + "+req", "v3-2026-09-01", "", null, undefined]) assert.equal(C.isAutoApplyReview(v), false, String(v));
 });
+
+// ADR-0103 Addendum 106: stray closing quote inside a rumor item (the applied +fact edit on Larry, The Enthusiasts)
+{
+  const good = "## RUMORS TO SPREAD\n\n1. **About Robin:** 'Robin works the tables. I heard Lee found out.'\n\n3. **About Cardi:** 'Cardi stayed in the foyer, then slipped away. Ask what Cardi was doing.'";
+  const bad = "3. **About Cardi Mundi:** 'Cardi stayed in the foyer talking about the deck for a good while after the reveal, then slipped away and came back looking pale.' A printer who knows exactly what Lee ordered changed has plenty to be nervous about. Ask what Cardi was doing.'";
+  assert.deepEqual(C.midQuoteItems(good), []);
+  assert.equal(C.midQuoteItems(bad).length, 1);
+  assert.deepEqual(C.midQuoteItems("Plain prose. 'Quoted.' More prose after."), [], "not a numbered item");
+  assert.deepEqual(C.midQuoteItems("1. **To Riley:** 'You said \"no.\" Did you mean it?'"), [], "inner double quotes are fine");
+  assert.deepEqual(C.midQuoteItems("2. 'The friends' secrets are safe. I promise.'"), [], "possessive plural apostrophe is not a closing quote");
+  assert.equal(C.introducesMidQuote(good, bad), true);
+  assert.equal(C.introducesMidQuote(bad, bad), false, "an existing defect is not blamed on the edit");
+  assert.equal(C.introducesMidQuote(bad, good), false);
+  console.log("ok   midQuoteItems flags a closing quote mid-item, ignores prose, apostrophes and inner quotes; the guard blames only new ones");
+}

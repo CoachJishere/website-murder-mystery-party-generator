@@ -12,7 +12,7 @@ export const isAutoApplyReview = (promptVersion: string | null | undefined, allo
   promptVersion === PROMPT_VERSION || promptVersion === PROMPT_VERSION + "+p2" || (allowFact && promptVersion === PROMPT_VERSION + "+fact");
 
 /** ADR-0166: shadow checks write open findings that only the sweep reads (measurement); they are never auto-applied and never emailed. */
-export const SHADOW_SUFFIXES = ["+doc", "+req2", "+pub"];
+export const SHADOW_SUFFIXES = ["+doc", "+req2", "+pub", "+sweep"];
 export const isShadowReview = (promptVersion: string | null | undefined): boolean =>
   !!promptVersion && SHADOW_SUFFIXES.some((s) => promptVersion === PROMPT_VERSION + s);
 
@@ -87,13 +87,13 @@ export const FINDINGS_SCHEMA = {
 
 const COMMON_INTRO = `You are the final quality reviewer for a paid murder-mystery party package. A host prints each character's sheet and reads aloud with friends, so any slip a guest notices breaks the illusion. You review ONE item at a time (either one character's sheet, or the package's shared documents) and report only genuine defects.`;
 
-const SLIP_RULES = `HOW THE GAME WORKS (these are by design, never defects):
+export const SLIP_RULES = `HOW THE GAME WORKS (these are by design, never defects):
 - Slip-style game: the murderer and accomplice are drawn at the table. Every character therefore has three versions of rounds 2-4 and of the final statement: innocent, guilty and accomplice. The versions legitimately differ. The guilty and accomplice versions deny or deflect in rounds 2-4 and in the final statement and only confess in the reveal. A guilty or accomplice character lying in rounds 2-4 is not a contradiction.
 - Accomplice confessions may name a specific murderer. Do not report that.
 - Characters repeat the same motive and background across versions, in their own words.
 - Rumors and questions legitimately mention other characters' public motives and secrets. Only report a secret leak when an INNOCENT-branch statement shows knowledge of the murderer's or another character's hidden secret that this speaker could not know.`;
 
-const DETECTIVE_RULES = `HOW THE GAME WORKS (these are by design, never defects):
+export const DETECTIVE_RULES = `HOW THE GAME WORKS (these are by design, never defects):
 - Detective style: the solution is fixed. The SOLUTION line below names the murderer (and accomplice, if any); red herrings carry suspicious secrets that have nothing to do with the murder. Guests do not know the solution.
 - Each character has ONE script per round (round2_script, round3_script, round4_script) and a final_statement, plus an accusation sheet. The murderer's and accomplice's scripts deny, deflect or mislead in rounds 2-4; their final_statement may confess or deny. That lying is by design, not a contradiction. The accusation sheet of a guilty character may contain private deflection tips.
 - Rounds: round 2 is motives, round 3 is method, round 4 is opportunity. One evidence card is revealed per round.
@@ -110,7 +110,7 @@ const WHAT_TO_REPORT_COMMON = `WHAT TO REPORT (category):
 const SLIP_SECRET_LEAK = `- secret_leak: an INNOCENT-branch statement shows knowledge of the murderer's or another character's hidden secret that the speaker could not know.`;
 const DETECTIVE_SECRET_LEAK = `- secret_leak: an INNOCENT character's text, or any shared document read before the reveal, shows or hints at the solution (who the murderer is, the murderer's secret or hidden method) or at another character's hidden secret that this speaker could not know. In round 2 a script must not rely on round 3 or 4 evidence.`;
 
-const PRONOUNS_AND_IGNORE = `VICTIM PRONOUN CONVENTION: use the victim's name. Use a pronoun only if master_context refers to the victim with one consistent gender. If master_context uses no pronoun, mixes genders, or never states a gender, the victim is gender-neutral (they/them/their) and any he/she/him/her/his/hers/man/woman/boy/girl/guy/lady for the victim is pronoun_drift. Other characters keep their own pronouns.
+export const PRONOUNS_AND_IGNORE = `VICTIM PRONOUN CONVENTION: use the victim's name. Use a pronoun only if master_context refers to the victim with one consistent gender. If master_context uses no pronoun, mixes genders, or never states a gender, the victim is gender-neutral (they/them/their) and any he/she/him/her/his/hers/man/woman/boy/girl/guy/lady for the victim is pronoun_drift. Other characters keep their own pronouns.
 This applies in the package's own language: for a neutral victim, every masculine or feminine form of that language that stands for the victim is pronoun_drift, e.g. French il/elle, le/la/l', lui after a preposition (contre lui, chez lui), lui-même, celui-ci, un homme/une femme, prêt/prête; Spanish él/ella, lo/la, un hombre; German er/sie, ihn/ihr, ein Mann; Italian lui/lei, lo/la, un uomo; Portuguese ele/ela, um homem; Dutch hij/zij, hem/haar; Danish/Swedish han/hon, ham/henne, en mand/man; the same in Finnish, Korean, Japanese and Chinese. A neutral victim is written with the name (or "that person" in the language's neutral wording), never with a pronoun. The slips cluster in the speeches and confessions, where a sentence about the victim starts with the pronoun right after the name ("Rémi me menaçait. Il avait ..."): read EVERY sentence of EVERY field that mentions the victim by name or pronoun, and list each wrong form separately.
 
 IGNORE THESE (handled by other tools or by design, never report them): (a) which character a confession names as the murderer or accomplice; (b) any ally or rival listed in a relationships field compared with the relationship matrix; (c) section headers, missing headers, pointform, markdown, quote marks, tags and other stray characters; (d) a name written like "Osric/Osryth" is the deliberate dual-gender naming convention, so never report it nor the gendered words around it; (e) writing style, tone or length.
@@ -402,6 +402,27 @@ export function replacementIsSane(f: RawFinding): boolean {
   if (/[<`{]/.test(r) && !/[<`{]/.test(f.exact_quote)) return false;
   return true;
 }
+
+/**
+ * ADR-0103 Addendum 106: a numbered rumor or question item is one quotation ('...'). An applied replacement that carried its own closing quote
+ * ("came back looking pale.' A printer who ...") left the rest of the item outside the quotes and a lone quote at its end, and nothing reverted it.
+ * Returns the items that start with a quote and have a sentence-final closing quote followed by more text. Plain prose and well-formed items give [].
+ */
+export function midQuoteItems(text: string): string[] {
+  const out: string[] = [];
+  for (const line of String(text ?? "").split("\n")) {
+    const m = line.match(/^\s*\d+\.\s+(?:\*\*[^*]*\*\*\s*)?(['\u2018"\u201c].*)$/);
+    if (!m) continue;
+    const body = m[1].trim();
+    const q = body[0];
+    const close = q === "'" || q === "\u2018" ? /[.!?]['\u2019]\s+\S/ : /[.!?]["\u201d]\s+\S/;
+    if (close.test(body.slice(1))) out.push(body.slice(0, 120));
+  }
+  return out;
+}
+
+/** True when applying the replacement would add a malformed quoted item that the field did not have before. */
+export const introducesMidQuote = (before: string, after: string): boolean => midQuoteItems(after).length > midQuoteItems(before).length;
 
 export function applyReplacement(text: string, f: RawFinding): string | null {
   if (countOccurrences(text, f.exact_quote) !== 1) return null;

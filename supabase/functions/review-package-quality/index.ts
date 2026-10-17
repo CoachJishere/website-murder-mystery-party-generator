@@ -9,6 +9,7 @@ import * as IJ from "./image-judge.ts";
 import * as DP from "./doc-probe.ts";
 import * as RI from "./req-insert.ts";
 import * as RM from "./reminders.ts";
+import * as SW from "./sweep-probe.ts";
 import { encode as b64encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 import { LABELS_BY_CODE } from "./label-tables.ts";
 import * as PS from "../_shared/packageScaffold.ts";
@@ -64,11 +65,11 @@ async function spentToday(): Promise<number> {
 
 type CallResult = { item: string; findings: C.RawFinding[]; usage: C.Usage; cost: number; stop: string; error?: string; secs: number };
 
-async function callModel(apiKey: string, system: C.SystemBlock[], userText: string, opts: { schema?: unknown; effort?: string; maxTokens?: number } = {}): Promise<{ text: string; usage: C.Usage; stop: string }> {
+async function callModel(apiKey: string, system: C.SystemBlock[], userText: string, opts: { schema?: unknown; effort?: string; maxTokens?: number; timeoutMs?: number; attempts?: number } = {}): Promise<{ text: string; usage: C.Usage; stop: string }> {
   let lastErr = "";
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < (opts.attempts ?? 3); attempt++) {
     const ctl = new AbortController();
-    const timer = setTimeout(() => ctl.abort(), CALL_TIMEOUT_MS);
+    const timer = setTimeout(() => ctl.abort(), opts.timeoutMs ?? CALL_TIMEOUT_MS);
     try {
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
@@ -331,6 +332,10 @@ async function autoApply(packageId: string, pkg: Row, chars: Row[], findingRows:
     if (typeof before !== "string") continue; // only plain text fields
     const after = C.applyReplacement(before, raw);
     if (after === null) continue;
+    if (C.introducesMidQuote(before, after)) {
+      await supabase.from("package_review_findings").update({ human_note: "Not auto-applied: the replacement would close the quotation of a rumor or question item in the middle (a stray quote). Left open for a human." }).eq("id", f.id);
+      continue;
+    }
     const { data: defBefore } = await supabase.rpc("package_blocking_defects_by_id", { _id: packageId });
     const w = await supabase.rpc("remediation_write_field", { _scope: isDoc ? "package" : "character", _row_id: rowId, _field: f.field, _value: after });
     if (w.error) { console.error(`apply failed: ${w.error.message}`); continue; }
@@ -1132,6 +1137,115 @@ async function leakProbe(packageId: string, opts: { dryRun?: boolean; write?: bo
   return { package_id: packageId, ...estimate, calls, cost_usd: Number(cost.toFixed(4)), findings: found.length, dropped, stored, preview: opts.write ? undefined : found.map((f) => ({ item: f.item_name, field: f.field, severity: f.severity, quote: String(f.exact_quote).slice(0, 140), why: f.explanation })) };
 }
 
+/**
+ * ADR-0168 `+sweep` (shadow): the whole-package sweeper. One model call per half of the cast, each reading the full package (the customer's words,
+ * master_context, shared documents, every sheet) and reporting only on its own half, with the checklist of the daily hand sweep. SHADOW: stored under
+ * `+sweep`, open, never auto-applied, never emailed (the sweep reads them and judges recall against its own hand finds). A `+sweep` review row is written
+ * even with zero findings, because the unique (package_id, prompt_version) row is also the "already swept" marker.
+ */
+async function sweepProbe(packageId: string, opts: { dryRun?: boolean; write?: boolean; force?: boolean; overrides?: Record<string, Record<string, string>> } = {}): Promise<Row> {
+  const { data: pkgData } = await supabase.from("mystery_packages").select("*").eq("id", packageId).single();
+  const { data: charsData } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId).order("character_name");
+  // overrides ({sheet or "PACKAGE DOCUMENTS": {field: text}}) replay a package from before a hand fix, in memory only (ADR-0165 pattern); a replay never stores anything.
+  const pkg = pkgData ? { ...(pkgData as Row), ...(opts.overrides?.[C.DOC_ITEM_NAME] ?? {}) } : pkgData;
+  const chars = ((charsData ?? []) as Row[]).map((c) => ({ ...c, ...(opts.overrides?.[String(c.character_name)] ?? {}) }));
+  if (opts.overrides) opts.write = false;
+  if (!pkg || chars.length < 3) return { skipped: "package not found or too few characters" };
+  const style: C.Style = (pkg as Row).mystery_style === "detective" ? "detective" : "character";
+  const size = SW.sweepSize(pkg as Row, chars, style);
+  const groups = SW.focusGroups(chars.map((c) => String(c.character_name)));
+  const estimate = { ...size, calls: groups.length, approx_cost_usd: Number((groups.length * size.approx_input_tokens * 2 / 1e6 + groups.length * 0.1).toFixed(2)) };
+  if (opts.dryRun) return { package_id: packageId, ...estimate, dry_run: true };
+  if (size.chars > SW.SWEEP_MAX_CHARS) return { package_id: packageId, ...estimate, skipped: "too large for one call" };
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
+  if ((await spentToday()) >= DAILY_CAP_USD) return { skipped: "daily cost cap" };
+  const version = C.PROMPT_VERSION + "+sweep";
+  let reviewId: string | null = null;
+  if (opts.write) {
+    const { data: existing } = await supabase.from("package_reviews").select("id,status").eq("package_id", packageId).eq("prompt_version", version).maybeSingle();
+    if (existing && !opts.force) return { skipped: "already swept" };
+    if (existing) { await supabase.from("package_review_findings").delete().eq("review_id", (existing as { id: string }).id); await supabase.from("package_reviews").delete().eq("id", (existing as { id: string }).id); }
+    const { data: rv } = await supabase.from("package_reviews").insert({ package_id: packageId, prompt_version: version, model: MODEL, mystery_style: String((pkg as Row).mystery_style ?? ""), status: "running" }).select("id").single();
+    reviewId = rv ? (rv as { id: string }).id : null;
+    if (!reviewId) return { skipped: "could not take the sweep lock" };
+  }
+  const system: C.SystemBlock[] = [{ type: "text", text: SW.sweepInstructions(style) }, { type: "text", text: SW.sweepContext(pkg as Row, chars, style) }]; // no cache breakpoint: the two calls start together, so both would pay the write price (0.2 USD more on a 12-sheet package)
+  let cost = 0, dropped = 0, errors = 0;
+  const found: Row[] = [];
+  const outcomes = await Promise.all(groups.map(async (group) => {
+    const t0 = Date.now();
+    try {
+      // One attempt and a long timeout: a retry of a 90k-token call would double the spend, and the cron's own wait is 280 s.
+      const r = await callModel(apiKey, system, SW.focusText(group), { schema: SW.SWEEP_SCHEMA, effort: "high", maxTokens: 24000, timeoutMs: 250_000, attempts: 1 });
+      return { group, r, secs: (Date.now() - t0) / 1000 };
+    } catch (e) { return { group, err: (e as Error).message, secs: (Date.now() - t0) / 1000 }; }
+  }));
+  const calls: Row[] = [];
+  for (const o of outcomes) {
+    if ("err" in o) { errors++; calls.push({ focus: o.group.length, error: String(o.err).slice(0, 160), secs: o.secs }); continue; }
+    cost += C.costUsd(o.r.usage);
+    let raw: SW.SweepFinding[] = [];
+    try { raw = JSON.parse(o.r.text).findings ?? []; } catch { errors++; calls.push({ focus: o.group.length, error: `parse (stop ${o.r.stop})`, secs: o.secs }); continue; }
+    let kept = 0;
+    for (const f of raw) {
+      const t = SW.resolveSweepFinding(f, chars, pkg as Row, o.group);
+      if (!t) { dropped++; continue; }
+      kept++;
+      found.push({ item_name: t.item, field: t.finding.field, category: t.finding.category, severity: t.finding.severity, exact_quote: t.finding.exact_quote, explanation: String(t.finding.explanation ?? "").slice(0, 480), suggested_replacement: t.finding.suggested_replacement ?? "" });
+    }
+    calls.push({ focus: o.group.length, raw: raw.length, kept, stop: o.r.stop, out_tokens: o.r.usage.output_tokens ?? 0, secs: Number(o.secs.toFixed(0)) });
+  }
+  const rows = SW.dedupe(found as { item_name: string; field: string; exact_quote: string }[]) as Row[];
+  let stored = 0;
+  if (reviewId) {
+    if (rows.length > 0) {
+      const { error } = await supabase.from("package_review_findings").insert(rows.map((f) => ({ review_id: reviewId, package_id: packageId, ...f })));
+      if (!error) stored = rows.length;
+    }
+    await supabase.from("package_reviews").update({ status: errors >= groups.length ? "failed" : errors > 0 ? "partial" : "done", finished_at: new Date().toISOString(), items_reviewed: groups.length, findings_count: rows.length, cost_usd: Number(cost.toFixed(4)), error: errors ? `${errors} of ${groups.length} calls failed` : null }).eq("id", reviewId);
+  }
+  if (cost > 0) await logSpend(packageId, `sweep_probe:${rows.length}_findings${errors ? `:${errors}_errors` : ""}`, errors ? "failed" : "escalated", cost);
+  return { package_id: packageId, ...estimate, cost_usd: Number(cost.toFixed(4)), findings: rows.length, dropped, errors, stored, calls, preview: opts.write ? undefined : rows.map((f) => ({ item: f.item_name, field: f.field, severity: f.severity, quote: String(f.exact_quote).slice(0, 160), why: f.explanation, fix: String(f.suggested_replacement).slice(0, 200) })) };
+}
+
+/**
+ * ADR-0168: cron entry. Takes the oldest package released in the last 24 hours that has no `+sweep` review, while pipeline_settings.review_sweep_probe
+ * (a count of packages still allowed, the approved shadow window; absent or 0 = off) is above zero. The budget is decremented BEFORE the paid call,
+ * so a crash can never run more packages than were approved.
+ */
+async function sweepNext(): Promise<Row> {
+  const budget = SW.remainingBudget(await setting("review_sweep_probe", "0"));
+  if (budget <= 0) return { skipped: "review_sweep_probe is off (0 packages left)" };
+  const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+  const before = new Date(Date.now() - 4 * 60 * 1000).toISOString();
+  const { data: rel } = await supabase.from("mystery_packages").select("id,title,quality_review_released_at").gte("quality_review_released_at", since).lte("quality_review_released_at", before).order("quality_review_released_at", { ascending: true }).limit(40);
+  const released = ((rel ?? []) as { id: string; title: string | null; quality_review_released_at: string }[]);
+  if (released.length === 0) return { skipped: "nothing released in the last 24 hours" };
+  // Wait for the second pass (it edits sheets, which would leave stale quotes in sweep findings); a package whose second pass never ran is taken after 30 minutes.
+  const { data: p2 } = await supabase.from("package_reviews").select("package_id").in("package_id", released.map((r) => r.id)).eq("prompt_version", C.PROMPT_VERSION + "+p2");
+  const p2Done = new Set(((p2 ?? []) as { package_id: string }[]).map((r) => r.package_id));
+  const ids = released.filter((r) => p2Done.has(r.id) || Date.now() - new Date(r.quality_review_released_at).getTime() > 30 * 60 * 1000);
+  if (ids.length === 0) return { skipped: "waiting for the second pass" };
+  const { data: done } = await supabase.from("package_reviews").select("package_id").in("package_id", ids.map((r) => r.id)).eq("prompt_version", C.PROMPT_VERSION + "+sweep");
+  const swept = new Set(((done ?? []) as { package_id: string }[]).map((r) => r.package_id));
+  const next = ids.find((r) => !swept.has(r.id));
+  if (!next) return { skipped: "every recent package already swept" };
+  const { error } = await supabase.from("pipeline_settings").update({ value: String(budget - 1) }).eq("key", "review_sweep_probe");
+  if (error) return { skipped: `could not decrement the budget: ${error.message}` };
+  const res = await sweepProbe(next.id, { dryRun: false, write: true });
+  const why = typeof res.skipped === "string" ? res.skipped : "";
+  let left = budget - 1;
+  if (why === "daily cost cap") {
+    // Nothing was spent: give the slot back and try again on a later tick.
+    await supabase.from("pipeline_settings").update({ value: String(budget) }).eq("key", "review_sweep_probe"); left = budget;
+  } else if (why && why !== "already swept") {
+    // Mark the package as handled so the cron does not pick it again and burn the rest of the budget on it.
+    await supabase.from("package_reviews").insert({ package_id: next.id, prompt_version: C.PROMPT_VERSION + "+sweep", model: MODEL, status: "failed", finished_at: new Date().toISOString(), error: `skipped: ${why}`.slice(0, 200) });
+  }
+  return { title: next.title, budget_left: left, ...res };
+}
+
 async function setting(key: string, fallback: string): Promise<string> {
   const { data } = await supabase.from("pipeline_settings").select("value").eq("key", key).maybeSingle();
   return (data as { value?: string } | null)?.value ?? fallback;
@@ -1217,7 +1331,7 @@ async function releaseQueue(): Promise<Row[]> {
 serve(async (req) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const mode = ["conform_labels", "reconcile_roster", "localize_scaffold", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe", "judge_images", "doc_probe", "requirement_insert", "pub_probe", "reminders"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
+    const mode = ["conform_labels", "reconcile_roster", "localize_scaffold", "heal_scan", "leak_probe", "roster_patch_scan", "fact_probe", "judge_images", "doc_probe", "requirement_insert", "pub_probe", "sweep_probe", "sweep_next", "reminders"].includes(body.mode) ? String(body.mode) : body.mode === "one" ? "one" : body.mode === "release_queue" ? "release_queue" : body.mode === "propagate_probe" ? "propagate_probe" : body.mode === "open_digest" ? "open_digest" : body.mode === "second_pass" ? "second_pass" : body.mode === "apply_open" ? "apply_open" : body.mode === "requirements_probe" ? "requirements_probe" : "sweep";
     const out: Row[] = [];
     if (mode === "conform_labels" || mode === "reconcile_roster" || mode === "localize_scaffold") {
       // ADR-0152: manual run for one package (delivered packages are only changed through here). dry_run:true computes and writes nothing; force:true writes even when the setting is "report".
@@ -1278,6 +1392,12 @@ serve(async (req) => {
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
       return new Response(JSON.stringify(await judgeImages(String(body.package_id), { apply: body.apply === true, force: body.force === true })), { headers: { "Content-Type": "application/json" } });
     }
+    if (mode === "sweep_probe") {
+      // ADR-0168: whole-package sweeper, SHADOW. Paid only with paid:true (about 0.3 to 0.8 USD). write:true stores open `+sweep` findings. force:true repeats a package already swept.
+      if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(await sweepProbe(String(body.package_id), { dryRun: body.paid !== true, write: body.write === true, force: body.force === true, overrides: body.overrides && typeof body.overrides === "object" ? body.overrides : undefined })), { headers: { "Content-Type": "application/json" } });
+    }
+    if (mode === "sweep_next") return new Response(JSON.stringify(await sweepNext()), { headers: { "Content-Type": "application/json" } });
     if (mode === "pub_probe") {
       // ADR-0167: paid only with paid:true (one small call per owner, about 0.01 to 0.03 USD each). write:true stores shadow findings. overrides replays sheets in memory.
       if (!body.package_id) return new Response(JSON.stringify({ error: "package_id required" }), { status: 400, headers: { "Content-Type": "application/json" } });
