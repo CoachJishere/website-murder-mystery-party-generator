@@ -1,6 +1,6 @@
 # ADR-0169: European and Brazilian Portuguese as two variants, chosen by the browser's language
 
-- **Status:** Accepted 2026-10-17 (Jonathan: "do your reco"); built and deployed behind a switch that is OFF; goes live when Child69 is imported and the switch is turned on.
+- **Status:** Accepted 2026-10-17 (Jonathan: "do your reco"); LIVE since 2026-10-17 19:20 UTC (Child69 imported, `portuguese_variants` on); not yet seen on a real Portuguese purchase.
 - **Date:** 2026-10-17
 - **Related:** ADR-0135 (language pack), ADR-0152 (label conformity heal), ADR-0161 (scaffold localization), ADR-0112 (language detection), ADR-0103 Addendum 108 (Parent89 pins `{{63.language}}`).
 
