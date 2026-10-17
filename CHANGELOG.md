@@ -2,7 +2,7 @@
 
 ## 2026-10-17
 
-### Feature: Parent89 built, the Parent's language pinned to the trigger's `language` (not imported yet; ADR-0103 Addendum 108 Update 2)
+### Feature: Parent89 built, the Parent's language pinned to the trigger's `language` (imported 2026-10-17 18:30 UTC; ADR-0103 Addendum 108 Update 2)
 - **Why:** The Great Pumpkin Heist's Detective Intrigue Part 1 module wrote Portuguese on an English order and the four guest-facing modules copied it. Detecting the language is left to the model in every Parent module; the Child already uses `{{63.language}}`.
 - **What:** `temp-files/build-parent-v89.py` (local, gitignored) builds Parent89 from Parent88: the `<language_instruction>` block of 24 Claude modules now says to write in `{{63.language}}`; Image Prompts modules and everything else unchanged, verified reversible. Contains all of Parent88, so the Parent88 measurement continues across both versions. Rollback: re-import Parent88.
 
