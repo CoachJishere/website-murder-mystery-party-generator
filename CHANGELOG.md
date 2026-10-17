@@ -2,6 +2,12 @@
 
 ## 2026-10-17
 
+### Fix: sweep of "Killer Sundae" (detective, EN, 6 characters), 7 hand fixes, first real `+sweep` result 0 of 10 (ADR-0103 Addendum 107)
+- **What:** machinery and reviewer clean or applied before editing (3 findings real: the customer's scoop twist missing from everything players see, a Rocky visibility fix, a Praline conversation topic). 7 defects found by hand and fixed free: Nilla's claim that she could see Rocky (twin of an applied fix), a stray comma left by an applied edit (C20, second sighting), Nilla's "when Sunny was found" position, gendered words on two dual-name characters (C7), a question that gave Chip a public history of sparring, and the customer's "Sunday" (new cluster C21). The scoop twist and "Sunday" went into the detective script.
+- **Measurements:** Child68 detective purchase 1 of 2: 1 position contradiction in 6 sheets (baseline 0.7 per sheet) and 0 culprit-position pointers in Round 1/2 (baseline 3). `+sweep` found 0 of the 10 real defects (replay: 5 of 7), 4 packages left in its window. `+fact` tally: 2 applied (1 debatable, 1 real), none wrong.
+- **Left, decided:** the "C.C.D." apron is the designed Round 4 solution; the Round 2 ledger image kept.
+- Full detail: ADR-0103 Addendum 107.
+
 ### Feature: whole-package "sweeper" pass `+sweep` in shadow, plus a stray-quote apply guard and a stricter image judge (ADR-0168)
 - **Why:** reviewer recall against the daily hand sweep is 52 percent over 16 sweeps (median 7.5 misses per package, 40 high); the misses are cross-sheet facts that only a whole-cast read sees. Jonathan approved a shadow window of 5 packages (about 3 USD more).
 - **What:** `review-package-quality` gets `sweepProbe` (one call per half of the cast, each reading the customer's words, master context, documents and every sheet, reporting only on its own half, with the sweep checklist and the "smaller side matches the larger" rule), `sweep_probe` and `sweep_next` modes, and cron `review-sweep-probe`. Findings are open `+sweep` shadow rows (never auto-applied, never emailed). Spend gate: `pipeline_settings.review_sweep_probe` is a count of packages left (4), decremented before each paid call.
