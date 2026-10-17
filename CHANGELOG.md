@@ -2,6 +2,13 @@
 
 ## 2026-10-17
 
+### Fix: leaked `[If hasAccomplice is true, insert here:]` line in a slip detective script, detector and free heal (ADR-0103 Addendum 106)
+- **What:** "The Enthusiasts: A Deadly Club Deck Launch Evening" (slip, 12 players, accomplice) shipped a detective script with the template conditional left as a bare line before the accomplice beat. The script is read aloud or recorded as audio. Removed by hand; first sighting in the 14 earlier paid slip packages since 2026-10-01.
+- **Detector:** `package_meta_text_leak` now matches `hasAccomplice` (migration `20261017000000_meta_text_leak_hasaccomplice.sql`, patches the live definition in place; positive control flags, 0 other corpus hits), so `list_packages_with_meta_text_leak` and the completion gate catch it.
+- **Heal:** `auto-remediate-packages` v37 strips a standalone `[If hasAccomplice ...]` line for free and refuses (escalates) any other occurrence of the flag name.
+- **Same package, by hand (all free):** Riley's "Lee had their back to me", Sage's "her words", Imma's "her stolen prize" tip, Riley's Round 4 position vs two rumors (sentence added to both branches and their point-form), a stray quote left by the applied `+fact` edit on Larry's rumor, Cardi's secret vs the rumors about it; Round 4 evidence image re-rolled twice (about 0.08 USD, standing yes) because the judge had passed a Jack of Diamonds where the card says Joker.
+- **Left, decided:** Cardi's last-minute change and Upton's secret act stay unspecified (the customer's own wording is vague; Parent88 is the fix).
+
 ### Fix: health-check alert on "Dead Serious: The BR31 Unveiling", stray rename reverted (ADR-0103 Addendum 105)
 - **What:** `name_background_mismatch` flagged package `6eb76783`: one character row had been renamed to "Madame Vanille" (2026-10-16 16:41 UTC, source unknown, no customer request in the chat) while its own text and the rest of the package (about 115 references) say "French Vanilla". Reverted the single `character_name` back to "French Vanilla" (free, no regeneration). Structural and blocking detectors clean afterwards.
 - **Why revert and not propagate:** no sign the customer asked for it; one row versus about 120 replacements across 16 sheets.
