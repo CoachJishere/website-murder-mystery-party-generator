@@ -2,6 +2,13 @@
 
 ## 2026-10-17
 
+### Feature: whole-package "sweeper" pass `+sweep` in shadow, plus a stray-quote apply guard and a stricter image judge (ADR-0168)
+- **Why:** reviewer recall against the daily hand sweep is 52 percent over 16 sweeps (median 7.5 misses per package, 40 high); the misses are cross-sheet facts that only a whole-cast read sees. Jonathan approved a shadow window of 5 packages (about 3 USD more).
+- **What:** `review-package-quality` gets `sweepProbe` (one call per half of the cast, each reading the customer's words, master context, documents and every sheet, reporting only on its own half, with the sweep checklist and the "smaller side matches the larger" rule), `sweep_probe` and `sweep_next` modes, and cron `review-sweep-probe`. Findings are open `+sweep` shadow rows (never auto-applied, never emailed). Spend gate: `pipeline_settings.review_sweep_probe` is a count of packages left (4), decremented before each paid call.
+- **Calibration:** replay of The Enthusiasts with 7 known defects restored: 5 found, 2 missed, 1 real extra find, 0.91 USD; Killer Sundae: 0 findings, 0.18 USD.
+- **Also:** `autoApply` no longer applies a replacement that would close a numbered rumor or question item's quotation in the middle (`midQuoteItems`, tests); the image judge treats a wrong identity detail named on the card (a Jack where the card says Joker) as a failed subject and steers playing-card re-rolls to a full-bleed jester face without naming indices or suits.
+- Full detail: ADR-0168.
+
 ### Fix: leaked `[If hasAccomplice is true, insert here:]` line in a slip detective script, detector and free heal (ADR-0103 Addendum 106)
 - **What:** "The Enthusiasts: A Deadly Club Deck Launch Evening" (slip, 12 players, accomplice) shipped a detective script with the template conditional left as a bare line before the accomplice beat. The script is read aloud or recorded as audio. Removed by hand; first sighting in the 14 earlier paid slip packages since 2026-10-01.
 - **Detector:** `package_meta_text_leak` now matches `hasAccomplice` (migration `20261017000000_meta_text_leak_hasaccomplice.sql`, patches the live definition in place; positive control flags, 0 other corpus hits), so `list_packages_with_meta_text_leak` and the completion gate catch it.
