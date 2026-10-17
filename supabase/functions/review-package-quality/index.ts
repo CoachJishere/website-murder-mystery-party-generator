@@ -12,6 +12,7 @@ import * as RM from "./reminders.ts";
 import * as SW from "./sweep-probe.ts";
 import { encode as b64encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 import { LABELS_BY_CODE } from "./label-tables.ts";
+import { tableCode } from "../_shared/languageVariant.ts";
 import * as PS from "../_shared/packageScaffold.ts";
 import { applyLaterRenames, extractRosterFromMessage, mergeRosterContinuations } from "../_shared/rosterExtraction.ts";
 
@@ -568,6 +569,16 @@ async function reviewPackage(packageId: string, opts: { force?: boolean; dryRun?
 // review_leak_probe = "on" runs the paid cross-sheet secret check in the second pass; default "off".
 // ---------------------------------------------------------------------------------------------------------------------------
 const WRITABLE_MODES = new Set(["on", "report", "off"]);
+// ADR-0170: the Portuguese variant a package was generated in (conversations.language_variant, written by mystery-webhook-trigger); null for every
+// other language and for packages generated before the variant existed, which keeps the Brazilian tables.
+async function packageLanguageVariant(packageId: string): Promise<string | null> {
+  const { data: pkg } = await supabase.from("mystery_packages").select("conversation_id").eq("id", packageId).maybeSingle();
+  const convId = (pkg as { conversation_id?: string } | null)?.conversation_id;
+  if (!convId) return null;
+  const { data: conv } = await supabase.from("conversations").select("language_variant").eq("id", convId).maybeSingle();
+  return ((conv as { language_variant?: string | null } | null)?.language_variant) ?? null;
+}
+
 async function healMode(key: string): Promise<"on" | "report" | "off"> {
   const v = (await setting(key, "report")).trim().toLowerCase();
   return (WRITABLE_MODES.has(v) ? v : "report") as "on" | "report" | "off";
@@ -586,7 +597,7 @@ async function healLabels(packageId: string, opts: { dryRun?: boolean; force?: b
   if (mode === "off") return { skipped: "label_conformity off" };
   const { data: charsData } = await supabase.from("mystery_characters").select("*").eq("package_id", packageId).order("character_name");
   const chars = (charsData ?? []) as Row[];
-  const lang = C.detectLanguage(C.languageSample(chars));
+  const lang = tableCode(C.detectLanguage(C.languageSample(chars)), await packageLanguageVariant(packageId)); // ADR-0170: "pt" becomes "pt-pt" for a European Portuguese package
   if (!lang || !LABELS_BY_CODE[lang]) return { skipped: `language ${lang ?? "unclear"} has no label table` };
   const plan = LC.conformPackage(chars, lang);
   const agg = new Map<string, number>();
@@ -633,7 +644,7 @@ async function healScaffold(packageId: string, opts: { dryRun?: boolean; force?:
   if (!pkg) return { skipped: "package not found" };
   const { data: charsData } = await supabase.from("mystery_characters").select("introduction").eq("package_id", packageId).order("character_name");
   // `language` is a manual override for a package the detector cannot place (a manual run only).
-  const lang = opts.language && opts.force ? opts.language : PS.detectScaffoldLanguage(C.languageSample((charsData ?? []) as Row[]));
+  const lang = opts.language && opts.force ? opts.language : tableCode(PS.detectScaffoldLanguage(C.languageSample((charsData ?? []) as Row[])), await packageLanguageVariant(packageId));
   if (!lang || !PS.SCAFFOLD_LANGUAGES.includes(lang)) return { skipped: `language ${lang ?? "unclear"} has no scaffold table` };
   const plan: { field: PS.ScaffoldField; before: string; after: string; edits: PS.ScaffoldEdit[] }[] = [];
   const unmatched: string[] = [];

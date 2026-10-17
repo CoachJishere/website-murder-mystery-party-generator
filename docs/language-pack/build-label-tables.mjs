@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const json = JSON.parse(fs.readFileSync(path.join(here, "header-labels.json"), "utf8")).languages;
-const CODE = { Spanish: "es", German: "de", French: "fr", Italian: "it", Portuguese: "pt", Dutch: "nl", Danish: "da", Swedish: "sv" };
+const CODE = { Spanish: "es", German: "de", French: "fr", Italian: "it", Portuguese: "pt", "European Portuguese": "pt-pt", Dutch: "nl", Danish: "da", Swedish: "sv" };
 const out = path.join(here, "../../supabase/functions/review-package-quality/label-tables.ts");
 
 const byCode = {};

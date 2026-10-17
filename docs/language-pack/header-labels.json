@@ -1,5 +1,5 @@
 {
- "_readme": "Canonical section-header and bold-label wording for non-English Child generation (ADR-0135). Keys are the exact English template labels in the Make.com Child blueprint. Spanish/German/French/Italian/Portuguese values start from the most common wording already delivered to customers where it was a real translation (French and Portuguese often shipped English labels instead), the rest and Dutch were written for this pack and have NOT had native-speaker review. Header voice addresses the player (es tu, de du, fr vous, it tu, pt voce, nl jouw). Danish and Swedish were added 2026-10-12 (ADR-0152): Danish follows the wording most used in the Danish package \"Champagnens Skygge\", both have NOT had native-speaker review. Edit here, then run scripts/build-label-tables.mjs and rebuild the Child (temp-files/build-child-v62.py).",
+ "_readme": "Canonical section-header and bold-label wording for non-English Child generation (ADR-0135). Keys are the exact English template labels in the Make.com Child blueprint. Spanish/German/French/Italian/Portuguese values start from the most common wording already delivered to customers where it was a real translation (French and Portuguese often shipped English labels instead), the rest and Dutch were written for this pack and have NOT had native-speaker review. Header voice addresses the player (es tu, de du, fr vous, it tu, pt voce, nl jouw). Danish and Swedish were added 2026-10-12 (ADR-0152): Danish follows the wording most used in the Danish package \"Champagnens Skygge\", both have NOT had native-speaker review. Edit here, then run scripts/build-label-tables.mjs and rebuild the Child (temp-files/build-child-v62.py). European Portuguese (Portugal) was added 2026-10-17 (ADR-0170): informal tu, ronda, guião, ficheiro, partilha; the Brazilian table keeps the key 'Portuguese'; neither has had native-speaker review for the European wording.",
  "languages": {
   "Spanish": {
    "## CHARACTER DESCRIPTION": "## DESCRIPCIÓN DEL PERSONAJE",
@@ -320,6 +320,46 @@
    "**IF YOU'RE GUILTY**": "**OM DU ÄR SKYLDIG**",
    "**IF YOU'RE THE ACCOMPLICE**": "**OM DU ÄR MEDHJÄLPAREN**",
    "## THE REVEAL — YOUR CONFESSION": "## AVSLÖJANDET — DIN BEKÄNNELSE"
+  },
+  "European Portuguese": {
+   "## CHARACTER DESCRIPTION": "## DESCRIÇÃO DA PERSONAGEM",
+   "## CHARACTER BACKGROUND": "## ANTECEDENTES DA PERSONAGEM",
+   "**Name:**": "**Nome:**",
+   "**Role:**": "**Papel:**",
+   "**Who they are:**": "**Quem é:**",
+   "**How they met the victim:**": "**Como conheceu a vítima:**",
+   "**Relationship to the victim — then:**": "**Relação com a vítima — antes:**",
+   "**Relationship to the victim — now:**": "**Relação com a vítima — agora:**",
+   "## YOUR RELATIONSHIPS": "## AS TUAS RELAÇÕES",
+   "**ALLIES:**": "**ALIADOS:**",
+   "**RIVALS & ENEMIES:**": "**RIVAIS E INIMIGOS:**",
+   "## YOUR SECRET": "## O TEU SEGREDO",
+   "**Why This Matters:**": "**Porque é que isto importa:**",
+   "## ROUND 1: YOUR INTRODUCTION": "## RONDA 1: A TUA APRESENTAÇÃO",
+   "**Read this aloud when introducing yourself:**": "**Lê isto em voz alta quando te apresentares:**",
+   "## RUMORS TO SPREAD": "## RUMORES PARA ESPALHAR",
+   "**During the rumor phase, share these pieces of gossip about other characters:**": "**Na fase dos rumores, partilha estes mexericos sobre as outras personagens:**",
+   "**About [Cast Name]:**": "**Sobre [Nome]:**",
+   "## ACCUSATIONS": "## ACUSAÇÕES",
+   "### YOUR ACCUSATION": "### A TUA ACUSAÇÃO",
+   "### DEFLECTING SUSPICION — FOR YOUR EYES ONLY": "### DESVIAR AS SUSPEITAS — SÓ PARA OS TEUS OLHOS",
+   "### IF YOU DREW THE GUILTY/CULPRIT SLIP — DEFLECTION TIPS": "### SE TE SAIU O PAPEL DE CULPADO — DICAS PARA DESVIAR AS SUSPEITAS",
+   "## ROUND 2: MOTIVES": "## RONDA 2: MOTIVOS",
+   "## ROUND 3: METHOD": "## RONDA 3: MÉTODO",
+   "## ROUND 4: OPPORTUNITY": "## RONDA 4: OPORTUNIDADE",
+   "### QUESTIONS TO ASK": "### PERGUNTAS A FAZER",
+   "**To [Cast Name]:**": "**Para [Nome]:**",
+   "**YOUR SCRIPT**": "**O TEU GUIÃO**",
+   "**When asked about your feelings toward the victim:**": "**Quando te perguntarem o que sentes pela vítima:**",
+   "**When asked about your knowledge or capability:**": "**Quando te perguntarem sobre os teus conhecimentos ou capacidades:**",
+   "**When asked about your whereabouts:**": "**Quando te perguntarem onde estavas:**",
+   "## FINAL STATEMENT": "## DECLARAÇÃO FINAL",
+   "**YOUR FINAL STATEMENT**": "**A TUA DECLARAÇÃO FINAL**",
+   "**Read this when called upon during final statements:**": "**Lê isto quando te chamarem para as declarações finais:**",
+   "**IF YOU'RE INNOCENT**": "**SE ÉS INOCENTE**",
+   "**IF YOU'RE GUILTY**": "**SE ÉS CULPADO**",
+   "**IF YOU'RE THE ACCOMPLICE**": "**SE ÉS O CÚMPLICE**",
+   "## THE REVEAL — YOUR CONFESSION": "## A REVELAÇÃO — A TUA CONFISSÃO"
   }
  }
 }

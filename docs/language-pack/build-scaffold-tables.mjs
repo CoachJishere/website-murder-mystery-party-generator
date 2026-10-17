@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const json = JSON.parse(fs.readFileSync(path.join(here, "scaffold-labels.json"), "utf8")).languages;
-const CODE = { Spanish: "es", French: "fr", German: "de", Italian: "it", Portuguese: "pt", Dutch: "nl", Danish: "da", Swedish: "sv", Finnish: "fi", Korean: "ko", Japanese: "ja", Chinese: "zh-cn" };
+const CODE = { Spanish: "es", French: "fr", German: "de", Italian: "it", Portuguese: "pt", "European Portuguese": "pt-pt", Dutch: "nl", Danish: "da", Swedish: "sv", Finnish: "fi", Korean: "ko", Japanese: "ja", Chinese: "zh-cn" };
 const out = path.join(here, "../../supabase/functions/_shared/packageScaffoldTables.ts");
 
 const byCode = {};

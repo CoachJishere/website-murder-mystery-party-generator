@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import * as L from "./label-conformity.ts";
 import { LABELS_BY_CODE } from "./label-tables.ts";
+import { tableCode, normalizeVariant } from "../_shared/languageVariant.ts";
 
 const t = (n, fn) => { fn(); console.log("ok  ", n); };
 const DA = LABELS_BY_CODE.da;
@@ -102,6 +103,36 @@ t("conformPackage reports per character and counts edits", () => {
   assert.equal(r.total, 2);
   assert.deepEqual(r.changes.map((c) => c.name), ["A", "B"]);
   assert.ok(r.changes[1].fields.secret.startsWith("## DIN HEMMELIGHED"));
+});
+
+// ADR-0170: European Portuguese is its own table ("pt-pt"); Brazilian keeps "pt". The detectors only know "pt", so tableCode() picks the variant.
+t("tableCode: only a pt detection with a pt-PT variant becomes pt-pt; Brazil, null and every other language are unchanged", () => {
+  assert.equal(tableCode("pt", "pt-PT"), "pt-pt");
+  assert.equal(tableCode("pt", "PT_pt"), "pt-pt");
+  assert.equal(tableCode("pt", "pt-BR"), "pt");
+  assert.equal(tableCode("pt", null), "pt");
+  assert.equal(tableCode("pt", undefined), "pt");
+  assert.equal(tableCode("es", "pt-PT"), "es");
+  assert.equal(tableCode(null, "pt-PT"), null);
+  assert.equal(normalizeVariant("pt-br"), "pt-BR");
+  assert.equal(normalizeVariant("fr"), null);
+});
+
+t("European Portuguese sheet: its own labels stay untouched, English and Brazilian labels become European", () => {
+  const ok = "## RONDA 2: MOTIVOS\n\n### PERGUNTAS A FAZER\n\n**O TEU GUIÃO**\n\nTexto.";
+  assert.equal(L.conformField("round2_questions", ok, "pt-pt").edits.length, 0);
+  const br = "## RODADA 2: MOTIVOS\n\n### PERGUNTAS PARA FAZER\n\n**SEU ROTEIRO**\n\nTexto.";
+  const r = L.conformField("round2_questions", br, "pt-pt");
+  assert.ok(r.text.includes("## RONDA 2: MOTIVOS") && r.text.includes("### PERGUNTAS A FAZER") && r.text.includes("**O TEU GUIÃO**"), r.text);
+  const en = L.conformField("secret", "## YOUR SECRET\n\nTexto.\n\n**Why This Matters:** Texto.", "pt-pt");
+  assert.ok(en.text.includes("## O TEU SEGREDO") && en.text.includes("**Porque é que isto importa:**"), en.text);
+});
+
+t("Brazilian sheet is unchanged by the European table existing; a European label in a Brazilian sheet becomes Brazilian", () => {
+  const br = "## RODADA 2: MOTIVOS\n\n### PERGUNTAS PARA FAZER\n\n**SEU ROTEIRO**\n\nTexto.";
+  assert.equal(L.conformField("round2_questions", br, "pt").edits.length, 0);
+  const pp = L.conformField("round2_questions", "## RONDA 2: MOTIVOS\n\n### PERGUNTAS A FAZER\n\n**O TEU GUIÃO**\n\nTexto.", "pt");
+  assert.ok(pp.text.includes("## RODADA 2: MOTIVOS") && pp.text.includes("**SEU ROTEIRO**"), pp.text);
 });
 
 console.log("label-conformity tests passed");

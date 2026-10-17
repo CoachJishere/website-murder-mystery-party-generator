@@ -1,5 +1,5 @@
 {
- "_readme": "Canonical wording for the package-level scaffolding that the Parent prompts copy from an English template: detective script headers, audio-recording notes and bracketed stage directions, evidence card headings and the Game Overview heading (ADR-0161). Keys are the exact English template strings; values are the wording to use. Directions and cues are stored WITHOUT their *[ ]* wrapper (the wrapper of the source line is kept). 'investigator' variants of the detective strings resolve to the same entry. Host-facing text uses the same register as the character label pack (header-labels.json): fr vous, others informal singular. Brazilian Portuguese vocabulary (Rodada, roteiro, arquivos) to match the character label pack. Danish, Swedish, Finnish, Korean, Japanese and Chinese and every translation here have NOT had native-speaker review. Edit here, then run node docs/language-pack/build-scaffold-tables.mjs.",
+ "_readme": "Canonical wording for the package-level scaffolding that the Parent prompts copy from an English template: detective script headers, audio-recording notes and bracketed stage directions, evidence card headings and the Game Overview heading (ADR-0161). Keys are the exact English template strings; values are the wording to use. Directions and cues are stored WITHOUT their *[ ]* wrapper (the wrapper of the source line is kept). 'investigator' variants of the detective strings resolve to the same entry. Host-facing text uses the same register as the character label pack (header-labels.json): fr vous, others informal singular. Brazilian Portuguese vocabulary (Rodada, roteiro, arquivos) to match the character label pack. Danish, Swedish, Finnish, Korean, Japanese and Chinese and every translation here have NOT had native-speaker review. Edit here, then run node docs/language-pack/build-scaffold-tables.mjs. European Portuguese (Portugal) was added 2026-10-17 (ADR-0170) in the informal tu register with European vocabulary (ronda, guião, ficheiro, prova); not natively reviewed.",
  "languages": {
   "Spanish": {
    "headers": {
@@ -684,6 +684,63 @@
    },
    "cue": "出示第{n}轮证据",
    "absent": "**注意（仅限主持人）：**{name}无法出席，已被预先排除嫌疑（从未进过这座房子，没有作案机会）。请在没有此人的情况下继续进行；其他任何角色的剧本都不应提及此人。"
+  },
+  "European Portuguese": {
+   "headers": {
+    "DETECTIVE SCRIPT": "GUIÃO DO DETETIVE",
+    "NOTE FOR HOST": "NOTA PARA O ANFITRIÃO",
+    "RECORDING GUIDELINES FOR AUDIO OPTION": "ORIENTAÇÕES DE GRAVAÇÃO PARA A OPÇÃO DE ÁUDIO",
+    "DETECTIVE BACKSTORY": "HISTÓRIA DO DETETIVE",
+    "OPENING STATEMENT": "DECLARAÇÃO DE ABERTURA",
+    "ROUND 1: INTRODUCTIONS & RUMORS": "RONDA 1: APRESENTAÇÕES E RUMORES",
+    "ROUND 2: MOTIVES": "RONDA 2: MOTIVOS",
+    "ROUND 3: METHOD": "RONDA 3: MÉTODO",
+    "ROUND 4: OPPORTUNITY": "RONDA 4: OPORTUNIDADE",
+    "ACCUSATIONS": "ACUSAÇÕES",
+    "FINAL STATEMENTS": "DECLARAÇÕES FINAIS",
+    "THE REVEAL": "A REVELAÇÃO",
+    "ACCUSATIONS AND RESOLUTION": "ACUSAÇÕES E RESOLUÇÃO",
+    "EVIDENCE CARDS": "CARTÕES DE PROVAS",
+    "EVIDENCE: ROUND 2": "PROVA: RONDA 2",
+    "EVIDENCE: ROUND 3": "PROVA: RONDA 3",
+    "EVIDENCE: ROUND 4": "PROVA: RONDA 4",
+    "DESCRIPTION": "DESCRIÇÃO",
+    "SIGNIFICANCE (Host Only)": "SIGNIFICADO (apenas para o anfitrião)",
+    "Game Overview": "Visão geral do jogo"
+   },
+   "lines": {
+    "These scripts can be delivered in two ways:": "Estes guiões podem ser usados de duas formas:",
+    "- **Read aloud by the host** (if the host is playing the detective character)": "- **Lidos em voz alta pelo anfitrião** (se o anfitrião interpretar a personagem do detetive)",
+    "- **Pre-recorded as audio files** that are played during the game": "- **Pré-gravados como ficheiros de áudio** e reproduzidos durante o jogo",
+    "- Record each section as a separate file": "- Grava cada secção num ficheiro separado",
+    "- Use a clear, dramatic voice appropriate for the mystery theme": "- Usa uma voz clara e dramática, adequada ao tema do mistério",
+    "- Include 2-3 second pauses between major points": "- Faz pausas de 2 a 3 segundos entre os pontos principais",
+    "- Suggested file names: opening.mp3, round1-intro.mp3, round2-intro.mp3, round3-intro.mp3, round4-intro.mp3, accusations.mp3, reveal.mp3": "- Nomes de ficheiro sugeridos: opening.mp3, round1-intro.mp3, round2-intro.mp3, round3-intro.mp3, round4-intro.mp3, accusations.mp3, reveal.mp3",
+    "- Free audio creation tools: [Google AI Studio Generate Speech](https://aistudio.google.com/generate-speech) or [Google NotebookLM](https://notebooklm.google.com) Audio Overview": "- Ferramentas gratuitas para criar áudio: [Google AI Studio Generate Speech](https://aistudio.google.com/generate-speech) ou [Google NotebookLM](https://notebooklm.google.com) Audio Overview",
+    "- When generating audio, skip the [bracketed stage directions]": "- Ao gerar o áudio, ignora as [indicações de cena entre parênteses retos]",
+    "*Display these one per round during the game. Each card pairs with one forensic image.*": "*Mostra estes cartões um por ronda durante o jogo. Cada cartão acompanha uma imagem forense.*"
+   },
+   "directions": {
+    "Read this when guests are gathered, before Round 1. Lower music if any. Speak slowly with weight.": "Lê isto quando os convidados estiverem reunidos, antes da Ronda 1. Baixa a música, se a houver. Fala devagar e com peso.",
+    "Proceed immediately into Round 1 — there is no break here.": "Passa de imediato para a Ronda 1: aqui não há pausa.",
+    "Read immediately after the opening statement — flow straight in, no pause.": "Lê logo a seguir à declaração de abertura: segue em frente, sem pausa.",
+    "The detective now steps back. Invite the guests to introduce themselves and trade rumors amongst one another, then reconvene for the next round.": "O detetive afasta-se. Convida os convidados a apresentarem-se e a trocarem rumores entre si; depois reúne todos para a ronda seguinte.",
+    "Present the evidence when cued below — don't reveal it before this point.": "Apresenta a prova quando indicado abaixo; não a reveles antes deste ponto.",
+    "The detective steps back. Let the guests question one another about motives, then reconvene.": "O detetive afasta-se. Deixa os convidados questionarem-se uns aos outros sobre os motivos; depois reúne todos de novo.",
+    "The detective steps back. Let the guests press one another on the method, then reconvene.": "O detetive afasta-se. Deixa os convidados pressionarem-se uns aos outros sobre o método; depois reúne todos de novo.",
+    "The detective steps back. Let the guests pin down alibis and opportunity, then reconvene for the accusations.": "O detetive afasta-se. Deixa os convidados definirem álibis e oportunidade; depois reúne todos para as acusações.",
+    "Read after Round 4 discussion winds down.": "Lê isto quando a discussão da Ronda 4 estiver a terminar.",
+    "Going around the group, each player in turn accuses another with one-sentence reasoning. Hold defenses for the next round. Tally the accusations.": "À vez, cada jogador acusa outro com uma frase de justificação. Guarda as defesas para a ronda seguinte. Conta as acusações.",
+    "Read after every player has made their accusation.": "Lê isto depois de todos os jogadores terem feito a sua acusação.",
+    "Each player, in turn, defends themselves and makes their final statement.": "À vez, cada jogador defende-se e faz a sua declaração final.",
+    "After all final statements. Build the moment.": "Depois de todas as declarações finais. Constrói o momento.",
+    "The detective names the murderer directly, addressing them by name.": "O detetive nomeia diretamente o assassino, dirigindo-se a ele ou a ela pelo nome.",
+    "The murderer (player) reads their confession aloud.": "O jogador assassino lê a sua confissão em voz alta.",
+    "The accomplice (player) reads their confession aloud.": "O jogador cúmplice lê a sua confissão em voz alta.",
+    "Pause. Let the moment land.": "Pausa. Deixa o momento assentar."
+   },
+   "cue": "Apresentar a prova da Ronda {n}",
+   "absent": "**Nota (apenas para o anfitrião):** {name} não pôde comparecer e está fora de qualquer suspeita desde o início (nunca esteve em casa, sem oportunidade): segue em frente sem essa pessoa; o guião de nenhuma outra personagem deve mencioná-la."
   }
  }
 }

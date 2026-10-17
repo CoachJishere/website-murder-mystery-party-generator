@@ -15,6 +15,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { detectScaffoldLanguage, localizeScaffoldField, SCAFFOLD_FIELDS, SCAFFOLD_LANGUAGES, type ScaffoldField } from "../_shared/packageScaffold.ts";
+import { tableCode } from "../_shared/languageVariant.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL") || "",
@@ -363,7 +364,7 @@ serve(async (req) => {
 
     const { data: conv } = await supabase
       .from("conversations")
-      .select("player_count")
+      .select("player_count, language_variant")
       .eq("id", pkg.conversation_id)
       .single();
     const playerCount = conv?.player_count || 8;
@@ -375,7 +376,7 @@ serve(async (req) => {
 
     // Language of the package for the deterministic scaffold pass: the master_context prose, JSON keys removed.
     const mcProse = masterContextStr.replace(/"[A-Za-z_]+"\s*:/g, " ").replace(/[{}\[\]",]/g, " ").slice(0, 8000);
-    const detected = detectScaffoldLanguage(mcProse);
+    const detected = tableCode(detectScaffoldLanguage(mcProse), conv?.language_variant); // ADR-0170: "pt" becomes "pt-pt" for a European Portuguese package
     const scaffoldLang = detected && SCAFFOLD_LANGUAGES.includes(detected) ? detected : null;
 
     const targetFields: string[] = Array.isArray(fields) && fields.length > 0

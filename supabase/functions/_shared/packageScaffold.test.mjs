@@ -151,7 +151,7 @@ t("scaffold tables are generated from scaffold-labels.json (single source of tru
 });
 
 t("all 12 languages carry every key, and no value is empty or left in English", () => {
-  assert.deepEqual(SCAFFOLD_LANGUAGES.sort(), ["da", "de", "es", "fi", "fr", "it", "ja", "ko", "nl", "pt", "sv", "zh-cn"]);
+  assert.deepEqual(SCAFFOLD_LANGUAGES.sort(), ["da", "de", "es", "fi", "fr", "it", "ja", "ko", "nl", "pt", "pt-pt", "sv", "zh-cn"]);
   const probe = Object.values(tj.languages)[0];
   for (const [name, tb] of Object.entries(tj.languages)) {
     for (const sect of ["headers", "lines", "directions"]) {
