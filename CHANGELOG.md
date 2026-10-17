@@ -2,6 +2,14 @@
 
 ## 2026-10-17
 
+### Improvement: evidence-image judge fails a contradicted card detail and runs on Sonnet 5.5 (ADR-0165 Update 4)
+- **Why:** it passed a full vial for an "empty vial, cracked stopper" card and a rum label reading "Rugm's RUM" (Dead Men's Cove); second miss of this kind in one day.
+- **What:** new `contradicts_card_detail` flag (only the main object's defining state, small details excluded), invented label words count as gibberish, judge model Haiku 4.5 to Sonnet 5.5 (Haiku flagged good images in 2 of 3 runs), JSON-schema output because Sonnet 5.x rejects a forced tool. Deployed as `review-package-quality` v56; calibrated on 5 real images; unit tests extended. Judging cost about 0.013 to 0.028 USD per package; test spend about 0.24 USD.
+
+### Chore: dependency alerts triaged (2026-10-17)
+- **Fixed:** `source-map-js` 1.2.1 to 1.2.2 (dev only, build passes).
+- **Not changed, decided:** `react-router` (2 alerts) is only patched in 7.x; the app is a client-side SPA with no server rendering and no user-controlled redirect targets (checked `navigate`, `Navigate`, `Link` usages), so neither advisory is reachable, and a 6 to 7 migration is not worth it for that. `postcss-selector-parser` (dev, patched only in 7.x, Tailwind 3 uses 6.x) and `braces` (no patch exists; pulled in by Tailwind's build tooling, not in the browser bundle) are build-time only. The 4 alerts stay open on GitHub; revisit when Tailwind 4 or a braces patch lands.
+
 ### Fix: Dead Men's Cove sweep, slip-draw eligibility rule, stolen-goods announcements, 4 self-contradicting secrets (ADR-0103 Addendum 110)
 - **Package content (`c3d57320`, free, exact-match edits, point-form and `secrets` mirrored):** Ashford now acknowledges the stolen-goods whispers that 14 other sheets already stated aloud (introduction and Round 2, all branches); One-Eyed Jack's stray allies line removed and his Round 4 alibi aligned with the other sheets (beach and dock); Whitlock, Delgado, Pip and Scout no longer contradict their own secrets; Scout's rumor list renumbered 1, 2, 3.
 - **Customer culprit rule on a slip order:** the approved concept said Silas is never murderer or accomplice and both culprits are adults, which a random slip draw cannot honor. A host-only bullet in `materials` now tells the host how to prepare the 19 slips (11 eligible adults get the 2 culprit slips and 9 blanks, the other 8 players get blanks). First sighting; the concept-chat guardrail and a `draw_pool` host-guide field are recorded as a proposal, to be built on a second sighting (CLAUDE.md item 12).

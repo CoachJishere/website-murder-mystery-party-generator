@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import * as J from "./image-judge.ts";
 
 const t = (n, fn) => { fn(); console.log("ok  ", n); };
-const base = { transcription: "NONE", readable_text: "none", watermark_or_logo: false, subject_matches_card: "yes", problems: "", retry_prompt: "" };
+const base = { transcription: "NONE", readable_text: "none", watermark_or_logo: false, subject_matches_card: "yes", contradicts_card_detail: false, problems: "", retry_prompt: "" };
 const card = { title: "The Leverage List", description: "A crumpled page torn from a notebook under the heading LEVERAGE LIST." };
 
 t("parseJudge accepts a full report and rejects unusable ones", () => {
@@ -15,6 +15,8 @@ t("parseJudge accepts a full report and rejects unusable ones", () => {
   assert.equal(J.parseJudge({ ...base, subject_matches_card: "maybe" }), null);
   assert.equal(J.parseJudge({ ...base, watermark_or_logo: "no" }), null);
   assert.equal(J.parseJudge({ ...base, transcription: undefined }).transcription, "");
+  assert.equal(J.parseJudge({ ...base, contradicts_card_detail: undefined }).contradicts_card_detail, false);
+  assert.equal(J.parseJudge({ ...base, contradicts_card_detail: true }).contradicts_card_detail, true);
 });
 
 t("judgePasses: gibberish, watermark and a wrong subject fail; partly matching passes", () => {
@@ -25,12 +27,14 @@ t("judgePasses: gibberish, watermark and a wrong subject fail; partly matching p
   assert.equal(J.judgePasses({ ...base, watermark_or_logo: true }), false);
   assert.equal(J.judgePasses({ ...base, subject_matches_card: "partly" }), true);
   assert.equal(J.judgePasses({ ...base, subject_matches_card: "no" }), false);
+  assert.equal(J.judgePasses({ ...base, subject_matches_card: "partly", contradicts_card_detail: true }), false);
 });
 
 t("judgeScore orders clean above partly above gibberish above wrong subject with watermark", () => {
   const s = (o) => J.judgeScore({ ...base, ...o });
   assert.equal(s({}), 10);
   assert.ok(s({ subject_matches_card: "partly" }) < s({}));
+  assert.ok(s({ contradicts_card_detail: true }) < s({ subject_matches_card: "partly" }));
   assert.ok(s({ readable_text: "some_gibberish" }) < s({ subject_matches_card: "partly" }));
   assert.ok(s({ readable_text: "mostly_gibberish" }) < s({ readable_text: "some_gibberish" }));
   assert.ok(s({ readable_text: "mostly_gibberish", watermark_or_logo: true, subject_matches_card: "no" }) < 0 + 1);
@@ -60,13 +64,14 @@ t("rerollPrompt keeps the judge's description, drops every sentence that mention
 t("prompts and tool: transcription comes first and is required; the schema lists every field", () => {
   assert.ok(J.JUDGE_SYSTEM.includes("transcription comes FIRST"));
   assert.equal(J.JUDGE_TOOL.input_schema.required[0], "transcription");
-  for (const k of ["transcription", "readable_text", "watermark_or_logo", "subject_matches_card", "problems", "retry_prompt"]) assert.ok(k in J.JUDGE_TOOL.input_schema.properties, k);
+  for (const k of ["transcription", "readable_text", "watermark_or_logo", "subject_matches_card", "contradicts_card_detail", "problems", "retry_prompt"]) assert.ok(k in J.JUDGE_TOOL.input_schema.properties, k);
   assert.ok(J.judgeUserText(card).includes("The Leverage List"));
 });
 
 t("judgeCostUsd matches the price table and the caps stay as decided in ADR-0165", () => {
-  assert.equal(J.judgeCostUsd({ input_tokens: 1_000_000, output_tokens: 1_000_000 }), 6);
-  assert.ok(Math.abs(J.judgeCostUsd({ input_tokens: 2000, output_tokens: 400 }) - 0.004) < 1e-9);
+  assert.equal(J.judgeCostUsd({ input_tokens: 1_000_000, output_tokens: 1_000_000 }), 12); // default model: Sonnet 5.5
+  assert.equal(J.judgeCostUsd({ input_tokens: 1_000_000, output_tokens: 1_000_000 }, "claude-haiku-4-5-20251001"), 6);
+  assert.ok(Math.abs(J.judgeCostUsd({ input_tokens: 2800, output_tokens: 350 }) - 0.0091) < 1e-9);
   assert.equal(J.MAX_REROLLS_PER_ROUND, 2);
   assert.equal(J.JUDGE_BUDGET_MS, 120000);
 });
@@ -78,4 +83,29 @@ console.log("image-judge tests passed");
   assert.ok(J.JUDGE_SYSTEM.includes("specific identity detail") && J.JUDGE_SYSTEM.includes("A Joker is a jester figure"), "subject rule names identity details and the Joker");
   assert.ok(J.JUDGE_SYSTEM.includes("full-bleed illustration") && J.JUDGE_SYSTEM.includes("never mention indices"), "retry prompt guidance for playing cards");
   console.log("ok   judge prompt checks identity details and steers playing-card re-rolls");
+}
+
+// 2026-10-17 (Dead Men's Cove): the judge passed a full vial for a card with a cracked stopper and a crusted inside, and a rum label reading "Rugm's RUM".
+{
+  const J = await import("./image-judge.ts");
+  assert.ok(J.JUDGE_SYSTEM.includes("contradicts_card_detail") && J.JUDGE_SYSTEM.includes("NOT a contradiction") && J.JUDGE_SYSTEM.includes("invented brand"), "contradiction and brand-name rules");
+  assert.ok(J.JUDGE_SYSTEM.includes("state the card's version of that detail"), "retry prompt must restate the card's detail");
+  console.log("ok   judge prompt fails a stated detail that the image contradicts");
+}
+
+// 2026-10-17: model-shaped requests and responses (Sonnet 5.x rejects a forced tool_choice).
+{
+  const J = await import("./image-judge.ts");
+  assert.equal(J.DEFAULT_JUDGE_MODEL, "claude-sonnet-5-5");
+  const son = J.judgeRequestBody("claude-sonnet-5-5", "AAAA", "u");
+  assert.ok(son.output_config && !son.tools && !son.tool_choice && son.output_config.format.type === "json_schema" && son.max_tokens === 4000);
+  const hai = J.judgeRequestBody("claude-haiku-4-5-20251001", "AAAA", "u");
+  assert.ok(hai.tools && hai.tool_choice.name === "report" && !hai.output_config);
+  const rep = { transcription: "NONE", readable_text: "none", watermark_or_logo: false, subject_matches_card: "yes", contradicts_card_detail: true, problems: "x", retry_prompt: "y" };
+  assert.equal(J.judgeFromResponse([{ type: "text", text: JSON.stringify(rep) }]).contradicts_card_detail, true);
+  assert.equal(J.judgeFromResponse([{ type: "thinking" }, { type: "text", text: JSON.stringify(rep) }]).readable_text, "none");
+  assert.equal(J.judgeFromResponse([{ type: "tool_use", input: rep }]).subject_matches_card, "yes");
+  assert.equal(J.judgeFromResponse([{ type: "text", text: "not json" }]), null);
+  assert.equal(J.judgeFromResponse(undefined), null);
+  console.log("ok   judge request and response shapes for Sonnet 5.x and Haiku");
 }

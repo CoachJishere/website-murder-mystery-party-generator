@@ -795,17 +795,13 @@ async function callImageJudge(apiKey: string, bytes: Uint8Array, card: { title: 
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
-        body: JSON.stringify({
-          model: IMAGE_JUDGE_MODEL, max_tokens: 900, system: IJ.JUDGE_SYSTEM, tools: [IJ.JUDGE_TOOL], tool_choice: { type: "tool", name: "report" },
-          messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: "image/png", data: b64encode(bytes) } }, { type: "text", text: IJ.judgeUserText(card) }] }],
-        }),
+        body: JSON.stringify(IJ.judgeRequestBody(IMAGE_JUDGE_MODEL, b64encode(bytes), IJ.judgeUserText(card))),
         signal: ctl.signal,
       });
       if (resp.status === 429 || resp.status >= 500) { await new Promise((r) => setTimeout(r, 2000 * (attempt + 1))); continue; }
       if (!resp.ok) throw new Error(`Anthropic HTTP ${resp.status}: ${(await resp.text()).slice(0, 200)}`);
       const j = await resp.json();
-      const tu = (j.content ?? []).find((b: { type: string }) => b.type === "tool_use");
-      return { judge: IJ.parseJudge(tu?.input), cost: IJ.judgeCostUsd(j.usage ?? {}) };
+      return { judge: IJ.judgeFromResponse(j.content), cost: IJ.judgeCostUsd(j.usage ?? {}, IMAGE_JUDGE_MODEL) };
     } catch (e) {
       if ((e as Error).name !== "AbortError" && attempt === 1) throw e;
     } finally { clearTimeout(timer); }
@@ -865,7 +861,7 @@ async function judgeImages(packageId: string, opts: { apply?: boolean; force?: b
         if (!judge) { note.push(`attempt${attempt}:unparsed`); break; }
         const cand: IJ.Candidate = { judge, pass: IJ.judgePasses(judge), score: IJ.judgeScore(judge), label: attempt === 0 ? "original" : `reroll${attempt}` };
         cands.push(cand); bytesByCand.push(bytes);
-        note.push(`${cand.label}#${await shortHash(bytes)}:${cand.pass ? "pass" : "fail"}(${judge.readable_text}${judge.watermark_or_logo ? ",watermark" : ""},${judge.subject_matches_card})`);
+        note.push(`${cand.label}#${await shortHash(bytes)}:${cand.pass ? "pass" : "fail"}(${judge.readable_text}${judge.watermark_or_logo ? ",watermark" : ""},${judge.subject_matches_card}${judge.contradicts_card_detail ? ",contradicts" : ""})`);
         if (cand.pass || !opts.apply || attempt === IJ.MAX_REROLLS_PER_ROUND || Date.now() - started > IJ.JUDGE_BUDGET_MS) break;
         const r = await rerollImage(packageId, round, IJ.rerollPrompt(judge, card, attempt + 1));
         cost += IJ.REROLL_COST_USD;
