@@ -2,6 +2,10 @@
 
 ## 2026-10-17
 
+### Improvement: Parent88 imported into Make (ADR-0166 e)
+- **What:** Jonathan imported `MM Live - Parent88 (Contents Of The Hidden Thing)` at 18:01 UTC (logged in `prompt_version_history`); the Parent now says what a hidden envelope, photo, message or remark contained. Rollback is re-importing Parent87.
+- **Which packages carry it:** only those created after 18:01 UTC. The two orders placed before the import, The Triwizard Tournament Murder (`4b0f83c9`) and Dead Men's Cove (`c3d57320`), ran on Parent87 and Child68 and were swept in separate tabs; they do not count for the Parent88 measurement (CLAUDE.md item 1).
+
 ### Fix: "The Great Pumpkin Heist At The D Loop Halloween Party" came back with the whole Parent output in Portuguese; translated, new Parent-language gate, sheet fixes (ADR-0103 Addendum 108)
 - **What:** an all-English order (chat English, trigger detected `en`, sheets English) got `master_context`, `game_overview`, `detective_script`, `evidence_cards` and `materials` in Portuguese. The held alert was only the unrelated duplicate-accomplice label (Priya relabelled to suspect, free). The four guest-facing fields were translated to English with Sonnet 5.5 (about 0.14 USD, Jonathan's yes) and the package released through the normal reviewer.
 - **New detector and gate:** `package_parent_language_mismatch` / `list_packages_with_parent_language_mismatch` (free stopword score of the conversation against the overview and script) and a `parent_language_mismatch.*` entry in `package_completion_blocking_defects()`. 0 hits over every package since 2026-09-01, fires on a Portuguese clone. Migration `20261017020000_parent_language_mismatch_detector.sql` (applied through the Supabase MCP).
