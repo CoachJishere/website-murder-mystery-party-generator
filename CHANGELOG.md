@@ -2,6 +2,12 @@
 
 ## 2026-10-17
 
+### Fix: Dead Men's Cove sweep, slip-draw eligibility rule, stolen-goods announcements, 4 self-contradicting secrets (ADR-0103 Addendum 110)
+- **Package content (`c3d57320`, free, exact-match edits, point-form and `secrets` mirrored):** Ashford now acknowledges the stolen-goods whispers that 14 other sheets already stated aloud (introduction and Round 2, all branches); One-Eyed Jack's stray allies line removed and his Round 4 alibi aligned with the other sheets (beach and dock); Whitlock, Delgado, Pip and Scout no longer contradict their own secrets; Scout's rumor list renumbered 1, 2, 3.
+- **Customer culprit rule on a slip order:** the approved concept said Silas is never murderer or accomplice and both culprits are adults, which a random slip draw cannot honor. A host-only bullet in `materials` now tells the host how to prepare the 19 slips (11 eligible adults get the 2 culprit slips and 9 blanks, the other 8 players get blanks). First sighting; the concept-chat guardrail and a `draw_pool` host-guide field are recorded as a proposal, to be built on a second sighting (CLAUDE.md item 12).
+- **Evidence images:** round 3 showed a full vial (card says empty, cracked stopper) and round 2's bottle label read "Rugm's RUM"; both re-rolled once under the standing yes (about 0.08 USD) and checked by eye. The image judge checks lettering, not content against the card.
+- **Reviewer and `+sweep` measurement:** 24 findings, all real; `+sweep` found 2 of 9 defect classes (3 findings, 3 real). Layer cost 3.99 USD. No code change, no customer message sent.
+
 ### Fix: Triwizard sweep, French evidence cards, `+fact` reversal, evidence-cards language detector (ADR-0103 Addendum 109, ADR-0165 Update 3)
 - **Package content (`4b0f83c9`, free, hand SQL):** evidence cards rewritten in English (they were French on an English order); Hermione's and Dumbledore's refreshments-table lines restored after `+fact` reversed a canon fact on 5 fields; Hermione's secret made concrete (unregistered Animagus, beetle) and a beetle hint added to the host script (customer requirement); "Two of you" now "Several of you"; one hidden-fact announcement in McGonagall's R2 question softened; Round 4 image re-rolled once (0.04 USD, clean).
 - **`+fact` auto-apply switched off (`review_apply_fact_findings`):** 5 applied edits, all wrong, one root cause (two `master_context` fields disagree and it rewrote the minority side); ADR-0165 rule fires. Do not re-enable until it escalates conflicts instead of picking a side.
