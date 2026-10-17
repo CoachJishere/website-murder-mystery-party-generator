@@ -2,6 +2,12 @@
 
 ## 2026-10-17
 
+### Fix: Triwizard sweep, French evidence cards, `+fact` reversal, evidence-cards language detector (ADR-0103 Addendum 109, ADR-0165 Update 3)
+- **Package content (`4b0f83c9`, free, hand SQL):** evidence cards rewritten in English (they were French on an English order); Hermione's and Dumbledore's refreshments-table lines restored after `+fact` reversed a canon fact on 5 fields; Hermione's secret made concrete (unregistered Animagus, beetle) and a beetle hint added to the host script (customer requirement); "Two of you" now "Several of you"; one hidden-fact announcement in McGonagall's R2 question softened; Round 4 image re-rolled once (0.04 USD, clean).
+- **`+fact` auto-apply switched off (`review_apply_fact_findings`):** 5 applied edits, all wrong, one root cause (two `master_context` fields disagree and it rewrote the minority side); ADR-0165 rule fires. Do not re-enable until it escalates conflicts instead of picking a side.
+- **New alert-only detector** `list_packages_with_evidence_cards_language_mismatch` (migration `20261017030000`): `package_parent_language_mismatch` never read `evidence_cards`, so French cards passed the gate. Corpus check from 2026-08-15: 1 hit, a true one (an ad hoc variant also hit the Golden Stars customer decision). Not in the gate on purpose (free repair, would hold correct packages).
+- **`+sweep` first clean recall number:** 7 of 7 findings real, 2 of 7 defect classes (about 7 of 13 fields), against the 80 percent screen.
+
 ### Feature: Parent89 built, the Parent's language pinned to the trigger's `language` (imported 2026-10-17 18:30 UTC; ADR-0103 Addendum 108 Update 2)
 - **Why:** The Great Pumpkin Heist's Detective Intrigue Part 1 module wrote Portuguese on an English order and the four guest-facing modules copied it. Detecting the language is left to the model in every Parent module; the Child already uses `{{63.language}}`.
 - **What:** `temp-files/build-parent-v89.py` (local, gitignored) builds Parent89 from Parent88: the `<language_instruction>` block of 24 Claude modules now says to write in `{{63.language}}`; Image Prompts modules and everything else unchanged, verified reversible. Contains all of Parent88, so the Parent88 measurement continues across both versions. Rollback: re-import Parent88.
